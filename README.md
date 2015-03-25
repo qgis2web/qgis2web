@@ -18,4 +18,6 @@ The plugin lets you export your data using either openlayers3 or leaflet for a w
 
 ##additional functions
 + define single distinct feature attribute to get custom popup fills
++ show webmap preview for openlayers and/or leaflet map
+
 
