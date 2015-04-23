@@ -26,9 +26,9 @@ email=tom.chadwin@nnpa.org.uk
 # tags are comma separated with spaces allowed
 tags=
 
-homepage=
-tracker=
-repository=
+homepage=https://github.com/tomchadwin/qgis2web
+tracker=https://github.com/tomchadwin/qgis2web/issues
+repository=https://github.com/tomchadwin/qgis2web
 icon=icon.png
 # experimental flag
 experimental=True
