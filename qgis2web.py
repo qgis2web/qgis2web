@@ -18,7 +18,33 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-def classFactory(iface):
+# Import the PyQt and QGIS libraries
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from qgis.core import *
+# Initialize Qt resources from file resources.py
+import resources_rc
+# Import the code for the dialog
+from maindialog import MainDialog
 
-    from qgis2web import qgis2web
-    return qgis2web(iface)
+
+class qgis2web:
+
+    def __init__(self, iface):
+        # Save reference to the QGIS interface
+        self.iface = iface
+
+    def initGui(self):
+        self.action = QAction(
+            QIcon(":/plugins/qgis2ol/icons/ol.png"),
+            u"Create web map", self.iface.mainWindow())
+        self.action.triggered.connect(self.run)
+
+        self.iface.addPluginToWebMenu(u"&Export web map", self.action)
+
+    def unload(self):
+        self.iface.removePluginWebMenu(u"&Export web map", self.action)
+    
+    def run(self):
+        dlg = MainDialog()
+        dlg.exec_()        

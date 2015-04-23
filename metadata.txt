@@ -1,37 +1,38 @@
-# This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
-# information about a plugin. The old method of 
-# embedding metadata in __init__.py will 
-# is no longer supported since version 2.0.
+# This file contains metadata for your plugin. Beginning
+# with version 1.8 this is the preferred way to supply information about a
+# plugin. The current method of embedding metadata in __init__.py will
+# be supported until version 2.0
 
-# This file should be included when you package your plugin.# Mandatory items:
+# This file should be included when you package your plugin.
+
+# Mandatory items:
+
 
 [general]
 name=qgis2web
 qgisMinimumVersion=2.0
-description=Export your QGIS map to a webmap
-version=0.1
-author=Riccardo Klinger / Geolicious
-email=riccardo.klinger@geolicious.de
+description=Creates web map from QGIS layers
+version=0.30
+author=Tom Chadwin
+email=tom.chadwin@nnpa.org.uk
 
-# End of mandatory metadata
+# end of mandatory metadata
 
-# Recommended items:
+# Optional items:
 
-# Uncomment the following line and add your changelog:
+# Uncomment the following line and add your changelog entries:
 # changelog=
 
-# Tags are comma separated with spaces allowed
-tags=export, html, openlayers, web, leaflet
+# tags are comma separated with spaces allowed
+tags=
 
-homepage=https://github.com/riccardoklinger/qgis2web
-tracker=https://github.com/riccardoklinger/qgis2web
-repository=https://github.com/riccardoklinger/qgis2web
-category=Web
+homepage=
+tracker=
+repository=
 icon=icon.png
 # experimental flag
 experimental=True
 
-# deprecated flag (applies to the whole plugin, not just a single version)
+# deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
 

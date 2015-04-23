@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # qgis-ol3 Creates OpenLayers map from QGIS layers
 # Copyright (C) 2014 Victor Olaya (volayaf@gmail.com)
 #
@@ -17,8 +15,38 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
 
-def classFactory(iface):
+def getTemplates():
+	folder = os.path.join(os.path.dirname(__file__), "templates")
+	return tuple(f[:f.find(".")] for f in os.listdir(folder) if f.endswith("html"))
 
-    from qgis2web import qgis2web
-    return qgis2web(iface)
+
+paramsOL = {
+	"Appearance":{
+		"Add layers list": True,
+		"Base layer": (			
+			"OSM",
+			"MapQuest",
+			"Stamen watercolor",
+			"Stamen toner"
+			),
+		"Add scale bar": True,
+		"Show popups on hover": False,
+		"Highlight features": False,
+		"Template": getTemplates()
+	},
+	"Data export" : {
+		"Precision": 3,
+		"Minify GeoJSON files": True,
+		"Delete unused fields": True
+	},
+	"Scale/Zoom":{
+		"Use layer scale dependent visibility": True,
+		"Extent": ("Canvas extent", "Fit to layers extent"),
+		"Restrict to extent": False,
+		"Max zoom level": 28,
+		"Min zoom level": 1,
+	}
+
+}
