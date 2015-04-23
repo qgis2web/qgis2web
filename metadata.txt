@@ -12,7 +12,7 @@
 name=qgis2web
 qgisMinimumVersion=2.0
 description=Creates web map from QGIS layers
-version=0.30
+version=0.0.1
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
