@@ -44,7 +44,7 @@ import sys #to use another print command without annoying newline characters
 def layerstyle_single(layer):
 	return color_code
 
-def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, full, layer_list, visible, opacity_raster, encode2JSON, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, precision, labels, labelhover, matchCRS, selected, params):
+def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, full, layer_list, visible, opacity_raster, encode2JSON, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, params):
 	# supply path to where is your qgis installed
 	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
 
@@ -216,6 +216,7 @@ th {
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		layerFileName = dataStore + os.sep + 'exp_' + safeLayerName + '.js'
 		if i.providerType() != 'WFS' or encode2JSON == True and i:
+			precision = params["Data export"]["Precision"]
 			if i.type() ==0:
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
 
