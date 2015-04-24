@@ -65,7 +65,7 @@ def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress
 	jsDir = pluginDir + os.sep + 'js' + os.sep
 	shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
 	shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
-	if cluster_set:
+	if len(cluster_set):
 		shutil.copyfile(jsDir + 'leaflet.markercluster.js', jsStore + 'leaflet.markercluster.js')
 	if labels:
 		shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
@@ -79,7 +79,7 @@ def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress
 	os.makedirs(cssStore)
 	cssStore += os.sep
 	cssDir = pluginDir + os.sep + 'css' + os.sep
-	if cluster_set:
+	if len(cluster_set):
 		shutil.copyfile(cssDir + 'MarkerCluster.css', cssStore + 'MarkerCluster.css')
 		shutil.copyfile(cssDir + 'MarkerCluster.Default.css', cssStore + 'MarkerCluster.Default.css')
 	if labels:
@@ -166,7 +166,7 @@ th {
 		base += """
 		<meta charset="utf-8" />
 		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />"""
-		if cluster_set:
+		if len(cluster_set):
 			base+= """
 		<link rel="stylesheet" href="css/MarkerCluster.css" />
 		<link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
@@ -189,7 +189,7 @@ th {
 		if address == True:
 			base +="""
 		<script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js"></script>"""
-		if cluster_set:
+		if len(cluster_set):
 			base +="""
 		<script src="js/leaflet.markercluster.js"></script>"""
 		if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
@@ -408,6 +408,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				renderer = i.rendererV2()
 				rendererDump = renderer.dump()
 				layer_transp_float = 1 - (float(i.layerTransparency()) / 100)
+				print "Cluster: " + unicode(cluster_set[count])
 
 				if rendererDump[0:6] == 'SINGLE':
 					symbol = renderer.symbol()
@@ -432,7 +433,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {""" + popFuncs + """
 		}"""
-							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set, cluster_num, visible)
+							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set[count], cluster_num, visible)
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -444,12 +445,12 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	});
 	layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 #add points to the cluster group
-						if cluster_set:
-							new_obj += """
-	var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
-							new_obj += """
-	cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
-							cluster_num += 1	
+							if cluster_set[count]:
+								new_obj += """
+		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
+								new_obj += """
+		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+								cluster_num += 1	
 
 					elif i.geometryType() == 1:
 						radius_str = str(symbol.width() * 5)
@@ -556,7 +557,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set, cluster_num, visible)
+							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible)
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -570,11 +571,12 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	});
 		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 			#add points to the cluster group
-						if cluster_set == True:
-							
-							new_obj += """
-	var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
-	cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+							if cluster_set[count] == True:
+								
+
+								new_obj += """
+		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
+		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
 							cluster_num += 1	
 					elif i.geometryType() == 1:
 						categories = renderer.categories()
@@ -699,7 +701,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set, cluster_num, visible)
+							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible)
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -713,11 +715,11 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	});
 		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 							#add points to the cluster group
-						if cluster_set == True:
-							new_obj += """
-	var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
-	cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
-							cluster_num += 1	
+							if cluster_set[count] == True:
+								new_obj += """
+		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
+		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+								cluster_num += 1	
 					elif i.geometryType() == 1:
 						valueAttr = renderer.classAttribute()
 						categoryStr = """
@@ -811,7 +813,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 #			},
 #			onEachFeature: function (feature, layer) {"""+popFuncs+"""
 #			}"""
-#								new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set, cluster_num, visible)
+#								new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible)
 #								wfsLayers += """
 #	<script src='""" + scriptTag + """'></script>"""
 #							else:
@@ -823,11 +825,11 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 #			}
 #		});"""
 #								#add points to the cluster group
-#							if cluster_set == True:
-#								new_obj += """
-#		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
-#		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
-#								cluster_num += 1	
+	#							if cluster_set[count] == True:
+	#								new_obj += """
+	#		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
+	#		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+	#								cluster_num += 1	
 
 				elif icon_prov == True and i.geometryType() == 0:
 					new_obj = """
@@ -845,7 +847,7 @@ var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + 
 	}}
 );"""
 		#add points to the cluster group
-					if cluster_set == True:
+					if cluster_set[count] == True:
 						new_obj += """
 var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
 cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
@@ -862,7 +864,7 @@ var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + 
 				f5.write("""
 """ + new_obj)
 				if visible == 'show all':
-					if cluster_set == False:
+					if cluster_set[count] == False:
 						if i.geometryType() == 0:
 							f5.write("""
 //add comment sign to hide this layer on the map in the initial view.
@@ -874,9 +876,9 @@ feature_group.addLayer(exp_""" + safeLayerName + """JSON);""")
 					else:
 						f5.write("""
 //add comment sign to hide this layer on the map in the initial view.
-cluster_group.addLayer(exp_""" + safeLayerName + """JSON);""")
+cluster_group""" + safeLayerName + """JSON.addTo(map);""")
 				if visible == 'show none':
-					if cluster_set == False:
+					if cluster_set[count] == False:
 						if i.geometryType() == 0:
 							f5.write("""
 	//delete comment sign to show this layer on the map in the initial view.
@@ -888,7 +890,7 @@ cluster_group.addLayer(exp_""" + safeLayerName + """JSON);""")
 					else:
 						f5.write("""
 	//delete comment sign to show this layer on the map in the initial view.
-	//cluster_group.addLayer(exp_""" + safeLayerName + """JSON);""")
+	//cluster_group""" + safeLayerName + """JSON.addTo(map);""")
 				f5.close()
 		elif i.type() == 1:
 			if i.dataProvider().name() == "wms":
@@ -1041,12 +1043,12 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 		f6.write(controlStart)
 		f6.close()
 
-	for i in allLayers:
+	for count, i in enumerate(allLayers):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		if i.type() == 0:
 			with open(outputIndex, 'a') as f7:
-				if cluster_set == True and i.geometryType() == 0:
+				if cluster_set[count] == True and i.geometryType() == 0:
 					new_layer = '"' + safeLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
 				else:
 					new_layer = '"' + safeLayerName + '"' + ": exp_" + safeLayerName + """JSON,"""
