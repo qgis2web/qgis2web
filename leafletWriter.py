@@ -44,7 +44,7 @@ import sys #to use another print command without annoying newline characters
 def layerstyle_single(layer):
 	return color_code
 
-def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, full, layer_list, visible, opacity_raster, encode2JSON, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, params):
+def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
 	# supply path to where is your qgis installed
 	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
 
@@ -213,11 +213,12 @@ th {
 	wfsLayers = ""
 	allLayers = canvas.layers()
 	exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-	for i in layer_list:
+	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		layerFileName = dataStore + os.sep + 'exp_' + safeLayerName + '.js'
-		if i.providerType() != 'WFS' or encode2JSON == True and i:
+		if i.providerType() != 'WFS' or json[count] == True and i:
+			print "JSON (" + i.providerType() + "): " + rawLayerName
 			precision = params["Data export"]["Precision"]
 			if i.type() ==0:
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
@@ -251,6 +252,8 @@ th {
 					processing.runalg("gdalogr:warpreproject",in_raster,i.crs().authid(),"EPSG:4326","",0,1,0,-1,75,6,1,False,0,False,"",prov_raster)
 					print extentRepNew
 					processing.runalg("gdalogr:translate",prov_raster,100,True,"",0,"",extentRepNew,False,0,0,75,6,1,False,0,False,"",out_raster)
+		else:
+			print "Not JSON (" + i.providerType() + "): " + rawLayerName
 
 	#now determine the canvas bounding box
 	#####now with viewcontrol
@@ -341,7 +344,7 @@ th {
 			f4.write(basemapText)
 			f4.write(layerOrder)
 			f4.close()
-	for i in reversed(allLayers):
+	for count, i in enumerate(reversed(allLayers)):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		if i.type()==0:
@@ -424,7 +427,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				opacity: """+opacity_str+""",
 				fillOpacity: """+opacity_str+"""
 			})"""+labeltext
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = pointToLayer_str + """
 		},
 		onEachFeature: function (feature, layer) {""" + popFuncs + """
@@ -457,7 +460,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				opacity: """+opacity_str+""",
 				fillOpacity: """+opacity_str+"""
 			};"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		style: function (feature) {""" + lineStyle_str + """
 		},
@@ -493,7 +496,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				fillOpacity: """+opacity_str+"""
 			};
 """
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		style: function (feature) {""" + polyStyle_str + """
 		},
@@ -544,7 +547,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 						categoryStr += """
 		}
 	}"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
@@ -609,7 +612,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		style:doStyle""" + layerName + """,
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible)
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
@@ -653,7 +656,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 						categoryStr += """
 		}
 	}"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		style:doStyle""" + layerName + """,
 		onEachFeature : function (feature, layer) {"""+popFuncs+"""
@@ -685,7 +688,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		}"""
 						categoryStr += """
 	}"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
@@ -729,7 +732,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		}"""
 						categoryStr += """
 	}"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		style:doStyle""" + layerName + """,
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
@@ -760,7 +763,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		}"""
 						categoryStr += """
 	}"""
-						if i.providerType() == 'WFS' and encode2JSON == False:
+						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr="""
 		style: doStyle""" + layerName + """,
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
@@ -795,7 +798,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 #			}"""
 #							categoryStr += """
 #		}"""
-#							if i.providerType() == 'WFS' and encode2JSON == False:
+#							if i.providerType() == 'WFS' and json[count] == False:
 #								stylestr="""
 #			pointToLayer: function (feature, latlng) {  
 #				return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
@@ -848,7 +851,7 @@ var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + 
 });"""		
 		
 				# store everything in the file
-				if i.providerType() != 'WFS' or encode2JSON == True:
+				if i.providerType() != 'WFS' or json[count] == True:
 					f5.write(new_pop)
 				f5.write("""
 """ + new_obj)
@@ -1115,6 +1118,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	#webbrowser.open(outputIndex)
 
 def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
+	print "Point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
 		var exp_"""+layerName+"""JSON;
@@ -1142,6 +1146,7 @@ def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cl
 	return new_obj, scriptTag, cluster_num
 
 def buildNonPointJSON(categoryStr, safeLayerName):
+	print "Non-point JSON: " + safeLayerName
 	new_obj = categoryStr + """
 		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 			onEachFeature: pop_""" + safeLayerName + """,
@@ -1150,6 +1155,7 @@ def buildNonPointJSON(categoryStr, safeLayerName):
 	return new_obj
 
 def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):
+	print "Non-point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
 		var exp_"""+layerName+"""JSON;
