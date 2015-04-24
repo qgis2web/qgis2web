@@ -40,10 +40,11 @@ import webbrowser #to open the made map directly in your browser
 import sys #to use another print command without annoying newline characters 
 
 
+
 def layerstyle_single(layer):
 	return color_code
 
-def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, extent, full, layer_list, visible, opacity_raster, encode2JSON, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, precision, labels, labelhover, matchCRS, selected):
+def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, full, layer_list, visible, opacity_raster, encode2JSON, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, precision, labels, labelhover, matchCRS, selected, params):
 	# supply path to where is your qgis installed
 	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
 
@@ -87,6 +88,9 @@ def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress
 	os.makedirs(picturesStore)
 	miscStore = os.path.join(outputProjectFileName, 'misc')
 	os.makedirs(miscStore)
+	
+	extent = params["Scale/Zoom"]["Extent"]
+	print extent
 	#lets create a css file for own css:
 	with open(cssStore + 'own_style.css', 'w') as f_css:
 		text = """
@@ -247,7 +251,7 @@ th {
 
 	#now determine the canvas bounding box
 	#####now with viewcontrol
-	if extent == 'canvas extent':
+	if extent == "Canvas extent":
 		pt0	= canvas.extent()
 		try:
 			crsSrc = canvas.mapSettings().destinationCrs() # WGS 84
@@ -281,11 +285,11 @@ th {
 		}).fitBounds(""" + bounds + """);
 		var hash = new L.Hash(map);
 		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';"""
-	if extent == 'layer extent':
+	if extent == 'Fit to layers extent':
 		middle = """
 		<script>
 """
-		print '>> ' + crsProj4
+
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
 			print '>> ' + crsProj4
 			middle += """
@@ -1090,10 +1094,11 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	else:
 		end = ''
 	# let's close the file but ask for the extent of all layers if the user wants to show only this extent:
-	if extent == 'layer extent':
+	if extent == 'Fit to layers extent':
 		end += """
 		map.fitBounds(feature_group.getBounds());"""
-	if extent == 'canvas extent':
+	else:
+
 		end += """
 		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);"""
 	end += """
