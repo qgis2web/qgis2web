@@ -440,7 +440,9 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + "," + pointToLayer_str + """
 		}
-	});"""
+
+	});
+	layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 #add points to the cluster group
 						if cluster_set:
 							new_obj += """
@@ -564,7 +566,9 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
 		}
-	});"""
+
+	});
+		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 			#add points to the cluster group
 						if cluster_set == True:
 							
@@ -705,7 +709,9 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))"""+labeltext+"""
 		}
-	});"""
+
+	});
+		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 							#add points to the cluster group
 						if cluster_set == True:
 							new_obj += """
@@ -1151,7 +1157,9 @@ def buildNonPointJSON(categoryStr, safeLayerName):
 		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 			onEachFeature: pop_""" + safeLayerName + """,
 			style: doStyle""" + safeLayerName + """
-		});"""
+
+		});
+		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 	return new_obj
 
 def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):
