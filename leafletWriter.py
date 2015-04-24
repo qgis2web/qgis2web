@@ -91,6 +91,8 @@ def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress
 	
 	extent = params["Scale/Zoom"]["Extent"]
 	print extent
+	minZoom = params["Scale/Zoom"]["Min zoom level"]
+	maxZoom = params["Scale/Zoom"]["Max zoom level"]
 	#lets create a css file for own css:
 	with open(cssStore + 'own_style.css', 'w') as f_css:
 		text = """
@@ -282,7 +284,8 @@ th {
 			continuousWorld: false,
 			worldCopyJump: false, """
 		middle += """
-			zoomControl:true, maxZoom:19
+			zoomControl:true, maxZoom:""" + unicode(maxZoom) + """, minZoom:""" + unicode(minZoom) + """
+
 		}).fitBounds(""" + bounds + """);
 		var hash = new L.Hash(map);
 		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';"""
