@@ -21,8 +21,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet
-0.0.1 Initial release
+changelog= 2015/04/25 0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet export
+	2015/04/23 0.0.1 Initial release
 # tags are comma separated with spaces allowed
 tags=
 
