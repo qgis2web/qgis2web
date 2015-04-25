@@ -110,9 +110,9 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def update(self):
         self.preview.settings().clearMemoryCaches()
-        layers, groups, popup, visible = self.getLayersAndGroups()
+        layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
         params = self.getParameters()
-        writeOL(layers, groups, popup, visible, params, utils.tempFolder())
+        writeOL(layers, groups, popup, visible, json, cluster, params, utils.tempFolder())
         self.preview.setUrl(QUrl(self.tempIndexFile()))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
@@ -122,7 +122,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if folder:
             layers, groups, popup, visible = self.getLayersAndGroups()
             params = self.getParameters()
-            writeOL(layers, groups, popup, visible, params, folder)
+            writeOL(layers, groups, popup, visible, json, cluster, params, folder)
             reply = QMessageBox.question(self, "OL3 map correctly exported",
                 "Do you want to open the resulting map in a web browser?",
                 QMessageBox.Yes | QMessageBox.No)
@@ -133,9 +133,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = QFileDialog.getExistingDirectory(self, "Save to directory", None,
                                                  QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
         if folder:
-            layers, groups, popup, visible = self.getLayersAndGroups()
+            layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
-            writeLeaflet("index.html", "", "", "", 600, 400, "", layers, "show all", "", 0, 0, "", "", "", "", "", "", "", "", 0, 0, params)
+            writeLeaflet("index.html", "", "", "", 600, 400, "", layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
             reply = QMessageBox.question(self, "Leaflet map correctly exported",
                 "Do you want to open the resulting map in a web browser?",
                 QMessageBox.Yes | QMessageBox.No)
@@ -156,6 +156,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         groups = {}
         popup = []
         visible = []
+        json = []
+        cluster = []
         for i in xrange(self.layersItem.childCount()):
             item = self.layersItem.child(i)
             if isinstance(item, TreeLayerItem):
@@ -163,6 +165,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                     layers.append(item.layer)
                     popup.append(item.popup)
                     visible.append(item.visible)
+                    json.append(item.json)
+                    cluster.append(item.cluster)
             else:
                 group = item.name
                 groupLayers = []
@@ -176,9 +180,17 @@ class MainDialog(QDialog, Ui_MainDialog):
                         visible.append(True)
                     else:
                         visible.append(False)
+                    if item.json:
+                        json.append(True)
+                    else:
+                        json.append(False)
+                    if item.cluster:
+                        cluster.append(True)
+                    else:
+                        cluster.append(False)
                 groups[group] = groupLayers[::-1]
 
-        return layers[::-1], groups, popup[::-1], visible[::-1]
+        return layers[::-1], groups, popup[::-1], visible[::-1],  json[::-1], cluster[::-1]
 
 
 class TreeGroupItem(QTreeWidgetItem):
@@ -232,6 +244,18 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        self.jsonItem = QTreeWidgetItem(self)
+        self.jsonCheck = QCheckBox()
+        self.jsonCheck.setChecked(True)
+        self.jsonItem.setText(0, "Encode to JSON")
+        self.addChild(self.jsonItem)
+        tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
+        self.clusterItem = QTreeWidgetItem(self)
+        self.clusterCheck = QCheckBox()
+        self.clusterCheck.setChecked(False)
+        self.clusterItem.setText(0, "Cluster")
+        self.addChild(self.clusterItem)
+        tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
 
     @property
     def popup(self):
@@ -245,6 +269,14 @@ class TreeLayerItem(QTreeWidgetItem):
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
+
+    @property
+    def json(self):
+        return self.jsonCheck.isChecked()
+
+    @property
+    def cluster(self):
+        return self.clusterCheck.isChecked()
 
 
 class TreeSettingItem(QTreeWidgetItem):

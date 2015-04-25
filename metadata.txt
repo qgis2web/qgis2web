@@ -12,7 +12,7 @@
 name=qgis2web
 qgisMinimumVersion=2.0
 description=Creates web map from QGIS layers
-version=0.0.1
+version=0.1.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -21,8 +21,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-# changelog=
-
+changelog=0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet
+0.0.1 Initial release
 # tags are comma separated with spaces allowed
 tags=
 

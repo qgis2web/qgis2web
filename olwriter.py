@@ -38,7 +38,7 @@ baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layer
 
 
 
-def writeOL(layers, groups, popup, visible, settings, folder): 
+def writeOL(layers, groups, popup, visible, json, cluster, settings, folder): 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     try:
         dst = os.path.join(folder, "resources")
