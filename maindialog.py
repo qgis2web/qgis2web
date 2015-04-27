@@ -120,7 +120,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = QFileDialog.getExistingDirectory(self, "Save to directory", None,
                                                  QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
         if folder:
-            layers, groups, popup, visible = self.getLayersAndGroups()
+            layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
             writeOL(layers, groups, popup, visible, json, cluster, params, folder)
             reply = QMessageBox.question(self, "OL3 map correctly exported",
