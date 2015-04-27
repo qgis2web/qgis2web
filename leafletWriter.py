@@ -38,13 +38,15 @@ import re
 import fileinput
 import webbrowser #to open the made map directly in your browser
 import sys #to use another print command without annoying newline characters 
+from basemaps import basemapAddresses, basemapAttributions
 
-
+basemapAddresses = basemapAddresses()
+basemapAttributions = basemapAttributions()
 
 def layerstyle_single(layer):
 	return color_code
 
-def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
+def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
 	# supply path to where is your qgis installed
 	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
 
@@ -90,9 +92,11 @@ def writeLeaflet(outputProjectFileName, basemapName, basemapMeta, basemapAddress
 	os.makedirs(miscStore)
 	
 	extent = params["Scale/Zoom"]["Extent"]
-	print extent
 	minZoom = params["Scale/Zoom"]["Min zoom level"]
 	maxZoom = params["Scale/Zoom"]["Max zoom level"]
+	basemapName = params["Appearance"]["Base layer"]
+	
+	
 	#lets create a css file for own css:
 	with open(cssStore + 'own_style.css', 'w') as f_css:
 		text = """
@@ -254,7 +258,6 @@ th {
 					processing.runalg("gdalogr:translate",prov_raster,100,True,"",0,"",extentRepNew,False,0,0,75,6,1,False,0,False,"",out_raster)
 		else:
 			print "Not JSON (" + i.providerType() + "): " + rawLayerName
-
 	#now determine the canvas bounding box
 	#####now with viewcontrol
 	if extent == "Canvas extent":
@@ -288,15 +291,13 @@ th {
 			worldCopyJump: false, """
 		middle += """
 			zoomControl:true, maxZoom:""" + unicode(maxZoom) + """, minZoom:""" + unicode(minZoom) + """
-
 		}).fitBounds(""" + bounds + """);
 		var hash = new L.Hash(map);
-		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';"""
+		var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';"""
 	if extent == 'Fit to layers extent':
 		middle = """
 		<script>
 """
-
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
 			print '>> ' + crsProj4
 			middle += """
@@ -306,29 +307,22 @@ th {
 		middle += """
 		var map = L.map('map', { zoomControl:true, maxZoom:19 });
 		var hash = new L.Hash(map); //add hashes to html address to easy share locations
-		var additional_attrib = 'created with <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';"""
+		var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';"""
 	# we will start with the clustergroup
 	middle += """
 		var feature_group = new L.featureGroup([]);
 		var raster_group = new L.LayerGroup([]);"""
 #here come the basemap (variants list thankfully provided by: "https://github.com/leaflet-extras/leaflet-providers") our geojsons will  looped after that
 #basemap name	
-	if basemapName == 0 or matchCRS == True:
+	if basemapName == 0 or basemapName == "" or matchCRS == True:
 		basemapText = ""
 	else:
-		basemapText = ""
-		for l in range(0,len(basemapAddress)):
-			print basemapAddress[l]
-			basemapText += """
-		var basemap_""" + str(l) +""" = L.tileLayer('""" + basemapAddress[l] + """', { 
-			attribution: additional_attrib + '""" + str(basemapMeta[l]) + """'
+		basemapText = """
+		var basemap = L.tileLayer('""" + basemapAddresses[basemapName] + """', { 
+			attribution: additional_attrib + ' """ + basemapAttributions[basemapName] + """'
 		});"""
-	#attribution	
-		#	basemapText += """
-		#map.attributionControl.addAttribution(additional_attrib + '""" + basemapMeta + """');"""
-			if l == 0:
-				basemapText += """	
-		basemap_""" + str(l)+""".addTo(map);"""
+		basemapText += """	
+		basemap.addTo(map);"""
 	layerOrder = """	
 		var layerOrder=new Array();
 		function restackLayers() {
@@ -441,7 +435,6 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + "," + pointToLayer_str + """
 		}
-
 	});
 	layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 #add points to the cluster group
@@ -567,13 +560,11 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
 		}
-
 	});
 		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 			#add points to the cluster group
 							if cluster_set[count] == True:
 								
-
 								new_obj += """
 		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
 		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
@@ -711,7 +702,6 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))"""+labeltext+"""
 		}
-
 	});
 		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 							#add points to the cluster group
@@ -1113,7 +1103,6 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 		end += """
 		map.fitBounds(feature_group.getBounds());"""
 	else:
-
 		end += """
 		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);"""
 	end += """
@@ -1159,7 +1148,6 @@ def buildNonPointJSON(categoryStr, safeLayerName):
 		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 			onEachFeature: pop_""" + safeLayerName + """,
 			style: doStyle""" + safeLayerName + """
-
 		});
 		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
 	return new_obj

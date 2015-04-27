@@ -12,7 +12,7 @@
 name=qgis2web
 qgisMinimumVersion=2.0
 description=Creates web map from QGIS layers
-version=0.1.0
+version=0.2.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -21,10 +21,12 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/04/25 0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet export
+changelog= 2015/04/27 0.2.0 Basemap in Leaflet export, additional basemaps from qgis2leaf, icons fixed, toolbar icon added, QGIS menu item renamed
+	2015/04/25 0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet export
 	2015/04/23 0.0.1 Initial release
 # tags are comma separated with spaces allowed
-tags=
+tags=web, webmap, webmaps, Leaflet, OpenLayers, OL3, HTML, Javascript, CSS, export
+
 
 homepage=https://github.com/tomchadwin/qgis2web
 tracker=https://github.com/tomchadwin/qgis2web/issues

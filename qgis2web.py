@@ -40,10 +40,12 @@ class qgis2web:
             u"Create web map", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
 
-        self.iface.addPluginToWebMenu(u"&Export web map", self.action)
+        self.iface.addPluginToWebMenu(u"&qgis2web", self.action)
+        self.iface.addToolBarIcon(self.action)
 
     def unload(self):
-        self.iface.removePluginWebMenu(u"&Export web map", self.action)
+        self.iface.removePluginWebMenu(u"&qgis2web", self.action)
+        self.iface.removeToolBarIcon(self.action)
     
     def run(self):
         dlg = MainDialog()

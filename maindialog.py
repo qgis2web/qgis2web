@@ -135,7 +135,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if folder:
             layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
-            writeLeaflet("index.html", "", "", "", 600, 400, "", layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
+            writeLeaflet("index.html", 600, 400, "", layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
             reply = QMessageBox.question(self, "Leaflet map correctly exported",
                 "Do you want to open the resulting map in a web browser?",
                 QMessageBox.Yes | QMessageBox.No)
