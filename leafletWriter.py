@@ -1012,21 +1012,20 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	print len(basemapName)
 	if len(basemapName) == 0 or matchCRS == True:
 		controlStart = """"""
-	if len(basemapName) == 1:
-		controlStart = """
+	controlStart = """
 	var baseMaps = {
-		'""" + str(basemapName[0]) + """': basemap_0
+		'""" + str(basemapName) + """': basemap
 	};"""
-	if len(basemapName) > 1:
-		controlStart = """
-	var baseMaps = {"""
-		for l in range(0,len(basemapName)):
-			if l < len(basemapName)-1:
-				controlStart+= """
-		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + ""","""
-			if l == len(basemapName)-1:
-				controlStart+= """
-		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + """};"""
+#	if len(basemapName) > 1:
+#		controlStart = """
+#	var baseMaps = {"""
+#		for l in range(0,len(basemapName)):
+#			if l < len(basemapName)-1:
+#				controlStart+= """
+#		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + ""","""
+#			if l == len(basemapName)-1:
+#				controlStart+= """
+#		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + """};"""
     #if len
 	#control_basemap = """
 	#var baseMaps = {"""
