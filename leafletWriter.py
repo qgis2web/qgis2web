@@ -38,9 +38,9 @@ import re
 import fileinput
 import webbrowser #to open the made map directly in your browser
 import sys #to use another print command without annoying newline characters 
-from basemaps import basemapAddresses, basemapAttributions
+from basemaps import basemapLeaflet, basemapAttributions
 
-basemapAddresses = basemapAddresses()
+basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
 def layerstyle_single(layer):

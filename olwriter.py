@@ -26,33 +26,35 @@ from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from utils import ALL_ATTRIBUTES
+from basemaps import basemapOL, basemapAttributions
 
-baseLayers  = {
-    "Stamen Watercolor": "new ol.layer.Tile({title: 'Stamen watercolor', source: new ol.source.Stamen({layer: 'watercolor'})})",
-    "Stamen Toner": "new ol.layer.Tile({title: 'Stamen toner', source: new ol.source.Stamen({layer: 'toner'})})",
-    "Stamen Terrain": "new ol.layer.Tile({title: 'Stamen terrain', source: new ol.source.Stamen({layer: 'terrain'})})",
-    "OSM Standard": "new ol.layer.Tile({title: 'OSM', source: new ol.source.OSM()})",
-    "OSM Black & White": "new ol.layer.Tile({title: 'OSM Black & White', source: new ol.source.XYZ({url: 'http://www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'})})",
-    "MapQuestOpen OSM": "new ol.layer.Tile({title: 'MapQuest OSM', source: new ol.source.MapQuest({layer: 'osm'})})",
-    "MapQuestOpen Aerial": "new ol.layer.Tile({title: 'MapQuest Aerial', source: new ol.source.MapQuest({layer: 'sat'})})",
-	"Thunderforest Transport": "new ol.layer.Tile({title: 'Thunderforest Transport', source: new ol.source.XYZ({url: 'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png'})})",
-	"Thunderforest Landscape": "new ol.layer.Tile({title: 'Thunderforest Landscape', source: new ol.source.XYZ({url: 'http://tile.thunderforest.com/landscape/{z}/{x}/{y}.png'})})",
-	"Thunderforest Outdoors": "new ol.layer.Tile({title: 'Thunderforest Outdoors', source: new ol.source.XYZ({url: 'http://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png'})})",
-	"OpenMapSurfer Roads": "new ol.layer.Tile({title: 'OpenMapSurfer Roads', source: new ol.source.XYZ({url: 'http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}'})})",
-	"OpenMapSurfer adminb": "new ol.layer.Tile({title: 'OpenMapSurfer adminb', source: new ol.source.XYZ({url: 'http://openmapsurfer.uni-hd.de/tiles/adminb/x={x}&y={y}&z={z}'})})",
-	"OpenMapSurfer roadsg": "new ol.layer.Tile({title: 'OpenMapSurfer roadsg', source: new ol.source.XYZ({url: 'http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}'})})",
-	"OSM HOT": "new ol.layer.Tile({title: 'OSM HOT', source: new ol.source.XYZ({url: 'http://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'})})",
-	"OpenSeaMap": "new ol.layer.Tile({title: 'OpenSeaMap', source: new ol.source.XYZ({url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'})})",
-	"Thunderforest Cycle": "new ol.layer.Tile({title: 'Thunderforest Cycle', source: new ol.source.XYZ({url: 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'})})",
-	"OSM DE": "new ol.layer.Tile({title: 'OSM DE', source: new ol.source.XYZ({url: 'http://tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Clouds": "new ol.layer.Tile({title: 'OpenWeatherMap Clouds', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Precipitation": "new ol.layer.Tile({title: 'OpenWeatherMap Precipitation', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Rain": "new ol.layer.Tile({title: 'OpenWeatherMap Rain', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/rain/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Pressure": "new ol.layer.Tile({title: 'OpenWeatherMap Pressure', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/pressure/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Wind": "new ol.layer.Tile({title: 'OpenWeatherMap Wind', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/wind/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Temp": "new ol.layer.Tile({title: 'OpenWeatherMap Temp', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/temp/{z}/{x}/{y}.png'})})",
-	"OpenWeatherMap Snow": "new ol.layer.Tile({title: 'OpenWeatherMap Snow', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/snow/{z}/{x}/{y}.png'})})"
-}
+baseLayers = basemapOL()
+basemapAttributions = basemapAttributions()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
