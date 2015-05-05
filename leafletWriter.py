@@ -91,11 +91,14 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	miscStore = os.path.join(outputProjectFileName, 'misc')
 	os.makedirs(miscStore)
 	
+	minify = params["Data export"]["Minify GeoJSON files"]
 	extent = params["Scale/Zoom"]["Extent"]
 	minZoom = params["Scale/Zoom"]["Min zoom level"]
 	maxZoom = params["Scale/Zoom"]["Max zoom level"]
 	basemapName = params["Appearance"]["Base layer"]
 	
+	removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
+						for i,it in enumerate(txt.split('"')))
 	
 	#lets create a css file for own css:
 	with open(cssStore + 'own_style.css', 'w') as f_css:
@@ -228,10 +231,15 @@ th {
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
 
 				#now change the data structure to work with leaflet:
-				with open(layerFileName, "r+") as f2:
-					old = f2.read() # read everything in the file
-					f2.seek(0) # rewind
-					f2.write("var exp_" + str(safeLayerName) + " = " + old) # write the new line before
+				with open(layerFileName) as f:
+					lines = f.readlines()
+				with open(layerFileName, "w") as f2:
+					f2.write("var exp_" + str(safeLayerName) + "=") # write the new line before
+					for line in lines:
+						if minify:
+							line = line.strip("\n\t ")
+							line = removeSpaces(line)
+						f2.write(line)
 					f2.close
 					
 				#now add the js files as data input for our map
