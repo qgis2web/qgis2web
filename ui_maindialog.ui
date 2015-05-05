@@ -125,7 +125,7 @@
              <item>
               <widget class="QPushButton" name="buttonSaveOL">
                <property name="text">
-                <string>Export as OpenLayers 3...</string>
+                <string>Export OL3</string>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -136,7 +136,7 @@
              <item>
               <widget class="QPushButton" name="buttonSaveLeaflet">
                <property name="text">
-                <string>Export as Leaflet...</string>
+                <string>Export Leaflet</string>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -160,7 +160,18 @@
              <item>
               <widget class="QPushButton" name="buttonUpdateOL">
                <property name="text">
-                <string>Update preview</string>
+                <string>Preview OL3</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/plugins/qgis2ol/icons/preview.gif</normaloff>:/plugins/qgis2ol/icons/preview.gif</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonUpdateLeaflet">
+               <property name="text">
+                <string>Preview Leaflet</string>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
