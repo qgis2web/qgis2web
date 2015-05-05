@@ -19,6 +19,7 @@ import codecs
 import os
 import re
 import math
+import time
 import shutil
 from qgis.core import *
 from utils import exportLayers, safeName
@@ -31,37 +32,12 @@ from basemaps import basemapOL, basemapAttributions
 baseLayers = basemapOL()
 basemapAttributions = basemapAttributions()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
-
-
 
 def writeOL(layers, groups, popup, visible, json, cluster, settings, folder): 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+    folder = os.path.join(folder, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
+    #folder = os.path.join(os.getcwd(),folder)
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
@@ -105,7 +81,8 @@ def writeOL(layers, groups, popup, visible, json, cluster, settings, folder):
         with open(os.path.join(folder, "index.html"), "w") as f:
             f.write(replaceInTemplate(settings["Appearance"]["Template"] + ".html", values))            
     finally:
-        QApplication.restoreOverrideCursor() 
+        QApplication.restoreOverrideCursor()
+	return os.path.join(folder, "index.html")
         
 def writeLayersAndGroups(layers, groups, visible, folder, settings):
 

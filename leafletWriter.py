@@ -46,10 +46,10 @@ basemapAttributions = basemapAttributions()
 def layerstyle_single(layer):
 	return color_code
 
-def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
+def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
 	# supply path to where is your qgis installed
 	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
-
+	print "Output: " + outputProjectFileName
 	pluginDir = os.path.dirname(os.path.realpath(__file__))
 	
 	cluster_num = 1
@@ -59,8 +59,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	print os.getcwd()		
 	print layer_list
 	# let's create the overall folder structure:
-	outputProjectFileName = os.path.join(outputProjectFileName, 'export_' + str(time.strftime("%Y_%m_%d")) + '_' + str(time.strftime("%I_%M_%S")))
-	outputProjectFileName = os.path.join(os.getcwd(),outputProjectFileName)
+	outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
+	#outputProjectFileName = os.path.join(os.getcwd(),outputProjectFileName)
 	jsStore = os.path.join(outputProjectFileName, 'js')
 	os.makedirs(jsStore)
 	jsStore += os.sep
@@ -1112,6 +1112,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	with open(outputIndex, 'a') as f12:
 		f12.write(end)
 		f12.close()
+	return outputIndex
 	#webbrowser.open(outputIndex)
 
 def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):

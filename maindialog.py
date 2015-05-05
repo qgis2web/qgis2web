@@ -29,6 +29,7 @@ from olwriter import writeOL
 from leafletWriter import *
 from qgis.utils import iface
 import webbrowser
+import tempfile
 
 
 class MainDialog(QDialog, Ui_MainDialog):
@@ -112,36 +113,38 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
         params = self.getParameters()
+        print "folder: " + utils.tempFolder()
         writeOL(layers, groups, popup, visible, json, cluster, params, utils.tempFolder())
         self.preview.setUrl(QUrl(self.tempIndexFile()))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
     def saveOL(self):
-        folder = QFileDialog.getExistingDirectory(self, "Save to directory", None,
+        folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
                                                  QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
+        print "folder: " + folder
         if folder:
             layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
-            writeOL(layers, groups, popup, visible, json, cluster, params, folder)
-            reply = QMessageBox.question(self, "OL3 map correctly exported",
-                "Do you want to open the resulting map in a web browser?",
-                QMessageBox.Yes | QMessageBox.No)
-            if reply == QMessageBox.Yes:
-                webbrowser.open_new_tab(os.path.join(folder, "index.html"))
+            outputFile = writeOL(layers, groups, popup, visible, json, cluster, params, folder)
+
+
+
+
+            webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
-        folder = QFileDialog.getExistingDirectory(self, "Save to directory", None,
+        folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
                                                  QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
         if folder:
             layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
-            writeLeaflet("index.html", 600, 400, "", layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
-            reply = QMessageBox.question(self, "Leaflet map correctly exported",
-                "Do you want to open the resulting map in a web browser?",
-                QMessageBox.Yes | QMessageBox.No)
-            if reply == QMessageBox.Yes:
-                webbrowser.open_new_tab(os.path.join(folder, "index.html"))
-#qgis2leaf_exec(outputProjectFileName, basemapName, basemapMeta, basemapAddress, width, height, extent, full, layer_list, visible, opacity_raster, encode2JSON, cluster_set, webpage_name, webmap_head,webmap_subhead, legend, locate, address, precision, labels, labelhover, matchCRS, selected)
+            outputFile = writeLeaflet(folder, 600, 400, "", layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
+
+
+
+
+            webbrowser.open_new_tab(outputFile)
+
 
 
     def getParameters(self):
