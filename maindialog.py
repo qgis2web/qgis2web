@@ -41,7 +41,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.populateLayers()
         self.populateConfigParams()
-        self.buttonUpdateOL.clicked.connect(self.update)
+        self.buttonUpdateOL.clicked.connect(self.previewOL3)
+        self.buttonUpdateLeaflet.clicked.connect(self.previewLeaflet)
         self.buttonSaveOL.clicked.connect(self.saveOL)
         self.buttonSaveLeaflet.clicked.connect(self.saveLeaf)
         self.connect(self.labelPreview, SIGNAL("linkActivated(QString)"), self.labelLinkClicked)
@@ -109,13 +110,22 @@ class MainDialog(QDialog, Ui_MainDialog):
         url = "file:///"+ os.path.join(folder, "index.html").replace("\\","/")
         return url
 
-    def update(self):
+    def previewOL3(self):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
         params = self.getParameters()
         print "folder: " + utils.tempFolder()
-        writeOL(layers, groups, popup, visible, json, cluster, params, utils.tempFolder())
-        self.preview.setUrl(QUrl(self.tempIndexFile()))
+        previewFile = writeOL(layers, groups, popup, visible, json, cluster, params, utils.tempFolder())
+        self.preview.setUrl(QUrl.fromLocalFile(previewFile))
+        self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
+
+    def previewLeaflet(self):
+        self.preview.settings().clearMemoryCaches()
+        layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
+        params = self.getParameters()
+        print "folder: " + utils.tempFolder()
+        previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
+        self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
     def saveOL(self):
@@ -126,10 +136,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
             outputFile = writeOL(layers, groups, popup, visible, json, cluster, params, folder)
-
-
-
-
             webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
@@ -139,13 +145,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
             outputFile = writeLeaflet(folder, 600, 400, "", layers, "show all", "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
-
-
-
-
             webbrowser.open_new_tab(outputFile)
-
-
 
     def getParameters(self):
         parameters = defaultdict(dict)
