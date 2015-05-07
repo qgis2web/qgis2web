@@ -481,7 +481,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							new_obj += buildNonPointJSON("", safeLayerName)
 							new_obj += restackLayers(layerName, visible[count])		
 					elif i.geometryType() == 2:
-						if symbol.symbolLayer(0).layerType() == 'SimpleLine':
+						borderStyle_str = ""
+						if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
 							colorName = 'none'
 							borderColor_str = str(symbol.color().name())
 							radius_str = str(symbol.symbolLayer(0).width() * 5)
@@ -489,8 +490,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
 							borderStyle_str = getLineStyle(symbol.symbolLayer(0).borderStyle())
 							radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
-						if symbol.symbolLayer(0).brushStyle() == 0:
-							borderStyle_str = "0"
+							if symbol.symbolLayer(0).brushStyle() == 0:
+								borderStyle_str = "0"
 						polyStyle_str = """
 			return {
 				color: '"""+borderColor_str+"""',
