@@ -49,14 +49,14 @@ def layerstyle_single(layer):
 def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
 	# supply path to where is your qgis installed
 	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
-	print "Output: " + outputProjectFileName
+	#print "Output: " + outputProjectFileName
 	pluginDir = os.path.dirname(os.path.realpath(__file__))
 	
 	cluster_num = 1
 	# load providers
 	QgsApplication.initQgis()
 	# let's determine the current work folder of qgis:
-	print os.getcwd()		
+	#print os.getcwd()		
 	print layer_list
 	# let's create the overall folder structure:
 	outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
@@ -218,14 +218,13 @@ th {
 	# let's create the js files in the data folder of input vector files:
 
 	wfsLayers = ""
-	allLayers = canvas.layers()
 	exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
 	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		layerFileName = dataStore + os.sep + 'exp_' + safeLayerName + '.js'
 		if i.providerType() != 'WFS' or json[count] == True and i:
-			print "JSON (" + i.providerType() + "): " + rawLayerName
+			#print "JSON (" + i.providerType() + "): " + rawLayerName
 			precision = params["Data export"]["Precision"]
 			if i.type() ==0:
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
@@ -262,10 +261,10 @@ th {
 					extentRep = xform.transform(i.extent())
 					extentRepNew = ','.join([str(extentRep.xMinimum()), str(extentRep.xMaximum()),str(extentRep.yMinimum()), str(extentRep.yMaximum())])
 					processing.runalg("gdalogr:warpreproject",in_raster,i.crs().authid(),"EPSG:4326","",0,1,0,-1,75,6,1,False,0,False,"",prov_raster)
-					print extentRepNew
+					#print extentRepNew
 					processing.runalg("gdalogr:translate",prov_raster,100,True,"",0,"",extentRepNew,False,0,0,75,6,1,False,0,False,"",out_raster)
-		else:
-			print "Not JSON (" + i.providerType() + "): " + rawLayerName
+		#else:
+			#print "Not JSON (" + i.providerType() + "): " + rawLayerName
 	#now determine the canvas bounding box
 	#####now with viewcontrol
 	if extent == "Canvas extent":
@@ -285,7 +284,7 @@ th {
 		<script>"""
 		#print '>> ' + crsProj4
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
-			print '>> ' + crsProj4
+			#print '>> ' + crsProj4
 			middle += """
 		var crs = new L.Proj.CRS('""" + crsAuthId + """', '""" + crsProj4 + """', {
 			resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
@@ -307,7 +306,7 @@ th {
 		<script>
 """
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
-			print '>> ' + crsProj4
+			#print '>> ' + crsProj4
 			middle += """
 		var crs = new L.Proj.CRS('""" + crsAuthId + """', '""" + crsProj4 + """', {
 			resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
@@ -346,7 +345,7 @@ th {
 			f4.write(basemapText)
 			f4.write(layerOrder)
 			f4.close()
-	for count, i in enumerate(reversed(allLayers)):
+	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		if i.type()==0:
@@ -409,6 +408,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				layerName = safeLayerName
 				renderer = i.rendererV2()
 				rendererDump = renderer.dump()
+				#print "rendererDump: " + rendererDump
 				layer_transp_float = 1 - (float(i.layerTransparency()) / 100)
 				#print "Cluster: " + unicode(cluster_set[count])
 
@@ -540,7 +540,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
 							opacity_str = str(layer_transp_float*symbol_transp_float)
-							print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
+							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 					radius: '""" + unicode(symbol.size() * 2) + """',
 					fillColor: '""" + unicode(symbol.color().name()) + """',
@@ -603,7 +603,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
 							opacity_str = str(layer_transp_float*symbol_transp_float)
-							print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
+							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 					color: '""" + unicode(symbol.color().name()) + """',
 					weight: '""" + unicode(symbol.width() * 5) + """',
@@ -648,7 +648,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
 							opacity_str = str(layer_transp_float*symbol_transp_float)
-							print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
+							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 					weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
 					fillColor: '""" + unicode(symbol.color().name()) + """',
@@ -681,7 +681,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
 							opacity_str = str(layer_transp_float*symbol_transp_float)
-							print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
+							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + """) {
 			return {
@@ -727,7 +727,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
 							opacity_str = str(layer_transp_float*symbol_transp_float)
-							print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
+							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + """) {
 			return {"""
@@ -757,7 +757,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
 							opacity_str = str(layer_transp_float*symbol_transp_float)
-							print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
+							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + """) {
 			return {
@@ -907,7 +907,7 @@ var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
 	continuousWorld : true,
 }).addTo(map);"""
 				
-				print d
+				#print d
 				#print i.source()
 			else:
 				out_raster_name = 'data/' + 'exp_' + safeLayerName + '.png'
@@ -973,7 +973,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 		legend.onAdd = function (map) {
 			var div = L.DomUtil.create('div', 'info legend');
 			div.innerHTML = "<h3>Legend</h3><table>"""
-		for i in reversed(allLayers):
+		for i in reversed(layer_list):
 			rawLayerName = i.name()
 			safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 			if i.type() == 0:
@@ -996,8 +996,8 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 						attribute_map = feat.attributes()
 						legend_icon = attribute_map[legend_ico_index]
 						legend_expression = attribute_map[legend_exp_index]
-						print legend_expression
-						print legend_icon 
+						#print legend_expression
+						#print legend_icon 
 						break
 					legendStart += """<tr><td><img src='""" + unicode(legend_icon) + """'></img></td><td>"""+unicode(legend_expression) + """</td></tr>"""
 
@@ -1010,7 +1010,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 			f5leg.close()
 
 	# let's add layer control
-	print len(basemapName)
+	#print len(basemapName)
 	if len(basemapName) == 0 or matchCRS == True:
 		controlStart = """"""
 	controlStart = """
@@ -1041,7 +1041,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 		f6.write(controlStart)
 		f6.close()
 
-	for count, i in enumerate(allLayers):
+	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		if i.type() == 0:
@@ -1074,7 +1074,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 			f9.write(opacityStart)
 			f9.close()
 
-		for i in allLayers: 
+		for i in layer_list: 
 			rawLayerName = i.name()
 			safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 			if i.type() == 1:
@@ -1089,8 +1089,8 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 			f11.truncate()
 			f11.write(opacityEnd)
 			f11.close()
-	elif opacity_raster == False:
-		print "no opacity control added"
+	#elif opacity_raster == False:
+		#print "no opacity control added"
 
 	#here comes the user locate:
 	if locate == True:
@@ -1124,7 +1124,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	#webbrowser.open(outputIndex)
 
 def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
-	print "Point WFS: " + layerName
+	#print "Point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
 		var exp_"""+layerName+"""JSON;
@@ -1146,13 +1146,13 @@ def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cl
 		new_obj += """
 				cluster_group"""+ layerName + """JSON.addLayer(exp_""" + layerName + """JSON);"""			
 		cluster_num += 1	
-		print "cluster_num: " + str(cluster_num)
+		#print "cluster_num: " + str(cluster_num)
 	new_obj+="""
 		};"""
 	return new_obj, scriptTag, cluster_num
 
 def buildNonPointJSON(categoryStr, safeLayerName):
-	print "Non-point JSON: " + safeLayerName
+	#print "Non-point JSON: " + safeLayerName
 	new_obj = categoryStr + """
 		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 			onEachFeature: pop_""" + safeLayerName + """,
@@ -1162,7 +1162,7 @@ def buildNonPointJSON(categoryStr, safeLayerName):
 	return new_obj
 
 def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):
-	print "Non-point WFS: " + layerName
+	#print "Non-point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
 		var exp_"""+layerName+"""JSON;
