@@ -57,7 +57,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	QgsApplication.initQgis()
 	# let's determine the current work folder of qgis:
 	#print os.getcwd()		
-	print layer_list
+	#print layer_list
 	# let's create the overall folder structure:
 	outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
 	#outputProjectFileName = os.path.join(os.getcwd(),outputProjectFileName)
@@ -436,7 +436,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {""" + popFuncs + """
 		}"""
-							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set[count], cluster_num, visible)
+							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set[count], cluster_num, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -471,7 +471,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible)
+							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -479,7 +479,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	function doStyle""" + safeLayerName + """(feature) {""" + lineStyle_str + """
 	}"""
 							new_obj += buildNonPointJSON("", safeLayerName)
-							new_obj += restackLayers(layerName, visible)		
+							new_obj += restackLayers(layerName, visible[count])		
 					elif i.geometryType() == 2:
 						if symbol.symbolLayer(0).layerType() == 'SimpleLine':
 							colorName = 'none'
@@ -507,7 +507,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer){"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible)
+							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -515,7 +515,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	function doStyle""" + safeLayerName + """(feature) {""" + polyStyle_str + """
 	}"""
 							new_obj += buildNonPointJSON("", safeLayerName)
-							new_obj += restackLayers(layerName, visible)	
+							new_obj += restackLayers(layerName, visible[count])	
 				elif rendererDump[0:11] == 'CATEGORIZED':
 					if i.geometryType() == 0 and icon_prov != True:
 						categories = renderer.categories()
@@ -559,7 +559,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible)
+							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -619,7 +619,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
 						if i.providerType() == 'WFS' and json[count] == False:
-							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible)
+							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -667,7 +667,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		style:doStyle""" + layerName + """,
 		onEachFeature : function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible)
+							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -701,7 +701,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		},
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible)
+							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -744,7 +744,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		style:doStyle""" + layerName + """,
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible)
+							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -775,7 +775,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 		style: doStyle""" + layerName + """,
 		onEachFeature: function (feature, layer) {"""+popFuncs+"""
 		}"""
-							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible)
+							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += """
 <script src='""" + scriptTag + """'></script>"""
 						else:
@@ -812,7 +812,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 #			},
 #			onEachFeature: function (feature, layer) {"""+popFuncs+"""
 #			}"""
-#								new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible)
+#								new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible[count])
 #								wfsLayers += """
 #	<script src='""" + scriptTag + """'></script>"""
 #							else:
@@ -862,7 +862,7 @@ var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + 
 					f5.write(new_pop)
 				f5.write("""
 """ + new_obj)
-				if visible == 'show all':
+				if visible[count]:
 					if cluster_set[count] == False:
 						if i.geometryType() == 0:
 							f5.write("""
@@ -876,7 +876,7 @@ feature_group.addLayer(exp_""" + safeLayerName + """JSON);""")
 						f5.write("""
 //add comment sign to hide this layer on the map in the initial view.
 cluster_group""" + safeLayerName + """JSON.addTo(map);""")
-				if visible == 'show none':
+				else:
 					if cluster_set[count] == False:
 						if i.geometryType() == 0:
 							f5.write("""
@@ -905,7 +905,7 @@ var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
 	format: '""" + wms_format + """',
 	transparent: true,
 	continuousWorld : true,
-}).addTo(map);"""
+});"""
 				
 				#print d
 				#print i.source()
@@ -921,7 +921,9 @@ var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
 				new_obj = """
 var img_""" + safeLayerName + """= '""" + out_raster_name + """';
 var img_bounds_""" + safeLayerName + """ = """+ bounds2 + """;
-var overlay_""" + safeLayerName + """ = new L.imageOverlay(img_""" + safeLayerName + """, img_bounds_""" + safeLayerName + """).addTo(map);
+var overlay_""" + safeLayerName + """ = new L.imageOverlay(img_""" + safeLayerName + """, img_bounds_""" + safeLayerName + """);"""
+			if visible[count]:
+				new_obj += """
 raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 				
 			with open(outputIndex, 'a') as f5_raster:
@@ -932,7 +934,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	
 	with open(outputIndex, 'a') as f5fgroup:
 		f5fgroup.write("""
-
+		raster_group.addTo(map);
 		feature_group.addTo(map);""")
 		f5fgroup.close()
 
@@ -1139,7 +1141,7 @@ def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cl
 	new_obj+="""
 		function get"""+layerName+"""Json(geojson) {
 			exp_"""+layerName+"""JSON.addData(geojson);"""
-	if visible == 'show all':
+	if visible:
 		new_obj+="""
 			restackLayers();"""
 	if cluster_set == True:
@@ -1174,7 +1176,7 @@ def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, vi
 	new_obj+="""
 		function get"""+layerName+"""Json(geojson) {
 			exp_"""+layerName+"""JSON.addData(geojson);"""
-	if visible == 'show all':
+	if visible:
 		new_obj+="""
 			restackLayers();"""
 	new_obj+="""
@@ -1196,7 +1198,7 @@ def getLineStyle(penType):
 	return penStyle_str
 
 def restackLayers(layerName, visible):
-	if visible == 'show all':
+	if visible:
 		return """
 		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
 		for (index = 0; index < layerOrder.length; index++) {
