@@ -410,8 +410,9 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				renderer = i.rendererV2()
 				rendererDump = renderer.dump()
 				layer_transp_float = 1 - (float(i.layerTransparency()) / 100)
-				print "Cluster: " + unicode(cluster_set[count])
+				#print "Cluster: " + unicode(cluster_set[count])
 
+				new_obj = ""
 				if rendererDump[0:6] == 'SINGLE':
 					symbol = renderer.symbol()
 					colorName = symbol.color().name()
