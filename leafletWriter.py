@@ -831,7 +831,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	#		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
 	#								cluster_num += 1	
 
-				elif icon_prov == True and i.geometryType() == 0:
+				if icon_prov == True and i.geometryType() == 0:
 					new_obj = """
 var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
 	onEachFeature: pop_""" + safeLayerName + """,
