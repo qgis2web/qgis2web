@@ -11,8 +11,8 @@
 [general]
 name=qgis2web
 qgisMinimumVersion=2.0
-description=Export to an OpenLayers3/Leaflet webmap
-version=0.4.1
+description=Export to an OpenLayers 3/Leaflet webmap
+version=0.4.2
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -21,7 +21,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/05/08 0.4.1 Fix Leaflet custom icon layers
+changelog= 2015/05/13 0.4.2 Fix Leaflet styles not applied
+	2015/05/08 0.4.1 Fix Leaflet custom icon layers
 	2015/05/07 0.4.0 Leaflet layer visibility, fix Leaflet simple outline
 	2015/05/07 0.3.1 Fix leaflet exporting wrong layers
 	2015/05/05 0.3.0 Leaflet preview, Leaflet JSON minification, fix Leaflet layer control
