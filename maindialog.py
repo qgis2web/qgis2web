@@ -255,12 +255,13 @@ class TreeLayerItem(QTreeWidgetItem):
 				self.jsonItem.setText(0, "Encode to JSON")
 				self.addChild(self.jsonItem)
 				tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-			self.clusterItem = QTreeWidgetItem(self)
-			self.clusterCheck = QCheckBox()
-			self.clusterCheck.setChecked(False)
-			self.clusterItem.setText(0, "Cluster")
-			self.addChild(self.clusterItem)
-			tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
+			if layer.geometryType() == 0:
+				self.clusterItem = QTreeWidgetItem(self)
+				self.clusterCheck = QCheckBox()
+				self.clusterCheck.setChecked(False)
+				self.clusterItem.setText(0, "Cluster")
+				self.addChild(self.clusterItem)
+				tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
 
     @property
     def popup(self):
