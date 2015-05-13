@@ -11,7 +11,7 @@
 [general]
 name=qgis2web
 qgisMinimumVersion=2.0
-description=Creates web map from QGIS layers
+description=Export to an OpenLayers3/Leaflet webmap
 version=0.4.1
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
@@ -37,7 +37,7 @@ tags=web,webmap,webmaps,Leaflet,OpenLayers,OL3,HTML,Javascript,CSS,export
 homepage=https://github.com/tomchadwin/qgis2web
 tracker=https://github.com/tomchadwin/qgis2web/issues
 repository=https://github.com/tomchadwin/qgis2web
-icon=icon.png
+icon=qgis2web.png
 # experimental flag
 experimental=True
 
