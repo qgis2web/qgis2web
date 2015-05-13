@@ -248,12 +248,13 @@ class TreeLayerItem(QTreeWidgetItem):
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
         if layer.type() == layer.VectorLayer:
-			self.jsonItem = QTreeWidgetItem(self)
-			self.jsonCheck = QCheckBox()
-			self.jsonCheck.setChecked(True)
-			self.jsonItem.setText(0, "Encode to JSON")
-			self.addChild(self.jsonItem)
-			tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
+			if layer.providerType() == 'WFS':
+				self.jsonItem = QTreeWidgetItem(self)
+				self.jsonCheck = QCheckBox()
+				self.jsonCheck.setChecked(True)
+				self.jsonItem.setText(0, "Encode to JSON")
+				self.addChild(self.jsonItem)
+				tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
 			self.clusterItem = QTreeWidgetItem(self)
 			self.clusterCheck = QCheckBox()
 			self.clusterCheck.setChecked(False)
@@ -276,11 +277,17 @@ class TreeLayerItem(QTreeWidgetItem):
 
     @property
     def json(self):
-        return self.jsonCheck.isChecked()
+        try:
+			return self.jsonCheck.isChecked()
+        except:
+			return False
 
     @property
     def cluster(self):
-        return self.clusterCheck.isChecked()
+		try:
+			return self.clusterCheck.isChecked()
+		except:
+			return False
 
 
 class TreeSettingItem(QTreeWidgetItem):
