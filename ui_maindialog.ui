@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/plugins/qgis2ol/icons/ol.png</normaloff>:/plugins/qgis2ol/icons/ol.png</iconset>
+    <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -129,7 +129,7 @@
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
-                 <normaloff>:/plugins/qgis2ol/icons/ol.png</normaloff>:/plugins/qgis2ol/icons/ol.png</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/ol.png</normaloff>:/plugins/qgis2web/icons/ol.png</iconset>
                </property>
               </widget>
              </item>
@@ -140,7 +140,7 @@
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
-                 <normaloff>:/plugins/qgis2ol/icons/leaflet.png</normaloff>:/plugins/qgis2ol/icons/leaflet.png</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/leaflet.png</normaloff>:/plugins/qgis2web/icons/leaflet.png</iconset>
                </property>
               </widget>
              </item>
@@ -164,7 +164,7 @@
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
-                 <normaloff>:/plugins/qgis2ol/icons/preview.gif</normaloff>:/plugins/qgis2ol/icons/preview.gif</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
                </property>
               </widget>
              </item>
@@ -175,7 +175,7 @@
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
-                 <normaloff>:/plugins/qgis2ol/icons/preview.gif</normaloff>:/plugins/qgis2ol/icons/preview.gif</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
                </property>
               </widget>
              </item>

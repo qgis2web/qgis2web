@@ -36,7 +36,7 @@ class qgis2web:
 
     def initGui(self):
         self.action = QAction(
-            QIcon(":/plugins/qgis2ol/icons/ol.png"),
+            QIcon(":/plugins/qgis2web/icons/qgis2web.png"),
             u"Create web map", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
 
