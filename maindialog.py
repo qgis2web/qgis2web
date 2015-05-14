@@ -144,7 +144,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if folder:
             layers, groups, popup, visible, json, cluster = self.getLayersAndGroups()
             params = self.getParameters()
-            outputFile = writeLeaflet(folder, 600, 400, "", layers, visible, "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
+            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", "", "", "", "", 0, 0, json, params)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
