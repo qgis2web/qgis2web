@@ -12,7 +12,7 @@
 name=qgis2web
 qgisMinimumVersion=2.0
 description=Export to an OpenLayers 3/Leaflet webmap
-version=0.4.3
+version=0.5.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -21,7 +21,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/05/14 0.4.3 Limit per-layer options to appropriate layer types
+changelog= 2015/05/14 0.5.0 FIRST STABLE RELEASE: New logo, Leaflet full-screen
+	2015/05/14 0.4.3 Limit per-layer options to appropriate layer types
 	2015/05/13 0.4.2 Fix Leaflet styles not applied
 	2015/05/08 0.4.1 Fix Leaflet custom icon layers
 	2015/05/07 0.4.0 Leaflet layer visibility, fix Leaflet simple outline
@@ -41,7 +42,7 @@ tracker=https://github.com/tomchadwin/qgis2web/issues
 repository=https://github.com/tomchadwin/qgis2web
 icon=qgis2web.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
