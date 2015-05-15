@@ -218,15 +218,14 @@ th {
 	# let's create the js files in the data folder of input vector files:
 
 	wfsLayers = ""
-	exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+	exp_crs = QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
 	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		layerFileName = dataStore + os.sep + 'exp_' + safeLayerName + '.js'
 		if i.providerType() != 'WFS' or json[count] == True and i:
 			#print "JSON (" + i.providerType() + "): " + rawLayerName
-			#Below should be precision = params["Data export"]["Precision"] but epsg 4326 is lat and long
-			precision = 15
+			precision = params["Data export"]["Precision"]
 			if i.type() ==0:
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
 
