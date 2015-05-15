@@ -49,7 +49,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def labelLinkClicked(self, url):
         if url == "open":
-            webbrowser.open_new_tab(self.tempIndexFile())
+            webbrowser.open_new_tab(self.preview.url().toString())
 
     def populateLayers(self):
         skip_type = [2]
