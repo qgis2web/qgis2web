@@ -57,7 +57,7 @@ paramsOL = {
 		"Template": getTemplates()
 	},
 	"Data export" : {
-		"Precision": 3,
+		"Precision": 15,
 		"Minify GeoJSON files": True,
 		"Delete unused fields": True
 	},
