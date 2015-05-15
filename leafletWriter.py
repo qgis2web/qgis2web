@@ -218,7 +218,7 @@ th {
 	# let's create the js files in the data folder of input vector files:
 
 	wfsLayers = ""
-	exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+	exp_crs = QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
 	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
