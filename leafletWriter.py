@@ -418,7 +418,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 					symbol = renderer.symbol()
 					colorName = symbol.color().name()
 					symbol_transp_float = symbol.alpha()
-					opacity_str = str(layer_transp_float*symbol_transp_float)
+					color_transp_float = float(symbol.color().alpha())/255
+					opacity_str = str(layer_transp_float*symbol_transp_float * color_transp_float)
 					if i.geometryType() == 0 and icon_prov != True:
 						radius_str = str(symbol.size() * 2)
 						borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
@@ -541,7 +542,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				return {"""
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
-							opacity_str = str(layer_transp_float*symbol_transp_float)
+							color_transp_float = float(symbol.color().alpha())/255
+							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
 							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 					radius: '""" + unicode(symbol.size() * 2) + """',
@@ -604,7 +606,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 							#categoryStr += "radius: '" + unicode(cat.symbol().size() * 2) + "',"
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
-							opacity_str = str(layer_transp_float*symbol_transp_float)
+							color_transp_float = float(symbol.color().alpha())/255
+							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
 							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 					color: '""" + unicode(symbol.color().name()) + """',
@@ -649,7 +652,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 				return {"""
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
-							opacity_str = str(layer_transp_float*symbol_transp_float)
+							color_transp_float = float(symbol.color().alpha())/255
+							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
 							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 					weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
@@ -682,7 +686,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 						for r in renderer.ranges():
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
-							opacity_str = str(layer_transp_float*symbol_transp_float)
+							color_transp_float = float(symbol.color().alpha())/255
+							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
 							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + """) {
@@ -728,7 +733,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 						for r in renderer.ranges():
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
-							opacity_str = str(layer_transp_float*symbol_transp_float)
+							color_transp_float = float(symbol.color().alpha())/255
+							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
 							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + """) {
@@ -758,7 +764,8 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 						for r in renderer.ranges():
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
-							opacity_str = str(layer_transp_float*symbol_transp_float)
+							color_transp_float = float(symbol.color().alpha())/255
+							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
 							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
 							categoryStr += """
 		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + """) {
