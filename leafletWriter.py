@@ -225,7 +225,8 @@ th {
 		layerFileName = dataStore + os.sep + 'exp_' + safeLayerName + '.js'
 		if i.providerType() != 'WFS' or json[count] == True and i:
 			#print "JSON (" + i.providerType() + "): " + rawLayerName
-			precision = params["Data export"]["Precision"]
+			#Below should be precision = params["Data export"]["Precision"] but epsg 4326 is lat and long
+			precision = 15
 			if i.type() ==0:
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
 
