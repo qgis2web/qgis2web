@@ -69,7 +69,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
 	if len(cluster_set):
 		shutil.copyfile(jsDir + 'leaflet.markercluster.js', jsStore + 'leaflet.markercluster.js')
-	if labels:
+	if len(labels):
 		shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
 	canvas = qgis.utils.iface.mapCanvas()
 	if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
@@ -84,7 +84,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	if len(cluster_set):
 		shutil.copyfile(cssDir + 'MarkerCluster.css', cssStore + 'MarkerCluster.css')
 		shutil.copyfile(cssDir + 'MarkerCluster.Default.css', cssStore + 'MarkerCluster.Default.css')
-	if labels:
+	if len(labels):
 		shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
 	picturesStore = os.path.join(outputProjectFileName, 'pictures')
 	os.makedirs(picturesStore)
@@ -179,7 +179,7 @@ th {
 		<link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
 		base+= """
 		<link rel="stylesheet" type="text/css" href="css/own_style.css">"""
-		if labels:
+		if len(labels):
 			base+= """
 		<link rel="stylesheet" href="css/label.css" />"""
 		if address == True:
@@ -188,7 +188,7 @@ th {
 		base +="""
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 		<script src="js/leaflet-hash.js"></script>"""
-		if labels:
+		if len(labels):
 			base += """
 		<script src="js/label.js"></script>"""
 		base += """
@@ -360,7 +360,7 @@ th {
 				#lets extract possible labels form the qgis map for each layer. 
 				labeltext = ""
 				f = ''
-				if labels == True and labelhover == False:
+				if labels[count]:
 					palyr = QgsPalLayerSettings()
 					palyr.readFromLayer(i)
 					f = palyr.fieldName
@@ -368,7 +368,8 @@ th {
 					if labelhover == False:
 						labeltext = """.bindLabel(feature.properties."""+str(f)+""", {noHide: true})"""
 					else:
-						labeltext = """.bindLabel(feature.properties."""+str(f)+""")"""
+						labeltext = """.bindLabel(feature.properties."""+str(f)+""", {noHide: true})"""
+						#labeltext = """.bindLabel(feature.properties."""+str(f)+""")"""
 				for field in field_names:
 					if str(field) == 'html_exp':
 						html_prov = True
