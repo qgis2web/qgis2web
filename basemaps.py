@@ -31,6 +31,7 @@ INSTRUCTION ON FILE USAGE:
 """
 def basemapLeaflet():
 	dictionary = {
+		'None': '',
 		'OSM Standard':'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 		'OSM Black & White':'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
 		'Stamen Toner':'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png',
@@ -60,6 +61,7 @@ def basemapLeaflet():
 
 def basemapOL():
 	dictionary = {
+		"None": "",
 		"Stamen Watercolor": "new ol.layer.Tile({title: 'Stamen watercolor', source: new ol.source.Stamen({layer: 'watercolor'})})",
 		"Stamen Toner": "new ol.layer.Tile({title: 'Stamen toner', source: new ol.source.Stamen({layer: 'toner'})})",
 		"Stamen Terrain": "new ol.layer.Tile({title: 'Stamen terrain', source: new ol.source.Stamen({layer: 'terrain'})})",
@@ -89,6 +91,7 @@ def basemapOL():
 
 def basemapAttributions():
 	dictionary = {
+		'None': '',
 		'OSM Standard':'&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		'OSM Black & White':'&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		'Stamen Toner':'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',

@@ -26,6 +26,7 @@ paramsOL = {
 	"Appearance":{
 		"Add layers list": True,
 		"Base layer": (			
+			"None",
 			"OSM Standard",
 			"OSM Black & White",
 			"Stamen Toner",

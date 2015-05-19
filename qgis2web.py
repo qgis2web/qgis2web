@@ -49,4 +49,4 @@ class qgis2web:
     
     def run(self):
         dlg = MainDialog()
-        dlg.exec_()        
+        dlg.exec_()

@@ -100,7 +100,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
                 group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
-    mapLayers = ["baseLayer"]
+    mapLayers = []
+    if settings["Appearance"]["Base layer"] != "None":
+        mapLayers.append("baseLayer")
     usedGroups = []
     for layer in layers:
         mapLayers.append("lyr_" + safeName(layer.name()))

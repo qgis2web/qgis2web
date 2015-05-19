@@ -163,7 +163,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 		var raster_group = new L.LayerGroup([]);"""
 #here come the basemap (variants list thankfully provided by: "https://github.com/leaflet-extras/leaflet-providers") our geojsons will  looped after that
 #basemap name	
-	if basemapName == 0 or basemapName == "" or matchCRS == True:
+	if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS == True:
 		basemapText = ""
 	else:
 		basemapText = """
@@ -865,9 +865,10 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 
 	# let's add layer control
 	#print len(basemapName)
-	if len(basemapName) == 0 or matchCRS == True:
+	if len(basemapName) == 0 or basemapName == "None" or matchCRS == True:
 		controlStart = """"""
-	controlStart = """
+	else:
+		controlStart = """
 	var baseMaps = {
 		'""" + str(basemapName) + """': basemap
 	};"""
@@ -885,7 +886,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	#control_basemap = """
 	#var baseMaps = {"""
 	#for l in range(0,len(basemapName)):
-	if len(basemapName) == 0:
+	if len(basemapName) == 0 or basemapName == "None":
 		controlStart += """
 		L.control.layers({},{"""
 	else:
