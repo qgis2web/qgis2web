@@ -20,77 +20,31 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QFileInfo
-import osgeo.ogr, osgeo.osr #we will need some packages
-from osgeo import ogr
-from osgeo import gdal
 import processing
-import shutil
 from qgis.core import *
 import qgis.utils
-import os #for file writing/folder actions
-import shutil #for reverse removing directories
-import urllib # to get files from the web
+import os
 from urlparse import parse_qs
 import time
 import tempfile
 import re
-import fileinput
-import webbrowser #to open the made map directly in your browser
-import sys #to use another print command without annoying newline characters 
 from basemaps import basemapLeaflet, basemapAttributions
+from leafletFileScripts import *
+from leafletLayerScripts import *
 
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
-def layerstyle_single(layer):
-	return color_code
-
 def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, locate, address, labels, labelhover, matchCRS, selected, json, params):
-	# supply path to where is your qgis installed
-	#QgsApplication.setPrefixPath("/path/to/qgis/installation", True)
-	#print "Output: " + outputProjectFileName
-	pluginDir = os.path.dirname(os.path.realpath(__file__))
-	
-	cluster_num = 1
-	# load providers
-	QgsApplication.initQgis()
-	# let's determine the current work folder of qgis:
-	#print os.getcwd()		
-	#print layer_list
-	# let's create the overall folder structure:
-	outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
-	#outputProjectFileName = os.path.join(os.getcwd(),outputProjectFileName)
-	jsStore = os.path.join(outputProjectFileName, 'js')
-	os.makedirs(jsStore)
-	jsStore += os.sep
-	jsDir = pluginDir + os.sep + 'js' + os.sep
-	shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
-	shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
-	if len(cluster_set):
-		shutil.copyfile(jsDir + 'leaflet.markercluster.js', jsStore + 'leaflet.markercluster.js')
-	if len(labels):
-		shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
+
 	canvas = qgis.utils.iface.mapCanvas()
-	if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
-		shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
-		shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
-	dataStore = os.path.join(outputProjectFileName, 'data')
-	os.makedirs(dataStore)
-	cssStore = os.path.join(outputProjectFileName, 'css')
-	os.makedirs(cssStore)
-	cssStore += os.sep
-	cssDir = pluginDir + os.sep + 'css' + os.sep
-	if len(cluster_set):
-		shutil.copyfile(cssDir + 'MarkerCluster.css', cssStore + 'MarkerCluster.css')
-		shutil.copyfile(cssDir + 'MarkerCluster.Default.css', cssStore + 'MarkerCluster.Default.css')
-	if len(labels):
-		shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
-	picturesStore = os.path.join(outputProjectFileName, 'pictures')
-	os.makedirs(picturesStore)
-	miscStore = os.path.join(outputProjectFileName, 'misc')
-	os.makedirs(miscStore)
-	
+	pluginDir = os.path.dirname(os.path.realpath(__file__))
+	outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
+	outputIndex = outputProjectFileName + os.sep + 'index.html'
+	cluster_num = 1
+
+	QgsApplication.initQgis()
+
 	minify = params["Data export"]["Minify GeoJSON files"]
 	extent = params["Scale/Zoom"]["Extent"]
 	minZoom = params["Scale/Zoom"]["Min zoom level"]
@@ -100,122 +54,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
 						for i,it in enumerate(txt.split('"')))
 	
-	#lets create a css file for own css:
-	with open(cssStore + 'own_style.css', 'w') as f_css:
-		text = """
-body {
-	padding: 0;
-	margin: 0;
-}"""
-		if full == 1:
-			text += """
-html, body, #map {
-	height: 100%;
-	width: 100%;
-	padding: 0;
-	margin: 0;
-}"""
-		else:
-			text += """
-html, body, #map {
-	height: """+str(height)+"""px;
-	width: """+str(width)+"""px;
-}"""
-		if opacity_raster == True and full == 1:
-			text += """
-html, body, #slide {
-	width: 100%;
-	padding: 0;
-	margin: 0;
-}"""
-		elif opacity_raster == True:
-			text += """	
-html, body, #slide {
-	width: """+str(width)+"""px;
-	padding: 0;
-	margin: 0;
-}"""
-		text += """
-th {
-	text-align: left;
-	vertical-align: top;
-}
-.info {
-	padding: 6px 8px;
-	font: 14px/16px Arial, Helvetica, sans-serif;
-	background: white;
-	background: rgba(255,255,255,0.8);
-	box-shadow: 0 0 15px rgba(0,0,0,0.2);
-	border-radius: 5px;
-}
-.info h2 {
-	margin: 0 0 5px;
-	color: #777;
-}
-.leaflet-container {
-	background: #fff;"""
-		f_css.write(text)
-		f_css.close()
-	
-	#the index file has an easy beginning. we will store it right away:
-	outputIndex = outputProjectFileName + os.sep + 'index.html'
-	with open(outputIndex, 'w') as f_html:
-		base = """<!DOCTYPE html>
-<html>
-	<head>"""
-		if webpage_name == "":
-			base +="""
-		<title>QGIS2leaf webmap</title>
-	"""
-		else:
-			base +="""
-		<title>""" + (webpage_name).encode('utf-8') + """</title>"""
-		base += """
-		<meta charset="utf-8" />
-		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />"""
-		if len(cluster_set):
-			base+= """
-		<link rel="stylesheet" href="css/MarkerCluster.css" />
-		<link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
-		base+= """
-		<link rel="stylesheet" type="text/css" href="css/own_style.css">"""
-		if len(labels):
-			base+= """
-		<link rel="stylesheet" href="css/label.css" />"""
-		if address == True:
-			base += """
-		<link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css" />	"""
-		base +="""
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-		<script src="js/leaflet-hash.js"></script>"""
-		if len(labels):
-			base += """
-		<script src="js/label.js"></script>"""
-		base += """
-		<script src="js/Autolinker.min.js"></script>"""
-		if address == True:
-			base +="""
-		<script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js"></script>"""
-		if len(cluster_set):
-			base +="""
-		<script src="js/leaflet.markercluster.js"></script>"""
-		if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
-			base += """
-		<script src="js/proj4.js"></script>
-		<script src="js/proj4leaflet.js"></script>"""
-		if full == 1:
-			base += """
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />"""
-		base += """
-	</head>
-	<body>
-		<div id="map"></div>"""
-		if opacity_raster == True:
-			base += """
-		<input id="slide" type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)">"""
-  		f_html.write(base)
-		f_html.close()
-	# let's create the js files in the data folder of input vector files:
+	dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, matchCRS, canvas)
+	writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, matchCRS, canvas, full)
+	writeCSS(cssStore, full, height, width)
 
 	wfsLayers = ""
 	exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
@@ -1133,86 +974,3 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 		f12.write(end)
 		f12.close()
 	return outputIndex
-	#webbrowser.open(outputIndex)
-
-def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
-	#print "Point WFS: " + layerName
-	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
-	new_obj = categoryStr + """
-		var exp_"""+layerName+"""JSON;
-		exp_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
-		});
-		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
-		feature_group.addLayer(exp_"""+layerName+"""JSON);
-		layerControl.addOverlay(exp_"""+layerName+"""JSON, '"""+layerName+"""');"""
-	if cluster_set == True:
-		new_obj += """
-		var cluster_group"""+ layerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
-	new_obj+="""
-		function get"""+layerName+"""Json(geojson) {
-			exp_"""+layerName+"""JSON.addData(geojson);"""
-	if visible:
-		new_obj+="""
-			restackLayers();"""
-	if cluster_set == True:
-		new_obj += """
-				cluster_group"""+ layerName + """JSON.addLayer(exp_""" + layerName + """JSON);"""			
-		cluster_num += 1	
-		#print "cluster_num: " + str(cluster_num)
-	new_obj+="""
-		};"""
-	return new_obj, scriptTag, cluster_num
-
-def buildNonPointJSON(categoryStr, safeLayerName):
-	#print "Non-point JSON: " + safeLayerName
-	new_obj = categoryStr + """
-		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
-			onEachFeature: pop_""" + safeLayerName + """,
-			style: doStyle""" + safeLayerName + """
-		});
-		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
-	return new_obj
-
-def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):
-	#print "Non-point WFS: " + layerName
-	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
-	new_obj = categoryStr + """
-		var exp_"""+layerName+"""JSON;
-		exp_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
-		});
-		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
-		feature_group.addLayer(exp_"""+layerName+"""JSON);
-		layerControl.addOverlay(exp_"""+layerName+"""JSON, '"""+layerName+"""');"""
-	new_obj+="""
-		function get"""+layerName+"""Json(geojson) {
-			exp_"""+layerName+"""JSON.addData(geojson);"""
-	if visible:
-		new_obj+="""
-			restackLayers();"""
-	new_obj+="""
-		};"""
-	return new_obj, scriptTag
-
-def getLineStyle(penType):
-	if penType > 1:
-		if penType == 2:
-			penStyle_str = "10,5"
-		if penType == 3:
-			penStyle_str = "1,5"
-		if penType == 4:
-			penStyle_str = "15,5,1,5"
-		if penType == 5:
-			penStyle_str = "15,5,1,5,1,5"
-	else:
-		penStyle_str = ""
-	return penStyle_str
-
-def restackLayers(layerName, visible):
-	if visible:
-		return """
-		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
-		for (index = 0; index < layerOrder.length; index++) {
-			feature_group.removeLayer(layerOrder[index]);feature_group.addLayer(layerOrder[index]);
-		}"""
-	else:
-		return ""
