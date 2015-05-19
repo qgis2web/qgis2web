@@ -51,6 +51,7 @@ paramsOL = {
 			"OpenWeatherMap Temp",
 			"OpenWeatherMap Snow"
 			),
+		"Match project CRS": False,
 		"Add scale bar": True,
 		"Show popups on hover": False,
 		"Highlight features": False,

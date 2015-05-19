@@ -124,7 +124,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
         print "folder: " + utils.tempFolder()
-        previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", "", "", labels, "", 0, 0, json, params)
+        previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", "", "", labels, "", 0, json, params)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
@@ -144,7 +144,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
             params = self.getParameters()
-            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", "", "", labels, "", 0, 0, json, params)
+            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", "", "", labels, "", 0, json, params)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
