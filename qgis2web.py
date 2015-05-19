@@ -33,7 +33,6 @@ class qgis2web:
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
-        self.dlg = MainDialog()
 
     def initGui(self):
         self.action = QAction(
@@ -49,5 +48,5 @@ class qgis2web:
         self.iface.removeToolBarIcon(self.action)
     
     def run(self):
-		self.dlg.show()
-		self.dlg.exec_()
+        dlg = MainDialog()
+        dlg.exec_()        
