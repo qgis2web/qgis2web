@@ -12,7 +12,7 @@
 name=qgis2web
 qgisMinimumVersion=2.0
 description=Export to an OpenLayers 3/Leaflet webmap
-version=0.7.0
+version=0.8.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -21,7 +21,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/05/19 0.7.0 Leaflet export code refactor
+changelog= 2015/05/20 0.8.0 Match project CRS in Leaflet, "Basemap: none" option,  Leaflet observes layers list and scale bar settings 
+	2015/05/19 0.7.0 Leaflet export code refactor
 	2015/05/18 0.6.2 Change default precision to 15, get alpha of fill colours
 	2015/05/15 0.6.1 Fix 0.6.0 OL3 regression
 	2015/05/15 0.6.0 Leaflet labels, fix open in browser
