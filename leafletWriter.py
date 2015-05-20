@@ -865,62 +865,63 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 
 	# let's add layer control
 	#print len(basemapName)
-	if len(basemapName) == 0 or basemapName == "None" or matchCRS == True:
-		controlStart = """"""
-	else:
-		controlStart = """
-	var baseMaps = {
-		'""" + str(basemapName) + """': basemap
-	};"""
-#	if len(basemapName) > 1:
-#		controlStart = """
-#	var baseMaps = {"""
-#		for l in range(0,len(basemapName)):
-#			if l < len(basemapName)-1:
-#				controlStart+= """
-#		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + ""","""
-#			if l == len(basemapName)-1:
-#				controlStart+= """
-#		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + """};"""
-    #if len
-	#control_basemap = """
-	#var baseMaps = {"""
-	#for l in range(0,len(basemapName)):
-	if len(basemapName) == 0 or basemapName == "None":
-		controlStart += """
-		L.control.layers({},{"""
-	else:
-		controlStart += """
-		L.control.layers(baseMaps,{"""
-	with open(outputIndex, 'a') as f6:
-		f6.write(controlStart)
-		f6.close()
+	if params["Appearance"]["Add layers list"]:
+		if len(basemapName) == 0 or basemapName == "None" or matchCRS == True:
+			controlStart = ""
+		else:
+			controlStart = """
+		var baseMaps = {
+			'""" + str(basemapName) + """': basemap
+		};"""
+	#	if len(basemapName) > 1:
+	#		controlStart = """
+	#	var baseMaps = {"""
+	#		for l in range(0,len(basemapName)):
+	#			if l < len(basemapName)-1:
+	#				controlStart+= """
+	#		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + ""","""
+	#			if l == len(basemapName)-1:
+	#				controlStart+= """
+	#		'""" + str(basemapName[l]) + """': basemap_""" + str(l) + """};"""
+		#if len
+		#control_basemap = """
+		#var baseMaps = {"""
+		#for l in range(0,len(basemapName)):
+		if len(basemapName) == 0 or basemapName == "None":
+			controlStart += """
+			L.control.layers({},{"""
+		else:
+			controlStart += """
+			L.control.layers(baseMaps,{"""
+		with open(outputIndex, 'a') as f6:
+			f6.write(controlStart)
+			f6.close()
 
-	for count, i in enumerate(layer_list):
-		rawLayerName = i.name()
-		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-		if i.type() == 0:
-			with open(outputIndex, 'a') as f7:
-				if cluster_set[count] == True and i.geometryType() == 0:
-					new_layer = '"' + safeLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
-				else:
-					new_layer = '"' + safeLayerName + '"' + ": exp_" + safeLayerName + """JSON,"""
-				f7.write(new_layer)
-				f7.close()
-		elif i.type() == 1:
-			with open(outputIndex, 'a') as f7:
-				new_layer = '"' + safeLayerName + '"' + ": overlay_" + safeLayerName + ""","""
-				f7.write(new_layer)
-				f7.close()	
-	controlEnd = "},{collapsed:false}).addTo(map);"	
-	
+		for count, i in enumerate(layer_list):
+			rawLayerName = i.name()
+			safeLayerName = re.sub('[\W_]+', '', rawLayerName)
+			if i.type() == 0:
+				with open(outputIndex, 'a') as f7:
+					if cluster_set[count] == True and i.geometryType() == 0:
+						new_layer = '"' + safeLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
+					else:
+						new_layer = '"' + safeLayerName + '"' + ": exp_" + safeLayerName + """JSON,"""
+					f7.write(new_layer)
+					f7.close()
+			elif i.type() == 1:
+				with open(outputIndex, 'a') as f7:
+					new_layer = '"' + safeLayerName + '"' + ": overlay_" + safeLayerName + ""","""
+					f7.write(new_layer)
+					f7.close()	
+		controlEnd = "},{collapsed:false}).addTo(map);"	
+		
 
 
-	with open(outputIndex, 'rb+') as f8:
-		f8.seek(-1, os.SEEK_END)
-		f8.truncate()
-		f8.write(controlEnd)
-		f8.close()
+		with open(outputIndex, 'rb+') as f8:
+			f8.seek(-1, os.SEEK_END)
+			f8.truncate()
+			f8.write(controlEnd)
+			f8.close()
 	if opacity_raster == True:
 		opacityStart = """
 		function updateOpacity(value) {
@@ -965,7 +966,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	if extent == 'Fit to layers extent':
 		end += """
 		map.fitBounds(feature_group.getBounds());"""
-	else:
+	if params["Appearance"]["Add scale bar"]:
 		end += """
 		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);"""
 	end += """
