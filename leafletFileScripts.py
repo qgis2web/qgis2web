@@ -4,35 +4,28 @@ import os
 import shutil
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, matchCRS, canvas):
-	#outputProjectFileName = os.path.join(os.getcwd(),outputProjectFileName)
 	jsStore = os.path.join(outputProjectFileName, 'js')
 	os.makedirs(jsStore)
 	jsStore += os.sep
 	jsDir = pluginDir + os.sep + 'js' + os.sep
-	shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
-	shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
-	if len(cluster_set):
-		shutil.copyfile(jsDir + 'leaflet.markercluster.js', jsStore + 'leaflet.markercluster.js')
-	if len(labels):
-		shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
-	if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
-		shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
-		shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
 	dataStore = os.path.join(outputProjectFileName, 'data')
 	os.makedirs(dataStore)
 	cssStore = os.path.join(outputProjectFileName, 'css')
 	os.makedirs(cssStore)
 	cssStore += os.sep
 	cssDir = pluginDir + os.sep + 'css' + os.sep
+	shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
+	shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
 	if len(cluster_set):
+		shutil.copyfile(jsDir + 'leaflet.markercluster.js', jsStore + 'leaflet.markercluster.js')
 		shutil.copyfile(cssDir + 'MarkerCluster.css', cssStore + 'MarkerCluster.css')
 		shutil.copyfile(cssDir + 'MarkerCluster.Default.css', cssStore + 'MarkerCluster.Default.css')
 	if len(labels):
+		shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
 		shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
-	picturesStore = os.path.join(outputProjectFileName, 'pictures')
-	os.makedirs(picturesStore)
-	miscStore = os.path.join(outputProjectFileName, 'misc')
-	os.makedirs(miscStore)
+	if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
+		shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
+		shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
 	return dataStore, cssStore
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, matchCRS, canvas, full):

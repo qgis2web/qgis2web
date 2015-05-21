@@ -34,7 +34,7 @@ TYPE_MAP = {
     }
     
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'qgis2ol')
+    tempDir = os.path.join(unicode(QDir.tempPath()), 'qgis2web')
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 

@@ -2,24 +2,24 @@ def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cl
 	#print "Point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
-		var exp_"""+layerName+"""JSON;
-		exp_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
+		var json_"""+layerName+"""JSON;
+		json_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
 		});
-		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
-		feature_group.addLayer(exp_"""+layerName+"""JSON);
-		layerControl.addOverlay(exp_"""+layerName+"""JSON, '"""+layerName+"""');"""
+		layerOrder[layerOrder.length] = json_"""+layerName+"""JSON;
+		feature_group.addLayer(json_"""+layerName+"""JSON);
+		layerControl.addOverlay(json_"""+layerName+"""JSON, '"""+layerName+"""');"""
 	if cluster_set == True:
 		new_obj += """
 		var cluster_group"""+ layerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
 	new_obj+="""
 		function get"""+layerName+"""Json(geojson) {
-			exp_"""+layerName+"""JSON.addData(geojson);"""
+			json_"""+layerName+"""JSON.addData(geojson);"""
 	if visible:
 		new_obj+="""
 			restackLayers();"""
 	if cluster_set == True:
 		new_obj += """
-				cluster_group"""+ layerName + """JSON.addLayer(exp_""" + layerName + """JSON);"""			
+				cluster_group"""+ layerName + """JSON.addLayer(json_""" + layerName + """JSON);"""			
 		cluster_num += 1	
 		#print "cluster_num: " + str(cluster_num)
 	new_obj+="""
@@ -29,26 +29,26 @@ def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cl
 def buildNonPointJSON(categoryStr, safeLayerName):
 	#print "Non-point JSON: " + safeLayerName
 	new_obj = categoryStr + """
-		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+		var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 			onEachFeature: pop_""" + safeLayerName + """,
 			style: doStyle""" + safeLayerName + """
 		});
-		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
+		layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
 	return new_obj
 
 def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):
 	#print "Non-point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
-		var exp_"""+layerName+"""JSON;
-		exp_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
+		var json_"""+layerName+"""JSON;
+		json_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
 		});
-		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
-		feature_group.addLayer(exp_"""+layerName+"""JSON);
-		layerControl.addOverlay(exp_"""+layerName+"""JSON, '"""+layerName+"""');"""
+		layerOrder[layerOrder.length] = json_"""+layerName+"""JSON;
+		feature_group.addLayer(json_"""+layerName+"""JSON);
+		layerControl.addOverlay(json_"""+layerName+"""JSON, '"""+layerName+"""');"""
 	new_obj+="""
 		function get"""+layerName+"""Json(geojson) {
-			exp_"""+layerName+"""JSON.addData(geojson);"""
+			json_"""+layerName+"""JSON.addData(geojson);"""
 	if visible:
 		new_obj+="""
 			restackLayers();"""
@@ -73,7 +73,7 @@ def getLineStyle(penType):
 def restackLayers(layerName, visible):
 	if visible:
 		return """
-		layerOrder[layerOrder.length] = exp_"""+layerName+"""JSON;
+		layerOrder[layerOrder.length] = json_"""+layerName+"""JSON;
 		for (index = 0; index < layerOrder.length; index++) {
 			feature_group.removeLayer(layerOrder[index]);feature_group.addLayer(layerOrder[index]);
 		}"""

@@ -64,7 +64,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	for count, i in enumerate(layer_list):
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-		layerFileName = dataStore + os.sep + 'exp_' + safeLayerName + '.js'
+		layerFileName = dataStore + os.sep + 'json_' + safeLayerName + '.js'
 		if i.providerType() != 'WFS' or json[count] == True and i:
 			#print "JSON (" + i.providerType() + "): " + rawLayerName
 			precision = params["Data export"]["Precision"]
@@ -75,7 +75,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 				with open(layerFileName) as f:
 					lines = f.readlines()
 				with open(layerFileName, "w") as f2:
-					f2.write("var exp_" + str(safeLayerName) + "=") # write the new line before
+					f2.write("var json_" + str(safeLayerName) + "=") # write the new line before
 					for line in lines:
 						if minify:
 							line = line.strip("\n\t ")
@@ -86,7 +86,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 				#now add the js files as data input for our map
 				with open(outputIndex, 'a') as f3:
 					new_src = """
-<script src=\"""" + 'data' + """/exp_""" + safeLayerName + """.js\"></script>"""
+<script src=\"""" + 'data' + """/json_""" + safeLayerName + """.js\"></script>"""
 					# store everything in the file
 					f3.write(new_src)
 					f3.close()
@@ -95,8 +95,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 			elif i.type() == 1:
 				if i.dataProvider().name() != "wms":
 					in_raster = str(i.dataProvider().dataSourceUri())
-					prov_raster = tempfile.gettempdir() + os.sep + 'exp_' + safeLayerName + '_prov.tif'
-					out_raster = dataStore + os.sep + 'exp_' + safeLayerName + '.png'
+					prov_raster = tempfile.gettempdir() + os.sep + 'json_' + safeLayerName + '_prov.tif'
+					out_raster = dataStore + os.sep + 'json_' + safeLayerName + '.png'
 					crsSrc = i.crs()
 					crsDest = QgsCoordinateReferenceSystem(4326)
 					xform = QgsCoordinateTransform(crsSrc, crsDest)
@@ -285,17 +285,17 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 <script src='""" + scriptTag + """'></script>"""
 						else:
 							new_obj = """
-	var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + "," + pointToLayer_str + """
 		}
 	});
-	layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
+	layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
 #add points to the cluster group
 							if cluster_set[count]:
 								new_obj += """
 		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
 								new_obj += """
-		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
 								cluster_num += 1	
 
 					elif i.geometryType() == 1:
@@ -410,19 +410,19 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 <script src='""" + scriptTag + """'></script>"""
 						else:
 							new_obj = categoryStr + """
-	var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + """,
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
 		}
 	});
-		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
+		layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
 			#add points to the cluster group
 							if cluster_set[count] == True:
 								
 								new_obj += """
 		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
-		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
 							cluster_num += 1	
 					elif i.geometryType() == 1:
 						categories = renderer.categories()
@@ -555,18 +555,18 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 <script src='""" + scriptTag + """'></script>"""
 						else:
 							new_obj = categoryStr + """
-	var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + """,
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))"""+labeltext+"""
 		}
 	});
-		layerOrder[layerOrder.length] = exp_"""+safeLayerName+"""JSON;"""
+		layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
 							#add points to the cluster group
 							if cluster_set[count] == True:
 								new_obj += """
 		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
-		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
 								cluster_num += 1	
 					elif i.geometryType() == 1:
 						valueAttr = renderer.classAttribute()
@@ -668,7 +668,7 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 #	<script src='""" + scriptTag + """'></script>"""
 #							else:
 #								new_obj = categoryStr + """
-#		var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+#		var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 #			onEachFeature: pop_""" + safeLayerName + """,
 #			pointToLayer: function (feature, latlng) {  
 #				return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))"""+labeltext+"""
@@ -678,12 +678,12 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 	#							if cluster_set[count] == True:
 	#								new_obj += """
 	#		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
-	#		cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+	#		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
 	#								cluster_num += 1	
 
 				if icon_prov and i.geometryType() == 0:
 					new_obj = """
-var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 	onEachFeature: pop_""" + safeLayerName + """,
 	pointToLayer: function (feature, latlng) {
 		return L.marker(latlng, {
@@ -700,11 +700,11 @@ var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + 
 					if cluster_set[count] == True:
 						new_obj += """
 var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
-cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """JSON);"""			
+cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
 						cluster_num += 1
 #				else:
 #					new_obj = """
-#var exp_""" + safeLayerName + """JSON = new L.geoJson(exp_""" + safeLayerName + """,{
+#var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 #	onEachFeature: pop_""" + safeLayerName + """,
 #});"""		
 
@@ -719,11 +719,11 @@ cluster_group"""+ safeLayerName + """JSON.addLayer(exp_""" + safeLayerName + """
 						if i.geometryType() == 0:
 							f5.write("""
 //add comment sign to hide this layer on the map in the initial view.
-feature_group.addLayer(exp_"""+ safeLayerName + """JSON);""")
+feature_group.addLayer(json_"""+ safeLayerName + """JSON);""")
 						else:
 							f5.write("""
 //add comment sign to hide this layer on the map in the initial view.
-feature_group.addLayer(exp_""" + safeLayerName + """JSON);""")
+feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
 					else:
 						f5.write("""
 //add comment sign to hide this layer on the map in the initial view.
@@ -733,11 +733,11 @@ cluster_group""" + safeLayerName + """JSON.addTo(map);""")
 						if i.geometryType() == 0:
 							f5.write("""
 	//delete comment sign to show this layer on the map in the initial view.
-	//feature_group.addLayer(exp_"""+ safeLayerName + """JSON);""")
+	//feature_group.addLayer(json_"""+ safeLayerName + """JSON);""")
 						if i.geometryType() != 0:
 							f5.write("""
 	//delete comment sign to show this layer on the map in the initial view.
-	//feature_group.addLayer(exp_""" + safeLayerName + """JSON);""")
+	//feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
 					else:
 						f5.write("""
 	//delete comment sign to show this layer on the map in the initial view.
@@ -762,7 +762,7 @@ var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
 				#print d
 				#print i.source()
 			else:
-				out_raster_name = 'data/' + 'exp_' + safeLayerName + '.png'
+				out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
 				pt2	= i.extent()
 				crsSrc = i.crs()    # WGS 84
 				crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
@@ -905,7 +905,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 					if cluster_set[count] == True and i.geometryType() == 0:
 						new_layer = '"' + safeLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
 					else:
-						new_layer = '"' + safeLayerName + '"' + ": exp_" + safeLayerName + """JSON,"""
+						new_layer = '"' + safeLayerName + '"' + ": json_" + safeLayerName + """JSON,"""
 					f7.write(new_layer)
 					f7.close()
 			elif i.type() == 1:
