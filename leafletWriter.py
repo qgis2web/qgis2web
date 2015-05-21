@@ -218,31 +218,16 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							if cluster_set[count]:
 								new_obj += clusterScript(safeLayerName)
 								cluster_num += 1	
-
 					elif i.geometryType() == 1:
 						radius_str = str(symbol.width() * 5)
 						penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle())
-						lineStyle_str = """
-			return {
-				weight: """+radius_str+""",
-				color: '"""+colorName+"""',
-				dashArray: '"""+penStyle_str+"""',
-				opacity: """+opacity_str+""",
-				fillOpacity: """+opacity_str+"""
-			};"""
+						lineStyle_str = lineStyleScript(radius_str, colorName, penStyle_str, opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
-							stylestr="""
-		style: function (feature) {""" + lineStyle_str + """
-		},
-		onEachFeature: function (feature, layer) {"""+popFuncs+"""
-		}"""
+							stylestr = lineStylePopupsScript(lineStyle_str, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
-							wfsLayers += """
-<script src='""" + scriptTag + """'></script>"""
+							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = """
-	function doStyle""" + safeLayerName + """(feature) {""" + lineStyle_str + """
-	}"""
+							new_obj = lineStyleFunctionScript(safeLayerName, lineStyle_str)
 							new_obj += buildNonPointJSON("", safeLayerName)
 							new_obj += restackLayers(layerName, visible[count])		
 					elif i.geometryType() == 2:

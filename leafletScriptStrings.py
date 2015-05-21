@@ -107,3 +107,28 @@ def clusterScript(safeLayerName):
 		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
 		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
 	return clusterScript
+
+def lineStyleScript(radius_str, colorName, penStyle_str, opacity_str):
+	lineStyleScript = """
+			return {
+				weight: """ + radius_str + """,
+				color: '""" + colorName + """',
+				dashArray: '""" + penStyle_str + """',
+				opacity: """ + opacity_str + """,
+				fillOpacity: """ + opacity_str + """
+			};"""
+	return lineStyleScript
+
+def lineStylePopupsScript(lineStyle_str, popFuncs):
+	lineStylePopupsScript = """
+		style: function (feature) {""" + lineStyle_str + """
+		},
+		onEachFeature: function (feature, layer) {""" + popFuncs + """
+		}"""
+	return lineStylePopupsScript
+
+def lineStyleFunctionScript(safeLayerName, lineStyle_str):
+	lineStyleFunctionScript = """
+	function doStyle""" + safeLayerName + """(feature) {""" + lineStyle_str + """
+	}"""
+	return lineStyleFunctionScript
