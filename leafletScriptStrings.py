@@ -1,7 +1,7 @@
 def jsonScript(layer):
-	jsonScript = """
+	json = """
 		<script src=\"""" + 'data' + """/json_""" + layer + """.js\"></script>"""
-	return jsonScript
+	return json
 		
 def openScript():
 	openScript = """
@@ -9,46 +9,46 @@ def openScript():
 	return openScript
 
 def crsScript(crsAuthId, crsProj4):
-	crsScript = """
+	crs = """
 		var crs = new L.Proj.CRS('""" + crsAuthId + """', '""" + crsProj4 + """', {
 			resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
 		});"""
-	return crsScript
+	return crs
 
 def mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds):
-	mapScript = """
+	map = """
 		var map = L.map('map', {"""
 	if extent == "Canvas extent" and matchCRS == True and crsAuthId != 'EPSG:4326':
-		mapScript += """
+		map += """
 			crs: crs,
 			continuousWorld: false,
 			worldCopyJump: false, """
-	mapScript += """
+	map += """
 			zoomControl:true, maxZoom:""" + unicode(maxZoom) + """, minZoom:""" + unicode(minZoom) + """
 		})"""
 	if extent == "Canvas extent":
-		mapScript += """.fitBounds(""" + bounds + """);"""
-	mapScript += """
+		map += """.fitBounds(""" + bounds + """);"""
+	map += """
 		var hash = new L.Hash(map);
 		var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';"""
-	return mapScript
+	return map
 
 def featureGroupsScript():
-	featureGroupsScript = """
+	featureGroups = """
 		var feature_group = new L.featureGroup([]);
 		var raster_group = new L.LayerGroup([]);"""
-	return featureGroupsScript
+	return featureGroups
 
 def basemapsScript(basemap, attribution):
-	basemapsScript = """
+	basemaps = """
 		var basemap = L.tileLayer('""" + basemap + """', { 
 			attribution: additional_attrib + ' """ + attribution + """'
 		});
 		basemap.addTo(map);"""
-	return basemapsScript
+	return basemaps
 
 def layerOrderScript():
-	layerOrderScript = """	
+	layerOrder = """	
 		var layerOrder=new Array();
 		function restackLayers() {
 			for (index = 0; index < layerOrder.length; index++) {
@@ -58,18 +58,18 @@ def layerOrderScript():
 		}
 
 		layerControl = L.control.layers({},{},{collapsed:false});"""
-	return layerOrderScript
+	return layerOrder
 
 def popupScript(safeLayerName, table):
-	popupScript = """
+	popup = """
 	function pop_""" + safeLayerName + """(feature, layer) {
 		var popupContent = """ + table + """;
 		layer.bindPopup(popupContent);
 	}"""
-	return popupScript
+	return popup
 
 def pointToLayerScript(radius_str, colorName, borderColor_str, opacity_str, labeltext):
-	pointToLayerScript = """
+	pointToLayer = """
 		pointToLayer: function (feature, latlng) {  
 			return L.circleMarker(latlng, {
 				radius: """ + radius_str + """,
@@ -79,56 +79,57 @@ def pointToLayerScript(radius_str, colorName, borderColor_str, opacity_str, labe
 				opacity: """ + opacity_str + """,
 				fillOpacity: """ + opacity_str + """
 			})""" + labeltext
-	return pointToLayerScript
+	return pointToLayer
 
 def pointStyleScript(pointToLayer_str, popFuncs):
-	pointStyleScript = pointToLayer_str + """
+	pointStyle = pointToLayer_str + """
 		},
 		onEachFeature: function (feature, layer) {""" + popFuncs + """
 		}"""
-	return pointStyleScript
+	return pointStyle
 
 def wfsScript(scriptTag):
-	wfsScript = """
+	wfs = """
 		<script src='""" + scriptTag + """'></script>"""
-	return wfsScript
+	return wfs
 
 def jsonPointScript(safeLayerName, pointToLayer_str):
-	jsonPointScript = """
+	jsonPoint = """
 	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + "," + pointToLayer_str + """
 		}
 	});
 	layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
-	return jsonPointScript
+	return jsonPoint
 
 def clusterScript(safeLayerName):
-	clusterScript = """
+	cluster = """
 		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
 		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
-	return clusterScript
+	return cluster
 
-def lineStyleScript(radius_str, colorName, penStyle_str, opacity_str):
-	lineStyleScript = """
+def nonPointStyleScript(radius_str, colorName, fillColor, penStyle_str, opacity_str):
+	nonPointStyle = """
 			return {
 				weight: """ + radius_str + """,
 				color: '""" + colorName + """',
+				fillColor: '""" + fillColor + """',
 				dashArray: '""" + penStyle_str + """',
 				opacity: """ + opacity_str + """,
 				fillOpacity: """ + opacity_str + """
 			};"""
-	return lineStyleScript
+	return nonPointStyle
 
-def lineStylePopupsScript(lineStyle_str, popFuncs):
-	lineStylePopupsScript = """
+def nonPointStylePopupsScript(lineStyle_str, popFuncs):
+	nonPointStylePopups = """
 		style: function (feature) {""" + lineStyle_str + """
 		},
 		onEachFeature: function (feature, layer) {""" + popFuncs + """
 		}"""
-	return lineStylePopupsScript
+	return nonPointStylePopups
 
-def lineStyleFunctionScript(safeLayerName, lineStyle_str):
-	lineStyleFunctionScript = """
+def nonPointStyleFunctionScript(safeLayerName, lineStyle_str):
+	nonPointStyleFunction = """
 	function doStyle""" + safeLayerName + """(feature) {""" + lineStyle_str + """
 	}"""
-	return lineStyleFunctionScript
+	return nonPointStyleFunction

@@ -221,13 +221,13 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					elif i.geometryType() == 1:
 						radius_str = str(symbol.width() * 5)
 						penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle())
-						lineStyle_str = lineStyleScript(radius_str, colorName, penStyle_str, opacity_str)
+						lineStyle_str = nonPointStyleScript(radius_str, colorName, "", penStyle_str, opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
-							stylestr = lineStylePopupsScript(lineStyle_str, popFuncs)
+							stylestr = nonPointStylePopupsScript(lineStyle_str, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = lineStyleFunctionScript(safeLayerName, lineStyle_str)
+							new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle_str)
 							new_obj += buildNonPointJSON("", safeLayerName)
 							new_obj += restackLayers(layerName, visible[count])		
 					elif i.geometryType() == 2:
@@ -242,29 +242,13 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
 							if symbol.symbolLayer(0).brushStyle() == 0:
 								borderStyle_str = "0"
-						polyStyle_str = """
-			return {
-				color: '"""+borderColor_str+"""',
-				fillColor: '"""+colorName+"""',
-				weight: """+radius_str+""",
-				dashArray: '"""+borderStyle_str+"""',
-				opacity: """+opacity_str+""",
-				fillOpacity: """+opacity_str+"""
-			};
-"""
+						polyStyle_str = nonPointStyleScript(radius_str, borderColor_str, colorName, borderStyle_str, opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
-							stylestr="""
-		style: function (feature) {""" + polyStyle_str + """
-		},
-		onEachFeature: function (feature, layer){"""+popFuncs+"""
-		}"""
+							stylestr = nonPointStylePopupsScript(polyStyle_str, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
-							wfsLayers += """
-<script src='""" + scriptTag + """'></script>"""
+							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = """
-	function doStyle""" + safeLayerName + """(feature) {""" + polyStyle_str + """
-	}"""
+							new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle_str)
 							new_obj += buildNonPointJSON("", safeLayerName)
 							new_obj += restackLayers(layerName, visible[count])	
 				elif rendererDump[0:11] == 'CATEGORIZED':
