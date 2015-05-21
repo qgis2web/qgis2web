@@ -31,6 +31,7 @@ import re
 from basemaps import basemapLeaflet, basemapAttributions
 from leafletFileScripts import *
 from leafletLayerScripts import *
+from leafletScriptStrings import *
 
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
@@ -85,8 +86,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					
 				#now add the js files as data input for our map
 				with open(outputIndex, 'a') as f3:
-					new_src = """
-<script src=\"""" + 'data' + """/json_""" + safeLayerName + """.js\"></script>"""
+					new_src = jsonScript(safeLayerName)
 					# store everything in the file
 					f3.write(new_src)
 					f3.close()
@@ -122,66 +122,21 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 		pt1 = xform.transform(pt0)
 		bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),pt1.xMinimum(), pt1.xMaximum()]
 		bounds = '[[' + str(pt1.yMinimum()) + ',' + str(pt1.xMinimum()) + '],[' + str(pt1.yMaximum()) + ',' + str(pt1.xMaximum()) +']]'
-		middle = """
-		<script>"""
-		#print '>> ' + crsProj4
+		middle = openScript()
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
-			#print '>> ' + crsProj4
-			middle += """
-		var crs = new L.Proj.CRS('""" + crsAuthId + """', '""" + crsProj4 + """', {
-			resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-		});"""
-		middle += """
-		var map = L.map('map', {"""
-		if matchCRS == True and crsAuthId != 'EPSG:4326':
-			middle += """
-			crs: crs,
-			continuousWorld: false,
-			worldCopyJump: false, """
-		middle += """
-			zoomControl:true, maxZoom:""" + unicode(maxZoom) + """, minZoom:""" + unicode(minZoom) + """
-		}).fitBounds(""" + bounds + """);
-		var hash = new L.Hash(map);
-		var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';"""
+			middle += crsScript(crsAuthId, crsProj4)
+		middle += mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds)
 	if extent == 'Fit to layers extent':
-		middle = """
-		<script>
-"""
+		middle = openScript()
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
-			#print '>> ' + crsProj4
-			middle += """
-		var crs = new L.Proj.CRS('""" + crsAuthId + """', '""" + crsProj4 + """', {
-			resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-		});"""
-		middle += """
-		var map = L.map('map', { zoomControl:true, maxZoom:19 });
-		var hash = new L.Hash(map); //add hashes to html address to easy share locations
-		var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';"""
-	# we will start with the clustergroup
-	middle += """
-		var feature_group = new L.featureGroup([]);
-		var raster_group = new L.LayerGroup([]);"""
-#here come the basemap (variants list thankfully provided by: "https://github.com/leaflet-extras/leaflet-providers") our geojsons will  looped after that
-#basemap name	
+			middle += crsScript(crsAuthId, crsProj4)
+		middle += mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds)
+	middle += featureGroupsScript()
 	if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS == True:
 		basemapText = ""
 	else:
-		basemapText = """
-		var basemap = L.tileLayer('""" + basemapAddresses[basemapName] + """', { 
-			attribution: additional_attrib + ' """ + basemapAttributions[basemapName] + """'
-		});"""
-		basemapText += """	
-		basemap.addTo(map);"""
-	layerOrder = """	
-		var layerOrder=new Array();
-		function restackLayers() {
-			for (index = 0; index < layerOrder.length; index++) {
-				feature_group.removeLayer(layerOrder[index]);
-				feature_group.addLayer(layerOrder[index]);
-			}
-		}
-
-		layerControl = L.control.layers({},{},{collapsed:false});"""
+		basemapText = basemapsScript(basemapAddresses[basemapName], basemapAttributions[basemapName])
+	layerOrder = layerOrderScript()
 	with open(outputIndex, 'a') as f4:
 			f4.write(middle)
 			f4.write(basemapText)
@@ -192,14 +147,11 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		if i.type()==0:
 			with open(outputIndex, 'a') as f5:
-				#here comes the layer style
-				#here comes the html popup content
 				fields = i.pendingFields() 
 				field_names = [field.name() for field in fields]
 				html_prov = False
 				icon_prov = False
 				label_exp = ''
-				#lets extract possible labels form the qgis map for each layer. 
 				labeltext = ""
 				f = ''
 				if labels[count]:
@@ -210,8 +162,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					if labelhover == False:
 						labeltext = """.bindLabel(feature.properties."""+str(f)+""", {noHide: true})"""
 					else:
-						labeltext = """.bindLabel(feature.properties."""+str(f)+""", {noHide: true})"""
-						#labeltext = """.bindLabel(feature.properties."""+str(f)+""")"""
+						labeltext = """.bindLabel(feature.properties."""+str(f)+""")"""
 				for field in field_names:
 					if str(field) == 'html_exp':
 						html_prov = True
@@ -222,11 +173,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					if str(field) == 'label_exp' and labelhover == True:
 						label_exp = True
 						labeltext = """.bindLabel(feature.properties.label_exp)"""
-					# we will use labels in leaflet only if a fieldname is equal to the label defining field:
 					if str(f) != "" and str(f) == str(field) and f:
 						label_exp = True
 					if str(field) == 'icon_exp':
-						icon_prov = True #we need this later on for icon creation
+						icon_prov = True 
 					if html_prov != True:
 						tablestart = """'<table>"""
 						row = ""
@@ -240,22 +190,15 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 						table = tablestart + row + tableend
 				if label_exp == False:
 					labeltext = ""
-				popFuncs = """					
-	var popupContent = """ + table + """;
-	layer.bindPopup(popupContent);"""
-				new_pop = """
-function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
-}"""
-				#single marker points:
+				new_pop = popupScript(safeLayerName, table)
 				 
 				layerName = safeLayerName
 				renderer = i.rendererV2()
 				rendererDump = renderer.dump()
-				#print "rendererDump: " + rendererDump
 				layer_transp_float = 1 - (float(i.layerTransparency()) / 100)
-				#print "Cluster: " + unicode(cluster_set[count])
-
 				new_obj = ""
+
+				#single marker points:
 				if rendererDump[0:6] == 'SINGLE':
 					symbol = renderer.symbol()
 					colorName = symbol.color().name()
@@ -265,37 +208,15 @@ function pop_""" + safeLayerName + """(feature, layer) {"""+popFuncs+"""
 					if i.geometryType() == 0 and icon_prov != True:
 						radius_str = str(symbol.size() * 2)
 						borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
-						pointToLayer_str = """
-		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, {
-				radius: """+radius_str+""",
-				fillColor: '"""+colorName+"""',
-				color: '"""+borderColor_str+"""',
-				weight: 1,
-				opacity: """+opacity_str+""",
-				fillOpacity: """+opacity_str+"""
-			})"""+labeltext
+						pointToLayer_str = pointToLayerScript(radius_str, colorName, borderColor_str, opacity_str, labeltext)
 						if i.providerType() == 'WFS' and json[count] == False:
-							stylestr = pointToLayer_str + """
-		},
-		onEachFeature: function (feature, layer) {""" + popFuncs + """
-		}"""
+							stylestr = pointStyleScript(pointToLayer_str, popFuncs)
 							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set[count], cluster_num, visible[count])
-							wfsLayers += """
-<script src='""" + scriptTag + """'></script>"""
+							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = """
-	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-		onEachFeature: pop_""" + safeLayerName + "," + pointToLayer_str + """
-		}
-	});
-	layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
-#add points to the cluster group
+							new_obj = jsonPointScript(safeLayerName, pointToLayer_str)
 							if cluster_set[count]:
-								new_obj += """
-		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
-								new_obj += """
-		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
+								new_obj += clusterScript(safeLayerName)
 								cluster_num += 1	
 
 					elif i.geometryType() == 1:
