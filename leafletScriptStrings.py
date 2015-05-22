@@ -108,8 +108,8 @@ def jsonPointScript(safeLayerName, pointToLayer_str):
 
 def clusterScript(safeLayerName):
 	cluster = """
-		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
-		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
+		var cluster_group"""+ safeLayerName + """JSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
+		cluster_group""" + safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
 	return cluster
 
 def styleValuesScript(symbol, opacity_str):
@@ -186,12 +186,12 @@ def categorizedPointWFSscript(layerName, labeltext, popFuncs):
 		}"""
 	return categorizedPointWFS
 
-def categorizedPointJSONscript(layerName, safeLayerName, labeltext):
+def categorizedPointJSONscript(safeLayerName, labeltext):
 	categorizedPointJSON = """
 	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 		onEachFeature: pop_""" + safeLayerName + """,
 		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))""" + labeltext + """
+			return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))""" + labeltext + """
 		}
 	});
 		layerOrder[layerOrder.length] = json_""" + safeLayerName + """JSON;"""
@@ -209,7 +209,7 @@ def categorizedLineStylesScript(symbol, opacity_str):
 
 def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 	categorizedNonPointStyleFunction = """
-		style:doStyle""" + layerName + """,
+		style: doStyle""" + layerName + """,
 		onEachFeature: function (feature, layer) {""" + popFuncs + """
 		}"""
 	return categorizedNonPointStyleFunction
@@ -226,6 +226,58 @@ def categorizedPolygonStylesScript(symbol, opacity_str):
 				};
 				break;"""
 	return categorizedPolygonStyles
+
+def graduatedStyleScript(layerName):
+	graduatedStyle = """
+	function doStyle""" + layerName + "(feature) {"
+	return graduatedStyle
+
+def rangeStartScript(valueAttr, r):
+	rangeStart = """
+		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + ") {"
+	return rangeStart
+
+def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str):
+	graduatedPointStyles = rangeStartScript(valueAttr, r)
+	graduatedPointStyles += """
+			return {
+				radius: '""" + unicode(symbol.size() * 2) + """',
+				fillColor: '""" + unicode(symbol.color().name()) + """',
+				color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
+				weight: 1,
+				fillOpacity: '""" + opacity_str + """',
+			}
+		}"""
+	return graduatedPointStyles
+
+def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
+	graduatedLineStyles = rangeStartScript(valueAttr, r)
+	graduatedLineStyles += """
+			return {
+				color: '""" + unicode(symbol.symbolLayer(0).color().name())+ """',
+				weight: '""" + unicode(symbol.width() * 5) + """',
+				opacity: '""" + opacity_str + """',
+			}
+		}"""
+	return graduatedLineStyles
+
+def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str):
+	graduatedPolygonStyles = rangeStartScript(valueAttr, r)
+	graduatedPolygonStyles += """
+			return {
+				color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
+				weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
+				fillColor: '""" + unicode(symbol.color().name())+ """',
+				opacity: '""" + opacity_str + """',
+				fillOpacity: '""" + opacity_str + """',
+			}
+		}"""
+	return graduatedPolygonStyles
+
+def endGraduatedStyleScript():
+	endGraduatedStyle = """
+	}"""
+	return endGraduatedStyle
 
 def endHTMLscript(wfsLayers):
 	endHTML = """
