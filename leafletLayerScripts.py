@@ -56,20 +56,6 @@ def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, vi
 		};"""
 	return new_obj, scriptTag
 
-def getLineStyle(penType):
-	if penType > 1:
-		if penType == 2:
-			penStyle_str = "10,5"
-		if penType == 3:
-			penStyle_str = "1,5"
-		if penType == 4:
-			penStyle_str = "15,5,1,5"
-		if penType == 5:
-			penStyle_str = "15,5,1,5,1,5"
-	else:
-		penStyle_str = ""
-	return penStyle_str
-
 def restackLayers(layerName, visible):
 	if visible:
 		return """

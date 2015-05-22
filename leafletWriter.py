@@ -190,7 +190,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 						table = tablestart + row + tableend
 				if label_exp == False:
 					labeltext = ""
-				new_pop = popupScript(safeLayerName, table)
+				popFuncs = popFuncsScript(table)
+				new_pop = popupScript(safeLayerName, popFuncs)
 				 
 				layerName = safeLayerName
 				renderer = i.rendererV2()
@@ -255,159 +256,68 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					if i.geometryType() == 0 and icon_prov != True:
 						categories = renderer.categories()
 						valueAttr = renderer.classAttribute()
-						categoryStr = """
-	function doStyle""" + layerName + """(feature) {
-		switch (feature.properties.""" + valueAttr + """) {"""
+						categoryStr = categoryScript(layerName, valueAttr)
 						for cat in categories:
 							if not cat.value():
-								categoryStr += """
-			default:
-				return {"""
+								categoryStr += defaultCategoryScript()
 							else:
-								if isinstance(cat.value(), basestring):
-									categoryStr += """
-			case '""" + unicode(cat.value()) + """':
-				return {"""
-								else:
-									categoryStr += """
-			case """ + unicode(cat.value()) + """:
-				return {"""
+								categoryStr += eachCategoryScript(cat.value())
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
 							color_transp_float = float(symbol.color().alpha())/255
 							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
-							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
-							categoryStr += """
-					radius: '""" + unicode(symbol.size() * 2) + """',
-					fillColor: '""" + unicode(symbol.color().name()) + """',
-					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
-					weight: 1,
-					fillOpacity: '""" + opacity_str + """',
-				};
-				break;"""
-						categoryStr += """
-		}
-	}"""
+							categoryStr += styleValuesScript(symbol, opacity_str)
+						categoryStr += endCategoryScript()
 						if i.providerType() == 'WFS' and json[count] == False:
-							stylestr="""
-		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
-		},
-		onEachFeature: function (feature, layer) {"""+popFuncs+"""
-		}"""
+							stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
 							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible[count])
-							wfsLayers += """
-<script src='""" + scriptTag + """'></script>"""
+							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = categoryStr + """
-	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-		onEachFeature: pop_""" + safeLayerName + """,
-		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
-		}
-	});
-		layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
-			#add points to the cluster group
+							new_obj = categoryStr + categorizedPointJSONscript(layerName, safeLayerName, labeltext)
 							if cluster_set[count] == True:
-								
-								new_obj += """
-		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
-		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
+								new_obj += clusterScript(safeLayerName)			
 							cluster_num += 1	
 					elif i.geometryType() == 1:
 						categories = renderer.categories()
 						valueAttr = renderer.classAttribute()
-						categoryStr = """
-	function doStyle""" + layerName + """(feature) {"""
-						categoryStr += """
-		switch (feature.properties.""" + valueAttr + ") {"
+						categoryStr = categoryScript(layerName, valueAttr)
 						for cat in categories:
 							if not cat.value():
-								categoryStr += """
-			default:
-				return {"""
+								categoryStr += defaultCategoryScript()
 							else:
-								if isinstance(cat.value(), basestring):
-									categoryStr += """
-			case '""" + unicode(cat.value()) + """':
-				return {"""
-								else:
-									categoryStr += """
-			case """ + unicode(cat.value()) + """:
-				return {"""
+								categoryStr += eachCategoryScript(cat.value())
 							#categoryStr += "radius: '" + unicode(cat.symbol().size() * 2) + "',"
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
 							color_transp_float = float(symbol.color().alpha())/255
 							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
-							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
-							categoryStr += """
-					color: '""" + unicode(symbol.color().name()) + """',
-					weight: '""" + unicode(symbol.width() * 5) + """',
-					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).penStyle()) + """',
-					opacity: '""" + opacity_str + """',
-				};
-				break;"""
-						categoryStr += """
-		}
-	}"""
-						stylestr="""
-		style:doStyle""" + layerName + """,
-		onEachFeature: function (feature, layer) {"""+popFuncs+"""
-		}"""
+							categoryStr += categorizedLineStylesScript(symbol, opacity_str)
+						categoryStr += endCategoryScript()
+						stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
 						if i.providerType() == 'WFS' and json[count] == False:
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
-							wfsLayers += """
-<script src='""" + scriptTag + """'></script>"""
+							wfsLayers += wfsScript(scriptTag)
 						else:
 							new_obj = buildNonPointJSON(categoryStr, safeLayerName)
 					elif i.geometryType() == 2:
 						categories = renderer.categories()
 						valueAttr = renderer.classAttribute()
-						categoryStr = """
-	function doStyle""" + layerName + "(feature) {"
-						categoryStr += """
-		switch (feature.properties.""" + valueAttr + ") {"
+						categoryStr = categoryScript(layerName, valueAttr)
 						for cat in categories:
 							if not cat.value():
-								categoryStr += """
-			default:
-				return {"""
+								categoryStr += defaultCategoryScript()
 							else:
-								if isinstance(cat.value(), basestring):
-									categoryStr += """
-			case '""" + unicode(cat.value()) + """':
-				return {"""
-								else:
-									categoryStr += """
-			case """ + unicode(cat.value()) + """:
-				return {"""
+								categoryStr += eachCategoryScript(cat.value())
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
 							color_transp_float = float(symbol.color().alpha())/255
 							opacity_str = str(layer_transp_float*symbol_transp_float*color_transp_float)
-							#print str(layer_transp_float) + " x " + str(symbol_transp_float) + " = " + opacity_str
-							categoryStr += """
-					weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
-					fillColor: '""" + unicode(symbol.color().name()) + """',
-					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name()) + """',
-					weight: '1',
-					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).borderStyle()) + """',
-					opacity: '""" + opacity_str + """',
-					fillOpacity: '""" + opacity_str + """',
-				};
-				break;"""
-						categoryStr += """
-		}
-	}"""
+							categoryStr += categorizedPolygonStylesScript(symbol, opacity_str)
+						categoryStr += endCategoryScript()
 						if i.providerType() == 'WFS' and json[count] == False:
-							stylestr="""
-		style:doStyle""" + layerName + """,
-		onEachFeature : function (feature, layer) {"""+popFuncs+"""
-		}"""
+							stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
-							wfsLayers += """
-<script src='""" + scriptTag + """'></script>"""
+							wfsLayers += wfsScript(scriptTag)
 						else:
 							new_obj = buildNonPointJSON(categoryStr, safeLayerName)
 				elif rendererDump[0:9] == 'GRADUATED':
@@ -859,10 +769,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	if params["Appearance"]["Add scale bar"]:
 		end += """
 		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);"""
-	end += """
-	</script>""" + wfsLayers + """
-</body>
-</html>"""
+	end += endHTMLscript(wfsLayers)
 	with open(outputIndex, 'a') as f12:
 		f12.write(end)
 		f12.close()

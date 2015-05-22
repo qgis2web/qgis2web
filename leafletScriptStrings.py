@@ -60,11 +60,15 @@ def layerOrderScript():
 		layerControl = L.control.layers({},{},{collapsed:false});"""
 	return layerOrder
 
-def popupScript(safeLayerName, table):
+def popFuncsScript(table):
+	popFuncs = """					
+	var popupContent = """ + table + """;
+	layer.bindPopup(popupContent);"""
+	return popFuncs
+
+def popupScript(safeLayerName, popFuncs):
 	popup = """
-	function pop_""" + safeLayerName + """(feature, layer) {
-		var popupContent = """ + table + """;
-		layer.bindPopup(popupContent);
+	function pop_""" + safeLayerName + """(feature, layer) {""" + popFuncs + """
 	}"""
 	return popup
 
@@ -108,6 +112,17 @@ def clusterScript(safeLayerName):
 		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
 	return cluster
 
+def styleValuesScript(symbol, opacity_str):
+	styleValues = """
+					radius: '""" + unicode(symbol.size() * 2) + """',
+					fillColor: '""" + unicode(symbol.color().name()) + """',
+					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
+					weight: 1,
+					fillOpacity: '""" + opacity_str + """',
+				};
+				break;"""
+	return styleValues
+
 def nonPointStyleScript(radius_str, colorName, fillColor, penStyle_str, opacity_str):
 	nonPointStyle = """
 			return {
@@ -133,3 +148,102 @@ def nonPointStyleFunctionScript(safeLayerName, lineStyle_str):
 	function doStyle""" + safeLayerName + """(feature) {""" + lineStyle_str + """
 	}"""
 	return nonPointStyleFunction
+
+def categoryScript(layerName, valueAttr):
+	category = """
+	function doStyle""" + layerName + """(feature) {
+		switch (feature.properties.""" + valueAttr + ") {"
+	return category
+
+def defaultCategoryScript():
+	defaultCategory = """
+			default:
+				return {"""
+	return defaultCategory
+
+def eachCategoryScript(catValue):
+	if isinstance(catValue, basestring):
+		valQuote = "'"
+	else: 
+		valQuote = ""
+	eachCategory = """
+		case """ + valQuote + unicode(catValue) + valQuote + """:
+			return {"""
+	return eachCategory
+
+def endCategoryScript():
+	endCategory = """
+		}
+	}"""
+	return endCategory
+
+def categorizedPointWFSscript(layerName, labeltext, popFuncs):
+	categorizedPointWFS = """
+		pointToLayer: function (feature, latlng) {  
+			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))""" + labeltext + """
+		},
+		onEachFeature: function (feature, layer) {""" + popFuncs + """
+		}"""
+	return categorizedPointWFS
+
+def categorizedPointJSONscript(layerName, safeLayerName, labeltext):
+	categorizedPointJSON = """
+	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
+		onEachFeature: pop_""" + safeLayerName + """,
+		pointToLayer: function (feature, latlng) {  
+			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))""" + labeltext + """
+		}
+	});
+		layerOrder[layerOrder.length] = json_""" + safeLayerName + """JSON;"""
+	return categorizedPointJSON
+
+def categorizedLineStylesScript(symbol, opacity_str):
+	categorizedLineStyles = """
+					color: '""" + unicode(symbol.color().name()) + """',
+					weight: '""" + unicode(symbol.width() * 5) + """',
+					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).penStyle()) + """',
+					opacity: '""" + opacity_str + """',
+				};
+				break;"""
+	return categorizedLineStyles
+
+def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
+	categorizedNonPointStyleFunction = """
+		style:doStyle""" + layerName + """,
+		onEachFeature: function (feature, layer) {""" + popFuncs + """
+		}"""
+	return categorizedNonPointStyleFunction
+
+def categorizedPolygonStylesScript(symbol, opacity_str):
+	categorizedPolygonStyles = """
+					weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
+					fillColor: '""" + unicode(symbol.color().name()) + """',
+					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name()) + """',
+					weight: '1',
+					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).borderStyle()) + """',
+					opacity: '""" + opacity_str + """',
+					fillOpacity: '""" + opacity_str + """',
+				};
+				break;"""
+	return categorizedPolygonStyles
+
+def endHTMLscript(wfsLayers):
+	endHTML = """
+	</script>""" + wfsLayers + """
+</body>
+</html>"""
+	return endHTML
+
+def getLineStyle(penType):
+	if penType > 1:
+		if penType == 2:
+			penStyle_str = "10,5"
+		if penType == 3:
+			penStyle_str = "1,5"
+		if penType == 4:
+			penStyle_str = "15,5,1,5"
+		if penType == 5:
+			penStyle_str = "15,5,1,5,1,5"
+	else:
+		penStyle_str = ""
+	return penStyle_str
