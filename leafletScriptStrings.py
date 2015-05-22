@@ -279,6 +279,92 @@ def endGraduatedStyleScript():
 	}"""
 	return endGraduatedStyle
 
+def customMarkerScript(safeLayerName, labeltext):
+	customMarker = """
+	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
+		onEachFeature: pop_""" + safeLayerName + """,
+		pointToLayer: function (feature, latlng) {
+			return L.marker(latlng, {
+				icon: L.icon({
+					iconUrl: feature.properties.icon_exp,
+					iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
+					iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
+					popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
+				})
+			})""" + labeltext + """
+		}}
+	);"""
+	return customMarker
+
+def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
+	wms = """
+	var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
+		layers: '""" + wms_layer + """',
+		format: '""" + wms_format + """',
+		transparent: true,
+		continuousWorld : true,
+	});"""
+	return wms
+
+def rasterScript(safeLayerName, out_raster_name, bounds2):
+	raster = """
+	var img_""" + safeLayerName + """= '""" + out_raster_name + """';
+	var img_bounds_""" + safeLayerName + """ = """+ bounds2 + """;
+	var overlay_""" + safeLayerName + """ = new L.imageOverlay(img_""" + safeLayerName + """, img_bounds_""" + safeLayerName + """);"""
+	return raster
+
+def titleSubScript(webmap_head, webmap_subhead):
+	titleSub = """
+		var title = new L.Control();
+		title.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+			this.update();
+			return this._div;
+		};
+		title.update = function () {
+			this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8') + """</h2>""" + webmap_subhead.encode('utf-8') + """'
+		};
+		title.addTo(map);"""
+	return titleSub
+
+def addressSearchScript():
+	addressSearch = """
+		var osmGeocoder = new L.Control.OSMGeocoder({
+            collapsed: false,
+            position: 'topright',
+            text: 'Find!',
+		});
+		osmGeocoder.addTo(map);"""
+	return addressSearch
+
+def legendStartScript():
+	legendStart = """
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (map) {
+			var div = L.DomUtil.create('div', 'info legend');
+			div.innerHTML = "<h3>Legend</h3><table>"""
+	return legendStart
+
+def legendEndScript():
+	legendEnd = """</table>";
+    		return div;
+		};
+		legend.addTo(map);"""
+	return legendEnd
+
+def locateScript():
+	locate = """
+		map.locate({setView: true, maxZoom: 16});
+		function onLocationFound(e) {
+    		var radius = e.accuracy / 2;
+			L.marker(e.latlng).addTo(map)
+        	.bindPopup("You are within " + radius + " meters from this point").openPopup();
+			L.circle(e.latlng, radius).addTo(map);
+		}
+		map.on('locationfound', onLocationFound);
+		"""
+	return locate
+
 def endHTMLscript(wfsLayers):
 	endHTML = """
 	</script>""" + wfsLayers + """

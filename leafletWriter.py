@@ -415,32 +415,16 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #			}
 #		});"""
 #								#add points to the cluster group
-	#							if cluster_set[count] == True:
-	#								new_obj += """
-	#		var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
-	#		cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
-	#								cluster_num += 1	
+#								if cluster_set[count] == True:
+#									new_obj += """
+#			var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});				
+#			cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
+#									cluster_num += 1	
 
 				if icon_prov and i.geometryType() == 0:
-					new_obj = """
-var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-	onEachFeature: pop_""" + safeLayerName + """,
-	pointToLayer: function (feature, latlng) {
-		return L.marker(latlng, {
-			icon: L.icon({
-				iconUrl: feature.properties.icon_exp,
-				iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
-				iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
-				popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
-			})
-		})"""+labeltext+"""
-	}}
-);"""
-		#add points to the cluster group
+					new_obj = customMarkerScript(safeLayerName, labeltext)
 					if cluster_set[count] == True:
-						new_obj += """
-var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
-cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""			
+						new_obj += clusterScript(safeLayerName)
 						cluster_num += 1
 #				else:
 #					new_obj = """
@@ -448,8 +432,6 @@ cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + ""
 #	onEachFeature: pop_""" + safeLayerName + """,
 #});"""		
 
-		
-				# store everything in the file
 				if i.providerType() != 'WFS' or json[count] == True:
 					f5.write(new_pop)
 				f5.write("""
@@ -490,17 +472,7 @@ cluster_group""" + safeLayerName + """JSON.addTo(map);""")
 				wms_layer = d['layers'][0]
 				wms_format = d['format'][0]
 				wms_crs = d['crs'][0]
-				
-				new_obj = """
-var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
-	layers: '""" + wms_layer + """',
-	format: '""" + wms_format + """',
-	transparent: true,
-	continuousWorld : true,
-});"""
-				
-				#print d
-				#print i.source()
+				new_obj = wmsScript(safeLayerName, wms_url, wms_layer, wms_format)
 			else:
 				out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
 				pt2	= i.extent()
@@ -510,63 +482,31 @@ var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
 				pt3 = xform.transform(pt2)
 				bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),pt3.xMinimum(), pt3.xMaximum()]
 				bounds2 = '[[' + str(pt3.yMinimum()) + ',' + str(pt3.xMinimum()) + '],[' + str(pt3.yMaximum()) + ',' + str(pt3.xMaximum()) +']]'
-				new_obj = """
-var img_""" + safeLayerName + """= '""" + out_raster_name + """';
-var img_bounds_""" + safeLayerName + """ = """+ bounds2 + """;
-var overlay_""" + safeLayerName + """ = new L.imageOverlay(img_""" + safeLayerName + """, img_bounds_""" + safeLayerName + """);"""
+				new_obj = rasterScript(safeLayerName, out_raster_name, bounds2)
 			if visible[count]:
 				new_obj += """
 raster_group.addLayer(overlay_""" + safeLayerName + """);"""
-				
 			with open(outputIndex, 'a') as f5_raster:
-					
-
 				f5_raster.write(new_obj)
 				f5_raster.close()
-	
 	with open(outputIndex, 'a') as f5fgroup:
 		f5fgroup.write("""
 		raster_group.addTo(map);
 		feature_group.addTo(map);""")
 		f5fgroup.close()
 
-	#let's add a Title and a subtitle
 	if webmap_head != "": 
-		titleStart ="""
-		var title = new L.Control();
-		title.onAdd = function (map) {
-			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-			this.update();
-			return this._div;
-		};
-		title.update = function () {
-			this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8') + """</h2>""" + webmap_subhead.encode('utf-8') + """'
-		};
-		title.addTo(map);"""
+		titleStart = titleSubScript(webmap_head, webmap_subhead)
 		with open(outputIndex, 'a') as f5contr:
 			f5contr.write(titleStart)
 			f5contr.close()
-			#here comes the address search:
 	if address == True:
-		address_text = """
-		var osmGeocoder = new L.Control.OSMGeocoder({
-            collapsed: false,
-            position: 'topright',
-            text: 'Find!',
-		});
-		osmGeocoder.addTo(map);"""
+		address_text = addressSearchScript()
 		with open(outputIndex, 'a') as f5addr:
 			f5addr.write(address_text)
 			f5addr.close()
-
-
-	#let's add a legend
 	if legend == True:
-		legendStart = """
-		var legend = L.control({position: 'bottomright'});
-		legend.onAdd = function (map) {
-			var div = L.DomUtil.create('div', 'info legend');
-			div.innerHTML = "<h3>Legend</h3><table>"""
+		legendStart = legendStartScript()
 		for i in reversed(layer_list):
 			rawLayerName = i.name()
 			safeLayerName = re.sub('[\W_]+', '', rawLayerName)
@@ -593,12 +533,8 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 						#print legend_expression
 						#print legend_icon 
 						break
-					legendStart += """<tr><td><img src='""" + unicode(legend_icon) + """'></img></td><td>"""+unicode(legend_expression) + """</td></tr>"""
-
-		legendStart += """</table>";
-    		return div;
-		};
-		legend.addTo(map);"""
+					legendStart += """<tr><td><img src='""" + unicode(legend_icon) + """'></img></td><td>""" + unicode(legend_expression) + """</td></tr>"""
+		legendStart += legendEndScript()
 		with open(outputIndex, 'a') as f5leg:
 			f5leg.write(legendStart)
 			f5leg.close()
@@ -643,19 +579,17 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 			if i.type() == 0:
 				with open(outputIndex, 'a') as f7:
 					if cluster_set[count] == True and i.geometryType() == 0:
-						new_layer = '"' + safeLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
+						new_layer = '"' + rawLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
 					else:
-						new_layer = '"' + safeLayerName + '"' + ": json_" + safeLayerName + """JSON,"""
+						new_layer = '"' + rawLayerName + '"' + ": json_" + safeLayerName + """JSON,"""
 					f7.write(new_layer)
 					f7.close()
 			elif i.type() == 1:
 				with open(outputIndex, 'a') as f7:
-					new_layer = '"' + safeLayerName + '"' + ": overlay_" + safeLayerName + ""","""
+					new_layer = '"' + rawLayerName + '"' + ": overlay_" + safeLayerName + ""","""
 					f7.write(new_layer)
 					f7.close()	
 		controlEnd = "},{collapsed:false}).addTo(map);"	
-		
-
 
 		with open(outputIndex, 'rb+') as f8:
 			f8.seek(-1, os.SEEK_END)
@@ -688,18 +622,8 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 	#elif opacity_raster == False:
 		#print "no opacity control added"
 
-	#here comes the user locate:
 	if locate == True:
-		end = """
-		map.locate({setView: true, maxZoom: 16});
-		function onLocationFound(e) {
-    		var radius = e.accuracy / 2;
-			L.marker(e.latlng).addTo(map)
-        	.bindPopup("You are within " + radius + " meters from this point").openPopup();
-			L.circle(e.latlng, radius).addTo(map);
-		}
-		map.on('locationfound', onLocationFound);
-		"""
+		end = locateScript()
 	else:
 		end = ''
 	# let's close the file but ask for the extent of all layers if the user wants to show only this extent:
