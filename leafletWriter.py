@@ -36,7 +36,7 @@ from leafletScriptStrings import *
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
-def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, locate, address, labels, labelhover, selected, json, params):
+def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, locate, labels, labelhover, selected, json, params):
 
 	canvas = qgis.utils.iface.mapCanvas()
 	pluginDir = os.path.dirname(os.path.realpath(__file__))
@@ -52,12 +52,13 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	maxZoom = params["Scale/Zoom"]["Max zoom level"]
 	basemapName = params["Appearance"]["Base layer"]
 	matchCRS = params["Appearance"]["Match project CRS"]
+	addressSearch = params["Appearance"]["Add address search"]
 	
 	removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
 						for i,it in enumerate(txt.split('"')))
 	
 	dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, matchCRS, canvas)
-	writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, matchCRS, canvas, full)
+	writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, addressSearch, matchCRS, canvas, full)
 	writeCSS(cssStore, full, height, width)
 
 	wfsLayers = ""
@@ -500,7 +501,7 @@ raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 		with open(outputIndex, 'a') as f5contr:
 			f5contr.write(titleStart)
 			f5contr.close()
-	if address == True:
+	if addressSearch == True:
 		address_text = addressSearchScript()
 		with open(outputIndex, 'a') as f5addr:
 			f5addr.write(address_text)

@@ -54,6 +54,7 @@ paramsOL = {
 			),
 		"Match project CRS": False,
 		"Add scale bar": True,
+		"Add address search": True,
 		"Show popups on hover": False,
 		"Highlight features": False,
 		"Template": getTemplates()
