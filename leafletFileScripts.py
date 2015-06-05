@@ -104,8 +104,8 @@ html, body, #map {
 		else:
 			text += """
 html, body, #map {
-	height: """+str(height)+"""px;
-	width: """+str(width)+"""px;
+	height: """ + str(height) + """px;
+	width: """ + str(width) + """px;
 }"""
 #		if opacity_raster == True and full == 1:
 #			text += """

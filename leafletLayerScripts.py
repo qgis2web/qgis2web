@@ -1,54 +1,51 @@
 def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
-	#print "Point WFS: " + layerName
 	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
 	new_obj = categoryStr + """
-		var json_"""+layerName+"""JSON;
-		json_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
-		});
-		layerOrder[layerOrder.length] = json_"""+layerName+"""JSON;
-		feature_group.addLayer(json_"""+layerName+"""JSON);
-		layerControl.addOverlay(json_"""+layerName+"""JSON, '"""+layerName+"""');"""
+		var json_{layerName}JSON;
+		json_{layerName}JSON = L.geoJson(null, {{{stylestr}
+		}});
+		layerOrder[layerOrder.length] = json_{layerName}JSON;
+		feature_group.addLayer(json_{layerName}JSON);
+		layerControl.addOverlay(json_{layerName}JSON, '{layerName}');""".format(layerName = layerName, stylestr = stylestr)
 	if cluster_set == True:
 		new_obj += """
-		var cluster_group"""+ layerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});"""				
+		var cluster_group{layerName}JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});""".format(layerName = layerName)				
 	new_obj+="""
-		function get"""+layerName+"""Json(geojson) {
-			json_"""+layerName+"""JSON.addData(geojson);"""
+		function get{layerName}Json(geojson) {{
+			json_{layerName}JSON.addData(geojson);""".format(layerName = layerName)
 	if visible:
 		new_obj+="""
 			restackLayers();"""
 	if cluster_set == True:
 		new_obj += """
-				cluster_group"""+ layerName + """JSON.addLayer(json_""" + layerName + """JSON);"""			
+				cluster_group{layerName}JSON.addLayer(json_{layerName}JSON);""".format(layerName = layerName)			
 		cluster_num += 1	
-		#print "cluster_num: " + str(cluster_num)
 	new_obj+="""
 		};"""
 	return new_obj, scriptTag, cluster_num
 
 def buildNonPointJSON(categoryStr, safeLayerName):
-	#print "Non-point JSON: " + safeLayerName
 	new_obj = categoryStr + """
-		var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-			onEachFeature: pop_""" + safeLayerName + """,
-			style: doStyle""" + safeLayerName + """
-		});
-		layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			onEachFeature: pop_{safeLayerName},
+			style: doStyle{safeLayerName}
+		}});
+		layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName)
 	return new_obj
 
 def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):
-	#print "Non-point WFS: " + layerName
-	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)+"""&outputFormat=text%2Fjavascript&format_options=callback%3Aget"""+layerName+"""Json"""
+	scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
+	scriptTag += """&outputFormat=text%2Fjavascript&format_options=callback%3Aget{layerName}Json""".format(layerName = layerName)
 	new_obj = categoryStr + """
-		var json_"""+layerName+"""JSON;
-		json_"""+layerName+"""JSON = L.geoJson(null, {"""+stylestr+"""
-		});
-		layerOrder[layerOrder.length] = json_"""+layerName+"""JSON;
-		feature_group.addLayer(json_"""+layerName+"""JSON);
-		layerControl.addOverlay(json_"""+layerName+"""JSON, '"""+layerName+"""');"""
-	new_obj+="""
-		function get"""+layerName+"""Json(geojson) {
-			json_"""+layerName+"""JSON.addData(geojson);"""
+		var json_{layerName}JSON;
+		json_{layerName}JSON = L.geoJson(null, {{{stylestr}
+		}});
+		layerOrder[layerOrder.length] = json_{layerName}JSON;
+		feature_group.addLayer(json_{layerName}JSON);
+		layerControl.addOverlay(json_{layerName}JSON, '{layerName}');""".format(layerName = layerName, stylestr = stylestr)
+	new_obj += """
+		function get{layerName}Json(geojson) {{
+			json_{layerName}JSON.addData(geojson);""".format(layerName = layerName)
 	if visible:
 		new_obj+="""
 			restackLayers();"""
@@ -59,9 +56,9 @@ def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, vi
 def restackLayers(layerName, visible):
 	if visible:
 		return """
-		layerOrder[layerOrder.length] = json_"""+layerName+"""JSON;
-		for (index = 0; index < layerOrder.length; index++) {
+		layerOrder[layerOrder.length] = json_{layerName}JSON;
+		for (index = 0; index < layerOrder.length; index++) {{
 			feature_group.removeLayer(layerOrder[index]);feature_group.addLayer(layerOrder[index]);
-		}"""
+		}}""".format(layerName = layerName)
 	else:
 		return ""
