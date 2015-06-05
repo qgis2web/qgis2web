@@ -57,6 +57,7 @@ paramsOL = {
 		"Add address search": False,
 		"Show popups on hover": False,
 		"Highlight features": False,
+		"Geolocate user": False,
 		"Template": getTemplates()
 	},
 	"Data export" : {

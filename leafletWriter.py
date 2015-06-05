@@ -36,7 +36,7 @@ from leafletScriptStrings import *
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
-def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, locate, labels, labelhover, selected, json, params):
+def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params):
 
 	canvas = qgis.utils.iface.mapCanvas()
 	pluginDir = os.path.dirname(os.path.realpath(__file__))
@@ -53,6 +53,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	basemapName = params["Appearance"]["Base layer"]
 	matchCRS = params["Appearance"]["Match project CRS"]
 	addressSearch = params["Appearance"]["Add address search"]
+	locate = params["Appearance"]["Geolocate user"]
 	
 	removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
 						for i,it in enumerate(txt.split('"')))
@@ -70,7 +71,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 		if i.providerType() != 'WFS' or json[count] == True and i:
 			#print "JSON (" + i.providerType() + "): " + rawLayerName
 			precision = params["Data export"]["Precision"]
-			if i.type() ==0:
+			if i.type() == 0:
 				qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
 
 				#now change the data structure to work with leaflet:
