@@ -1,6 +1,6 @@
 def jsonScript(layer):
 	json = """
-		<script src=\"""" + 'data' + """/json_""" + layer + """.js\"></script>"""
+		<script src="data/json_{layer}.js\"></script>""".format(layer = layer)
 	return json
 		
 def openScript():
@@ -10,9 +10,9 @@ def openScript():
 
 def crsScript(crsAuthId, crsProj4):
 	crs = """
-		var crs = new L.Proj.CRS('""" + crsAuthId + """', '""" + crsProj4 + """', {
+		var crs = new L.Proj.CRS('{crsAuthId}', '{crsProj4}', {{
 			resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-		});"""
+		}});""".format(crsAuthId = crsAuthId, crsProj4 = crsProj4)
 	return crs
 
 def mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds):
@@ -41,10 +41,10 @@ def featureGroupsScript():
 
 def basemapsScript(basemap, attribution):
 	basemaps = """
-		var basemap = L.tileLayer('""" + basemap + """', { 
-			attribution: additional_attrib + ' """ + attribution + """'
-		});
-		basemap.addTo(map);"""
+		var basemap = L.tileLayer('{basemap}', {{ 
+			attribution: additional_attrib + ' {attribution}'
+		}});
+		basemap.addTo(map);""".format(basemap = basemap, attribution = attribution)
 	return basemaps
 
 def layerOrderScript():
@@ -62,54 +62,58 @@ def layerOrderScript():
 
 def popFuncsScript(table):
 	popFuncs = """					
-	var popupContent = """ + table + """;
-	layer.bindPopup(popupContent);"""
+	var popupContent = {table};
+	layer.bindPopup(popupContent);""".format(table = table)
 	return popFuncs
 
 def popupScript(safeLayerName, popFuncs):
 	popup = """
-	function pop_""" + safeLayerName + """(feature, layer) {""" + popFuncs + """
-	}"""
+	function pop_{safeLayerName}(feature, layer) {{{popFuncs}
+	}}""".format(safeLayerName = safeLayerName, popFuncs = popFuncs)
 	return popup
 
 def pointToLayerScript(radius_str, colorName, borderColor_str, opacity_str, labeltext):
 	pointToLayer = """
-		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, {
-				radius: """ + radius_str + """,
-				fillColor: '""" + colorName + """',
-				color: '""" + borderColor_str + """',
+		pointToLayer: function (feature, latlng) {{
+			return L.circleMarker(latlng, {{
+				radius: {radius_str},
+				fillColor: '{colorName}',
+				color: '{borderColor_str}',
 				weight: 1,
-				opacity: """ + opacity_str + """,
-				fillOpacity: """ + opacity_str + """
-			})""" + labeltext
+				opacity: {opacity_str},
+				fillOpacity: {opacity_str}
+			}}){labeltext}""".format(radius_str = radius_str,
+									 colorName = colorName,
+									 borderColor_str = borderColor_str,
+									 opacity_str = opacity_str,
+									 labeltext = labeltext)
 	return pointToLayer
 
 def pointStyleScript(pointToLayer_str, popFuncs):
-	pointStyle = pointToLayer_str + """
-		},
-		onEachFeature: function (feature, layer) {""" + popFuncs + """
-		}"""
+	pointStyle = """{pointToLayer_str}
+		}},
+		onEachFeature: function (feature, layer) {{{popFuncs}
+		}}""".format(pointToLayer_str = pointToLayer_str, popFuncs = popFuncs)
 	return pointStyle
 
 def wfsScript(scriptTag):
 	wfs = """
-		<script src='""" + scriptTag + """'></script>"""
+		<script src='{scriptTag}'></script>""".format(scriptTag = scriptTag)
 	return wfs
 
 def jsonPointScript(safeLayerName, pointToLayer_str):
 	jsonPoint = """
-	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-		onEachFeature: pop_""" + safeLayerName + "," + pointToLayer_str + """
-		}
-	});
-	layerOrder[layerOrder.length] = json_"""+safeLayerName+"""JSON;"""
+	var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+		onEachFeature: pop_{safeLayerName}, {pointToLayer_str}
+		}}
+	}});
+	layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, pointToLayer_str = pointToLayer_str)
 	return jsonPoint
 
 def clusterScript(safeLayerName):
 	cluster = """
-		var cluster_group"""+ safeLayerName + """JSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
-		cluster_group""" + safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
+		var cluster_group{safeLayerName}JSON = new L.MarkerClusterGroup({{showCoverageOnHover: false}});
+		cluster_group{safeLayerName}JSON.addLayer(json_{safeLayerName}JSON);""".format(safeLayerName = safeLayerName)
 	return cluster
 
 def styleValuesScript(symbol, opacity_str):
@@ -118,41 +122,45 @@ def styleValuesScript(symbol, opacity_str):
 					fillColor: '""" + unicode(symbol.color().name()) + """',
 					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
 					weight: 1,
-					fillOpacity: '""" + opacity_str + """',
-				};
-				break;"""
+					fillOpacity: '{opacity_str}',
+				}};
+				break;""".format(opacity_str = opacity_str)
 	return styleValues
 
 def nonPointStyleScript(radius_str, colorName, fillColor, penStyle_str, opacity_str):
 	nonPointStyle = """
-			return {
-				weight: """ + radius_str + """,
-				color: '""" + colorName + """',
-				fillColor: '""" + fillColor + """',
-				dashArray: '""" + penStyle_str + """',
-				opacity: """ + opacity_str + """,
-				fillOpacity: """ + opacity_str + """
-			};"""
+			return {{
+				weight: {radius_str},
+				color: '{colorName}',
+				fillColor: '{fillColor}',
+				dashArray: '{penStyle_str}',
+				opacity: {opacity_str},
+				fillOpacity: {opacity_str}
+			}};""".format(radius_str = radius_str,
+						 colorName = colorName,
+						 fillColor = fillColor,
+						 penStyle_str = penStyle_str,
+						 opacity_str = opacity_str)
 	return nonPointStyle
 
 def nonPointStylePopupsScript(lineStyle_str, popFuncs):
 	nonPointStylePopups = """
-		style: function (feature) {""" + lineStyle_str + """
-		},
-		onEachFeature: function (feature, layer) {""" + popFuncs + """
-		}"""
+		style: function (feature) {{{lineStyle_str}
+		}},
+		onEachFeature: function (feature, layer) {{{popFuncs}
+		}}""".format(lineStyle_str = lineStyle_str, popFuncs = popFuncs)
 	return nonPointStylePopups
 
 def nonPointStyleFunctionScript(safeLayerName, lineStyle_str):
 	nonPointStyleFunction = """
-	function doStyle""" + safeLayerName + """(feature) {""" + lineStyle_str + """
-	}"""
+	function doStyle{safeLayerName}(feature) {{{lineStyle_str}
+	}}""".format(safeLayerName = safeLayerName, lineStyle_str = lineStyle_str)
 	return nonPointStyleFunction
 
 def categoryScript(layerName, valueAttr):
 	category = """
-	function doStyle""" + layerName + """(feature) {
-		switch (feature.properties.""" + valueAttr + ") {"
+	function doStyle{layerName}(feature) {{
+		switch (feature.properties.{valueAttr}) {{""".format(layerName = layerName, valueAttr = valueAttr)
 	return category
 
 def defaultCategoryScript():
@@ -179,22 +187,22 @@ def endCategoryScript():
 
 def categorizedPointWFSscript(layerName, labeltext, popFuncs):
 	categorizedPointWFS = """
-		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, doStyle""" + layerName + """(feature))""" + labeltext + """
-		},
-		onEachFeature: function (feature, layer) {""" + popFuncs + """
-		}"""
+		pointToLayer: function (feature, latlng) {{
+			return L.circleMarker(latlng, doStyle{layerName}(feature)){labeltext}
+		}},
+		onEachFeature: function (feature, layer) {{{popFuncs}
+		}}""".format(layerName = layerName, labeltext = labeltext, popFuncs = popFuncs)
 	return categorizedPointWFS
 
 def categorizedPointJSONscript(safeLayerName, labeltext):
 	categorizedPointJSON = """
-	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-		onEachFeature: pop_""" + safeLayerName + """,
-		pointToLayer: function (feature, latlng) {  
-			return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))""" + labeltext + """
-		}
-	});
-		layerOrder[layerOrder.length] = json_""" + safeLayerName + """JSON;"""
+	var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+		onEachFeature: pop_{safeLayerName},
+		pointToLayer: function (feature, latlng) {{  
+			return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+		}}
+	}});
+		layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, labeltext = labeltext)
 	return categorizedPointJSON
 
 def categorizedLineStylesScript(symbol, opacity_str):
@@ -202,16 +210,16 @@ def categorizedLineStylesScript(symbol, opacity_str):
 					color: '""" + unicode(symbol.color().name()) + """',
 					weight: '""" + unicode(symbol.width() * 5) + """',
 					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).penStyle()) + """',
-					opacity: '""" + opacity_str + """',
-				};
-				break;"""
+					opacity: '{opacity_str}',
+				}};
+				break;""".format(opacity_str = opacity_str)
 	return categorizedLineStyles
 
 def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 	categorizedNonPointStyleFunction = """
-		style: doStyle""" + layerName + """,
-		onEachFeature: function (feature, layer) {""" + popFuncs + """
-		}"""
+		style: doStyle{layerName},
+		onEachFeature: function (feature, layer) {{{popFuncs}
+		}}""".format(layerName = layerName, popFuncs = popFuncs)
 	return categorizedNonPointStyleFunction
 
 def categorizedPolygonStylesScript(symbol, opacity_str):
@@ -221,57 +229,57 @@ def categorizedPolygonStylesScript(symbol, opacity_str):
 					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name()) + """',
 					weight: '1',
 					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).borderStyle()) + """',
-					opacity: '""" + opacity_str + """',
-					fillOpacity: '""" + opacity_str + """',
-				};
-				break;"""
+					opacity: '{opacity_str}',
+					fillOpacity: '{opacity_str}',
+				}};
+				break;""".format(opacity_str = opacity_str)
 	return categorizedPolygonStyles
 
 def graduatedStyleScript(layerName):
 	graduatedStyle = """
-	function doStyle""" + layerName + "(feature) {"
+	function doStyle{layerName}(feature) {{""".format(layerName = layerName)
 	return graduatedStyle
 
 def rangeStartScript(valueAttr, r):
 	rangeStart = """
-		if (feature.properties.""" + valueAttr + " >= " + unicode(r.lowerValue()) + " && feature.properties." + valueAttr + " <= " + unicode(r.upperValue()) + ") {"
+		if (feature.properties.{valueAttr} >= """ + unicode(r.lowerValue()) + " && feature.properties.{valueAttr} <= " + unicode(r.upperValue()) + ") {{".format(valueAttr = valueAttr)
 	return rangeStart
 
 def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str):
 	graduatedPointStyles = rangeStartScript(valueAttr, r)
 	graduatedPointStyles += """
-			return {
+			return {{
 				radius: '""" + unicode(symbol.size() * 2) + """',
 				fillColor: '""" + unicode(symbol.color().name()) + """',
 				color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
 				weight: 1,
-				fillOpacity: '""" + opacity_str + """',
-			}
-		}"""
+				fillOpacity: '{opacity_str}',
+			}}
+		}}""".format(opacity_str = opacity_str)
 	return graduatedPointStyles
 
 def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
 	graduatedLineStyles = rangeStartScript(valueAttr, r)
 	graduatedLineStyles += """
-			return {
+			return {{
 				color: '""" + unicode(symbol.symbolLayer(0).color().name())+ """',
 				weight: '""" + unicode(symbol.width() * 5) + """',
-				opacity: '""" + opacity_str + """',
-			}
-		}"""
+				opacity: '{opacity_str}',
+			}}
+		}}""".format(opacity_str = opacity_str)
 	return graduatedLineStyles
 
 def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str):
 	graduatedPolygonStyles = rangeStartScript(valueAttr, r)
 	graduatedPolygonStyles += """
-			return {
+			return {{
 				color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
 				weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
 				fillColor: '""" + unicode(symbol.color().name())+ """',
-				opacity: '""" + opacity_str + """',
-				fillOpacity: '""" + opacity_str + """',
-			}
-		}"""
+				opacity: '{opacity_str}',
+				fillOpacity: '{opacity_str}',
+			}}
+		}}""".format(opacity_str = opacity_str)
 	return graduatedPolygonStyles
 
 def endGraduatedStyleScript():
@@ -281,36 +289,39 @@ def endGraduatedStyleScript():
 
 def customMarkerScript(safeLayerName, labeltext):
 	customMarker = """
-	var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
-		onEachFeature: pop_""" + safeLayerName + """,
-		pointToLayer: function (feature, latlng) {
-			return L.marker(latlng, {
-				icon: L.icon({
+	var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+		onEachFeature: pop_{safeLayerName},
+		pointToLayer: function (feature, latlng) {{
+			return L.marker(latlng, {{
+				icon: L.icon({{
 					iconUrl: feature.properties.icon_exp,
 					iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
 					iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
 					popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
-				})
-			})""" + labeltext + """
-		}}
-	);"""
+				}})
+			}}){labeltext}
+		}}}}
+	);""".format(safeLayerName = safeLayerName, labeltext = labeltext)
 	return customMarker
 
 def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
 	wms = """
-	var overlay_""" + safeLayerName + """ = L.tileLayer.wms('""" + wms_url + """', {
-		layers: '""" + wms_layer + """',
-		format: '""" + wms_format + """',
+	var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
+		layers: '{wms_layer}',
+		format: '{wms_format}',
 		transparent: true,
 		continuousWorld : true,
-	});"""
+	}});""".format(safeLayerName = safeLayerName,
+				  wms_url = wms_url,
+				  wms_layer = wms_layer,
+				  wms_format = wms_format)
 	return wms
 
-def rasterScript(safeLayerName, out_raster_name, bounds2):
+def rasterScript(safeLayerName, out_raster_name, bounds):
 	raster = """
-	var img_""" + safeLayerName + """= '""" + out_raster_name + """';
-	var img_bounds_""" + safeLayerName + """ = """+ bounds2 + """;
-	var overlay_""" + safeLayerName + """ = new L.imageOverlay(img_""" + safeLayerName + """, img_bounds_""" + safeLayerName + """);"""
+	var img_{safeLayerName} = '{out_raster_name}';
+	var img_bounds_{safeLayerName} = {bounds};
+	var overlay_{safeLayerName} = new L.imageOverlay(img_{safeLayerName}, img_bounds_{safeLayerName};""".format(safeLayerName = safeLayerName, out_raster_name = out_raster_name, bounds = bounds)
 	return raster
 
 def titleSubScript(webmap_head, webmap_subhead):
@@ -332,7 +343,7 @@ def addressSearchScript():
 		var osmGeocoder = new L.Control.OSMGeocoder({
             collapsed: false,
             position: 'topright',
-            text: 'Find!',
+            text: 'Search',
 		});
 		osmGeocoder.addTo(map);"""
 	return addressSearch
@@ -367,9 +378,9 @@ def locateScript():
 
 def endHTMLscript(wfsLayers):
 	endHTML = """
-	</script>""" + wfsLayers + """
+	</script>{wfsLayers}
 </body>
-</html>"""
+</html>""".format(wfsLayers = wfsLayers)
 	return endHTML
 
 def getLineStyle(penType):

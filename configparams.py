@@ -24,7 +24,7 @@ def getTemplates():
 
 paramsOL = {
 	"Appearance":{
-		"Add layers list": True,
+		"Add layers list": False,
 		"Base layer": (			
 			"None",
 			"OSM Standard",
@@ -53,8 +53,8 @@ paramsOL = {
 			"OpenWeatherMap Snow"
 			),
 		"Match project CRS": False,
-		"Add scale bar": True,
-		"Add address search": True,
+		"Add scale bar": False,
+		"Add address search": False,
 		"Show popups on hover": False,
 		"Highlight features": False,
 		"Template": getTemplates()
@@ -65,7 +65,7 @@ paramsOL = {
 		"Delete unused fields": True
 	},
 	"Scale/Zoom":{
-		"Use layer scale dependent visibility": True,
+		"Use layer scale dependent visibility": False,
 		"Extent": ("Canvas extent", "Fit to layers extent"),
 		"Restrict to extent": False,
 		"Max zoom level": 28,
