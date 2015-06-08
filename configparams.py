@@ -21,7 +21,6 @@ def getTemplates():
 	folder = os.path.join(os.path.dirname(__file__), "templates")
 	return tuple(f[:f.find(".")] for f in os.listdir(folder) if f.endswith("html"))
 
-
 paramsOL = {
 	"Appearance":{
 		"Add layers list": False,
@@ -61,6 +60,7 @@ paramsOL = {
 		"Template": getTemplates()
 	},
 	"Data export" : {
+		"Export folder": "",
 		"Precision": 15,
 		"Minify GeoJSON files": True,
 		"Delete unused fields": True

@@ -41,11 +41,23 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.populateLayers()
         self.populateConfigParams()
+        self.paramsTreeOL.itemClicked.connect(self.changeSetting)
+        self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.buttonUpdateOL.clicked.connect(self.previewOL3)
         self.buttonUpdateLeaflet.clicked.connect(self.previewLeaflet)
         self.buttonSaveOL.clicked.connect(self.saveOL)
         self.buttonSaveLeaflet.clicked.connect(self.saveLeaf)
         self.connect(self.labelPreview, SIGNAL("linkActivated(QString)"), self.labelLinkClicked)
+	
+    def changeSetting(self, paramItem, col):
+        if paramItem.name == "Export folder":
+            folder = QFileDialog.getExistingDirectory(self, "Choose export folder", paramItem.text(col), QFileDialog.ShowDirsOnly)
+            if folder != "":
+                paramItem.setText(col, folder)
+	
+    def saveSettings(self, paramItem, col):
+        params = self.getParameters()
+        QSettings().setValue("exportFolder", params["Data export"]["Export folder"])
 
     def labelLinkClicked(self, url):
         if url == "open":
@@ -114,7 +126,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
-        print "folder: " + utils.tempFolder()
         previewFile = writeOL(layers, groups, popup, visible, json, cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
@@ -123,27 +134,27 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
-        print "folder: " + utils.tempFolder()
         previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
     def saveOL(self):
-        folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
-                                                 QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
-        print "folder: " + folder
+        params = self.getParameters()
+        #folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
+        #                                         QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
+        folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            params = self.getParameters()
             outputFile = writeOL(layers, groups, popup, visible, json, cluster, labels, params, folder)
             webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
-        folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
-                                                 QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
+        params = self.getParameters()
+        #folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
+        #                                         QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
+        folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            params = self.getParameters()
             outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params)
             webbrowser.open_new_tab(outputFile)
 
@@ -335,6 +346,8 @@ class TreeSettingItem(QTreeWidgetItem):
         else:
             self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
+        if name == "Export folder":
+            self.setText(1, QSettings().value("exportFolder") if QSettings().contains("exportFolder") and QSettings().value("exportFolder") != "" else utils.tempFolder())
 
     def value(self):
         if isinstance(self._value, bool):
@@ -345,3 +358,7 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.combo.currentText()
         else:
             return self.text(1)
+
+    def getSettings(self, paramItem, col):
+        params = self.getParameters()
+        QSettings().setValue("exportFolder", params["Data export"]["Export folder"])
