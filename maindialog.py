@@ -31,6 +31,7 @@ from qgis.utils import iface
 import webbrowser
 import tempfile
 
+selectedCombo = "None"
 
 class MainDialog(QDialog, Ui_MainDialog):
 
@@ -39,8 +40,9 @@ class MainDialog(QDialog, Ui_MainDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         self.populateLayers()
-        self.populateConfigParams()
+        self.populateConfigParams(self)
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.buttonUpdateOL.clicked.connect(self.previewOL3)
@@ -50,14 +52,20 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.connect(self.labelPreview, SIGNAL("linkActivated(QString)"), self.labelLinkClicked)
 	
     def changeSetting(self, paramItem, col):
-        if paramItem.name == "Export folder":
+        if hasattr(paramItem, "name") and paramItem.name == "Export folder":
             folder = QFileDialog.getExistingDirectory(self, "Choose export folder", paramItem.text(col), QFileDialog.ShowDirsOnly)
             if folder != "":
                 paramItem.setText(col, folder)
 	
     def saveSettings(self, paramItem, col):
-        params = self.getParameters()
-        QSettings().setValue("exportFolder", params["Data export"]["Export folder"])
+        if isinstance(paramItem._value, bool):
+            QSettings().setValue(paramItem.name, paramItem.checkState(col))
+        else:
+            QSettings().setValue(paramItem.name, paramItem.text(col))
+
+    def saveComboSettings(self, value):
+        global selectedCombo
+        QSettings().setValue(selectedCombo, value)
 
     def labelLinkClicked(self, url):
         if url == "open":
@@ -102,13 +110,30 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
 
-    def populateConfigParams(self):
+    def populateConfigParams(self, dlg):
+        global selectedCombo
         self.items = defaultdict(dict)
         for group, settings in paramsOL.iteritems():
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param,value in settings.iteritems():
-                subitem = TreeSettingItem(item, self.paramsTreeOL, param, value)
+                if QSettings().contains(param):
+                    if isinstance(value, bool):
+                        if QSettings().value(param):
+                            value = True
+                        else:
+                            value = False
+                    elif isinstance(value, int):
+                        value = int(QSettings().value(param))
+                    elif isinstance(value, tuple):
+                        selectedCombo = param
+                        comboSelection = QSettings().value(param)
+                    else:
+                        value = QSettings().value(param)
+                else:
+                subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
+                if isinstance(value, tuple) and QSettings().contains(param):
+                    dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -140,8 +165,6 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveOL(self):
         params = self.getParameters()
-        #folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
-        #                                         QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
         folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
@@ -150,8 +173,6 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveLeaf(self):
         params = self.getParameters()
-        #folder = QFileDialog.getExistingDirectory(self, "Save to directory", tempfile.gettempdir(),
-        #                                         QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
         folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
@@ -326,7 +347,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
 class TreeSettingItem(QTreeWidgetItem):
 
-    def __init__(self, parent, tree, name, value):
+    def __init__(self, parent, tree, name, value, dlg):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
         self.tree = tree
@@ -343,11 +364,16 @@ class TreeSettingItem(QTreeWidgetItem):
             for option in value:
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
+            index = self.combo.currentIndex()
+            self.combo.highlighted.connect(self.clickCombo)
+            self.combo.currentIndexChanged.connect(dlg.saveComboSettings)
         else:
             self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
-        if name == "Export folder":
-            self.setText(1, QSettings().value("exportFolder") if QSettings().contains("exportFolder") and QSettings().value("exportFolder") != "" else utils.tempFolder())
+
+    def clickCombo(self):
+        global selectedCombo
+        selectedCombo = self.name
 
     def value(self):
         if isinstance(self._value, bool):
@@ -358,7 +384,3 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.combo.currentText()
         else:
             return self.text(1)
-
-    def getSettings(self, paramItem, col):
-        params = self.getParameters()
-        QSettings().setValue("exportFolder", params["Data export"]["Export folder"])
