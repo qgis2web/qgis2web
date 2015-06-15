@@ -130,7 +130,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                         comboSelection = QSettings().value(param)
                     else:
                         value = QSettings().value(param)
-                else:
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
                 if isinstance(value, tuple) and QSettings().contains(param):
                     dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
