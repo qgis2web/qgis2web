@@ -15,7 +15,7 @@ def crsScript(crsAuthId, crsProj4):
 		}});""".format(crsAuthId = crsAuthId, crsProj4 = crsProj4)
 	return crs
 
-def mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds):
+def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
 	map = """
 		var map = L.map('map', {"""
 	if extent == "Canvas extent" and matchCRS == True and crsAuthId != 'EPSG:4326':
@@ -23,6 +23,9 @@ def mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds):
 			crs: crs,
 			continuousWorld: false,
 			worldCopyJump: false, """
+	if measure:
+		map += """
+			measureControl:true,"""
 	map += """
 			zoomControl:true, maxZoom:""" + unicode(maxZoom) + """, minZoom:""" + unicode(minZoom) + """
 		})"""
@@ -118,13 +121,17 @@ def clusterScript(safeLayerName):
 
 def styleValuesScript(symbol, opacity_str):
 	styleValues = """
-					radius: '""" + unicode(symbol.size() * 2) + """',
-					fillColor: '""" + unicode(symbol.color().name()) + """',
-					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
+					radius: '{radius}',
+					fillColor: '{fillColor}',
+					color: '{color}',
 					weight: 1,
 					fillOpacity: '{opacity_str}',
 				}};
-				break;""".format(opacity_str = opacity_str)
+				break;""".format(
+					radius = unicode(symbol.size() * 2),
+					fillColor = unicode(symbol.color().name()),
+					color = unicode(symbol.symbolLayer(0).borderColor().name()),
+					opacity_str = opacity_str)
 	return styleValues
 
 def nonPointStyleScript(radius_str, colorName, fillColor, penStyle_str, opacity_str):
@@ -207,12 +214,16 @@ def categorizedPointJSONscript(safeLayerName, labeltext):
 
 def categorizedLineStylesScript(symbol, opacity_str):
 	categorizedLineStyles = """
-					color: '""" + unicode(symbol.color().name()) + """',
-					weight: '""" + unicode(symbol.width() * 5) + """',
-					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).penStyle()) + """',
+					color: '{color}',
+					weight: '{weight}',
+					dashArray: '{dashArray}',
 					opacity: '{opacity_str}',
 				}};
-				break;""".format(opacity_str = opacity_str)
+				break;""".format(
+					color = unicode(symbol.color().name()),
+					weight = unicode(symbol.width() * 5),
+					dashArray = getLineStyle(symbol.symbolLayer(0).penStyle()),
+					opacity_str = opacity_str)
 	return categorizedLineStyles
 
 def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
@@ -224,15 +235,20 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 
 def categorizedPolygonStylesScript(symbol, opacity_str):
 	categorizedPolygonStyles = """
-					weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
-					fillColor: '""" + unicode(symbol.color().name()) + """',
-					color: '""" + unicode(symbol.symbolLayer(0).borderColor().name()) + """',
+					weight: '{weight}',
+					fillColor: '{fillColor}',
+					color: '{color}',
 					weight: '1',
-					dashArray: '""" + getLineStyle(symbol.symbolLayer(0).borderStyle()) + """',
+					dashArray: '{dashArray}',
 					opacity: '{opacity_str}',
 					fillOpacity: '{opacity_str}',
 				}};
-				break;""".format(opacity_str = opacity_str)
+				break;""".format(
+					weight = unicode(symbol.symbolLayer(0).borderWidth() * 5),
+					fillColor = unicode(symbol.color().name()),
+					color = unicode(symbol.symbolLayer(0).borderColor().name()),
+					dashArray = getLineStyle(symbol.symbolLayer(0).borderStyle()),
+					opacity_str = opacity_str)
 	return categorizedPolygonStyles
 
 def graduatedStyleScript(layerName):
@@ -249,37 +265,48 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str):
 	graduatedPointStyles = rangeStartScript(valueAttr, r)
 	graduatedPointStyles += """
 			return {{
-				radius: '""" + unicode(symbol.size() * 2) + """',
-				fillColor: '""" + unicode(symbol.color().name()) + """',
-				color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
+				radius: '{radius}',
+				fillColor: '{fillColor}',
+				color: '{color}',
 				weight: 1,
 				fillOpacity: '{opacity_str}',
 			}}
-		}}""".format(opacity_str = opacity_str)
+		}}""".format(
+			radius = unicode(symbol.size() * 2),
+			fillColor = unicode(symbol.color().name()),
+			color = unicode(symbol.symbolLayer(0).borderColor().name()),
+			opacity_str = opacity_str)
 	return graduatedPointStyles
 
 def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
 	graduatedLineStyles = rangeStartScript(valueAttr, r)
 	graduatedLineStyles += """
 			return {{
-				color: '""" + unicode(symbol.symbolLayer(0).color().name())+ """',
-				weight: '""" + unicode(symbol.width() * 5) + """',
+				color: '{color}',
+				weight: '{weight}',
 				opacity: '{opacity_str}',
 			}}
-		}}""".format(opacity_str = opacity_str)
+		}}""".format(
+			color = unicode(symbol.symbolLayer(0).color().name()),
+			weight = unicode(symbol.width() * 5),
+			opacity_str = opacity_str)
 	return graduatedLineStyles
 
 def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str):
 	graduatedPolygonStyles = rangeStartScript(valueAttr, r)
 	graduatedPolygonStyles += """
 			return {{
-				color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
-				weight: '""" + unicode(symbol.symbolLayer(0).borderWidth() * 5) + """',
-				fillColor: '""" + unicode(symbol.color().name())+ """',
+				color: '{color}',
+				weight: '{weight}',
+				fillColor: '{fillColor}',
 				opacity: '{opacity_str}',
 				fillOpacity: '{opacity_str}',
 			}}
-		}}""".format(opacity_str = opacity_str)
+		}}""".format(
+			color = unicode(symbol.symbolLayer(0).borderColor().name()),
+			weight = unicode(symbol.symbolLayer(0).borderWidth() * 5),
+			fillColor = unicode(symbol.color().name()),
+			opacity_str = opacity_str)
 	return graduatedPolygonStyles
 
 def endGraduatedStyleScript():

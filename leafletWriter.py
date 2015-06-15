@@ -54,12 +54,13 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 	matchCRS = params["Appearance"]["Match project CRS"]
 	addressSearch = params["Appearance"]["Add address search"]
 	locate = params["Appearance"]["Geolocate user"]
+	measure = params["Appearance"]["Add measure tool"]
 	
 	removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
 						for i,it in enumerate(txt.split('"')))
 	
-	dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, matchCRS, canvas)
-	writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, addressSearch, matchCRS, canvas, full)
+	dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas)
+	writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, addressSearch, measure, matchCRS, canvas, full)
 	writeCSS(cssStore, full, height, width)
 
 	wfsLayers = ""
@@ -127,7 +128,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 		middle = openScript()
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
 			middle += crsScript(crsAuthId, crsProj4)
-		middle += mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds)
+		middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds)
 	if extent == 'Fit to layers extent':
 		middle = openScript()
 		if matchCRS == True and crsAuthId != 'EPSG:4326':

@@ -3,7 +3,7 @@
 import os
 import shutil
 
-def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, matchCRS, canvas):
+def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas):
 	jsStore = os.path.join(outputProjectFileName, 'js')
 	os.makedirs(jsStore)
 	jsStore += os.sep
@@ -23,12 +23,18 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, 
 	if len(labels):
 		shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
 		shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
+	if measure:
+		shutil.copyfile(jsDir + 'leaflet.draw.js', jsStore + 'leaflet.draw.js')
+		shutil.copyfile(cssDir + 'leaflet.draw.css', cssStore + 'leaflet.draw.css')
+		shutil.copyfile(jsDir + 'leaflet.measurecontrol.js', jsStore + 'leaflet.measurecontrol.js')
+		shutil.copyfile(cssDir + 'leaflet.measurecontrol.css', cssStore + 'leaflet.measurecontrol.css')
+		shutil.copytree(cssDir + 'images', cssStore + 'images')
 	if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
 		shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
 		shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
 	return dataStore, cssStore
 
-def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, matchCRS, canvas, full):
+def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, measure, matchCRS, canvas, full):
 	with open(outputIndex, 'w') as f_html:
 		base = """<!DOCTYPE html>
 <html>
@@ -55,6 +61,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, matc
 		if address == True:
 			base += """
 		<link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css" />	"""
+		if measure:
+			base += """
+		<link rel="stylesheet" href="css/leaflet.draw.css" />
+		<link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
 		base +="""
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 		<script src="js/leaflet-hash.js"></script>"""
@@ -69,6 +79,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, matc
 		if len(cluster_set):
 			base +="""
 		<script src="js/leaflet.markercluster.js"></script>"""
+		if measure:
+			base += """
+		<script src="js/leaflet.draw.js"></script>
+		<script src="js/leaflet.measurecontrol.js"></script>"""
 		if matchCRS == True and canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326':
 			base += """
 		<script src="js/proj4.js"></script>
