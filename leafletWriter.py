@@ -211,6 +211,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
 					if i.geometryType() == 0 and icon_prov != True:
 						radius_str = str(symbol.size() * 2)
+						borderWidth - str(symbol.outlineWidth())
 						borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
 						border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
 						borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
@@ -227,7 +228,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					elif i.geometryType() == 1:
 						radius_str = str(symbol.width() * 5)
 						penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle())
-						lineStyle_str = nonPointStyleScript(radius_str, colorName, "", "", penStyle_str, fill_opacity_str)
+						lineStyle_str = nonPointStyleScript(radius_str, colorName, 1, "", penStyle_str, fill_opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = nonPointStylePopupsScript(lineStyle_str, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
