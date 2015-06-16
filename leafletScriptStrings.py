@@ -120,18 +120,20 @@ def clusterScript(safeLayerName):
 		cluster_group{safeLayerName}JSON.addLayer(json_{safeLayerName}JSON);""".format(safeLayerName = safeLayerName)
 	return cluster
 
-def styleValuesScript(symbol, opacity_str):
+def styleValuesScript(symbol, opacity_str, borderOpacity_str):
 	styleValues = """
 					radius: '{radius}',
 					fillColor: '{fillColor}',
 					color: '{color}',
 					weight: 1,
+					opacity: {borderOpacity_str},
 					fillOpacity: '{opacity_str}',
 				}};
 				break;""".format(
 					radius = unicode(symbol.size() * 2),
 					fillColor = unicode(symbol.color().name()),
 					color = unicode(symbol.symbolLayer(0).borderColor().name()),
+					borderOpacity_str = borderOpacity_str,
 					opacity_str = opacity_str)
 	return styleValues
 
@@ -235,21 +237,22 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 		}}""".format(layerName = layerName, popFuncs = popFuncs)
 	return categorizedNonPointStyleFunction
 
-def categorizedPolygonStylesScript(symbol, opacity_str):
+def categorizedPolygonStylesScript(symbol, opacity_str, borderOpacity_str):
 	categorizedPolygonStyles = """
 					weight: '{weight}',
 					fillColor: '{fillColor}',
 					color: '{color}',
 					weight: '1',
 					dashArray: '{dashArray}',
-					opacity: '{opacity_str}',
+					opacity: '{borderOpacity_str}',
 					fillOpacity: '{opacity_str}',
 				}};
 				break;""".format(
 					weight = unicode(symbol.symbolLayer(0).borderWidth() * 5),
-					fillColor = unicode(symbol.color().name()),
-					color = unicode(symbol.symbolLayer(0).borderColor().name()),
+					fillColor = unicode(symbol.color().name()) if symbol.symbolLayer(0).brushStyle() != 0 else "none",
+					color = unicode(symbol.symbolLayer(0).borderColor().name()) if symbol.symbolLayer(0).borderStyle() != 0 else "none",
 					dashArray = getLineStyle(symbol.symbolLayer(0).borderStyle()),
+					borderOpacity_str = borderOpacity_str,
 					opacity_str = opacity_str)
 	return categorizedPolygonStyles
 
@@ -260,10 +263,10 @@ def graduatedStyleScript(layerName):
 
 def rangeStartScript(valueAttr, r):
 	rangeStart = """
-		if (feature.properties.{valueAttr} >= """ + unicode(r.lowerValue()) + " && feature.properties.{valueAttr} <= " + unicode(r.upperValue()) + ") {{".format(valueAttr = valueAttr)
+		if (feature.properties.{valueAttr} >= {lowerValue} && feature.properties.{valueAttr} <= {upperValue}) {{""".format(valueAttr = valueAttr, lowerValue = unicode(r.lowerValue()), upperValue = unicode(r.upperValue()))
 	return rangeStart
 
-def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str):
+def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_str):
 	graduatedPointStyles = rangeStartScript(valueAttr, r)
 	graduatedPointStyles += """
 			return {{
@@ -272,12 +275,14 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str):
 				color: '{color}',
 				weight: 1,
 				fillOpacity: '{opacity_str}',
+				opacity: '{borderOpacity_str}',
 			}}
 		}}""".format(
 			radius = unicode(symbol.size() * 2),
 			fillColor = unicode(symbol.color().name()),
 			color = unicode(symbol.symbolLayer(0).borderColor().name()),
-			opacity_str = opacity_str)
+			opacity_str = opacity_str,
+			borderOpacity_str = borderOpacity_str)
 	return graduatedPointStyles
 
 def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
@@ -294,20 +299,21 @@ def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
 			opacity_str = opacity_str)
 	return graduatedLineStyles
 
-def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str):
+def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_str):
 	graduatedPolygonStyles = rangeStartScript(valueAttr, r)
 	graduatedPolygonStyles += """
 			return {{
 				color: '{color}',
 				weight: '{weight}',
 				fillColor: '{fillColor}',
-				opacity: '{opacity_str}',
+				opacity: '{borderOpacity_str}',
 				fillOpacity: '{opacity_str}',
 			}}
 		}}""".format(
 			color = unicode(symbol.symbolLayer(0).borderColor().name()),
-			weight = unicode(symbol.symbolLayer(0).borderWidth() * 5),
-			fillColor = unicode(symbol.color().name()),
+			weight = unicode(symbol.symbolLayer(0).borderWidth() * 5) if symbol.symbolLayer(0).borderStyle() != 0 else "0",
+			fillColor = unicode(symbol.color().name()) if symbol.symbolLayer(0).brushStyle() != 0 else "none",
+			borderOpacity_str = borderOpacity_str,
 			opacity_str = opacity_str)
 	return graduatedPolygonStyles
 

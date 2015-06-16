@@ -275,7 +275,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							symbol_transp_float = symbol.alpha()
 							fill_transp_float = float(symbol.color().alpha())/255
 							fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
-							categoryStr += styleValuesScript(symbol, fill_opacity_str)
+							border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+							borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
+							categoryStr += styleValuesScript(symbol, fill_opacity_str, borderOpacity_str)
 						categoryStr += endCategoryScript()
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
@@ -319,9 +321,11 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 								categoryStr += eachCategoryScript(cat.value())
 							symbol = cat.symbol()
 							symbol_transp_float = symbol.alpha()
+							border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+							borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
 							fill_transp_float = float(symbol.color().alpha())/255
 							fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
-							categoryStr += categorizedPolygonStylesScript(symbol, fill_opacity_str)
+							categoryStr += categorizedPolygonStylesScript(symbol, fill_opacity_str, borderOpacity_str)
 						categoryStr += endCategoryScript()
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
@@ -336,9 +340,11 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 						for r in renderer.ranges():
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
+							border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+							borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
 							fill_transp_float = float(symbol.color().alpha())/255
 							fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
-							categoryStr += graduatedPointStylesScript(valueAttr, r, symbol, fill_opacity_str)
+							categoryStr += graduatedPointStylesScript(valueAttr, r, symbol, fill_opacity_str, borderOpacity_str)
 						categoryStr += endGraduatedStyleScript()
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
@@ -370,9 +376,11 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 						for r in renderer.ranges():
 							symbol = r.symbol()
 							symbol_transp_float = symbol.alpha()
+							border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+							borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
 							fill_transp_float = float(symbol.color().alpha())/255
 							fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
-							categoryStr += graduatedPolygonStylesScript(valueAttr, r, symbol, fill_opacity_str)
+							categoryStr += graduatedPolygonStylesScript(valueAttr, r, symbol, fill_opacity_str, borderOpacity_str)
 						categoryStr += endGraduatedStyleScript()
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
