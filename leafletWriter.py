@@ -211,7 +211,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
 					if i.geometryType() == 0 and icon_prov != True:
 						radius_str = str(symbol.size() * 2)
-						borderWidth - str(symbol.outlineWidth())
+						borderWidth_str = str(symbol.outlineWidth())
 						borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
 						border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
 						borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
