@@ -244,8 +244,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
 							borderStyle_str = getLineStyle(symbol.symbolLayer(0).borderStyle())
 							radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
+							if symbol.symbolLayer(0).borderStyle() == 0:
+								radius_str = "0"
 							if symbol.symbolLayer(0).brushStyle() == 0:
-								borderStyle_str = "0"
+								colorName = "none"
 						polyStyle_str = nonPointStyleScript(radius_str, borderColor_str, colorName, borderStyle_str, opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = nonPointStylePopupsScript(polyStyle_str, popFuncs)
@@ -443,16 +445,16 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					if cluster_set[count] == False:
 						if i.geometryType() == 0:
 							f5.write("""
-//add comment sign to hide this layer on the map in the initial view.
-feature_group.addLayer(json_"""+ safeLayerName + """JSON);""")
+		//add comment sign to hide this layer on the map in the initial view.
+		feature_group.addLayer(json_"""+ safeLayerName + """JSON);""")
 						else:
 							f5.write("""
-//add comment sign to hide this layer on the map in the initial view.
-feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
+		//add comment sign to hide this layer on the map in the initial view.
+		feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
 					else:
 						f5.write("""
-//add comment sign to hide this layer on the map in the initial view.
-cluster_group""" + safeLayerName + """JSON.addTo(map);""")
+		//add comment sign to hide this layer on the map in the initial view.
+		cluster_group""" + safeLayerName + """JSON.addTo(map);""")
 				else:
 					if cluster_set[count] == False:
 						if i.geometryType() == 0:
@@ -488,7 +490,7 @@ cluster_group""" + safeLayerName + """JSON.addTo(map);""")
 				new_obj = rasterScript(safeLayerName, out_raster_name, bounds2)
 			if visible[count]:
 				new_obj += """
-raster_group.addLayer(overlay_""" + safeLayerName + """);"""
+		raster_group.addLayer(overlay_""" + safeLayerName + """);"""
 			with open(outputIndex, 'a') as f5_raster:
 				f5_raster.write(new_obj)
 				f5_raster.close()
