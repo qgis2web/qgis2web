@@ -84,12 +84,14 @@ def pointToLayerScript(radius_str, borderWidth_str, borderStyle, colorName, bord
 				color: '{borderColor_str}',
 				weight: {borderWidth_str},
 				opacity: {borderOpacity_str},
+				dashArray: '{dashArray}',
 				fillOpacity: {opacity_str}
 			}}){labeltext}""".format(radius_str = radius_str,
 									 colorName = colorName,
 									 borderColor_str = borderColor_str,
 									 borderWidth_str = borderWidth_str,
 									 borderOpacity_str = borderOpacity_str if borderStyle != 0 else 0,
+									 dashArray = getLineStyle(borderStyle),
 									 opacity_str = opacity_str,
 									 labeltext = labeltext)
 	return pointToLayer
