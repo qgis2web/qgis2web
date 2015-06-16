@@ -75,7 +75,7 @@ def popupScript(safeLayerName, popFuncs):
 	}}""".format(safeLayerName = safeLayerName, popFuncs = popFuncs)
 	return popup
 
-def pointToLayerScript(radius_str, colorName, borderColor_str, opacity_str, labeltext):
+def pointToLayerScript(radius_str, colorName, borderColor_str, borderOpacity_str, opacity_str, labeltext):
 	pointToLayer = """
 		pointToLayer: function (feature, latlng) {{
 			return L.circleMarker(latlng, {{
@@ -83,11 +83,12 @@ def pointToLayerScript(radius_str, colorName, borderColor_str, opacity_str, labe
 				fillColor: '{colorName}',
 				color: '{borderColor_str}',
 				weight: 1,
-				opacity: {opacity_str},
+				opacity: {borderOpacity_str},
 				fillOpacity: {opacity_str}
 			}}){labeltext}""".format(radius_str = radius_str,
 									 colorName = colorName,
 									 borderColor_str = borderColor_str,
+									 borderOpacity_str = borderOpacity_str,
 									 opacity_str = opacity_str,
 									 labeltext = labeltext)
 	return pointToLayer
@@ -134,19 +135,20 @@ def styleValuesScript(symbol, opacity_str):
 					opacity_str = opacity_str)
 	return styleValues
 
-def nonPointStyleScript(radius_str, colorName, fillColor, penStyle_str, opacity_str):
+def nonPointStyleScript(radius_str, colorName, borderOpacity_str, fillColor, penStyle_str, opacity_str):
 	nonPointStyle = """
 			return {{
 				weight: {radius_str},
 				color: '{colorName}',
 				fillColor: '{fillColor}',
 				dashArray: '{penStyle_str}',
-				opacity: {opacity_str},
+				opacity: {borderOpacity_str},
 				fillOpacity: {opacity_str}
 			}};""".format(radius_str = radius_str,
 						 colorName = colorName,
 						 fillColor = fillColor,
 						 penStyle_str = penStyle_str,
+						 borderOpacity_str = borderOpacity_str,
 						 opacity_str = opacity_str)
 	return nonPointStyle
 
