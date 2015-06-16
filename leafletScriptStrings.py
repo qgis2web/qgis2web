@@ -75,20 +75,21 @@ def popupScript(safeLayerName, popFuncs):
 	}}""".format(safeLayerName = safeLayerName, popFuncs = popFuncs)
 	return popup
 
-def pointToLayerScript(radius_str, colorName, borderColor_str, borderOpacity_str, opacity_str, labeltext):
+def pointToLayerScript(radius_str, borderWidth_str, borderStyle, colorName, borderColor_str, borderOpacity_str, opacity_str, labeltext):
 	pointToLayer = """
 		pointToLayer: function (feature, latlng) {{
 			return L.circleMarker(latlng, {{
 				radius: {radius_str},
 				fillColor: '{colorName}',
 				color: '{borderColor_str}',
-				weight: 1,
+				weight: {borderWidth_str},
 				opacity: {borderOpacity_str},
 				fillOpacity: {opacity_str}
 			}}){labeltext}""".format(radius_str = radius_str,
 									 colorName = colorName,
 									 borderColor_str = borderColor_str,
-									 borderOpacity_str = borderOpacity_str,
+									 borderWidth_str = borderWidth_str,
+									 borderOpacity_str = borderOpacity_str if borderStyle != 0 else 0,
 									 opacity_str = opacity_str,
 									 labeltext = labeltext)
 	return pointToLayer

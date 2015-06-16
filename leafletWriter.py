@@ -211,11 +211,12 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
 					if i.geometryType() == 0 and icon_prov != True:
 						radius_str = str(symbol.size() * 2)
-						borderWidth_str = str(symbol.outlineWidth())
+						borderWidth_str = str(symbol.symbolLayer(0).outlineWidth())
+						borderStyle = symbol.symbolLayer(0).outlineStyle()
 						borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
 						border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
 						borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
-						pointToLayer_str = pointToLayerScript(radius_str, colorName, borderColor_str, borderOpacity_str, fill_opacity_str, labeltext)
+						pointToLayer_str = pointToLayerScript(radius_str, borderWidth_str, borderStyle, colorName, borderColor_str, borderOpacity_str, fill_opacity_str, labeltext)
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = pointStyleScript(pointToLayer_str, popFuncs)
 							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set[count], cluster_num, visible[count])
