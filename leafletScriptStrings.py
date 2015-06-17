@@ -128,16 +128,20 @@ def styleValuesScript(symbol, opacity_str, borderOpacity_str):
 					radius: '{radius}',
 					fillColor: '{fillColor}',
 					color: '{color}',
-					weight: 1,
+					weight: {borderWidth},
 					opacity: {borderOpacity_str},
+					dashArray: '{dashArray}',
 					fillOpacity: '{opacity_str}',
 				}};
 				break;""".format(
 					radius = unicode(symbol.size() * 2),
 					fillColor = unicode(symbol.color().name()),
 					color = unicode(symbol.symbolLayer(0).borderColor().name()),
-					borderOpacity_str = borderOpacity_str,
+					borderWidth = symbol.symbolLayer(0).outlineWidth(),
+					borderOpacity_str = borderOpacity_str if symbol.symbolLayer(0).outlineStyle() != 0 else 0,
+					dashArray = getLineStyle(int(str(symbol.symbolLayer(0).outlineStyle()))),
 					opacity_str = opacity_str)
+	print "outlineStyle(): " + str(int(str(symbol.symbolLayer(0).outlineStyle())))
 	return styleValues
 
 def nonPointStyleScript(radius_str, colorName, borderOpacity_str, fillColor, penStyle_str, opacity_str):
@@ -240,12 +244,12 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 		}}""".format(layerName = layerName, popFuncs = popFuncs)
 	return categorizedNonPointStyleFunction
 
-def categorizedPolygonStylesScript(symbol, opacity_str, borderOpacity_str):
+def categorizedPolygonStylesScript(symbol, radius_str, opacity_str, borderOpacity_str):
 	categorizedPolygonStyles = """
 					weight: '{weight}',
 					fillColor: '{fillColor}',
 					color: '{color}',
-					weight: '1',
+					weight: '{radius_str}',
 					dashArray: '{dashArray}',
 					opacity: '{borderOpacity_str}',
 					fillOpacity: '{opacity_str}',
@@ -254,6 +258,7 @@ def categorizedPolygonStylesScript(symbol, opacity_str, borderOpacity_str):
 					weight = unicode(symbol.symbolLayer(0).borderWidth() * 5),
 					fillColor = unicode(symbol.color().name()) if symbol.symbolLayer(0).brushStyle() != 0 else "none",
 					color = unicode(symbol.symbolLayer(0).borderColor().name()) if symbol.symbolLayer(0).borderStyle() != 0 else "none",
+					radius_str = radius_str,
 					dashArray = getLineStyle(symbol.symbolLayer(0).borderStyle()),
 					borderOpacity_str = borderOpacity_str,
 					opacity_str = opacity_str)

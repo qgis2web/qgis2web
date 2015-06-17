@@ -59,13 +59,13 @@ class MainDialog(QDialog, Ui_MainDialog):
 	
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
-            QSettings().setValue(paramItem.name, paramItem.checkState(col))
+            QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
         else:
-            QSettings().setValue(paramItem.name, paramItem.text(col))
+            QSettings().setValue("qgis2web/" + paramItem.name, paramItem.text(col))
 
     def saveComboSettings(self, value):
         global selectedCombo
-        QSettings().setValue(selectedCombo, value)
+        QSettings().setValue("qgis2web/" + selectedCombo, value)
 
     def labelLinkClicked(self, url):
         if url == "open":
@@ -118,21 +118,27 @@ class MainDialog(QDialog, Ui_MainDialog):
             item.setText(0, group)
             for param,value in settings.iteritems():
                 if QSettings().contains(param):
+                    QSettings().remove(param)
+                if QSettings().contains("qgis2web/" + param):
                     if isinstance(value, bool):
-                        if QSettings().value(param):
+                        if QSettings().value("qgis2web/" + param):
                             value = True
                         else:
                             value = False
                     elif isinstance(value, int):
-                        value = int(QSettings().value(param))
+                        value = int(QSettings().value("qgis2web/" + param))
                     elif isinstance(value, tuple):
                         selectedCombo = param
-                        comboSelection = QSettings().value(param)
+                        comboSelection = QSettings().value("qgis2web/" + param)
                     else:
-                        value = QSettings().value(param)
+                        value = QSettings().value("qgis2web/" + param)
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
-                if isinstance(value, tuple) and QSettings().contains(param):
-                    dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
+                if isinstance(value, tuple):
+                    if QSettings().contains("qgis2web/" + param):
+                        dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
+                    else:
+                        if param == "Precision" or param == "Max zoom level":
+                            dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(dlg.paramsTreeOL.itemWidget(subitem, 1).count() - 1)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -360,6 +366,7 @@ class TreeSettingItem(QTreeWidgetItem):
                 self.setCheckState(1, Qt.Unchecked)
         elif isinstance(value, tuple):
             self.combo = QComboBox()
+            self.combo.setSizeAdjustPolicy(0)
             for option in value:
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
@@ -367,7 +374,7 @@ class TreeSettingItem(QTreeWidgetItem):
             self.combo.highlighted.connect(self.clickCombo)
             self.combo.currentIndexChanged.connect(dlg.saveComboSettings)
         else:
-            self.setFlags(self.flags() | Qt.ItemIsEditable)
+            #self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
 
     def clickCombo(self):

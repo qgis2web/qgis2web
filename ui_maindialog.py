@@ -86,6 +86,7 @@ class Ui_MainDialog(object):
         self.verticalLayout_5.addWidget(self.label_3)
         self.paramsTreeOL = QtGui.QTreeWidget(self.widget)
         self.paramsTreeOL.setMinimumSize(QtCore.QSize(300, 0))
+        self.paramsTreeOL.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.paramsTreeOL.setFrameShape(QtGui.QFrame.StyledPanel)
         self.paramsTreeOL.setFrameShadow(QtGui.QFrame.Sunken)
         self.paramsTreeOL.setObjectName(_fromUtf8("paramsTreeOL"))

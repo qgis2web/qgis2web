@@ -112,13 +112,13 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 			#print "Not JSON (" + i.providerType() + "): " + rawLayerName
 	#now determine the canvas bounding box
 	#####now with viewcontrol
+	try:
+		crsSrc = canvas.mapSettings().destinationCrs() # WGS 84
+	except:
+		crsSrc = canvas.mapRenderer().destinationCrs() # WGS 84
+	crsAuthId = crsSrc.authid()
 	if extent == "Canvas extent":
 		pt0	= canvas.extent()
-		try:
-			crsSrc = canvas.mapSettings().destinationCrs() # WGS 84
-		except:
-			crsSrc = canvas.mapRenderer().destinationCrs() # WGS 84
-		crsAuthId = crsSrc.authid()
 		crsProj4 = crsSrc.toProj4()
 		crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
 		xform = QgsCoordinateTransform(crsSrc, crsDest)
@@ -133,7 +133,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 		middle = openScript()
 		if matchCRS == True and crsAuthId != 'EPSG:4326':
 			middle += crsScript(crsAuthId, crsProj4)
-		middle += mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds)
+		middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, 0)
 	middle += featureGroupsScript()
 	if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS == True:
 		basemapText = ""
@@ -325,9 +325,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							symbol_transp_float = symbol.alpha()
 							border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
 							borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
+							radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
 							fill_transp_float = float(symbol.color().alpha())/255
-							fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
-							categoryStr += categorizedPolygonStylesScript(symbol, fill_opacity_str, borderOpacity_str)
+							fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
+							categoryStr += categorizedPolygonStylesScript(symbol, radius_str, fill_opacity_str, borderOpacity_str)
 						categoryStr += endCategoryScript()
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)

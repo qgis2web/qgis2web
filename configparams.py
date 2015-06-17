@@ -63,7 +63,7 @@ paramsOL = {
 	},
 	"Data export" : {
 		"Export folder": tempFolder(),
-		"Precision": 15,
+		"Precision": ("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"),
 		"Minify GeoJSON files": True,
 		"Delete unused fields": True
 	},
@@ -71,8 +71,8 @@ paramsOL = {
 		"Use layer scale dependent visibility": False,
 		"Extent": ("Canvas extent", "Fit to layers extent"),
 		"Restrict to extent": False,
-		"Max zoom level": 28,
-		"Min zoom level": 1,
+		"Max zoom level": ("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"),
+		"Min zoom level": ("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"),
 	}
 
 }
