@@ -144,8 +144,21 @@ def styleValuesScript(symbol, opacity_str, borderOpacity_str):
 	print "outlineStyle(): " + str(int(str(symbol.symbolLayer(0).outlineStyle())))
 	return styleValues
 
-def nonPointStyleScript(radius_str, colorName, borderOpacity_str, fillColor, penStyle_str, opacity_str):
-	nonPointStyle = """
+def lineStyleScript(radius_str, colorName, penStyle_str, opacity_str):
+	lineStyle = """
+			return {{
+				weight: {radius_str},
+				color: '{colorName}',
+				dashArray: '{penStyle_str}',
+				opacity: {opacity_str}
+			}};""".format(radius_str = radius_str,
+						 colorName = colorName,
+						 penStyle_str = penStyle_str,
+						 opacity_str = opacity_str)
+	return lineStyle
+
+def polyStyleScript(radius_str, colorName, borderOpacity_str, fillColor, penStyle_str, opacity_str):
+	polyStyle = """
 			return {{
 				weight: {radius_str},
 				color: '{colorName}',
@@ -159,7 +172,7 @@ def nonPointStyleScript(radius_str, colorName, borderOpacity_str, fillColor, pen
 						 penStyle_str = penStyle_str,
 						 borderOpacity_str = borderOpacity_str,
 						 opacity_str = opacity_str)
-	return nonPointStyle
+	return polyStyle
 
 def nonPointStylePopupsScript(lineStyle_str, popFuncs):
 	nonPointStylePopups = """
@@ -281,16 +294,19 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_
 				radius: '{radius}',
 				fillColor: '{fillColor}',
 				color: '{color}',
-				weight: 1,
+				weight: {lineWeight},
 				fillOpacity: '{opacity_str}',
 				opacity: '{borderOpacity_str}',
+				dashArray: '{dashArray}'
 			}}
 		}}""".format(
 			radius = unicode(symbol.size() * 2),
 			fillColor = unicode(symbol.color().name()),
 			color = unicode(symbol.symbolLayer(0).borderColor().name()),
+			lineWeight = symbol.symbolLayer(0).outlineWidth(),
 			opacity_str = opacity_str,
-			borderOpacity_str = borderOpacity_str)
+			borderOpacity_str = borderOpacity_str,
+			dashArray = getLineStyle(symbol.symbolLayer(0).outlineStyle()))
 	return graduatedPointStyles
 
 def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
@@ -299,11 +315,13 @@ def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
 			return {{
 				color: '{color}',
 				weight: '{weight}',
+				dashArray: '{dashArray}',
 				opacity: '{opacity_str}',
 			}}
 		}}""".format(
 			color = unicode(symbol.symbolLayer(0).color().name()),
 			weight = unicode(symbol.width() * 5),
+			dashArray = getLineStyle(symbol.symbolLayer(0).penStyle()),
 			opacity_str = opacity_str)
 	return graduatedLineStyles
 
@@ -313,6 +331,7 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str, borderOpacit
 			return {{
 				color: '{color}',
 				weight: '{weight}',
+				dashArray: '{dashArray}',
 				fillColor: '{fillColor}',
 				opacity: '{borderOpacity_str}',
 				fillOpacity: '{opacity_str}',
@@ -320,6 +339,7 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str, borderOpacit
 		}}""".format(
 			color = unicode(symbol.symbolLayer(0).borderColor().name()),
 			weight = unicode(symbol.symbolLayer(0).borderWidth() * 5) if symbol.symbolLayer(0).borderStyle() != 0 else "0",
+			dashArray = getLineStyle(symbol.symbolLayer(0).borderStyle()),
 			fillColor = unicode(symbol.color().name()) if symbol.symbolLayer(0).brushStyle() != 0 else "none",
 			borderOpacity_str = borderOpacity_str,
 			opacity_str = opacity_str)

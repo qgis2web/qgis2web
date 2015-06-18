@@ -229,7 +229,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 					elif i.geometryType() == 1:
 						radius_str = str(symbol.width() * 5)
 						penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle())
-						lineStyle_str = nonPointStyleScript(radius_str, colorName, 1, "", penStyle_str, fill_opacity_str)
+						print "penStyle: " + str(penStyle_str)
+						lineStyle_str = lineStyleScript(radius_str, colorName, penStyle_str, fill_opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = nonPointStylePopupsScript(lineStyle_str, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
@@ -254,7 +255,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 								radius_str = "0"
 							if symbol.symbolLayer(0).brushStyle() == 0:
 								colorName = "none"
-						polyStyle_str = nonPointStyleScript(radius_str, borderColor_str, borderOpacity_str, colorName, borderStyle_str, fill_opacity_str)
+						polyStyle_str = polyStyleScript(radius_str, borderColor_str, borderOpacity_str, colorName, borderStyle_str, fill_opacity_str)
 						if i.providerType() == 'WFS' and json[count] == False:
 							stylestr = nonPointStylePopupsScript(polyStyle_str, popFuncs)
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
