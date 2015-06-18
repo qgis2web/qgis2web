@@ -59,13 +59,13 @@ class MainDialog(QDialog, Ui_MainDialog):
 	
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
-            QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
+            QSettings().setValue(paramItem.name, paramItem.checkState(col))
         else:
-            QSettings().setValue("qgis2web/" + paramItem.name, paramItem.text(col))
+            QSettings().setValue(paramItem.name, paramItem.text(col))
 
     def saveComboSettings(self, value):
         global selectedCombo
-        QSettings().setValue("qgis2web/" + selectedCombo, value)
+        QSettings().setValue(selectedCombo, value)
 
     def labelLinkClicked(self, url):
         if url == "open":
@@ -118,27 +118,21 @@ class MainDialog(QDialog, Ui_MainDialog):
             item.setText(0, group)
             for param,value in settings.iteritems():
                 if QSettings().contains(param):
-                    QSettings().remove(param)
-                if QSettings().contains("qgis2web/" + param):
                     if isinstance(value, bool):
-                        if QSettings().value("qgis2web/" + param):
+                        if QSettings().value(param):
                             value = True
                         else:
                             value = False
                     elif isinstance(value, int):
-                        value = int(QSettings().value("qgis2web/" + param))
+                        value = int(QSettings().value(param))
                     elif isinstance(value, tuple):
                         selectedCombo = param
-                        comboSelection = QSettings().value("qgis2web/" + param)
+                        comboSelection = QSettings().value(param)
                     else:
-                        value = QSettings().value("qgis2web/" + param)
+                        value = QSettings().value(param)
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
-                if isinstance(value, tuple):
-                    if QSettings().contains("qgis2web/" + param):
-                        dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
-                    else:
-                        if param == "Precision" or param == "Max zoom level":
-                            dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(dlg.paramsTreeOL.itemWidget(subitem, 1).count() - 1)
+                #if isinstance(value, tuple) and QSettings().contains(param):
+                #    dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -179,9 +173,12 @@ class MainDialog(QDialog, Ui_MainDialog):
     def saveLeaf(self):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
+        #print (popup)
+        #print (params)
+        
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params)
+            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
@@ -222,20 +219,20 @@ class MainDialog(QDialog, Ui_MainDialog):
                         visible.append(True)
                     else:
                         visible.append(False)
-                    if hasattr(item, "json") and item.json:
+                    if item.json:
                         json.append(True)
                     else:
                         json.append(False)
-                    if hasattr(item, "cluster") and item.cluster:
+                    if item.cluster:
                         cluster.append(True)
                     else:
                         cluster.append(False)
-                    if hasattr(item, "labels") and item.labels:
+                    if item.labels:
                         labels.append(True)
                     else:
                         labels.append(False)
                 groups[group] = groupLayers[::-1]
-
+        print ("popup " + str(popup))
         return layers[::-1], groups, popup[::-1], visible[::-1],  json[::-1], cluster[::-1], labels[::-1]
 
 
@@ -366,7 +363,6 @@ class TreeSettingItem(QTreeWidgetItem):
                 self.setCheckState(1, Qt.Unchecked)
         elif isinstance(value, tuple):
             self.combo = QComboBox()
-            self.combo.setSizeAdjustPolicy(0)
             for option in value:
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
@@ -374,7 +370,7 @@ class TreeSettingItem(QTreeWidgetItem):
             self.combo.highlighted.connect(self.clickCombo)
             self.combo.currentIndexChanged.connect(dlg.saveComboSettings)
         else:
-            #self.setFlags(self.flags() | Qt.ItemIsEditable)
+            self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
 
     def clickCombo(self):
