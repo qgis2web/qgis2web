@@ -222,15 +222,15 @@ class MainDialog(QDialog, Ui_MainDialog):
                         visible.append(True)
                     else:
                         visible.append(False)
-                    if item.json:
+                    if hasattr(item, "json") and item.json:
                         json.append(True)
                     else:
                         json.append(False)
-                    if item.cluster:
+                    if hasattr(item, "cluster") and item.cluster:
                         cluster.append(True)
                     else:
                         cluster.append(False)
-                    if item.labels:
+                    if hasattr(item, "labels") and item.labels:
                         labels.append(True)
                     else:
                         labels.append(False)
