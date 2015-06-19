@@ -135,6 +135,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
                 if isinstance(value, tuple):
                     if QSettings().contains("qgis2web/" + param):
+                        print "Unicode debug:"
+                        print "Param: " + param
+                        print "comboSelection: *" + str(comboSelection) + "*"
                         dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
                     else:
                         if param == "Precision" or param == "Max zoom level":
