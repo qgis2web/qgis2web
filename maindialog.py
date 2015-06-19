@@ -138,6 +138,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         print "Unicode debug:"
                         print "Param: " + param
                         print "comboSelection: *" + str(comboSelection) + "*"
+                        print "Type: " + str(type(comboSelection))
                         dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
                     else:
                         if param == "Precision" or param == "Max zoom level":
