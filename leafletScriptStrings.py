@@ -108,12 +108,20 @@ def wfsScript(scriptTag):
 		<script src='{scriptTag}'></script>""".format(scriptTag = scriptTag)
 	return wfs
 
-def jsonPointScript(safeLayerName, pointToLayer_str):
-	jsonPoint = """
-	var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-		onEachFeature: pop_{safeLayerName}, {pointToLayer_str}
-		}}
-	}});
+def jsonPointScript(safeLayerName, pointToLayer_str, usedFields):
+	if usedFields != 0 :
+		jsonPoint = """
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			onEachFeature: pop_{safeLayerName}, {pointToLayer_str}
+			}}
+		}});
+	layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, pointToLayer_str = pointToLayer_str)
+	else:
+		jsonPoint = """
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			{pointToLayer_str}
+			}}
+		}});
 	layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, pointToLayer_str = pointToLayer_str)
 	return jsonPoint
 
@@ -225,15 +233,24 @@ def categorizedPointWFSscript(layerName, labeltext, popFuncs):
 		}}""".format(layerName = layerName, labeltext = labeltext, popFuncs = popFuncs)
 	return categorizedPointWFS
 
-def categorizedPointJSONscript(safeLayerName, labeltext):
-	categorizedPointJSON = """
-	var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-		onEachFeature: pop_{safeLayerName},
-		pointToLayer: function (feature, latlng) {{  
-			return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
-		}}
-	}});
-		layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, labeltext = labeltext)
+def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
+	if usedFields != 0:
+		categorizedPointJSON = """
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			onEachFeature: pop_{safeLayerName},
+			pointToLayer: function (feature, latlng) {{  
+				return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+			}}
+		}});
+			layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, labeltext = labeltext)
+	else:
+		categorizedPointJSON = """
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			pointToLayer: function (feature, latlng) {{  
+				return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+			}}
+		}});
+			layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName, labeltext = labeltext)
 	return categorizedPointJSON
 
 def categorizedLineStylesScript(symbol, opacity_str):
@@ -350,21 +367,36 @@ def endGraduatedStyleScript():
 	}"""
 	return endGraduatedStyle
 
-def customMarkerScript(safeLayerName, labeltext):
-	customMarker = """
-	var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-		onEachFeature: pop_{safeLayerName},
-		pointToLayer: function (feature, latlng) {{
-			return L.marker(latlng, {{
-				icon: L.icon({{
-					iconUrl: feature.properties.icon_exp,
-					iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
-					iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
-					popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
-				}})
-			}}){labeltext}
-		}}}}
-	);""".format(safeLayerName = safeLayerName, labeltext = labeltext)
+def customMarkerScript(safeLayerName, labeltext, usedFields):
+	if usedFields != 0:
+		customMarker = """
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			onEachFeature: pop_{safeLayerName},
+			pointToLayer: function (feature, latlng) {{
+				return L.marker(latlng, {{
+					icon: L.icon({{
+						iconUrl: feature.properties.icon_exp,
+						iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
+						iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
+						popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
+					}})
+				}}){labeltext}
+			}}}}
+		);""".format(safeLayerName = safeLayerName, labeltext = labeltext)
+	else:
+		customMarker = """
+		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+			pointToLayer: function (feature, latlng) {{
+				return L.marker(latlng, {{
+					icon: L.icon({{
+						iconUrl: feature.properties.icon_exp,
+						iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
+						iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
+						popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
+					}})
+				}}){labeltext}
+			}}}}
+		);""".format(safeLayerName = safeLayerName, labeltext = labeltext)
 	return customMarker
 
 def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):

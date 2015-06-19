@@ -129,12 +129,20 @@ class MainDialog(QDialog, Ui_MainDialog):
                         value = int(QSettings().value("qgis2web/" + param))
                     elif isinstance(value, tuple):
                         selectedCombo = param
-                        comboSelection = QSettings().value("qgis2web/" + param)
+                        if isinstance(QSettings().value("qgis2web/" + param), int):
+                            comboSelection = QSettings().value("qgis2web/" + param)
+                        else:
+                            comboSelection = 0
+                            QSettings().remove("qgis2web/" + selectedCombo)
                     else:
                         value = QSettings().value("qgis2web/" + param)
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
                 if isinstance(value, tuple):
                     if QSettings().contains("qgis2web/" + param):
+                        print "Unicode debug:"
+                        print "Param: " + param
+                        print "comboSelection: *" + str(comboSelection) + "*"
+                        print "Type: " + str(type(comboSelection))
                         dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
                     else:
                         if param == "Precision" or param == "Max zoom level":
@@ -164,7 +172,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params)
+        previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
@@ -181,7 +189,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params)
+            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, "", 0, json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
