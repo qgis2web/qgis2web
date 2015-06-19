@@ -24,13 +24,20 @@ def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cl
 		};"""
 	return new_obj, scriptTag, cluster_num
 
-def buildNonPointJSON(categoryStr, safeLayerName):
-	new_obj = categoryStr + """
-		var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-			onEachFeature: pop_{safeLayerName},
-			style: doStyle{safeLayerName}
-		}});
-		layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName)
+def buildNonPointJSON(categoryStr, safeLayerName, usedFields):
+	if usedFields != 0:
+		new_obj = categoryStr + """
+			var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+				onEachFeature: pop_{safeLayerName},
+				style: doStyle{safeLayerName}
+			}});
+			layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName)
+	else:
+		new_obj = categoryStr + """
+			var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+				style: doStyle{safeLayerName}
+			}});
+			layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName = safeLayerName)
 	return new_obj
 
 def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, popFuncs, visible):

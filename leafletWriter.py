@@ -32,18 +32,25 @@ from basemaps import basemapLeaflet, basemapAttributions
 from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *
+from utils import ALL_ATTRIBUTES
 
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
-def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params):
-
+def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params, popup):
+	print "Popup" + str(popup)
 	canvas = qgis.utils.iface.mapCanvas()
 	pluginDir = os.path.dirname(os.path.realpath(__file__))
 	outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
 	outputIndex = outputProjectFileName + os.sep + 'index.html'
 	cluster_num = 1
-
+	cleanUnusedFields = params["Data export"]["Delete unused fields"]
+	if not cleanUnusedFields:
+		usedFields = [ALL_ATTRIBUTES] * len(popup)
+	else:
+		usedFields = popup
+	print ("USED FIELDS =" + str(usedFields))
+	
 	QgsApplication.initQgis()
 
 	minify = params["Data export"]["Minify GeoJSON files"]
@@ -146,12 +153,22 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 			f4.write(layerOrder)
 			f4.close()
 	for count, i in enumerate(layer_list):
+		new_field_names = []
+		print ("i = " + str(i))
+		print ("count = " + str(count))
 		rawLayerName = i.name()
 		safeLayerName = re.sub('[\W_]+', '', rawLayerName)
 		if i.type()==0:
 			with open(outputIndex, 'a') as f5:
 				fields = i.pendingFields() 
 				field_names = [field.name() for field in fields]
+				if usedFields[count] != 0 and usedFields[count] != 1:
+					for field in field_names:
+						#for popup_field in usedFields:
+						if field == usedFields[count]:
+							new_field_names.append(field)
+					print ("new fields " + str(new_field_names))
+					field_names = new_field_names
 				html_prov = False
 				icon_prov = False
 				label_exp = ''
@@ -222,7 +239,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster_set[count], cluster_num, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = jsonPointScript(safeLayerName, pointToLayer_str)
+							new_obj = jsonPointScript(safeLayerName, pointToLayer_str, usedFields[count])
 							if cluster_set[count]:
 								new_obj += clusterScript(safeLayerName)
 								cluster_num += 1	
@@ -287,7 +304,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext)
+							new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
 							if cluster_set[count] == True:
 								new_obj += clusterScript(safeLayerName)			
 							cluster_num += 1	
@@ -355,7 +372,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster_set[count], cluster_num, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext)
+							new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
 							#add points to the cluster group
 							if cluster_set[count] == True:
 								new_obj += clusterScript(safeLayerName)			
@@ -374,7 +391,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = buildNonPointJSON(categoryStr, safeLayerName)
+							new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
 					elif i.geometryType() == 2:
 						valueAttr = renderer.classAttribute()
 						for r in renderer.ranges():
@@ -391,7 +408,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = buildNonPointJSON(categoryStr, safeLayerName)
+							new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
 #						elif rendererDump[0:10] == 'Rule-based':
 #							for rule in renderer.rootRule().children():
 #								try:
@@ -443,7 +460,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #									cluster_num += 1	
 
 				if icon_prov and i.geometryType() == 0:
-					new_obj = customMarkerScript(safeLayerName, labeltext)
+					new_obj = customMarkerScript(safeLayerName, labeltext, usedFields[count])
 					if cluster_set[count] == True:
 						new_obj += clusterScript(safeLayerName)
 						cluster_num += 1
@@ -453,7 +470,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #	onEachFeature: pop_""" + safeLayerName + """,
 #});"""		
 
-				if i.providerType() != 'WFS' or json[count] == True:
+				if (i.providerType() != 'WFS' or json[count] == True) and usedFields[count] != 0:
 					f5.write(new_pop)
 				f5.write("""
 """ + new_obj)
