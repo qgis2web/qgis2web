@@ -254,7 +254,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							wfsLayers += wfsScript(scriptTag)
 						else:
 							new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle_str)
-							new_obj += buildNonPointJSON("", safeLayerName)
+							new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
 							new_obj += restackLayers(layerName, visible[count])		
 					elif i.geometryType() == 2:
 						borderStyle_str = ""
@@ -279,7 +279,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							wfsLayers += wfsScript(scriptTag)
 						else:
 							new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle_str)
-							new_obj += buildNonPointJSON("", safeLayerName)
+							new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
 							new_obj += restackLayers(layerName, visible[count])	
 				elif rendererDump[0:11] == 'CATEGORIZED':
 					if i.geometryType() == 0 and icon_prov != True:
@@ -329,7 +329,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = buildNonPointJSON(categoryStr, safeLayerName)
+							new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
 					elif i.geometryType() == 2:
 						categories = renderer.categories()
 						valueAttr = renderer.classAttribute()
@@ -353,7 +353,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 							new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
 							wfsLayers += wfsScript(scriptTag)
 						else:
-							new_obj = buildNonPointJSON(categoryStr, safeLayerName)
+							new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
 				elif rendererDump[0:9] == 'GRADUATED':
 					categoryStr = graduatedStyleScript(layerName)
 					if i.geometryType() == 0 and icon_prov != True:
