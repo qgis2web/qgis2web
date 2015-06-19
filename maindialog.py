@@ -130,7 +130,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                     elif isinstance(value, tuple):
                         selectedCombo = param
                         if isinstance(QSettings().value("qgis2web/" + param), int):
-                            comboSelection = QSettings().value("qgis2web/" + param)
+                            if QSettings().value("qgis2web/" + param) != -1:
+                                comboSelection = QSettings().value("qgis2web/" + param)
+                            else:
+                                QSettings().remove("qgis2web/" + param)
                         else:
                             comboSelection = 0
                             QSettings().remove("qgis2web/" + selectedCombo)
