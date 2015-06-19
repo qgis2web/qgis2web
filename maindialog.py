@@ -133,7 +133,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                             comboSelection = QSettings().value("qgis2web/" + param)
                         else:
                             comboSelection = 0
-                            QSettings().removeValue("qgis2web/" + selectedCombo)
+                            QSettings().remove("qgis2web/" + selectedCombo)
                     else:
                         value = QSettings().value("qgis2web/" + param)
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
