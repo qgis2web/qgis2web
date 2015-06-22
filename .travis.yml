@@ -1,7 +1,8 @@
 language: python
 python:
   - "2.7"
+sudo: required
 # command to install dependencies
-install: apt-get install -y qgis 
+install: sudo apt-get install -y qgis 
 # command to run tests
 script: source scripts/run-env-linux.sh; make test
