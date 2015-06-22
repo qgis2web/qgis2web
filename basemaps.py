@@ -33,11 +33,9 @@ def basemapLeaflet():
 	dictionary = {
 		'None': '',
 		'OSM Standard':'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-		'OSM Black & White':'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
 		'Stamen Toner':'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png',
 		'OSM DE':'http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
 		'OSM HOT':'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-		'OpenSeaMap':'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
 		'Thunderforest Cycle':'http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png',
 		'Thunderforest Transport':'http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png',
 		'Thunderforest Landscape':'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
@@ -55,7 +53,8 @@ def basemapLeaflet():
 		'OpenWeatherMap Pressure':'http://{s}.tile.openweathermap.org/map/pressure/{z}/{x}/{y}.png',
 		'OpenWeatherMap Wind':'http://{s}.tile.openweathermap.org/map/wind/{z}/{x}/{y}.png',
 		'OpenWeatherMap Temp':'http://{s}.tile.openweathermap.org/map/temp/{z}/{x}/{y}.png',
-		'OpenWeatherMap Snow':'http://{s}.tile.openweathermap.org/map/snow/{z}/{x}/{y}.png'
+		'OpenWeatherMap Snow':'http://{s}.tile.openweathermap.org/map/snow/{z}/{x}/{y}.png',
+		'OpenSeaMap':'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
 	}
 	return dictionary
 
@@ -66,7 +65,6 @@ def basemapOL():
 		"Stamen Toner": "new ol.layer.Tile({title: 'Stamen toner', source: new ol.source.Stamen({layer: 'toner'})})",
 		"Stamen Terrain": "new ol.layer.Tile({title: 'Stamen terrain', source: new ol.source.Stamen({layer: 'terrain'})})",
 		"OSM Standard": "new ol.layer.Tile({title: 'OSM', source: new ol.source.OSM()})",
-		"OSM Black & White": "new ol.layer.Tile({title: 'OSM Black & White', source: new ol.source.XYZ({url: 'http://www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'attributions: [new ol.Attribution({html: 'asdasdasad'})]})})",
 		"MapQuestOpen OSM": "new ol.layer.Tile({title: 'MapQuest OSM', source: new ol.source.MapQuest({layer: 'osm'})})",
 		"MapQuestOpen Aerial": "new ol.layer.Tile({title: 'MapQuest Aerial', source: new ol.source.MapQuest({layer: 'sat'})})",
 		"Thunderforest Transport": "new ol.layer.Tile({title: 'Thunderforest Transport', source: new ol.source.XYZ({url: 'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png'})})",
@@ -75,8 +73,8 @@ def basemapOL():
 		"OpenMapSurfer Roads": "new ol.layer.Tile({title: 'OpenMapSurfer Roads', source: new ol.source.XYZ({url: 'http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}'})})",
 		"OpenMapSurfer adminb": "new ol.layer.Tile({title: 'OpenMapSurfer adminb', source: new ol.source.XYZ({url: 'http://openmapsurfer.uni-hd.de/tiles/adminb/x={x}&y={y}&z={z}'})})",
 		"OpenMapSurfer roadsg": "new ol.layer.Tile({title: 'OpenMapSurfer roadsg', source: new ol.source.XYZ({url: 'http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}'})})",
-		"OSM HOT": "new ol.layer.Tile({title: 'OSM HOT', source: new ol.source.XYZ({url: 'http://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'})})",
-		"OpenSeaMap": "new ol.layer.Tile({title: 'OpenSeaMap', source: new ol.source.XYZ({url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'})})",
+		"OSM HOT": "new ol.layer.Tile({title: 'OSM HOT', source: new ol.source.XYZ({url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'})})",
+		"OpenSeaMap": "new ol.layer.Tile({title: 'OpenSeaMap', source: new ol.source.XYZ({url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png'})})",
 		"Thunderforest Cycle": "new ol.layer.Tile({title: 'Thunderforest Cycle', source: new ol.source.XYZ({url: 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'})})",
 		"OSM DE": "new ol.layer.Tile({title: 'OSM DE', source: new ol.source.XYZ({url: 'http://tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'})})",
 		"OpenWeatherMap Clouds": "new ol.layer.Tile({title: 'OpenWeatherMap Clouds', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png'})})",
@@ -93,7 +91,6 @@ def basemapAttributions():
 	dictionary = {
 		'None': '',
 		'OSM Standard':'&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-		'OSM Black & White':'&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		'Stamen Toner':'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		'OSM DE':'&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		'OSM HOT':'&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>',

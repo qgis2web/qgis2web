@@ -28,11 +28,9 @@ paramsOL = {
 		"Base layer": (			
 			"None",
 			"OSM Standard",
-			"OSM Black & White",
 			"Stamen Toner",
 			"OSM DE",
 			"OSM HOT",
-			"OpenSeaMap",
 			"Thunderforest Cycle",
 			"Thunderforest Transport",
 			"Thunderforest Landscape",
