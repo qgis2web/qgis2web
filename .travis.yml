@@ -4,4 +4,4 @@ python:
 # command to install dependencies
 #install: "pip install -r requirements.txt"
 # command to run tests
-script: source scripts/run-env-linux.sh /usr/local/qgis-master; make test
+script: source scripts/run-env-linux.sh; make test
