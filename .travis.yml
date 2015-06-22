@@ -5,4 +5,4 @@ sudo: required
 # command to install dependencies
 install: sudo apt-get update; sudo apt-get install -y qgis 
 # command to run tests
-script: source scripts/run-env-linux.sh; make test
+script: source scripts/run-env-linux.sh /usr/bin/qgis; make test
