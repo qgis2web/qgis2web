@@ -1,8 +1,36 @@
 language: python
+
 python:
   - "2.7"
-sudo: required
-# command to install dependencies
-install: sudo apt-get update; sudo apt-get install -y qgis 
-# command to run tests
-script: source scripts/run-env-linux.sh /usr; make test
+
+virtualenv:
+  system_site_packages: true
+
+-before_install:
+  - sudo apt-get -qq -y update
+
+install:
+  - sudo apt-get install -y python-software-properties
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt-get update
+  - sudo apt-get install -y qgis
+  - pip install --upgrade pip
+  - pip install --upgrade pep8
+  - pip install --upgrade pylint
+
+before_script:
+  - echo "Build starting on " `date`
+  - export QGIS_PREFIX_PATH=/usr
+  - export PYTHONPATH=${QGIS_PREFIX_PATH}/share/qgis/python/:${QGIS_PREFIX_PATH}/share/qgis/python/plugins:`pwd`
+  - echo "PYTHONPATH:" $PYTHONPATH
+  - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
+
+script:
+  - make pep8
+  - make pylint
+  - make test
+
+notifications:
+  email:
+    - tim@kartoza.com
+
