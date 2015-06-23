@@ -21,7 +21,7 @@ def crsScript(crsAuthId, crsProj4):
 def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
     map = """
         var map = L.map('map', {"""
-    if extent == "Canvas extent" and matchCRS == True and crsAuthId != 'EPSG:4326':
+    if extent == "Canvas extent" and matchCRS and crsAuthId != 'EPSG:4326':
         map += """
             crs: crs,
             continuousWorld: false,
@@ -49,7 +49,7 @@ def featureGroupsScript():
 
 def basemapsScript(basemap, attribution):
     basemaps = """
-        var basemap = L.tileLayer('{basemap}', {{ 
+        var basemap = L.tileLayer('{basemap}', {{
             attribution: additional_attrib + ' {attribution}'
         }});
         basemap.addTo(map);""".format(basemap=basemap, attribution=attribution)
@@ -57,7 +57,7 @@ def basemapsScript(basemap, attribution):
 
 
 def layerOrderScript():
-    layerOrder = """    
+    layerOrder = """
         var layerOrder=new Array();
         function restackLayers() {
             for (index = 0; index < layerOrder.length; index++) {
@@ -71,7 +71,7 @@ def layerOrderScript():
 
 
 def popFuncsScript(table):
-    popFuncs = """                    
+    popFuncs = """
     var popupContent = {table};
     layer.bindPopup(popupContent);""".format(table=table)
     return popFuncs
@@ -231,7 +231,7 @@ def defaultCategoryScript():
 def eachCategoryScript(catValue):
     if isinstance(catValue, basestring):
         valQuote = "'"
-    else: 
+    else:
         valQuote = ""
     eachCategory = """
         case """ + valQuote + unicode(catValue) + valQuote + """:
@@ -261,7 +261,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
         categorizedPointJSON = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             onEachFeature: pop_{safeLayerName},
-            pointToLayer: function (feature, latlng) {{  
+            pointToLayer: function (feature, latlng) {{
                 return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});
@@ -269,7 +269,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
     else:
         categorizedPointJSON = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            pointToLayer: function (feature, latlng) {{  
+            pointToLayer: function (feature, latlng) {{
                 return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});

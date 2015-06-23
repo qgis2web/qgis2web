@@ -46,7 +46,7 @@ class qgis2web:
     def unload(self):
         self.iface.removePluginWebMenu(u"&qgis2web", self.action)
         self.iface.removeToolBarIcon(self.action)
-    
+
     def run(self):
         dlg = MainDialog()
         dlg.exec_()

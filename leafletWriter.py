@@ -49,7 +49,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
         usedFields = [ALL_ATTRIBUTES] * len(popup)
     else:
         usedFields = popup
-    
+
     QgsApplication.initQgis()
 
     minify = params["Data export"]["Minify GeoJSON files"]
@@ -61,10 +61,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
     addressSearch = params["Appearance"]["Add address search"]
     locate = params["Appearance"]["Geolocate user"]
     measure = params["Appearance"]["Add measure tool"]
-    
-    removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
-                        for i,it in enumerate(txt.split('"')))
-    
+
+    removeSpaces = lambda txt: '"'.join(it if i % 2 else ''.join(it.split())
+                        for i, it in enumerate(txt.split('"')))
+
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas)
     writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, addressSearch, measure, matchCRS, canvas, full)
     writeCSS(cssStore, full, height, width)
@@ -78,20 +78,20 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
         if i.providerType() != 'WFS' or json[count] == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == 0:
-                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i,layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION="+str(precision)])
+                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + str(precision)])
 
                 #now change the data structure to work with leaflet:
                 with open(layerFileName) as f:
                     lines = f.readlines()
                 with open(layerFileName, "w") as f2:
-                    f2.write("var json_" + str(safeLayerName) + "=") # write the new line before
+                    f2.write("var json_" + str(safeLayerName) + "=")
                     for line in lines:
                         if minify:
                             line = line.strip("\n\t ")
                             line = removeSpaces(line)
                         f2.write(line)
                     f2.close
-                    
+
                 #now add the js files as data input for our map
                 with open(outputIndex, 'a') as f3:
                     new_src = jsonScript(safeLayerName)
@@ -109,36 +109,36 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     crsDest = QgsCoordinateReferenceSystem(4326)
                     xform = QgsCoordinateTransform(crsSrc, crsDest)
                     extentRep = xform.transform(i.extent())
-                    extentRepNew = ','.join([str(extentRep.xMinimum()), str(extentRep.xMaximum()),str(extentRep.yMinimum()), str(extentRep.yMaximum())])
-                    processing.runalg("gdalogr:warpreproject",in_raster,i.crs().authid(),"EPSG:4326","",0,1,0,-1,75,6,1,False,0,False,"",prov_raster)
-                    processing.runalg("gdalogr:translate",prov_raster,100,True,"",0,"",extentRepNew,False,0,0,75,6,1,False,0,False,"",out_raster)
+                    extentRepNew = ','.join([str(extentRep.xMinimum()), str(extentRep.xMaximum()), str(extentRep.yMinimum()), str(extentRep.yMaximum())])
+                    processing.runalg("gdalogr:warpreproject", in_raster,i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
+                    processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "", extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "", out_raster)
 
     #now determine the canvas bounding box
     #####now with viewcontrol
     try:
-        crsSrc = canvas.mapSettings().destinationCrs() # WGS 84
+        crsSrc = canvas.mapSettings().destinationCrs()
     except:
-        crsSrc = canvas.mapRenderer().destinationCrs() # WGS 84
+        crsSrc = canvas.mapRenderer().destinationCrs()
     crsAuthId = crsSrc.authid()
     if extent == "Canvas extent":
-        pt0    = canvas.extent()
+        pt0 = canvas.extent()
         crsProj4 = crsSrc.toProj4()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
         xform = QgsCoordinateTransform(crsSrc, crsDest)
         pt1 = xform.transform(pt0)
-        bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),pt1.xMinimum(), pt1.xMaximum()]
-        bounds = '[[' + str(pt1.yMinimum()) + ',' + str(pt1.xMinimum()) + '],[' + str(pt1.yMaximum()) + ',' + str(pt1.xMaximum()) +']]'
+        bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(), pt1.xMinimum(), pt1.xMaximum()]
+        bounds = '[[' + str(pt1.yMinimum()) + ',' + str(pt1.xMinimum()) + '],[' + str(pt1.yMaximum()) + ',' + str(pt1.xMaximum()) + ']]'
         middle = openScript()
-        if matchCRS == True and crsAuthId != 'EPSG:4326':
+        if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds)
     if extent == 'Fit to layers extent':
         middle = openScript()
-        if matchCRS == True and crsAuthId != 'EPSG:4326':
+        if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, 0)
     middle += featureGroupsScript()
-    if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS == True:
+    if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS:
         basemapText = ""
     else:
         basemapText = basemapsScript(basemapAddresses[basemapName], basemapAttributions[basemapName])
@@ -152,9 +152,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
         new_field_names = []
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-        if i.type()==0:
+        if i.type() == 0:
             with open(outputIndex, 'a') as f5:
-                fields = i.pendingFields() 
+                fields = i.pendingFields()
                 field_names = [field.name() for field in fields]
                 if usedFields[count] != 0 and usedFields[count] != 1:
                     for field in field_names:
@@ -172,25 +172,25 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     palyr.readFromLayer(i)
                     f = palyr.fieldName
                     label_exp = False
-                    if labelhover == False:
-                        labeltext = """.bindLabel(feature.properties."""+str(f)+""", {noHide: true})"""
+                    if not labelhover:
+                        labeltext = """.bindLabel(feature.properties.""" + str(f) + """, {noHide: true})"""
                     else:
-                        labeltext = """.bindLabel(feature.properties."""+str(f)+""")"""
+                        labeltext = """.bindLabel(feature.properties.""" + str(f) + """)"""
                 for field in field_names:
                     if str(field) == 'html_exp':
                         html_prov = True
                         table = 'feature.properties.html_exp'
-                    if str(field) == 'label_exp' and labelhover == False:
+                    if str(field) == 'label_exp' and not labelhover:
                         label_exp = True
                         labeltext = """.bindLabel(feature.properties.label_exp, {noHide: true})"""
-                    if str(field) == 'label_exp' and labelhover == True:
+                    if str(field) == 'label_exp' and labelhover:
                         label_exp = True
                         labeltext = """.bindLabel(feature.properties.label_exp)"""
                     if str(f) != "" and str(f) == str(field) and f:
                         label_exp = True
                     if str(field) == 'icon_exp':
-                        icon_prov = True 
-                    if html_prov != True:
+                        icon_prov = True
+                    if not html_prov:
                         tablestart = """'<table>"""
                         row = ""
                         for field in field_names:
@@ -201,11 +201,11 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                                     row += """<tr><th scope="row">""" + i.attributeDisplayName(fields.indexFromName(str(field))) + """</th><td>' + Autolinker.link(String(feature.properties['""" + str(field) + """'])) + '</td></tr>"""
                         tableend = """</table>'"""
                         table = tablestart + row + tableend
-                if label_exp == False:
+                if not label_exp:
                     labeltext = ""
                 popFuncs = popFuncsScript(table)
                 new_pop = popupScript(safeLayerName, popFuncs)
-                 
+
                 layerName = safeLayerName
                 renderer = i.rendererV2()
                 rendererDump = renderer.dump()
@@ -217,14 +217,14 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     symbol = renderer.symbol()
                     colorName = symbol.color().name()
                     symbol_transp_float = symbol.alpha()
-                    fill_transp_float = float(symbol.color().alpha())/255
+                    fill_transp_float = float(symbol.color().alpha()) / 255
                     fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
-                    if i.geometryType() == 0 and icon_prov != True:
+                    if i.geometryType() == 0 and not icon_prov:
                         radius_str = str(symbol.size() * 2)
                         borderWidth_str = str(symbol.symbolLayer(0).outlineWidth())
                         borderStyle = symbol.symbolLayer(0).outlineStyle()
                         borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
-                        border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+                        border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                         borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
                         pointToLayer_str = pointToLayerScript(radius_str, borderWidth_str, borderStyle, colorName, borderColor_str, borderOpacity_str, fill_opacity_str, labeltext)
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -235,7 +235,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             new_obj = jsonPointScript(safeLayerName, pointToLayer_str, usedFields[count])
                             if cluster_set[count]:
                                 new_obj += clusterScript(safeLayerName)
-                                cluster_num += 1    
+                                cluster_num += 1
                     elif i.geometryType() == 1:
                         radius_str = str(symbol.width() * 5)
                         penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle())
@@ -247,7 +247,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         else:
                             new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle_str)
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-                            new_obj += restackLayers(layerName, visible[count])        
+                            new_obj += restackLayers(layerName, visible[count])
                     elif i.geometryType() == 2:
                         borderStyle_str = ""
                         if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
@@ -272,9 +272,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         else:
                             new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle_str)
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-                            new_obj += restackLayers(layerName, visible[count])    
+                            new_obj += restackLayers(layerName, visible[count])
                 elif rendererDump[0:11] == 'CATEGORIZED':
-                    if i.geometryType() == 0 and icon_prov != True:
+                    if i.geometryType() == 0 and not icon_prov:
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -285,9 +285,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                                 categoryStr += eachCategoryScript(cat.value())
                             symbol = cat.symbol()
                             symbol_transp_float = symbol.alpha()
-                            fill_transp_float = float(symbol.color().alpha())/255
-                            fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
-                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+                            fill_transp_float = float(symbol.color().alpha()) / 255
+                            fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
+                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
                             categoryStr += styleValuesScript(symbol, fill_opacity_str, borderOpacity_str)
                         categoryStr += endCategoryScript()
@@ -298,8 +298,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
                             if cluster_set[count] == True:
-                                new_obj += clusterScript(safeLayerName)            
-                            cluster_num += 1    
+                                new_obj += clusterScript(safeLayerName)
+                            cluster_num += 1
                     elif i.geometryType() == 1:
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
@@ -312,8 +312,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             #categoryStr += "radius: '" + unicode(cat.symbol().size() * 2) + "',"
                             symbol = cat.symbol()
                             symbol_transp_float = symbol.alpha()
-                            fill_transp_float = float(symbol.color().alpha())/255
-                            fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
+                            fill_transp_float = float(symbol.color().alpha()) / 255
+                            fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             categoryStr += categorizedLineStylesScript(symbol, fill_opacity_str)
                         categoryStr += endCategoryScript()
                         stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
@@ -333,10 +333,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                                 categoryStr += eachCategoryScript(cat.value())
                             symbol = cat.symbol()
                             symbol_transp_float = symbol.alpha()
-                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
                             radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
-                            fill_transp_float = float(symbol.color().alpha())/255
+                            fill_transp_float = float(symbol.color().alpha()) / 255
                             fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             categoryStr += categorizedPolygonStylesScript(symbol, radius_str, fill_opacity_str, borderOpacity_str)
                         categoryStr += endCategoryScript()
@@ -348,15 +348,15 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
                 elif rendererDump[0:9] == 'GRADUATED':
                     categoryStr = graduatedStyleScript(layerName)
-                    if i.geometryType() == 0 and icon_prov != True:
+                    if i.geometryType() == 0 and not icon_prov:
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
                             symbol_transp_float = symbol.alpha()
-                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
-                            fill_transp_float = float(symbol.color().alpha())/255
-                            fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
+                            fill_transp_float = float(symbol.color().alpha()) / 255
+                            fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             categoryStr += graduatedPointStylesScript(valueAttr, r, symbol, fill_opacity_str, borderOpacity_str)
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -367,15 +367,15 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
                             #add points to the cluster group
                             if cluster_set[count] == True:
-                                new_obj += clusterScript(safeLayerName)            
-                                cluster_num += 1    
+                                new_obj += clusterScript(safeLayerName)
+                                cluster_num += 1
                     elif i.geometryType() == 1:
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
                             symbol_transp_float = symbol.alpha()
-                            fill_transp_float = float(symbol.color().alpha())/255
-                            fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
+                            fill_transp_float = float(symbol.color().alpha()) / 255
+                            fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             categoryStr += graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, fill_opacity_str)
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -389,10 +389,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         for r in renderer.ranges():
                             symbol = r.symbol()
                             symbol_transp_float = symbol.alpha()
-                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
-                            fill_transp_float = float(symbol.color().alpha())/255
-                            fill_opacity_str = str(layer_transp_float*symbol_transp_float*fill_transp_float)
+                            fill_transp_float = float(symbol.color().alpha()) / 255
+                            fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             categoryStr += graduatedPolygonStylesScript(valueAttr, r, symbol, fill_opacity_str, borderOpacity_str)
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -428,7 +428,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #        }"""
 #                            if i.providerType() == 'WFS' and json[count] == False:
 #                                stylestr="""
-#            pointToLayer: function (feature, latlng) {  
+#            pointToLayer: function (feature, latlng) {
 #                return L.circleMarker(latlng, doStyle""" + layerName + """(feature))"""+labeltext+"""
 #            },
 #            onEachFeature: function (feature, layer) {"""+popFuncs+"""
@@ -440,16 +440,16 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #                                new_obj = categoryStr + """
 #        var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 #            onEachFeature: pop_""" + safeLayerName + """,
-#            pointToLayer: function (feature, latlng) {  
+#            pointToLayer: function (feature, latlng) {
 #                return L.circleMarker(latlng, doStyle""" + safeLayerName + """(feature))"""+labeltext+"""
 #            }
 #        });"""
 #                                #add points to the cluster group
 #                                if cluster_set[count] == True:
 #                                    new_obj += """
-#            var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});                
-#            cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""            
-#                                    cluster_num += 1    
+#            var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});     
+#            cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
+#                                    cluster_num += 1
 
                 if icon_prov and i.geometryType() == 0:
                     new_obj = customMarkerScript(safeLayerName, labeltext, usedFields[count])
@@ -460,7 +460,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #                    new_obj = """
 #var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 #    onEachFeature: pop_""" + safeLayerName + """,
-#});"""        
+#});"""
 
                 if (i.providerType() != 'WFS' or json[count] == True) and usedFields[count] != 0:
                     f5.write(new_pop)
@@ -471,7 +471,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         if i.geometryType() == 0:
                             f5.write("""
         //add comment sign to hide this layer on the map in the initial view.
-        feature_group.addLayer(json_"""+ safeLayerName + """JSON);""")
+        feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
                         else:
                             f5.write("""
         //add comment sign to hide this layer on the map in the initial view.
@@ -485,7 +485,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         if i.geometryType() == 0:
                             f5.write("""
     //delete comment sign to show this layer on the map in the initial view.
-    //feature_group.addLayer(json_"""+ safeLayerName + """JSON);""")
+    //feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
                         if i.geometryType() != 0:
                             f5.write("""
     //delete comment sign to show this layer on the map in the initial view.
@@ -505,13 +505,13 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                 new_obj = wmsScript(safeLayerName, wms_url, wms_layer, wms_format)
             else:
                 out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
-                pt2    = i.extent()
+                pt2 = i.extent()
                 crsSrc = i.crs()    # WGS 84
                 crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
                 pt3 = xform.transform(pt2)
-                bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),pt3.xMinimum(), pt3.xMaximum()]
-                bounds2 = '[[' + str(pt3.yMinimum()) + ',' + str(pt3.xMinimum()) + '],[' + str(pt3.yMaximum()) + ',' + str(pt3.xMaximum()) +']]'
+                bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(), pt3.xMinimum(), pt3.xMaximum()]
+                bounds2 = '[[' + str(pt3.yMinimum()) + ',' + str(pt3.xMinimum()) + '],[' + str(pt3.yMaximum()) + ',' + str(pt3.xMaximum()) + ']]'
                 new_obj = rasterScript(safeLayerName, out_raster_name, bounds2)
             if visible[count]:
                 new_obj += """
@@ -525,23 +525,23 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
         feature_group.addTo(map);""")
         f5fgroup.close()
 
-    if webmap_head != "": 
+    if webmap_head != "":
         titleStart = titleSubScript(webmap_head, webmap_subhead)
         with open(outputIndex, 'a') as f5contr:
             f5contr.write(titleStart)
             f5contr.close()
-    if addressSearch == True:
+    if addressSearch:
         address_text = addressSearchScript()
         with open(outputIndex, 'a') as f5addr:
             f5addr.write(address_text)
             f5addr.close()
-    if legend == True:
+    if legend:
         legendStart = legendStartScript()
         for i in reversed(layer_list):
             rawLayerName = i.name()
             safeLayerName = re.sub('[\W_]+', '', rawLayerName)
             if i.type() == 0:
-                fields = i.pendingFields() 
+                fields = i.pendingFields()
                 field_names = [field.name() for field in fields]
                 legend_ico_prov = False
                 legend_exp_prov = False
@@ -550,7 +550,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         legend_ico_prov = True
                     if str(field) == 'legend_exp':
                         legend_exp_prov = True
-                if legend_ico_prov == True and legend_exp_prov == True:
+                if legend_ico_prov and legend_exp_prov:
                     iter = i.getFeatures()
                     for feat in iter:
                         fid = feat.id()
@@ -569,7 +569,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 
     # let's add layer control
     if params["Appearance"]["Add layers list"]:
-        if len(basemapName) == 0 or basemapName == "None" or matchCRS == True:
+        if len(basemapName) == 0 or basemapName == "None" or matchCRS:
             controlStart = ""
         else:
             controlStart = """
@@ -606,7 +606,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
             if i.type() == 0:
                 with open(outputIndex, 'a') as f7:
                     if cluster_set[count] == True and i.geometryType() == 0:
-                        new_layer = '"' + rawLayerName + '"' + ": cluster_group"""+ safeLayerName + """JSON,"""
+                        new_layer = '"' + rawLayerName + '"' + ": cluster_group""" + safeLayerName + """JSON,"""
                     else:
                         new_layer = '"' + rawLayerName + '"' + ": json_" + safeLayerName + """JSON,"""
                     f7.write(new_layer)
@@ -615,15 +615,15 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                 with open(outputIndex, 'a') as f7:
                     new_layer = '"' + rawLayerName + '"' + ": overlay_" + safeLayerName + ""","""
                     f7.write(new_layer)
-                    f7.close()    
-        controlEnd = "},{collapsed:false}).addTo(map);"    
+                    f7.close()
+        controlEnd = "},{collapsed:false}).addTo(map);"
 
         with open(outputIndex, 'rb+') as f8:
             f8.seek(-1, os.SEEK_END)
             f8.truncate()
             f8.write(controlEnd)
             f8.close()
-    if opacity_raster == True:
+    if opacity_raster:
         opacityStart = """
         function updateOpacity(value) {
         """
@@ -631,7 +631,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
             f9.write(opacityStart)
             f9.close()
 
-        for i in layer_list: 
+        for i in layer_list:
             rawLayerName = i.name()
             safeLayerName = re.sub('[\W_]+', '', rawLayerName)
             if i.type() == 1:
@@ -639,15 +639,15 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     new_opc = """
                     overlay_""" + safeLayerName + """.setOpacity(value);"""
                     f10.write(new_opc)
-                    f10.close()    
-        opacityEnd = """}"""    
+                    f10.close()
+        opacityEnd = """}"""
         with open(outputIndex, 'rb+') as f11:
             f11.seek(-1, os.SEEK_END)
             f11.truncate()
             f11.write(opacityEnd)
             f11.close()
 
-    if locate == True:
+    if locate:
         end = locateScript()
     else:
         end = ''

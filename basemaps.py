@@ -60,6 +60,7 @@ def basemapLeaflet():
     }
     return dictionary
 
+
 def basemapOL():
     dictionary = {
         "None": "",
@@ -88,6 +89,7 @@ def basemapOL():
         "OpenWeatherMap Snow": "new ol.layer.Tile({title: 'OpenWeatherMap Snow', source: new ol.source.XYZ({url: 'http://tile.openweathermap.org/map/snow/{z}/{x}/{y}.png'})})"
     }
     return dictionary
+
 
 def basemapAttributions():
     dictionary = {

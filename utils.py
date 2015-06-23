@@ -54,50 +54,50 @@ def getUsedFields(layer):
     return fields
 
 
-def exportLayers(layers, folder, precision, optimize, popupField):        
+def exportLayers(layers, folder, precision, optimize, popupField):
     epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
-    QDir().mkpath(layersFolder)    
+    QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision)))
-    removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
-                         for i,it in enumerate(txt.split('"')))
-    for layer, popup in zip(layers, popupField):           
-        if layer.type() == layer.VectorLayer: 
-            usedFields = getUsedFields(layer)           
-            if popup != ALL_ATTRIBUTES:            
+    removeSpaces = lambda txt: '"'.join(it if i % 2 else ''.join(it.split())
+                         for i, it in enumerate(txt.split('"')))
+    for layer, popup in zip(layers, popupField):
+        if layer.type() == layer.VectorLayer:
+            usedFields = getUsedFields(layer)
+            if popup != ALL_ATTRIBUTES:
                 uri = TYPE_MAP[layer.wkbType()]
                 crs = layer.crs()
                 if crs.isValid():
-                    uri += '?crs=' + crs.authid() 
+                    uri += '?crs=' + crs.authid()
                 if popup != NO_POPUP:
                     usedFields.append(popup)
                 for field in usedFields:
                     fieldType = layer.pendingFields().field(field).type()
                     fieldType = "double" if fieldType == QVariant.Double or fieldType == QVariant.Int else "string"
-                    uri += '&field=' + str(field) + ":" + fieldType    
+                    uri += '&field=' + str(field) + ":" + fieldType
                 newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
                 writer = newlayer.dataProvider()
                 outFeat = QgsFeature()
-                for feature in layer.getFeatures():  
+                for feature in layer.getFeatures():
                     outFeat.setGeometry(feature.geometry())
                     attrs = [feature[f] for f in usedFields]
-                    if attrs:                        
-                        outFeat.setAttributes(attrs)              
+                    if attrs:
+                        outFeat.setAttributes(attrs)
                     writer.addFeatures([outFeat])
-                layer = newlayer            
+                layer = newlayer
 
             path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
-            QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", epsg3587, 'GeoJson')                
+            QgsVectorFileWriter.writeAsVectorFormat(layer, path, "utf-8", epsg3587, 'GeoJson')
             with open(path) as f:
                 lines = f.readlines()
-            with open(path, "w") as f:            
+            with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" + safeName(layer.name())))
-                for line in lines:                                
+                for line in lines:
                     line = reducePrecision.sub(r"\1", line)
                     if optimize:
                         line = line.strip("\n\t ")
                         line = removeSpaces(line)
-                    f.write(line)      
+                    f.write(line)
         elif layer.type() == layer.RasterLayer:
             orgFile = layer.source()
             destFile = os.path.join(layersFolder, safeName(layer.name()) + ".jpg")
@@ -118,6 +118,6 @@ def exportLayers(layers, folder, precision, optimize, popupField):
 
 
 def safeName(name):
-    #TODO: we are assuming that at least one character is valid...
+# TODO: we are assuming that at least one character is valid...
     validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChars)

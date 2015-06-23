@@ -33,6 +33,7 @@ import tempfile
 
 selectedCombo = "None"
 
+
 class MainDialog(QDialog, Ui_MainDialog):
 
     items = {}
@@ -50,13 +51,13 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonSaveOL.clicked.connect(self.saveOL)
         self.buttonSaveLeaflet.clicked.connect(self.saveLeaf)
         self.connect(self.labelPreview, SIGNAL("linkActivated(QString)"), self.labelLinkClicked)
-    
+
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
             folder = QFileDialog.getExistingDirectory(self, "Choose export folder", paramItem.text(col), QFileDialog.ShowDirsOnly)
             if folder != "":
                 paramItem.setText(col, folder)
-    
+
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
@@ -116,7 +117,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         for group, settings in paramsOL.iteritems():
             item = QTreeWidgetItem()
             item.setText(0, group)
-            for param,value in settings.iteritems():
+            for param, value in settings.iteritems():
                 if QSettings().contains(param):
                     QSettings().remove(param)
                 if QSettings().contains("qgis2web/" + param):
@@ -156,7 +157,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def tempIndexFile(self):
         folder = utils.tempFolder()
-        url = "file:///"+ os.path.join(folder, "index.html").replace("\\","/")
+        url = "file:///" + os.path.join(folder, "index.html").replace("\\", "/")
         return url
 
     def previewOL3(self):
@@ -243,7 +244,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         labels.append(False)
                 groups[group] = groupLayers[::-1]
 
-        return layers[::-1], groups, popup[::-1], visible[::-1],  json[::-1], cluster[::-1], labels[::-1]
+        return layers[::-1], groups, popup[::-1], visible[::-1], json[::-1], cluster[::-1], labels[::-1]
 
 
 class TreeGroupItem(QTreeWidgetItem):
@@ -267,6 +268,7 @@ class TreeGroupItem(QTreeWidgetItem):
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
+
 
 class TreeLayerItem(QTreeWidgetItem):
 
@@ -391,7 +393,7 @@ class TreeSettingItem(QTreeWidgetItem):
     def value(self):
         if isinstance(self._value, bool):
             return self.checkState(1) == Qt.Checked
-        elif isinstance(self._value, (int,float)):
+        elif isinstance(self._value, (int, float)):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
             return self.combo.currentText()
