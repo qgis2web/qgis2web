@@ -171,7 +171,7 @@ def bounds(useCanvas, layers):
 
 
 def layerToJavascript(layer, scaleVisibility):
-#   TODO: change scale to resolution
+    # TODO: change scale to resolution
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale())
         maxResolution = "maxResolution:%s,\n" % str(layer.maximumScale())
@@ -245,7 +245,7 @@ def exportStyles(layers, folder):
                 for cat in renderer.categories():
                     cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder, layer_transparency)))
                 defs += ",\n".join(cats) + "};"
-                value = 'var value = feature.get("%s");' %  renderer.classAttribute()
+                value = 'var value = feature.get("%s");' % renderer.classAttribute()
                 style = '''var style = categories_%s[value]''' % (safeName(layer.name()))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())

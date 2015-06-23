@@ -110,7 +110,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     xform = QgsCoordinateTransform(crsSrc, crsDest)
                     extentRep = xform.transform(i.extent())
                     extentRepNew = ','.join([str(extentRep.xMinimum()), str(extentRep.xMaximum()), str(extentRep.yMinimum()), str(extentRep.yMaximum())])
-                    processing.runalg("gdalogr:warpreproject", in_raster,i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
+                    processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
                     processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "", extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "", out_raster)
 
     #now determine the canvas bounding box
@@ -257,7 +257,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         else:
                             borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
                             borderStyle_str = getLineStyle(symbol.symbolLayer(0).borderStyle())
-                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha())/255
+                            border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
                             radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
                             if symbol.symbolLayer(0).borderStyle() == 0:
@@ -447,7 +447,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
 #                                #add points to the cluster group
 #                                if cluster_set[count] == True:
 #                                    new_obj += """
-#            var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});     
+#            var cluster_group"""+ safeLayerName + """JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
 #            cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
 #                                    cluster_num += 1
 

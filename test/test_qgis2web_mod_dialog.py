@@ -16,7 +16,7 @@ import unittest
 
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
-from qgis2web_mod_dialog import qgis2web_classDialog
+from main_dialog import MainDialog
 
 from utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
@@ -27,7 +27,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = qgis2web_classDialog(None)
+        self.dialog = MainDialog(None)
 
     def tearDown(self):
         """Runs after each test."""
