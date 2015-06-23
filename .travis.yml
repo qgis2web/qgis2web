@@ -11,7 +11,7 @@ virtualenv:
 
 install:
   - sudo apt-get update
-  - sudo apt-get install -y qgis python-coverage 
+  - sudo apt-get install -y qgis python-coverage xvfb
   - pip install --upgrade pip
   - pip install --upgrade pep8
   - pip install --upgrade pylint
@@ -26,7 +26,7 @@ before_script:
 script:
   - make pep8
   - make pylint
-  - make test
+  - xvfb-run --server-args="-screen 0, 1024x768x24" make test -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=safe safe
 
 notifications:
   email:
