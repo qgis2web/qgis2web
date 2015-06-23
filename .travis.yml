@@ -26,7 +26,7 @@ before_script:
 script:
   - make pep8
   - make pylint
-  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web qgis2web
+  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
 notifications:
   email:
