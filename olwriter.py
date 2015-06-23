@@ -34,6 +34,7 @@ basemapAttributions = basemapAttributions()
 
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
+
 def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, folder): 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     folder = os.path.join(folder, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
@@ -82,8 +83,9 @@ def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, fol
             f.write(replaceInTemplate(settings["Appearance"]["Template"] + ".html", values))            
     finally:
         QApplication.restoreOverrideCursor()
-	return os.path.join(folder, "index.html")
-        
+    return os.path.join(folder, "index.html")
+
+
 def writeLayersAndGroups(layers, groups, visible, folder, settings):
 
     baseLayer = baseLayerGroup % baseLayers[settings["Appearance"]["Base layer"]]
@@ -141,6 +143,7 @@ def replaceInTemplate(template, values):
         s = s.replace(name, value)
     return s
 
+
 def bounds(useCanvas, layers):    
     if useCanvas: 
         canvas = iface.mapCanvas()
@@ -165,7 +168,8 @@ def bounds(useCanvas, layers):
                     
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(), 
                                 extent.xMaximum(), extent.yMaximum())
-        
+
+
 def layerToJavascript(layer, scaleVisibility):
     #TODO: change scale to resolution
     if scaleVisibility and layer.hasScaleBasedVisibility():
@@ -214,7 +218,7 @@ def layerToJavascript(layer, scaleVisibility):
                         });''' % {"n": layerName, "extent": sExtent, "col": provider.xSize(), 
                                     "name": layer.name(), "row": provider.ySize()} 
 
-    
+
 def exportStyles(layers, folder):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
@@ -296,7 +300,7 @@ def exportStyles(layers, folder):
                     var styleCache_%(name)s={}
                     var style_%(name)s = %(style)s;''' % 
                 {"defs":defs, "name":safeName(layer.name()), "style":style})                    
-          
+
 
 def getRGBAColor(color, alpha):
     r,g,b,_ = color.split(",")
@@ -370,10 +374,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                         })
                         ''' % style)
     return "[ %s]" % ",".join(styles)
-                             
+
+
 def getCircle(color):
     return ("new ol.style.Circle({radius: 3, stroke: %s, fill: %s})" % 
                 (getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"), getFillStyle(color)))
+
 
 def getIcon(path, size):
     size  = math.floor(float(size) * 3.8) 
@@ -386,11 +392,12 @@ def getIcon(path, size):
                   src: "%(path)s"
             })''' % {"s": size, "a":anchor, "path": path.replace("\\", "\\\\")}
 
+
 def getStrokeStyle(color, dashed, width):
     width  = math.floor(float(width) * 3.8) 
     dash = "[3]" if dashed else "null"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
 
+
 def getFillStyle(color):
     return "new ol.style.Fill({color: %s})" % color
-

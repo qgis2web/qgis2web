@@ -50,13 +50,13 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonSaveOL.clicked.connect(self.saveOL)
         self.buttonSaveLeaflet.clicked.connect(self.saveLeaf)
         self.connect(self.labelPreview, SIGNAL("linkActivated(QString)"), self.labelLinkClicked)
-	
+    
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
             folder = QFileDialog.getExistingDirectory(self, "Choose export folder", paramItem.text(col), QFileDialog.ShowDirsOnly)
             if folder != "":
                 paramItem.setText(col, folder)
-	
+    
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
@@ -298,29 +298,29 @@ class TreeLayerItem(QTreeWidgetItem):
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
         if layer.type() == layer.VectorLayer:
-			if layer.providerType() == 'WFS':
-				self.jsonItem = QTreeWidgetItem(self)
-				self.jsonCheck = QCheckBox()
-				self.jsonCheck.setChecked(True)
-				self.jsonItem.setText(0, "Encode to JSON")
-				self.addChild(self.jsonItem)
-				tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-			if layer.geometryType() == 0:
-				self.clusterItem = QTreeWidgetItem(self)
-				self.clusterCheck = QCheckBox()
-				self.clusterCheck.setChecked(False)
-				self.clusterItem.setText(0, "Cluster")
-				self.addChild(self.clusterItem)
-				tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
-			palyr = QgsPalLayerSettings()
-			palyr.readFromLayer(layer)
-			if palyr.fieldName:
-				self.labelsItem = QTreeWidgetItem(self)
-				self.labelsCheck = QCheckBox()
-				self.labelsCheck.setChecked(True)
-				self.labelsItem.setText(0, "Label")
-				self.addChild(self.labelsItem)
-				tree.setItemWidget(self.labelsItem, 1, self.labelsCheck)
+            if layer.providerType() == 'WFS':
+                self.jsonItem = QTreeWidgetItem(self)
+                self.jsonCheck = QCheckBox()
+                self.jsonCheck.setChecked(True)
+                self.jsonItem.setText(0, "Encode to JSON")
+                self.addChild(self.jsonItem)
+                tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
+            if layer.geometryType() == 0:
+                self.clusterItem = QTreeWidgetItem(self)
+                self.clusterCheck = QCheckBox()
+                self.clusterCheck.setChecked(False)
+                self.clusterItem.setText(0, "Cluster")
+                self.addChild(self.clusterItem)
+                tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
+            palyr = QgsPalLayerSettings()
+            palyr.readFromLayer(layer)
+            if palyr.fieldName:
+                self.labelsItem = QTreeWidgetItem(self)
+                self.labelsCheck = QCheckBox()
+                self.labelsCheck.setChecked(True)
+                self.labelsItem.setText(0, "Label")
+                self.addChild(self.labelsItem)
+                tree.setItemWidget(self.labelsItem, 1, self.labelsCheck)
 
     @property
     def popup(self):
@@ -338,23 +338,23 @@ class TreeLayerItem(QTreeWidgetItem):
     @property
     def json(self):
         try:
-			return self.jsonCheck.isChecked()
+            return self.jsonCheck.isChecked()
         except:
-			return False
+            return False
 
     @property
     def cluster(self):
-		try:
-			return self.clusterCheck.isChecked()
-		except:
-			return False
+        try:
+            return self.clusterCheck.isChecked()
+        except:
+            return False
 
     @property
     def labels(self):
-		try:
-			return self.labelsCheck.isChecked()
-		except:
-			return False
+        try:
+            return self.labelsCheck.isChecked()
+        except:
+            return False
 
 
 class TreeSettingItem(QTreeWidgetItem):

@@ -32,14 +32,16 @@ TYPE_MAP = {
     QGis.WKBMultiLineString: 'MultiLineString',
     QGis.WKBMultiPolygon: 'MultiPolygon',
     }
-    
+
+
 def tempFolder():
     tempDir = os.path.join(unicode(QDir.tempPath()), 'qgis2web')
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 
     return unicode(os.path.abspath(tempDir))
-    
+
+
 def getUsedFields(layer):
     fields = []
     try:
@@ -50,7 +52,8 @@ def getUsedFields(layer):
     if labelsEnabled:
         fields.append(layer.customProperty("labeling/fieldName"))
     return fields
-        
+
+
 def exportLayers(layers, folder, precision, optimize, popupField):        
     epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
@@ -82,7 +85,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                         outFeat.setAttributes(attrs)              
                     writer.addFeatures([outFeat])
                 layer = newlayer            
-            
+
             path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
             QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", epsg3587, 'GeoJson')                
             with open(path) as f:
@@ -112,9 +115,9 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                 stderr=subprocess.STDOUT,
                 universal_newlines=False,
                 )
-            
+
 
 def safeName(name):
     #TODO: we are assuming that at least one character is valid...
     validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    return ''.join(c for c in name if c in validChars)    
+    return ''.join(c for c in name if c in validChars)

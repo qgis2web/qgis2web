@@ -99,7 +99,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
 #        if opacity_raster == True:
 #            base += """
 #        <input id="slide" type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)">"""
-          f_html.write(base)
+        f_html.write(base)
         f_html.close()
 
 
