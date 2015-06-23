@@ -11,7 +11,7 @@ virtualenv:
 
 install:
   - sudo apt-get update
-  - sudo apt-get install -y qgis python-coverage xvfb
+  - sudo apt-get install -y qgis python-coverage xvfb python-nosexcover
   - pip install --upgrade pip
   - pip install --upgrade pep8
   - pip install --upgrade pylint
