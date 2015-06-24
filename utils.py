@@ -118,6 +118,6 @@ def exportLayers(layers, folder, precision, optimize, popupField):
 
 
 def safeName(name):
-# TODO: we are assuming that at least one character is valid...
+    # TODO: we are assuming that at least one character is valid...
     validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChars)
