@@ -80,7 +80,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
             if i.type() == 0:
                 qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + str(precision)])
 
-                #now change the data structure to work with leaflet:
+                # now change the data structure to work with leaflet:
                 with open(layerFileName) as f:
                     lines = f.readlines()
                 with open(layerFileName, "w") as f2:
@@ -92,14 +92,14 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         f2.write(line)
                     f2.close
 
-                #now add the js files as data input for our map
+                # now add the js files as data input for our map
                 with open(outputIndex, 'a') as f3:
                     new_src = jsonScript(safeLayerName)
                     # store everything in the file
                     f3.write(new_src)
                     f3.close()
 
-            #here comes the raster layers. you need an installed version of gdal
+            # here comes the raster layers. you need an installed version of gdal
             elif i.type() == 1:
                 if i.dataProvider().name() != "wms":
                     in_raster = str(i.dataProvider().dataSourceUri())
@@ -113,8 +113,8 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
                     processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "", extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "", out_raster)
 
-    #now determine the canvas bounding box
-    #####now with viewcontrol
+    # now determine the canvas bounding box
+    # now with viewcontrol
     try:
         crsSrc = canvas.mapSettings().destinationCrs()
     except:
@@ -158,7 +158,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                 field_names = [field.name() for field in fields]
                 if usedFields[count] != 0 and usedFields[count] != 1:
                     for field in field_names:
-                        #for popup_field in usedFields:
+                        # for popup_field in usedFields:
                         if field == usedFields[count]:
                             new_field_names.append(field)
                     field_names = new_field_names
@@ -212,7 +212,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                 layer_transp_float = 1 - (float(i.layerTransparency()) / 100)
                 new_obj = ""
 
-                #single marker points:
+                # single marker points:
                 if rendererDump[0:6] == 'SINGLE':
                     symbol = renderer.symbol()
                     colorName = symbol.color().name()
@@ -309,7 +309,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                                 categoryStr += defaultCategoryScript()
                             else:
                                 categoryStr += eachCategoryScript(cat.value())
-                            #categoryStr += "radius: '" + unicode(cat.symbol().size() * 2) + "',"
+                            # categoryStr += "radius: '" + unicode(cat.symbol().size() * 2) + "',"
                             symbol = cat.symbol()
                             symbol_transp_float = symbol.alpha()
                             fill_transp_float = float(symbol.color().alpha()) / 255
@@ -365,7 +365,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
-                            #add points to the cluster group
+                            # add points to the cluster group
                             if cluster_set[count] == True:
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1
@@ -458,9 +458,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                         cluster_num += 1
 #                else:
 #                    new_obj = """
-#var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
+# var json_""" + safeLayerName + """JSON = new L.geoJson(json_""" + safeLayerName + """,{
 #    onEachFeature: pop_""" + safeLayerName + """,
-#});"""
+# });"""
 
                 if (i.providerType() != 'WFS' or json[count] == True) and usedFields[count] != 0:
                     f5.write(new_pop)
@@ -586,10 +586,10 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
     #            if l == len(basemapName)-1:
     #                controlStart+= """
     #        '""" + str(basemapName[l]) + """': basemap_""" + str(l) + """};"""
-        #if len
-        #control_basemap = """
-        #var baseMaps = {"""
-        #for l in range(0,len(basemapName)):
+        # if len
+        # control_basemap = """
+        # var baseMaps = {"""
+        # for l in range(0,len(basemapName)):
         if len(basemapName) == 0 or basemapName == "None":
             controlStart += """
             L.control.layers({},{"""
