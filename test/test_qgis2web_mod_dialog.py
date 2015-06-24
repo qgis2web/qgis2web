@@ -29,7 +29,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = MainDialog(None)
+        self.dialog = MainDialog()
 
     def tearDown(self):
         """Runs after each test."""
