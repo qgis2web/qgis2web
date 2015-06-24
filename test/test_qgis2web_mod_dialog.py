@@ -19,8 +19,8 @@ from PyQt4.QtGui import QDialogButtonBox, QDialog
 from maindialog import MainDialog
 
 from utilities import get_qgis_app
+QGIS_APP = get_qgis_app()
 
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test dialog works."""

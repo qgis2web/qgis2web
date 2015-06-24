@@ -15,6 +15,8 @@ __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 import unittest
 
 from PyQt4.QtGui import QIcon
+from utilities import get_qgis_app
+QGIS_APP = get_qgis_app()
 
 
 
