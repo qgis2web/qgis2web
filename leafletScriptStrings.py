@@ -98,7 +98,7 @@ def pointToLayerScript(radius_str, borderWidth_str, borderStyle, colorName, bord
             }}){labeltext}""".format(radius_str=radius_str,
                                      colorName=colorName,
                                      borderColor_str=borderColor_str,
-                                     borderWidth_str=borderWidth_str,
+                                     borderWidth_str=float(borderWidth_str) * 4,
                                      borderOpacity_str=borderOpacity_str if borderStyle != 0 else 0,
                                      dashArray=getLineStyle(borderStyle),
                                      opacity_str=opacity_str,
@@ -159,7 +159,7 @@ def styleValuesScript(symbol, opacity_str, borderOpacity_str):
                     radius=unicode(symbol.size() * 2),
                     fillColor=unicode(symbol.color().name()),
                     color=unicode(symbol.symbolLayer(0).borderColor().name()),
-                    borderWidth=symbol.symbolLayer(0).outlineWidth(),
+                    borderWidth=symbol.symbolLayer(0).outlineWidth() * 4,
                     borderOpacity_str=borderOpacity_str if symbol.symbolLayer(0).outlineStyle() != 0 else 0,
                     dashArray=getLineStyle(int(str(symbol.symbolLayer(0).outlineStyle()))),
                     opacity_str=opacity_str)
@@ -173,7 +173,7 @@ def lineStyleScript(radius_str, colorName, penStyle_str, opacity_str):
                 color: '{colorName}',
                 dashArray: '{penStyle_str}',
                 opacity: {opacity_str}
-            }};""".format(radius_str=radius_str,
+            }};""".format(radius_str=radius_str * 4,
                          colorName=colorName,
                          penStyle_str=penStyle_str,
                          opacity_str=opacity_str)
@@ -189,7 +189,7 @@ def polyStyleScript(radius_str, colorName, borderOpacity_str, fillColor, penStyl
                 dashArray: '{penStyle_str}',
                 opacity: {borderOpacity_str},
                 fillOpacity: {opacity_str}
-            }};""".format(radius_str=radius_str,
+            }};""".format(radius_str=radius_str * 4,
                          colorName=colorName,
                          fillColor=fillColor,
                          penStyle_str=penStyle_str,
@@ -286,7 +286,7 @@ def categorizedLineStylesScript(symbol, opacity_str):
                 }};
                 break;""".format(
                     color=unicode(symbol.color().name()),
-                    weight=unicode(symbol.width() * 5),
+                    weight=unicode(symbol.width() * 4),
                     dashArray=getLineStyle(symbol.symbolLayer(0).penStyle()),
                     opacity_str=opacity_str)
     return categorizedLineStyles
@@ -311,7 +311,7 @@ def categorizedPolygonStylesScript(symbol, radius_str, opacity_str, borderOpacit
                     fillOpacity: '{opacity_str}',
                 }};
                 break;""".format(
-                    weight=unicode(symbol.symbolLayer(0).borderWidth() * 5),
+                    weight=unicode(symbol.symbolLayer(0).borderWidth() * 4),
                     fillColor=unicode(symbol.color().name()) if symbol.symbolLayer(0).brushStyle() != 0 else "none",
                     color=unicode(symbol.symbolLayer(0).borderColor().name()) if symbol.symbolLayer(0).borderStyle() != 0 else "none",
                     radius_str=radius_str,
@@ -349,7 +349,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_
             radius=unicode(symbol.size() * 2),
             fillColor=unicode(symbol.color().name()),
             color=unicode(symbol.symbolLayer(0).borderColor().name()),
-            lineWeight=symbol.symbolLayer(0).outlineWidth(),
+            lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
             opacity_str=opacity_str,
             borderOpacity_str=borderOpacity_str,
             dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle()))
@@ -367,7 +367,7 @@ def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
             }}
         }}""".format(
             color=unicode(symbol.symbolLayer(0).color().name()),
-            weight=unicode(symbol.width() * 5),
+            weight=unicode(symbol.width() * 4),
             dashArray=getLineStyle(symbol.symbolLayer(0).penStyle()),
             opacity_str=opacity_str)
     return graduatedLineStyles
@@ -386,7 +386,7 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str, borderOpacit
             }}
         }}""".format(
             color=unicode(symbol.symbolLayer(0).borderColor().name()),
-            weight=unicode(symbol.symbolLayer(0).borderWidth() * 5) if symbol.symbolLayer(0).borderStyle() != 0 else "0",
+            weight=unicode(symbol.symbolLayer(0).borderWidth() * 4) if symbol.symbolLayer(0).borderStyle() != 0 else "0",
             dashArray=getLineStyle(symbol.symbolLayer(0).borderStyle()),
             fillColor=unicode(symbol.color().name()) if symbol.symbolLayer(0).brushStyle() != 0 else "none",
             borderOpacity_str=borderOpacity_str,
