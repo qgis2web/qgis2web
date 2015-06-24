@@ -383,7 +383,7 @@ class TreeSettingItem(QTreeWidgetItem):
             self.combo.highlighted.connect(self.clickCombo)
             self.combo.currentIndexChanged.connect(dlg.saveComboSettings)
         else:
-            #self.setFlags(self.flags() | Qt.ItemIsEditable)
+            # self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
 
     def clickCombo(self):

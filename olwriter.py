@@ -38,7 +38,7 @@ baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layer
 def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     folder = os.path.join(folder, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
-    #folder = os.path.join(os.getcwd(),folder)
+    # folder = os.path.join(os.getcwd(),folder)
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
@@ -110,7 +110,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         mapLayers.append("lyr_" + safeName(layer.name()))
     visibility = "\n".join(["%s.setVisible(%s);" % (layer, str(v).lower()) for layer, v in zip(mapLayers[1:], visible)])
 
-    #ADD Group
+    # ADD Group
     group_list = ["baseLayer"]
     no_group_list = []
     for layer in layers:
@@ -131,7 +131,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersList + "\n")
-        #f.write(write_group_list)
+        # f.write(write_group_list)
 
 
 def replaceInTemplate(template, values):
