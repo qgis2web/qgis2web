@@ -12,6 +12,9 @@ import os
 import unittest
 import logging
 import ConfigParser
+from utilities import get_qgis_app
+
+QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
 LOGGER = logging.getLogger('QGIS')
 

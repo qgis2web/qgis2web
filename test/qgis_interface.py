@@ -27,6 +27,9 @@ import logging
 from PyQt4.QtCore import QObject, pyqtSlot, pyqtSignal
 from qgis.core import QgsMapLayerRegistry
 from qgis.gui import QgsMapCanvasLayer
+from utilities import get_qgis_app
+
+QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 LOGGER = logging.getLogger('QGIS')
 
 
