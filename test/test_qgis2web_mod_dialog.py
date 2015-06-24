@@ -21,6 +21,25 @@ from maindialog import MainDialog
 from utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
+class DummyInterface(object):
+    def __getattr__(self, *args, **kwargs):
+        def dummy(*args, **kwargs):
+            return self
+        return dummy
+    def __iter__(self):
+        return self
+    def next(self):
+        raise StopIteration
+    def layers(self):
+        # simulate iface.legendInterface().layers()
+        return QgsMapLayerRegistry.instance().mapLayers().values()
+iface = DummyInterface()
+QtCore.QCoreApplication.setOrganizationName('QGIS')
+QtCore.QCoreApplication.setApplicationName('QGIS2')
+
+import qgis2web
+self.plugin = qgis2web.classFactory(iface)
+self.ui = self.plugin.dlg.ui # useful for shorthand later
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test dialog works."""
