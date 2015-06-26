@@ -57,6 +57,8 @@ class QgisInterface(QObject):
         QgsMapLayerRegistry.instance().layerWasAdded.connect(self.addLayer)
         # noinspection PyArgumentList
         QgsMapLayerRegistry.instance().removeAll.connect(self.removeAllLayers)
+        
+        legendInterface = QgsLegendInterface(self)
 
         # For processing module
         self.destCrs = None
@@ -205,4 +207,4 @@ class QgisInterface(QObject):
 
     def legendInterface(self):
         """Get the legend."""
-        return self.canvas
+        return self.legendInterface()
