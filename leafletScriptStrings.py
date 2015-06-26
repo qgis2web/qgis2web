@@ -434,9 +434,9 @@ def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
         transparent: true,
         continuousWorld : true,
     }});""".format(safeLayerName=safeLayerName,
-                  wms_url=wms_url,
-                  wms_layer=wms_layer,
-                  wms_format=wms_format)
+                   wms_url=wms_url,
+                   wms_layer=wms_layer,
+                   wms_format=wms_format)
     return wms
 
 
