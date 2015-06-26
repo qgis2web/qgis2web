@@ -121,7 +121,7 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(safeLayerName, pointToLayer_str, usedFields):
-    if usedFields != 0 :
+    if usedFields != 0:
         jsonPoint = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             onEachFeature: pop_{safeLayerName}, {pointToLayer_str}

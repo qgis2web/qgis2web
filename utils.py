@@ -30,8 +30,7 @@ TYPE_MAP = {
     QGis.WKBPolygon: 'Polygon',
     QGis.WKBMultiPoint: 'MultiPoint',
     QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
-    }
+    QGis.WKBMultiPolygon: 'MultiPolygon'}
 
 
 def tempFolder():
@@ -113,8 +112,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                 stdout=subprocess.PIPE,
                 stdin=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
-                universal_newlines=False,
-                )
+                universal_newlines=False)
 
 
 def safeName(name):
