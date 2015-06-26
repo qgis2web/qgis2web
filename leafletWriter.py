@@ -221,7 +221,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                     fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                     if i.geometryType() == 0 and not icon_prov:
                         radius_str = str(symbol.size() * 2)
-                        borderWidth_str = str(symbol.symbolLayer(0).outlineWidth())
+                        borderWidth_str = symbol.symbolLayer(0).outlineWidth()
                         borderStyle = symbol.symbolLayer(0).outlineStyle()
                         borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
                         border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
@@ -237,9 +237,9 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1
                     elif i.geometryType() == 1:
-                        radius_str = str(symbol.width() * 5)
-                        penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle())
-                        lineStyle_str = lineStyleScript(radius_str, colorName, penStyle_str, fill_opacity_str)
+                        radius_str = symbol.width()
+                        penStyle_str = getLineStyle(symbol.symbolLayer(0).penStyle(), radius_str)
+                        lineStyle_str = simpleLineStyleScript(radius_str, colorName, penStyle_str, fill_opacity_str)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = nonPointStylePopupsScript(lineStyle_str, popFuncs)
                             new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
@@ -255,16 +255,16 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             borderColor_str = str(symbol.color().name())
                             radius_str = str(symbol.symbolLayer(0).width() * 5)
                         else:
+                            radius = symbol.symbolLayer(0).borderWidth()
                             borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
-                            borderStyle_str = getLineStyle(symbol.symbolLayer(0).borderStyle())
+                            borderStyle_str = getLineStyle(symbol.symbolLayer(0).borderStyle(), radius)
                             border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
-                            radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
                             if symbol.symbolLayer(0).borderStyle() == 0:
                                 radius_str = "0"
                             if symbol.symbolLayer(0).brushStyle() == 0:
                                 colorName = "none"
-                        polyStyle_str = polyStyleScript(radius_str, borderColor_str, borderOpacity_str, colorName, borderStyle_str, fill_opacity_str)
+                        polyStyle_str = singlePolyStyleScript(radius * 4, borderColor_str, borderOpacity_str, colorName, borderStyle_str, fill_opacity_str)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = nonPointStylePopupsScript(polyStyle_str, popFuncs)
                             new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
@@ -289,7 +289,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
-                            categoryStr += styleValuesScript(symbol, fill_opacity_str, borderOpacity_str)
+                            categoryStr += categorizedPointStylesScript(symbol, fill_opacity_str, borderOpacity_str)
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
@@ -335,7 +335,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
                             symbol_transp_float = symbol.alpha()
                             border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
-                            radius_str = str(symbol.symbolLayer(0).borderWidth() * 5)
+                            radius_str = symbol.symbolLayer(0).borderWidth()
                             fill_transp_float = float(symbol.color().alpha()) / 255
                             fill_opacity_str = str(layer_transp_float * symbol_transp_float * fill_transp_float)
                             categoryStr += categorizedPolygonStylesScript(symbol, radius_str, fill_opacity_str, borderOpacity_str)
