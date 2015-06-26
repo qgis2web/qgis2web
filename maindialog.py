@@ -73,6 +73,9 @@ class MainDialog(QDialog, Ui_MainDialog):
             webbrowser.open_new_tab(self.preview.url().toString())
 
     def populateLayers(self):
+        global IFACE
+        if IFACE:
+            iface = IFACE
         skip_type = [2]
         groups = {}
         rels = iface.legendInterface().groupLayerRelationship()
