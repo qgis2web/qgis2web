@@ -17,6 +17,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import sys
 import os
 from qgis.core import *
 from PyQt4.QtCore import *
@@ -30,7 +31,6 @@ from leafletWriter import *
 from qgis.utils import iface
 import webbrowser
 import tempfile
-from .test.utilities import get_qgis_app
 
 selectedCombo = "None"
 
@@ -79,6 +79,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         try:
             rels = iface.legendInterface().groupLayerRelationship()
         except:
+            sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+            from test.utilities import get_qgis_app
             QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
             rels = IFACE.legendInterface().groupLayerRelationship()
         groupedLayers = {}
