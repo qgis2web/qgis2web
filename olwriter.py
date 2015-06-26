@@ -56,7 +56,7 @@ def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, fol
         geojsonVars = "\n".join(['<script src="layers/%s"></script>' % (safeName(layer.name()) + ".js")
                                 for layer in layers if layer.type() == layer.VectorLayer])
         styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.name()))
-                                for layer in layers if layer.type() == layer.VectorLayer])
+                              for layer in layers if layer.type() == layer.VectorLayer])
         popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if isinstance(field, basestring) else str(field) for field in popup])
         controls = []
         if settings["Appearance"]["Add scale bar"]:
@@ -71,13 +71,13 @@ def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, fol
         highlight = str(settings["Appearance"]["Highlight features"]).lower()
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
         values = {"@STYLEVARS@": styleVars,
-                    "@GEOJSONVARS@": geojsonVars,
-                    "@BOUNDS@": mapbounds,
-                    "@CONTROLS@": ",".join(controls),
-                    "@POPUPLAYERS@": popupLayers,
-                    "@VIEW@": view,
-                    "@ONHOVER@": onHover,
-                    "@DOHIGHLIGHT@": highlight}
+                  "@GEOJSONVARS@": geojsonVars,
+                  "@BOUNDS@": mapbounds,
+                  "@CONTROLS@": ",".join(controls),
+                  "@POPUPLAYERS@": popupLayers,
+                  "@VIEW@": view,
+                  "@ONHOVER@": onHover,
+                  "@DOHIGHLIGHT@": highlight}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
             f.write(replaceInTemplate(settings["Appearance"]["Template"] + ".html", values))
@@ -98,8 +98,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 title: "%s"});\n''' %
-                ("group_" + safeName(group), ",".join(["lyr_" + safeName(layer.name()) for layer in groupLayers]),
-                group))
+                      ("group_" + safeName(group), ",".join(["lyr_" + safeName(layer.name()) for layer in groupLayers]),
+                       group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
     mapLayers = []
@@ -167,7 +167,7 @@ def bounds(useCanvas, layers):
                 extent.combineExtentWith(layerExtent)
 
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
-                                extent.xMaximum(), extent.yMaximum())
+                                 extent.xMaximum(), extent.yMaximum())
 
 
 def layerToJavascript(layer, scaleVisibility):
@@ -185,8 +185,8 @@ def layerToJavascript(layer, scaleVisibility):
                 style: style_%(n)s,
                 title: "%(name)s"
             });''' %
-            {"name": layer.name(), "n": layerName, "min": minResolution,
-             "max": maxResolution})
+                {"name": layer.name(), "n": layerName, "min": minResolution,
+                 "max": maxResolution})
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -204,7 +204,7 @@ def layerToJavascript(layer, scaleVisibility):
             transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
             extent = transform.transform(provider.extent())
             sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
-                                    extent.xMaximum(), extent.yMaximum())
+                                            extent.xMaximum(), extent.yMaximum())
             return '''var lyr_%(n)s = new ol.layer.Image({
                             opacity: 1,
                             title: "%(name)s",
@@ -216,7 +216,7 @@ def layerToJavascript(layer, scaleVisibility):
                                 imageExtent: %(extent)s
                             })
                         });''' % {"n": layerName, "extent": sExtent, "col": provider.xSize(),
-                                    "name": layer.name(), "row": provider.ySize()}
+                                  "name": layer.name(), "row": provider.ySize()}
 
 
 def exportStyles(layers, folder):
@@ -299,7 +299,7 @@ def exportStyles(layers, folder):
             f.write('''%(defs)s
                     var styleCache_%(name)s={}
                     var style_%(name)s = %(style)s;''' %
-                {"defs": defs, "name": safeName(layer.name()), "style": style})
+                    {"defs": defs, "name": safeName(layer.name()), "style": style})
 
 
 def getRGBAColor(color, alpha):
@@ -364,8 +364,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
             style = ('''stroke: %s,
                         fill: %s''' %
-                    (getStrokeStyle(borderColor, borderStyle != "solid", borderWidth),
-                     getFillStyle(fillColor)))
+                     (getStrokeStyle(borderColor, borderStyle != "solid", borderWidth),
+                      getFillStyle(fillColor)))
         else:
             style = ""
         styles.append('''new ol.style.Style({
@@ -377,7 +377,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
 def getCircle(color):
     return ("new ol.style.Circle({radius: 3, stroke: %s, fill: %s})" %
-                (getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"), getFillStyle(color)))
+            (getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"), getFillStyle(color)))
 
 
 def getIcon(path, size):

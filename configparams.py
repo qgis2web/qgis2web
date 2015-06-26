@@ -49,8 +49,7 @@ paramsOL = {
             "OpenWeatherMap Pressure",
             "OpenWeatherMap Wind",
             "OpenWeatherMap Temp",
-            "OpenWeatherMap Snow"
-            ),
+            "OpenWeatherMap Snow"),
         "Match project CRS": False,
         "Add scale bar": False,
         "Add address search": False,

@@ -63,7 +63,7 @@ def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible
     measure = params["Appearance"]["Add measure tool"]
 
     removeSpaces = lambda txt: '"'.join(it if i % 2 else ''.join(it.split())
-                        for i, it in enumerate(txt.split('"')))
+                                        for i, it in enumerate(txt.split('"')))
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas)
     writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, addressSearch, measure, matchCRS, canvas, full)

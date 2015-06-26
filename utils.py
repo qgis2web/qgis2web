@@ -59,7 +59,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
     QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision)))
     removeSpaces = lambda txt: '"'.join(it if i % 2 else ''.join(it.split())
-                         for i, it in enumerate(txt.split('"')))
+                                        for i, it in enumerate(txt.split('"')))
     for layer, popup in zip(layers, popupField):
         if layer.type() == layer.VectorLayer:
             usedFields = getUsedFields(layer)
