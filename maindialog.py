@@ -30,6 +30,7 @@ from leafletWriter import *
 from qgis.utils import iface
 import webbrowser
 import tempfile
+from .test.utilities import get_qgis_app
 
 selectedCombo = "None"
 
@@ -78,6 +79,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         try:
             rels = iface.legendInterface().groupLayerRelationship()
         except:
+            QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
             rels = IFACE.legendInterface().groupLayerRelationship()
         groupedLayers = {}
         for rel in rels:
