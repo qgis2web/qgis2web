@@ -3,13 +3,15 @@
 
 import sys
 import logging
+from qgis.utils import iface
+
+IFACE = iface
 
 
 LOGGER = logging.getLogger('QGIS')
 QGIS_APP = None  # Static variable used to hold hand to running QGIS app
 CANVAS = None
 PARENT = None
-IFACE = None
 
 
 def get_qgis_app():

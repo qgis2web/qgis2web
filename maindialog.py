@@ -78,11 +78,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def populateLayers(self):
         skip_type = [2]
         groups = {}
-        try:
-            rels = iface.legendInterface().groupLayerRelationship()
-        except:
-            QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
-            rels = IFACE.legendInterface().groupLayerRelationship()
+        rels = iface.legendInterface().groupLayerRelationship()
         groupedLayers = {}
         for rel in rels:
             groupName = rel[0]
