@@ -58,8 +58,6 @@ class QgisInterface(QObject):
         # noinspection PyArgumentList
         QgsMapLayerRegistry.instance().removeAll.connect(self.removeAllLayers)
         
-        legendInterface = QgsLegendInterface(self)
-
         # For processing module
         self.destCrs = None
 
