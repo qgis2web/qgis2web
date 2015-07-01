@@ -35,19 +35,17 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Runs after each test."""
         self.dialog = None
 
-    def test_dialog_ok(self):
+    def test_OL3(self):
         """Test we can click OK."""
-        button = self.dialog.button_box.button(QDialogButtonBox.Ok)
+        button = self.dialog.buttonUpdateOL
         button.click()
         result = self.dialog.result()
-        self.assertEqual(result, QDialog.Accepted)
 
-    def test_dialog_cancel(self):
+    def test_Leaflet(self):
         """Test we can click cancel."""
-        button = self.dialog.button_box.button(QDialogButtonBox.Cancel)
+        button = self.dialog.buttonUpdateLeaflet
         button.click()
         result = self.dialog.result()
-        self.assertEqual(result, QDialog.Rejected)
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
