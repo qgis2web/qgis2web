@@ -17,6 +17,7 @@ import unittest
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
+from PyQt4 import QtCore, QtTest
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 from utilities import get_qgis_app
 
@@ -37,15 +38,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_OL3(self):
         """Test we can export to OL3."""
-        button = self.dialog.widget.buttonUpdateOL
-        button.click()
+        button = self.dialog.buttonUpdateOL
+        QtTest.QTest.mouseClick(button, QtCore.Qt.LeftButton)
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Accepted)
 
     def test_Leaflet(self):
         """Test we can export to Leaflet."""
-        button = self.dialog.widget.buttonUpdateLeaflet
-        button.click()
+        button = self.dialog.buttonUpdateLeaflet
+        QtTest.QTest.mouseClick(button, QtCore.Qt.LeftButton)
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Rejected)
 
