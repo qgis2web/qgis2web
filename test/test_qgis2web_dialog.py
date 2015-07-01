@@ -37,14 +37,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_OL3(self):
         """Test we can export to OL3."""
-        button = self.dialog.buttonUpdateOL
+        button = self.dialog.widget.buttonUpdateOL
         button.click()
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Accepted)
 
     def test_Leaflet(self):
         """Test we can export to Leaflet."""
-        button = self.dialog.buttonUpdateLeaflet
+        button = self.dialog.widget.buttonUpdateLeaflet
         button.click()
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Rejected)
