@@ -44,7 +44,6 @@ class MainDialog(QDialog, Ui_MainDialog):
     items = {}
 
     def __init__(self, iface):
-        ksdjflsdkjfkl
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
