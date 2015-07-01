@@ -10,6 +10,7 @@ virtualenv:
   - sudo apt-get -qq -y update
 
 install:
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update
   - sudo apt-get install -y qgis python-coverage xvfb python-nosexcover
   - pip install --upgrade pip
