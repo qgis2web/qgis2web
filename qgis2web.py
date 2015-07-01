@@ -28,8 +28,8 @@ import resources_rc
 from maindialog import MainDialog
 
 
-class qgis2web:
-
+class Qgis2Web(object):
+    """Class abstraction for managing Qgis2Web plugin in QGIS."""
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
@@ -48,5 +48,5 @@ class qgis2web:
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
-        dlg = MainDialog()
+        dlg = MainDialog(self.iface)
         dlg.exec_()
