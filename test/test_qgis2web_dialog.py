@@ -14,22 +14,22 @@ __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
 import unittest
 
+# This import is to enable SIP API V2
+# noinspection PyUnresolvedReferences
+import qgis  # pylint: disable=unused-import
 from PyQt4.QtGui import QDialogButtonBox, QDialog
-
-from maindialog import MainDialog
-
 from utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
-print "test_qgis2web_mod_dialog.py"
+from maindialog import MainDialog
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test dialog works."""
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = MainDialog()
+        self.dialog = MainDialog(IFACE)
 
     def tearDown(self):
         """Runs after each test."""
@@ -37,7 +37,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_dialog_ok(self):
         """Test we can click OK."""
-
         button = self.dialog.button_box.button(QDialogButtonBox.Ok)
         button.click()
         result = self.dialog.result()

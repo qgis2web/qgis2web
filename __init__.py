@@ -19,6 +19,10 @@
 
 
 def classFactory(iface):
+    """Load plugin.
 
-    from qgis2web import qgis2web
-    return qgis2web(iface)
+    :param iface: QGIS interface.
+    :type iface: QgisInterface.
+    """
+    from qgis2web import Qgis2Web
+    return Qgis2Web(iface)
