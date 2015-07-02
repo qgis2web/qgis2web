@@ -38,15 +38,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_OL3(self):
         """Export to OL3 (test_qgis2web_dialog.test_OL3)."""
-        button = self.dialog.buttonUpdateOL
-        QtTest.QTest.mouseClick(self.dialog.buttonUpdateOL, QtCore.Qt.LeftButton)
+        self.dialog.previewOL3()
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Accepted)
 
     def test_Leaflet(self):
         """Export to Leaflet (test_qgis2web_dialog.test_Leaflet)."""
-        button = self.dialog.buttonUpdateLeaflet
-        QtTest.QTest.mouseClick(self.dialog.buttonUpdateLeaflet, QtCore.Qt.LeftButton)
+        self.dialog.previewLeaflet()
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Rejected)
 
