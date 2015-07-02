@@ -46,7 +46,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test_Leaflet(self):
         """Export to Leaflet (test_qgis2web_dialog.test_Leaflet)."""
         button = self.dialog.buttonUpdateLeaflet
-        QtTest.QTest.mouseClick(buttonUpdateLeaflet, QtCore.Qt.LeftButton)
+        QtTest.QTest.mouseClick(self.dialog.buttonUpdateLeaflet, QtCore.Qt.LeftButton)
         # result = self.dialog.result()
         # self.assertEqual(result, QDialog.Rejected)
 
