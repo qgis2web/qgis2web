@@ -38,8 +38,8 @@ basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
 
-def writeLeaflet(outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params, popup):
-    canvas = qgis.utils.iface.mapCanvas()
+def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params, popup):
+    canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
     outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
     outputIndex = outputProjectFileName + os.sep + 'index.html'

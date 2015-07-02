@@ -35,7 +35,7 @@ basemapAttributions = basemapAttributions()
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 
-def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, folder):
+def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     folder = os.path.join(folder, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
     # folder = os.path.join(os.getcwd(),folder)
@@ -63,7 +63,7 @@ def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, fol
             controls.append("new ol.control.ScaleLine({})")
         if settings["Appearance"]["Add layers list"]:
             controls.append('new ol.control.LayerSwitcher({tipLabel: "Layers"})')
-        mapbounds = bounds(settings["Scale/Zoom"]["Extent"] == "Canvas extent", layers)
+        mapbounds = bounds(iface, settings["Scale/Zoom"]["Extent"] == "Canvas extent", layers)
         mapextent = "extent: %s," % mapbounds if settings["Scale/Zoom"]["Restrict to extent"] else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
@@ -144,7 +144,7 @@ def replaceInTemplate(template, values):
     return s
 
 
-def bounds(useCanvas, layers):
+def bounds(iface, useCanvas, layers):
     if useCanvas:
         canvas = iface.mapCanvas()
         canvasCrs = canvas.mapRenderer().destinationCrs()

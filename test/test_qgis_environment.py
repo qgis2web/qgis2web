@@ -29,7 +29,7 @@ class QGISTest(unittest.TestCase):
     """Test the QGIS Environment"""
 
     def test_qgis_environment(self):
-        """QGIS environment has the expected providers"""
+        """QGIS environment has the expected providers (test_qgis_environment.test_qgis_environment)"""
 
         r = QgsProviderRegistry.instance()
         self.assertIn('gdal', r.providerList())
@@ -37,7 +37,7 @@ class QGISTest(unittest.TestCase):
         self.assertIn('postgres', r.providerList())
 
     def test_projection(self):
-        """Test that QGIS properly parses a wkt string.
+        """QGIS properly parses a wkt string (test_qgis_environment.test_projection).
         """
         crs = QgsCoordinateReferenceSystem()
         wkt = (

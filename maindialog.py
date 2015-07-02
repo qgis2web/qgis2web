@@ -18,34 +18,37 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import sys
-import os
-from qgis.core import *
+from collections import defaultdict
+import webbrowser
+
+# This import is to enable SIP API V2
+# noinspection PyUnresolvedReferences
+import qgis  # pylint: disable=unused-import
+# noinspection PyUnresolvedReferences
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from ui_maindialog import Ui_MainDialog
 import utils
 from configparams import paramsOL
-from collections import defaultdict
 from olwriter import writeOL
 from leafletWriter import *
-from qgis.utils import iface
-import webbrowser
-import tempfile
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from test.utilities import get_qgis_app
 
 selectedCombo = "None"
 
 
 class MainDialog(QDialog, Ui_MainDialog):
-
+    """The main dialog of QGIS2Web plugin."""
     items = {}
 
-    def __init__(self):
+    def __init__(self, iface):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.iface = iface
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.populateLayers()
+        self.populate_layers_and_groups()
         self.populateConfigParams(self)
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
@@ -53,7 +56,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonUpdateLeaflet.clicked.connect(self.previewLeaflet)
         self.buttonSaveOL.clicked.connect(self.saveOL)
         self.buttonSaveLeaflet.clicked.connect(self.saveLeaf)
-        self.connect(self.labelPreview, SIGNAL("linkActivated(QString)"), self.labelLinkClicked)
+        self.connect(
+            self.labelPreview,
+            SIGNAL("linkActivated(QString)"),
+            self.labelLinkClicked
+        )
 
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
@@ -75,42 +82,38 @@ class MainDialog(QDialog, Ui_MainDialog):
         if url == "open":
             webbrowser.open_new_tab(self.preview.url().toString())
 
-    def populateLayers(self):
-        skip_type = [2]
-        groups = {}
-        rels = iface.legendInterface().groupLayerRelationship()
-        groupedLayers = {}
-        for rel in rels:
-            groupName = rel[0]
-            if groupName != '':
-                groupLayers = rel[1]
-                groups[groupName] = []
-                for layerid in groupLayers:
-                    groups[groupName].append(QgsMapLayerRegistry.instance().mapLayer(layerid))
-                    groupedLayers[layerid] = groupName
-        self.layersItem = QTreeWidgetItem()
-        self.layersItem.setText(0, "Layers and Groups")
-        layers = iface.legendInterface().layers()
-        for layer in layers:
-            if layer.type() not in skip_type:
-                if layer.id() not in groupedLayers:
-                    item = TreeLayerItem(layer, self.layersTree)
-                    self.layersItem.addChild(item)
-                else:
-                    groupName = groupedLayers[layer.id()]
-                    try:
-                        groupLayers = groups[groupName]
-                    except KeyError:
-                        continue
-                    item = TreeGroupItem(groupName, groupLayers, self.layersTree)
-                    self.layersItem.addChild(item)
-                    del groups[groupName]
+    def populate_layers_and_groups(self):
+        """Populate layers on QGIS into our layers and group tree view."""
+        root_node = QgsProject.instance().layerTreeRoot()
+        # All tree group
+        tree_groups = []
+        # Get all the tree layers
+        tree_layers = root_node.findLayers()
+        self.layers_item = QTreeWidgetItem()
+        self.layers_item.setText(0, "Layers and Groups")
+
+        for tree_layer in tree_layers:
+            layer = tree_layer.layer()
+            layer_parent = tree_layer.parent()
+            if layer_parent.parent() is None:
+                # Layer parent is a root node.
+                # This is an orphan layer (has no parent) :(
+                item = TreeLayerItem(self.iface, layer, self.layersTree)
+                self.layers_item.addChild(item)
             else:
-                pass
+                # Layer parent is not a root, it's a group then
+                if layer_parent not in tree_groups:
+                    tree_groups.append(layer_parent)
 
-        self.layersTree.addTopLevelItem(self.layersItem)
+        for tree_group in tree_groups:
+            group_name = tree_group.name()
+            group_layers = [
+                tree_layer.layer() for tree_layer in tree_group.findLayers()]
+            item = TreeGroupItem(group_name, group_layers, self.layersTree)
+            self.layers_item.addChild(item)
+
+        self.layersTree.addTopLevelItem(self.layers_item)
         self.layersTree.expandAll()
-
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
 
@@ -167,7 +170,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeOL(layers, groups, popup, visible, json, cluster, labels, params, utils.tempFolder())
+        previewFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
@@ -175,7 +178,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeLeaflet(utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
+        previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
         self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
@@ -210,8 +213,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         json = []
         cluster = []
         labels = []
-        for i in xrange(self.layersItem.childCount()):
-            item = self.layersItem.child(i)
+        for i in xrange(self.layers_item.childCount()):
+            item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
                 if item.checkState(0) == Qt.Checked:
                     layers.append(item.layer)
@@ -277,12 +280,13 @@ class TreeLayerItem(QTreeWidgetItem):
 
     layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
 
-    def __init__(self, layer, tree):
+    def __init__(self, iface, layer, tree):
         QTreeWidgetItem.__init__(self)
+        self.iface = iface
         self.layer = layer
         self.setText(0, layer.name())
         self.setIcon(0, self.layerIcon)
-        if iface.legendInterface().isLayerVisible(layer):
+        if self.iface.legendInterface().isLayerVisible(layer):
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)

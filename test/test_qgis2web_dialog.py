@@ -14,41 +14,39 @@ __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
 import unittest
 
+# This import is to enable SIP API V2
+# noinspection PyUnresolvedReferences
+import qgis  # pylint: disable=unused-import
+from PyQt4 import QtCore, QtTest
 from PyQt4.QtGui import QDialogButtonBox, QDialog
-
-from maindialog import MainDialog
-
 from utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
-print "test_qgis2web_mod_dialog.py"
+from maindialog import MainDialog
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test dialog works."""
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = MainDialog()
+        self.dialog = MainDialog(IFACE)
 
     def tearDown(self):
         """Runs after each test."""
         self.dialog = None
 
-    def test_dialog_ok(self):
-        """Test we can click OK."""
+    def test_OL3(self):
+        """Export to OL3 (test_qgis2web_dialog.test_OL3)."""
+        self.dialog.previewOL3()
+        # result = self.dialog.result()
+        # self.assertEqual(result, QDialog.Accepted)
 
-        button = self.dialog.button_box.button(QDialogButtonBox.Ok)
-        button.click()
-        result = self.dialog.result()
-        self.assertEqual(result, QDialog.Accepted)
-
-    def test_dialog_cancel(self):
-        """Test we can click cancel."""
-        button = self.dialog.button_box.button(QDialogButtonBox.Cancel)
-        button.click()
-        result = self.dialog.result()
-        self.assertEqual(result, QDialog.Rejected)
+    def test_Leaflet(self):
+        """Export to Leaflet (test_qgis2web_dialog.test_Leaflet)."""
+        self.dialog.previewLeaflet()
+        # result = self.dialog.result()
+        # self.assertEqual(result, QDialog.Rejected)
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)

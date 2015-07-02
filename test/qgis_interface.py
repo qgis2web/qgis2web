@@ -1,5 +1,9 @@
 # coding=utf-8
-"""QGIS plugin implementation.
+"""
+InaSAFE Disaster risk assessment tool developed by AusAid -
+**QGIS plugin implementation.**
+
+Contact : ole.moller.nielsen@gmail.com
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -10,37 +14,34 @@
      with original authors:
      Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk
      Copyright (c) 2011 German Carrillo, geotux_tuxman@linuxmail.org
-     Copyright (c) 2014 Tim Sutton, tim@linfiniti.com
 
 """
 
-__author__ = 'tim@linfiniti.com'
+__author__ = 'tim@kartoza.com'
 __revision__ = '$Format:%H$'
 __date__ = '10/01/2011'
 __copyright__ = (
     'Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and '
     'Copyright (c) 2011 German Carrillo, geotux_tuxman@linuxmail.org'
-    'Copyright (c) 2014 Tim Sutton, tim@linfiniti.com'
+    'Copyright (c) 2014 Tim Sutton, tim@kartoza.com'
 )
 
 import logging
+
+from qgis.core import QgsMapLayerRegistry, QGis, QgsMapLayer
+from qgis.gui import QgsMapCanvasLayer  # pylint: disable=no-name-in-module
 from PyQt4.QtCore import QObject, pyqtSlot, pyqtSignal
-from qgis.core import QgsMapLayerRegistry
-from qgis.gui import QgsMapCanvasLayer
-from utilities import get_qgis_app
-
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
-LOGGER = logging.getLogger('QGIS')
 
 
-#noinspection PyMethodMayBeStatic,PyPep8Naming
+# noinspection PyMethodMayBeStatic,PyPep8Naming
 class QgisInterface(QObject):
-    """Class to expose QGIS objects and functions to plugins.
+    """Class to expose qgis objects and functions to plugins.
 
     This class is here for enabling us to run unit tests only,
     so most methods are simply stubs.
     """
     currentLayerChanged = pyqtSignal(QgsMapCanvasLayer)
+    layerSavedAs = pyqtSignal(QgsMapLayer, str)
 
     def __init__(self, canvas):
         """Constructor
@@ -50,16 +51,82 @@ class QgisInterface(QObject):
         self.canvas = canvas
         # Set up slots so we can mimic the behaviour of QGIS when layers
         # are added.
-        LOGGER.debug('Initialising canvas...')
         # noinspection PyArgumentList
         QgsMapLayerRegistry.instance().layersAdded.connect(self.addLayers)
         # noinspection PyArgumentList
         QgsMapLayerRegistry.instance().layerWasAdded.connect(self.addLayer)
         # noinspection PyArgumentList
         QgsMapLayerRegistry.instance().removeAll.connect(self.removeAllLayers)
-        
+
         # For processing module
         self.destCrs = None
+        # For keeping track of which layer is active in the legend.
+        self.active_layer = None
+
+        # In the next section of code, we are going to do some monkey patching
+        # to make the QGIS processing framework think that this mock QGIS IFACE
+        # instance is the actual one. It will also ensure that the processing
+        # algorithms are nicely loaded and available for use.
+
+        # Since QGIS > 2.0, the module is moved from QGisLayers to dataobjects
+        # pylint: disable=F0401, E0611
+        if QGis.QGIS_VERSION_INT > 20001:
+            from processing.tools import dataobjects
+        else:
+            from processing.core import QGisLayers as dataobjects
+
+        import processing
+        from processing.core.Processing import Processing
+        # pylint: enable=F0401, E0611
+        processing.classFactory(self)
+
+        # We create our own getAlgorithm function below which will will monkey
+        # patch in to the Processing class in QGIS in order to ensure that the
+        # Processing.initialize() call is made before asking for an alg.
+
+        @staticmethod
+        def mock_getAlgorithm(name):
+            """
+            Modified version of the original getAlgorithm function.
+
+            :param name: Name of the algorithm to load.
+            :type name: str
+
+            :return: An algorithm concrete class.
+            :rtype: QgsAlgorithm  ?
+            """
+            Processing.initialize()
+            for provider in Processing.algs.values():
+                if name in provider:
+                    return provider[name]
+            return None
+
+        # Now we let the monkey loose!
+        Processing.getAlgorithm = mock_getAlgorithm
+        # We also need to make dataobjects think that this iface is 'the one'
+        # Note. the placement here (after the getAlgorithm monkey patch above)
+        # is significant, so don't move it!
+        dataobjects.iface = self
+
+    def __getattr__(self, *args, **kwargs):
+        # It's for processing module
+        def dummy(*a, **kwa):
+            _ = a, kwa
+            return QgisInterface(self.canvas)
+        return dummy
+
+    def __iter__(self):
+        # It's for processing module
+        return self
+
+    def next(self):
+        # It's for processing module
+        raise StopIteration
+
+    def layers(self):
+        # It's for processing module
+        # simulate iface.legendInterface().layers()
+        return QgsMapLayerRegistry.instance().mapLayers().values()
 
     @pyqtSlot('QStringList')
     def addLayers(self, layers):
@@ -70,18 +137,22 @@ class QgisInterface(QObject):
         .. note:: The QgsInterface api does not include this method,
             it is added here as a helper to facilitate testing.
         """
-        #LOGGER.debug('addLayers called on qgis_interface')
-        #LOGGER.debug('Number of layers being added: %s' % len(layers))
-        #LOGGER.debug('Layer Count Before: %s' % len(self.canvas.layers()))
+        # LOGGER.debug('addLayers called on qgis_interface')
+        # LOGGER.debug('Number of layers being added: %s' % len(layers))
+        # LOGGER.debug('Layer Count Before: %s' % len(self.canvas.layers()))
         current_layers = self.canvas.layers()
         final_layers = []
+        # We need to keep the record of the registered layers on our canvas!
+        registered_layers = []
         for layer in current_layers:
             final_layers.append(QgsMapCanvasLayer(layer))
+            registered_layers.append(layer.id())
         for layer in layers:
-            final_layers.append(QgsMapCanvasLayer(layer))
+            if layer.id() not in registered_layers:
+                final_layers.append(QgsMapCanvasLayer(layer))
 
         self.canvas.setLayerSet(final_layers)
-        #LOGGER.debug('Layer Count After: %s' % len(self.canvas.layers()))
+        # LOGGER.debug('Layer Count After: %s' % len(self.canvas.layers()))
 
     @pyqtSlot('QgsMapLayer')
     def addLayer(self, layer):
@@ -98,9 +169,15 @@ class QgisInterface(QObject):
         pass
 
     @pyqtSlot()
-    def removeAllLayers(self):
-        """Remove layers from the canvas before they get deleted."""
+    def removeAllLayers(self, ):
+        """Remove layers from the canvas before they get deleted.
+
+        .. note:: This is NOT part of the QGisInterface API but is needed
+            to support QgsMapLayerRegistry.removeAllLayers().
+
+        """
         self.canvas.setLayerSet([])
+        self.active_layer = None
 
     def newProject(self):
         """Create new project."""
@@ -150,12 +227,19 @@ class QgisInterface(QObject):
         """
         pass
 
+    def setActiveLayer(self, layer):
+        """Set the currently active layer in the legend.
+        :param layer: Layer to make active.
+        :type layer: QgsMapLayer, QgsVectorLayer, QgsRasterLayer
+        """
+        self.active_layer = layer
+
     def activeLayer(self):
         """Get pointer to the active layer (layer selected in the legend)."""
-        # noinspection PyArgumentList
-        layers = QgsMapLayerRegistry.instance().mapLayers()
-        for item in layers:
-            return layers[item]
+        if self.active_layer is not None:
+            return self.active_layer
+        else:
+            return None
 
     def addToolBarIcon(self, action):
         """Add an icon to the plugins toolbar.
@@ -204,5 +288,12 @@ class QgisInterface(QObject):
         pass
 
     def legendInterface(self):
-        """Get the legend."""
-        return self.legendInterface()
+        """Get the legend.
+
+        TODO: Implement this when it is needed one day...
+
+        See also discussion at:
+
+        https://github.com/AIFDR/inasafe/pull/924/
+        """
+        return self.canvas
