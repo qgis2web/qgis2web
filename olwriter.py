@@ -35,7 +35,7 @@ basemapAttributions = basemapAttributions()
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 
-def writeOL(layers, groups, popup, visible, json, cluster, labels, settings, folder):
+def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     folder = os.path.join(folder, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
     # folder = os.path.join(os.getcwd(),folder)
