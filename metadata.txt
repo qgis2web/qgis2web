@@ -10,10 +10,10 @@
 
 [general]
 name=qgis2web
-qgisMinimumVersion=2.0
+qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent.
-version=0.13.7
+version=0.14.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/06/19 0.13.7 Leaflet label default non-hover, border improvements, PEP8, Travis integration
+changelog= 2015/07/06 0.14.0 Travis build success, minimum QGIS version 2.4
+    2015/06/19 0.13.7 Leaflet label default non-hover, border improvements, PEP8, Travis integration
     2015/06/19 0.13.6 Basemap fixes
 	2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
 	2015/06/19 0.13.4 Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
