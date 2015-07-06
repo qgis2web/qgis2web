@@ -24,7 +24,7 @@ email=tom.chadwin@nnpa.org.uk
 # Uncomment the following line and add your changelog entries:
 changelog= 2015/07/06 0.14.0 Travis build success, minimum QGIS version 2.4
     2015/06/19 0.13.7 Leaflet label default non-hover, border improvements, PEP8, Travis integration
-    2015/06/19 0.13.6 Basemap fixes
+    2015/06/19 0.13.6 Basemap fixes 
 	2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
 	2015/06/19 0.13.4 Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
 	2015/06/18 0.13.3 Leaflet style improvements: simple line opacity, graduated point outline weight and pen style, graduated line pen style, graduated polygon border pen style
