@@ -187,7 +187,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeOL(layers, groups, popup, visible, json, cluster, labels, params, folder)
+            outputFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, folder)
             webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
@@ -195,7 +195,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeLeaflet(folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
+            outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
