@@ -51,6 +51,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populate_layers_and_groups()
         self.populateConfigParams(self)
         self.selectMapFormat()
+        self.previewMap()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.ol3.clicked.connect(self.changeFormat)
@@ -417,6 +418,9 @@ class TreeSettingItem(QTreeWidgetItem):
     def clickCombo(self):
         global selectedCombo
         selectedCombo = self.name
+
+    def toggleEnabled(self, enabledBool):
+        self.setEnabled(enabledBool)
 
     def value(self):
         if isinstance(self._value, bool):
