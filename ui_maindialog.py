@@ -1,31 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# qgis-ol3 Creates OpenLayers map from QGIS layers
-# Copyright (C) 2014 Victor Olaya (volayaf@gmail.com)
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Jun 19 10:23:10 2014
-#      by: PyQt4 UI code generator 4.11
+# Created: Wed Jul 08 15:22:22 2015
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui, QtWebKit
-import resources_rc
+from PyQt4 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -35,13 +17,11 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
-
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
-
 
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
@@ -49,10 +29,6 @@ class Ui_MainDialog(object):
         MainDialog.resize(994, 736)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        iconOL = QtGui.QIcon()
-        iconOL.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        iconLeaf = QtGui.QIcon()
-        iconLeaf.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/leaflet.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
         self.verticalLayout_3 = QtGui.QVBoxLayout(MainDialog)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
@@ -89,7 +65,6 @@ class Ui_MainDialog(object):
         self.verticalLayout_5.addWidget(self.label_3)
         self.paramsTreeOL = QtGui.QTreeWidget(self.widget)
         self.paramsTreeOL.setMinimumSize(QtCore.QSize(300, 0))
-        self.paramsTreeOL.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.paramsTreeOL.setFrameShape(QtGui.QFrame.StyledPanel)
         self.paramsTreeOL.setFrameShadow(QtGui.QFrame.Sunken)
         self.paramsTreeOL.setObjectName(_fromUtf8("paramsTreeOL"))
@@ -99,26 +74,27 @@ class Ui_MainDialog(object):
         self.verticalLayout_5.addWidget(self.paramsTreeOL)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.buttonSaveOL = QtGui.QPushButton(self.widget)
-        self.buttonSaveOL.setIcon(iconOL)
-        self.buttonSaveOL.setObjectName(_fromUtf8("buttonSaveOL"))
-        self.horizontalLayout_2.addWidget(self.buttonSaveOL)
-        self.buttonSaveLeaflet = QtGui.QPushButton(self.widget)
-        self.buttonSaveLeaflet.setIcon(iconLeaf)
-        self.buttonSaveLeaflet.setObjectName(_fromUtf8("buttonSaveLeaflet"))
-        self.horizontalLayout_2.addWidget(self.buttonSaveLeaflet)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
-        self.buttonUpdateOL = QtGui.QPushButton(self.widget)
+        self.ol3 = QtGui.QRadioButton(self.widget)
+        self.ol3.setChecked(True)
+        self.ol3.setObjectName(_fromUtf8("ol3"))
+        self.mapFormat = QtGui.QButtonGroup(MainDialog)
+        self.mapFormat.setObjectName(_fromUtf8("mapFormat"))
+        self.mapFormat.addButton(self.ol3)
+        self.horizontalLayout_2.addWidget(self.ol3)
+        self.leaflet = QtGui.QRadioButton(self.widget)
+        self.leaflet.setObjectName(_fromUtf8("leaflet"))
+        self.mapFormat.addButton(self.leaflet)
+        self.horizontalLayout_2.addWidget(self.leaflet)
+        self.buttonPreview = QtGui.QPushButton(self.widget)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.buttonUpdateOL.setIcon(icon1)
-        self.buttonUpdateOL.setObjectName(_fromUtf8("buttonUpdateOL"))
-        self.horizontalLayout_2.addWidget(self.buttonUpdateOL)
-        self.buttonUpdateLeaflet = QtGui.QPushButton(self.widget)
-        self.buttonUpdateLeaflet.setIcon(icon1)
-        self.buttonUpdateLeaflet.setObjectName(_fromUtf8("buttonUpdateLeaflet"))
-        self.horizontalLayout_2.addWidget(self.buttonUpdateLeaflet)
+        self.buttonPreview.setIcon(icon1)
+        self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
+        self.horizontalLayout_2.addWidget(self.buttonPreview)
+        self.buttonExport = QtGui.QPushButton(self.widget)
+        self.buttonExport.setIcon(icon)
+        self.buttonExport.setObjectName(_fromUtf8("buttonExport"))
+        self.horizontalLayout_2.addWidget(self.buttonExport)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
         self.verticalLayout.addWidget(self.splitter)
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.splitter_2)
@@ -150,8 +126,11 @@ class Ui_MainDialog(object):
         self.label_3.setText(_translate("MainDialog", "Settings:", None))
         self.paramsTreeOL.headerItem().setText(0, _translate("MainDialog", "Setting", None))
         self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog", "Value", None))
-        self.buttonSaveOL.setText(_translate("MainDialog", "Export OL3", None))
-        self.buttonSaveLeaflet.setText(_translate("MainDialog", "Export Leaflet", None))
-        self.buttonUpdateOL.setText(_translate("MainDialog", "Preview OL3", None))
-        self.buttonUpdateLeaflet.setText(_translate("MainDialog", "Preview Leaflet", None))
+        self.ol3.setText(_translate("MainDialog", "OpenLayers 3", None))
+        self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
+        self.buttonPreview.setText(_translate("MainDialog", "Preview", None))
+        self.buttonExport.setText(_translate("MainDialog", "Export", None))
         self.labelPreview.setText(_translate("MainDialog", "Preview", None))
+
+from PyQt4 import QtWebKit
+import resources_rc

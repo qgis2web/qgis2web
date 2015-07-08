@@ -50,17 +50,33 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         self.populate_layers_and_groups()
         self.populateConfigParams(self)
+        self.selectMapFormat()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
-        self.buttonUpdateOL.clicked.connect(self.previewOL3)
-        self.buttonUpdateLeaflet.clicked.connect(self.previewLeaflet)
-        self.buttonSaveOL.clicked.connect(self.saveOL)
-        self.buttonSaveLeaflet.clicked.connect(self.saveLeaf)
+        self.ol3.clicked.connect(self.changeFormat)
+        self.leaflet.clicked.connect(self.changeFormat)
+        self.buttonPreview.clicked.connect(self.previewMap)
+        self.buttonExport.clicked.connect(self.saveMap)
         self.connect(
             self.labelPreview,
             SIGNAL("linkActivated(QString)"),
             self.labelLinkClicked
         )
+
+    def changeFormat(self):
+        QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
+
+    def previewMap(self):
+        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+            MainDialog.previewOL3(self)
+        else:
+            MainDialog.previewLeaflet(self)
+
+    def saveMap(self):
+        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+            MainDialog.saveOL(self)
+        else:
+            MainDialog.saveLeaf(self)
 
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
@@ -160,6 +176,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.expandAll()
         self.paramsTreeOL.resizeColumnToContents(0)
         self.paramsTreeOL.resizeColumnToContents(1)
+
+    def selectMapFormat(self):
+        if QSettings().value("qgis2web/mapFormat") == "Leaflet":
+            self.ol3.setChecked(False)
+            self.leaflet.setChecked(True)
 
     def tempIndexFile(self):
         folder = utils.tempFolder()
