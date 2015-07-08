@@ -146,17 +146,6 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="buttonPreview">
-               <property name="text">
-                <string>Preview</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QPushButton" name="buttonExport">
                <property name="text">
                 <string>Export</string>

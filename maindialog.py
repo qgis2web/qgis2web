@@ -56,7 +56,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
-        self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
         self.connect(
             self.labelPreview,
@@ -66,6 +65,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def changeFormat(self):
         QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
+        self.previewMap()
 
     def previewMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
@@ -182,6 +182,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         if QSettings().value("qgis2web/mapFormat") == "Leaflet":
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
+            self.items["Scale/Zoom"]["Use layer scale dependent visibility"].setDisabled(True)
+        else:
+            self.items["Scale/Zoom"]["Use layer scale dependent visibility"].setDisabled(False)
 
     def tempIndexFile(self):
         folder = utils.tempFolder()
@@ -419,8 +422,8 @@ class TreeSettingItem(QTreeWidgetItem):
         global selectedCombo
         selectedCombo = self.name
 
-    def toggleEnabled(self, enabledBool):
-        self.setEnabled(enabledBool)
+#    def toggleEnabled(self, enabledBool):
+#        self.setEnabled(enabledBool)
 
     def value(self):
         if isinstance(self._value, bool):
