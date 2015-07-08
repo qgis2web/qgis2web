@@ -51,6 +51,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populate_layers_and_groups()
         self.populateConfigParams(self)
         self.selectMapFormat()
+        self.toggleOptions()
         self.previewMap()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
@@ -66,7 +67,27 @@ class MainDialog(QDialog, Ui_MainDialog):
     def changeFormat(self):
         QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
         self.previewMap()
+        self.toggleOptions()
 
+    def toggleOptions(self):
+        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+            self.paramsTreeOL.findItems("Delete unused fields", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Use layer scale dependent visibility", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Add measure tool", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            self.paramsTreeOL.findItems("Geolocate user", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            self.paramsTreeOL.findItems("Match project CRS", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            self.paramsTreeOL.findItems("Show popups on hover", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Template", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+        else:
+            self.paramsTreeOL.findItems("Delete unused fields", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            self.paramsTreeOL.findItems("Use layer scale dependent visibility", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            self.paramsTreeOL.findItems("Add address search", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Add measure tool", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Geolocate user", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Match project CRS", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
+            self.paramsTreeOL.findItems("Show popups on hover", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            self.paramsTreeOL.findItems("Template", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+            
     def previewMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
             MainDialog.previewOL3(self)
@@ -182,9 +203,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         if QSettings().value("qgis2web/mapFormat") == "Leaflet":
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
-            self.items["Scale/Zoom"]["Use layer scale dependent visibility"].setDisabled(True)
-        else:
-            self.items["Scale/Zoom"]["Use layer scale dependent visibility"].setDisabled(False)
 
     def tempIndexFile(self):
         folder = utils.tempFolder()
