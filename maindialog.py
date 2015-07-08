@@ -87,7 +87,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.paramsTreeOL.findItems("Match project CRS", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
             self.paramsTreeOL.findItems("Show popups on hover", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
             self.paramsTreeOL.findItems("Template", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            
+
     def previewMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
             MainDialog.previewOL3(self)
