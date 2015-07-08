@@ -134,4 +134,3 @@ class Ui_MainDialog(object):
         self.buttonPreview.setText(_translate("MainDialog", "Preview", None))
         self.buttonExport.setText(_translate("MainDialog", "Export", None))
         self.labelPreview.setText(_translate("MainDialog", "Preview", None))
-
