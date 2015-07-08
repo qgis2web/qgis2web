@@ -146,13 +146,20 @@
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="buttonPreview">
+               <property name="text">
+                <string>Preview</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="buttonExport">
                <property name="text">
                 <string>Export</string>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/ol.png</normaloff>:/plugins/qgis2web/icons/ol.png</iconset>
                </property>
               </widget>
              </item>

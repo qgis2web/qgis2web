@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Jul 08 17:14:35 2015
+# Created: Wed Jul 08 20:49:02 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -88,8 +88,13 @@ class Ui_MainDialog(object):
         self.leaflet.setObjectName(_fromUtf8("leaflet"))
         self.mapFormat.addButton(self.leaflet)
         self.horizontalLayout_2.addWidget(self.leaflet)
+        self.buttonPreview = QtGui.QPushButton(self.widget)
+        self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
+        self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.buttonExport = QtGui.QPushButton(self.widget)
-        self.buttonExport.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.buttonExport.setIcon(icon1)
         self.buttonExport.setObjectName(_fromUtf8("buttonExport"))
         self.horizontalLayout_2.addWidget(self.buttonExport)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
@@ -125,5 +130,6 @@ class Ui_MainDialog(object):
         self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog", "Value", None))
         self.ol3.setText(_translate("MainDialog", "OpenLayers 3", None))
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
+        self.buttonPreview.setText(_translate("MainDialog", "Preview", None))
         self.buttonExport.setText(_translate("MainDialog", "Export", None))
         self.labelPreview.setText(_translate("MainDialog", "Preview", None))

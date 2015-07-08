@@ -57,6 +57,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
+        self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
         self.connect(
             self.labelPreview,
