@@ -39,7 +39,6 @@ basemapAttributions = basemapAttributions()
 
 
 def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster_set, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params, popup):
-    deliberateLeafletError
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
     outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.time()))
