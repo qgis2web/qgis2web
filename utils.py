@@ -58,8 +58,6 @@ def exportLayers(layers, folder, precision, optimize, popupField):
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision)))
-    removeSpaces = lambda txt: '"'.join(it if i % 2 else ''.join(it.split())
-                                        for i, it in enumerate(txt.split('"')))
     for layer, popup in zip(layers, popupField):
         if layer.type() == layer.VectorLayer:
             usedFields = getUsedFields(layer)
@@ -119,3 +117,8 @@ def safeName(name):
     # TODO: we are assuming that at least one character is valid...
     validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChars)
+
+
+def removeSpaces(txt):
+    return '"'.join(it if i % 2 else ''.join(it.split())
+                                        for i, it in enumerate(txt.split('"')))

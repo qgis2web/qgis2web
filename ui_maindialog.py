@@ -91,7 +91,7 @@ class Ui_MainDialog(object):
         self.buttonPreview = QtGui.QPushButton(self.widget)
         self.buttonPreview.setMinimumSize(QtCore.QSize(0, 24))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonPreview.setIcon(icon1)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)

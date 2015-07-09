@@ -32,7 +32,7 @@ from basemaps import basemapLeaflet, basemapAttributions
 from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *
-from utils import ALL_ATTRIBUTES
+from utils import ALL_ATTRIBUTES, removeSpaces
 
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
@@ -61,9 +61,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     addressSearch = params["Appearance"]["Add address search"]
     locate = params["Appearance"]["Geolocate user"]
     measure = params["Appearance"]["Add measure tool"]
-
-    removeSpaces = lambda txt: '"'.join(it if i % 2 else ''.join(it.split())
-                                        for i, it in enumerate(txt.split('"')))
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas)
     writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, addressSearch, measure, matchCRS, canvas, full)

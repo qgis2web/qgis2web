@@ -25,7 +25,7 @@ before_script:
   - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
 
 script:
-  - pep8 --ignore=E501,E731 --exclude=test ./
+  - pep8 --ignore=E501 --exclude=test ./
   - make pylint
   - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
