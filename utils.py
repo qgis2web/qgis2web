@@ -121,4 +121,4 @@ def safeName(name):
 
 def removeSpaces(txt):
     return '"'.join(it if i % 2 else ''.join(it.split())
-                                        for i, it in enumerate(txt.split('"')))
+                    for i, it in enumerate(txt.split('"')))
