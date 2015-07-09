@@ -46,7 +46,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_toggle_Leaflet(self):
         """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)."""
-        QtTest.QTest.mouseClick(self.dialog.leaflet, Qt.LeftButton)
+        self.dialog.leaflet.click()
 
     def test_preview_Leaflet(self):
         """Preview Leaflet (test_qgis2web_dialog.test_preview_Leaflet)."""
@@ -58,7 +58,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_toggle_OL3(self):
         """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)."""
-        QtTest.QTest.mouseClick(self.dialog.ol3, Qt.LeftButton)
+        self.dialog.ol3.click()
 
     def test_preview_OL3(self):
         """Preview OL3 (test_qgis2web_dialog.test_preview_OL3)."""
