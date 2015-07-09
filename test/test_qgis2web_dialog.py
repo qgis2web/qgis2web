@@ -38,11 +38,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_preview_default(self):
         """Preview default (OL3) (test_qgis2web_dialog.test_preview_default)."""
-        self.dialog.previewMap()
+        self.dialog.buttonPreview.click()
 
     def test_save_default(self):
         """Save default (OL3) (test_qgis2web_dialog.test_save_default)."""
-        self.dialog.saveMap()
+        self.dialog.buttonExport.click()
 
     def test_toggle_Leaflet(self):
         """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)."""
@@ -50,11 +50,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_preview_Leaflet(self):
         """Preview Leaflet (test_qgis2web_dialog.test_preview_Leaflet)."""
-        self.dialog.previewMap()
+        self.dialog.leaflet.click()
+        self.dialog.buttonPreview.click()
 
     def test_export_Leaflet(self):
         """Export Leaflet (test_qgis2web_dialog.test_export_Leaflet)."""
-        self.dialog.saveMap()
+        self.dialog.leaflet.click()
+        self.dialog.buttonExport.click()
 
     def test_toggle_OL3(self):
         """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)."""
@@ -62,11 +64,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test_preview_OL3(self):
         """Preview OL3 (test_qgis2web_dialog.test_preview_OL3)."""
-        self.dialog.previewMap()
+        self.dialog.ol3.click()
+        self.dialog.buttonPreview.click()
 
     def test_export_OL3(self):
         """Export OL3 (test_qgis2web_dialog.test_export_OL3)."""
-        self.dialog.saveMap()
+        self.dialog.ol3.click()
+        self.dialog.buttonExport.click()
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
