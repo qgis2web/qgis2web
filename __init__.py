@@ -24,5 +24,5 @@ def classFactory(iface):
     :param iface: QGIS interface.
     :type iface: QgisInterface.
     """
-    from qgis2web import Qgis2Web
+    from .qgis2web import Qgis2Web
     return Qgis2Web(iface)
