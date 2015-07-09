@@ -1,3 +1,4 @@
+"""Export OpenLayers 3 and Leaflet webmaps from QGIS"""
 # -*- coding: utf-8 -*-
 
 # qgis-ol3 Creates OpenLayers map from QGIS layers
