@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Jul 08 20:49:02 2015
+# Created: Thu Jul 09 09:28:56 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,12 +89,16 @@ class Ui_MainDialog(object):
         self.mapFormat.addButton(self.leaflet)
         self.horizontalLayout_2.addWidget(self.leaflet)
         self.buttonPreview = QtGui.QPushButton(self.widget)
+        self.buttonPreview.setMinimumSize(QtCore.QSize(0, 24))
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.buttonPreview.setIcon(icon1)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.buttonExport = QtGui.QPushButton(self.widget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.buttonExport.setIcon(icon1)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.buttonExport.setIcon(icon2)
         self.buttonExport.setObjectName(_fromUtf8("buttonExport"))
         self.horizontalLayout_2.addWidget(self.buttonExport)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)

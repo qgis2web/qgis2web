@@ -30,7 +30,7 @@ from PyQt4.QtGui import *
 
 from ui_maindialog import Ui_MainDialog
 import utils
-from configparams import paramsOL
+from configparams import paramsOL, specificParams, specificOptions
 from olwriter import writeOL
 from leafletWriter import *
 
@@ -71,23 +71,33 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.toggleOptions()
 
     def toggleOptions(self):
-        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            self.paramsTreeOL.findItems("Delete unused fields", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Use layer scale dependent visibility", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Add measure tool", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            self.paramsTreeOL.findItems("Geolocate user", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            self.paramsTreeOL.findItems("Match project CRS", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            self.paramsTreeOL.findItems("Show popups on hover", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Template", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-        else:
-            self.paramsTreeOL.findItems("Delete unused fields", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            self.paramsTreeOL.findItems("Use layer scale dependent visibility", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            self.paramsTreeOL.findItems("Add address search", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Add measure tool", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Geolocate user", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Match project CRS", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(False)
-            self.paramsTreeOL.findItems("Show popups on hover", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
-            self.paramsTreeOL.findItems("Template", Qt.MatchExactly | Qt.MatchRecursive)[0].setDisabled(True)
+        for param, value in specificParams.iteritems():
+            print param + ": " + value
+            treeParam = self.paramsTreeOL.findItems(param, Qt.MatchExactly | Qt.MatchRecursive)[0]
+            if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+                if value == "OL3":
+                    treeParam.setDisabled(False)
+                else:
+                    treeParam.setDisabled(True)
+            else:
+                if value == "OL3":
+                    treeParam.setDisabled(True)
+                else:
+                    treeParam.setDisabled(False)
+        for option, value in specificOptions.iteritems():
+            print option + ": " + value
+            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly | Qt.MatchRecursive)
+            for treeOption in treeOptions:
+                if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+                    if value == "OL3":
+                        treeOption.setDisabled(False)
+                    else:
+                        treeOption.setDisabled(True)
+                else:
+                    if value == "OL3":
+                        treeOption.setDisabled(True)
+                    else:
+                        treeOption.setDisabled(False)
 
     def previewMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":

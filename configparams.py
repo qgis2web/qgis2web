@@ -73,3 +73,19 @@ paramsOL = {
         "Min zoom level": ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28"),
     }
 }
+
+specificParams = {
+    "Delete unused fields": "OL3",
+    "Use layer scale dependent visibility": "OL3",
+    "Add address search": "Leaflet",
+    "Add measure tool": "Leaflet",
+    "Geolocate user": "Leaflet",
+    "Match project CRS": "Leaflet",
+    "Show popups on hover": "OL3",
+    "Template": "OL3"
+}
+
+specificOptions = {
+    "Encode to JSON": "Leaflet",
+    "Cluster": "Leaflet"
+}
