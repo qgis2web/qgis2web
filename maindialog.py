@@ -103,6 +103,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
             MainDialog.previewOL3(self)
         else:
+            kajsdk
             MainDialog.previewLeaflet(self)
 
     def saveMap(self):
