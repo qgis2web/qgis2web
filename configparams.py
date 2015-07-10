@@ -76,7 +76,6 @@ paramsOL = {
 
 specificParams = {
     "Delete unused fields": "OL3",
-    "Use layer scale dependent visibility": "OL3",
     "Add address search": "Leaflet",
     "Add measure tool": "Leaflet",
     "Geolocate user": "Leaflet",
