@@ -6,15 +6,13 @@ python:
 virtualenv:
   system_site_packages: true
 
-sudo: false
-
 -before_install:
-  - apt-get -qq -y update
+  - sudo apt-get -qq -y update
 
 install:
-  - add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-  - apt-get update
-  - apt-get install -y qgis python-coverage xvfb python-nosexcover
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt-get update
+  - sudo apt-get install -y qgis python-coverage xvfb python-nosexcover
   - pip install --upgrade pip
   - pip install --upgrade pep8
   - pip install --upgrade pylint
