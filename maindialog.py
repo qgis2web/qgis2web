@@ -72,7 +72,6 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def toggleOptions(self):
         for param, value in specificParams.iteritems():
-            print param + ": " + value
             treeParam = self.paramsTreeOL.findItems(param, Qt.MatchExactly | Qt.MatchRecursive)[0]
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
                 if value == "OL3":
@@ -85,7 +84,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 else:
                     treeParam.setDisabled(False)
         for option, value in specificOptions.iteritems():
-            print option + ": " + value
             treeOptions = self.layersTree.findItems(option, Qt.MatchExactly | Qt.MatchRecursive)
             for treeOption in treeOptions:
                 if self.mapFormat.checkedButton().text() == "OpenLayers 3":

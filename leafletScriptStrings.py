@@ -1,7 +1,36 @@
+from utils import scaleToZoom
+
+
 def jsonScript(layer):
     json = """
         <script src="data/json_{layer}.js\"></script>""".format(layer=layer)
     return json
+
+
+def scaleDependentLayerScript(layer, layerName):
+    min = layer.minimumScale()
+    max = layer.maximumScale()
+    scaleDependentLayer = """
+    if (map.getZoom() < {min} && map.getZoom() > {max}) {{
+        feature_group.addLayer(json_{layerName}JSON);
+        console.log("show");
+        //restackLayers();
+    }} else if (map.getZoom() >= {min} || map.getZoom() <= {max}) {{
+        feature_group.removeLayer(json_{layerName}JSON);
+        console.log("hide");
+        //restackLayers();
+    }}""".format(min=scaleToZoom(min), max=scaleToZoom(max), layerName=layerName)
+    return scaleDependentLayer
+
+
+def scaleDependentScript(layers):
+    scaleDependent = """
+        map.on("zoomend", function(e) {"""
+    scaleDependent += layers
+    scaleDependent += """
+    });"""
+    scaleDependent += layers
+    return scaleDependent
 
 
 def openScript():

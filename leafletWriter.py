@@ -56,6 +56,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     extent = params["Scale/Zoom"]["Extent"]
     minZoom = params["Scale/Zoom"]["Min zoom level"]
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
+    scaleDependent = params["Scale/Zoom"]["Use layer scale dependent visibility"]
     basemapName = params["Appearance"]["Base layer"]
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
@@ -67,6 +68,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     writeCSS(cssStore, full, height, width)
 
     wfsLayers = ""
+    scaleDependentLayers = ""
     exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
     for count, i in enumerate(layer_list):
         rawLayerName = i.name()
@@ -109,7 +111,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     extentRepNew = ','.join([str(extentRep.xMinimum()), str(extentRep.xMaximum()), str(extentRep.yMinimum()), str(extentRep.yMaximum())])
                     processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
                     processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "", extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "", out_raster)
-
+        if scaleDependent and i.hasScaleBasedVisibility():
+            scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
+    if scaleDependentLayers != "":
+        scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
     # now determine the canvas bounding box
     # now with viewcontrol
     try:
@@ -521,7 +526,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         raster_group.addTo(map);
         feature_group.addTo(map);""")
         f5fgroup.close()
-
+    with open(outputIndex, 'a') as f5scaleDependent:
+        f5scaleDependent.write(scaleDependentLayers)
+        f5scaleDependent.close()
     if webmap_head != "":
         titleStart = titleSubScript(webmap_head, webmap_subhead)
         with open(outputIndex, 'a') as f5contr:

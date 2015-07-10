@@ -122,3 +122,46 @@ def safeName(name):
 def removeSpaces(txt):
     return '"'.join(it if i % 2 else ''.join(it.split())
                     for i, it in enumerate(txt.split('"')))
+
+
+def scaleToZoom(scale):
+    if scale < 1000:
+        return 19
+    elif scale < 2000:
+        return 18
+    elif scale < 4000:
+        return 17
+    elif scale < 8000:
+        return 16
+    elif scale < 15000:
+        return 15
+    elif scale < 35000:
+        return 14
+    elif scale < 70000:
+        return 13
+    elif scale < 150000:
+        return 12
+    elif scale < 250000:
+        return 11
+    elif scale < 500000:
+        return 10
+    elif scale < 1000000:
+        return 9
+    elif scale < 2000000:
+        return 8
+    elif scale < 4000000:
+        return 7
+    elif scale < 10000000:
+        return 6
+    elif scale < 15000000:
+        return 5
+    elif scale < 35000000:
+        return 4
+    elif scale < 70000000:
+        return 3
+    elif scale < 150000000:
+        return 2
+    elif scale < 250000000:
+        return 1
+    else:
+        return 0
