@@ -24,18 +24,18 @@ email=tom.chadwin@nnpa.org.uk
 # Uncomment the following line and add your changelog entries:
 changelog= 2015/07/09 0.15.0 UI altered, preview on plugin launch, mouse clicks in unit tests, options enabled/disabled per output format
     2015/07/07 0.14.1 Fixed export failures
-    2015/07/06 0.14.0 Travis build success, minimum QGIS version 2.4
+    2015/07/06 0.14.0 BROKEN Travis build success, minimum QGIS version 2.4
     2015/06/19 0.13.7 Leaflet label default non-hover, border improvements, PEP8, Travis integration
     2015/06/19 0.13.6 Basemap fixes
 	2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
-	2015/06/19 0.13.4 Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
+	2015/06/19 0.13.4 BROKEN Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
 	2015/06/18 0.13.3 Leaflet style improvements: simple line opacity, graduated point outline weight and pen style, graduated line pen style, graduated polygon border pen style
 	2015/06/17 0.13.2 Leaflet point border width/line style; Leaflet categorized polygon border width; Fit to layers extent fixed; QSettings namespaced; Unicode error fixed; Numeric settings now combos; UI tidied; UI labels not editable
 	2015/06/16 0.13.1 Fill style "No Brush" observed in Leaflet, border/fill transparency decoupled in Leaflet
 	2015/06/16 0.13.0 Leaflet measure tool (thanks to https://github.com/boesiii), Leaflet string handling improvements
 	2015/06/15 0.12.2 New mandatory metadata item added
-	2015/06/15 0.12.1 Major regression fixed
-	2015/06/12 0.12.0 Dialog settings persist, corrected typo in changelog
+	2015/06/15 0.12.1 UNRELEASED Major regression fixed
+	2015/06/12 0.12.0 BROKEN Dialog settings persist, corrected typo in changelog
 	2015/06/08 0.11.0 Geocode user in Leaflet, Leaflet string handling improved, export folder persists
 	2015/06/04 0.10.0 Leaflet address search
 	2015/05/26 0.9.0 Major Leaflet export code refactor
@@ -43,7 +43,7 @@ changelog= 2015/07/09 0.15.0 UI altered, preview on plugin launch, mouse clicks 
 	2015/05/19 0.7.0 Leaflet export code refactor
 	2015/05/18 0.6.2 Change default precision to 15, get alpha of fill colours
 	2015/05/15 0.6.1 Fix 0.6.0 OL3 regression
-	2015/05/15 0.6.0 Leaflet labels, fix open in browser
+	2015/05/15 0.6.0 BROKEN Leaflet labels, fix open in browser
 	2015/05/14 0.5.0 FIRST STABLE RELEASE: New logo, Leaflet full-screen
 	2015/05/14 0.4.3 Limit per-layer options to appropriate layer types
 	2015/05/13 0.4.2 Fix Leaflet styles not applied
