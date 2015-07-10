@@ -97,7 +97,7 @@ class Ui_MainDialog(object):
         self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.buttonExport = QtGui.QPushButton(self.widget)
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonExport.setIcon(icon2)
         self.buttonExport.setObjectName(_fromUtf8("buttonExport"))
         self.horizontalLayout_2.addWidget(self.buttonExport)

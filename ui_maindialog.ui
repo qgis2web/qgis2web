@@ -158,7 +158,7 @@
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
-                 <normaloff>:/plugins/qgis2web_class/icon.png</normaloff>:/plugins/qgis2web_class/icon.png</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
                </property>
               </widget>
              </item>
@@ -169,7 +169,7 @@
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>:/plugins/qgis2web/icons/ol.png</normaloff>:/plugins/qgis2web/icons/ol.png</iconset>
+                 <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
                </property>
               </widget>
              </item>
