@@ -11,5 +11,4 @@ Not all features are supported in both OpenLayers 3 and Leaflet export. Unsuppor
 - all vector layers encoded to JSON in OL3 (ie no remote WFS layers)
 - per-layer popup behaviour only supported in OL3
 - clustering only supported in Leaflet
-- scale-dependent visibility only supported in OL3
 - no rule-based rendering
