@@ -378,7 +378,8 @@ class TreeLayerItem(QTreeWidgetItem):
             if palyr.fieldName:
                 self.labelsItem = QTreeWidgetItem(self)
                 self.labelsCheck = QCheckBox()
-                self.labelsCheck.setChecked(True)
+                if palyr.enabled:
+                    self.labelsCheck.setChecked(True)
                 self.labelsItem.setText(0, "Label")
                 self.addChild(self.labelsItem)
                 tree.setItemWidget(self.labelsItem, 1, self.labelsCheck)
