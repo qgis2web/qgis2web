@@ -15,6 +15,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, 
     os.makedirs(cssStore)
     cssStore += os.sep
     cssDir = pluginDir + os.sep + 'css' + os.sep
+    shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
+    shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     if len(cluster_set):
@@ -50,7 +52,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
         <title>""" + (webpage_name).encode('utf-8') + """</title>"""
         base += """
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />"""
+        <link rel="stylesheet" href="css/leaflet.css" />"""
         if len(cluster_set):
             base += """
         <link rel="stylesheet" href="css/MarkerCluster.css" />
@@ -68,7 +70,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
         <link rel="stylesheet" href="css/leaflet.draw.css" />
         <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
         base += """
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+        <script src="js/leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>"""
         if len(labels):
             base += """
