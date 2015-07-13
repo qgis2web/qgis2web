@@ -173,8 +173,8 @@ def bounds(iface, useCanvas, layers):
 def layerToJavascript(layer, scaleVisibility):
     # TODO: change scale to resolution
     if scaleVisibility and layer.hasScaleBasedVisibility():
-        minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale())
-        maxResolution = "maxResolution:%s,\n" % str(layer.maximumScale())
+        minResolution = "\nminResolution:%s,\n" % str(1/((1/layer.minimumScale())*39.37*90.7))
+        maxResolution = "maxResolution:%s,\n" % str(1/((1/layer.maximumScale())*39.37*90.7))
     else:
         minResolution = ""
         maxResolution = ""
