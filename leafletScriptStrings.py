@@ -11,11 +11,11 @@ def scaleDependentLayerScript(layer, layerName):
     min = layer.minimumScale()
     max = layer.maximumScale()
     scaleDependentLayer = """
-    if (map.getZoom() < {min} && map.getZoom() > {max}) {{
+    if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
         feature_group.addLayer(json_{layerName}JSON);
         console.log("show");
         //restackLayers();
-    }} else if (map.getZoom() >= {min} || map.getZoom() <= {max}) {{
+    }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
         feature_group.removeLayer(json_{layerName}JSON);
         console.log("hide");
         //restackLayers();

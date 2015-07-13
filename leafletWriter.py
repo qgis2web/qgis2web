@@ -253,19 +253,20 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     elif i.geometryType() == 2:
                         borderStyle_str = ""
                         if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
+                            radius = symbol.symbolLayer(0).width()
                             colorName = 'none'
                             borderColor_str = str(symbol.color().name())
-                            radius_str = str(symbol.symbolLayer(0).width() * 5)
+                            border_transp_float = float(symbol.color().alpha()) / 255
                         else:
                             radius = symbol.symbolLayer(0).borderWidth()
                             borderColor_str = str(symbol.symbolLayer(0).borderColor().name())
                             borderStyle_str = getLineStyle(symbol.symbolLayer(0).borderStyle(), radius)
                             border_transp_float = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
                             if symbol.symbolLayer(0).borderStyle() == 0:
                                 radius_str = "0"
                             if symbol.symbolLayer(0).brushStyle() == 0:
                                 colorName = "none"
+                        borderOpacity_str = str(layer_transp_float * symbol_transp_float * border_transp_float)
                         polyStyle_str = singlePolyStyleScript(radius * 4, borderColor_str, borderOpacity_str, colorName, borderStyle_str, fill_opacity_str)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = nonPointStylePopupsScript(polyStyle_str, popFuncs)
