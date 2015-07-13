@@ -113,33 +113,33 @@ def popupScript(safeLayerName, popFuncs):
     return popup
 
 
-def pointToLayerScript(radius_str, borderWidth_str, borderStyle, colorName, borderColor_str, borderOpacity_str, opacity_str, labeltext):
+def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, opacity, labeltext):
     pointToLayer = """
         pointToLayer: function (feature, latlng) {{
             return L.circleMarker(latlng, {{
-                radius: {radius_str},
+                radius: {radius},
                 fillColor: '{colorName}',
-                color: '{borderColor_str}',
-                weight: {borderWidth_str},
-                opacity: {borderOpacity_str},
+                color: '{borderColor}',
+                weight: {borderWidth},
+                opacity: {borderOpacity},
                 dashArray: '{dashArray}',
-                fillOpacity: {opacity_str}
-            }}){labeltext}""".format(radius_str=radius_str,
+                fillOpacity: {opacity}
+            }}){labeltext}""".format(radius=radius,
                                      colorName=colorName,
-                                     borderColor_str=borderColor_str,
-                                     borderWidth_str=borderWidth_str * 4,
-                                     borderOpacity_str=borderOpacity_str if borderStyle != 0 else 0,
-                                     dashArray=getLineStyle(borderStyle, borderWidth_str),
-                                     opacity_str=opacity_str,
+                                     borderColor=borderColor,
+                                     borderWidth=borderWidth * 4,
+                                     borderOpacity=borderOpacity if borderStyle != 0 else 0,
+                                     dashArray=getLineStyle(borderStyle, borderWidth),
+                                     opacity=opacity,
                                      labeltext=labeltext)
     return pointToLayer
 
 
-def pointStyleScript(pointToLayer_str, popFuncs):
-    pointStyle = """{pointToLayer_str}
+def pointStyleScript(pointToLayer, popFuncs):
+    pointStyle = """{pointToLayer}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}
-        }}""".format(pointToLayer_str=pointToLayer_str, popFuncs=popFuncs)
+        }}""".format(pointToLayer=pointToLayer, popFuncs=popFuncs)
     return pointStyle
 
 
@@ -149,21 +149,21 @@ def wfsScript(scriptTag):
     return wfs
 
 
-def jsonPointScript(safeLayerName, pointToLayer_str, usedFields):
+def jsonPointScript(safeLayerName, pointToLayer, usedFields):
     if usedFields != 0:
         jsonPoint = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            onEachFeature: pop_{safeLayerName}, {pointToLayer_str}
+            onEachFeature: pop_{safeLayerName}, {pointToLayer}
             }}
         }});
-    layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer_str=pointToLayer_str)
+    layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
     else:
         jsonPoint = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            {pointToLayer_str}
+            {pointToLayer}
             }}
         }});
-    layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer_str=pointToLayer_str)
+    layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
     return jsonPoint
 
 
@@ -174,71 +174,71 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def categorizedPointStylesScript(symbol, opacity_str, borderOpacity_str):
+def categorizedPointStylesScript(symbol, opacity, borderOpacity):
     styleValues = """
                     radius: '{radius}',
                     fillColor: '{fillColor}',
                     color: '{color}',
                     weight: {borderWidth},
-                    opacity: {borderOpacity_str},
+                    opacity: {borderOpacity},
                     dashArray: '{dashArray}',
-                    fillOpacity: '{opacity_str}',
+                    fillOpacity: '{opacity}',
                 }};
                 break;""".format(radius=symbol.size() * 2,
                                  fillColor=symbol.color().name(),
                                  color=symbol.symbolLayer(0).borderColor().name(),
                                  borderWidth=symbol.symbolLayer(0).outlineWidth() * 4,
-                                 borderOpacity_str=borderOpacity_str if symbol.symbolLayer(0).outlineStyle() != 0 else 0,
+                                 borderOpacity=borderOpacity if symbol.symbolLayer(0).outlineStyle() != 0 else 0,
                                  dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle(), symbol.symbolLayer(0).outlineWidth()),
-                                 opacity_str=opacity_str)
+                                 opacity=opacity)
     return styleValues
 
 
-def simpleLineStyleScript(radius_str, colorName, penStyle_str, opacity_str):
+def simpleLineStyleScript(radius, colorName, penStyle, opacity):
     lineStyle = """
             return {{
-                weight: {radius_str},
+                weight: {radius},
                 color: '{colorName}',
-                dashArray: '{penStyle_str}',
-                opacity: {opacity_str}
-            }};""".format(radius_str=radius_str * 4,
+                dashArray: '{penStyle}',
+                opacity: {opacity}
+            }};""".format(radius=radius * 4,
                           colorName=colorName,
-                          penStyle_str=penStyle_str,
-                          opacity_str=opacity_str)
+                          penStyle=penStyle,
+                          opacity=opacity)
     return lineStyle
 
 
-def singlePolyStyleScript(radius_str, colorName, borderOpacity_str, fillColor, penStyle_str, opacity_str):
+def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor, penStyle, opacity):
     polyStyle = """
             return {{
-                weight: {radius_str},
+                weight: {radius},
                 color: '{colorName}',
                 fillColor: '{fillColor}',
-                dashArray: '{penStyle_str}',
-                opacity: {borderOpacity_str},
-                fillOpacity: {opacity_str}
-            }};""".format(radius_str=radius_str,
+                dashArray: '{penStyle}',
+                opacity: {borderOpacity},
+                fillOpacity: {opacity}
+            }};""".format(radius=radius,
                           colorName=colorName,
                           fillColor=fillColor,
-                          penStyle_str=penStyle_str,
-                          borderOpacity_str=borderOpacity_str,
-                          opacity_str=opacity_str)
+                          penStyle=penStyle,
+                          borderOpacity=borderOpacity,
+                          opacity=opacity)
     return polyStyle
 
 
-def nonPointStylePopupsScript(lineStyle_str, popFuncs):
+def nonPointStylePopupsScript(lineStyle, popFuncs):
     nonPointStylePopups = """
-        style: function (feature) {{{lineStyle_str}
+        style: function (feature) {{{lineStyle}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}
-        }}""".format(lineStyle_str=lineStyle_str, popFuncs=popFuncs)
+        }}""".format(lineStyle=lineStyle, popFuncs=popFuncs)
     return nonPointStylePopups
 
 
-def nonPointStyleFunctionScript(safeLayerName, lineStyle_str):
+def nonPointStyleFunctionScript(safeLayerName, lineStyle):
     nonPointStyleFunction = """
-    function doStyle{safeLayerName}(feature) {{{lineStyle_str}
-    }}""".format(safeLayerName=safeLayerName, lineStyle_str=lineStyle_str)
+    function doStyle{safeLayerName}(feature) {{{lineStyle}
+    }}""".format(safeLayerName=safeLayerName, lineStyle=lineStyle)
     return nonPointStyleFunction
 
 
@@ -305,17 +305,17 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
     return categorizedPointJSON
 
 
-def categorizedLineStylesScript(symbol, opacity_str):
+def categorizedLineStylesScript(symbol, opacity):
     categorizedLineStyles = """
                     color: '{color}',
                     weight: '{weight}',
                     dashArray: '{dashArray}',
-                    opacity: '{opacity_str}',
+                    opacity: '{opacity}',
                 }};
                 break;""".format(color=symbol.color().name(),
                                  weight=symbol.width() * 4,
                                  dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(), symbol.width()),
-                                 opacity_str=opacity_str)
+                                 opacity=opacity)
     return categorizedLineStyles
 
 
@@ -327,22 +327,21 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
     return categorizedNonPointStyleFunction
 
 
-def categorizedPolygonStylesScript(symbol, radius_str, opacity_str, borderOpacity_str):
+def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
     categorizedPolygonStyles = """
                     weight: '{weight}',
                     fillColor: '{fillColor}',
                     color: '{color}',
                     dashArray: '{dashArray}',
-                    opacity: '{borderOpacity_str}',
-                    fillOpacity: '{opacity_str}',
+                    opacity: '{borderOpacity}',
+                    fillOpacity: '{opacity}',
                 }};
                 break;""".format(weight=symbol.symbolLayer(0).borderWidth() * 4,
                                  fillColor=symbol.color().name() if symbol.symbolLayer(0).brushStyle() != 0 else "none",
                                  color=symbol.symbolLayer(0).borderColor().name() if symbol.symbolLayer(0).borderStyle() != 0 else "none",
-                                 radius_str=radius_str,
                                  dashArray=getLineStyle(symbol.symbolLayer(0).borderStyle(), symbol.symbolLayer(0).borderWidth()),
-                                 borderOpacity_str=borderOpacity_str,
-                                 opacity_str=opacity_str)
+                                 borderOpacity=borderOpacity,
+                                 opacity=opacity)
     return categorizedPolygonStyles
 
 
@@ -358,7 +357,7 @@ def rangeStartScript(valueAttr, r):
     return rangeStart
 
 
-def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_str):
+def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     graduatedPointStyles = rangeStartScript(valueAttr, r)
     graduatedPointStyles += """
             return {{
@@ -366,37 +365,37 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_
                 fillColor: '{fillColor}',
                 color: '{color}',
                 weight: {lineWeight},
-                fillOpacity: '{opacity_str}',
-                opacity: '{borderOpacity_str}',
+                fillOpacity: '{opacity}',
+                opacity: '{borderOpacity}',
                 dashArray: '{dashArray}'
             }}
         }}""".format(radius=symbol.size() * 2,
                      fillColor=symbol.color().name(),
                      color=symbol.symbolLayer(0).borderColor().name(),
                      lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
-                     opacity_str=opacity_str,
-                     borderOpacity_str=borderOpacity_str,
+                     opacity=opacity,
+                     borderOpacity=borderOpacity,
                      dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle(), symbol.symbolLayer(0).outlineWidth()))
     return graduatedPointStyles
 
 
-def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity_str):
+def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity):
     graduatedLineStyles = rangeStartScript(valueAttr, r)
     graduatedLineStyles += """
             return {{
                 color: '{color}',
                 weight: '{weight}',
                 dashArray: '{dashArray}',
-                opacity: '{opacity_str}',
+                opacity: '{opacity}',
             }}
         }}""".format(color=symbol.symbolLayer(0).color().name(),
                      weight=symbol.width() * 4,
                      dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(), symbol.width()),
-                     opacity_str=opacity_str)
+                     opacity=opacity)
     return graduatedLineStyles
 
 
-def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str, borderOpacity_str):
+def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     graduatedPolygonStyles = rangeStartScript(valueAttr, r)
     graduatedPolygonStyles += """
             return {{
@@ -404,15 +403,15 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity_str, borderOpacit
                 weight: '{weight}',
                 dashArray: '{dashArray}',
                 fillColor: '{fillColor}',
-                opacity: '{borderOpacity_str}',
-                fillOpacity: '{opacity_str}',
+                opacity: '{borderOpacity}',
+                fillOpacity: '{opacity}',
             }}
         }}""".format(color=symbol.symbolLayer(0).borderColor().name(),
                      weight=symbol.symbolLayer(0).borderWidth() * 4 if symbol.symbolLayer(0).borderStyle() != 0 else "0",
                      dashArray=getLineStyle(symbol.symbolLayer(0).borderStyle(), symbol.symbolLayer(0).borderWidth() if symbol.symbolLayer(0).borderStyle() != 0 else "0"),
                      fillColor=symbol.color().name() if symbol.symbolLayer(0).brushStyle() != 0 else "none",
-                     borderOpacity_str=borderOpacity_str,
-                     opacity_str=opacity_str)
+                     borderOpacity=borderOpacity,
+                     opacity=opacity)
     return graduatedPolygonStyles
 
 
@@ -555,7 +554,7 @@ def getLineStyle(penType, lineWidth):
             penStyle = [dash, gap, dot, gap]
         if penType == 5:
             penStyle = [dash, gap, dot, gap, dot, gap]
-        penStyle_str = ','.join(map(str, penStyle))
+        penStyle = ','.join(map(str, penStyle))
     else:
-        penStyle_str = ""
-    return penStyle_str
+        penStyle = ""
+    return penStyle

@@ -338,10 +338,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity = str(layer_transp * symbol_transp * border_transp)
-                            radius = symbol.symbolLayer(0).borderWidth()
                             fill_transp = float(symbol.color().alpha()) / 255
                             fill_opacity = str(layer_transp * symbol_transp * fill_transp)
-                            categoryStr += categorizedPolygonStylesScript(symbol, radius, fill_opacity, borderOpacity)
+                            categoryStr += categorizedPolygonStylesScript(symbol, fill_opacity, borderOpacity)
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
