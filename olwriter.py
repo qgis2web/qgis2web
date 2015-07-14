@@ -53,6 +53,12 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
         exportLayers(layers, folder, precision, optimize, usedFields)
         exportStyles(layers, folder)
         writeLayersAndGroups(layers, groups, visible, folder, settings)
+        if settings["Data export"]["Mapping library location"] == "Local":
+            cssAddress = "./resources/ol.css"
+            jsAddress = "./resources/ol.js"
+        else:
+            cssAddress = "http://openlayers.org/en/v3.1.1/css/ol.css"
+            jsAddress = "http://openlayers.org/en/v3.1.1/build/ol.js"
         geojsonVars = "\n".join(['<script src="layers/%s"></script>' % (safeName(layer.name()) + ".js")
                                 for layer in layers if layer.type() == layer.VectorLayer])
         styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.name()))
@@ -70,7 +76,9 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
         onHover = str(settings["Appearance"]["Show popups on hover"]).lower()
         highlight = str(settings["Appearance"]["Highlight features"]).lower()
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
-        values = {"@STYLEVARS@": styleVars,
+        values = {"@CSSADDRESS@": cssAddress,
+                  "@JSADDRESS@": jsAddress,
+                  "@STYLEVARS@": styleVars,
                   "@GEOJSONVARS@": geojsonVars,
                   "@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),

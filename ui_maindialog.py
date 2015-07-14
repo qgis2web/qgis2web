@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Jul 09 09:28:56 2015
+# Created: Tue Jul 14 13:58:00 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,13 +18,11 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
-
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
-
 
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
@@ -43,9 +41,6 @@ class Ui_MainDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.label = QtGui.QLabel(self.layoutWidget)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.verticalLayout.addWidget(self.label)
         self.splitter = QtGui.QSplitter(self.layoutWidget)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.splitter.setObjectName(_fromUtf8("splitter"))
@@ -63,9 +58,6 @@ class Ui_MainDialog(object):
         self.verticalLayout_5.setSpacing(6)
         self.verticalLayout_5.setMargin(0)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
-        self.label_3 = QtGui.QLabel(self.widget)
-        self.label_3.setObjectName(_fromUtf8("label_3"))
-        self.verticalLayout_5.addWidget(self.label_3)
         self.paramsTreeOL = QtGui.QTreeWidget(self.widget)
         self.paramsTreeOL.setMinimumSize(QtCore.QSize(300, 0))
         self.paramsTreeOL.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -96,9 +88,7 @@ class Ui_MainDialog(object):
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.buttonExport = QtGui.QPushButton(self.widget)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.buttonExport.setIcon(icon2)
+        self.buttonExport.setIcon(icon)
         self.buttonExport.setObjectName(_fromUtf8("buttonExport"))
         self.horizontalLayout_2.addWidget(self.buttonExport)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
@@ -108,9 +98,6 @@ class Ui_MainDialog(object):
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setMargin(0)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.labelPreview = QtGui.QLabel(self.verticalLayoutWidget_2)
-        self.labelPreview.setObjectName(_fromUtf8("labelPreview"))
-        self.verticalLayout_2.addWidget(self.labelPreview)
         self.preview = QtWebKit.QWebView(self.verticalLayoutWidget_2)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -127,13 +114,10 @@ class Ui_MainDialog(object):
 
     def retranslateUi(self, MainDialog):
         MainDialog.setWindowTitle(_translate("MainDialog", "Export to web map", None))
-        self.label.setText(_translate("MainDialog", "Layers:", None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog", "2", None))
-        self.label_3.setText(_translate("MainDialog", "Settings:", None))
         self.paramsTreeOL.headerItem().setText(0, _translate("MainDialog", "Setting", None))
         self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog", "Value", None))
         self.ol3.setText(_translate("MainDialog", "OpenLayers 3", None))
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
-        self.buttonPreview.setText(_translate("MainDialog", "Preview", None))
+        self.buttonPreview.setText(_translate("MainDialog", "Update preview", None))
         self.buttonExport.setText(_translate("MainDialog", "Export", None))
-        self.labelPreview.setText(_translate("MainDialog", "Preview", None))

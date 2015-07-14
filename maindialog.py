@@ -59,11 +59,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
-        self.connect(
-            self.labelPreview,
-            SIGNAL("linkActivated(QString)"),
-            self.labelLinkClicked
-        )
 
     def changeFormat(self):
         QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
@@ -124,10 +119,6 @@ class MainDialog(QDialog, Ui_MainDialog):
     def saveComboSettings(self, value):
         global selectedCombo
         QSettings().setValue("qgis2web/" + selectedCombo, value)
-
-    def labelLinkClicked(self, url):
-        if url == "open":
-            webbrowser.open_new_tab(self.preview.url().toString())
 
     def populate_layers_and_groups(self):
         """Populate layers on QGIS into our layers and group tree view."""
@@ -224,7 +215,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         params = self.getParameters()
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
-        self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
@@ -232,7 +222,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         params = self.getParameters()
         previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
-        self.labelPreview.setText('Preview &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="open">Open in external browser</a>')
 
     def saveOL(self):
         params = self.getParameters()

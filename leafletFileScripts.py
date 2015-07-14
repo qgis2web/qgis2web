@@ -15,8 +15,9 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, 
     os.makedirs(cssStore)
     cssStore += os.sep
     cssDir = pluginDir + os.sep + 'css' + os.sep
-    shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
-    shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
+    if mapLibLocation == "Local":
+        shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
+        shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     if len(cluster_set):
@@ -38,7 +39,7 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, 
     return dataStore, cssStore
 
 
-def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, measure, matchCRS, canvas, full):
+def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, measure, matchCRS, canvas, full, mapLibLocation):
     with open(outputIndex, 'w') as f_html:
         base = """<!DOCTYPE html>
 <html>
@@ -51,8 +52,13 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
             base += """
         <title>""" + (webpage_name).encode('utf-8') + """</title>"""
         base += """
-        <meta charset="utf-8" />
+        <meta charset="utf-8" />"""
+        if mapLibLocation == "Local":
+            base += """
         <link rel="stylesheet" href="css/leaflet.css" />"""
+        else:
+            base += """
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />"""
         if len(cluster_set):
             base += """
         <link rel="stylesheet" href="css/MarkerCluster.css" />
@@ -69,8 +75,13 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
             base += """
         <link rel="stylesheet" href="css/leaflet.draw.css" />
         <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
+        if mapLibLocation == "Local":
+            base += """
+        <script src="js/leaflet.js"></script>"""
+        else:
+            base += """
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>"""
         base += """
-        <script src="js/leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>"""
         if len(labels):
             base += """

@@ -52,6 +52,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 
     QgsApplication.initQgis()
 
+    mapLibLocation = params["Data export"]["Mapping library location"]
     minify = params["Data export"]["Minify GeoJSON files"]
     extent = params["Scale/Zoom"]["Extent"]
     minZoom = params["Scale/Zoom"]["Min zoom level"]
@@ -64,7 +65,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     measure = params["Appearance"]["Add measure tool"]
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas)
-    writeHTMLstart(outputIndex, webpage_name, cluster, labels, addressSearch, measure, matchCRS, canvas, full)
+    writeHTMLstart(outputIndex, webpage_name, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
     writeCSS(cssStore, full, height, width)
 
     wfsLayers = ""
