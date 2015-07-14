@@ -64,7 +64,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     locate = params["Appearance"]["Geolocate user"]
     measure = params["Appearance"]["Add measure tool"]
 
-    dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas)
+    dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation)
     writeHTMLstart(outputIndex, webpage_name, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
     writeCSS(cssStore, full, height, width)
 
