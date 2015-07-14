@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/07/14 0.17.0 OL3 scale-dependent visibility fixed, default label display corrected, Leaflet code tidied, UI tweaked, map library local or CDN
+changelog= 2015/07/14 0.17.0 OL3 scale-dependent visibility fixed, default label display corrected, Leaflet code tidied, UI simplified, map library local or CDN
     2015/07/13 0.16.1 Leaflet scale-dependent visibility improvement, Leaflet simpleline error
     2015/07/10 0.16.0 Leaflet scale-dependent visibility, code improvements (PEP8 and Pylint), export icon corrected, changelog and readme updated
     2015/07/09 0.15.0 UI altered, preview on plugin launch, mouse clicks in unit tests, options enabled/disabled per output format
