@@ -90,15 +90,20 @@
           @VIEW@
         })
       });
-      map.getView().fitExtent(@BOUNDS@, map.getSize());
+      map.getView().fit(@BOUNDS@, map.getSize());
 
       var NO_POPUP = 0
       var ALL_FIELDS = 1
 
       @POPUPLAYERS@
 
-      var featureOverlay = new ol.FeatureOverlay({
+      var collection = new ol.Collection();
+      var featureOverlay = new ol.layer.Vector({
         map: map,
+        source: new ol.source.Vector({
+          features: collection,
+          useSpatialIndex: false // optional, might improve performance
+        }),
         style: [new ol.style.Style({
               stroke: new ol.style.Stroke({
                 color: '#f00',
@@ -107,9 +112,10 @@
               fill: new ol.style.Fill({
                 color: 'rgba(255,0,0,0.1)'
               }),
-              })]          
+              })],
+        updateWhileAnimating: true, // optional, for instant visual feedback
+        updateWhileInteracting: true // optional, for instant visual feedback
       });
-
 
       var doHighlight = @DOHIGHLIGHT@;
       var doHover = @ONHOVER@;
@@ -150,10 +156,10 @@
         if (doHighlight){
           if (currentFeature !== highlight) {
             if (highlight) {
-              featureOverlay.removeFeature(highlight);
+              featureOverlay.getSource().removeFeature(feature);
             }
             if (currentFeature) {
-              featureOverlay.addFeature(currentFeature);
+              featureOverlay.getSource().addFeature(feature);
             }
             highlight = currentFeature;
           }

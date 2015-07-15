@@ -57,8 +57,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
             cssAddress = "./resources/ol.css"
             jsAddress = "./resources/ol.js"
         else:
-            cssAddress = "http://openlayers.org/en/v3.1.1/css/ol.css"
-            jsAddress = "http://openlayers.org/en/v3.1.1/build/ol.js"
+            cssAddress = "http://openlayers.org/en/v3.7.0/css/ol.css"
+            jsAddress = "http://openlayers.org/en/v3.7.0/build/ol.js"
         geojsonVars = "\n".join(['<script src="layers/%s"></script>' % (safeName(layer.name()) + ".js")
                                 for layer in layers if layer.type() == layer.VectorLayer])
         styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.name()))
@@ -188,8 +188,12 @@ def layerToJavascript(layer, scaleVisibility):
         maxResolution = ""
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
-        return ('''var lyr_%(n)s = new ol.layer.Vector({
-                source: new ol.source.GeoJSON({object: geojson_%(n)s}),%(min)s %(max)s
+        return ('''var format_%(n)s = new ol.format.GeoJSON();
+var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s);
+var jsonSource_%(n)s = new ol.source.Vector();
+jsonSource_%(n)s.addFeatures(features_%(n)s);
+var lyr_%(n)s = new ol.layer.Vector({
+                source: jsonSource_%(n)s,%(min)s %(max)s
                 style: style_%(n)s,
                 title: "%(name)s"
             });''' %
