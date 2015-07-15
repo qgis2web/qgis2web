@@ -220,7 +220,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 # single marker points:
                 if rendererDump[0:6] == 'SINGLE':
                     symbol = renderer.symbol()
-                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16,16))
+                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
                     legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + ".png")
                     colorName = symbol.color().name()
                     symbol_transp = symbol.alpha()
