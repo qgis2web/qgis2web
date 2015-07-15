@@ -115,6 +115,12 @@ class MainDialog(QDialog, Ui_MainDialog):
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
         else:
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.text(col))
+        if paramItem.name == "Match project CRS":
+            baseLayer = self.paramsTreeOL.findItems("Base layer", Qt.MatchExactly | Qt.MatchRecursive)[0]
+            if paramItem.checkState(col):
+                baseLayer.setDisabled(True)
+            else:
+                baseLayer.setDisabled(False)
 
     def saveComboSettings(self, value):
         global selectedCombo
