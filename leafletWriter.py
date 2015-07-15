@@ -20,6 +20,7 @@
  ***************************************************************************/
 """
 
+from PyQt4.QtCore import QSize
 import processing
 from qgis.core import *
 import qgis.utils
@@ -123,6 +124,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     except:
         crsSrc = canvas.mapRenderer().destinationCrs()
     crsAuthId = crsSrc.authid()
+    middle = ""
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsProj4 = crsSrc.toProj4()
@@ -218,6 +220,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 # single marker points:
                 if rendererDump[0:6] == 'SINGLE':
                     symbol = renderer.symbol()
+                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16,16))
+                    legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + ".png")
                     colorName = symbol.color().name()
                     symbol_transp = symbol.alpha()
                     fill_transp = float(symbol.color().alpha()) / 255
@@ -609,11 +613,15 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
             rawLayerName = i.name()
             safeLayerName = re.sub('[\W_]+', '', rawLayerName)
             if i.type() == 0:
+                if i.rendererV2().dump()[0:6] == "SINGLE":
+                    legendIcon = """<img src="legend/""" + safeLayerName + """.png" /> """
+                else:
+                    legendIcon = ""
                 with open(outputIndex, 'a') as f7:
                     if cluster[count] == True and i.geometryType() == 0:
-                        new_layer = '"' + rawLayerName + '"' + ": cluster_group""" + safeLayerName + """JSON,"""
+                        new_layer = "'" + legendIcon + rawLayerName + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
                     else:
-                        new_layer = '"' + rawLayerName + '"' + ": json_" + safeLayerName + """JSON,"""
+                        new_layer = "'" + legendIcon + rawLayerName + "'" + ": json_" + safeLayerName + """JSON,"""
                     f7.write(new_layer)
                     f7.close()
             elif i.type() == 1:
