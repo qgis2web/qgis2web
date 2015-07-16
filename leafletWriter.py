@@ -40,6 +40,7 @@ basemapAttributions = basemapAttributions()
 
 
 def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params, popup):
+    legends = {}
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
     outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.time()))
@@ -222,6 +223,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     symbol = renderer.symbol()
                     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
                     legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + ".png")
+                    legends[layerName] = """<img src="legend/""" + layerName + """.png" /> """ + i.name()
                     colorName = symbol.color().name()
                     symbol_transp = symbol.alpha()
                     fill_transp = float(symbol.color().alpha()) / 255
@@ -282,6 +284,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
                             new_obj += restackLayers(layerName, visible[count])
                 elif rendererDump[0:11] == 'CATEGORIZED':
+                    catLegend = i.name() + "<br />"
                     if i.geometryType() == 0 and not icon_prov:
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
@@ -292,6 +295,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             else:
                                 categoryStr += eachCategoryScript(cat.value())
                             symbol = cat.symbol()
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            safeLabel = re.sub('[\W_]+', '', cat.label())
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + safeLabel + ".png")
+                            catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
                             fill_opacity = str(layer_transp * symbol_transp * fill_transp)
@@ -319,6 +326,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                                 categoryStr += eachCategoryScript(cat.value())
                             # categoryStr += "radius: '" + unicode(cat.symbol().size() * 2) + "',"
                             symbol = cat.symbol()
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            safeLabel = re.sub('[\W_]+', '', cat.label())
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + safeLabel + ".png")
+                            catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
                             fill_opacity = str(layer_transp * symbol_transp * fill_transp)
@@ -340,6 +351,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             else:
                                 categoryStr += eachCategoryScript(cat.value())
                             symbol = cat.symbol()
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            safeLabel = re.sub('[\W_]+', '', cat.label())
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + safeLabel + ".png")
+                            catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity = str(layer_transp * symbol_transp * border_transp)
@@ -353,12 +368,18 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
+                    legends[layerName] = catLegend
                 elif rendererDump[0:9] == 'GRADUATED':
+                    catLegend = i.name() + "<br />"
                     categoryStr = graduatedStyleScript(layerName)
                     if i.geometryType() == 0 and not icon_prov:
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            safeLabel = re.sub('[\W_]+', '', r.label())
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + safeLabel + ".png")
+                            catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity = str(layer_transp * symbol_transp * border_transp)
@@ -380,6 +401,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            safeLabel = re.sub('[\W_]+', '', r.label())
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + safeLabel + ".png")
+                            catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + unicode(r.label()) + ".png")
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
                             fill_opacity = str(layer_transp * symbol_transp * fill_transp)
@@ -395,6 +422,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            safeLabel = re.sub('[\W_]+', '', r.label())
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + safeLabel + ".png")
+                            catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
+                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+                            legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + unicode(r.label()) + ".png")
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             borderOpacity = str(layer_transp * symbol_transp * border_transp)
@@ -408,6 +441,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
+                    legends[layerName] = catLegend
 #                        elif rendererDump[0:10] == 'Rule-based':
 #                            for rule in renderer.rootRule().children():
 #                                try:
@@ -613,15 +647,11 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
             rawLayerName = i.name()
             safeLayerName = re.sub('[\W_]+', '', rawLayerName)
             if i.type() == 0:
-                if i.rendererV2().dump()[0:6] == "SINGLE":
-                    legendIcon = """<img src="legend/""" + safeLayerName + """.png" /> """
-                else:
-                    legendIcon = ""
                 with open(outputIndex, 'a') as f7:
                     if cluster[count] == True and i.geometryType() == 0:
-                        new_layer = "'" + legendIcon + rawLayerName + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
+                        new_layer = "'" + legends[safeLayerName] + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
                     else:
-                        new_layer = "'" + legendIcon + rawLayerName + "'" + ": json_" + safeLayerName + """JSON,"""
+                        new_layer = "'" + legends[safeLayerName] + "'" + ": json_" + safeLayerName + """JSON,"""
                     f7.write(new_layer)
                     f7.close()
             elif i.type() == 1:
