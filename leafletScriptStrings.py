@@ -472,7 +472,7 @@ def rasterScript(safeLayerName, out_raster_name, bounds):
     raster = """
     var img_{safeLayerName} = '{out_raster_name}';
     var img_bounds_{safeLayerName} = {bounds};
-    var overlay_{safeLayerName} = new L.imageOverlay(img_{safeLayerName}, img_bounds_{safeLayerName};""".format(safeLayerName=safeLayerName, out_raster_name=out_raster_name, bounds=bounds)
+    var overlay_{safeLayerName} = new L.imageOverlay(img_{safeLayerName}, img_bounds_{safeLayerName});""".format(safeLayerName=safeLayerName, out_raster_name=out_raster_name, bounds=bounds)
     return raster
 
 
