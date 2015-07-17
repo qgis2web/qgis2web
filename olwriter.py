@@ -247,8 +247,11 @@ def exportStyles(layers, folder):
         try:
             renderer = layer.rendererV2()
             layer_transparency = layer.layerTransparency()
-            if isinstance(renderer, QgsSingleSymbolRendererV2):
-                symbol = renderer.symbol()
+            if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
+                if isinstance(renderer, QgsRuleBasedRendererV2):
+                    symbol = renderer.rootRule().children()[0].symbol()
+                else:
+                    symbol = renderer.symbol()
                 style = "var style = " + getSymbolAsStyle(symbol, stylesFolder, layer_transparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
