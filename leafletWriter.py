@@ -219,8 +219,13 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 new_obj = ""
 
                 # single marker points:
-                if rendererDump[0:6] == 'SINGLE':
-                    symbol = renderer.symbol()
+                if rendererDump[0:6] == 'SINGLE' or rendererDump[0:10] == 'Rule-based':
+                    if rendererDump[0:10] == 'Rule-based':
+                        print 1
+                        symbol = renderer.rootRule().children()[0].symbol()
+                    else:
+                        print 2
+                        symbol = renderer.symbol()
                     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
                     legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + ".png")
                     legends[layerName] = """<img src="legend/""" + layerName + """.png" /> """ + i.name()
