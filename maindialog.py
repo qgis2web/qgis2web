@@ -226,7 +226,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
+        previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", labels, 0, 0, json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def saveOL(self):
@@ -242,7 +242,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = params["Data export"]["Export folder"]
         if folder:
             layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", "", labels, 0, 0, json, params, popup)
+            outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", labels, 0, 0, json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):

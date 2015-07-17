@@ -39,7 +39,7 @@ basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
 
-def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, webpage_name, webmap_head, webmap_subhead, legend, labels, labelhover, selected, json, params, popup):
+def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, webpage_name, webmap_head, webmap_subhead, labels, labelhover, selected, json, params, popup):
     legends = {}
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
@@ -125,10 +125,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     except:
         crsSrc = canvas.mapRenderer().destinationCrs()
     crsAuthId = crsSrc.authid()
+    crsProj4 = crsSrc.toProj4()
     middle = ""
     if extent == "Canvas extent":
         pt0 = canvas.extent()
-        crsProj4 = crsSrc.toProj4()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
         xform = QgsCoordinateTransform(crsSrc, crsDest)
         pt1 = xform.transform(pt0)
@@ -138,7 +138,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds)
-    if extent == 'Fit to layers extent':
+    if extent == "Fit to layers extent":
         middle = openScript()
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
@@ -583,37 +583,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         with open(outputIndex, 'a') as f5addr:
             f5addr.write(address_text)
             f5addr.close()
-    if legend:
-        legendStart = legendStartScript()
-        for i in reversed(layer_list):
-            rawLayerName = i.name()
-            safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-            if i.type() == 0:
-                fields = i.pendingFields()
-                field_names = [field.name() for field in fields]
-                legend_ico_prov = False
-                legend_exp_prov = False
-                for field in field_names:
-                    if str(field) == 'legend_ico':
-                        legend_ico_prov = True
-                    if str(field) == 'legend_exp':
-                        legend_exp_prov = True
-                if legend_ico_prov and legend_exp_prov:
-                    iter = i.getFeatures()
-                    for feat in iter:
-                        fid = feat.id()
-                        provider = i.dataProvider()
-                        legend_ico_index = provider.fieldNameIndex('legend_ico')
-                        legend_exp_index = provider.fieldNameIndex('legend_exp')
-                        attribute_map = feat.attributes()
-                        legend_icon = attribute_map[legend_ico_index]
-                        legend_expression = attribute_map[legend_exp_index]
-                        break
-                    legendStart += """<tr><td><img src='""" + unicode(legend_icon) + """'></img></td><td>""" + unicode(legend_expression) + """</td></tr>"""
-        legendStart += legendEndScript()
-        with open(outputIndex, 'a') as f5leg:
-            f5leg.write(legendStart)
-            f5leg.close()
 
     # let's add layer control
     if params["Appearance"]["Add layers list"]:

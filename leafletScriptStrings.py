@@ -502,23 +502,6 @@ def addressSearchScript():
     return addressSearch
 
 
-def legendStartScript():
-    legendStart = """
-        var legend = L.control({position: 'bottomright'});
-        legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML = "<h3>Legend</h3><table>"""
-    return legendStart
-
-
-def legendEndScript():
-    legendEnd = """</table>";
-            return div;
-        };
-        legend.addTo(map);"""
-    return legendEnd
-
-
 def locateScript():
     locate = """
         map.locate({setView: true, maxZoom: 16});
