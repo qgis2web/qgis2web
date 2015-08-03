@@ -37,7 +37,7 @@ baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layer
 
 def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    folder = os.path.join(folder, 'qgis2web_' + str(time.strftime("%Y_%m_%d-%H_%M_%S")))
+    folder = os.path.join(folder, 'qgis2web_' + unicode(time.strftime("%Y_%m_%d-%H_%M_%S")))
     # folder = os.path.join(os.getcwd(),folder)
     try:
         dst = os.path.join(folder, "resources")
@@ -63,7 +63,7 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
                                 for layer in layers if layer.type() == layer.VectorLayer])
         styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.name()))
                               for layer in layers if layer.type() == layer.VectorLayer])
-        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if isinstance(field, basestring) else str(field) for field in popup])
+        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if isinstance(field, basestring) else unicode(field) for field in popup])
         controls = []
         if settings["Appearance"]["Add scale bar"]:
             controls.append("new ol.control.ScaleLine({})")
@@ -73,8 +73,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
         mapextent = "extent: %s," % mapbounds if settings["Scale/Zoom"]["Restrict to extent"] else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
-        onHover = str(settings["Appearance"]["Show popups on hover"]).lower()
-        highlight = str(settings["Appearance"]["Highlight features"]).lower()
+        onHover = unicode(settings["Appearance"]["Show popups on hover"]).lower()
+        highlight = unicode(settings["Appearance"]["Highlight features"]).lower()
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
         values = {"@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
@@ -116,7 +116,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     usedGroups = []
     for layer in layers:
         mapLayers.append("lyr_" + safeName(layer.name()))
-    visibility = "\n".join(["%s.setVisible(%s);" % (layer, str(v).lower()) for layer, v in zip(mapLayers[1:], visible)])
+    visibility = "\n".join(["%s.setVisible(%s);" % (layer, unicode(v).lower()) for layer, v in zip(mapLayers[1:], visible)])
 
     # ADD Group
     group_list = ["baseLayer"]
@@ -181,8 +181,8 @@ def bounds(iface, useCanvas, layers):
 def layerToJavascript(layer, scaleVisibility):
     # TODO: change scale to resolution
     if scaleVisibility and layer.hasScaleBasedVisibility():
-        minResolution = "\nminResolution:%s,\n" % str(1 / ((1 / layer.minimumScale()) * 39.37 * 90.7))
-        maxResolution = "maxResolution:%s,\n" % str(1 / ((1 / layer.maximumScale()) * 39.37 * 90.7))
+        minResolution = "\nminResolution:%s,\n" % unicode(1 / ((1 / layer.minimumScale()) * 39.37 * 90.7))
+        maxResolution = "maxResolution:%s,\n" % unicode(1 / ((1 / layer.maximumScale()) * 39.37 * 90.7))
     else:
         minResolution = ""
         maxResolution = ""
@@ -237,7 +237,7 @@ def exportStyles(layers, folder):
     for layer in layers:
         if layer.type() != layer.VectorLayer:
             continue
-        labelsEnabled = str(layer.customProperty("labeling/enabled")).lower() == "true"
+        labelsEnabled = unicode(layer.customProperty("labeling/enabled")).lower() == "true"
         if (labelsEnabled):
             labelField = layer.customProperty("labeling/fieldName")
             labelText = 'feature.get("%s")' % labelField
@@ -319,7 +319,7 @@ def exportStyles(layers, folder):
 
 def getRGBAColor(color, alpha):
     r, g, b, _ = color.split(",")
-    return '"rgba(%s)"' % ",".join([r, g, b, str(alpha)])
+    return '"rgba(%s)"' % ",".join([r, g, b, unicode(alpha)])
 
 
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):

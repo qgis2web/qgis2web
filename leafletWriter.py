@@ -43,7 +43,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     legends = {}
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
-    outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + str(time.time()))
+    outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + unicode(time.time()))
     outputIndex = outputProjectFileName + os.sep + 'index.html'
     cluster_num = 1
     cleanUnusedFields = params["Data export"]["Delete unused fields"]
@@ -80,13 +80,13 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         if i.providerType() != 'WFS' or json[count] == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == 0:
-                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + str(precision)])
+                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + unicode(precision)])
 
                 # now change the data structure to work with leaflet:
                 with open(layerFileName) as f:
                     lines = f.readlines()
                 with open(layerFileName, "w") as f2:
-                    f2.write("var json_" + str(safeLayerName) + "=")
+                    f2.write("var json_" + unicode(safeLayerName) + "=")
                     for line in lines:
                         if minify:
                             line = line.strip("\n\t ")
@@ -104,14 +104,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
             # here comes the raster layers. you need an installed version of gdal
             elif i.type() == 1:
                 if i.dataProvider().name() != "wms":
-                    in_raster = str(i.dataProvider().dataSourceUri())
+                    in_raster = unicode(i.dataProvider().dataSourceUri())
                     prov_raster = tempfile.gettempdir() + os.sep + 'json_' + safeLayerName + '_prov.tif'
                     out_raster = dataStore + os.sep + 'json_' + safeLayerName + '.png'
                     crsSrc = i.crs()
                     crsDest = QgsCoordinateReferenceSystem(4326)
                     xform = QgsCoordinateTransform(crsSrc, crsDest)
                     extentRep = xform.transform(i.extent())
-                    extentRepNew = ','.join([str(extentRep.xMinimum()), str(extentRep.xMaximum()), str(extentRep.yMinimum()), str(extentRep.yMaximum())])
+                    extentRepNew = ','.join([unicode(extentRep.xMinimum()), unicode(extentRep.xMaximum()), unicode(extentRep.yMinimum()), unicode(extentRep.yMaximum())])
                     processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
                     processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "", extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "", out_raster)
         if scaleDependent and i.hasScaleBasedVisibility():
@@ -133,7 +133,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         xform = QgsCoordinateTransform(crsSrc, crsDest)
         pt1 = xform.transform(pt0)
         bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(), pt1.xMinimum(), pt1.xMaximum()]
-        bounds = '[[' + str(pt1.yMinimum()) + ',' + str(pt1.xMinimum()) + '],[' + str(pt1.yMaximum()) + ',' + str(pt1.xMaximum()) + ']]'
+        bounds = '[[' + unicode(pt1.yMinimum()) + ',' + unicode(pt1.xMinimum()) + '],[' + unicode(pt1.yMaximum()) + ',' + unicode(pt1.xMaximum()) + ']]'
         middle = openScript()
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
@@ -179,32 +179,32 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     f = palyr.fieldName
                     label_exp = False
                     if not labelhover:
-                        labeltext = """.bindLabel(feature.properties.""" + str(f) + """, {noHide: true})"""
+                        labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """, {noHide: true})"""
                     else:
-                        labeltext = """.bindLabel(feature.properties.""" + str(f) + """)"""
+                        labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """)"""
                 for field in field_names:
-                    if str(field) == 'html_exp':
+                    if unicode(field) == 'html_exp':
                         html_prov = True
                         table = 'feature.properties.html_exp'
-                    if str(field) == 'label_exp' and not labelhover:
+                    if unicode(field) == 'label_exp' and not labelhover:
                         label_exp = True
                         labeltext = """.bindLabel(feature.properties.label_exp, {noHide: true})"""
-                    if str(field) == 'label_exp' and labelhover:
+                    if unicode(field) == 'label_exp' and labelhover:
                         label_exp = True
                         labeltext = """.bindLabel(feature.properties.label_exp)"""
-                    if str(f) != "" and str(f) == str(field) and f:
+                    if unicode(f) != "" and unicode(f) == unicode(field) and f:
                         label_exp = True
-                    if str(field) == 'icon_exp':
+                    if unicode(field) == 'icon_exp':
                         icon_prov = True
                     if not html_prov:
                         tablestart = """'<table>"""
                         row = ""
                         for field in field_names:
-                            if str(field) == "icon_exp":
+                            if unicode(field) == "icon_exp":
                                 row += ""
                             else:
                                 if i.editorWidgetV2(fields.indexFromName(field)) != QgsVectorLayer.Hidden and i.editorWidgetV2(fields.indexFromName(field)) != 'Hidden':
-                                    row += """<tr><th scope="row">""" + i.attributeDisplayName(fields.indexFromName(str(field))) + """</th><td>' + Autolinker.link(String(feature.properties['""" + str(field) + """'])) + '</td></tr>"""
+                                    row += """<tr><th scope="row">""" + i.attributeDisplayName(fields.indexFromName(unicode(field))) + """</th><td>' + Autolinker.link(String(feature.properties['""" + unicode(field) + """'])) + '</td></tr>"""
                         tableend = """</table>'"""
                         table = tablestart + row + tableend
                 if not label_exp:
@@ -232,14 +232,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     colorName = symbol.color().name()
                     symbol_transp = symbol.alpha()
                     fill_transp = float(symbol.color().alpha()) / 255
-                    fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                    fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                     if i.geometryType() == 0 and not icon_prov:
-                        radius = str(symbol.size() * 2)
+                        radius = unicode(symbol.size() * 2)
                         borderWidth = symbol.symbolLayer(0).outlineWidth()
                         borderStyle = symbol.symbolLayer(0).outlineStyle()
-                        borderColor = str(symbol.symbolLayer(0).borderColor().name())
+                        borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
                         border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                        borderOpacity = str(layer_transp * symbol_transp * border_transp)
+                        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                         pointToLayer = pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = pointStyleScript(pointToLayer, popFuncs)
@@ -267,18 +267,18 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
                             radius = symbol.symbolLayer(0).width()
                             colorName = 'none'
-                            borderColor = str(symbol.color().name())
+                            borderColor = unicode(symbol.color().name())
                             border_transp = float(symbol.color().alpha()) / 255
                         else:
                             radius = symbol.symbolLayer(0).borderWidth()
-                            borderColor = str(symbol.symbolLayer(0).borderColor().name())
+                            borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
                             borderStyle = getLineStyle(symbol.symbolLayer(0).borderStyle(), radius)
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
                             if symbol.symbolLayer(0).borderStyle() == 0:
                                 radius = "0"
                             if symbol.symbolLayer(0).brushStyle() == 0:
                                 colorName = "none"
-                        borderOpacity = str(layer_transp * symbol_transp * border_transp)
+                        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                         polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity, colorName, borderStyle, fill_opacity)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = nonPointStylePopupsScript(polyStyle, popFuncs)
@@ -306,9 +306,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
-                            fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                            fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            borderOpacity = str(layer_transp * symbol_transp * border_transp)
+                            borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                             categoryStr += categorizedPointStylesScript(symbol, fill_opacity, borderOpacity)
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -337,7 +337,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
-                            fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                            fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                             categoryStr += categorizedLineStylesScript(symbol, fill_opacity)
                         categoryStr += endCategoryScript()
                         stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
@@ -362,9 +362,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            borderOpacity = str(layer_transp * symbol_transp * border_transp)
+                            borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                             fill_transp = float(symbol.color().alpha()) / 255
-                            fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                            fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                             categoryStr += categorizedPolygonStylesScript(symbol, fill_opacity, borderOpacity)
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -387,9 +387,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            borderOpacity = str(layer_transp * symbol_transp * border_transp)
+                            borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                             fill_transp = float(symbol.color().alpha()) / 255
-                            fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                            fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                             categoryStr += graduatedPointStylesScript(valueAttr, r, symbol, fill_opacity, borderOpacity)
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -414,7 +414,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + unicode(r.label()) + ".png")
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
-                            fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                            fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                             categoryStr += graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, fill_opacity)
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -435,9 +435,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + "_" + unicode(r.label()) + ".png")
                             symbol_transp = symbol.alpha()
                             border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            borderOpacity = str(layer_transp * symbol_transp * border_transp)
+                            borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                             fill_transp = float(symbol.color().alpha()) / 255
-                            fill_opacity = str(layer_transp * symbol_transp * fill_transp)
+                            fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                             categoryStr += graduatedPolygonStylesScript(valueAttr, r, symbol, fill_opacity, borderOpacity)
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
@@ -467,7 +467,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 #                    fillColor: '""" + unicode(symbol.color().name()) + """',
 #                    color: '""" + unicode(symbol.symbolLayer(0).borderColor().name())+ """',
 #                    weight: 1,
-#                    fillOpacity: '""" + str(symbol.alpha()) + """',
+#                    fillOpacity: '""" + unicode(symbol.alpha()) + """',
 #                }
 #            }"""
 #                            categoryStr += """
@@ -557,7 +557,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
                 pt3 = xform.transform(pt2)
                 bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(), pt3.xMinimum(), pt3.xMaximum()]
-                bounds2 = '[[' + str(pt3.yMinimum()) + ',' + str(pt3.xMinimum()) + '],[' + str(pt3.yMaximum()) + ',' + str(pt3.xMaximum()) + ']]'
+                bounds2 = '[[' + unicode(pt3.yMinimum()) + ',' + unicode(pt3.xMinimum()) + '],[' + unicode(pt3.yMaximum()) + ',' + unicode(pt3.xMaximum()) + ']]'
                 new_obj = rasterScript(safeLayerName, out_raster_name, bounds2)
             if visible[count]:
                 new_obj += """
@@ -591,7 +591,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         else:
             controlStart = """
         var baseMaps = {
-            '""" + str(basemapName) + """': basemap
+            '""" + unicode(basemapName) + """': basemap
         };"""
     #    if len(basemapName) > 1:
     #        controlStart = """
@@ -599,10 +599,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     #        for l in range(0,len(basemapName)):
     #            if l < len(basemapName)-1:
     #                controlStart+= """
-    #        '""" + str(basemapName[l]) + """': basemap_""" + str(l) + ""","""
+    #        '""" + unicode(basemapName[l]) + """': basemap_""" + unicode(l) + ""","""
     #            if l == len(basemapName)-1:
     #                controlStart+= """
-    #        '""" + str(basemapName[l]) + """': basemap_""" + str(l) + """};"""
+    #        '""" + unicode(basemapName[l]) + """': basemap_""" + unicode(l) + """};"""
         # if len
         # control_basemap = """
         # var baseMaps = {"""
