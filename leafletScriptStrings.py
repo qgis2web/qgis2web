@@ -101,15 +101,15 @@ def layerOrderScript():
 
 def popFuncsScript(table):
     popFuncs = """
-    var popupContent = {table};
-    layer.bindPopup(popupContent);""".format(table=table)
+            var popupContent = {table};
+            layer.bindPopup(popupContent);""".format(table=table)
     return popFuncs
 
 
 def popupScript(safeLayerName, popFuncs):
     popup = """
-    function pop_{safeLayerName}(feature, layer) {{{popFuncs}
-    }}""".format(safeLayerName=safeLayerName, popFuncs=popFuncs)
+        function pop_{safeLayerName}(feature, layer) {{{popFuncs}
+        }}""".format(safeLayerName=safeLayerName, popFuncs=popFuncs)
     return popup
 
 
@@ -237,22 +237,22 @@ def nonPointStylePopupsScript(lineStyle, popFuncs):
 
 def nonPointStyleFunctionScript(safeLayerName, lineStyle):
     nonPointStyleFunction = """
-    function doStyle{safeLayerName}(feature) {{{lineStyle}
-    }}""".format(safeLayerName=safeLayerName, lineStyle=lineStyle)
+        function doStyle{safeLayerName}(feature) {{{lineStyle}
+        }}""".format(safeLayerName=safeLayerName, lineStyle=lineStyle)
     return nonPointStyleFunction
 
 
 def categoryScript(layerName, valueAttr):
     category = """
-    function doStyle{layerName}(feature) {{
-        switch (feature.properties.{valueAttr}) {{""".format(layerName=layerName, valueAttr=valueAttr)
+        function doStyle{layerName}(feature) {{
+            switch (feature.properties.{valueAttr}) {{""".format(layerName=layerName, valueAttr=valueAttr)
     return category
 
 
 def defaultCategoryScript():
     defaultCategory = """
-            default:
-                return {"""
+                default:
+                    return {"""
     return defaultCategory
 
 
@@ -262,15 +262,15 @@ def eachCategoryScript(catValue):
     else:
         valQuote = ""
     eachCategory = """
-        case """ + valQuote + unicode(catValue) + valQuote + """:
-            return {"""
+                case """ + valQuote + unicode(catValue) + valQuote + """:
+                    return {"""
     return eachCategory
 
 
 def endCategoryScript():
     endCategory = """
-        }
-    }"""
+            }
+        }"""
     return endCategory
 
 
@@ -347,7 +347,7 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
 
 def graduatedStyleScript(layerName):
     graduatedStyle = """
-    function doStyle{layerName}(feature) {{""".format(layerName=layerName)
+        function doStyle{layerName}(feature) {{""".format(layerName=layerName)
     return graduatedStyle
 
 
@@ -417,7 +417,7 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
 
 def endGraduatedStyleScript():
     endGraduatedStyle = """
-    }"""
+        }"""
     return endGraduatedStyle
 
 

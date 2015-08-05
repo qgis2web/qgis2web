@@ -214,7 +214,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 
                 layerName = safeLayerName
                 renderer = i.rendererV2()
-                rendererDump = renderer.dump()
+                try:
+                    rendererDump = renderer.dump()
+                except:
+                    rendererDump = ""
                 layer_transp = 1 - (float(i.layerTransparency()) / 100)
                 new_obj = ""
 
@@ -618,21 +621,25 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
             f6.close()
 
         for count, i in enumerate(layer_list):
-            rawLayerName = i.name()
-            safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-            if i.type() == 0:
-                with open(outputIndex, 'a') as f7:
-                    if cluster[count] == True and i.geometryType() == 0:
-                        new_layer = "'" + legends[safeLayerName] + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
-                    else:
-                        new_layer = "'" + legends[safeLayerName] + "'" + ": json_" + safeLayerName + """JSON,"""
-                    f7.write(new_layer)
-                    f7.close()
-            elif i.type() == 1:
-                with open(outputIndex, 'a') as f7:
-                    new_layer = '"' + rawLayerName + '"' + ": overlay_" + safeLayerName + ""","""
-                    f7.write(new_layer)
-                    f7.close()
+            try:
+                testDump = i.rendererV2().dump()
+                rawLayerName = i.name()
+                safeLayerName = re.sub('[\W_]+', '', rawLayerName)
+                if i.type() == 0:
+                    with open(outputIndex, 'a') as f7:
+                        if cluster[count] == True and i.geometryType() == 0:
+                            new_layer = "'" + legends[safeLayerName] + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
+                        else:
+                            new_layer = "'" + legends[safeLayerName] + "'" + ": json_" + safeLayerName + """JSON,"""
+                        f7.write(new_layer)
+                        f7.close()
+                elif i.type() == 1:
+                    with open(outputIndex, 'a') as f7:
+                        new_layer = '"' + rawLayerName + '"' + ": overlay_" + safeLayerName + ""","""
+                        f7.write(new_layer)
+                        f7.close()
+            except:
+                pass
         controlEnd = "},{collapsed:false}).addTo(map);"
 
         with open(outputIndex, 'rb+') as f8:
