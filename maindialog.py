@@ -52,7 +52,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
-        self.previewMap()
+        try:
+            self.previewMap()
+        except:
+            pass
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.ol3.clicked.connect(self.changeFormat)
