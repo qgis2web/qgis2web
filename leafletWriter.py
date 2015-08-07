@@ -620,7 +620,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
             f6.write(controlStart)
             f6.close()
 
-        for count, i in enumerate(layer_list):
+        for count, i in enumerate(reversed(layer_list)):
             try:
                 testDump = i.rendererV2().dump()
                 rawLayerName = i.name()

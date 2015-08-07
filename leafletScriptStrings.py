@@ -87,14 +87,13 @@ def basemapsScript(basemap, attribution):
 
 def layerOrderScript():
     layerOrder = """
-        var layerOrder=new Array();
+        var layerOrder = new Array();
         function restackLayers() {
             for (index = 0; index < layerOrder.length; index++) {
-                feature_group.removeLayer(layerOrder[index]);
-                feature_group.addLayer(layerOrder[index]);
+                layerOrder[index].bringToFront();
             }
         }
-
+        map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});"""
     return layerOrder
 
