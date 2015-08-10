@@ -142,7 +142,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             try:
-                testDump = layer.rendererV2().dump()
+                if layer.type() == 0:
+                    testDump = layer.rendererV2().dump()
                 layer_parent = tree_layer.parent()
                 if layer_parent.parent() is None:
                     # Layer parent is a root node.
