@@ -27,6 +27,7 @@ import qgis  # pylint: disable=unused-import
 # noinspection PyUnresolvedReferences
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import traceback
 
 from ui_maindialog import Ui_MainDialog
 import utils
@@ -52,10 +53,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
-        try:
-            self.previewMap()
-        except:
-            pass
+        self.previewMap()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.ol3.clicked.connect(self.changeFormat)
@@ -96,10 +94,13 @@ class MainDialog(QDialog, Ui_MainDialog):
                         treeOption.setDisabled(False)
 
     def previewMap(self):
-        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            MainDialog.previewOL3(self)
-        else:
-            MainDialog.previewLeaflet(self)
+        try:
+            if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+                MainDialog.previewOL3(self)
+            else:
+                MainDialog.previewLeaflet(self)
+        except Exception as e:
+            self.preview.setHtml("""<html><head></head><style>body {font-family: sans-serif;}</style><body><h1>Error</h1><p>qgis2web produced an error:</p><code>""" + traceback.format_exc().replace("\n", "<br />") + """</code></body></html>""")
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
@@ -142,7 +143,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             try:
-                if layer.type() == 0:
+                if layer.type() == QgsMapLayer.VectorLayer:
                     testDump = layer.rendererV2().dump()
                 layer_parent = tree_layer.parent()
                 if layer_parent.parent() is None:
@@ -369,7 +370,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonItem.setText(0, "Encode to JSON")
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-            if layer.geometryType() == 0:
+            if layer.geometryType() == QGis.Point:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
                 self.clusterCheck.setChecked(False)

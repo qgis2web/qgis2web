@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/08/11 0.21.3 Fix raster/WMS reversion
+changelog= 2015/08/11 0.21.3 Fix raster/WMS regression
     2015/08/10 0.21.2 Replace str() with unicode() throughout, ignore layers with no geometry, tidy output, handle 2.5D geometries, catch exception on initial preview, preserve layer stacking order when changing layer visibility via layer list (thanks to https://github.com/radumas)
     2015/07/17 0.21.1 Fix unbound crsProj4 error, remove legacy Leaflet legend code
     2015/07/17 0.21.0 Fix crash with rule-based renderers (use first rule style for all features), improve readme
