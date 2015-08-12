@@ -79,7 +79,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         layerFileName = dataStore + os.sep + 'json_' + safeLayerName + '.js'
         if i.providerType() != 'WFS' or json[count] == True and i:
             precision = params["Data export"]["Precision"]
-            if i.type() == 0:
+            if i.type() == QgsMapLayer.VectorLayer:
                 qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + unicode(precision)])
 
                 # now change the data structure to work with leaflet:
@@ -102,7 +102,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     f3.close()
 
             # here comes the raster layers. you need an installed version of gdal
-            elif i.type() == 1:
+            elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
                     in_raster = unicode(i.dataProvider().dataSourceUri())
                     prov_raster = tempfile.gettempdir() + os.sep + 'json_' + safeLayerName + '_prov.tif'
@@ -158,7 +158,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         new_field_names = []
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-        if i.type() == 0:
+        if i.type() == QgsMapLayer.VectorLayer:
             with open(outputIndex, 'a') as f5:
                 fields = i.pendingFields()
                 field_names = [field.name() for field in fields]
@@ -224,10 +224,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 # single marker points:
                 if rendererDump[0:6] == 'SINGLE' or rendererDump[0:10] == 'Rule-based':
                     if rendererDump[0:10] == 'Rule-based':
-                        print 1
                         symbol = renderer.rootRule().children()[0].symbol()
                     else:
-                        print 2
                         symbol = renderer.symbol()
                     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
                     legendIcon.save(outputProjectFileName + os.sep + "legend" + os.sep + layerName + ".png")
@@ -236,7 +234,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     symbol_transp = symbol.alpha()
                     fill_transp = float(symbol.color().alpha()) / 255
                     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-                    if i.geometryType() == 0 and not icon_prov:
+                    if i.geometryType() == QGis.Point and not icon_prov:
                         radius = unicode(symbol.size() * 2)
                         borderWidth = symbol.symbolLayer(0).outlineWidth()
                         borderStyle = symbol.symbolLayer(0).outlineStyle()
@@ -253,7 +251,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             if cluster[count]:
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1
-                    elif i.geometryType() == 1:
+                    elif i.geometryType() == QGis.Line:
                         radius = symbol.width()
                         penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
                         lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
@@ -265,7 +263,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
                             new_obj += restackLayers(layerName, visible[count])
-                    elif i.geometryType() == 2:
+                    elif i.geometryType() == QGis.Polygon:
                         borderStyle = ""
                         if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
                             radius = symbol.symbolLayer(0).width()
@@ -293,7 +291,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj += restackLayers(layerName, visible[count])
                 elif rendererDump[0:11] == 'CATEGORIZED':
                     catLegend = i.name() + "<br />"
-                    if i.geometryType() == 0 and not icon_prov:
+                    if i.geometryType() == QGis.Point and not icon_prov:
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -323,7 +321,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             if cluster[count] == True:
                                 new_obj += clusterScript(safeLayerName)
                             cluster_num += 1
-                    elif i.geometryType() == 1:
+                    elif i.geometryType() == QGis.Line:
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -349,7 +347,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
-                    elif i.geometryType() == 2:
+                    elif i.geometryType() == QGis.Polygon:
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -380,7 +378,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 elif rendererDump[0:9] == 'GRADUATED':
                     catLegend = i.name() + "<br />"
                     categoryStr = graduatedStyleScript(layerName)
-                    if i.geometryType() == 0 and not icon_prov:
+                    if i.geometryType() == QGis.Point and not icon_prov:
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
@@ -405,7 +403,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             if cluster[count] == True:
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1
-                    elif i.geometryType() == 1:
+                    elif i.geometryType() == QGis.Line:
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
@@ -426,7 +424,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
-                    elif i.geometryType() == 2:
+                    elif i.geometryType() == QGis.Polygon:
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
@@ -500,7 +498,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 #            cluster_group"""+ safeLayerName + """JSON.addLayer(json_""" + safeLayerName + """JSON);"""
 #                                    cluster_num += 1
 
-                if icon_prov and i.geometryType() == 0:
+                if icon_prov and i.geometryType() == QGis.Point:
                     new_obj = customMarkerScript(safeLayerName, labeltext, usedFields[count])
                     if cluster[count] == True:
                         new_obj += clusterScript(safeLayerName)
@@ -517,7 +515,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 """ + new_obj)
                 if visible[count]:
                     if cluster[count] == False:
-                        if i.geometryType() == 0:
+                        if i.geometryType() == QGis.Point:
                             f5.write("""
         //add comment sign to hide this layer on the map in the initial view.
         feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
@@ -531,7 +529,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         cluster_group""" + safeLayerName + """JSON.addTo(map);""")
                 else:
                     if cluster[count] == False:
-                        if i.geometryType() == 0:
+                        if i.geometryType() == QGis.Point:
                             f5.write("""
     //delete comment sign to show this layer on the map in the initial view.
     //feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
@@ -544,7 +542,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     //delete comment sign to show this layer on the map in the initial view.
     //cluster_group""" + safeLayerName + """JSON.addTo(map);""")
                 f5.close()
-        elif i.type() == 1:
+        elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
                 d = parse_qs(i.source())
                 wms_url = d['url'][0]
@@ -625,15 +623,15 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 testDump = i.rendererV2().dump()
                 rawLayerName = i.name()
                 safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-                if i.type() == 0:
+                if i.type() == QgsMapLayer.VectorLayer:
                     with open(outputIndex, 'a') as f7:
-                        if cluster[count] == True and i.geometryType() == 0:
+                        if cluster[count] == True and i.geometryType() == QGis.Point:
                             new_layer = "'" + legends[safeLayerName] + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
                         else:
                             new_layer = "'" + legends[safeLayerName] + "'" + ": json_" + safeLayerName + """JSON,"""
                         f7.write(new_layer)
                         f7.close()
-                elif i.type() == 1:
+                elif i.type() == QgsMapLayer.RasterLayer:
                     with open(outputIndex, 'a') as f7:
                         new_layer = '"' + rawLayerName + '"' + ": overlay_" + safeLayerName + ""","""
                         f7.write(new_layer)
@@ -658,7 +656,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         for i in layer_list:
             rawLayerName = i.name()
             safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-            if i.type() == 1:
+            if i.type() == QgsMapLayer.RasterLayer:
                 with open(outputIndex, 'a') as f10:
                     new_opc = """
                     overlay_""" + safeLayerName + """.setOpacity(value);"""
