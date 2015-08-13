@@ -142,21 +142,22 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            try:
-                if layer.type() == QgsMapLayer.VectorLayer:
-                    testDump = layer.rendererV2().dump()
-                layer_parent = tree_layer.parent()
-                if layer_parent.parent() is None:
-                    # Layer parent is a root node.
-                    # This is an orphan layer (has no parent) :(
-                    item = TreeLayerItem(self.iface, layer, self.layersTree)
-                    self.layers_item.addChild(item)
-                else:
-                    # Layer parent is not a root, it's a group then
-                    if layer_parent not in tree_groups:
-                        tree_groups.append(layer_parent)
-            except:
-                pass
+            if layer.type() != QgsMapLayer.PluginLayer:
+                try:
+                    if layer.type() == QgsMapLayer.VectorLayer:
+                        testDump = layer.rendererV2().dump()
+                    layer_parent = tree_layer.parent()
+                    if layer_parent.parent() is None:
+                        # Layer parent is a root node.
+                        # This is an orphan layer (has no parent) :(
+                        item = TreeLayerItem(self.iface, layer, self.layersTree)
+                        self.layers_item.addChild(item)
+                    else:
+                        # Layer parent is not a root, it's a group then
+                        if layer_parent not in tree_groups:
+                            tree_groups.append(layer_parent)
+                except:
+                    pass
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
