@@ -237,9 +237,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     if i.geometryType() == QGis.Point and not icon_prov:
                         radius = unicode(symbol.size() * 2)
                         borderWidth = symbol.symbolLayer(0).outlineWidth()
-                        borderStyle = symbol.symbolLayer(0).outlineStyle()
-                        borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
-                        border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+                        try:
+                            borderStyle = symbol.symbolLayer(0).outlineStyle()
+                            borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
+                            border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+                        except:
+                            borderStyle = ""
+                            borderColor = ""
+                            border_transp = 0
                         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                         pointToLayer = pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
                         if i.providerType() == 'WFS' and json[count] == False:

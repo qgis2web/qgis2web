@@ -530,12 +530,14 @@ def getLineStyle(penType, lineWidth):
     if penType > 1:
         if penType == 2:
             penStyle = [dash, gap]
-        if penType == 3:
+        elif penType == 3:
             penStyle = [dot, gap]
-        if penType == 4:
+        elif penType == 4:
             penStyle = [dash, gap, dot, gap]
-        if penType == 5:
+        elif penType == 5:
             penStyle = [dash, gap, dot, gap, dot, gap]
+        else:
+            penStyle = ""
         penStyle = ','.join(map(str, penStyle))
     else:
         penStyle = ""
