@@ -340,7 +340,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
-            style = "image: %s" % getIcon(path, sl.size())
+            style = "image: %s" % getIcon("styles/" + os.path.basename(sl.path()), sl.size())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
             # Check for old version
