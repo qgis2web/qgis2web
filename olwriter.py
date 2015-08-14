@@ -240,7 +240,10 @@ def exportStyles(layers, folder):
         labelsEnabled = unicode(layer.customProperty("labeling/enabled")).lower() == "true"
         if (labelsEnabled):
             labelField = layer.customProperty("labeling/fieldName")
-            labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
+            if labelField != "":
+                labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
+            else:
+                labelText = '""'
         else:
             labelText = '""'
         defs = ""
