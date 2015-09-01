@@ -60,7 +60,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
         <link rel="stylesheet" href="css/leaflet.css" />"""
         else:
             base += """
-        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />"""
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.4/leaflet.css" />"""
         if len(cluster_set):
             base += """
         <link rel="stylesheet" href="css/MarkerCluster.css" />
@@ -82,7 +82,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
         <script src="js/leaflet.js"></script>"""
         else:
             base += """
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>"""
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.4/leaflet.js"></script>"""
         base += """
         <script src="js/leaflet-hash.js"></script>"""
         if len(labels):
