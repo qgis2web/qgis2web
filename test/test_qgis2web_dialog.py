@@ -105,7 +105,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test_Leaflet_shp_pnt_graduated(self):
         """Leaflet shape point graduated (test_qgis2web_dialog.test_Leaflet_shp_pnt_graduated)."""
         project = QgsProject.instance()
-        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_graduateded.qgs'))
+        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_graduated.qgs'))
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
@@ -147,7 +147,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test_Leaflet_shp_line_graduated(self):
         """Leaflet shape line graduated (test_qgis2web_dialog.test_Leaflet_shp_line_graduated)."""
         project = QgsProject.instance()
-        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_graduateded.qgs'))
+        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_graduated.qgs'))
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
@@ -189,7 +189,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test_Leaflet_shp_polygon_graduated(self):
         """Leaflet shape polygon graduated (test_qgis2web_dialog.test_Leaflet_shp_polygon_graduated)."""
         project = QgsProject.instance()
-        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_graduateded.qgs'))
+        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_graduated.qgs'))
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
