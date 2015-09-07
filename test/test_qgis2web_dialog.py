@@ -72,6 +72,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
+    def test_load_project(self):
+        """Load QGIS project (test_qgis2web_dialog.test_load_project)."""
+        project = QgsProject.instance()
+        project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/project_for_export.qgs'))
+
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
     runner = unittest.TextTestRunner(verbosity=2)

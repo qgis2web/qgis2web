@@ -1,0 +1,22 @@
+<PAMDataset>
+  <SRS>GEOGCS["Pulkovo 1942",DATUM["Pulkovo_1942",SPHEROID["Krassowsky 1940",6378245,298.3,AUTHORITY["EPSG","7024"]],TOWGS84[23.92,-141.27,-80.9,-0,0.35,0.82,-0.12],AUTHORITY["EPSG","6284"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4284"]]</SRS>
+  <GeoTransform>  1.3971523770597951e+01,  1.0160605569573472e-04,  0.0000000000000000e+00,  5.3022156307436148e+01,  0.0000000000000000e+00, -1.0160605569573472e-04</GeoTransform>
+  <Metadata>
+    <MDI key="AREA_OR_POINT">Area</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <Histograms>
+      <HistItem>
+        <HistMin>-0.498046875</HistMin>
+        <HistMax>255.498046875</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>1</Approximate>
+        <HistCounts>16|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|2|0|3|1|0|0|1|1|0|2|3|1|2|5|3|2|0|4|2|3|1|3|4|3|6|6|1|5|6|9|5|6|5|7|5|8|6|9|4|7|13|10|8|11|4|15|7|5|16|12|13|17|13|15|11|19|17|19|24|19|20|22|20|21|18|23|23|18|21|26|31|30|33|35|38|27|28|32|42|34|36|50|27|32|39|29|42|30|40|26|37|30|32|50|38|33|35|37|42|39|35|37|44|38|43|37|41|26|33|39|28|27|24|23|19|22|17|16|28|23|16|20|19|24|16|25|15|31|21|20|27|17|17|13|24|21|19|21|17|14|31|17|25|25|17|23|23|21|27|29|31|23|24|27|26|27|22|35|33|34|32|28|22|30|37|36|24|36|35|25|20|30|34|36|36|35|23|32|33|20|19|23|36|28|36|54|101|232|507|1729|0|0</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata domain="IMAGE_STRUCTURE">
+      <MDI key="COMPRESSION">JPEG</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
