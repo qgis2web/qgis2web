@@ -104,10 +104,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            ererseefxd = uktudtdcfh
             MainDialog.saveOL(self)
         else:
-            sdfsdf = jkerhgk
             MainDialog.saveLeaf(self)
 
     def changeSetting(self, paramItem, col):
