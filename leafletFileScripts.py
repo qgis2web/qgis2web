@@ -4,7 +4,7 @@ import os
 import shutil
 
 
-def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas, mapLibLocation):
+def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, measure, matchCRS, canvas, mapLibLocation, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -20,6 +20,10 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set, labels, 
     if mapLibLocation == "Local":
         shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
+        if locate:
+            os.makedirs(os.path.join(jsStore, "images"))
+            shutil.copyfile(jsDir + 'images/marker-icon.png', jsStore + 'images/marker-icon.png')
+            shutil.copyfile(jsDir + 'images/marker-shadow.png', jsStore + 'images/marker-shadow.png')
     shutil.copyfile(jsDir + 'Autolinker.min.js', jsStore + 'Autolinker.min.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     if len(cluster_set):
