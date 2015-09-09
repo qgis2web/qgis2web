@@ -79,7 +79,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.qgs'))
         output = self.dialog.previewLeaflet()
-        testFile = open(QFileInfo()'/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.html'), 'r')
+        testFile = open(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.html'), 'r')
         testOutput = testFile.read()
         assertEqual(output, testOutput)
 
