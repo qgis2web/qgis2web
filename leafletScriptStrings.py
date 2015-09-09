@@ -134,8 +134,7 @@ def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor,
     return pointToLayer
 
 
-def pointStyleScript(iface, pointToLayer, popFuncs):
-    asdasd = asdsdklff
+def pointStyleScript(pointToLayer, popFuncs):
     pointStyle = """{pointToLayer}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}

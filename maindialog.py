@@ -238,6 +238,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         params = self.getParameters()
         previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", labels, 0, 0, json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
+        outputFile = open(previewFile, 'r')
+        return outputFile.read()
 
     def saveOL(self):
         params = self.getParameters()

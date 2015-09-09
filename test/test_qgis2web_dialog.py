@@ -78,7 +78,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.qgs'))
-        self.dialog.previewLeaflet()
+        output = self.dialog.previewLeaflet()
+        testFile = open('/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.html', 'r')
+        testOutput = testFile.read()
+        assertEqual(output, testOutput)
 
     def test10_OL3_shp_pnt_simple(self):
         """OL3 shape point simple (test_qgis2web_dialog.test_OL3_shp_pnt_simple)."""
