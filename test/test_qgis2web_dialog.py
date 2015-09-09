@@ -78,127 +78,109 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test10_OL3_shp_pnt_simple(self):
         """OL3 shape point simple (test_qgis2web_dialog.test_OL3_shp_pnt_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_simple.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test11_Leaflet_shp_pnt_categorized(self):
         """Leaflet shape point categorized (test_qgis2web_dialog.test_Leaflet_shp_pnt_categorized)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_categorized.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test12_OL3_shp_pnt_categorized(self):
         """OL3 shape point categorized (test_qgis2web_dialog.test_OL3_shp_pnt_categorized)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_categorized.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test13_Leaflet_shp_pnt_graduated(self):
         """Leaflet shape point graduated (test_qgis2web_dialog.test_Leaflet_shp_pnt_graduated)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_graduated.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test14_OL3_shp_pnt_graduated(self):
         """OL3 shape point graduated (test_qgis2web_dialog.test_OL3_shp_pnt_graduated)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_point_graduated.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test15_Leaflet_shp_line_simple(self):
         """Leaflet shape line simple (test_qgis2web_dialog.test_Leaflet_shp_line_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_simple.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test16_OL3_shp_line_simple(self):
         """OL3 shape line simple (test_qgis2web_dialog.test_OL3_shp_line_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_simple.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test17_Leaflet_shp_line_categorized(self):
         """Leaflet shape line categorized (test_qgis2web_dialog.test_Leaflet_shp_line_categorized)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_categorized.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test18_OL3_shp_line_categorized(self):
         """OL3 shape line categorized (test_qgis2web_dialog.test_OL3_shp_line_categorized)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_categorized.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test19_Leaflet_shp_line_graduated(self):
         """Leaflet shape line graduated (test_qgis2web_dialog.test_Leaflet_shp_line_graduated)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_graduated.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test20_OL3_shp_line_graduated(self):
         """OL3 shape line graduated (test_qgis2web_dialog.test_OL3_shp_line_graduated)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_line_graduated.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test21_Leaflet_shp_polygon_simple(self):
         """Leaflet shape polygon simple (test_qgis2web_dialog.test_Leaflet_shp_polygon_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_simple.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test22_OL3_shp_polygon_simple(self):
         """OL3 shape polygon simple (test_qgis2web_dialog.test_OL3_shp_polygon_simple)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_simple.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test23_Leaflet_shp_polygon_categorized(self):
         """Leaflet shape polygon categorized (test_qgis2web_dialog.test_Leaflet_shp_polygon_categorized)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_categorized.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test24_OL3_shp_polygon_categorized(self):
         """OL3 shape polygon categorized (test_qgis2web_dialog.test_OL3_shp_polygon_categorized)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_categorized.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
     def test25_Leaflet_shp_polygon_graduated(self):
         """Leaflet shape polygon graduated (test_qgis2web_dialog.test_Leaflet_shp_polygon_graduated)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_graduated.qgs'))
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewLeaflet()
 
     def test26_OL3_shp_polygon_graduated(self):
         """OL3 shape polygon graduated (test_qgis2web_dialog.test_OL3_shp_polygon_graduated)."""
         project = QgsProject.instance()
         project.read(QFileInfo('/share/qgis/python/plugins/qgis2web/test_data/shp_polygon_graduated.qgs'))
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+        self.dialog.previewOL3()
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
