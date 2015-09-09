@@ -305,6 +305,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
 
 
 def categorizedLineStylesScript(symbol, opacity):
+    deliberateLeafletError()
     categorizedLineStyles = """
                     color: '{color}',
                     weight: '{weight}',
