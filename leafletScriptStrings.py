@@ -135,6 +135,7 @@ def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor,
 
 
 def pointStyleScript(pointToLayer, popFuncs):
+    asdasdasdasdasd()
     pointStyle = """{pointToLayer}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}
@@ -304,8 +305,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
     return categorizedPointJSON
 
 
-def categorizedLineStylesScript(iface, symbol, opacity):
-    deliberateLeafletError()
+def categorizedLineStylesScript(symbol, opacity):
     categorizedLineStyles = """
                     color: '{color}',
                     weight: '{weight}',
