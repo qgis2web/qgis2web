@@ -304,7 +304,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
     return categorizedPointJSON
 
 
-def categorizedLineStylesScript(symbol, opacity):
+def categorizedLineStylesScript(iface, symbol, opacity):
     deliberateLeafletError()
     categorizedLineStyles = """
                     color: '{color}',

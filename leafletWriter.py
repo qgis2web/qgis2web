@@ -344,7 +344,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
                             fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-                            categoryStr += categorizedLineStylesScript(symbol, fill_opacity)
+                            categoryStr += categorizedLineStylesScript(iface, symbol, fill_opacity)
                         categoryStr += endCategoryScript()
                         stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
                         if i.providerType() == 'WFS' and json[count] == False:
