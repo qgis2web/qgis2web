@@ -135,6 +135,7 @@ def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor,
 
 
 def pointStyleScript(pointToLayer, popFuncs):
+    asdasdasdasdasd()
     pointStyle = """{pointToLayer}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}
