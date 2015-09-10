@@ -30,7 +30,7 @@ before_script:
 script:
   - pep8 --ignore=E501 --exclude=test ./
   - make pylint
-  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
+  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
 notifications:
   email:
