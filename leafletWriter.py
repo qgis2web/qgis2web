@@ -40,7 +40,6 @@ basemapAttributions = basemapAttributions()
 
 
 def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, webpage_name, webmap_head, webmap_subhead, labels, labelhover, selected, json, params, popup):
-    print "writeLeaflet()"
     legends = {}
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))

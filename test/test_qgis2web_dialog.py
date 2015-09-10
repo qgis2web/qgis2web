@@ -76,7 +76,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_shp_pnt_simple(self):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
-        layer = IFACE.addVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.qgs", "shp_point_simple", "ogr")
+        layer = IFACE.addVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
