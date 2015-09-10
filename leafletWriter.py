@@ -158,7 +158,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         new_field_names = []
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-        print count + ": " + safeLayerName
+        print unicode(count) + ": " + safeLayerName
         if i.type() == QgsMapLayer.VectorLayer:
             with open(outputIndex, 'a') as f5:
                 fields = i.pendingFields()
