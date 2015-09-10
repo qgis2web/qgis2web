@@ -17,10 +17,10 @@ import unittest
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
-from qgis.core import QgsProject
+# from qgis.core import QgsProject
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import QFileInfo
-from PyQt4.QtGui import QDialogButtonBox, QDialog
+# from PyQt4.QtGui import QDialogButtonBox, QDialog
 from utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
@@ -32,7 +32,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = MainDialog(IFACE)
+        # self.dialog = MainDialog(IFACE)
 
     def tearDown(self):
         """Runs after each test."""
@@ -77,8 +77,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test09_Leaflet_shp_pnt_simple(self):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
         layer = IFACE.addVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
+        QgsMapLayerRegistry.instance().addMapLayers(layer)
         if not layer:
             print "Layer failed to load!"
+        self.dialog = MainDialog(IFACE)
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
         goodOutput = testFile.read()
         print "test09_Leaflet_shp_pnt_simple()"
