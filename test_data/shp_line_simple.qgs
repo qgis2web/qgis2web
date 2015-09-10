@@ -58,7 +58,7 @@
   <projectlayers layercount="1">
     <maplayer minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Line" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>line_feature20150907120043991</id>
-      <datasource>./line_feature.shp</datasource>
+      <datasource>/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp</datasource>
       <title></title>
       <abstract></abstract>
       <keywordList>
