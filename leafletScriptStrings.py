@@ -136,7 +136,6 @@ def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor,
 
 def pointStyleScript(pointToLayer, popFuncs):
     print "pointStyleScript()"
-    asdasdasdasdasd()
     pointStyle = """{pointToLayer}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}
@@ -151,6 +150,8 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(safeLayerName, pointToLayer, usedFields):
+    print "jsonPointScript()"
+    ajdhfadkjhfkj()
     if usedFields != 0:
         jsonPoint = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
