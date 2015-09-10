@@ -76,7 +76,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_shp_pnt_simple(self):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
-        project = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.qgs')
+        project = QgsProject.instance()
+        project.read(QFileInfo('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simpleX.qgs'))
+        self.dialog.leaflet.click()
+        self.dialog.buttonExport.click()
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
