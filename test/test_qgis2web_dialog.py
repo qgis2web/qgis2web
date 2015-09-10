@@ -77,13 +77,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_shp_pnt_simple(self):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/places_few_1.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
-        print "Before: " + unicode(registry.count())
         registry.addMapLayer(layer)
-        print "After: " + unicode(registry.count())
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
         goodOutput = testFile.read()
         print "test09_Leaflet_shp_pnt_simple()"
