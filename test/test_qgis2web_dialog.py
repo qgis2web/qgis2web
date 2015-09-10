@@ -21,7 +21,7 @@ import qgis  # pylint: disable=unused-import
 from qgis.core import QgsMapLayerRegistry
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import QFileInfo
-# from PyQt4.QtGui import QDialogButtonBox, QDialog
+from PyQt4.QtGui import QDialogButtonBox, QDialog
 from utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
@@ -78,7 +78,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test09_Leaflet_shp_pnt_simple(self):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
         layer = IFACE.addVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
-        QgsMapLayerRegistry.instance().addMapLayers(layer)
+        QgsMapLayerRegistry.instance().addMapLayer(layer)
         if not layer:
             print "Layer failed to load!"
         self.dialog = MainDialog(IFACE)
