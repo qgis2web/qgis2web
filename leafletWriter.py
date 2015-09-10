@@ -454,6 +454,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
                     legends[layerName] = catLegend
+                else:
+                    print "No renderer"
 #                        elif rendererDump[0:10] == 'Rule-based':
 #                            for rule in renderer.rootRule().children():
 #                                try:
