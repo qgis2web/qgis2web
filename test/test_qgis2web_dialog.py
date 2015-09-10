@@ -81,9 +81,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
-        print "Before: " + registry.count()
+        print "Before: " + unicode(registry.count())
         registry.addMapLayer(layer)
-        print "After: " + registry.count()
+        print "After: " + unicode(registry.count())
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
         goodOutput = testFile.read()
         print "test09_Leaflet_shp_pnt_simple()"
