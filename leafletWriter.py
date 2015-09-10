@@ -224,6 +224,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 
                 # single marker points:
                 if rendererDump[0:6] == 'SINGLE' or rendererDump[0:10] == 'Rule-based':
+                    print "SINGLE"
                     if rendererDump[0:10] == 'Rule-based':
                         symbol = renderer.rootRule().children()[0].symbol()
                     else:
@@ -236,6 +237,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     fill_transp = float(symbol.color().alpha()) / 255
                     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                     if i.geometryType() == QGis.Point and not icon_prov:
+                        print "POINT""
                         radius = unicode(symbol.size() * 2)
                         borderWidth = symbol.symbolLayer(0).outlineWidth()
                         try:
@@ -258,6 +260,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1
                     elif i.geometryType() == QGis.Line:
+                        print "LINE"
                         radius = symbol.width()
                         penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
                         lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
@@ -270,6 +273,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
                             new_obj += restackLayers(layerName, visible[count])
                     elif i.geometryType() == QGis.Polygon:
+                        print "POLYGON"
                         borderStyle = ""
                         if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
                             radius = symbol.symbolLayer(0).width()
@@ -296,8 +300,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
                             new_obj += restackLayers(layerName, visible[count])
                 elif rendererDump[0:11] == 'CATEGORIZED':
+                    print "CATEGORIZED"
                     catLegend = i.name() + "<br />"
                     if i.geometryType() == QGis.Point and not icon_prov:
+                        print "POINT"
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -328,6 +334,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                                 new_obj += clusterScript(safeLayerName)
                             cluster_num += 1
                     elif i.geometryType() == QGis.Line:
+                        print "LINE"
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -354,6 +361,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
                     elif i.geometryType() == QGis.Polygon:
+                        print "POLYGON"
                         categories = renderer.categories()
                         valueAttr = renderer.classAttribute()
                         categoryStr = categoryScript(layerName, valueAttr)
@@ -382,9 +390,11 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
                     legends[layerName] = catLegend
                 elif rendererDump[0:9] == 'GRADUATED':
+                    print "GRADUATED"
                     catLegend = i.name() + "<br />"
                     categoryStr = graduatedStyleScript(layerName)
                     if i.geometryType() == QGis.Point and not icon_prov:
+                        print "POINT"
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
@@ -410,6 +420,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1
                     elif i.geometryType() == QGis.Line:
+                        print "LINE"
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
@@ -431,6 +442,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
                     elif i.geometryType() == QGis.Polygon:
+                        print "POLYGON"
                         valueAttr = renderer.classAttribute()
                         for r in renderer.ranges():
                             symbol = r.symbol()
