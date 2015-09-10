@@ -62,7 +62,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonExport.clicked.connect(self.saveMap)
 
     def changeFormat(self):
-        print "In changeFormat()"
         QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
@@ -95,7 +94,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                         treeOption.setDisabled(False)
 
     def previewMap(self):
-        print "previewMap()"
         try:
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
                 MainDialog.previewOL3(self)
@@ -235,7 +233,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def previewLeaflet(self):
-        print "previewLeaflet()"
         self.preview.settings().clearMemoryCaches()
         layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
         params = self.getParameters()

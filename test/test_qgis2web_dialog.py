@@ -76,11 +76,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_shp_pnt_simple(self):
         """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
-        project = QgsProject.instance()
-        project.read(QFileInfo('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.qgs'))
+        layer = iface.addVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.qgs", "shp_point_simple", "ogr")
+        if not layer:
+            print "Layer failed to load!"
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
         goodOutput = testFile.read()
-        print "In test script"
+        print "test09_Leaflet_shp_pnt_simple()"
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
