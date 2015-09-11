@@ -49,7 +49,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.iface = iface
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.populate_layers_and_groups()
+        self.populate_layers_and_groups(self.iface)
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
@@ -130,7 +130,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         global selectedCombo
         QSettings().setValue("qgis2web/" + selectedCombo, value)
 
-    def populate_layers_and_groups(self):
+    def populate_layers_and_groups(self, iface):
         """Populate layers on QGIS into our layers and group tree view."""
         print "populate_layers_and_groups()"
         root_node = QgsProject.instance().layerTreeRoot()
