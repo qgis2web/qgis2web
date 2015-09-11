@@ -33,7 +33,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = MainDialog(IFACE)
+#        self.dialog = MainDialog(IFACE)
 
     def tearDown(self):
         """Runs after each test."""
@@ -41,37 +41,45 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test01_preview_default(self):
         """Preview default - no data (OL3) (test_qgis2web_dialog.test_preview_default)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.buttonPreview.click()
 
     def test02_save_default(self):
         """Save default - no data (OL3) (test_qgis2web_dialog.test_save_default)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.buttonExport.click()
 
     def test03_toggle_Leaflet(self):
         """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test04_preview_Leaflet(self):
         """Preview Leaflet - no data (test_qgis2web_dialog.test_preview_Leaflet)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonPreview.click()
 
     def test05_export_Leaflet(self):
         """Export Leaflet - no data (test_qgis2web_dialog.test_export_Leaflet)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
     def test06_toggle_OL3(self):
         """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
 
     def test07_preview_OL3(self):
         """Preview OL3 - no data (test_qgis2web_dialog.test_preview_OL3)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog.buttonPreview.click()
 
     def test08_export_OL3(self):
         """Export OL3 - no data (test_qgis2web_dialog.test_export_OL3)."""
+        self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
@@ -85,6 +93,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
         goodOutput = testFile.read()
         print "test09_Leaflet_shp_pnt_simple()"
+        self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
