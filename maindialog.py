@@ -49,7 +49,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.iface = iface
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.populate_layers_and_groups(self)
+        self.populate_layers_and_groups()
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
@@ -130,7 +130,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         global selectedCombo
         QSettings().setValue("qgis2web/" + selectedCombo, value)
 
-    def populate_layers_and_groups(self, dlg):
+    def populate_layers_and_groups(self):
         """Populate layers on QGIS into our layers and group tree view."""
         print "populate_layers_and_groups()"
         root_node = QgsProject.instance().layerTreeRoot()
@@ -230,14 +230,14 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def previewOL3(self):
         self.preview.settings().clearMemoryCaches()
-        layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
+        layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups(self.iface)
         params = self.getParameters()
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
-        layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
+        layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups(self.iface)
         params = self.getParameters()
         previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, "", "", "", labels, 0, 0, json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
@@ -248,7 +248,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
         if folder:
-            layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
+            layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups(self.iface)
             outputFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, folder)
             webbrowser.open_new_tab(outputFile)
 
@@ -256,7 +256,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
         if folder:
-            layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
+            layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups(self.iface)
             outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers, visible, "", cluster, "", "", "", labels, 0, 0, json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
@@ -267,7 +267,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 parameters[group][param] = item.value()
         return parameters
 
-    def getLayersAndGroups(self):
+    def getLayersAndGroups(self, iface):
         print "getLayersAndGroups()"
         print "child_count(): " + unicode(self.layers_item.childCount())
         layers = []
