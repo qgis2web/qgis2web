@@ -172,6 +172,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
+        print "child_count(): " + unicode(self.layers_item.childCount())
 
     def populateConfigParams(self, dlg):
         global selectedCombo
