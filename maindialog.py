@@ -132,6 +132,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populate_layers_and_groups(self):
         """Populate layers on QGIS into our layers and group tree view."""
+        print "populate_layers_and_groups()"
         root_node = QgsProject.instance().layerTreeRoot()
         # All tree group
         tree_groups = []
@@ -266,6 +267,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         return parameters
 
     def getLayersAndGroups(self):
+        print "getLayersAndGroups()"
         layers = []
         groups = {}
         popup = []
