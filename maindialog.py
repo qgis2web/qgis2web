@@ -353,6 +353,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
+        self.setCheckState(0, Qt.Checked)
         if layer.type() == layer.VectorLayer:
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Info popup content")
