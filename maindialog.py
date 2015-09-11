@@ -268,7 +268,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def getLayersAndGroups(self):
         print "getLayersAndGroups()"
-        print "child_count(): " + unicode()self.layers_item.childCount())
+        print "child_count(): " + unicode(self.layers_item.childCount())
         layers = []
         groups = {}
         popup = []
