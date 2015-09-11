@@ -142,6 +142,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
+            print "populate_layers_and_groups: " + layer.name()
             if layer.type() != QgsMapLayer.PluginLayer:
                 try:
                     if layer.type() == QgsMapLayer.VectorLayer:
@@ -276,6 +277,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
                 if item.checkState(0) == Qt.Checked:
+                    print "getLayersAndGroups: " + item.layer.name()
                     layers.append(item.layer)
                     popup.append(item.popup)
                     visible.append(item.visible)
