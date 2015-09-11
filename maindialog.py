@@ -49,7 +49,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.iface = iface
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.populate_layers_and_groups(self)
+        self.populate_layers_and_groups()
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
@@ -130,7 +130,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         global selectedCombo
         QSettings().setValue("qgis2web/" + selectedCombo, value)
 
-    def populate_layers_and_groups(self, dlg):
+    def populate_layers_and_groups(self):
         """Populate layers on QGIS into our layers and group tree view."""
         print "populate_layers_and_groups()"
         root_node = QgsProject.instance().layerTreeRoot()
@@ -138,8 +138,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         tree_groups = []
         # Get all the tree layers
         tree_layers = root_node.findLayers()
-        dlg.layers_item = QTreeWidgetItem()
-        dlg.layers_item.setText(0, "Layers and Groups")
+        self.layers_item = QTreeWidgetItem()
+        self.layers_item.setText(0, "Layers and Groups")
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
@@ -153,7 +153,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         # Layer parent is a root node.
                         # This is an orphan layer (has no parent) :(
                         item = TreeLayerItem(self.iface, layer, self.layersTree)
-                        dlg.layers_item.addChild(item)
+                        self.layers_item.addChild(item)
                     else:
                         # Layer parent is not a root, it's a group then
                         if layer_parent not in tree_groups:
@@ -166,13 +166,13 @@ class MainDialog(QDialog, Ui_MainDialog):
             group_layers = [
                 tree_layer.layer() for tree_layer in tree_group.findLayers()]
             item = TreeGroupItem(group_name, group_layers, self.layersTree)
-            dlg.layers_item.addChild(item)
+            self.layers_item.addChild(item)
 
-        self.layersTree.addTopLevelItem(dlg.layers_item)
+        self.layersTree.addTopLevelItem(self.layers_item)
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
-        print "child_count(): " + unicode(dlg.layers_item.childCount())
+        print "child_count(): " + unicode(self.layers_item.childCount())
 
     def populateConfigParams(self, dlg):
         global selectedCombo
