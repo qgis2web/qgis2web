@@ -278,8 +278,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         for i in xrange(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
+                print "getLayersAndGroups: " + item.layer.name()
                 if item.checkState(0) == Qt.Checked:
-                    print "getLayersAndGroups: " + item.layer.name()
                     layers.append(item.layer)
                     popup.append(item.popup)
                     visible.append(item.visible)
@@ -353,7 +353,6 @@ class TreeLayerItem(QTreeWidgetItem):
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
-        self.setCheckState(0, Qt.Checked)
         if layer.type() == layer.VectorLayer:
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Info popup content")
