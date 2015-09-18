@@ -50,7 +50,7 @@ def crsScript(crsAuthId, crsProj4):
 def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
     map = """
         var map = L.map('map', {"""
-    if extent == "Canvas extent" and matchCRS and crsAuthId != 'EPSG:4326':
+    if matchCRS and crsAuthId != 'EPSG:4326':
         map += """
             crs: crs,
             continuousWorld: false,
