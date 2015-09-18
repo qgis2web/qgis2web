@@ -604,7 +604,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     # let's add layer control
     if params["Appearance"]["Add layers list"]:
         if len(basemapName) == 0 or basemapName == "None" or matchCRS:
-            controlStart = ""
+            controlStart = """
+        var baseMaps = {};"""
         else:
             controlStart = """
         var baseMaps = {
