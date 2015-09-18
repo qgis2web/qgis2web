@@ -132,7 +132,6 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populate_layers_and_groups(self):
         """Populate layers on QGIS into our layers and group tree view."""
-        print "populate_layers_and_groups()"
         root_node = QgsProject.instance().layerTreeRoot()
         # All tree group
         tree_groups = []
@@ -143,7 +142,6 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            print "populate_layers_and_groups: " + layer.name()
             if layer.type() != QgsMapLayer.PluginLayer:
                 try:
                     if layer.type() == QgsMapLayer.VectorLayer:
@@ -172,7 +170,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
-        print "child_count(): " + unicode(self.layers_item.childCount())
 
     def populateConfigParams(self, dlg):
         global selectedCombo
@@ -268,8 +265,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         return parameters
 
     def getLayersAndGroups(self):
-        print "getLayersAndGroups()"
-        print "child_count(): " + unicode(self.layers_item.childCount())
         layers = []
         groups = {}
         popup = []
@@ -280,7 +275,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         for i in xrange(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
-                print "getLayersAndGroups: " + item.layer.name()
                 if item.checkState(0) == Qt.Checked:
                     layers.append(item.layer)
                     popup.append(item.popup)

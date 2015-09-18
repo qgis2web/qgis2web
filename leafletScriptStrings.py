@@ -72,6 +72,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
 def featureGroupsScript():
     featureGroups = """
         var feature_group = new L.featureGroup([]);
+        var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);"""
     return featureGroups
 
@@ -135,7 +136,6 @@ def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor,
 
 
 def pointStyleScript(pointToLayer, popFuncs):
-    print "pointStyleScript()"
     pointStyle = """{pointToLayer}
         }},
         onEachFeature: function (feature, layer) {{{popFuncs}
@@ -150,8 +150,6 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(safeLayerName, pointToLayer, usedFields):
-    print "jsonPointScript()"
-    ajdhfadkjhfkj = asdasdasd
     if usedFields != 0:
         jsonPoint = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{

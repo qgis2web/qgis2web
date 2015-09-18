@@ -40,8 +40,6 @@ basemapAttributions = basemapAttributions()
 
 
 def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, webpage_name, webmap_head, webmap_subhead, labels, labelhover, selected, json, params, popup):
-    print "writeLeaflet()"
-    print layer_list
     legends = {}
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
@@ -140,7 +138,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds)
-    if extent == "Fit to layers extent":
+    else:
         middle = openScript()
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
@@ -160,7 +158,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         new_field_names = []
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-        print unicode(count) + ": " + safeLayerName
         if i.type() == QgsMapLayer.VectorLayer:
             with open(outputIndex, 'a') as f5:
                 fields = i.pendingFields()
@@ -535,14 +532,11 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     f5.write(new_pop)
                 f5.write("""
 """ + new_obj)
+                f5.write("""
+        bounds_group.addLayer(json_""" + safeLayerName + """JSON);""")
                 if visible[count]:
                     if cluster[count] == False:
-                        if i.geometryType() == QGis.Point:
-                            f5.write("""
-        //add comment sign to hide this layer on the map in the initial view.
-        feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
-                        else:
-                            f5.write("""
+                        f5.write("""
         //add comment sign to hide this layer on the map in the initial view.
         feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
                     else:
@@ -698,7 +692,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     # let's close the file but ask for the extent of all layers if the user wants to show only this extent:
     if extent == 'Fit to layers extent':
         end += """
-        map.fitBounds(feature_group.getBounds());"""
+        map.fitBounds(bounds_group.getBounds());"""
     if params["Appearance"]["Add scale bar"]:
         end += """
         L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);"""
