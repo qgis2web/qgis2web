@@ -156,10 +156,10 @@
         if (doHighlight){
           if (currentFeature !== highlight) {
             if (highlight) {
-              featureOverlay.getSource().removeFeature(feature);
+              featureOverlay.getSource().removeFeature(highlight);
             }
             if (currentFeature) {
-              featureOverlay.getSource().addFeature(feature);
+              featureOverlay.getSource().addFeature(currentFeature);
             }
             highlight = currentFeature;
           }
