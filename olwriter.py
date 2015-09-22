@@ -297,8 +297,8 @@ def exportStyles(layers, folder):
                             var text = new ol.style.Text({
                                   font: '%(size)spx Calibri,sans-serif',
                                   text: labelText,
-                                  offsetX: 10,
-                                  offsetY: -5,
+                                  offsetX: 8,
+                                  offsetY: 0,
                                   fill: new ol.style.Fill({
                                     color: "%(color)s"
                                   }),
