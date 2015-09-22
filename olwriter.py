@@ -282,7 +282,7 @@ def exportStyles(layers, folder):
                                 }
                             }
                             ''' % {"v": varName}
-            size = layer.customProperty("labeling/fontSize") * 1.5
+            size = float(layer.customProperty("labeling/fontSize")) * 1.3
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
@@ -297,7 +297,7 @@ def exportStyles(layers, folder):
                             var text = new ol.style.Text({
                                   font: '%(size)spx Calibri,sans-serif',
                                   text: labelText,
-                                  offsetX: 8,
+                                  offsetX: 10,
                                   offsetY: 0,
                                   fill: new ol.style.Fill({
                                     color: "%(color)s"
