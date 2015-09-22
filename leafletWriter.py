@@ -179,7 +179,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     f = palyr.fieldName
                     label_exp = False
                     if not labelhover:
-                        labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """, {noHide: true})"""
+                        labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """, {noHide: true, offset: [-0, -16]})"""
                     else:
                         labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """)"""
                 for field in field_names:
@@ -188,7 +188,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         table = 'feature.properties.html_exp'
                     if unicode(field) == 'label_exp' and not labelhover:
                         label_exp = True
-                        labeltext = """.bindLabel(feature.properties.label_exp, {noHide: true})"""
+                        labeltext = """.bindLabel(feature.properties.label_exp, {noHide: true, offset: [-0, -16]})"""
                     if unicode(field) == 'label_exp' and labelhover:
                         label_exp = True
                         labeltext = """.bindLabel(feature.properties.label_exp)"""
