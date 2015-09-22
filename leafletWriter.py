@@ -262,7 +262,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     elif i.geometryType() == QGis.Line:
                         print "LINE"
                         radius = symbol.width()
-                        penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
+                        try:
+                            penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
+                        except:
+                            penStyle = ""
                         lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = nonPointStylePopupsScript(lineStyle, popFuncs)
@@ -281,14 +284,21 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             borderColor = unicode(symbol.color().name())
                             border_transp = float(symbol.color().alpha()) / 255
                         else:
-                            radius = symbol.symbolLayer(0).borderWidth()
-                            borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
-                            borderStyle = getLineStyle(symbol.symbolLayer(0).borderStyle(), radius)
-                            border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            if symbol.symbolLayer(0).borderStyle() == 0:
-                                radius = "0"
-                            if symbol.symbolLayer(0).brushStyle() == 0:
-                                colorName = "none"
+                            try:
+                                radius = symbol.symbolLayer(0).borderWidth()
+                                borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
+                                borderStyle = getLineStyle(symbol.symbolLayer(0).borderStyle(), radius)
+                                border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+                                if symbol.symbolLayer(0).borderStyle() == 0:
+                                    radius = "0"
+                                if symbol.symbolLayer(0).brushStyle() == 0:
+                                    colorName = "none"
+                            except:
+                                radius = 1
+                                borderColor = "#000000"
+                                borderStyle = ""
+                                border_transp = 1
+                                colorName = "#ffffff"
                         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                         polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity, colorName, borderStyle, fill_opacity)
                         if i.providerType() == 'WFS' and json[count] == False:
