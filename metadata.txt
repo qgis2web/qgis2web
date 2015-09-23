@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent.
-version=0.23.3
+version=0.24.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/09/21 0.23.3  OL3 "Highlight features" breaks "Show popups on hover"
+changelog= 2015/09/23 0.24.0  OL3 popup layout improvements, OL3 label improvements, Leaflet label improvements, Leaflet labels appear over popups, catch font marker and vector field marker exceptions, "Highlight features" doesn't highlight points, catch marker line exceptions
+    2015/09/21 0.23.3  OL3 "Highlight features" breaks "Show popups on hover"
     2015/09/18 0.23.2  Leaflet "Match CRS" with "Fit to layers extent", Leaflet "baseMaps is not defined"
     2015/09/18 0.23.1 Fit to layers extent with clustering in Leaflet fixed, further unit test work (still not complete)
     2015/09/08 0.23.0 Added test data and suite of unit tests (not yet fully functional), broken marker image in local Leaflet geolocate
