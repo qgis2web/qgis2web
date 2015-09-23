@@ -147,7 +147,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS:
         basemapText = ""
     else:
-        basemapText = basemapsScript(basemapAddresses[basemapName], basemapAttributions[basemapName])
+        basemapText = basemapsScript(basemapAddresses[basemapName], basemapAttributions[basemapName], maxZoom)
     layerOrder = layerOrderScript()
     with open(outputIndex, 'a') as f4:
             f4.write(middle)

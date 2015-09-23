@@ -77,12 +77,13 @@ def featureGroupsScript():
     return featureGroups
 
 
-def basemapsScript(basemap, attribution):
+def basemapsScript(basemap, attribution, maxZoom):
     basemaps = """
         var basemap = L.tileLayer('{basemap}', {{
-            attribution: additional_attrib + ' {attribution}'
+            attribution: additional_attrib + ' {attribution}',
+            maxZoom: {maxZoom}
         }});
-        basemap.addTo(map);""".format(basemap=basemap, attribution=attribution)
+        basemap.addTo(map);""".format(basemap=basemap, attribution=attribution, maxZoom=maxZoom)
     return basemaps
 
 
