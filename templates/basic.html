@@ -121,28 +121,6 @@
         updateWhileInteracting: true // optional, for instant visual feedback
       });
 
-      var pointFeatureOverlay = new ol.layer.Vector({
-        map: map,
-        source: new ol.source.Vector({
-          features: collection,
-          useSpatialIndex: false // optional, might improve performance
-        }),
-        style: [new ol.style.Style({
-                image: new ol.style.Circle({
-                  radius: 3,
-                  stroke: new ol.style.Stroke({
-                    color: 'rgba(255,0,0,255)',
-                    lineDash: null,
-                    width: 1}),
-                  fill: new ol.style.Fill({
-                    color: "rgba(255,0,0,1.0)"
-                  })
-                })
-               })],
-        updateWhileAnimating: true, // optional, for instant visual feedback
-        updateWhileInteracting: true // optional, for instant visual feedback
-      });
-
       var doHighlight = @DOHIGHLIGHT@;
       var doHover = @ONHOVER@;
 
@@ -188,10 +166,31 @@
             }
             if (currentFeature) {
               if (currentFeature.getGeometry().getType() == 'Point') {
-                pointFeatureOverlay.getSource().addFeature(currentFeature);
+                highlightStyle = new ol.style.Style({
+                image: new ol.style.Circle({
+                  radius: 3,
+                  stroke: new ol.style.Stroke({
+                    color: 'rgba(255,0,0,255)',
+                    lineDash: null,
+                    width: 1}),
+                  fill: new ol.style.Fill({
+                    color: "rgba(255,0,0,1.0)"
+                  })
+                })
+               })
               } else {
-                featureOverlay.getSource().addFeature(currentFeature);
+                highlightStyle = new ol.style.Style({
+                  stroke: new ol.style.Stroke({
+                    color: '#f00',
+                    width: 1
+                  }),
+                  fill: new ol.style.Fill({
+                    color: 'rgba(255,0,0,0.1)'
+                  }),
+                })
               }
+              featureOverlay.getSource().addFeature(currentFeature);
+              featureOverlay.setStyle(highlightStyle);
             }
             highlight = currentFeature;
           }
