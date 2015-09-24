@@ -65,6 +65,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     addressSearch = params["Appearance"]["Add address search"]
     locate = params["Appearance"]["Geolocate user"]
     measure = params["Appearance"]["Add measure tool"]
+    highlight = params["Appearance"]["Highlight features"]
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
     writeHTMLstart(outputIndex, webpage_name, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
@@ -126,7 +127,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         crsSrc = canvas.mapRenderer().destinationCrs()
     crsAuthId = crsSrc.authid()
     crsProj4 = crsSrc.toProj4()
-    middle = ""
+    middle = openScript()
+    if highlight:
+        middle += highlightScript()
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
@@ -134,12 +137,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         pt1 = xform.transform(pt0)
         bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(), pt1.xMinimum(), pt1.xMaximum()]
         bounds = '[[' + unicode(pt1.yMinimum()) + ',' + unicode(pt1.xMinimum()) + '],[' + unicode(pt1.yMaximum()) + ',' + unicode(pt1.xMaximum()) + ']]'
-        middle = openScript()
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds)
     else:
-        middle = openScript()
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, 0)

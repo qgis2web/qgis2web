@@ -39,6 +39,26 @@ def openScript():
     return openScript
 
 
+def highlightScript():
+    highlightScript = """
+    var highlightLayer;
+    function highlightFeature(e) {
+        highlightLayer = e.target;
+
+        highlightLayer.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+            highlightLayer.bringToFront();
+        }
+    }"""
+    return highlightScript
+
+
 def crsScript(crsAuthId, crsProj4):
     crs = """
         var crs = new L.Proj.CRS('{crsAuthId}', '{crsProj4}', {{
@@ -109,7 +129,14 @@ def popFuncsScript(table):
 
 def popupScript(safeLayerName, popFuncs):
     popup = """
-        function pop_{safeLayerName}(feature, layer) {{{popFuncs}
+        function pop_{safeLayerName}(feature, layer) {{
+            layer.on({{
+                mouseover: highlightFeature,
+                mouseout: function(e) {{
+                    json_{safeLayerName}JSON.resetStyle(e.target)
+                }},
+            }});
+{popFuncs}
         }}""".format(safeLayerName=safeLayerName, popFuncs=popFuncs)
     return popup
 
