@@ -155,7 +155,10 @@ def replaceInTemplate(template, values):
 def bounds(iface, useCanvas, layers):
     if useCanvas:
         canvas = iface.mapCanvas()
-        canvasCrs = canvas.mapRenderer().destinationCrs()
+        try:
+            canvasCrs = canvas.mapSettings().destinationCrs()
+        except:
+            canvasCrs = canvas.mapRenderer().destinationCrs()
         transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem("EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
@@ -297,8 +300,10 @@ def exportStyles(layers, folder):
                             var text = new ol.style.Text({
                                   font: '%(size)spx Calibri,sans-serif',
                                   text: labelText,
-                                  offsetX: 10,
-                                  offsetY: 0,
+                                  textBaseline: "center",
+                                  textAlign: "left",
+                                  offsetX: 5,
+                                  offsetY: 3,
                                   fill: new ol.style.Fill({
                                     color: "%(color)s"
                                   }),

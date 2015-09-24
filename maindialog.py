@@ -116,8 +116,10 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
+            #print "W " + paramItem.name + ": " + unicode(paramItem.checkState(col))
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
         else:
+            print "W " + paramItem.name + ": " + paramItem.text(col)
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.text(col))
         if paramItem.name == "Match project CRS":
             baseLayer = self.paramsTreeOL.findItems("Base layer", Qt.MatchExactly | Qt.MatchRecursive)[0]
@@ -128,6 +130,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveComboSettings(self, value):
         global selectedCombo
+        print "W " + selectedCombo + ": " + unicode(value)
         QSettings().setValue("qgis2web/" + selectedCombo, value)
 
     def populate_layers_and_groups(self):
@@ -181,6 +184,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 if QSettings().contains(param):
                     QSettings().remove(param)
                 if QSettings().contains("qgis2web/" + param):
+                    print "R " + param + ": " + unicode(QSettings().value("qgis2web/" + param))
                     if isinstance(value, bool):
                         if QSettings().value("qgis2web/" + param):
                             value = True
@@ -196,6 +200,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                             else:
                                 QSettings().remove("qgis2web/" + param)
                         else:
+                            print "REMOVING " + selectedCombo
                             comboSelection = 0
                             QSettings().remove("qgis2web/" + selectedCombo)
                     else:
@@ -454,6 +459,7 @@ class TreeSettingItem(QTreeWidgetItem):
             self.setText(1, unicode(value))
 
     def clickCombo(self):
+        print "selectedCombo: " + self.name
         global selectedCombo
         selectedCombo = self.name
 
