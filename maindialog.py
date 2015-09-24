@@ -116,7 +116,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
-            #print "W " + paramItem.name + ": " + unicode(paramItem.checkState(col))
+            # print "W " + paramItem.name + ": " + unicode(paramItem.checkState(col))
             QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
         else:
             print "W " + paramItem.name + ": " + paramItem.text(col)
@@ -459,7 +459,6 @@ class TreeSettingItem(QTreeWidgetItem):
             self.setText(1, unicode(value))
 
     def clickCombo(self):
-        print "selectedCombo: " + self.name
         global selectedCombo
         selectedCombo = self.name
 
