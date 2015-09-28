@@ -250,13 +250,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             border_transp = 0
                             borderWidth = 1
                         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-                        pointToLayer = pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
+                        pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
+                        pointToLayer = pointToLayerScript(safeLayerName)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = pointStyleScript(pointToLayer, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), "", stylestr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", stylestr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
-                            new_obj = jsonPointScript(safeLayerName, pointToLayer, usedFields[count])
+                            new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields[count])
                             if cluster[count]:
                                 new_obj += clusterScript(safeLayerName)
                                 cluster_num += 1

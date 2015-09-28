@@ -13,12 +13,8 @@ def scaleDependentLayerScript(layer, layerName):
     scaleDependentLayer = """
     if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
         feature_group.addLayer(json_{layerName}JSON);
-        console.log("show");
-        //restackLayers();
     }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
         feature_group.removeLayer(json_{layerName}JSON);
-        console.log("hide");
-        //restackLayers();
     }}""".format(min=scaleToZoom(min), max=scaleToZoom(max), layerName=layerName)
     return scaleDependentLayer
 
@@ -41,21 +37,21 @@ def openScript():
 
 def highlightScript():
     highlightScript = """
-    var highlightLayer;
-    function highlightFeature(e) {
-        highlightLayer = e.target;
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
 
-        highlightLayer.setStyle({
-            weight: 5,
-            color: '#666',
-            dashArray: '',
-            fillOpacity: 0.7
-        });
+            highlightLayer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
 
-        if (!L.Browser.ie && !L.Browser.opera) {
-            highlightLayer.bringToFront();
-        }
-    }"""
+            if (!L.Browser.ie && !L.Browser.opera) {
+                highlightLayer.bringToFront();
+            }
+        }"""
     return highlightScript
 
 
@@ -133,7 +129,7 @@ def popupScript(safeLayerName, popFuncs):
             layer.on({{
                 mouseover: highlightFeature,
                 mouseout: function(e) {{
-                    json_{safeLayerName}JSON.resetStyle(e.target)
+                    layer.setStyle(doStyle{safeLayerName}(feature));
                 }},
             }});
 {popFuncs}
@@ -141,10 +137,10 @@ def popupScript(safeLayerName, popFuncs):
     return popup
 
 
-def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, opacity, labeltext):
-    pointToLayer = """
-        pointToLayer: function (feature, latlng) {{
-            return L.circleMarker(latlng, {{
+def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, opacity, labeltext):
+    pointStyleLabel = """
+        function doStyle{safeLayerName}() {{
+            return {{
                 radius: {radius},
                 fillColor: '{colorName}',
                 color: '{borderColor}',
@@ -152,21 +148,31 @@ def pointToLayerScript(radius, borderWidth, borderStyle, colorName, borderColor,
                 opacity: {borderOpacity},
                 dashArray: '{dashArray}',
                 fillOpacity: {opacity}
-            }}){labeltext}""".format(radius=radius,
-                                     colorName=colorName,
-                                     borderColor=borderColor,
-                                     borderWidth=borderWidth * 4,
-                                     borderOpacity=borderOpacity if borderStyle != 0 else 0,
-                                     dashArray=getLineStyle(borderStyle, borderWidth),
-                                     opacity=opacity,
-                                     labeltext=labeltext)
+            }}
+        }}
+        function doPointToLayer{safeLayerName}(feature, latlng) {{
+            return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
+        }}""".format(safeLayerName=safeLayerName,
+                     radius=radius,
+                     colorName=colorName,
+                     borderColor=borderColor,
+                     borderWidth=borderWidth * 4,
+                     borderOpacity=borderOpacity if borderStyle != 0 else 0,
+                     dashArray=getLineStyle(borderStyle, borderWidth),
+                     opacity=opacity,
+                     labeltext=labeltext)
+    return pointStyleLabel
+
+
+def pointToLayerScript(safeLayerName):
+    pointToLayer = """
+            pointToLayer: doPointToLayer{safeLayerName}""".format(safeLayerName=safeLayerName)
     return pointToLayer
 
 
 def pointStyleScript(pointToLayer, popFuncs):
-    pointStyle = """{pointToLayer}
-        }},
-        onEachFeature: function (feature, layer) {{{popFuncs}
+    pointStyle = """{pointToLayer},
+            onEachFeature: function (feature, layer) {{{popFuncs}
         }}""".format(pointToLayer=pointToLayer, popFuncs=popFuncs)
     return pointStyle
 
@@ -177,21 +183,20 @@ def wfsScript(scriptTag):
     return wfs
 
 
-def jsonPointScript(safeLayerName, pointToLayer, usedFields):
+def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
+    jsonPoint = pointStyleLabel
     if usedFields != 0:
-        jsonPoint = """
+        jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             onEachFeature: pop_{safeLayerName}, {pointToLayer}
-            }}
-        }});
-    layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
+            }});
+        layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
     else:
-        jsonPoint = """
+        jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             {pointToLayer}
-            }}
-        }});
-    layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
+            }});
+        layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
     return jsonPoint
 
 

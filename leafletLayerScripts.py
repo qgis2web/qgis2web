@@ -1,9 +1,9 @@
 import re
 
 
-def buildPointWFS(layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
+def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
     scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource) + """&outputFormat=text%2Fjavascript&format_options=callback%3Aget""" + layerName + """Json"""
-    new_obj = categoryStr + """
+    new_obj = pointStyleLabel + categoryStr + """
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{{stylestr}
         }});
