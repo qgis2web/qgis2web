@@ -211,7 +211,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 if not label_exp:
                     labeltext = ""
                 popFuncs = popFuncsScript(table)
-                new_pop = popupScript(safeLayerName, popFuncs)
+                new_pop = popupScript(safeLayerName, popFuncs, highlight)
 
                 layerName = safeLayerName
                 renderer = i.rendererV2()

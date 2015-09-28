@@ -123,17 +123,19 @@ def popFuncsScript(table):
     return popFuncs
 
 
-def popupScript(safeLayerName, popFuncs):
+def popupScript(safeLayerName, popFuncs, highlight):
     popup = """
-        function pop_{safeLayerName}(feature, layer) {{
-            layer.on({{
+        function pop_{safeLayerName}(feature, layer) {{""".format(safeLayerName=safeLayerName)
+    if highlight:
+        popup += """
+        layer.on({{
                 mouseover: highlightFeature,
                 mouseout: function(e) {{
                     layer.setStyle(doStyle{safeLayerName}(feature));
                 }},
-            }});
-{popFuncs}
-        }}""".format(safeLayerName=safeLayerName, popFuncs=popFuncs)
+            }});""".format(safeLayerName=safeLayerName)
+    popup += """{popFuncs}
+        }}""".format(popFuncs=popFuncs)
     return popup
 
 
