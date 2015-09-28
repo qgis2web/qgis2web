@@ -1,15 +1,15 @@
 import re
 
 
-def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr, stylestr, cluster_set, cluster_num, visible):
+def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,  cluster_set, cluster_num, visible):
     scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource) + """&outputFormat=text%2Fjavascript&format_options=callback%3Aget""" + layerName + """Json"""
     new_obj = pointStyleLabel + categoryStr + """
         var json_{layerName}JSON;
-        json_{layerName}JSON = L.geoJson(null, {{{stylestr}
+        json_{layerName}JSON = L.geoJson(null, {{
         }});
         layerOrder[layerOrder.length] = json_{layerName}JSON;
         feature_group.addLayer(json_{layerName}JSON);
-        layerControl.addOverlay(json_{layerName}JSON, '{layerName}');""".format(layerName=layerName, stylestr=stylestr)
+        layerControl.addOverlay(json_{layerName}JSON, '{layerName}');""".format(layerName=layerName)
     if cluster_set:
         new_obj += """
         var cluster_group{layerName}JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});""".format(layerName=layerName)

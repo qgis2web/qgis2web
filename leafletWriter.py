@@ -254,7 +254,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         pointToLayer = pointToLayerScript(safeLayerName)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = pointStyleScript(pointToLayer, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", stylestr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields[count])
@@ -338,7 +338,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
@@ -423,7 +423,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
@@ -512,7 +512,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 #            },
 #            onEachFeature: function (feature, layer) {"""+popFuncs+"""
 #            }"""
-#                                new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, stylestr, cluster[count], cluster_num, visible[count])
+#                                new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
 #                                wfsLayers += """
 #    <script src='""" + scriptTag + """'></script>"""
 #                            else:
@@ -541,7 +541,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 #    onEachFeature: pop_""" + safeLayerName + """,
 # });"""
 
-                if (i.providerType() != 'WFS' or json[count] == True) and usedFields[count] != 0:
+                if usedFields[count] != 0:
                     f5.write(new_pop)
                 f5.write("""
 """ + new_obj)
