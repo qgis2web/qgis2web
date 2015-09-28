@@ -56,6 +56,7 @@
     </style>
     <script src="@JSADDRESS@"></script>
     <script src="./resources/ol3-layerswitcher.js"></script>
+    <script src="./resources/Autolinker.min.js"></script>"""
 
     @GEOJSONVARS@
     @STYLEVARS@
@@ -228,7 +229,7 @@
             popupText = '<table>';
             for ( var i=0; i<currentFeatureKeys.length;i++) {
                 if (currentFeatureKeys[i] != 'geometry') {
-                    popupField = '<th>' + currentFeatureKeys[i] + ':</th><td>'+ currentFeature.get(currentFeatureKeys[i]) + '</td>';
+                    popupField = '<th>' + currentFeatureKeys[i] + ':</th><td>' + Autolinker.link(currentFeature.get(currentFeatureKeys[i])) + '</td>';
                     popupText = popupText + '<tr>' + popupField + '</tr>';
                 }
             }
