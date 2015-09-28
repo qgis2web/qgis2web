@@ -261,12 +261,9 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor, penStyle,
     return polyStyle
 
 
-def nonPointStylePopupsScript(lineStyle, popFuncs):
+def nonPointStylePopupsScript(safeLayerName):
     nonPointStylePopups = """
-        style: function (feature) {{{lineStyle}
-        }},
-        onEachFeature: function (feature, layer) {{{popFuncs}
-        }}""".format(lineStyle=lineStyle, popFuncs=popFuncs)
+            style: doStyle{safeLayerName}""".format(safeLayerName=safeLayerName)
     return nonPointStylePopups
 
 

@@ -270,8 +270,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             penStyle = ""
                         lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
                         if i.providerType() == 'WFS' and json[count] == False:
-                            stylestr = nonPointStylePopupsScript(lineStyle, popFuncs)
+                            stylestr = nonPointStylePopupsScript(safeLayerName)
                             new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
+                            new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
@@ -304,7 +305,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                         polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity, colorName, borderStyle, fill_opacity)
                         if i.providerType() == 'WFS' and json[count] == False:
-                            stylestr = nonPointStylePopupsScript(polyStyle, popFuncs)
+                            stylestr = nonPointStylePopupsScript(polyStyle, safeLayerName)
                             new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
