@@ -22,10 +22,10 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/09/29 0.25.0  Leaflet pass maxZoom to basemaps, OL3 label improvements, OL3 point highlight code improvements, Leaflet highlight features, autolink OL3 property values, Leaflet WFS deduplication, Leaflet layer style code improvements
-    2015/09/23 0.24.0  OL3 popup layout improvements, OL3 label improvements, Leaflet label improvements, Leaflet labels appear over popups, catch font marker and vector field marker exceptions, "Highlight features" doesn't highlight points, catch marker line exceptions
-    2015/09/21 0.23.3  OL3 "Highlight features" breaks "Show popups on hover"
-    2015/09/18 0.23.2  Leaflet "Match CRS" with "Fit to layers extent", Leaflet "baseMaps is not defined"
+changelog= 2015/09/29 0.25.0 Leaflet pass maxZoom to basemaps, OL3 label improvements, OL3 point highlight code improvements, Leaflet highlight features, autolink OL3 property values, Leaflet WFS deduplication, Leaflet layer style code improvements
+    2015/09/23 0.24.0 OL3 popup layout improvements, OL3 label improvements, Leaflet label improvements, Leaflet labels appear over popups, catch font marker and vector field marker exceptions, "Highlight features" doesn't highlight points, catch marker line exceptions
+    2015/09/21 0.23.3 OL3 "Highlight features" breaks "Show popups on hover"
+    2015/09/18 0.23.2 Leaflet "Match CRS" with "Fit to layers extent", Leaflet "baseMaps is not defined"
     2015/09/18 0.23.1 Fit to layers extent with clustering in Leaflet fixed, further unit test work (still not complete)
     2015/09/08 0.23.0 Added test data and suite of unit tests (not yet fully functional), broken marker image in local Leaflet geolocate
     2015/09/04 0.22.0 Upgrade Leaflet to 0.7.5, upgrade OL3 to 3.8.2, SVG errors, OL3 labelling errors
