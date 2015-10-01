@@ -66,6 +66,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     locate = params["Appearance"]["Geolocate user"]
     measure = params["Appearance"]["Add measure tool"]
     highlight = params["Appearance"]["Highlight features"]
+    popupsOnHover = params["Appearance"]["Show popups on hover"]
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
     writeHTMLstart(outputIndex, webpage_name, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
@@ -128,8 +129,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     crsAuthId = crsSrc.authid()
     crsProj4 = crsSrc.toProj4()
     middle = openScript()
-    if highlight:
-        middle += highlightScript()
+    if highlight or popupsOnHover:
+        middle += highlightScript(highlight, popupsOnHover)
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
@@ -211,7 +212,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 if not label_exp:
                     labeltext = ""
                 popFuncs = popFuncsScript(table)
-                new_pop = popupScript(safeLayerName, popFuncs, highlight)
+                new_pop = popupScript(safeLayerName, popFuncs, highlight, popupsOnHover)
 
                 layerName = safeLayerName
                 renderer = i.rendererV2()
@@ -551,26 +552,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 if visible[count]:
                     if cluster[count] == False:
                         f5.write("""
-        //add comment sign to hide this layer on the map in the initial view.
         feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
                     else:
                         f5.write("""
-        //add comment sign to hide this layer on the map in the initial view.
         cluster_group""" + safeLayerName + """JSON.addTo(map);""")
-                else:
-                    if cluster[count] == False:
-                        if i.geometryType() == QGis.Point:
-                            f5.write("""
-    //delete comment sign to show this layer on the map in the initial view.
-    //feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
-                        if i.geometryType() != 0:
-                            f5.write("""
-    //delete comment sign to show this layer on the map in the initial view.
-    //feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
-                    else:
-                        f5.write("""
-    //delete comment sign to show this layer on the map in the initial view.
-    //cluster_group""" + safeLayerName + """JSON.addTo(map);""")
                 f5.close()
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":

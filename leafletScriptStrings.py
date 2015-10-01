@@ -35,12 +35,13 @@ def openScript():
     return openScript
 
 
-def highlightScript():
+def highlightScript(highlight, popupsOnHover):
     highlightScript = """
         var highlightLayer;
         function highlightFeature(e) {
-            highlightLayer = e.target;
-
+            highlightLayer = e.target;"""
+    if highlight:
+        highlightScript += """
             highlightLayer.setStyle({
                 weight: 5,
                 color: '#666',
@@ -50,7 +51,11 @@ def highlightScript():
 
             if (!L.Browser.ie && !L.Browser.opera) {
                 highlightLayer.bringToFront();
-            }
+            }"""
+    if popupsOnHover:
+        highlightScript += """
+            highlightLayer.openPopup();"""
+    highlightScript += """
         }"""
     return highlightScript
 
@@ -123,17 +128,27 @@ def popFuncsScript(table):
     return popFuncs
 
 
-def popupScript(safeLayerName, popFuncs, highlight):
+def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     popup = """
         function pop_{safeLayerName}(feature, layer) {{""".format(safeLayerName=safeLayerName)
-    if highlight:
+    if highlight or popupsOnHover:
         popup += """
-        layer.on({{
+            layer.on({
+                mouseout: function(e) {"""
+        if highlight:
+            popup += """
+                    layer.setStyle(doStyle{safeLayerName}(feature));""".format(safeLayerName=safeLayerName)
+        if popupsOnHover:
+            popup += """
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){feature.closePopup()});
+                    }"""
+        popup += """
+                },
                 mouseover: highlightFeature,
-                mouseout: function(e) {{
-                    layer.setStyle(doStyle{safeLayerName}(feature));
-                }},
-            }});""".format(safeLayerName=safeLayerName)
+            });"""
     popup += """{popFuncs}
         }}""".format(popFuncs=popFuncs)
     return popup

@@ -81,7 +81,6 @@ specificParams = {
     "Add measure tool": "Leaflet",
     "Geolocate user": "Leaflet",
     "Match project CRS": "Leaflet",
-    "Show popups on hover": "OL3",
     "Template": "OL3"
 }
 
