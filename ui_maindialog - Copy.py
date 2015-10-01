@@ -2,12 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Oct 01 16:25:49 2015
+# Created: Tue Jul 14 13:58:00 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtWebKit
+import resources_rc
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -17,37 +18,24 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
+
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(994, 647)
+        MainDialog.resize(994, 736)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
         self.verticalLayout_3 = QtGui.QVBoxLayout(MainDialog)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.tabWidget = QtGui.QTabWidget(MainDialog)
-        self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
-        self.tab = QtGui.QWidget()
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tab.sizePolicy().hasHeightForWidth())
-        self.tab.setSizePolicy(sizePolicy)
-        self.tab.setObjectName(_fromUtf8("tab"))
-        self.splitter_2 = QtGui.QSplitter(self.tab)
-        self.splitter_2.setGeometry(QtCore.QRect(0, 0, 976, 602))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
-        self.splitter_2.setSizePolicy(sizePolicy)
+        self.splitter_2 = QtGui.QSplitter(MainDialog)
         self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_2.setObjectName(_fromUtf8("splitter_2"))
         self.layoutWidget = QtGui.QWidget(self.splitter_2)
@@ -59,7 +47,7 @@ class Ui_MainDialog(object):
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.splitter.setObjectName(_fromUtf8("splitter"))
         self.layersTree = QtGui.QTreeWidget(self.splitter)
-        self.layersTree.setMinimumSize(QtCore.QSize(400, 0))
+        self.layersTree.setMinimumSize(QtCore.QSize(400, 300))
         self.layersTree.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.layersTree.setObjectName(_fromUtf8("layersTree"))
         self.layersTree.headerItem().setText(0, _fromUtf8("1"))
@@ -82,10 +70,7 @@ class Ui_MainDialog(object):
         self.paramsTreeOL.header().setDefaultSectionSize(200)
         self.verticalLayout_5.addWidget(self.paramsTreeOL)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
-        self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        spacerItem = QtGui.QSpacerItem(5, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
         self.ol3 = QtGui.QRadioButton(self.widget)
         self.ol3.setChecked(True)
         self.ol3.setObjectName(_fromUtf8("ol3"))
@@ -124,17 +109,9 @@ class Ui_MainDialog(object):
         self.preview.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.preview.setObjectName(_fromUtf8("preview"))
         self.verticalLayout_2.addWidget(self.preview)
-        self.tabWidget.addTab(self.tab, _fromUtf8(""))
-        self.tab_2 = QtGui.QWidget()
-        self.tab_2.setObjectName(_fromUtf8("tab_2"))
-        self.helpField = QtGui.QTextBrowser(self.tab_2)
-        self.helpField.setGeometry(QtCore.QRect(-5, 1, 971, 601))
-        self.helpField.setObjectName(_fromUtf8("helpField"))
-        self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
-        self.verticalLayout_3.addWidget(self.tabWidget)
+        self.verticalLayout_3.addWidget(self.splitter_2)
 
         self.retranslateUi(MainDialog)
-        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainDialog)
 
     def retranslateUi(self, MainDialog):
@@ -146,8 +123,3 @@ class Ui_MainDialog(object):
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
         self.buttonPreview.setText(_translate("MainDialog", "Update preview", None))
         self.buttonExport.setText(_translate("MainDialog", "Export", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainDialog", "Export", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainDialog", "Help", None))
-
-from PyQt4 import QtWebKit
-import resources_rc
