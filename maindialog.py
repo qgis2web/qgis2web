@@ -60,8 +60,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
-        self.helpField.setSource(QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md")));
-        print QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md"))
+        self.helpField.setSource(QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md")))
 
     def changeFormat(self):
         QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
