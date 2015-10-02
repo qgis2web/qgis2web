@@ -23,30 +23,30 @@
 <h3>General options</h3>
 
 <h4>Data export</h4>
-<dl><dt>Delete unused fields</dt><dd>If not all fields are selected in "Info popup content", remove the undisplayed fields from the GeoJSON</dd>
-<dt>Export folder</dt><dd>The folder where the webmap will be saved</dd> 
-<dt>Mapping library location</dt><dd>Select whether to use a local copy of OL3/Leaflet, or whether to call them from their CDN</dd>
-<dt>Minify GeoJSON files</dt><dd>Remove unnecessary whitespace from exported GeoJSON to reduce file size</dd>
-<dt>Precision</dt><dd>Simplify geometry to reduce file size</dd></dl>
+<dl><dt style="font-style: italics;">Delete unused fields</dt><dd>If not all fields are selected in "Info popup content", remove the undisplayed fields from the GeoJSON</dd>
+<dt style="font-style: italics;">Export folder</dt><dd>The folder where the webmap will be saved</dd> 
+<dt style="font-style: italics;">Mapping library location</dt><dd>Select whether to use a local copy of OL3/Leaflet, or whether to call them from their CDN</dd>
+<dt style="font-style: italics;">Minify GeoJSON files</dt><dd>Remove unnecessary whitespace from exported GeoJSON to reduce file size</dd>
+<dt style="font-style: italics;">Precision</dt><dd>Simplify geometry to reduce file size</dd></dl>
 
 <h4>Scale/Zoom</h4>
-<dl><dt>Extent</dt><dd>Either match the current QGIS view or show all contents of all layers</dd>
-<dt>Max zoom level</dt><dd>How far the web map will zoom in</dd>
-<dt>Min zoom level</dt><dd>How far the web map will zoom out</dd>
-<dt>Restrict to extent</dt><dd>Prevent panning or zooming beyond the selected extent</dd>
-<dt>Use layer scale dependent visibility</dt><dd>Respect scale dependent visibility settings from QGIS</dd></dl>
+<dl><dt style="font-style: italics;">Extent</dt><dd>Either match the current QGIS view or show all contents of all layers</dd>
+<dt style="font-style: italics;">Max zoom level</dt><dd>How far the web map will zoom in</dd>
+<dt style="font-style: italics;">Min zoom level</dt><dd>How far the web map will zoom out</dd>
+<dt style="font-style: italics;">Restrict to extent</dt><dd>Prevent panning or zooming beyond the selected extent</dd>
+<dt style="font-style: italics;">Use layer scale dependent visibility</dt><dd>Respect scale dependent visibility settings from QGIS</dd></dl>
 
 <h4>Appearance</h4>
-<dl><dt>Add address search</dt><dd>Add field to allow searching for locations</dd>
-<dt>Add layers list</dt><dd>Include list of layers (with legend icons, where possible)</dd>
-<dt>Add measure tool</dt><dd>Include interactive measuring widget</dd>
-<dt>Add scale bar</dt><dd>Include scale bar</dd>
-<dt>Base layer</dt><dd>Select basemap layer</dd>
-<dt>Geolocate user</dt><dd>Show user's location on map</dd>
-<dt>Highlight features</dt><dd>Highlight features on mouseover</dd>
-<dt>Match project CRS</dt><dd>Create web map in same projection as QGIS project</dd>
-<dt>Show popups on hover</dt><dd>Show popups when mouse hovers over feature</dd>
-<dt>Template</dt><dd>Select HTML template for web map</dd></dl>
+<dl><dt style="font-style: italics;">Add address search</dt><dd>Add field to allow searching for locations</dd>
+<dt style="font-style: italics;">Add layers list</dt><dd>Include list of layers (with legend icons, where possible)</dd>
+<dt style="font-style: italics;">Add measure tool</dt><dd>Include interactive measuring widget</dd>
+<dt style="font-style: italics;">Add scale bar</dt><dd>Include scale bar</dd>
+<dt style="font-style: italics;">Base layer</dt><dd>Select basemap layer</dd>
+<dt style="font-style: italics;">Geolocate user</dt><dd>Show user's location on map</dd>
+<dt style="font-style: italics;">Highlight features</dt><dd>Highlight features on mouseover</dd>
+<dt style="font-style: italics;">Match project CRS</dt><dd>Create web map in same projection as QGIS project</dd>
+<dt style="font-style: italics;">Show popups on hover</dt><dd>Show popups when mouse hovers over feature</dd>
+<dt style="font-style: italics;">Template</dt><dd>Select HTML template for web map</dd></dl>
 
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo Klinger's qgis2web. This would not exist without their work.</p>
