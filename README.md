@@ -2,8 +2,9 @@
 <p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap</p>
 
 <h2>Installation</h2>
+<p>Either:</p>
 <ul><li>In QGIS, select Plugins > Manage and Install Plugins...</li></ul>
-<p>or</p>
+<p>or:</p>
 <ul><li>Download and unzip to your QGIS plugins directory</li></ul>
 
 <h2>Current limitations</h2>
@@ -49,7 +50,7 @@
 <dt>Template</dt><dd>Select HTML template for web map</dd></dl>
 
 <h2>Credits</h2>
-<p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo Klinger's qgis2web. This would not exist without their work.</p>
+<p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo Klinger's qgis2leaf. It would not exist without their work. Thank you, gentlemen.</p>
 
-<ul><li>https://github.com/volaya/</li>
-<li>https://github.com/riccardoklinger/</li></ul>
+<ul><li>github.com/volaya/</li>
+<li>github.com/riccardoklinger/</li></ul>

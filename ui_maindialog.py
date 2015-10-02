@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Oct 01 16:25:49 2015
+# Created: Fri Oct 02 15:10:35 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -36,6 +36,7 @@ class Ui_MainDialog(object):
         self.verticalLayout_3 = QtGui.QVBoxLayout(MainDialog)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.tabWidget = QtGui.QTabWidget(MainDialog)
+        self.tabWidget.setAutoFillBackground(True)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
@@ -80,7 +81,7 @@ class Ui_MainDialog(object):
         self.paramsTreeOL.setFrameShape(QtGui.QFrame.StyledPanel)
         self.paramsTreeOL.setFrameShadow(QtGui.QFrame.Sunken)
         self.paramsTreeOL.setObjectName(_fromUtf8("paramsTreeOL"))
-        self.paramsTreeOL.header().setVisible(True)
+        self.paramsTreeOL.header().setVisible(False)
         self.paramsTreeOL.header().setCascadingSectionResizes(False)
         self.paramsTreeOL.header().setDefaultSectionSize(200)
         self.verticalLayout_5.addWidget(self.paramsTreeOL)
@@ -129,9 +130,14 @@ class Ui_MainDialog(object):
         self.verticalLayout_2.addWidget(self.preview)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
+        self.tab_2.setStyleSheet(_fromUtf8("background-color: rgb(255, 255, 255);"))
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
         self.helpField = QtGui.QTextBrowser(self.tab_2)
-        self.helpField.setGeometry(QtCore.QRect(-5, 1, 971, 601))
+        self.helpField.setGeometry(QtCore.QRect(5, 1, 961, 591))
+        self.helpField.setStyleSheet(_fromUtf8("padding: 10px;"))
+        self.helpField.setFrameShape(QtGui.QFrame.NoFrame)
+        self.helpField.setFrameShadow(QtGui.QFrame.Plain)
+        self.helpField.setLineWidth(0)
         self.helpField.setObjectName(_fromUtf8("helpField"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.verticalLayout_3.addWidget(self.tabWidget)

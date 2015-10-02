@@ -20,6 +20,9 @@
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -114,7 +117,7 @@
                 <enum>QFrame::Sunken</enum>
                </property>
                <attribute name="headerVisible">
-                <bool>true</bool>
+                <bool>false</bool>
                </attribute>
                <attribute name="headerCascadingSectionResizes">
                 <bool>false</bool>
@@ -236,17 +239,32 @@
       </widget>
      </widget>
      <widget class="QWidget" name="tab_2">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
       <attribute name="title">
        <string>Help</string>
       </attribute>
       <widget class="QTextBrowser" name="helpField">
        <property name="geometry">
         <rect>
-         <x>-5</x>
+         <x>5</x>
          <y>1</y>
-         <width>971</width>
-         <height>601</height>
+         <width>961</width>
+         <height>591</height>
         </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">padding: 10px;</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
        </property>
       </widget>
      </widget>
