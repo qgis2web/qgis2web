@@ -572,9 +572,14 @@ def endHTMLscript(wfsLayers):
 
 
 def getLineStyle(penType, lineWidth):
-    dash = lineWidth * 10
-    dot = lineWidth * 1
-    gap = lineWidth * 5
+    if lineWidth > 1:
+        dash = lineWidth * 10
+        dot = lineWidth * 1
+        gap = lineWidth * 5
+    else:
+        dash = 10
+        dot = 1
+        gap = 5
     if penType > 1:
         if penType == 2:
             penStyle = [dash, gap]
