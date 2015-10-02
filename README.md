@@ -47,3 +47,9 @@
 <dt>Match project CRS</dt><dd>Create web map in same projection as QGIS project</dd>
 <dt>Show popups on hover</dt><dd>Show popups when mouse hovers over feature</dd>
 <dt>Template</dt><dd>Select HTML template for web map</dd></dl>
+
+<h2>Credits</h2>
+<p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo Klinger's qgis2web. This would not exist without their work.</p>
+
+<ul><li>https://github.com/volaya/</li>
+<li>https://github.com/riccardoklinger/</li></ul>
