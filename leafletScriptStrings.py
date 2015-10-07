@@ -521,7 +521,7 @@ def rasterScript(safeLayerName, out_raster_name, bounds):
     return raster
 
 
-def titleSubScript(webmap_head, webmap_subhead):
+def titleSubScript(webmap_head):
     titleSub = """
         var title = new L.Control();
         title.onAdd = function (map) {
@@ -530,7 +530,7 @@ def titleSubScript(webmap_head, webmap_subhead):
             return this._div;
         };
         title.update = function () {
-            this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8') + """</h2>""" + webmap_subhead.encode('utf-8') + """'
+            this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8').replace("'", "\\'") + """</h2>';   
         };
         title.addTo(map);"""
     return titleSub

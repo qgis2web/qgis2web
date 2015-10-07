@@ -589,8 +589,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     with open(outputIndex, 'a') as f5scaleDependent:
         f5scaleDependent.write(scaleDependentLayers)
         f5scaleDependent.close()
-    if webmap_head != "":
-        titleStart = titleSubScript(webmap_head, webmap_subhead)
+    if QgsProject.instance().title() != "":
+        titleStart = titleSubScript(QgsProject.instance().title())
         with open(outputIndex, 'a') as f5contr:
             f5contr.write(titleStart)
             f5contr.close()

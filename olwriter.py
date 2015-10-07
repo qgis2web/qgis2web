@@ -69,6 +69,7 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
             controls.append("new ol.control.ScaleLine({})")
         if settings["Appearance"]["Add layers list"]:
             controls.append('new ol.control.LayerSwitcher({tipLabel: "Layers"})')
+        pageTitle = QgsProject.instance().title()
         mapbounds = bounds(iface, settings["Scale/Zoom"]["Extent"] == "Canvas extent", layers)
         mapextent = "extent: %s," % mapbounds if settings["Scale/Zoom"]["Restrict to extent"] else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
@@ -77,7 +78,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
         highlight = unicode(settings["Appearance"]["Highlight features"]).lower()
         highlightFill = iface.mapCanvas().mapSettings().selectionColor().name()
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
-        values = {"@CSSADDRESS@": cssAddress,
+        values = {"@PAGETITLE@": pageTitle,
+                  "@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
                   "@STYLEVARS@": styleVars,
                   "@GEOJSONVARS@": geojsonVars,

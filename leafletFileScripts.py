@@ -52,7 +52,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
     <head>"""
         if webpage_name == "":
             base += """
-        <title>QGIS2leaf webmap</title>
+        <title>qgis2web Leaflet webmap</title>
     """
         else:
             base += """
