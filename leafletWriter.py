@@ -39,7 +39,7 @@ basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
 
-def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, webpage_name, webmap_head, webmap_subhead, labels, labelhover, selected, json, params, popup):
+def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, labels, labelhover, selected, json, params, popup):
     legends = {}
     canvas = iface.mapCanvas()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
@@ -69,7 +69,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     popupsOnHover = params["Appearance"]["Show popups on hover"]
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
-    writeHTMLstart(outputIndex, webpage_name, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
+    writeHTMLstart(outputIndex, QgsProject.instance().title(), cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
     writeCSS(cssStore, full, height, width)
 
     wfsLayers = ""
