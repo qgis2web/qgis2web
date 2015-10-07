@@ -75,6 +75,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
         onHover = unicode(settings["Appearance"]["Show popups on hover"]).lower()
         highlight = unicode(settings["Appearance"]["Highlight features"]).lower()
+        highlightFill = iface.mapCanvas().mapSettings().selectionColor().name()
+        print "highlightFill: " + highlightFill
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
         values = {"@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
@@ -85,7 +87,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
                   "@POPUPLAYERS@": popupLayers,
                   "@VIEW@": view,
                   "@ONHOVER@": onHover,
-                  "@DOHIGHLIGHT@": highlight}
+                  "@DOHIGHLIGHT@": highlight,
+                  "@HIGHLIGHTFILL@": highlightFill}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
             f.write(replaceInTemplate(settings["Appearance"]["Template"] + ".html", values))

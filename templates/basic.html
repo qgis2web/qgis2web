@@ -169,24 +169,15 @@
               if (currentFeature.getGeometry().getType() == 'Point') {
                 highlightStyle = new ol.style.Style({
                 image: new ol.style.Circle({
-                  radius: 3,
-                  stroke: new ol.style.Stroke({
-                    color: 'rgba(255,0,0,255)',
-                    lineDash: null,
-                    width: 1}),
                   fill: new ol.style.Fill({
-                    color: "rgba(255,0,0,1.0)"
+                    color: "@HIGHLIGHTFILL@"
                   })
                 })
                })
               } else {
                 highlightStyle = new ol.style.Style({
-                  stroke: new ol.style.Stroke({
-                    color: '#f00',
-                    width: 1
-                  }),
                   fill: new ol.style.Fill({
-                    color: 'rgba(255,0,0,0.1)'
+                    color: '@HIGHLIGHTFILL@'
                   }),
                 })
               }
