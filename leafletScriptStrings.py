@@ -35,7 +35,7 @@ def openScript():
     return openScript
 
 
-def highlightScript(highlight, popupsOnHover):
+def highlightScript(highlight, popupsOnHover, highlightFill):
     highlightScript = """
         var highlightLayer;
         function highlightFeature(e) {
@@ -43,10 +43,8 @@ def highlightScript(highlight, popupsOnHover):
     if highlight:
         highlightScript += """
             highlightLayer.setStyle({
-                weight: 5,
-                color: '#666',
-                dashArray: '',
-                fillOpacity: 0.7
+                fillColor: '""" + highlightFill + """',
+                fillOpacity: 1
             });
 
             if (!L.Browser.ie && !L.Browser.opera) {

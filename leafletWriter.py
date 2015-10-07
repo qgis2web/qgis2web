@@ -130,7 +130,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     crsProj4 = crsSrc.toProj4()
     middle = openScript()
     if highlight or popupsOnHover:
-        middle += highlightScript(highlight, popupsOnHover)
+        middle += highlightScript(highlight, popupsOnHover, canvas.mapSettings().selectionColor().name())
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
