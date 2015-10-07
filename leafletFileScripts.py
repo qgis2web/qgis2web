@@ -122,7 +122,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address, meas
         f_html.close()
 
 
-def writeCSS(cssStore, full, height, width):
+def writeCSS(cssStore, full, height, width, backgroundColor):
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
 body {
@@ -136,12 +136,14 @@ html, body, #map {
     width: 100%;
     padding: 0;
     margin: 0;
+    background-color: """ + backgroundColor + """
 }"""
         else:
             text += """
 html, body, #map {
     height: """ + str(height) + """px;
     width: """ + str(width) + """px;
+    background-color: """ + backgroundColor + """;
 }"""
 #        if opacity_raster == True and full == 1:
 #            text += """

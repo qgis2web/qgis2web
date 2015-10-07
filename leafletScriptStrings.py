@@ -530,7 +530,7 @@ def titleSubScript(webmap_head):
             return this._div;
         };
         title.update = function () {
-            this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8').replace("'", "\\'") + """</h2>';   
+            this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8').replace("'", "\\'") + """</h2>';
         };
         title.addTo(map);"""
     return titleSub

@@ -70,7 +70,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
     writeHTMLstart(outputIndex, QgsProject.instance().title(), cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
-    writeCSS(cssStore, full, height, width)
+    writeCSS(cssStore, full, height, width, iface.mapCanvas().mapSettings().backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
