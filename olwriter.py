@@ -188,7 +188,6 @@ def bounds(iface, useCanvas, layers):
 
 
 def layerToJavascript(layer, scaleVisibility):
-    # TODO: change scale to resolution
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minResolution = "\nminResolution:%s,\n" % unicode(1 / ((1 / layer.minimumScale()) * 39.37 * 90.7))
         maxResolution = "maxResolution:%s,\n" % unicode(1 / ((1 / layer.maximumScale()) * 39.37 * 90.7))
@@ -291,7 +290,10 @@ def exportStyles(layers, folder):
                                 }
                             }
                             ''' % {"v": varName}
-            size = float(layer.customProperty("labeling/fontSize")) * 1.3
+            if layer.customProperty("labeling/fontSize"):
+                size = float(layer.customProperty("labeling/fontSize")) * 1.3
+            else:
+                size = 10
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
