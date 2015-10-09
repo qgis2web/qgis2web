@@ -57,8 +57,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
             cssAddress = "./resources/ol.css"
             jsAddress = "./resources/ol.js"
         else:
-            cssAddress = "http://openlayers.org/en/v3.9.0/css/ol.css"
-            jsAddress = "http://openlayers.org/en/v3.9.0/build/ol.js"
+            cssAddress = "http://openlayers.org/en/v3.10.0/css/ol.css"
+            jsAddress = "http://openlayers.org/en/v3.10.0/build/ol.js"
         geojsonVars = "\n".join(['<script src="layers/%s"></script>' % (safeName(layer.name()) + ".js")
                                 for layer in layers if layer.type() == layer.VectorLayer])
         styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.name()))
