@@ -8,7 +8,8 @@
 <ul><li>Download and unzip to your QGIS plugins directory</li></ul>
 
 <h2>Current limitations</h2>
-<p>Not all features are supported in both OpenLayers 3 and Leaflet export. Unsupported options are disabled in the plugin UI when you select an output format.
+<p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies. This means that their respective functionality differs in many ways. qgis2web dies its best to interpret a QGIS project and to export HTML, Javascript, and CSS to create a web map as close to the QGIS project as possible.</p>
+<p>Not all features are supported in both OpenLayers 3 and Leaflet export. Unsupported options are disabled in the plugin UI when you select an output format.</p>
 <ul><li>all vector layers encoded to JSON in OL3 (ie no remote WFS layers)</li>
 <li>per-layer popup behaviour only supported in OL3</li>
 <li>clustering only supported in Leaflet</li>
