@@ -21,7 +21,7 @@
     <li>no rule-based rendering</li>
 </ul>
 
-<h3>Per-layer options</h3>
+<h3>Layer options</h3>
 <dl>
     <dt>Info popup content</dt>
         <dd>Select which fields will appear in popups when features are clicked</dd> 
