@@ -2,13 +2,13 @@
 <p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap</p>
 
 <h2>Installation</h2>
-<p>Either:</p>
 <ul><li>In QGIS, select Plugins > Manage and Install Plugins...</li></ul>
 <p>or:</p>
 <ul><li>Download and unzip to your QGIS plugins directory</li></ul>
 
 <h2>Current limitations</h2>
-<p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies. This means that their respective functionality differs in many ways. qgis2web dies its best to interpret a QGIS project and to export HTML, Javascript, and CSS to create a web map as close to the QGIS project as possible.</p>
+<p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies. This means that their respective functionality differs in many ways. qgis2web does its best to interpret a QGIS project and to export HTML, Javascript, and CSS to create a web map as close to the QGIS project as possible.</p>
+<p>However, many elements of a QGIS project cannot be reproduced, and many are only possible in <em>either</em> OpenLayers 3 <em>or</em> Leaflet. qgis2web tries its best to produce a publish-ready map, but you can always edit the output to achieve what qgis2web cannot.</p>
 <p>Not all features are supported in both OpenLayers 3 and Leaflet export. Unsupported options are disabled in the plugin UI when you select an output format.</p>
 <ul><li>all vector layers encoded to JSON in OL3 (ie no remote WFS layers)</li>
 <li>per-layer popup behaviour only supported in OL3</li>
