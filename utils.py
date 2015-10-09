@@ -86,18 +86,19 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                     writer.addFeatures([outFeat])
                 layer = newlayer
 
+            tmpPath = os.path.join(layersFolder, safeName(layer.name()) + ".json")
             path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
-            QgsVectorFileWriter.writeAsVectorFormat(layer, path, "utf-8", epsg3587, 'GeoJson')
-            with open(path) as f:
-                lines = f.readlines()
+            QgsVectorFileWriter.writeAsVectorFormat(layer, tmpPath, "utf-8", epsg3587, 'GeoJson')
             with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" + safeName(layer.name())))
-                for line in lines:
-                    line = reducePrecision.sub(r"\1", line)
-                    if optimize:
-                        line = line.strip("\n\t ")
-                        line = removeSpaces(line)
-                    f.write(line)
+                with open(tmpPath, "r") as f2:
+                    for line in f2:
+                        line = reducePrecision.sub(r"\1", line)
+                        if optimize:
+                            line = line.strip("\n\t ")
+                            line = removeSpaces(line)
+                        f.write(line)
+            os.remove(tmpPath)
         elif layer.type() == layer.RasterLayer:
             orgFile = layer.source()
             destFile = os.path.join(layersFolder, safeName(layer.name()) + ".jpg")

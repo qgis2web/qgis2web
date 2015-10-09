@@ -78,22 +78,23 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     for count, i in enumerate(layer_list):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
+        tmpFileName = dataStore + os.sep + 'json_' + safeLayerName + '.json'
         layerFileName = dataStore + os.sep + 'json_' + safeLayerName + '.js'
         if i.providerType() != 'WFS' or json[count] == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
-                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, layerFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + unicode(precision)])
+                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, tmpFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + unicode(precision)])
 
                 # now change the data structure to work with leaflet:
-                with open(layerFileName) as f:
-                    lines = f.readlines()
                 with open(layerFileName, "w") as f2:
                     f2.write("var json_" + unicode(safeLayerName) + "=")
-                    for line in lines:
-                        if minify:
-                            line = line.strip("\n\t ")
-                            line = removeSpaces(line)
-                        f2.write(line)
+                    with open(tmpFileName, "r") as tmpFile:
+                        for line in tmpFile:
+                            if minify:
+                                line = line.strip("\n\t ")
+                                line = removeSpaces(line)
+                            f2.write(line)
+                    os.remove(tmpFileName)
                     f2.close
 
                 # now add the js files as data input for our map

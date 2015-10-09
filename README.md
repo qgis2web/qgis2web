@@ -32,7 +32,7 @@
     <dt>Cluster</dt>
         <dd>Use Leaflet cluster plugin to cluster features</dd>
     <dt>Label</dt>
-        <dd>Use layer's label as set in QGIS</dd>
+        <dd>Use layer's label as set in QGIS (Leaflet only supports point labels)</dd>
 </dl>
 
 <h3>General options</h3>
