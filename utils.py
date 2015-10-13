@@ -56,7 +56,7 @@ def getUsedFields(layer):
 
 
 def exportLayers(layers, folder, precision, optimize, popupField):
-    epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
+    epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision)))
@@ -88,7 +88,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
 
             tmpPath = os.path.join(layersFolder, safeName(layer.name()) + ".json")
             path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
-            QgsVectorFileWriter.writeAsVectorFormat(layer, tmpPath, "utf-8", epsg3587, 'GeoJson')
+            QgsVectorFileWriter.writeAsVectorFormat(layer, tmpPath, "utf-8", epsg3857, 'GeoJson')
             with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" + safeName(layer.name())))
                 with open(tmpPath, "r") as f2:

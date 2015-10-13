@@ -189,12 +189,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     if unicode(field) == 'html_exp':
                         html_prov = True
                         table = 'feature.properties.html_exp'
-                    if unicode(field) == 'label_exp' and not labelhover:
-                        label_exp = True
-                        labeltext = """.bindLabel(feature.properties.label_exp, {noHide: true, offset: [-0, -16]})"""
-                    if unicode(field) == 'label_exp' and labelhover:
-                        label_exp = True
-                        labeltext = """.bindLabel(feature.properties.label_exp)"""
                     if unicode(f) != "" and unicode(f) == unicode(field) and f:
                         label_exp = True
                     if unicode(field) == 'icon_exp':
