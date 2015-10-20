@@ -38,6 +38,7 @@ from leafletWriter import *
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 selectedCombo = "None"
+selectedLayerCombo = "None"
 
 
 class MainDialog(QDialog, Ui_MainDialog):
@@ -49,7 +50,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.iface = iface
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.populate_layers_and_groups()
+        self.populate_layers_and_groups(self)
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
@@ -132,7 +133,12 @@ class MainDialog(QDialog, Ui_MainDialog):
         if selectedCombo != "None":
             QgsProject.instance().writeEntry("qgis2web", selectedCombo, value)
 
-    def populate_layers_and_groups(self):
+    def saveLayerComboSettings(self, value):
+        global selectedLayerCombo
+        if selectedLayerCombo != "None":
+            selectedLayerCombo.setCustomProperty("qgis2web/Info popup content", value)
+
+    def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
         root_node = QgsProject.instance().layerTreeRoot()
         # All tree group
@@ -145,21 +151,18 @@ class MainDialog(QDialog, Ui_MainDialog):
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             if layer.type() != QgsMapLayer.PluginLayer:
-                try:
                     if layer.type() == QgsMapLayer.VectorLayer:
                         testDump = layer.rendererV2().dump()
                     layer_parent = tree_layer.parent()
                     if layer_parent.parent() is None:
                         # Layer parent is a root node.
                         # This is an orphan layer (has no parent) :(
-                        item = TreeLayerItem(self.iface, layer, self.layersTree)
+                        item = TreeLayerItem(self.iface, layer, self.layersTree, dlg)
                         self.layers_item.addChild(item)
                     else:
                         # Layer parent is not a root, it's a group then
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
-                except:
-                    pass
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
@@ -336,7 +339,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
     layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
 
-    def __init__(self, iface, layer, tree):
+    def __init__(self, iface, layer, tree, dlg):
         QTreeWidgetItem.__init__(self)
         self.iface = iface
         self.layer = layer
@@ -355,26 +358,36 @@ class TreeLayerItem(QTreeWidgetItem):
             for option in options:
                 self.combo.addItem(option)
             self.addChild(self.popupItem)
+            if layer.customProperty("qgis2web/Info popup content"):
+                self.combo.setCurrentIndex(layer.customProperty("qgis2web/Info popup content"))
+            self.combo.highlighted.connect(self.clickCombo)
+            self.combo.currentIndexChanged.connect(dlg.saveLayerComboSettings)
             tree.setItemWidget(self.popupItem, 1, self.combo)
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
-        self.visibleCheck.setChecked(True)
+        if layer.customProperty("qgis2web/Visible") != 0:
+            self.visibleCheck.setChecked(True)
         self.visibleItem.setText(0, "Visible")
+        self.visibleCheck.stateChanged.connect(self.changeVisible)
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() == 'WFS':
                 self.jsonItem = QTreeWidgetItem(self)
                 self.jsonCheck = QCheckBox()
-                self.jsonCheck.setChecked(True)
+                if layer.customProperty("qgis2web/Encode to JSON") != 0:
+                    self.jsonCheck.setChecked(True)
                 self.jsonItem.setText(0, "Encode to JSON")
+                self.jsonCheck.stateChanged.connect(self.changeJSON)
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
             if layer.geometryType() == QGis.Point:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
-                self.clusterCheck.setChecked(False)
+                if layer.customProperty("qgis2web/Cluster") != 0:
+                    self.clusterCheck.setChecked(True)
                 self.clusterItem.setText(0, "Cluster")
+                self.clusterCheck.stateChanged.connect(self.changeCluster)
                 self.addChild(self.clusterItem)
                 tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
             palyr = QgsPalLayerSettings()
@@ -383,8 +396,10 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.labelsItem = QTreeWidgetItem(self)
                 self.labelsCheck = QCheckBox()
                 if palyr.enabled:
-                    self.labelsCheck.setChecked(True)
+                    if layer.customProperty("qgis2web/Label") != 0:
+                        self.labelsCheck.setChecked(True)
                 self.labelsItem.setText(0, "Label")
+                self.labelsCheck.stateChanged.connect(self.changeLabel)
                 self.addChild(self.labelsItem)
                 tree.setItemWidget(self.labelsItem, 1, self.labelsCheck)
 
@@ -421,6 +436,22 @@ class TreeLayerItem(QTreeWidgetItem):
             return self.labelsCheck.isChecked()
         except:
             return False
+
+    def clickCombo(self):
+        global selectedLayerCombo
+        selectedLayerCombo = self.layer
+
+    def changeVisible(self, isVisible):
+        self.layer.setCustomProperty("qgis2web/Visible", isVisible)
+
+    def changeJSON(self, isJSON):
+        self.layer.setCustomProperty("qgis2web/Encode to JSON", isJSON)
+
+    def changeCluster(self, isCluster):
+        self.layer.setCustomProperty("qgis2web/Cluster", isCluster)
+
+    def changeLabel(self, isLabel):
+        self.layer.setCustomProperty("qgis2web/Label", isLabel)
 
 
 class TreeSettingItem(QTreeWidgetItem):

@@ -335,7 +335,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS("", layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
@@ -420,7 +420,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS("", layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
@@ -509,7 +509,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 #            },
 #            onEachFeature: function (feature, layer) {"""+popFuncs+"""
 #            }"""
-#                                new_obj, scriptTag, cluster_num = buildPointWFS(layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+#                                new_obj, scriptTag, cluster_num = buildPointWFS("", layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
 #                                wfsLayers += """
 #    <script src='""" + scriptTag + """'></script>"""
 #                            else:

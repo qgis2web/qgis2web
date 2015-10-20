@@ -12,7 +12,7 @@ def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr, cluster_
         layerControl.addOverlay(json_{layerName}JSON, '{layerName}');""".format(layerName=layerName)
     if cluster_set:
         new_obj += """
-        var cluster_group{layerName}JSON= new L.MarkerClusterGroup({showCoverageOnHover: false});""".format(layerName=layerName)
+        var cluster_group{layerName}JSON= new L.MarkerClusterGroup({{showCoverageOnHover: false}});""".format(layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
             json_{layerName}JSON.addData(geojson);""".format(layerName=layerName)
