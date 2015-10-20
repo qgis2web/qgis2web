@@ -175,6 +175,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
+        for i in xrange(self.layers_item.childCount()):
+            item = self.layers_item.child(i)
+            if item.checkState(0) != Qt.Checked:
+                item.setExpanded(False)
 
     def populateConfigParams(self, dlg):
         global selectedCombo
