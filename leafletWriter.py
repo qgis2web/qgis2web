@@ -234,7 +234,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
                     if i.geometryType() == QGis.Point and not icon_prov:
                         print "POINT"
-                        asd = sdf
                         radius = unicode(symbol.size() * 2)
                         try:
                             borderStyle = symbol.symbolLayer(0).outlineStyle()
