@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent.
-version=0.29.0
+version=0.30.0
 author=Tom Chadwin
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2015/10/14 0.29.0 Upgrade OL3 to 3.10.1, update and correct README, tidy README markup, avoid readlines(), changelog typo, OL3 incorrect var name, remove old unused Leaflet label code, OL3 point radius from QGIS 
+changelog= 2015/10/20 0.30.0 General settings save per-project
+    2015/10/14 0.29.0 Upgrade OL3 to 3.10.1, update and correct README, tidy README markup, avoid readlines(), changelog typo, OL3 incorrect var name, remove old unused Leaflet label code, OL3 point radius from QGIS
     2015/10/08 0.28.0 Get "Highlight features" style, map background colour, and map title from QGIS,  OL3 style export fails if no font-size set
     2015/10/05 0.27.0 New help tab and credits, Leaflet line style, IO error
     2015/10/01 0.26.0 Leaflet show popups on hover, extraneous quotes in OL3 template
