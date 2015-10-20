@@ -104,7 +104,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        print "test10_Leaflet_shp_pnt_simple()"
+        print "test10_Leaflet_shp_line_simple()"
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
