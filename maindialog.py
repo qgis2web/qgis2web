@@ -349,7 +349,7 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer = layer
         self.setText(0, layer.name())
         self.setIcon(0, self.layerIcon)
-        if self.iface.legendInterface().isLayerVisible(layer):
+        if QgsProject.instance().layerTreeRoot().findLayer(layer.id()).isVisible():
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
