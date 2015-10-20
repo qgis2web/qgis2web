@@ -199,7 +199,6 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
-    asd = sdf
     jsonPoint = pointStyleLabel
     if usedFields != 0:
         jsonPoint += """

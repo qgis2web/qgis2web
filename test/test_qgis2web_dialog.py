@@ -97,6 +97,18 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
+    def test10_Leaflet_shp_line_simple(self):
+        """Leaflet shape line simple (test_qgis2web_dialog.test_Leaflet_shp_line_simple)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        print "test10_Leaflet_shp_pnt_simple()"
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+        self.dialog.buttonExport.click()
+
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
     runner = unittest.TextTestRunner(verbosity=2)
