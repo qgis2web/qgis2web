@@ -60,11 +60,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
-        # self.helpField.document.setDefaultStyleSheet("dt {font-style: italic;}")
         self.helpField.setSource(QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md")))
 
     def changeFormat(self):
-        QSettings().setValue("qgis2web/mapFormat", self.mapFormat.checkedButton().text())
+        QgsProject.instance().writeEntry("qgis2web", "mapFormat", self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
 
@@ -114,13 +113,13 @@ class MainDialog(QDialog, Ui_MainDialog):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
             folder = QFileDialog.getExistingDirectory(self, "Choose export folder", paramItem.text(col), QFileDialog.ShowDirsOnly)
             if folder != "":
-                paramItem.setText(col, folder)
+                paramItem.setText(1, folder)
 
     def saveSettings(self, paramItem, col):
         if isinstance(paramItem._value, bool):
-            QSettings().setValue("qgis2web/" + paramItem.name, paramItem.checkState(col))
+            QgsProject.instance().writeEntry("qgis2web", paramItem.name, paramItem.checkState(col))
         else:
-            QSettings().setValue("qgis2web/" + paramItem.name, paramItem.text(col))
+            QgsProject.instance().writeEntry("qgis2web", paramItem.name, paramItem.text(col))
         if paramItem.name == "Match project CRS":
             baseLayer = self.paramsTreeOL.findItems("Base layer", Qt.MatchExactly | Qt.MatchRecursive)[0]
             if paramItem.checkState(col):
@@ -130,7 +129,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveComboSettings(self, value):
         global selectedCombo
-        QSettings().setValue("qgis2web/" + selectedCombo, value)
+        if selectedCombo != "None":
+            QgsProject.instance().writeEntry("qgis2web", selectedCombo, value)
 
     def populate_layers_and_groups(self):
         """Populate layers on QGIS into our layers and group tree view."""
@@ -180,35 +180,32 @@ class MainDialog(QDialog, Ui_MainDialog):
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
-                if QSettings().contains(param):
-                    QSettings().remove(param)
-                if QSettings().contains("qgis2web/" + param):
-                    if isinstance(value, bool):
-                        if QSettings().value("qgis2web/" + param):
-                            value = True
-                        else:
-                            value = False
-                    elif isinstance(value, int):
-                        value = int(QSettings().value("qgis2web/" + param))
-                    elif isinstance(value, tuple):
-                        selectedCombo = param
-                        if isinstance(QSettings().value("qgis2web/" + param), int):
-                            if QSettings().value("qgis2web/" + param) != -1:
-                                comboSelection = QSettings().value("qgis2web/" + param)
-                            else:
-                                QSettings().remove("qgis2web/" + param)
-                        else:
-                            comboSelection = 0
-                            QSettings().remove("qgis2web/" + selectedCombo)
+                isTuple = False
+                if isinstance(value, bool):
+                    if QgsProject.instance().readBoolEntry("qgis2web", param)[0] == 2:
+                        value = True
+                    if QgsProject.instance().readBoolEntry("qgis2web", param)[0] == 0:
+                        value = False
+                elif isinstance(value, int):
+                    if QgsProject.instance().readNumEntry("qgis2web", param)[0] != 0:
+                        value = QgsProject.instance().readNumEntry("qgis2web", param)[0]
+                elif isinstance(value, tuple):
+                    selectedCombo = param
+                    isTuple = True
+                    if QgsProject.instance().readNumEntry("qgis2web", param)[0] != 0:
+                        comboSelection = QgsProject.instance().readNumEntry("qgis2web", param)[0]
+                    elif param == "Max zoom level":
+                        comboSelection = 27
+                    elif param == "Precision":
+                        comboSelection = 5
                     else:
-                        value = QSettings().value("qgis2web/" + param)
+                        comboSelection = 0
+                else:
+                    if isinstance(QgsProject.instance().readEntry("qgis2web", param)[0], basestring) and QgsProject.instance().readEntry("qgis2web", param)[0] != "":
+                        value = QgsProject.instance().readEntry("qgis2web", param)[0]
                 subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
-                if isinstance(value, tuple):
-                    if QSettings().contains("qgis2web/" + param):
-                        dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
-                    else:
-                        if param == "Precision" or param == "Max zoom level":
-                            dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(dlg.paramsTreeOL.itemWidget(subitem, 1).count() - 1)
+                if isTuple:
+                    dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -218,7 +215,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.resizeColumnToContents(1)
 
     def selectMapFormat(self):
-        if QSettings().value("qgis2web/mapFormat") == "Leaflet":
+        if QgsProject.instance().readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
 

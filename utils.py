@@ -64,7 +64,6 @@ def exportLayers(layers, folder, precision, optimize, popupField):
         if layer.type() == layer.VectorLayer:
             usedFields = getUsedFields(layer)
             if popup != ALL_ATTRIBUTES:
-                print layer.wkbType()
                 uri = TYPE_MAP[layer.wkbType()]
                 crs = layer.crs()
                 if crs.isValid():
