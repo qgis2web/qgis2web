@@ -37,6 +37,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def tearDown(self):
         """Runs after each test."""
+        registry = QgsMapLayerRegistry.instance()
+        registry.removeAllMapLayers()
         self.dialog = None
 
     def test01_preview_default(self):
