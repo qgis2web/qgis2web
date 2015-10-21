@@ -190,7 +190,7 @@ def doPointToLayerScript(safeLayerName, labeltext):
         function doPointToLayer{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
         }}""".format(safeLayerName=safeLayerName,
-              labeltext=labeltext)
+                     labeltext=labeltext)
 
 
 def wfsScript(scriptTag):
