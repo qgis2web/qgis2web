@@ -247,7 +247,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             borderWidth = 1
                         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
                         pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
-                        print pointStyleLabel
                         pointToLayer = pointToLayerScript(safeLayerName)
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = pointStyleScript(pointToLayer, popFuncs)
