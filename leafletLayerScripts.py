@@ -6,7 +6,8 @@ def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr, cluster_
     new_obj = pointStyleLabel + categoryStr + """
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{
-            pointToLayer: doPointToLayer{layerName}
+            pointToLayer: doPointToLayer{layerName},
+            onEachFeature: pop_{layerName}
         }});
         layerOrder[layerOrder.length] = json_{layerName}JSON;
         feature_group.addLayer(json_{layerName}JSON);
