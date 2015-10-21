@@ -185,11 +185,12 @@ def pointToLayerScript(safeLayerName):
     return pointToLayer
 
 
-def pointStyleScript(pointToLayer, popFuncs):
-    pointStyle = """{pointToLayer},
-            onEachFeature: function (feature, layer) {{{popFuncs}
-        }}""".format(pointToLayer=pointToLayer, popFuncs=popFuncs)
-    return pointStyle
+def doPointToLayerScript(safeLayerName, labeltext):
+    return """
+        function doPointToLayer{safeLayerName}(feature, latlng) {{
+            return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
+        }}""".format(safeLayerName=safeLayerName,
+              labeltext=labeltext)
 
 
 def wfsScript(scriptTag):
@@ -321,11 +322,11 @@ def endCategoryScript():
 
 def categorizedPointWFSscript(layerName, labeltext, popFuncs):
     categorizedPointWFS = """
-        pointToLayer: function (feature, latlng) {{
+        function doPointToLayer{layerName}(feature, latlng) {{
             return L.circleMarker(latlng, doStyle{layerName}(feature)){labeltext}
-        }},
-        onEachFeature: function (feature, layer) {{{popFuncs}
-        }}""".format(layerName=layerName, labeltext=labeltext, popFuncs=popFuncs)
+        }}
+        /*onEachFeature: function (feature, layer) {{{popFuncs}
+        }}*/""".format(layerName=layerName, labeltext=labeltext, popFuncs=popFuncs)
     return categorizedPointWFS
 
 

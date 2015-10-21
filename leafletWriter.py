@@ -249,7 +249,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
                         pointToLayer = pointToLayerScript(safeLayerName)
                         if i.providerType() == 'WFS' and json[count] == False:
-                            stylestr = pointStyleScript(pointToLayer, popFuncs)
                             new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
@@ -336,7 +335,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         categoryStr += endCategoryScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS("", layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS(stylestr, layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
@@ -421,7 +420,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         categoryStr += endGraduatedStyleScript()
                         if i.providerType() == 'WFS' and json[count] == False:
                             stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-                            new_obj, scriptTag, cluster_num = buildPointWFS("", layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+                            new_obj, scriptTag, cluster_num = buildPointWFS(stylestr, layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
                             wfsLayers += wfsScript(scriptTag)
                         else:
                             new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
