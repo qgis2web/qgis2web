@@ -94,10 +94,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
         goodOutput = testFile.read()
-        print "test09_Leaflet_shp_pnt_simple()"
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
 
     def test10_Leaflet_shp_line_simple(self):
         """Leaflet shape line simple (test_qgis2web_dialog.test_Leaflet_shp_line_simple)."""
@@ -106,10 +104,18 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        print "test10_Leaflet_shp_line_simple()"
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+
+    def test11_Leaflet_shp_poly_simple(self):
+        """Leaflet shape polygon simple (test_qgis2web_dialog.test_Leaflet_shp_poly_simple)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_feature.shp", "polygon feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
