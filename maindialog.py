@@ -363,7 +363,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.combo.addItem(option)
             self.addChild(self.popupItem)
             if layer.customProperty("qgis2web/Info popup content"):
-                self.combo.setCurrentIndex(layer.customProperty("qgis2web/Info popup content"))
+                self.combo.setCurrentIndex(int(layer.customProperty("qgis2web/Info popup content")))
             self.combo.highlighted.connect(self.clickCombo)
             self.combo.currentIndexChanged.connect(dlg.saveLayerComboSettings)
             tree.setItemWidget(self.popupItem, 1, self.combo)
