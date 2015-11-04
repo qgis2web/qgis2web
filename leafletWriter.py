@@ -211,17 +211,13 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 
                 layerName = safeLayerName
                 renderer = i.rendererV2()
-                try:
-                    rendererDump = renderer.dump()
-                except:
-                    rendererDump = ""
                 layer_transp = 1 - (float(i.layerTransparency()) / 100)
                 new_obj = ""
 
                 # single marker points:
-                if rendererDump[0:6] == 'SINGLE' or rendererDump[0:10] == 'Rule-based':
+                if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
                     print "SINGLE"
-                    if rendererDump[0:10] == 'Rule-based':
+                    if isinstance(renderer, QgsRuleBasedRendererV2):
                         symbol = renderer.rootRule().children()[0].symbol()
                     else:
                         symbol = renderer.symbol()
@@ -308,7 +304,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
                             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
                             new_obj += restackLayers(layerName, visible[count])
-                elif rendererDump[0:11] == 'CATEGORIZED':
+                elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                     print "CATEGORIZED"
                     catLegend = i.name() + "<br />"
                     if i.geometryType() == QGis.Point and not icon_prov:
@@ -398,7 +394,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         else:
                             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
                     legends[layerName] = catLegend
-                elif rendererDump[0:9] == 'GRADUATED':
+                elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                     print "GRADUATED"
                     catLegend = i.name() + "<br />"
                     categoryStr = graduatedStyleScript(layerName)
@@ -477,7 +473,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     legends[layerName] = catLegend
                 else:
                     print "No renderer"
-#                        elif rendererDump[0:10] == 'Rule-based':
+#                        elif isinstance(renderer, QgsRuleBasedRendererV2):
 #                            for rule in renderer.rootRule().children():
 #                                try:
 #                                    print rule.filterExpression() + ": " + rule.filter().functionCount()
