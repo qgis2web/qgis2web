@@ -81,8 +81,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     for count, i in enumerate(layer_list):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-        tmpFileName = os.path.join(dataStore, 'json_' + safeLayerName + '.json')
-        layerFileName = os.path.join(dataStore, 'json_' + safeLayerName + '.js')
+        dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
+        tmpFileName = dataPath + '.json'
+        layerFileName = dataPath + '.js'
         if i.providerType() != 'WFS' or json[count] == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
@@ -112,7 +113,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 if i.dataProvider().name() != "wms":
                     in_raster = unicode(i.dataProvider().dataSourceUri())
                     prov_raster = os.path.join(tempfile.gettempdir(), 'json_' + safeLayerName + '_prov.tif')
-                    out_raster = os.path.join(dataStore, 'json_' + safeLayerName + '.png')
+                    out_raster = dataPath + '.png'
                     crsSrc = i.crs()
                     crsDest = QgsCoordinateReferenceSystem(4326)
                     xform = QgsCoordinateTransform(crsSrc, crsDest)
@@ -220,11 +221,11 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 # single marker points:
                 if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
                     print "SINGLE"
-                    symbolLayer = symbol.symbolLayer(0)
                     if isinstance(renderer, QgsRuleBasedRendererV2):
                         symbol = renderer.rootRule().children()[0].symbol()
                     else:
                         symbol = renderer.symbol()
+                    symbolLayer = symbol.symbolLayer(0)
                     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
                     legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + ".png"))
                     legends[layerName] = """<img src="legend/""" + layerName + """.png" /> """ + i.name()
