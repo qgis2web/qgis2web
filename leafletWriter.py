@@ -232,10 +232,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         print "POINT"
                         radius = unicode(symbol.size() * 2)
                         try:
-                            borderStyle = symbol.symbolLayer(0).outlineStyle()
-                            borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
-                            border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                            borderWidth = symbol.symbolLayer(0).outlineWidth()
+                            symbolLayer = symbol.symbolLayer(0)
+                            borderStyle = symbolLayer.outlineStyle()
+                            border = symbolLayer.borderColor()
+                            borderColor = unicode(border.name())
+                            border_transp = float(border.alpha()) / 255
+                            borderWidth = symbolLayer.outlineWidth()
                         except:
                             borderStyle = ""
                             borderColor = ""
@@ -272,20 +274,22 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     elif i.geometryType() == QGis.Polygon:
                         print "POLYGON"
                         borderStyle = ""
-                        if symbol.symbolLayer(0).layerType() == 'SimpleLine' or isinstance(symbol.symbolLayer(0), QgsSimpleLineSymbolLayerV2):
-                            radius = symbol.symbolLayer(0).width()
+                        symbolLayer = symbol.symbolLayer(0)
+                        if symbolLayer.layerType() == 'SimpleLine' or isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2):
+                            radius = symbolLayer.width()
                             colorName = 'none'
                             borderColor = unicode(symbol.color().name())
                             border_transp = float(symbol.color().alpha()) / 255
                         else:
                             try:
-                                radius = symbol.symbolLayer(0).borderWidth()
-                                borderColor = unicode(symbol.symbolLayer(0).borderColor().name())
-                                borderStyle = getLineStyle(symbol.symbolLayer(0).borderStyle(), radius)
-                                border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
-                                if symbol.symbolLayer(0).borderStyle() == 0:
+                                radius = symbolLayer.borderWidth()
+                                border = symbolLayer.borderColor()
+                                borderColor = unicode(border.name())
+                                borderStyle = getLineStyle(symbolLayer.borderStyle(), radius)
+                                border_transp = float(border.alpha()) / 255
+                                if symbolLayer.borderStyle() == 0:
                                     radius = "0"
-                                if symbol.symbolLayer(0).brushStyle() == 0:
+                                if symbolLayer.brushStyle() == 0:
                                     colorName = "none"
                             except:
                                 radius = 1
