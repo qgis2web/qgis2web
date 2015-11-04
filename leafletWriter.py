@@ -68,11 +68,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     highlight = params["Appearance"]["Highlight features"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     project = QgsProject.instance()
+    mapSettings = canvas.mapSettings()
     title = project.title()
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
     writeHTMLstart(outputIndex, title, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
-    writeCSS(cssStore, full, height, width, canvas.mapSettings().backgroundColor().name())
+    writeCSS(cssStore, full, height, width, mapSettings.backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
@@ -126,14 +127,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     # now determine the canvas bounding box
     # now with viewcontrol
     try:
-        crsSrc = canvas.mapSettings().destinationCrs()
+        crsSrc = mapSettings.destinationCrs()
     except:
         crsSrc = canvas.mapRenderer().destinationCrs()
     crsAuthId = crsSrc.authid()
     crsProj4 = crsSrc.toProj4()
     middle = openScript()
     if highlight or popupsOnHover:
-        middle += highlightScript(highlight, popupsOnHover, canvas.mapSettings().selectionColor().name())
+        middle += highlightScript(highlight, popupsOnHover, mapSettings.selectionColor().name())
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
