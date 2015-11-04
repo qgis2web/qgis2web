@@ -440,8 +440,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                             safeLabel = re.sub('[\W_]+', '', r.label())
                             legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
                             catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
-                            legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
-                            legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + unicode(r.label()) + ".png"))
                             symbol_transp = symbol.alpha()
                             fill_transp = float(symbol.color().alpha()) / 255
                             fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
