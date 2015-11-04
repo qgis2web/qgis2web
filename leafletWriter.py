@@ -67,10 +67,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     measure = params["Appearance"]["Add measure tool"]
     highlight = params["Appearance"]["Highlight features"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
+    project = QgsProject.instance()
+    title = project.title()
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
-    writeHTMLstart(outputIndex, QgsProject.instance().title(), cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
-    writeCSS(cssStore, full, height, width, iface.mapCanvas().mapSettings().backgroundColor().name())
+    writeHTMLstart(outputIndex, title, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
+    writeCSS(cssStore, full, height, width, canvas.mapSettings().backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
@@ -584,8 +586,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     with open(outputIndex, 'a') as f5scaleDependent:
         f5scaleDependent.write(scaleDependentLayers)
         f5scaleDependent.close()
-    if QgsProject.instance().title() != "":
-        titleStart = titleSubScript(QgsProject.instance().title())
+    if title != "":
+        titleStart = titleSubScript(title)
         with open(outputIndex, 'a') as f5contr:
             f5contr.write(titleStart)
             f5contr.close()
