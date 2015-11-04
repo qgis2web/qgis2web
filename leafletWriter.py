@@ -220,6 +220,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 # single marker points:
                 if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
                     print "SINGLE"
+                    symbolLayer = symbol.symbolLayer(0)
                     if isinstance(renderer, QgsRuleBasedRendererV2):
                         symbol = renderer.rootRule().children()[0].symbol()
                     else:
@@ -235,7 +236,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                         print "POINT"
                         radius = unicode(symbol.size() * 2)
                         try:
-                            symbolLayer = symbol.symbolLayer(0)
                             borderStyle = symbolLayer.outlineStyle()
                             border = symbolLayer.borderColor()
                             borderColor = unicode(border.name())
@@ -277,7 +277,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     elif i.geometryType() == QGis.Polygon:
                         print "POLYGON"
                         borderStyle = ""
-                        symbolLayer = symbol.symbolLayer(0)
                         if symbolLayer.layerType() == 'SimpleLine' or isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2):
                             radius = symbolLayer.width()
                             colorName = 'none'
