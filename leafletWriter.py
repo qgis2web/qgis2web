@@ -176,22 +176,22 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 # single marker points:
                 if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
                     new_obj, legends, wfsLayers = singleLayer(renderer,
-                                                   outputProjectFileName,
-                                                   layerName,
-                                                   safeLayerName,
-                                                   wfsLayers,
-                                                   i,
-                                                   layer_transp,
-                                                   icon_prov,
-                                                   labeltext,
-                                                   cluster,
-                                                   cluster_num,
-                                                   visible,
-                                                   json,
-                                                   usedFields,
-                                                   legends,
-                                                   count,
-                                                   popFuncs)
+                                                              outputProjectFileName,
+                                                              layerName,
+                                                              safeLayerName,
+                                                              wfsLayers,
+                                                              i,
+                                                              layer_transp,
+                                                              icon_prov,
+                                                              labeltext,
+                                                              cluster,
+                                                              cluster_num,
+                                                              visible,
+                                                              json,
+                                                              usedFields,
+                                                              legends,
+                                                              count,
+                                                              popFuncs)
                 elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                     new_obj, legends = categorizedLayer(i,
                                                         icon_prov,
@@ -472,9 +472,36 @@ def singleLayer(renderer,
     fill_transp = float(symbol.color().alpha()) / 255
     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
     if i.geometryType() == QGis.Point and not icon_prov:
-        new_obj, cluster_num, wfsLayers = singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName, safeLayerName, colorName, fill_opacity, labeltext, i, cluster, cluster_num, visible, json, usedFields, wfsLayers, count)
+        new_obj, cluster_num, wfsLayers = singlePoint(symbol,
+                                                      symbolLayer,
+                                                      layer_transp,
+                                                      symbol_transp,
+                                                      layerName,
+                                                      safeLayerName,
+                                                      colorName,
+                                                      fill_opacity,
+                                                      labeltext,
+                                                      i,
+                                                      cluster,
+                                                      cluster_num,
+                                                      visible,
+                                                      json,
+                                                      usedFields,
+                                                      wfsLayers,
+                                                      count)
     elif i.geometryType() == QGis.Line:
-        new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, i, json, layerName, safeLayerName, wfsLayers, popFuncs, visible, usedFields, count)
+        new_obj, wfsLayers = singleLine(symbol,
+                                        colorName,
+                                        fill_opacity,
+                                        i,
+                                        json,
+                                        layerName,
+                                        safeLayerName,
+                                        wfsLayers,
+                                        popFuncs,
+                                        visible,
+                                        usedFields,
+                                        count)
     elif i.geometryType() == QGis.Polygon:
         print "POLYGON"
         borderStyle = ""
@@ -514,7 +541,23 @@ def singleLayer(renderer,
     return new_obj, legends, wfsLayers
 
 
-def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName, safeLayerName, colorName, fill_opacity, labeltext, i, cluster, cluster_num, visible, json, usedFields, wfsLayers, count):
+def singlePoint(symbol,
+                symbolLayer,
+                layer_transp,
+                symbol_transp,
+                layerName,
+                safeLayerName,
+                colorName,
+                fill_opacity,
+                labeltext,
+                i,
+                cluster,
+                cluster_num,
+                visible,
+                json,
+                usedFields,
+                wfsLayers,
+                count):
     print "POINT"
     radius = unicode(symbol.size() * 2)
     try:
@@ -529,20 +572,48 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName, saf
         border_transp = 0
         borderWidth = 1
     borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-    pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
+    pointStyleLabel = pointStyleLabelScript(safeLayerName,
+                                            radius,
+                                            borderWidth,
+                                            borderStyle,
+                                            colorName,
+                                            borderColor,
+                                            borderOpacity,
+                                            fill_opacity,
+                                            labeltext)
     pointToLayer = pointToLayerScript(safeLayerName)
     if i.providerType() == 'WFS' and json[count] == False:
-        new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", cluster[count], cluster_num, visible[count])
+        new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel,
+                                                        layerName,
+                                                        i.source(),
+                                                        "",
+                                                        cluster[count],
+                                                        cluster_num,
+                                                        visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields[count])
+        new_obj = jsonPointScript(pointStyleLabel,
+                                  safeLayerName,
+                                  pointToLayer,
+                                  usedFields[count])
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
     return new_obj, cluster_num, wfsLayers
 
 
-def singleLine(symbol, colorName, fill_opacity, i, json, layerName, safeLayerName, wfsLayers, popFuncs, visible, usedFields, count):
+def singleLine(symbol,
+               colorName,
+               fill_opacity,
+               i,
+               json,
+               layerName,
+               safeLayerName,
+               wfsLayers,
+               popFuncs,
+               visible,
+               usedFields,
+               count):
     print "LINE"
     radius = symbol.width()
     try:
