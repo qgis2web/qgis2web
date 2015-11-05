@@ -388,6 +388,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         f12.close()
     return outputIndex
 
+
 def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels, labelhover, highlight, popupsOnHover, count):
     fields = i.pendingFields()
     field_names = [field.name() for field in fields]
@@ -544,6 +545,7 @@ def buildSingleLayer(renderer,
             new_obj += restackLayers(layerName, visible[count])
     return new_obj, legends
 
+
 def buildCategorizedLayer(i,
                           icon_prov,
                           renderer,
@@ -648,6 +650,7 @@ def buildCategorizedLayer(i,
             new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
     legends[layerName] = catLegend
     return new_obj, legends
+
 
 def buildGraduatedLayer(i,
                         layerName,
