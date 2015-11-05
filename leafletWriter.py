@@ -212,22 +212,22 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                                                                    wfsLayers)
                 elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                     new_obj, legends, wfsLayers = graduatedLayer(i,
-                                                      layerName,
-                                                      safeLayerName,
-                                                      icon_prov,
-                                                      renderer,
-                                                      outputProjectFileName,
-                                                      layer_transp,
-                                                      labeltext,
-                                                      popFuncs,
-                                                      cluster,
-                                                      cluster_num,
-                                                      visible,
-                                                      json,
-                                                      usedFields,
-                                                      count,
-                                                      legends,
-                                                      wfsLayers)
+                                                                 layerName,
+                                                                 safeLayerName,
+                                                                 icon_prov,
+                                                                 renderer,
+                                                                 outputProjectFileName,
+                                                                 layer_transp,
+                                                                 labeltext,
+                                                                 popFuncs,
+                                                                 cluster,
+                                                                 cluster_num,
+                                                                 visible,
+                                                                 json,
+                                                                 usedFields,
+                                                                 count,
+                                                                 legends,
+                                                                 wfsLayers)
                 else:
                     print "No renderer"
 
