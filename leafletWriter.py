@@ -175,51 +175,54 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
 
                 # single marker points:
                 if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
-                    new_obj, legends = buildSingleLayer(renderer,
-                                                        outputProjectFileName,
+                    new_obj, legends, wfsLayers = singleLayer(renderer,
+                                                   outputProjectFileName,
+                                                   layerName,
+                                                   safeLayerName,
+                                                   wfsLayers,
+                                                   i,
+                                                   layer_transp,
+                                                   icon_prov,
+                                                   labeltext,
+                                                   cluster,
+                                                   cluster_num,
+                                                   visible,
+                                                   json,
+                                                   usedFields,
+                                                   legends,
+                                                   count,
+                                                   popFuncs)
+                elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                    new_obj, legends = categorizedLayer(i,
+                                                        icon_prov,
+                                                        renderer,
                                                         layerName,
                                                         safeLayerName,
-                                                        i,
+                                                        outputProjectFileName,
                                                         layer_transp,
-                                                        icon_prov,
+                                                        usedFields,
+                                                        count,
+                                                        legends,
                                                         labeltext,
                                                         cluster,
                                                         cluster_num,
-                                                        visible,
-                                                        usedFields,
-                                                        legends,
-                                                        count)
-                elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                    new_obj, legends = buildCategorizedLayer(i,
-                                                             icon_prov,
-                                                             renderer,
-                                                             layerName,
-                                                             safeLayerName,
-                                                             outputProjectFileName,
-                                                             layer_transp,
-                                                             usedFields,
-                                                             count,
-                                                             legends,
-                                                             labeltext,
-                                                             cluster,
-                                                             cluster_num,
-                                                             popFuncs)
+                                                        popFuncs)
                 elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                    new_obj, legends = buildGraduatedLayer(i,
-                                                           layerName,
-                                                           safeLayerName,
-                                                           icon_prov,
-                                                           renderer,
-                                                           outputProjectFileName,
-                                                           layer_transp,
-                                                           labeltext,
-                                                           popFuncs,
-                                                           cluster,
-                                                           cluster_num,
-                                                           visible,
-                                                           usedFields,
-                                                           count,
-                                                           legends)
+                    new_obj, legends = graduatedLayer(i,
+                                                      layerName,
+                                                      safeLayerName,
+                                                      icon_prov,
+                                                      renderer,
+                                                      outputProjectFileName,
+                                                      layer_transp,
+                                                      labeltext,
+                                                      popFuncs,
+                                                      cluster,
+                                                      cluster_num,
+                                                      visible,
+                                                      usedFields,
+                                                      count,
+                                                      legends)
                 else:
                     print "No renderer"
 
@@ -438,20 +441,23 @@ def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels, label
     return new_pop, icon_prov, labeltext, popFuncs
 
 
-def buildSingleLayer(renderer,
-                     outputProjectFileName,
-                     layerName,
-                     safeLayerName,
-                     i,
-                     layer_transp,
-                     icon_prov,
-                     labeltext,
-                     cluster,
-                     cluster_num,
-                     visible,
-                     usedFields,
-                     legends,
-                     count):
+def singleLayer(renderer,
+                outputProjectFileName,
+                layerName,
+                safeLayerName,
+                wfsLayers, 
+                i,
+                layer_transp,
+                icon_prov,
+                labeltext,
+                cluster,
+                cluster_num,
+                visible,
+                json,
+                usedFields,
+                legends,
+                count,
+                popFuncs):
     print "SINGLE"
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
@@ -466,47 +472,9 @@ def buildSingleLayer(renderer,
     fill_transp = float(symbol.color().alpha()) / 255
     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
     if i.geometryType() == QGis.Point and not icon_prov:
-        print "POINT"
-        radius = unicode(symbol.size() * 2)
-        try:
-            borderStyle = symbolLayer.outlineStyle()
-            border = symbolLayer.borderColor()
-            borderColor = unicode(border.name())
-            border_transp = float(border.alpha()) / 255
-            borderWidth = symbolLayer.outlineWidth()
-        except:
-            borderStyle = ""
-            borderColor = ""
-            border_transp = 0
-            borderWidth = 1
-        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-        pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
-        pointToLayer = pointToLayerScript(safeLayerName)
-        if i.providerType() == 'WFS' and json[count] == False:
-            new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", cluster[count], cluster_num, visible[count])
-            wfsLayers += wfsScript(scriptTag)
-        else:
-            new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields[count])
-            if cluster[count]:
-                new_obj += clusterScript(safeLayerName)
-                cluster_num += 1
+        new_obj, cluster_num, wfsLayers = singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName, safeLayerName, colorName, fill_opacity, labeltext, i, cluster, cluster_num, visible, json, usedFields, wfsLayers, count)
     elif i.geometryType() == QGis.Line:
-        print "LINE"
-        radius = symbol.width()
-        try:
-            penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
-        except:
-            penStyle = ""
-        lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
-        if i.providerType() == 'WFS' and json[count] == False:
-            stylestr = nonPointStylePopupsScript(safeLayerName)
-            new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
-            new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
-            wfsLayers += wfsScript(scriptTag)
-        else:
-            new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
-            new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-            new_obj += restackLayers(layerName, visible[count])
+        new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, i, json, layerName, safeLayerName, wfsLayers, popFuncs, visible, usedFields, count)
     elif i.geometryType() == QGis.Polygon:
         print "POLYGON"
         borderStyle = ""
@@ -543,23 +511,71 @@ def buildSingleLayer(renderer,
             new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
             new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
             new_obj += restackLayers(layerName, visible[count])
-    return new_obj, legends
+    return new_obj, legends, wfsLayers
 
 
-def buildCategorizedLayer(i,
-                          icon_prov,
-                          renderer,
-                          layerName,
-                          safeLayerName,
-                          outputProjectFileName,
-                          layer_transp,
-                          usedFields,
-                          count,
-                          legends,
-                          labeltext,
-                          cluster,
-                          cluster_num,
-                          popFuncs):
+def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName, safeLayerName, colorName, fill_opacity, labeltext, i, cluster, cluster_num, visible, json, usedFields, wfsLayers, count):
+    print "POINT"
+    radius = unicode(symbol.size() * 2)
+    try:
+        borderStyle = symbolLayer.outlineStyle()
+        border = symbolLayer.borderColor()
+        borderColor = unicode(border.name())
+        border_transp = float(border.alpha()) / 255
+        borderWidth = symbolLayer.outlineWidth()
+    except:
+        borderStyle = ""
+        borderColor = ""
+        border_transp = 0
+        borderWidth = 1
+    borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
+    pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, fill_opacity, labeltext)
+    pointToLayer = pointToLayerScript(safeLayerName)
+    if i.providerType() == 'WFS' and json[count] == False:
+        new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(), "", cluster[count], cluster_num, visible[count])
+        wfsLayers += wfsScript(scriptTag)
+    else:
+        new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields[count])
+        if cluster[count]:
+            new_obj += clusterScript(safeLayerName)
+            cluster_num += 1
+    return new_obj, cluster_num, wfsLayers
+
+
+def singleLine(symbol, colorName, fill_opacity, i, json, layerName, safeLayerName, wfsLayers, popFuncs, visible, usedFields, count):
+    print "LINE"
+    radius = symbol.width()
+    try:
+        penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
+    except:
+        penStyle = ""
+    lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
+    if i.providerType() == 'WFS' and json[count] == False:
+        stylestr = nonPointStylePopupsScript(safeLayerName)
+        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
+        new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
+        wfsLayers += wfsScript(scriptTag)
+    else:
+        new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
+        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
+        new_obj += restackLayers(layerName, visible[count])
+    return new_obj, wfsLayers
+
+
+def categorizedLayer(i,
+                     icon_prov,
+                     renderer,
+                     layerName,
+                     safeLayerName,
+                     outputProjectFileName,
+                     layer_transp,
+                     usedFields,
+                     count,
+                     legends,
+                     labeltext,
+                     cluster,
+                     cluster_num,
+                     popFuncs):
     print "CATEGORIZED"
     catLegend = i.name() + "<br />"
     if i.geometryType() == QGis.Point and not icon_prov:
@@ -652,21 +668,21 @@ def buildCategorizedLayer(i,
     return new_obj, legends
 
 
-def buildGraduatedLayer(i,
-                        layerName,
-                        safeLayerName,
-                        icon_prov,
-                        renderer,
-                        outputProjectFileName,
-                        layer_transp,
-                        labeltext,
-                        popFuncs,
-                        cluster,
-                        cluster_num,
-                        visible,
-                        usedFields,
-                        count,
-                        legends):
+def graduatedLayer(i,
+                   layerName,
+                   safeLayerName,
+                   icon_prov,
+                   renderer,
+                   outputProjectFileName,
+                   layer_transp,
+                   labeltext,
+                   popFuncs,
+                   cluster,
+                   cluster_num,
+                   visible,
+                   usedFields,
+                   count,
+                   legends):
     print "GRADUATED"
     catLegend = i.name() + "<br />"
     categoryStr = graduatedStyleScript(layerName)
