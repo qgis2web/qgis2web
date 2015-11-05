@@ -503,41 +503,21 @@ def singleLayer(renderer,
                                         usedFields,
                                         count)
     elif i.geometryType() == QGis.Polygon:
-        print "POLYGON"
-        borderStyle = ""
-        if symbolLayer.layerType() == 'SimpleLine' or isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2):
-            radius = symbolLayer.width()
-            colorName = 'none'
-            borderColor = unicode(symbol.color().name())
-            border_transp = float(symbol.color().alpha()) / 255
-        else:
-            try:
-                radius = symbolLayer.borderWidth()
-                border = symbolLayer.borderColor()
-                borderColor = unicode(border.name())
-                borderStyle = getLineStyle(symbolLayer.borderStyle(), radius)
-                border_transp = float(border.alpha()) / 255
-                if symbolLayer.borderStyle() == 0:
-                    radius = "0"
-                if symbolLayer.brushStyle() == 0:
-                    colorName = "none"
-            except:
-                radius = 1
-                borderColor = "#000000"
-                borderStyle = ""
-                border_transp = 1
-                colorName = "#ffffff"
-        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-        polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity, colorName, borderStyle, fill_opacity)
-        if i.providerType() == 'WFS' and json[count] == False:
-            stylestr = nonPointStylePopupsScript(safeLayerName)
-            new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
-            new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
-            wfsLayers += wfsScript(scriptTag)
-        else:
-            new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
-            new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-            new_obj += restackLayers(layerName, visible[count])
+        new_obj, wfsLayers = singlePolygon(i,
+                                           layerName,
+                                           safeLayerName,
+                                           symbol,
+                                           symbolLayer,
+                                           colorName,
+                                           layer_transp,
+                                           symbol_transp,
+                                           fill_opacity,
+                                           visible,
+                                           json,
+                                           usedFields,
+                                           popFuncs,
+                                           wfsLayers,
+                                           count)
     return new_obj, legends, wfsLayers
 
 
@@ -628,6 +608,59 @@ def singleLine(symbol,
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
+        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
+        new_obj += restackLayers(layerName, visible[count])
+    return new_obj, wfsLayers
+
+
+def singlePolygon(i,
+                  layerName,
+                  safeLayerName,
+                  symbol,
+                  symbolLayer,
+                  colorName,
+                  layer_transp,
+                  symbol_transp,
+                  fill_opacity,
+                  visible,
+                  json,
+                  usedFields,
+                  popFuncs,
+                  wfsLayers,
+                  count):
+    print "POLYGON"
+    borderStyle = ""
+    if symbolLayer.layerType() == 'SimpleLine' or isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2):
+        radius = symbolLayer.width()
+        colorName = 'none'
+        borderColor = unicode(symbol.color().name())
+        border_transp = float(symbol.color().alpha()) / 255
+    else:
+        try:
+            radius = symbolLayer.borderWidth()
+            border = symbolLayer.borderColor()
+            borderColor = unicode(border.name())
+            borderStyle = getLineStyle(symbolLayer.borderStyle(), radius)
+            border_transp = float(border.alpha()) / 255
+            if symbolLayer.borderStyle() == 0:
+                radius = "0"
+            if symbolLayer.brushStyle() == 0:
+                colorName = "none"
+        except:
+            radius = 1
+            borderColor = "#000000"
+            borderStyle = ""
+            border_transp = 1
+            colorName = "#ffffff"
+    borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
+    polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity, colorName, borderStyle, fill_opacity)
+    if i.providerType() == 'WFS' and json[count] == False:
+        stylestr = nonPointStylePopupsScript(safeLayerName)
+        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
+        new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
+        wfsLayers += wfsScript(scriptTag)
+    else:
+        new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
         new_obj += restackLayers(layerName, visible[count])
     return new_obj, wfsLayers
