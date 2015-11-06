@@ -126,7 +126,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
     # now determine the canvas bounding box
-    # now with viewcontrol
     try:
         crsSrc = mapSettings.destinationCrs()
     except:
@@ -167,7 +166,15 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         if i.type() == QgsMapLayer.VectorLayer:
             with open(outputIndex, 'a') as f5:
-                new_pop, icon_prov, labeltext, popFuncs = labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels, labelhover, highlight, popupsOnHover, count)
+                new_pop, icon_prov, labeltext, popFuncs = labelsAndPopups(i,
+                                                                          safeLayerName,
+                                                                          usedFields,
+                                                                          new_field_names,
+                                                                          labels,
+                                                                          labelhover,
+                                                                          highlight,
+                                                                          popupsOnHover,
+                                                                          count)
                 layerName = safeLayerName
                 renderer = i.rendererV2()
                 layer_transp = 1 - (float(i.layerTransparency()) / 100)
@@ -397,7 +404,15 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     return outputIndex
 
 
-def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels, labelhover, highlight, popupsOnHover, count):
+def labelsAndPopups(i,
+                    safeLayerName,
+                    usedFields,
+                    new_field_names,
+                    labels,
+                    labelhover,
+                    highlight,
+                    popupsOnHover,
+                    count):
     fields = i.pendingFields()
     field_names = [field.name() for field in fields]
     if usedFields[count] != 0 and usedFields[count] != 1:
@@ -416,10 +431,10 @@ def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels, label
         palyr.readFromLayer(i)
         f = palyr.fieldName
         label_exp = False
+        labeltext = ".bindLabel(feature.properties." + unicode(f)
         if not labelhover:
-            labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """, {noHide: true, offset: [-0, -16]})"""
-        else:
-            labeltext = """.bindLabel(feature.properties.""" + unicode(f) + """)"""
+            labeltext += ", {noHide: true, offset: [-0, -16]}"
+        labeltext += ")"
     for field in field_names:
         if unicode(field) == 'html_exp':
             html_prov = True
@@ -429,15 +444,17 @@ def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels, label
         if unicode(field) == 'icon_exp':
             icon_prov = True
         if not html_prov:
-            tablestart = """'<table>"""
+            tablestart = "'<table>"
             row = ""
             for field in field_names:
                 if unicode(field) == "icon_exp":
                     row += ""
                 else:
                     if i.editorWidgetV2(fields.indexFromName(field)) != QgsVectorLayer.Hidden and i.editorWidgetV2(fields.indexFromName(field)) != 'Hidden':
-                        row += """<tr><th scope="row">""" + i.attributeDisplayName(fields.indexFromName(unicode(field))) + """</th><td>' + Autolinker.link(String(feature.properties['""" + unicode(field) + """'])) + '</td></tr>"""
-            tableend = """</table>'"""
+                        row += '<tr><th scope="row">'
+                        row += i.attributeDisplayName(fields.indexFromName(unicode(field)))
+                        row += "</th><td>' + Autolinker.link(String(feature.properties['" + unicode(field) + "'])) + '</td></tr>"
+            tableend = "</table>'"
             table = tablestart + row + tableend
     if not label_exp:
         labeltext = ""
