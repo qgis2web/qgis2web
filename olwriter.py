@@ -47,9 +47,9 @@ def writeOL(iface,
             settings,
             folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+    stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     folder = os.path.join(folder,
-                          'qgis2web_' + unicode(time.strftime(
-                                                    "%Y_%m_%d-%H_%M_%S")))
+                          'qgis2web_' + unicode(stamp))
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
@@ -72,16 +72,16 @@ def writeOL(iface,
         else:
             cssAddress = "http://openlayers.org/en/v3.10.1/css/ol.css"
             jsAddress = "http://openlayers.org/en/v3.10.1/build/ol.js"
-        geojsonVars = "\n".join(['<script src="layers/%s"></script>' %
-                                (safeName(layer.name()) + ".js")
-                                for layer in layers if
-                                    layer.type() == layer.VectorLayer])
-        styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' %
-                              (safeName(layer.name()))
-                              for layer in layers if
-                                    layer.type() == layer.VectorLayer])
-        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if
-            isinstance(field, basestring) else
+        geojsonVars = ""
+        styleVars = ""
+        for layer in layers:
+            if layer.type() == layer.VectorLayer:
+                geojsonVars += ('<script src="layers/%s"></script>' %
+                                (safeName(layer.name()) + ".js"))
+                styleVars += ('<script src="styles/%s_style.js"></script>' %
+                              (safeName(layer.name())))
+        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if (
+            isinstance(field, basestring)) else
             unicode(field) for field in popup])
         controls = []
         if settings["Appearance"]["Add scale bar"]:
@@ -134,9 +134,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
 
     scaleVisibility = (settings["Scale/Zoom"]
                                ["Use layer scale dependent visibility"])
-    layerVars = "\n".join([layerToJavascript(layer,
-                                             scaleVisibility)
-        for layer in layers])
+    layerVars = ""
+    for layer in layers:
+        layerVars += "\n".join([layerToJavascript(layer,
+                                                scaleVisibility)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -145,7 +146,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
                                 title: "%s"});\n''' %
                       ("group_" + safeName(group),
                        ",".join(["lyr_" + safeName(layer.name())
-                        for layer in groupLayers]),
+                            for layer in groupLayers]),
                        group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
@@ -155,9 +156,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     usedGroups = []
     for layer in layers:
         mapLayers.append("lyr_" + safeName(layer.name()))
-    visibility = "\n".join(["%s.setVisible(%s);" % (layer,
-                                                    unicode(v).lower())
-        for layer, v in zip(mapLayers[1:], visible)])
+    for layer, v in zip(mapLayers[1:], visible):
+        visibility = "\n".join(["%s.setVisible(%s);" % (layer,
+                                                        unicode(v).lower())])
 
     # ADD Group
     group_list = ["baseLayer"]
@@ -171,8 +172,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         else:
             no_group_list.append("lyr_" + safeName(layer.name()))
 
-    layersList = "var layersList = [%s];" % ",".join([layer
-        for layer in (group_list + no_group_list)])
+    layersList = []
+    for layer in (group_list + no_group_list):
+        layersList.append(layer)
+    layersListString = "var layersList = [" + ",".join(layersList) + "];"
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
@@ -180,7 +183,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         f.write(layerVars + "\n")
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
-        f.write(layersList + "\n")
+        f.write(layersListString + "\n")
         # f.write(write_group_list)
 
 
@@ -203,7 +206,7 @@ def bounds(iface, useCanvas, layers):
             canvasCrs = canvas.mapRenderer().destinationCrs()
         transform = QgsCoordinateTransform(canvasCrs,
                                            QgsCoordinateReferenceSystem(
-                                            "EPSG:3857"))
+                                                "EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
         except QgsCsException:
@@ -214,7 +217,7 @@ def bounds(iface, useCanvas, layers):
         for layer in layers:
             transform = QgsCoordinateTransform(layer.crs(),
                                                QgsCoordinateReferenceSystem(
-                                                "EPSG:3857"))
+                                                    "EPSG:3857"))
             try:
                 layerExtent = transform.transform(layer.extent())
             except QgsCsException:
@@ -270,7 +273,7 @@ var lyr_%(n)s = new ol.layer.Vector({
             provider = layer.dataProvider()
             transform = QgsCoordinateTransform(provider.crs(),
                                                QgsCoordinateReferenceSystem(
-                                                "EPSG:3857"))
+                                                    "EPSG:3857"))
             extent = transform.transform(provider.extent())
             sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(),
                                             extent.yMinimum(),
@@ -305,7 +308,7 @@ def exportStyles(layers, folder):
             labelField = layer.customProperty("labeling/fieldName")
             if labelField != "":
                 labelText = ('feature.get("%s")' %
-                    labelField.replace('"', '\\"'))
+                             labelField.replace('"', '\\"'))
             else:
                 labelText = '""'
         else:
@@ -329,14 +332,15 @@ def exportStyles(layers, folder):
                 cats = []
                 for cat in renderer.categories():
                     cats.append('"%s": %s' %
-                        (cat.value(), getSymbolAsStyle(cat.symbol(),
-                                                       stylesFolder,
-                                                       layer_transparency)))
+                                (cat.value(), getSymbolAsStyle(
+                                    cat.symbol(),
+                                    stylesFolder,
+                                    layer_transparency)))
                 defs += ",\n".join(cats) + "};"
                 value = ('var value = feature.get("%s");' %
                     renderer.classAttribute())
                 style = ('''var style = categories_%s[value]''' %
-                    (safeName(layer.name())))
+                         (safeName(layer.name())))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())
                 defs += "var %s = [" % varName
