@@ -32,17 +32,30 @@ from basemaps import basemapOL, basemapAttributions
 baseLayers = basemapOL()
 basemapAttributions = basemapAttributions()
 
-baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
+baseLayerGroup = "var baseLayer = "
+baseLayerGroup += "new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 
-def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settings, folder):
+def writeOL(iface,
+            layers,
+            groups,
+            popup,
+            visible,
+            json,
+            cluster,
+            labels,
+            settings,
+            folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    folder = os.path.join(folder, 'qgis2web_' + unicode(time.strftime("%Y_%m_%d-%H_%M_%S")))
-    # folder = os.path.join(os.getcwd(),folder)
+    folder = os.path.join(folder,
+                          'qgis2web_' + unicode(time.strftime(
+                                                    "%Y_%m_%d-%H_%M_%S")))
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
-            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources"), dst)
+            shutil.copytree(os.path.join(os.path.dirname(__file__),
+                                         "resources"),
+                            dst)
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
         cleanUnusedFields = settings["Data export"]["Delete unused fields"]
@@ -59,25 +72,38 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
         else:
             cssAddress = "http://openlayers.org/en/v3.10.1/css/ol.css"
             jsAddress = "http://openlayers.org/en/v3.10.1/build/ol.js"
-        geojsonVars = "\n".join(['<script src="layers/%s"></script>' % (safeName(layer.name()) + ".js")
-                                for layer in layers if layer.type() == layer.VectorLayer])
-        styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.name()))
-                              for layer in layers if layer.type() == layer.VectorLayer])
-        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if isinstance(field, basestring) else unicode(field) for field in popup])
+        geojsonVars = "\n".join(['<script src="layers/%s"></script>' %
+                                (safeName(layer.name()) + ".js")
+                                for layer in layers if
+                                    layer.type() == layer.VectorLayer])
+        styleVars = "\n".join(['<script src="styles/%s_style.js"></script>' %
+                              (safeName(layer.name()))
+                              for layer in layers if
+                                    layer.type() == layer.VectorLayer])
+        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if
+            isinstance(field, basestring) else
+            unicode(field) for field in popup])
         controls = []
         if settings["Appearance"]["Add scale bar"]:
             controls.append("new ol.control.ScaleLine({})")
         if settings["Appearance"]["Add layers list"]:
-            controls.append('new ol.control.LayerSwitcher({tipLabel: "Layers"})')
+            controls.append(
+                'new ol.control.LayerSwitcher({tipLabel: "Layers"})')
         pageTitle = QgsProject.instance().title()
-        backgroundColor = iface.mapCanvas().mapSettings().backgroundColor().name()
-        mapbounds = bounds(iface, settings["Scale/Zoom"]["Extent"] == "Canvas extent", layers)
-        mapextent = "extent: %s," % mapbounds if settings["Scale/Zoom"]["Restrict to extent"] else ""
+        mapSettings = iface.mapCanvas().mapSettings()
+        backgroundColor = mapSettings.backgroundColor().name()
+        mapbounds = bounds(iface,
+                           settings["Scale/Zoom"]["Extent"] == "Canvas extent",
+                           layers)
+        mapextent = "extent: %s," % mapbounds if (
+            settings["Scale/Zoom"]["Restrict to extent"]) else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
-        onHover = unicode(settings["Appearance"]["Show popups on hover"]).lower()
-        highlight = unicode(settings["Appearance"]["Highlight features"]).lower()
-        highlightFill = iface.mapCanvas().mapSettings().selectionColor().name()
+        popupsOnHover = settings["Appearance"]["Show popups on hover"]
+        highlightFeatures = settings["Appearance"]["Highlight features"]
+        onHover = unicode(popupsOnHover).lower()
+        highlight = unicode(highlightFeatures).lower()
+        highlightFill = mapSettings.selectionColor().name()
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
@@ -94,7 +120,8 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
                   "@HIGHLIGHTFILL@": highlightFill}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
-            f.write(replaceInTemplate(settings["Appearance"]["Template"] + ".html", values))
+            htmlTemplate = settings["Appearance"]["Template"]
+            f.write(replaceInTemplate(htmlTemplate + ".html", values))
     finally:
         QApplication.restoreOverrideCursor()
     return os.path.join(folder, "index.html")
@@ -102,17 +129,23 @@ def writeOL(iface, layers, groups, popup, visible, json, cluster, labels, settin
 
 def writeLayersAndGroups(layers, groups, visible, folder, settings):
 
-    baseLayer = baseLayerGroup % baseLayers[settings["Appearance"]["Base layer"]]
+    baseLayerSetting = settings["Appearance"]["Base layer"]
+    baseLayer = baseLayerGroup % baseLayers[baseLayerSetting]
 
-    scaleVisibility = settings["Scale/Zoom"]["Use layer scale dependent visibility"]
-    layerVars = "\n".join([layerToJavascript(layer, scaleVisibility) for layer in layers])
+    scaleVisibility = (settings["Scale/Zoom"]
+                               ["Use layer scale dependent visibility"])
+    layerVars = "\n".join([layerToJavascript(layer,
+                                             scaleVisibility)
+        for layer in layers])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 title: "%s"});\n''' %
-                      ("group_" + safeName(group), ",".join(["lyr_" + safeName(layer.name()) for layer in groupLayers]),
+                      ("group_" + safeName(group),
+                       ",".join(["lyr_" + safeName(layer.name())
+                        for layer in groupLayers]),
                        group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
@@ -122,7 +155,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     usedGroups = []
     for layer in layers:
         mapLayers.append("lyr_" + safeName(layer.name()))
-    visibility = "\n".join(["%s.setVisible(%s);" % (layer, unicode(v).lower()) for layer, v in zip(mapLayers[1:], visible)])
+    visibility = "\n".join(["%s.setVisible(%s);" % (layer,
+                                                    unicode(v).lower())
+        for layer, v in zip(mapLayers[1:], visible)])
 
     # ADD Group
     group_list = ["baseLayer"]
@@ -136,7 +171,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         else:
             no_group_list.append("lyr_" + safeName(layer.name()))
 
-    layersList = "var layersList = [%s];" % ",".join([layer for layer in (group_list + no_group_list)])
+    layersList = "var layersList = [%s];" % ",".join([layer
+        for layer in (group_list + no_group_list)])
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
@@ -165,19 +201,25 @@ def bounds(iface, useCanvas, layers):
             canvasCrs = canvas.mapSettings().destinationCrs()
         except:
             canvasCrs = canvas.mapRenderer().destinationCrs()
-        transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem("EPSG:3857"))
+        transform = QgsCoordinateTransform(canvasCrs,
+                                           QgsCoordinateReferenceSystem(
+                                            "EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
         except QgsCsException:
-            extent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39, 20048966.10)
+            extent = QgsRectangle(-20026376.39, -20048966.10,
+                                  20026376.39, 20048966.10)
     else:
         extent = None
         for layer in layers:
-            transform = QgsCoordinateTransform(layer.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+            transform = QgsCoordinateTransform(layer.crs(),
+                                               QgsCoordinateReferenceSystem(
+                                                "EPSG:3857"))
             try:
                 layerExtent = transform.transform(layer.extent())
             except QgsCsException:
-                layerExtent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39, 20048966.10)
+                layerExtent = QgsRectangle(-20026376.39, -20048966.10,
+                                           20026376.39, 20048966.10)
             if extent is None:
                 extent = layerExtent
             else:
@@ -189,8 +231,10 @@ def bounds(iface, useCanvas, layers):
 
 def layerToJavascript(layer, scaleVisibility):
     if scaleVisibility and layer.hasScaleBasedVisibility():
-        minResolution = "\nminResolution:%s,\n" % unicode(1 / ((1 / layer.minimumScale()) * 39.37 * 90.7))
-        maxResolution = "maxResolution:%s,\n" % unicode(1 / ((1 / layer.maximumScale()) * 39.37 * 90.7))
+        minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
+        maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
+        minResolution = "\nminResolution:%s,\n" % unicode(minRes)
+        maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
     else:
         minResolution = ""
         maxResolution = ""
@@ -218,13 +262,20 @@ var lyr_%(n)s = new ol.layer.Vector({
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
                         title: "%(name)s"
-                      });''' % {"layers": layers, "url": url, "n": layerName, "name": layer.name()}
+                      });''' % {"layers": layers,
+                                "url": url,
+                                "n": layerName,
+                                "name": layer.name()}
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
-            transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+            transform = QgsCoordinateTransform(provider.crs(),
+                                               QgsCoordinateReferenceSystem(
+                                                "EPSG:3857"))
             extent = transform.transform(provider.extent())
-            sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
-                                            extent.xMaximum(), extent.yMaximum())
+            sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(),
+                                            extent.yMinimum(),
+                                            extent.xMaximum(),
+                                            extent.yMaximum())
             return '''var lyr_%(n)s = new ol.layer.Image({
                             opacity: 1,
                             title: "%(name)s",
@@ -235,8 +286,11 @@ var lyr_%(n)s = new ol.layer.Vector({
                                 imageSize: [%(col)d, %(row)d],
                                 imageExtent: %(extent)s
                             })
-                        });''' % {"n": layerName, "extent": sExtent, "col": provider.xSize(),
-                                  "name": layer.name(), "row": provider.ySize()}
+                        });''' % {"n": layerName,
+                                  "extent": sExtent,
+                                  "col": provider.xSize(),
+                                  "name": layer.name(),
+                                  "row": provider.ySize()}
 
 
 def exportStyles(layers, folder):
@@ -245,11 +299,13 @@ def exportStyles(layers, folder):
     for layer in layers:
         if layer.type() != layer.VectorLayer:
             continue
-        labelsEnabled = unicode(layer.customProperty("labeling/enabled")).lower() == "true"
+        labelsEnabled = unicode(
+            layer.customProperty("labeling/enabled")).lower() == "true"
         if (labelsEnabled):
             labelField = layer.customProperty("labeling/fieldName")
             if labelField != "":
-                labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
+                labelText = ('feature.get("%s")' %
+                    labelField.replace('"', '\\"'))
             else:
                 labelText = '""'
         else:
@@ -258,30 +314,43 @@ def exportStyles(layers, folder):
         try:
             renderer = layer.rendererV2()
             layer_transparency = layer.layerTransparency()
-            if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
+            if (isinstance(renderer, QgsSingleSymbolRendererV2) or
+                    isinstance(renderer, QgsRuleBasedRendererV2)):
                 if isinstance(renderer, QgsRuleBasedRendererV2):
                     symbol = renderer.rootRule().children()[0].symbol()
                 else:
                     symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder, layer_transparency)
+                style = "var style = " + getSymbolAsStyle(symbol,
+                                                          stylesFolder,
+                                                          layer_transparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder, layer_transparency)))
+                    cats.append('"%s": %s' %
+                        (cat.value(), getSymbolAsStyle(cat.symbol(),
+                                                       stylesFolder,
+                                                       layer_transparency)))
                 defs += ",\n".join(cats) + "};"
-                value = 'var value = feature.get("%s");' % renderer.classAttribute()
-                style = '''var style = categories_%s[value]''' % (safeName(layer.name()))
+                value = ('var value = feature.get("%s");' %
+                    renderer.classAttribute())
+                style = ('''var style = categories_%s[value]''' %
+                    (safeName(layer.name())))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())
                 defs += "var %s = [" % varName
                 ranges = []
                 for ran in renderer.ranges():
-                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer_transparency)
-                    ranges.append('[%f, %f, %s]' % (ran.lowerValue(), ran.upperValue(), symbolstyle))
+                    symbolstyle = getSymbolAsStyle(ran.symbol(),
+                                                   stylesFolder,
+                                                   layer_transparency)
+                    ranges.append('[%f, %f, %s]' % (ran.lowerValue(),
+                                                    ran.upperValue(),
+                                                    symbolstyle))
                 defs += ",\n".join(ranges) + "];"
-                value = 'var value = feature.get("%s");' % renderer.classAttribute()
+                value = ('var value = feature.get("%s");' %
+                    renderer.classAttribute())
                 style = '''var style = %(v)s[0][2];
                             for (i = 0; i < %(v)s.length; i++){
                                 var range = %(v)s[i];
@@ -316,13 +385,17 @@ def exportStyles(layers, folder):
                                     color: "%(color)s"
                                   }),
                                 });
-                            %(cache)s[key] = new ol.style.Style({"text": text});
+                            %(cache)s[key] = new ol.style.Style({"text": text})
                         }
                         var allStyles = [%(cache)s[key]];
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
-                    }''' % {"style": style, "label": labelText, "cache": "styleCache_" + safeName(layer.name()),
-                            "size": size, "color": color, "value": value}
+                    }''' % {"style": style,
+                            "label": labelText,
+                            "cache": "styleCache_" + safeName(layer.name()),
+                            "size": size,
+                            "color": color,
+                            "value": value}
         except Exception, e:
             style = "{}"
 
@@ -332,7 +405,9 @@ def exportStyles(layers, folder):
             f.write('''%(defs)s
                     var styleCache_%(name)s={}
                     var style_%(name)s = %(style)s;''' %
-                    {"defs": defs, "name": safeName(layer.name()), "style": style})
+                    {"defs": defs,
+                    "name": safeName(layer.name()),
+                     "style": style})
 
 
 def getRGBAColor(color, alpha):
@@ -356,7 +431,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
-            style = "image: %s" % getIcon("styles/" + os.path.basename(sl.path()), sl.size())
+            style = ("image: %s" %
+                getIcon("styles/" + os.path.basename(sl.path()), sl.size()))
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
             # Check for old version
@@ -375,7 +451,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             else:
                 line_style = props["line_style"]
 
-            style = "stroke: %s" % (getStrokeStyle(color, line_style != "solid", line_width))
+            style = "stroke: %s" % (getStrokeStyle(color,
+                                                   line_style != "solid",
+                                                   line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
 
             fillColor = getRGBAColor(props["color"], alpha)
@@ -398,7 +476,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
             style = ('''stroke: %s,
                         fill: %s''' %
-                     (getStrokeStyle(borderColor, borderStyle != "solid", borderWidth),
+                     (getStrokeStyle(borderColor,
+                                     borderStyle != "solid",
+                                     borderWidth),
                       getFillStyle(fillColor)))
         else:
             style = ""
@@ -411,7 +491,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
 def getCircle(color, size):
     return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
-            (size, getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"), getFillStyle(color)))
+            (size,
+             getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
+             getFillStyle(color)))
 
 
 def getIcon(path, size):
@@ -423,13 +505,16 @@ def getIcon(path, size):
                   anchorXUnits: "pixels",
                   anchorYUnits: "pixels",
                   src: "%(path)s"
-            })''' % {"s": size, "a": anchor, "path": path.replace("\\", "\\\\")}
+            })''' % {"s": size,
+                     "a": anchor,
+                     "path": path.replace("\\", "\\\\")}
 
 
 def getStrokeStyle(color, dashed, width):
     width = math.floor(float(width) * 3.8)
     dash = "[3]" if dashed else "null"
-    return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
+    return ("new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" %
+        (color, dash, width))
 
 
 def getFillStyle(color):
