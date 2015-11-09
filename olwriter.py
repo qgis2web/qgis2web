@@ -137,7 +137,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     layerVars = ""
     for layer in layers:
         layerVars += "\n".join([layerToJavascript(layer,
-                                                scaleVisibility)])
+                                                  scaleVisibility)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -146,7 +146,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
                                 title: "%s"});\n''' %
                       ("group_" + safeName(group),
                        ",".join(["lyr_" + safeName(layer.name())
-                            for layer in groupLayers]),
+                                for layer in groupLayers]),
                        group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
@@ -159,7 +159,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
-                                                        unicode(v).lower())])
+                                                         unicode(v).lower())])
 
     # ADD Group
     group_list = ["baseLayer"]
@@ -207,7 +207,7 @@ def bounds(iface, useCanvas, layers):
             canvasCrs = canvas.mapRenderer().destinationCrs()
         transform = QgsCoordinateTransform(canvasCrs,
                                            QgsCoordinateReferenceSystem(
-                                                "EPSG:3857"))
+                                               "EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
         except QgsCsException:
@@ -218,7 +218,7 @@ def bounds(iface, useCanvas, layers):
         for layer in layers:
             transform = QgsCoordinateTransform(layer.crs(),
                                                QgsCoordinateReferenceSystem(
-                                                    "EPSG:3857"))
+                                                   "EPSG:3857"))
             try:
                 layerExtent = transform.transform(layer.extent())
             except QgsCsException:
@@ -274,7 +274,7 @@ var lyr_%(n)s = new ol.layer.Vector({
             provider = layer.dataProvider()
             transform = QgsCoordinateTransform(provider.crs(),
                                                QgsCoordinateReferenceSystem(
-                                                    "EPSG:3857"))
+                                                   "EPSG:3857"))
             extent = transform.transform(provider.extent())
             sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(),
                                             extent.yMinimum(),
@@ -339,7 +339,7 @@ def exportStyles(layers, folder):
                                     layer_transparency)))
                 defs += ",\n".join(cats) + "};"
                 value = ('var value = feature.get("%s");' %
-                    renderer.classAttribute())
+                         renderer.classAttribute())
                 style = ('''var style = categories_%s[value]''' %
                          (safeName(layer.name())))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
@@ -355,7 +355,7 @@ def exportStyles(layers, folder):
                                                     symbolstyle))
                 defs += ",\n".join(ranges) + "];"
                 value = ('var value = feature.get("%s");' %
-                    renderer.classAttribute())
+                         renderer.classAttribute())
                 style = '''var style = %(v)s[0][2];
                             for (i = 0; i < %(v)s.length; i++){
                                 var range = %(v)s[i];
@@ -411,7 +411,7 @@ def exportStyles(layers, folder):
                     var styleCache_%(name)s={}
                     var style_%(name)s = %(style)s;''' %
                     {"defs": defs,
-                    "name": safeName(layer.name()),
+                     "name": safeName(layer.name()),
                      "style": style})
 
 
@@ -437,7 +437,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
             style = ("image: %s" %
-                getIcon("styles/" + os.path.basename(sl.path()), sl.size()))
+                     getIcon("styles/" + os.path.basename(sl.path()),
+                                                          sl.size()))
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
             # Check for old version
@@ -520,7 +521,7 @@ def getStrokeStyle(color, dashed, width):
     width = math.floor(float(width) * 3.8)
     dash = "[3]" if dashed else "null"
     return ("new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" %
-        (color, dash, width))
+            (color, dash, width))
 
 
 def getFillStyle(color, props):
