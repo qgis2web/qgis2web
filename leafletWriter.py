@@ -72,7 +72,7 @@ def writeLeaflet(iface,
     minZoom = params["Scale/Zoom"]["Min zoom level"]
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
     scaleDependent = (params["Scale/Zoom"]
-                           ["Use layer scale dependent visibility"])
+                            ["Use layer scale dependent visibility"])
     basemapName = params["Appearance"]["Base layer"]
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
@@ -258,9 +258,9 @@ def writeLeaflet(iface,
                             0)
     middle += featureGroupsScript()
     if (basemapName == 0 or
-        basemapName == "" or
-        basemapName == "None" or
-        matchCRS):
+            basemapName == "" or
+            basemapName == "None" or
+            matchCRS):
         basemapText = ""
     else:
         basemapText = basemapsScript(basemapAddresses[basemapName],
@@ -297,7 +297,7 @@ def writeLeaflet(iface,
 
                 # single marker points:
                 if (isinstance(renderer, QgsSingleSymbolRendererV2) or
-                    isinstance(renderer, QgsRuleBasedRendererV2)):
+                        isinstance(renderer, QgsRuleBasedRendererV2)):
                     (new_obj,
                      legends,
                      wfsLayers) = singleLayer(renderer,
@@ -476,7 +476,7 @@ def writeLeaflet(iface,
                 if i.type() == QgsMapLayer.VectorLayer:
                     with open(outputIndex, 'a') as f7:
                         if (cluster[count] == True and
-                            i.geometryType() == QGis.Point):
+                                i.geometryType() == QGis.Point):
                             new_layer = "'" + legends[safeLayerName] + "'"
                             + ": cluster_group""" + safeLayerName + "JSON,"
                         else:
@@ -589,8 +589,9 @@ def labelsAndPopups(i,
                     row += ""
                 else:
                     fieldIndex = fields.indexFromName(unicode(field))
-                    if (i.editorWidgetV2(fieldIndex) != QgsVectorLayer.Hidden
-                        and i.editorWidgetV2(fieldIndex) != 'Hidden'):
+                    editorWidget = i.editorWidgetV2(fieldIndex)
+                    if (editorWidget != QgsVectorLayer.Hidden and
+                            editorWidget != 'Hidden'):
                         row += '<tr><th scope="row">'
                         row += i.attributeDisplayName(fieldIndex)
                         row += "</th><td>' + Autolinker.link("
@@ -807,7 +808,7 @@ def singlePolygon(i,
     print "POLYGON"
     borderStyle = ""
     if (symbolLayer.layerType() == 'SimpleLine' or
-        isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
+            isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
         radius = symbolLayer.width()
         colorName = 'none'
         borderColor = unicode(symbol.color().name())
@@ -1015,8 +1016,8 @@ def categorizedLine(outputProjectFileName,
                                                                QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', cat.label())
         legendIcon.save(os.path.join(outputProjectFileName,
-                        "legend",
-                        layerName + "_" + safeLabel + ".png"))
+                                     "legend",
+                                     layerName + "_" + safeLabel + ".png"))
         catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
         catLegend += layerName + "_" + safeLabel + """.png" /> """
         catLegend += cat.label() + "<br />"
@@ -1199,8 +1200,8 @@ def graduatedPoint(outputProjectFileName,
                                                                QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', r.label())
         legendIcon.save(os.path.join(outputProjectFileName,
-                        "legend",
-                        layerName + "_" + safeLabel + ".png"))
+                                     "legend",
+                                     layerName + "_" + safeLabel + ".png"))
         catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
         catLegend += layerName + "_" + safeLabel + """.png" /> """
         catLegend += r.label() + "<br />"
