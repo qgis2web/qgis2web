@@ -156,8 +156,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     usedGroups = []
     for layer in layers:
         mapLayers.append("lyr_" + safeName(layer.name()))
+    visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
-        visibility = "\n".join(["%s.setVisible(%s);" % (layer,
+        visibility += "\n".join(["%s.setVisible(%s);" % (layer,
                                                         unicode(v).lower())])
 
     # ADD Group
@@ -431,7 +432,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             color = getRGBAColor(props["color"], alpha)
             size = symbol.size()
-            style = "image: %s" % getCircle(color, size)
+            style = "image: %s" % getCircle(color, size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
@@ -460,6 +461,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                                                    line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
 
+            for prop in props:
+                print prop, props[prop]
             fillColor = getRGBAColor(props["color"], alpha)
 
             # for old version
@@ -478,12 +481,11 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             else:
                 borderWidth = props["outline_width"]
 
-            style = ('''stroke: %s,
-                        fill: %s''' %
+            style = ('''stroke: %s %s''' %
                      (getStrokeStyle(borderColor,
                                      borderStyle != "solid",
                                      borderWidth),
-                      getFillStyle(fillColor)))
+                      getFillStyle(fillColor, props)))
         else:
             style = ""
         styles.append('''new ol.style.Style({
@@ -493,11 +495,11 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
     return "[ %s]" % ",".join(styles)
 
 
-def getCircle(color, size):
-    return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
+def getCircle(color, size, props):
+    return ("new ol.style.Circle({radius: %s, stroke: %s %s})" %
             (size,
              getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
-             getFillStyle(color)))
+             getFillStyle(color, props)))
 
 
 def getIcon(path, size):
@@ -521,5 +523,8 @@ def getStrokeStyle(color, dashed, width):
         (color, dash, width))
 
 
-def getFillStyle(color):
-    return "new ol.style.Fill({color: %s})" % color
+def getFillStyle(color, props):
+    if props["style"] == "no":
+        return ""
+    else:
+        return ", fill: new ol.style.Fill({color: %s})" % color
