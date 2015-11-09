@@ -39,27 +39,40 @@ basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
 
-def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, visible, opacity_raster, cluster, labels, labelhover, selected, json, params, popup):
+def writeLeaflet(iface,
+                 outputProjectFileName,
+                 width,
+                 height,
+                 full,
+                 layer_list,
+                 visible,
+                 opacity_raster,
+                 cluster,
+                 labels,
+                 labelhover,
+                 selected,
+                 json,
+                 params,
+                 popup):
     legends = {}
     canvas = iface.mapCanvas()
+    project = QgsProject.instance()
+    mapSettings = canvas.mapSettings()
+    title = project.title()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
-    outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + unicode(time.time()))
+    outputProjectFileName = os.path.join(outputProjectFileName,
+                                         'qgis2web_' + unicode(time.time()))
     outputIndex = os.path.join(outputProjectFileName, 'index.html')
     cluster_num = 1
+
     cleanUnusedFields = params["Data export"]["Delete unused fields"]
-    if not cleanUnusedFields:
-        usedFields = [ALL_ATTRIBUTES] * len(popup)
-    else:
-        usedFields = popup
-
-    QgsApplication.initQgis()
-
     mapLibLocation = params["Data export"]["Mapping library location"]
     minify = params["Data export"]["Minify GeoJSON files"]
     extent = params["Scale/Zoom"]["Extent"]
     minZoom = params["Scale/Zoom"]["Min zoom level"]
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
-    scaleDependent = params["Scale/Zoom"]["Use layer scale dependent visibility"]
+    scaleDependent = (params["Scale/Zoom"]
+                           ["Use layer scale dependent visibility"])
     basemapName = params["Appearance"]["Base layer"]
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
@@ -67,17 +80,44 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     measure = params["Appearance"]["Add measure tool"]
     highlight = params["Appearance"]["Highlight features"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
-    project = QgsProject.instance()
-    mapSettings = canvas.mapSettings()
-    title = project.title()
 
-    dataStore, cssStore = writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster, labels, measure, matchCRS, canvas, mapLibLocation, locate)
-    writeHTMLstart(outputIndex, title, cluster, labels, addressSearch, measure, matchCRS, canvas, full, mapLibLocation)
-    writeCSS(cssStore, full, height, width, mapSettings.backgroundColor().name())
+    if not cleanUnusedFields:
+        usedFields = [ALL_ATTRIBUTES] * len(popup)
+    else:
+        usedFields = popup
+
+    QgsApplication.initQgis()
+
+    dataStore, cssStore = writeFoldersAndFiles(pluginDir,
+                                               outputProjectFileName,
+                                               cluster,
+                                               labels,
+                                               measure,
+                                               matchCRS,
+                                               canvas,
+                                               mapLibLocation,
+                                               locate)
+    writeHTMLstart(outputIndex,
+                   title,
+                   cluster,
+                   labels,
+                   addressSearch,
+                   measure,
+                   matchCRS,
+                   canvas,
+                   full,
+                   mapLibLocation)
+    writeCSS(cssStore,
+             full,
+             height,
+             width,
+             mapSettings.backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
-    exp_crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+    crs = QgsCoordinateReferenceSystem.EpsgCrsId
+    exp_crs = QgsCoordinateReferenceSystem(4326,
+                                           crs)
     for count, i in enumerate(layer_list):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
@@ -87,7 +127,15 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         if i.providerType() != 'WFS' or json[count] == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
-                qgis.core.QgsVectorFileWriter.writeAsVectorFormat(i, tmpFileName, 'utf-8', exp_crs, 'GeoJson', selected, layerOptions=["COORDINATE_PRECISION=" + unicode(precision)])
+                writer = qgis.core.QgsVectorFileWriter
+                options = "COORDINATE_PRECISION=" + unicode(precision)
+                writer.writeAsVectorFormat(i,
+                                           tmpFileName,
+                                           'utf-8',
+                                           exp_crs,
+                                           'GeoJson',
+                                           selected,
+                                           layerOptions=[options])
 
                 # now change the data structure to work with leaflet:
                 with open(layerFileName, "w") as f2:
@@ -108,19 +156,58 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                     f3.write(new_src)
                     f3.close()
 
-            # here comes the raster layers. you need an installed version of gdal
+            # raster layers - you need an installed version of gdal
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
                     in_raster = unicode(i.dataProvider().dataSourceUri())
-                    prov_raster = os.path.join(tempfile.gettempdir(), 'json_' + safeLayerName + '_prov.tif')
+                    prov_raster = os.path.join(tempfile.gettempdir(),
+                                               'json_' + safeLayerName +
+                                               '_prov.tif')
                     out_raster = dataPath + '.png'
                     crsSrc = i.crs()
                     crsDest = QgsCoordinateReferenceSystem(4326)
                     xform = QgsCoordinateTransform(crsSrc, crsDest)
                     extentRep = xform.transform(i.extent())
-                    extentRepNew = ','.join([unicode(extentRep.xMinimum()), unicode(extentRep.xMaximum()), unicode(extentRep.yMinimum()), unicode(extentRep.yMaximum())])
-                    processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(), "EPSG:4326", "", 0, 1, 0, -1, 75, 6, 1, False, 0, False, "", prov_raster)
-                    processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "", extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "", out_raster)
+                    extentRepNew = ','.join([unicode(extentRep.xMinimum()),
+                                             unicode(extentRep.xMaximum()),
+                                             unicode(extentRep.yMinimum()),
+                                             unicode(extentRep.yMaximum())])
+                    processing.runalg("gdalogr:warpreproject",
+                                      in_raster,
+                                      i.crs().authid(),
+                                      "EPSG:4326",
+                                      "",
+                                      0,
+                                      1,
+                                      0,
+                                      -1,
+                                      75,
+                                      6,
+                                      1,
+                                      False,
+                                      0,
+                                      False,
+                                      "",
+                                      prov_raster)
+                    processing.runalg("gdalogr:translate",
+                                      prov_raster,
+                                      100,
+                                      True,
+                                      "",
+                                      0,
+                                      "",
+                                      extentRepNew,
+                                      False,
+                                      0,
+                                      0,
+                                      75,
+                                      6,
+                                      1,
+                                      False,
+                                      0,
+                                      False,
+                                      "",
+                                      out_raster)
         if scaleDependent and i.hasScaleBasedVisibility():
             scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
     if scaleDependentLayers != "":
@@ -134,26 +221,51 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     crsProj4 = crsSrc.toProj4()
     middle = openScript()
     if highlight or popupsOnHover:
-        middle += highlightScript(highlight, popupsOnHover, mapSettings.selectionColor().name())
+        middle += highlightScript(highlight,
+                                  popupsOnHover,
+                                  mapSettings.selectionColor().name())
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
         xform = QgsCoordinateTransform(crsSrc, crsDest)
         pt1 = xform.transform(pt0)
-        bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(), pt1.xMinimum(), pt1.xMaximum()]
-        bounds = '[[' + unicode(pt1.yMinimum()) + ',' + unicode(pt1.xMinimum()) + '],[' + unicode(pt1.yMaximum()) + ',' + unicode(pt1.xMaximum()) + ']]'
+        bbox_canvas = [pt1.yMinimum(),
+                       pt1.yMaximum(),
+                       pt1.xMinimum(),
+                       pt1.xMaximum()]
+        bounds = '[[' + unicode(pt1.yMinimum()) + ','
+        bounds += unicode(pt1.xMinimum()) + '],['
+        bounds += unicode(pt1.yMaximum()) + ','
+        bounds += unicode(pt1.xMaximum()) + ']]'
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds)
+        middle += mapScript(extent,
+                            matchCRS,
+                            crsAuthId,
+                            measure,
+                            maxZoom,
+                            minZoom,
+                            bounds)
     else:
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, 0)
+        middle += mapScript(extent,
+                            matchCRS,
+                            crsAuthId,
+                            measure,
+                            maxZoom,
+                            minZoom,
+                            0)
     middle += featureGroupsScript()
-    if basemapName == 0 or basemapName == "" or basemapName == "None" or matchCRS:
+    if (basemapName == 0 or
+        basemapName == "" or
+        basemapName == "None" or
+        matchCRS):
         basemapText = ""
     else:
-        basemapText = basemapsScript(basemapAddresses[basemapName], basemapAttributions[basemapName], maxZoom)
+        basemapText = basemapsScript(basemapAddresses[basemapName],
+                                     basemapAttributions[basemapName],
+                                     maxZoom)
     layerOrder = layerOrderScript()
     with open(outputIndex, 'a') as f4:
             f4.write(middle)
@@ -166,80 +278,92 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         if i.type() == QgsMapLayer.VectorLayer:
             with open(outputIndex, 'a') as f5:
-                new_pop, icon_prov, labeltext, popFuncs = labelsAndPopups(i,
-                                                                          safeLayerName,
-                                                                          usedFields,
-                                                                          new_field_names,
-                                                                          labels,
-                                                                          labelhover,
-                                                                          highlight,
-                                                                          popupsOnHover,
-                                                                          count)
+                (new_pop,
+                 icon_prov,
+                 labeltext,
+                 popFuncs) = labelsAndPopups(i,
+                                             safeLayerName,
+                                             usedFields,
+                                             new_field_names,
+                                             labels,
+                                             labelhover,
+                                             highlight,
+                                             popupsOnHover,
+                                             count)
                 layerName = safeLayerName
                 renderer = i.rendererV2()
                 layer_transp = 1 - (float(i.layerTransparency()) / 100)
                 new_obj = ""
 
                 # single marker points:
-                if isinstance(renderer, QgsSingleSymbolRendererV2) or isinstance(renderer, QgsRuleBasedRendererV2):
-                    new_obj, legends, wfsLayers = singleLayer(renderer,
-                                                              outputProjectFileName,
-                                                              layerName,
-                                                              safeLayerName,
-                                                              wfsLayers,
-                                                              i,
-                                                              layer_transp,
-                                                              icon_prov,
-                                                              labeltext,
-                                                              cluster,
-                                                              cluster_num,
-                                                              visible,
-                                                              json,
-                                                              usedFields,
-                                                              legends,
-                                                              count,
-                                                              popFuncs)
+                if (isinstance(renderer, QgsSingleSymbolRendererV2) or
+                    isinstance(renderer, QgsRuleBasedRendererV2)):
+                    (new_obj,
+                     legends,
+                     wfsLayers) = singleLayer(renderer,
+                                              outputProjectFileName,
+                                              layerName,
+                                              safeLayerName,
+                                              wfsLayers,
+                                              i,
+                                              layer_transp,
+                                              icon_prov,
+                                              labeltext,
+                                              cluster,
+                                              cluster_num,
+                                              visible,
+                                              json,
+                                              usedFields,
+                                              legends,
+                                              count,
+                                              popFuncs)
                 elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                    new_obj, legends, wfsLayers = categorizedLayer(i,
-                                                                   icon_prov,
-                                                                   renderer,
-                                                                   layerName,
-                                                                   safeLayerName,
-                                                                   outputProjectFileName,
-                                                                   layer_transp,
-                                                                   usedFields,
-                                                                   count,
-                                                                   legends,
-                                                                   labeltext,
-                                                                   cluster,
-                                                                   cluster_num,
-                                                                   popFuncs,
-                                                                   visible,
-                                                                   json,
-                                                                   wfsLayers)
+                    (new_obj,
+                     legends,
+                     wfsLayers) = categorizedLayer(i,
+                                                   icon_prov,
+                                                   renderer,
+                                                   layerName,
+                                                   safeLayerName,
+                                                   outputProjectFileName,
+                                                   layer_transp,
+                                                   usedFields,
+                                                   count,
+                                                   legends,
+                                                   labeltext,
+                                                   cluster,
+                                                   cluster_num,
+                                                   popFuncs,
+                                                   visible,
+                                                   json,
+                                                   wfsLayers)
                 elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                    new_obj, legends, wfsLayers = graduatedLayer(i,
-                                                                 layerName,
-                                                                 safeLayerName,
-                                                                 icon_prov,
-                                                                 renderer,
-                                                                 outputProjectFileName,
-                                                                 layer_transp,
-                                                                 labeltext,
-                                                                 popFuncs,
-                                                                 cluster,
-                                                                 cluster_num,
-                                                                 visible,
-                                                                 json,
-                                                                 usedFields,
-                                                                 count,
-                                                                 legends,
-                                                                 wfsLayers)
+                    (new_obj,
+                     legends,
+                     wfsLayers) = graduatedLayer(i,
+                                                 layerName,
+                                                 safeLayerName,
+                                                 icon_prov,
+                                                 renderer,
+                                                 outputProjectFileName,
+                                                 layer_transp,
+                                                 labeltext,
+                                                 popFuncs,
+                                                 cluster,
+                                                 cluster_num,
+                                                 visible,
+                                                 json,
+                                                 usedFields,
+                                                 count,
+                                                 legends,
+                                                 wfsLayers)
                 else:
                     print "No renderer"
 
                 if icon_prov and i.geometryType() == QGis.Point:
-                    new_obj = customMarkerScript(safeLayerName, labeltext, usedFields[count])
+                    new_obj = customMarkerScript(safeLayerName,
+                                                 labeltext,
+                                                 usedFields[count])
                     if cluster[count] == True:
                         new_obj += clusterScript(safeLayerName)
                         cluster_num += 1
@@ -265,16 +389,25 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 wms_layer = d['layers'][0]
                 wms_format = d['format'][0]
                 wms_crs = d['crs'][0]
-                new_obj = wmsScript(safeLayerName, wms_url, wms_layer, wms_format)
+                new_obj = wmsScript(safeLayerName,
+                                    wms_url,
+                                    wms_layer,
+                                    wms_format)
             else:
                 out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
                 pt2 = i.extent()
                 crsSrc = i.crs()    # WGS 84
-                crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
+                crsDest = QgsCoordinateReferenceSystem(4326)
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
                 pt3 = xform.transform(pt2)
-                bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(), pt3.xMinimum(), pt3.xMaximum()]
-                bounds2 = '[[' + unicode(pt3.yMinimum()) + ',' + unicode(pt3.xMinimum()) + '],[' + unicode(pt3.yMaximum()) + ',' + unicode(pt3.xMaximum()) + ']]'
+                bbox_canvas2 = [pt3.yMinimum(),
+                                pt3.yMaximum(),
+                                pt3.xMinimum(),
+                                pt3.xMaximum()]
+                bounds2 = '[[' + unicode(pt3.yMinimum()) + ','
+                bounds2 += unicode(pt3.xMinimum()) + '],['
+                bounds2 += unicode(pt3.yMaximum()) + ','
+                bounds2 += unicode(pt3.xMaximum()) + ']]'
                 new_obj = rasterScript(safeLayerName, out_raster_name, bounds2)
             if visible[count]:
                 new_obj += """
@@ -317,10 +450,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
     #        for l in range(0,len(basemapName)):
     #            if l < len(basemapName)-1:
     #                controlStart+= """
-    #        '""" + unicode(basemapName[l]) + """': basemap_""" + unicode(l) + ""","""
+    #        '""" + unicode(basemapName[l]) + "': basemap_" + unicode(l) + ","
     #            if l == len(basemapName)-1:
     #                controlStart+= """
-    #        '""" + unicode(basemapName[l]) + """': basemap_""" + unicode(l) + """};"""
+    #        '""" + unicode(basemapName[l]) + "': basemap_" + unicode(l) + "};"
         # if len
         # control_basemap = """
         # var baseMaps = {"""
@@ -342,15 +475,19 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
                 safeLayerName = re.sub('[\W_]+', '', rawLayerName)
                 if i.type() == QgsMapLayer.VectorLayer:
                     with open(outputIndex, 'a') as f7:
-                        if cluster[count] == True and i.geometryType() == QGis.Point:
-                            new_layer = "'" + legends[safeLayerName] + "'" + ": cluster_group""" + safeLayerName + """JSON,"""
+                        if (cluster[count] == True and
+                            i.geometryType() == QGis.Point):
+                            new_layer = "'" + legends[safeLayerName] + "'"
+                            + ": cluster_group""" + safeLayerName + "JSON,"
                         else:
-                            new_layer = "'" + legends[safeLayerName] + "'" + ": json_" + safeLayerName + """JSON,"""
+                            new_layer = "'" + legends[safeLayerName] + "':"
+                            new_layer += " json_" + safeLayerName + "JSON,"
                         f7.write(new_layer)
                         f7.close()
                 elif i.type() == QgsMapLayer.RasterLayer:
                     with open(outputIndex, 'a') as f7:
-                        new_layer = '"' + rawLayerName + '"' + ": overlay_" + safeLayerName + ""","""
+                        new_layer = '"' + rawLayerName + '"' + ": overlay_"
+                        new_layer += safeLayerName + ""","""
                         f7.write(new_layer)
                         f7.close()
             except:
@@ -390,13 +527,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list, 
         end = locateScript()
     else:
         end = ''
-    # let's close the file but ask for the extent of all layers if the user wants to show only this extent:
     if extent == 'Fit to layers extent':
         end += """
         map.fitBounds(bounds_group.getBounds());"""
     if params["Appearance"]["Add scale bar"]:
         end += """
-        L.control.scale({options: {position: 'bottomleft', maxWidth: 100, metric: true, imperial: false, updateWhenIdle: false}}).addTo(map);"""
+        L.control.scale({options: {position: 'bottomleft', """
+        end += "maxWidth: 100, metric: true, imperial: false, "
+        end += "updateWhenIdle: false}}).addTo(map);"
     end += endHTMLscript(wfsLayers)
     with open(outputIndex, 'a') as f12:
         f12.write(end)
@@ -450,10 +588,14 @@ def labelsAndPopups(i,
                 if unicode(field) == "icon_exp":
                     row += ""
                 else:
-                    if i.editorWidgetV2(fields.indexFromName(field)) != QgsVectorLayer.Hidden and i.editorWidgetV2(fields.indexFromName(field)) != 'Hidden':
+                    fieldIndex = fields.indexFromName(unicode(field))
+                    if (i.editorWidgetV2(fieldIndex) != QgsVectorLayer.Hidden
+                        and i.editorWidgetV2(fieldIndex) != 'Hidden'):
                         row += '<tr><th scope="row">'
-                        row += i.attributeDisplayName(fields.indexFromName(unicode(field)))
-                        row += "</th><td>' + Autolinker.link(String(feature.properties['" + unicode(field) + "'])) + '</td></tr>"
+                        row += i.attributeDisplayName(fieldIndex)
+                        row += "</th><td>' + Autolinker.link("
+                        row += "String(feature.properties['" + unicode(field)
+                        row += "'])) + '</td></tr>"
             tableend = "</table>'"
             table = tablestart + row + tableend
     if not label_exp:
@@ -486,9 +628,13 @@ def singleLayer(renderer,
     else:
         symbol = renderer.symbol()
     symbolLayer = symbol.symbolLayer(0)
-    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
-    legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + ".png"))
-    legends[layerName] = """<img src="legend/""" + layerName + """.png" /> """ + i.name()
+    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                           QSize(16, 16))
+    legendIcon.save(os.path.join(outputProjectFileName,
+                                 "legend",
+                                 layerName + ".png"))
+    legends[layerName] = '<img src="legend/' + layerName + '.png" /> '
+    legends[layerName] += i.name()
     colorName = symbol.color().name()
     symbol_transp = symbol.alpha()
     fill_transp = float(symbol.color().alpha()) / 255
@@ -622,10 +768,18 @@ def singleLine(symbol,
         penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
     except:
         penStyle = ""
-    lineStyle = simpleLineStyleScript(radius, colorName, penStyle, fill_opacity)
+    lineStyle = simpleLineStyleScript(radius,
+                                      colorName,
+                                      penStyle,
+                                      fill_opacity)
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
-        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
+        new_obj, scriptTag = buildNonPointWFS(layerName,
+                                              i.source(),
+                                              "",
+                                              stylestr,
+                                              popFuncs,
+                                              visible[count])
         new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -652,7 +806,8 @@ def singlePolygon(i,
                   count):
     print "POLYGON"
     borderStyle = ""
-    if symbolLayer.layerType() == 'SimpleLine' or isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2):
+    if (symbolLayer.layerType() == 'SimpleLine' or
+        isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
         radius = symbolLayer.width()
         colorName = 'none'
         borderColor = unicode(symbol.color().name())
@@ -675,10 +830,20 @@ def singlePolygon(i,
             border_transp = 1
             colorName = "#ffffff"
     borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-    polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity, colorName, borderStyle, fill_opacity)
+    polyStyle = singlePolyStyleScript(radius * 4,
+                                      borderColor,
+                                      borderOpacity,
+                                      colorName,
+                                      borderStyle,
+                                      fill_opacity)
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
-        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "", stylestr, popFuncs, visible[count])
+        new_obj, scriptTag = buildNonPointWFS(layerName,
+                                              i.source(),
+                                              "",
+                                              stylestr,
+                                              popFuncs,
+                                              visible[count])
         new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -739,19 +904,21 @@ def categorizedLayer(i,
                                                         count,
                                                         wfsLayers)
     elif i.geometryType() == QGis.Polygon:
-        new_obj, catLegend, wfsLayers = categorizedPolygon(outputProjectFileName,
-                                                           i,
-                                                           renderer,
-                                                           layerName,
-                                                           safeLayerName,
-                                                           catLegend,
-                                                           layer_transp,
-                                                           usedFields,
-                                                           visible,
-                                                           json,
-                                                           count,
-                                                           popFuncs,
-                                                           wfsLayers)
+        (new_obj,
+         catLegend,
+         wfsLayers) = categorizedPolygon(outputProjectFileName,
+                                         i,
+                                         renderer,
+                                         layerName,
+                                         safeLayerName,
+                                         catLegend,
+                                         layer_transp,
+                                         usedFields,
+                                         visible,
+                                         json,
+                                         count,
+                                         popFuncs,
+                                         wfsLayers)
     legends[layerName] = catLegend
     return new_obj, legends, wfsLayers
 
@@ -782,23 +949,39 @@ def categorizedPoint(outputProjectFileName,
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', cat.label())
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
+        legendIcon.save(os.path.join(outputProjectFileName,
+                                     "legend",
+                                     layerName + "_" + safeLabel + ".png"))
+        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+        catLegend += layerName + "_" + safeLabel + """.png" /> """
+        catLegend += cat.label() + "<br />"
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+        symbolLayer = symbol.symbolLayer(0)
+        border_transp = float(symbolLayer.borderColor().alpha()) / 255
         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-        categoryStr += categorizedPointStylesScript(symbol, fill_opacity, borderOpacity)
+        categoryStr += categorizedPointStylesScript(symbol,
+                                                    fill_opacity,
+                                                    borderOpacity)
     categoryStr += endCategoryScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-        new_obj, scriptTag, cluster_num = buildPointWFS(stylestr, layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+        new_obj, scriptTag, cluster_num = buildPointWFS(stylestr,
+                                                        layerName,
+                                                        i.source(),
+                                                        categoryStr,
+                                                        cluster[count],
+                                                        cluster_num,
+                                                        visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
+        new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
+                                                           labeltext,
+                                                           usedFields[count])
         if cluster[count] == True:
             new_obj += clusterScript(safeLayerName)
         cluster_num += 1
@@ -828,10 +1011,15 @@ def categorizedLine(outputProjectFileName,
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', cat.label())
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
+        legendIcon.save(os.path.join(outputProjectFileName,
+                        "legend",
+                        layerName + "_" + safeLabel + ".png"))
+        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+        catLegend += layerName + "_" + safeLabel + """.png" /> """
+        catLegend += cat.label() + "<br />"
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -839,10 +1027,17 @@ def categorizedLine(outputProjectFileName,
     categoryStr += endCategoryScript()
     stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
     if i.providerType() == 'WFS' and json[count] == False:
-        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
+        new_obj, scriptTag = buildNonPointWFS(layerName,
+                                              i.source(),
+                                              categoryStr,
+                                              stylestr,
+                                              popFuncs,
+                                              visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
+        new_obj = buildNonPointJSON(categoryStr,
+                                    safeLayerName,
+                                    usedFields[count])
     return new_obj, wfsLayers, catLegend
 
 
@@ -869,23 +1064,38 @@ def categorizedPolygon(outputProjectFileName,
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', cat.label())
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + cat.label() + "<br />"
+        legendIcon.save(os.path.join(outputProjectFileName,
+                                     "legend",
+                                     layerName + "_" + safeLabel + ".png"))
+        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+        catLegend += layerName + "_" + safeLabel + """.png" /> """
+        catLegend += cat.label() + "<br />"
         symbol_transp = symbol.alpha()
-        border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+        symbolLayer = symbol.symbolLayer(0)
+        border_transp = float(symbolLayer.borderColor().alpha()) / 255
         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += categorizedPolygonStylesScript(symbol, fill_opacity, borderOpacity)
+        categoryStr += categorizedPolygonStylesScript(symbol,
+                                                      fill_opacity,
+                                                      borderOpacity)
     categoryStr += endCategoryScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
+        new_obj, scriptTag = buildNonPointWFS(layerName,
+                                              i.source(),
+                                              categoryStr,
+                                              stylestr,
+                                              popFuncs,
+                                              visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
+        new_obj = buildNonPointJSON(categoryStr,
+                                    safeLayerName,
+                                    usedFields[count])
     return new_obj, catLegend, wfsLayers
 
 
@@ -910,23 +1120,26 @@ def graduatedLayer(i,
     catLegend = i.name() + "<br />"
     categoryStr = graduatedStyleScript(layerName)
     if i.geometryType() == QGis.Point and not icon_prov:
-        new_obj, catLegend, wfsLayers, cluster_num = graduatedPoint(outputProjectFileName,
-                                                                    i,
-                                                                    layerName,
-                                                                    safeLayerName,
-                                                                    renderer,
-                                                                    catLegend,
-                                                                    layer_transp,
-                                                                    json,
-                                                                    count,
-                                                                    labeltext,
-                                                                    popFuncs,
-                                                                    usedFields,
-                                                                    cluster,
-                                                                    cluster_num,
-                                                                    visible,
-                                                                    wfsLayers,
-                                                                    categoryStr)
+        (new_obj,
+         catLegend,
+         wfsLayers,
+         cluster_num) = graduatedPoint(outputProjectFileName,
+                                       i,
+                                       layerName,
+                                       safeLayerName,
+                                       renderer,
+                                       catLegend,
+                                       layer_transp,
+                                       json,
+                                       count,
+                                       labeltext,
+                                       popFuncs,
+                                       usedFields,
+                                       cluster,
+                                       cluster_num,
+                                       visible,
+                                       wfsLayers,
+                                       categoryStr)
     elif i.geometryType() == QGis.Line:
         new_obj, wfsLayers, catLegend = graduatedLine(outputProjectFileName,
                                                       i,
@@ -982,23 +1195,41 @@ def graduatedPoint(outputProjectFileName,
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', r.label())
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
+        legendIcon.save(os.path.join(outputProjectFileName,
+                        "legend",
+                        layerName + "_" + safeLabel + ".png"))
+        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+        catLegend += layerName + "_" + safeLabel + """.png" /> """
+        catLegend += r.label() + "<br />"
         symbol_transp = symbol.alpha()
-        border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+        symbolLayer = symbol.symbolLayer(0)
+        border_transp = float(symbolLayer.borderColor().alpha()) / 255
         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedPointStylesScript(valueAttr, r, symbol, fill_opacity, borderOpacity)
+        categoryStr += graduatedPointStylesScript(valueAttr,
+                                                  r,
+                                                  symbol,
+                                                  fill_opacity,
+                                                  borderOpacity)
     categoryStr += endGraduatedStyleScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
-        new_obj, scriptTag, cluster_num = buildPointWFS(stylestr, layerName, i.source(), categoryStr, cluster[count], cluster_num, visible[count])
+        new_obj, scriptTag, cluster_num = buildPointWFS(stylestr,
+                                                        layerName,
+                                                        i.source(),
+                                                        categoryStr,
+                                                        cluster[count],
+                                                        cluster_num,
+                                                        visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = categoryStr + categorizedPointJSONscript(safeLayerName, labeltext, usedFields[count])
+        new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
+                                                           labeltext,
+                                                           usedFields[count])
         # add points to the cluster group
         if cluster[count] == True:
             new_obj += clusterScript(safeLayerName)
@@ -1024,21 +1255,37 @@ def graduatedLine(outputProjectFileName,
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', r.label())
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
+        legendIcon.save(os.path.join(outputProjectFileName,
+                                     "legend",
+                                     layerName + "_" + safeLabel + ".png"))
+        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+        catLegend += layerName + "_" + safeLabel + """.png" /> """
+        catLegend += r.label() + "<br />"
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, fill_opacity)
+        categoryStr += graduatedLineStylesScript(valueAttr,
+                                                 r,
+                                                 categoryStr,
+                                                 symbol,
+                                                 fill_opacity)
     categoryStr += endGraduatedStyleScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
+        new_obj, scriptTag = buildNonPointWFS(layerName,
+                                              i.source(),
+                                              categoryStr,
+                                              stylestr,
+                                              popFuncs,
+                                              visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
+        new_obj = buildNonPointJSON(categoryStr,
+                                    safeLayerName,
+                                    usedFields[count])
     return new_obj, wfsLayers, catLegend
 
 
@@ -1060,23 +1307,38 @@ def graduatedPolygon(outputProjectFileName,
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
         safeLabel = re.sub('[\W_]+', '', r.label())
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/""" + layerName + "_" + safeLabel + """.png" /> """ + r.label() + "<br />"
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol, QSize(16, 16))
-        legendIcon.save(os.path.join(outputProjectFileName, "legend", layerName + "_" + unicode(r.label()) + ".png"))
+        legendIcon.save(os.path.join(outputProjectFileName,
+                                     "legend",
+                                     layerName + "_" + safeLabel + ".png"))
+        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+        catLegend += layerName + "_" + safeLabel + """.png" /> """
+        catLegend += r.label() + "<br />"
         symbol_transp = symbol.alpha()
-        border_transp = float(symbol.symbolLayer(0).borderColor().alpha()) / 255
+        symbolLayer = symbol.symbolLayer(0)
+        border_transp = float(symbolLayer.borderColor().alpha()) / 255
         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedPolygonStylesScript(valueAttr, r, symbol, fill_opacity, borderOpacity)
+        categoryStr += graduatedPolygonStylesScript(valueAttr,
+                                                    r,
+                                                    symbol,
+                                                    fill_opacity,
+                                                    borderOpacity)
     categoryStr += endGraduatedStyleScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedNonPointStyleFunctionScript(layerName, popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), categoryStr, stylestr, popFuncs, visible[count])
+        new_obj, scriptTag = buildNonPointWFS(layerName,
+                                              i.source(),
+                                              categoryStr,
+                                              stylestr,
+                                              popFuncs,
+                                              visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName, usedFields[count])
+        new_obj = buildNonPointJSON(categoryStr,
+                                    safeLayerName,
+                                    usedFields[count])
     return new_obj, catLegend, wfsLayers
