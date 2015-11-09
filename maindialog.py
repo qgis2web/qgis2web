@@ -39,6 +39,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 selectedCombo = "None"
 selectedLayerCombo = "None"
+projectInstance = QgsProject.instance()
 
 
 class MainDialog(QDialog, Ui_MainDialog):
@@ -61,16 +62,23 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
-        self.helpField.setSource(QUrl.fromLocalFile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md")))
+        self.helpField.setSource(QUrl.fromLocalFile(os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "README.md")))
 
     def changeFormat(self):
-        QgsProject.instance().writeEntry("qgis2web", "mapFormat", self.mapFormat.checkedButton().text())
+        global projectInstance
+        projectInstance.writeEntry("qgis2web",
+                                   "mapFormat",
+                                   self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
 
     def toggleOptions(self):
         for param, value in specificParams.iteritems():
-            treeParam = self.paramsTreeOL.findItems(param, Qt.MatchExactly | Qt.MatchRecursive)[0]
+            treeParam = self.paramsTreeOL.findItems(param,
+                                                    (Qt.MatchExactly |
+                                                     Qt.MatchRecursive))[0]
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
                 if value == "OL3":
                     treeParam.setDisabled(False)
@@ -82,7 +90,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 else:
                     treeParam.setDisabled(False)
         for option, value in specificOptions.iteritems():
-            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly | Qt.MatchRecursive)
+            treeOptions = self.layersTree.findItems(option,
+                                                    (Qt.MatchExactly |
+                                                     Qt.MatchRecursive))
             for treeOption in treeOptions:
                 if self.mapFormat.checkedButton().text() == "OpenLayers 3":
                     if value == "OL3":
@@ -102,7 +112,13 @@ class MainDialog(QDialog, Ui_MainDialog):
             else:
                 MainDialog.previewLeaflet(self)
         except Exception as e:
-            self.preview.setHtml("""<html><head></head><style>body {font-family: sans-serif;}</style><body><h1>Error</h1><p>qgis2web produced an error:</p><code>""" + traceback.format_exc().replace("\n", "<br />") + """</code></body></html>""")
+            self.preview.setHtml("""<html>
+    <head></head>
+    <style>body {font-family: sans-serif;}</style>
+    <body><h1>Error</h1>
+    <p>qgis2web produced an error:</p>
+    <code>""" + traceback.format_exc().replace("\n", "<br />") +
+    """</code></body></html>""")
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
@@ -112,31 +128,42 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
-            folder = QFileDialog.getExistingDirectory(self, "Choose export folder", paramItem.text(col), QFileDialog.ShowDirsOnly)
+            folder = QFileDialog.getExistingDirectory(self,
+                                                      "Choose export folder",
+                                                      paramItem.text(col),
+                                                      QFileDialog.ShowDirsOnly)
             if folder != "":
                 paramItem.setText(1, folder)
 
     def saveSettings(self, paramItem, col):
+        global projectInstance
         if isinstance(paramItem._value, bool):
-            QgsProject.instance().writeEntry("qgis2web", paramItem.name, paramItem.checkState(col))
+            projectInstance.writeEntry("qgis2web",
+                                       paramItem.name,
+                                       paramItem.checkState(col))
         else:
-            QgsProject.instance().writeEntry("qgis2web", paramItem.name, paramItem.text(col))
+            projectInstance.writeEntry("qgis2web",
+                                       paramItem.name,
+                                       paramItem.text(col))
         if paramItem.name == "Match project CRS":
-            baseLayer = self.paramsTreeOL.findItems("Base layer", Qt.MatchExactly | Qt.MatchRecursive)[0]
+            baseLayer = self.paramsTreeOL.findItems("Base layer",
+                                                    (Qt.MatchExactly |
+                                                    Qt.MatchRecursive))[0]
             if paramItem.checkState(col):
                 baseLayer.setDisabled(True)
             else:
                 baseLayer.setDisabled(False)
 
     def saveComboSettings(self, value):
-        global selectedCombo
+        global selectedCombo, projectInstance
         if selectedCombo != "None":
-            QgsProject.instance().writeEntry("qgis2web", selectedCombo, value)
+            projectInstance.writeEntry("qgis2web", selectedCombo, value)
 
     def saveLayerComboSettings(self, value):
         global selectedLayerCombo
         if selectedLayerCombo != "None":
-            selectedLayerCombo.setCustomProperty("qgis2web/Info popup content", value)
+            selectedLayerCombo.setCustomProperty("qgis2web/Info popup content",
+                                                 value)
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
@@ -157,7 +184,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if layer_parent.parent() is None:
                         # Layer parent is a root node.
                         # This is an orphan layer (has no parent) :(
-                        item = TreeLayerItem(self.iface, layer, self.layersTree, dlg)
+                        item = TreeLayerItem(self.iface,
+                                             layer,
+                                             self.layersTree,
+                                             dlg)
                         self.layers_item.addChild(item)
                     else:
                         # Layer parent is not a root, it's a group then
@@ -181,7 +211,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 item.setExpanded(False)
 
     def populateConfigParams(self, dlg):
-        global selectedCombo
+        global selectedCombo, projectInstance
         self.items = defaultdict(dict)
         for group, settings in paramsOL.iteritems():
             item = QTreeWidgetItem()
@@ -189,18 +219,25 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, value in settings.iteritems():
                 isTuple = False
                 if isinstance(value, bool):
-                    if QgsProject.instance().readBoolEntry("qgis2web", param)[0] == 2:
+                    if projectInstance.readBoolEntry("qgis2web",
+                                                     param)[0] == 2:
                         value = True
-                    if QgsProject.instance().readBoolEntry("qgis2web", param)[0] == 0:
+                    if projectInstance.readBoolEntry("qgis2web",
+                                                     param)[0] == 0:
                         value = False
                 elif isinstance(value, int):
-                    if QgsProject.instance().readNumEntry("qgis2web", param)[0] != 0:
-                        value = QgsProject.instance().readNumEntry("qgis2web", param)[0]
+                    if projectInstance.readNumEntry("qgis2web",
+                                                    param)[0] != 0:
+                        value = projectInstance.readNumEntry("qgis2web",
+                                                             param)[0]
                 elif isinstance(value, tuple):
                     selectedCombo = param
                     isTuple = True
-                    if QgsProject.instance().readNumEntry("qgis2web", param)[0] != 0:
-                        comboSelection = QgsProject.instance().readNumEntry("qgis2web", param)[0]
+                    if projectInstance.readNumEntry("qgis2web",
+                                                    param)[0] != 0:
+                        comboSelection = projectInstance.readNumEntry(
+                            "qgis2web",
+                            param)[0]
                     elif param == "Max zoom level":
                         comboSelection = 27
                     elif param == "Precision":
@@ -208,11 +245,20 @@ class MainDialog(QDialog, Ui_MainDialog):
                     else:
                         comboSelection = 0
                 else:
-                    if isinstance(QgsProject.instance().readEntry("qgis2web", param)[0], basestring) and QgsProject.instance().readEntry("qgis2web", param)[0] != "":
-                        value = QgsProject.instance().readEntry("qgis2web", param)[0]
-                subitem = TreeSettingItem(item, self.paramsTreeOL, param, value, dlg)
+                    if (isinstance(projectInstance.readEntry("qgis2web",
+                                   param)[0], basestring) and
+                            projectInstance.readEntry("qgis2web",
+                                                      param)[0] != ""):
+                        value = projectInstance.readEntry("qgis2web", param)[0]
+                subitem = TreeSettingItem(item,
+                                          self.paramsTreeOL,
+                                          param,
+                                          value,
+                                          dlg)
                 if isTuple:
-                    dlg.paramsTreeOL.itemWidget(subitem, 1).setCurrentIndex(comboSelection)
+                    dlg.paramsTreeOL.itemWidget(subitem,
+                                                1).setCurrentIndex(
+                                                    comboSelection)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -222,43 +268,115 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.resizeColumnToContents(1)
 
     def selectMapFormat(self):
-        if QgsProject.instance().readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
+        global projectInstance
+        if projectInstance.readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
 
     def tempIndexFile(self):
         folder = utils.tempFolder()
-        url = "file:///" + os.path.join(folder, "index.html").replace("\\", "/")
+        url = "file:///" + os.path.join(folder,
+                                        "index.html").replace("\\", "/")
         return url
 
     def previewOL3(self):
         self.preview.settings().clearMemoryCaches()
-        layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
+        (layers,
+         groups,
+         popup,
+         visible,
+         json,
+         cluster,
+         labels) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, utils.tempFolder())
+        previewFile = writeOL(self.iface,
+                              layers,
+                              groups,
+                              popup,
+                              visible,
+                              json,
+                              cluster,
+                              labels,
+                              params,
+                              utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
-        layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
+        (layers,
+         groups,
+         popup,
+         visible,
+         json,
+         cluster,
+         labels) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1, layers, visible, "", cluster, labels, 0, 0, json, params, popup)
+        previewFile = writeLeaflet(self.iface,
+                                   utils.tempFolder(),
+                                   500,
+                                   700,
+                                   1,
+                                   layers,
+                                   visible,
+                                   "",
+                                   cluster,
+                                   labels,
+                                   0,
+                                   0,
+                                   json,
+                                   params,
+                                   popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def saveOL(self):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
         if folder:
-            layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeOL(self.iface, layers, groups, popup, visible, json, cluster, labels, params, folder)
+            (layers,
+             groups,
+             popup,
+             visible,
+             json,
+             cluster,
+             labels) = self.getLayersAndGroups()
+            outputFile = writeOL(self.iface,
+                                 layers,
+                                 groups,
+                                 popup,
+                                 visible,
+                                 json,
+                                 cluster,
+                                 labels,
+                                 params,
+                                 folder)
             webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
         if folder:
-            layers, groups, popup, visible, json, cluster, labels = self.getLayersAndGroups()
-            outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers, visible, "", cluster, labels, 0, 0, json, params, popup)
+            (layers,
+             groups,
+             popup,
+             visible,
+             json,
+             cluster,
+             labels) = self.getLayersAndGroups()
+            outputFile = writeLeaflet(self.iface,
+                                      folder,
+                                      600,
+                                      400,
+                                      1,
+                                      layers,
+                                      visible,
+                                      "",
+                                      cluster,
+                                      labels,
+                                      0,
+                                      0,
+                                      json,
+                                      params,
+                                      popup)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
@@ -313,12 +431,20 @@ class MainDialog(QDialog, Ui_MainDialog):
                         labels.append(False)
                 groups[group] = groupLayers[::-1]
 
-        return layers[::-1], groups, popup[::-1], visible[::-1], json[::-1], cluster[::-1], labels[::-1]
+        return (layers[::-1],
+                groups,
+                popup[::-1],
+                visible[::-1],
+                json[::-1],
+                cluster[::-1],
+                labels[::-1])
 
 
 class TreeGroupItem(QTreeWidgetItem):
 
-    groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
+    groupIcon = QIcon(os.path.join(os.path.dirname(__file__),
+                      "icons",
+                      "group.gif"))
 
     def __init__(self, name, layers, tree):
         QTreeWidgetItem.__init__(self)
@@ -341,15 +467,18 @@ class TreeGroupItem(QTreeWidgetItem):
 
 class TreeLayerItem(QTreeWidgetItem):
 
-    layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
+    layerIcon = QIcon(os.path.join(os.path.dirname(__file__),
+                                   "icons",
+                                   "layer.png"))
 
     def __init__(self, iface, layer, tree, dlg):
+        global projectInstance
         QTreeWidgetItem.__init__(self)
         self.iface = iface
         self.layer = layer
         self.setText(0, layer.name())
         self.setIcon(0, self.layerIcon)
-        if QgsProject.instance().layerTreeRoot().findLayer(layer.id()).isVisible():
+        if projectInstance.layerTreeRoot().findLayer(layer.id()).isVisible():
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
@@ -358,12 +487,14 @@ class TreeLayerItem(QTreeWidgetItem):
             self.popupItem.setText(0, "Info popup content")
             self.combo = QComboBox()
             options = ["No popup", "Show all attributes"]
-            options.extend(["FIELD:" + f.name() for f in self.layer.pendingFields()])
+            for f in self.layer.pendingFields():
+                options.extend("FIELD:" + f.name())
             for option in options:
                 self.combo.addItem(option)
             self.addChild(self.popupItem)
             if layer.customProperty("qgis2web/Info popup content"):
-                self.combo.setCurrentIndex(int(layer.customProperty("qgis2web/Info popup content")))
+                self.combo.setCurrentIndex(int(
+                    layer.customProperty("qgis2web/Info popup content")))
             self.combo.highlighted.connect(self.clickCombo)
             self.combo.currentIndexChanged.connect(dlg.saveLayerComboSettings)
             tree.setItemWidget(self.popupItem, 1, self.combo)
@@ -411,7 +542,10 @@ class TreeLayerItem(QTreeWidgetItem):
     def popup(self):
         try:
             idx = self.combo.currentIndex()
-            popup = idx if idx < 2 else self.combo.currentText()[len("FIELD:"):]
+            if idx < 2:
+                popup = idx
+            else:
+                popup = self.combo.currentText()[len("FIELD:"):]
         except:
             popup = utils.NO_POPUP
         return popup
