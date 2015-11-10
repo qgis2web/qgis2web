@@ -118,7 +118,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     <body><h1>Error</h1>
     <p>qgis2web produced an error:</p>
     <code>""" + traceback.format_exc().replace("\n", "<br />") +
-    """</code></body></html>""")
+            """</code></body></html>""")
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
@@ -148,7 +148,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if paramItem.name == "Match project CRS":
             baseLayer = self.paramsTreeOL.findItems("Base layer",
                                                     (Qt.MatchExactly |
-                                                    Qt.MatchRecursive))[0]
+                                                     Qt.MatchRecursive))[0]
             if paramItem.checkState(col):
                 baseLayer.setDisabled(True)
             else:
@@ -443,8 +443,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 class TreeGroupItem(QTreeWidgetItem):
 
     groupIcon = QIcon(os.path.join(os.path.dirname(__file__),
-                      "icons",
-                      "group.gif"))
+                                   "icons",
+                                   "group.gif"))
 
     def __init__(self, name, layers, tree):
         QTreeWidgetItem.__init__(self)
