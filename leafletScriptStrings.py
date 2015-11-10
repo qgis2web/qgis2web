@@ -245,9 +245,8 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
 
 def clusterScript(safeLayerName):
     cluster = """
-        var cluster_group{safeLayerName}JSON = """.format(
-                                                        safeLayerName=
-                                                        safeLayerName)
+        var cluster_group"""
+    cluster += "{safeLayerName}JSON = ".format(safeLayerName=safeLayerName)
     cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(json_{safeLayerName}JSON);
@@ -372,11 +371,10 @@ def categorizedPointWFSscript(layerName, labeltext):
 def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
     if usedFields != 0:
         categorizedPointJSON = """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            onEachFeature: pop_{safeLayerName},
+        var json_{sln}JSON = new L.geoJson(json_{sln}, {{
+            onEachFeature: pop_{sln},
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(safeLayerName=
-                                                         safeLayerName)
+                return L.circleMarker(latlng, """.format(sln=safeLayerName)
         categorizedPointJSON += """doStyle{sln}(feature)){label}
             }}
         }});
@@ -409,7 +407,7 @@ def categorizedLineStylesScript(symbol, opacity):
            weight=symbol.width() * 4,
            dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(),
                                   symbol.width()),
-                                  opacity=opacity)
+           opacity=opacity)
     return categorizedLineStyles
 
 
@@ -440,12 +438,13 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
                     fillOpacity: '{opacity}',
                 }};
                 break;""".format(weight=symbolLayer.borderWidth() * 4,
-                          fillColor=fillColor,
-                          color=color,
-                          dashArray=getLineStyle(symbolLayer.borderStyle(),
-                                                 symbolLayer.borderWidth()),
-                          borderOpacity=borderOpacity,
-                          opacity=opacity)
+                                 fillColor=fillColor,
+                                 color=color,
+                                 dashArray=getLineStyle(
+                                    symbolLayer.borderStyle(),
+                                    symbolLayer.borderWidth()),
+                                 borderOpacity=borderOpacity,
+                                 opacity=opacity)
     return categorizedPolygonStyles
 
 
@@ -502,7 +501,7 @@ def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity):
                      weight=symbol.width() * 4,
                      dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(),
                                             symbol.width()),
-                                            opacity=opacity)
+                     opacity=opacity)
     return graduatedLineStyles
 
 
