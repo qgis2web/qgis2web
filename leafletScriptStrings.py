@@ -15,7 +15,9 @@ def scaleDependentLayerScript(layer, layerName):
         feature_group.addLayer(json_{layerName}JSON);
     }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
         feature_group.removeLayer(json_{layerName}JSON);
-    }}""".format(min=scaleToZoom(min), max=scaleToZoom(max), layerName=layerName)
+    }}""".format(min=scaleToZoom(min),
+                 max=scaleToZoom(max),
+                 layerName=layerName)
     return scaleDependentLayer
 
 
@@ -61,8 +63,10 @@ def highlightScript(highlight, popupsOnHover, highlightFill):
 def crsScript(crsAuthId, crsProj4):
     crs = """
         var crs = new L.Proj.CRS('{crsAuthId}', '{crsProj4}', {{
-            resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-        }});""".format(crsAuthId=crsAuthId, crsProj4=crsProj4)
+            resolutions: [2800, 1400, 700, 350, """.format(crsAuthId=crsAuthId,
+                                                           crsProj4=crsProj4)
+    crs += """175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
+        }});"""
     return crs
 
 
@@ -78,13 +82,15 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
         map += """
             measureControl:true,"""
     map += """
-            zoomControl:true, maxZoom:""" + unicode(maxZoom) + """, minZoom:""" + unicode(minZoom) + """
+            zoomControl:true, maxZoom:""" + unicode(maxZoom)
+    map += """, minZoom:""" + unicode(minZoom) + """
         })"""
     if extent == "Canvas extent":
         map += """.fitBounds(""" + bounds + """);"""
     map += """
         var hash = new L.Hash(map);
-        var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';"""
+        var additional_attrib = '<a href="https://github.com/tomchadwin/"""
+    map += """qgis2web" target ="_blank">qgis2web</a>';"""
     return map
 
 
@@ -102,7 +108,9 @@ def basemapsScript(basemap, attribution, maxZoom):
             attribution: additional_attrib + ' {attribution}',
             maxZoom: {maxZoom}
         }});
-        basemap.addTo(map);""".format(basemap=basemap, attribution=attribution, maxZoom=maxZoom)
+        basemap.addTo(map);""".format(basemap=basemap,
+                                      attribution=attribution,
+                                      maxZoom=maxZoom)
     return basemaps
 
 
@@ -128,20 +136,25 @@ def popFuncsScript(table):
 
 def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     popup = """
-        function pop_{safeLayerName}(feature, layer) {{""".format(safeLayerName=safeLayerName)
+        function pop_{safeLayerName}""".format(safeLayerName=safeLayerName)
+    popup += "(feature, layer) {"
     if highlight or popupsOnHover:
         popup += """
             layer.on({
                 mouseout: function(e) {"""
         if highlight:
             popup += """
-                    layer.setStyle(doStyle{safeLayerName}(feature));""".format(safeLayerName=safeLayerName)
+                    layer.setStyle(doStyle"""
+            popup += """{safeLayerName}(feature));""".format(safeLayerName=
+                                                             safeLayerName)
         if popupsOnHover:
             popup += """
                     if (typeof layer.closePopup == 'function') {
                         layer.closePopup();
                     } else {
-                        layer.eachLayer(function(feature){feature.closePopup()});
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
                     }"""
         popup += """
                 },
@@ -152,7 +165,15 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     return popup
 
 
-def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, colorName, borderColor, borderOpacity, opacity, labeltext):
+def pointStyleLabelScript(safeLayerName,
+                          radius,
+                          borderWidth,
+                          borderStyle,
+                          colorName,
+                          borderColor,
+                          borderOpacity,
+                          opacity,
+                          labeltext):
     pointStyleLabel = """
         function doStyle{safeLayerName}() {{
             return {{
@@ -181,7 +202,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle, color
 
 def pointToLayerScript(safeLayerName):
     pointToLayer = """
-            pointToLayer: doPointToLayer{safeLayerName}""".format(safeLayerName=safeLayerName)
+            pointToLayer: doPointToLayer{""" + safeLayerName + "}"
     return pointToLayer
 
 
@@ -206,24 +227,37 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             onEachFeature: pop_{safeLayerName}, {pointToLayer}
             }});
-        layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
+        layerOrder[layerOrder.length]""".format(safeLayerName=safeLayerName,
+                                                pointToLayer=pointToLayer)
+        jsonPoint += " = json_{safeLayerName}JSON;".format(safeLayerName=
+                                                           safeLayerName)
     else:
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             {pointToLayer}
             }});
-        layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, pointToLayer=pointToLayer)
+        layerOrder[layerOrder.length]""".format(safeLayerName=safeLayerName,
+                                                pointToLayer=pointToLayer)
+        jsonPoint += " = json_{safeLayerName}JSON;".format(safeLayerName=
+                                                           safeLayerName)
     return jsonPoint
 
 
 def clusterScript(safeLayerName):
     cluster = """
-        var cluster_group{safeLayerName}JSON = new L.MarkerClusterGroup({{showCoverageOnHover: false}});
-        cluster_group{safeLayerName}JSON.addLayer(json_{safeLayerName}JSON);""".format(safeLayerName=safeLayerName)
+        var cluster_group{safeLayerName}JSON = """.format(safeLayerName=
+                                                          safeLayerName)
+    cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
+        cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
+    cluster += ".addLayer(json_{safeLayerName}JSON);".format(safeLayerName=
+                                                             safeLayerName)
     return cluster
 
 
 def categorizedPointStylesScript(symbol, opacity, borderOpacity):
+    symbolLayer = symbol.symbolLayer(0)
+    if symbolLayer.outlineStyle() == 0:
+        borderOpacity = 0
     styleValues = """
                     radius: '{radius}',
                     fillColor: '{fillColor}',
@@ -235,10 +269,12 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                 }};
                 break;""".format(radius=symbol.size() * 2,
                                  fillColor=symbol.color().name(),
-                                 color=symbol.symbolLayer(0).borderColor().name(),
-                                 borderWidth=symbol.symbolLayer(0).outlineWidth() * 4,
-                                 borderOpacity=borderOpacity if symbol.symbolLayer(0).outlineStyle() != 0 else 0,
-                                 dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle(), symbol.symbolLayer(0).outlineWidth()),
+                                 color=symbolLayer.borderColor().name(),
+                                 borderWidth=symbolLayer.outlineWidth() * 4,
+                                 borderOpacity=borderOpacity,
+                                 dashArray=getLineStyle(
+                                    symbolLayer.outlineStyle(),
+                                    symbolLayer.outlineWidth()),
                                  opacity=opacity)
     return styleValues
 
@@ -257,7 +293,8 @@ def simpleLineStyleScript(radius, colorName, penStyle, opacity):
     return lineStyle
 
 
-def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor, penStyle, opacity):
+def singlePolyStyleScript(radius, colorName, borderOpacity,
+                          fillColor, penStyle, opacity):
     polyStyle = """
             return {{
                 weight: {radius},
@@ -277,7 +314,8 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor, penStyle,
 
 def nonPointStylePopupsScript(safeLayerName):
     nonPointStylePopups = """
-            style: doStyle{safeLayerName}""".format(safeLayerName=safeLayerName)
+            style: doStyle{safeLayerName}""".format(safeLayerName=
+                                                    safeLayerName)
     return nonPointStylePopups
 
 
@@ -291,7 +329,10 @@ def nonPointStyleFunctionScript(safeLayerName, lineStyle):
 def categoryScript(layerName, valueAttr):
     category = """
         function doStyle{layerName}(feature) {{
-            switch (feature.properties.{valueAttr}) {{""".format(layerName=layerName, valueAttr=valueAttr)
+            switch (feature.properties.{valueAttr}) {{""".format(layerName=
+                                                                 layerName,
+                                                                 valueAttr=
+                                                                 valueAttr)
     return category
 
 
@@ -320,13 +361,13 @@ def endCategoryScript():
     return endCategory
 
 
-def categorizedPointWFSscript(layerName, labeltext, popFuncs):
+def categorizedPointWFSscript(layerName, labeltext):
     categorizedPointWFS = """
         function doPointToLayer{layerName}(feature, latlng) {{
-            return L.circleMarker(latlng, doStyle{layerName}(feature)){labeltext}
-        }}
-        /*onEachFeature: function (feature, layer) {{{popFuncs}
-        }}*/""".format(layerName=layerName, labeltext=labeltext, popFuncs=popFuncs)
+            return L.circleMarker(latlng, doStyle{layerName}""".format(
+        layerName=layerName)
+    categorizedPointWFS += """(feature)){labeltext}
+        }}""".format(labeltext=labeltext)
     return categorizedPointWFS
 
 
@@ -336,18 +377,27 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             onEachFeature: pop_{safeLayerName},
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+                return L.circleMarker(latlng, """.format(safeLayerName=
+                                                         safeLayerName)
+        categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});
-            layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+            layerOrder[layerOrder.length] = json_""".format(safeLayerName=
+                                                         safeLayerName,
+                                                         labeltext=labeltext)
+        categorizedPointJSON += "{safeLayerName}JSON;".format(safeLayerName=
+                                                         safeLayerName)
     else:
         categorizedPointJSON = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+                return L.circleMarker(latlng, """.format(safeLayerName=
+                                                         safeLayerName)
+        categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});
-            layerOrder[layerOrder.length] = json_{safeLayerName}JSON;""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+            layerOrder[layerOrder.length] = json_{safeLayerName}JSON;
+""".format(safeLayerName=safeLayerName, labeltext=labeltext)
     return categorizedPointJSON
 
 
@@ -358,10 +408,12 @@ def categorizedLineStylesScript(symbol, opacity):
                     dashArray: '{dashArray}',
                     opacity: '{opacity}',
                 }};
-                break;""".format(color=symbol.color().name(),
-                                 weight=symbol.width() * 4,
-                                 dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(), symbol.width()),
-                                 opacity=opacity)
+                break;
+""".format(color=symbol.color().name(),
+           weight=symbol.width() * 4,
+           dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(),
+                                  symbol.width()),
+                                  opacity=opacity)
     return categorizedLineStyles
 
 
@@ -374,6 +426,15 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 
 
 def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
+    symbolLayer = symbol.symbolLayer(0)
+    if symbolLayer.brushStyle() == 0:
+        fillColor = "none"
+    else:
+        fillColor = symbol.color().name()
+    if symbolLayer.borderStyle() == 0:
+        color = "none"
+    else:
+        color = symbolLayer.borderColor().name()
     categorizedPolygonStyles = """
                     weight: '{weight}',
                     fillColor: '{fillColor}',
@@ -382,12 +443,13 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
                     opacity: '{borderOpacity}',
                     fillOpacity: '{opacity}',
                 }};
-                break;""".format(weight=symbol.symbolLayer(0).borderWidth() * 4,
-                                 fillColor=symbol.color().name() if symbol.symbolLayer(0).brushStyle() != 0 else "none",
-                                 color=symbol.symbolLayer(0).borderColor().name() if symbol.symbolLayer(0).borderStyle() != 0 else "none",
-                                 dashArray=getLineStyle(symbol.symbolLayer(0).borderStyle(), symbol.symbolLayer(0).borderWidth()),
-                                 borderOpacity=borderOpacity,
-                                 opacity=opacity)
+                break;""".format(weight=symbolLayer.borderWidth() * 4,
+                          fillColor=fillColor,
+                          color=color,
+                          dashArray=getLineStyle(symbolLayer.borderStyle(),
+                                                 symbolLayer.borderWidth()),
+                          borderOpacity=borderOpacity,
+                          opacity=opacity)
     return categorizedPolygonStyles
 
 
@@ -399,7 +461,11 @@ def graduatedStyleScript(layerName):
 
 def rangeStartScript(valueAttr, r):
     rangeStart = """
-        if (feature.properties.{valueAttr} >= {lowerValue} && feature.properties.{valueAttr} <= {upperValue}) {{""".format(valueAttr=valueAttr, lowerValue=r.lowerValue(), upperValue=r.upperValue())
+        if (feature.properties.{valueAttr} >= {lowerValue} &&
+                feature.properties.{valueAttr} <= {upperValue}) {{
+""".format(valueAttr=valueAttr,
+           lowerValue=r.lowerValue(),
+           upperValue=r.upperValue())
     return rangeStart
 
 
@@ -415,13 +481,15 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 opacity: '{borderOpacity}',
                 dashArray: '{dashArray}'
             }}
-        }}""".format(radius=symbol.size() * 2,
-                     fillColor=symbol.color().name(),
-                     color=symbol.symbolLayer(0).borderColor().name(),
-                     lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
-                     opacity=opacity,
-                     borderOpacity=borderOpacity,
-                     dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle(), symbol.symbolLayer(0).outlineWidth()))
+        }}
+""".format(radius=symbol.size() * 2,
+           fillColor=symbol.color().name(),
+           color=symbol.symbolLayer(0).borderColor().name(),
+           lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
+           opacity=opacity,
+           borderOpacity=borderOpacity,
+           dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle(),
+                                  symbol.symbolLayer(0).outlineWidth()))
     return graduatedPointStyles
 
 
@@ -436,12 +504,27 @@ def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity):
             }}
         }}""".format(color=symbol.symbolLayer(0).color().name(),
                      weight=symbol.width() * 4,
-                     dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(), symbol.width()),
-                     opacity=opacity)
+                     dashArray=getLineStyle(symbol.symbolLayer(0).penStyle(),
+                                            symbol.width()),
+                                            opacity=opacity)
     return graduatedLineStyles
 
 
 def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
+    symbolLayer = symbol.symbolLayer(0)
+    if symbolLayer.borderStyle() == 0:
+        weight = "0"
+    else:
+        weight = symbolLayer.borderWidth() * 4
+    if symbolLayer.borderStyle() == 0:
+        dashArray = "0"
+    else:
+        dashArray = getLineStyle(symbolLayer.borderStyle(),
+                                 symbolLayer.borderWidth())
+    if symbolLayer.brushStyle() == 0:
+        fillColor = "0"
+    else:
+        fillColor = symbol.color().name()
     graduatedPolygonStyles = rangeStartScript(valueAttr, r)
     graduatedPolygonStyles += """
             return {{
@@ -452,10 +535,10 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 opacity: '{borderOpacity}',
                 fillOpacity: '{opacity}',
             }}
-        }}""".format(color=symbol.symbolLayer(0).borderColor().name(),
-                     weight=symbol.symbolLayer(0).borderWidth() * 4 if symbol.symbolLayer(0).borderStyle() != 0 else "0",
-                     dashArray=getLineStyle(symbol.symbolLayer(0).borderStyle(), symbol.symbolLayer(0).borderWidth() if symbol.symbolLayer(0).borderStyle() != 0 else "0"),
-                     fillColor=symbol.color().name() if symbol.symbolLayer(0).brushStyle() != 0 else "none",
+        }}""".format(color=symbolLayer.borderColor().name(),
+                     weight=weight,
+                     dashArray=dashArray,
+                     fillColor=fillColor,
                      borderOpacity=borderOpacity,
                      opacity=opacity)
     return graduatedPolygonStyles
@@ -476,9 +559,9 @@ def customMarkerScript(safeLayerName, labeltext, usedFields):
                 return L.marker(latlng, {{
                     icon: L.icon({{
                         iconUrl: feature.properties.icon_exp,
-                        iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
-                        iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
-                        popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
+                        iconSize:     [24, 24],
+                        iconAnchor:   [12, 12],
+                        popupAnchor:  [0, -14]
                     }})
                 }}){labeltext}
             }}}}
@@ -490,9 +573,9 @@ def customMarkerScript(safeLayerName, labeltext, usedFields):
                 return L.marker(latlng, {{
                     icon: L.icon({{
                         iconUrl: feature.properties.icon_exp,
-                        iconSize:     [24, 24], // size of the icon change this to scale your icon (first coordinate is x, second y from the upper left corner of the icon)
-                        iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location (first coordinate is x, second y from the upper left corner of the icon)
-                        popupAnchor:  [0, -14] // point from which the popup should open relative to the iconAnchor (first coordinate is x, second y from the upper left corner of the icon)
+                        iconSize:     [24, 24],
+                        iconAnchor:   [12, 12],
+                        popupAnchor:  [0, -14]
                     }})
                 }}){labeltext}
             }}}}
@@ -518,7 +601,14 @@ def rasterScript(safeLayerName, out_raster_name, bounds):
     raster = """
     var img_{safeLayerName} = '{out_raster_name}';
     var img_bounds_{safeLayerName} = {bounds};
-    var overlay_{safeLayerName} = new L.imageOverlay(img_{safeLayerName}, img_bounds_{safeLayerName});""".format(safeLayerName=safeLayerName, out_raster_name=out_raster_name, bounds=bounds)
+    var overlay_{safeLayerName} = """.format(safeLayerName=safeLayerName,
+                                             out_raster_name=out_raster_name,
+                                             bounds=bounds)
+    raster += "new L.imageOverlay(img_"
+    raster += """"{safeLayerName}, img_bounds_{safeLayerName});
+""".format(safeLayerName=safeLayerName,
+           out_raster_name=out_raster_name,
+           bounds=bounds)
     return raster
 
 
@@ -526,12 +616,13 @@ def titleSubScript(webmap_head):
     titleSub = """
         var title = new L.Control();
         title.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this._div = L.DomUtil.create('div', 'info');
             this.update();
             return this._div;
         };
         title.update = function () {
-            this._div.innerHTML = '<h2>""" + webmap_head.encode('utf-8').replace("'", "\\'") + """</h2>';
+            this._div.innerHTML = '<h2>"""
+    titleSub += webmap_head.encode('utf-8').replace("'", "\\'") + """</h2>';
         };
         title.addTo(map);"""
     return titleSub
@@ -554,7 +645,8 @@ def locateScript():
         function onLocationFound(e) {
             var radius = e.accuracy / 2;
             L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters from this point").openPopup();
+            .bindPopup("You are within " + radius + " meters from this point")
+            .openPopup();
             L.circle(e.latlng, radius).addTo(map);
         }
         map.on('locationfound', onLocationFound);

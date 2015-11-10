@@ -968,7 +968,7 @@ def categorizedPoint(outputProjectFileName,
                                                     borderOpacity)
     categoryStr += endCategoryScript()
     if i.providerType() == 'WFS' and json[count] == False:
-        stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
+        stylestr = categorizedPointWFSscript(layerName, labeltext)
         new_obj, scriptTag, cluster_num = buildPointWFS(stylestr,
                                                         layerName,
                                                         i.source(),
@@ -1214,7 +1214,7 @@ def graduatedPoint(outputProjectFileName,
                                                   borderOpacity)
     categoryStr += endGraduatedStyleScript()
     if i.providerType() == 'WFS' and json[count] == False:
-        stylestr = categorizedPointWFSscript(layerName, labeltext, popFuncs)
+        stylestr = categorizedPointWFSscript(layerName, labeltext)
         new_obj, scriptTag, cluster_num = buildPointWFS(stylestr,
                                                         layerName,
                                                         i.source(),
