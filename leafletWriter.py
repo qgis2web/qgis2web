@@ -779,7 +779,6 @@ def singleLine(symbol,
                                               i.source(),
                                               "",
                                               stylestr,
-                                              popFuncs,
                                               visible[count])
         new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
         wfsLayers += wfsScript(scriptTag)
@@ -843,7 +842,6 @@ def singlePolygon(i,
                                               i.source(),
                                               "",
                                               stylestr,
-                                              popFuncs,
                                               visible[count])
         new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
         wfsLayers += wfsScript(scriptTag)
@@ -1032,7 +1030,6 @@ def categorizedLine(outputProjectFileName,
                                               i.source(),
                                               categoryStr,
                                               stylestr,
-                                              popFuncs,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -1090,7 +1087,6 @@ def categorizedPolygon(outputProjectFileName,
                                               i.source(),
                                               categoryStr,
                                               stylestr,
-                                              popFuncs,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -1280,7 +1276,6 @@ def graduatedLine(outputProjectFileName,
                                               i.source(),
                                               categoryStr,
                                               stylestr,
-                                              popFuncs,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -1335,7 +1330,6 @@ def graduatedPolygon(outputProjectFileName,
                                               i.source(),
                                               categoryStr,
                                               stylestr,
-                                              popFuncs,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
