@@ -437,14 +437,14 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
                     opacity: '{borderOpacity}',
                     fillOpacity: '{opacity}',
                 }};
-                break;""".format(weight=symbolLayer.borderWidth() * 4,
-                                 fillColor=fillColor,
-                                 color=color,
-                                 dashArray=getLineStyle(
-                                    symbolLayer.borderStyle(),
-                                    symbolLayer.borderWidth()),
-                                 borderOpacity=borderOpacity,
-                                 opacity=opacity)
+                break;
+""".format(weight=symbolLayer.borderWidth() * 4,
+           fillColor=fillColor,
+           color=color,
+           dashArray=getLineStyle(symbolLayer.borderStyle(),
+                                  symbolLayer.borderWidth()),
+           borderOpacity=borderOpacity,
+           opacity=opacity)
     return categorizedPolygonStyles
 
 
