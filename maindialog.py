@@ -112,13 +112,14 @@ class MainDialog(QDialog, Ui_MainDialog):
             else:
                 MainDialog.previewLeaflet(self)
         except Exception as e:
-            self.preview.setHtml("""<html>
-    <head></head>
-    <style>body {font-family: sans-serif;}</style>
-    <body><h1>Error</h1>
-    <p>qgis2web produced an error:</p>
-    <code>""" + traceback.format_exc().replace("\n", "<br />") +
-                    """</code></body></html>""")
+            errorHTML = "<html>"
+            errorHTML += "<head></head>"
+            errorHTML += "<style>body {font-family: sans-serif;}</style>"
+            errorHTML += "<body><h1>Error</h1>"
+            errorHTML += "<p>qgis2web produced an error:</p><code>"
+            errorHTML += traceback.format_exc().replace("\n", "<br />")
+            errorHTML += "</code></body></html>"
+            self.preview.setHtml(errorHTML)
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
