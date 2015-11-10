@@ -145,8 +145,8 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
         if highlight:
             popup += """
                     layer.setStyle(doStyle"""
-            popup += """{safeLayerName}(feature));""".format(safeLayerName=
-                                                             safeLayerName)
+            popup += """{safeLayerName}(feature));
+""".format(safeLayerName=safeLayerName)
         if popupsOnHover:
             popup += """
                     if (typeof layer.closePopup == 'function') {
@@ -229,8 +229,8 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
             }});
         layerOrder[layerOrder.length]""".format(safeLayerName=safeLayerName,
                                                 pointToLayer=pointToLayer)
-        jsonPoint += " = json_{safeLayerName}JSON;".format(safeLayerName=
-                                                           safeLayerName)
+        jsonPoint += """ = json_{safeLayerName}JSON;
+""".format(safeLayerName=safeLayerName)
     else:
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
@@ -238,19 +238,20 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
             }});
         layerOrder[layerOrder.length]""".format(safeLayerName=safeLayerName,
                                                 pointToLayer=pointToLayer)
-        jsonPoint += " = json_{safeLayerName}JSON;".format(safeLayerName=
-                                                           safeLayerName)
+        jsonPoint += """ = json_{safeLayerName}JSON;
+""".format(safeLayerName=safeLayerName)
     return jsonPoint
 
 
 def clusterScript(safeLayerName):
     cluster = """
-        var cluster_group{safeLayerName}JSON = """.format(safeLayerName=
-                                                          safeLayerName)
+        var cluster_group{safeLayerName}JSON = """.format(
+                                                        safeLayerName=
+                                                        safeLayerName)
     cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
-    cluster += ".addLayer(json_{safeLayerName}JSON);".format(safeLayerName=
-                                                             safeLayerName)
+    cluster += """.addLayer(json_{safeLayerName}JSON);
+""".format(safeLayerName=safeLayerName)
     return cluster
 
 
@@ -273,8 +274,8 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                                  borderWidth=symbolLayer.outlineWidth() * 4,
                                  borderOpacity=borderOpacity,
                                  dashArray=getLineStyle(
-                                    symbolLayer.outlineStyle(),
-                                    symbolLayer.outlineWidth()),
+                                     symbolLayer.outlineStyle(),
+                                     symbolLayer.outlineWidth()),
                                  opacity=opacity)
     return styleValues
 
@@ -314,8 +315,7 @@ def singlePolyStyleScript(radius, colorName, borderOpacity,
 
 def nonPointStylePopupsScript(safeLayerName):
     nonPointStylePopups = """
-            style: doStyle{safeLayerName}""".format(safeLayerName=
-                                                    safeLayerName)
+\t\t\tstyle: doStyle{safeLayerName}""".format(safeLayerName=safeLayerName)
     return nonPointStylePopups
 
 
@@ -329,10 +329,8 @@ def nonPointStyleFunctionScript(safeLayerName, lineStyle):
 def categoryScript(layerName, valueAttr):
     category = """
         function doStyle{layerName}(feature) {{
-            switch (feature.properties.{valueAttr}) {{""".format(layerName=
-                                                                 layerName,
-                                                                 valueAttr=
-                                                                 valueAttr)
+\t\t\tswitch (feature.properties.{valueAttr}) {{""".format(layerName=layerName,
+                                                           valueAttr=valueAttr)
     return category
 
 
@@ -379,20 +377,18 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
             pointToLayer: function (feature, latlng) {{
                 return L.circleMarker(latlng, """.format(safeLayerName=
                                                          safeLayerName)
-        categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
+        categorizedPointJSON += """doStyle{sln}(feature)){label}
             }}
         }});
-            layerOrder[layerOrder.length] = json_""".format(safeLayerName=
-                                                         safeLayerName,
-                                                         labeltext=labeltext)
-        categorizedPointJSON += "{safeLayerName}JSON;".format(safeLayerName=
-                                                         safeLayerName)
+            layerOrder[layerOrder.length] = json_""".format(sln=safeLayerName,
+                                                            label=labeltext)
+        categorizedPointJSON += """{safeLayerName}JSON;
+""".format(safeLayerName=safeLayerName)
     else:
         categorizedPointJSON = """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(safeLayerName=
-                                                         safeLayerName)
+\t\t\t\treturn L.circleMarker(latlng, """.format(safeLayerName=safeLayerName)
         categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});
