@@ -118,7 +118,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     <body><h1>Error</h1>
     <p>qgis2web produced an error:</p>
     <code>""" + traceback.format_exc().replace("\n", "<br />") +
-                """</code></body></html>""")
+                    """</code></body></html>""")
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
