@@ -13,10 +13,10 @@
 INSTRUCTION ON FILE USAGE:
 ***************************************************************************/
 """
-# To add a line to the layer list you might use this dictionary python variable.
-# its first element is the basemap service name which will be displayed in the GUI
-# The second entry marked with "META" is the metadata for the leaflet. please
-# respect copyrights and licenses
+# To add a line to the layer list you might use this dictionary python
+# variable. Its first element is the basemap service name which will be
+# displayed in the GUI. The second entry marked with "META" is the metadata for
+# the leaflet. Please respect copyrights and licenses
 # After you've added a basemap service, the plugin needs to be reinstalled.
 #
 """

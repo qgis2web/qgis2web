@@ -115,9 +115,8 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                 envval += '%s%s' % (os.pathsep, path)
                 os.putenv('PATH', envval)
             subprocess.Popen(
-                ['gdal_translate -of JPEG -a_srs EPSG:3857 %s %s' % (orgFile,
-                                                                     destFile)
-                ],
+                ['gdal_translate -of JPEG -a_srs EPSG:3857 %s %s' %
+                    (orgFile, destFile)],
                 shell=True,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.PIPE,
