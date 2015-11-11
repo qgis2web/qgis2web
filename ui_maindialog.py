@@ -95,9 +95,7 @@ class Ui_MainDialog(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        spacerItem = QtGui.QSpacerItem(5,
-                                       20,
-                                       QtGui.QSizePolicy.Fixed,
+        spacerItem = QtGui.QSpacerItem(5, 20, QtGui.QSizePolicy.Fixed,
                                        QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.ol3 = QtGui.QRadioButton(self.widget)
@@ -116,8 +114,7 @@ class Ui_MainDialog(object):
         icon1 = QtGui.QIcon()
         icon1.addPixmap(
             QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.gif")),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off)
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonPreview.setIcon(icon1)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
@@ -165,22 +162,17 @@ class Ui_MainDialog(object):
 
     def retranslateUi(self, MainDialog):
         MainDialog.setWindowTitle(_translate("MainDialog",
-                                             "Export to web map",
-                                             None))
+                                             "Export to web map", None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog",
-                                                           "2",
-                                                           None))
+                                                           "2", None))
         self.paramsTreeOL.headerItem().setText(0, _translate("MainDialog",
-                                                             "Setting",
-                                                             None))
+                                                             "Setting", None))
         self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog",
-                                                             "Value",
-                                                             None))
+                                                             "Value", None))
         self.ol3.setText(_translate("MainDialog", "OpenLayers 3", None))
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
         self.buttonPreview.setText(_translate("MainDialog",
-                                              "Update preview",
-                                              None))
+                                              "Update preview", None))
         self.buttonExport.setText(_translate("MainDialog", "Export", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab),
                                   _translate("MainDialog", "Export", None))
