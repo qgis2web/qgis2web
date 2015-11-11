@@ -4,15 +4,9 @@ import os
 import shutil
 
 
-def writeFoldersAndFiles(pluginDir,
-                         outputProjectFileName,
-                         cluster_set,
-                         labels,
-                         measure,
-                         matchCRS,
-                         canvas,
-                         mapLibLocation,
-                         locate):
+def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
+                         labels, measure, matchCRS, canvas,
+                         mapLibLocation, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -63,16 +57,8 @@ def writeFoldersAndFiles(pluginDir,
     return dataStore, cssStore
 
 
-def writeHTMLstart(outputIndex,
-                   webpage_name,
-                   cluster_set,
-                   labels,
-                   address,
-                   measure,
-                   matchCRS,
-                   canvas,
-                   full,
-                   mapLibLocation):
+def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address,
+                   measure, matchCRS, canvas, full, mapLibLocation):
     with open(outputIndex, 'w') as f_html:
         base = """<!DOCTYPE html>
 <html>
