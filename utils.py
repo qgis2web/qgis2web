@@ -49,7 +49,8 @@ def getUsedFields(layer):
         fields.append(layer.rendererV2().classAttribute())
     except:
         pass
-    labelsEnabled = str(layer.customProperty("labeling/enabled")).lower() == "true"
+    labelsEnabled = str(
+        layer.customProperty("labeling/enabled")).lower() == "true"
     if labelsEnabled:
         fields.append(layer.customProperty("labeling/fieldName"))
     return fields
@@ -59,7 +60,8 @@ def exportLayers(layers, folder, precision, optimize, popupField):
     epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
-    reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision)))
+    reducePrecision = (
+        re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision))))
     for layer, popup in zip(layers, popupField):
         if layer.type() == layer.VectorLayer:
             usedFields = getUsedFields(layer)
@@ -72,7 +74,9 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                     usedFields.append(popup)
                 for field in usedFields:
                     fieldType = layer.pendingFields().field(field).type()
-                    fieldType = "double" if fieldType == QVariant.Double or fieldType == QVariant.Int else "string"
+                    fieldType = "double" if (fieldType == QVariant.Double or
+                                             fieldType == QVariant.Int) else (
+                                                "string")
                     uri += '&field=' + str(field) + ":" + fieldType
                 newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
                 writer = newlayer.dataProvider()
@@ -85,9 +89,11 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                     writer.addFeatures([outFeat])
                 layer = newlayer
 
-            tmpPath = os.path.join(layersFolder, safeName(layer.name()) + ".json")
+            tmpPath = os.path.join(layersFolder,
+                                   safeName(layer.name()) + ".json")
             path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
-            QgsVectorFileWriter.writeAsVectorFormat(layer, tmpPath, "utf-8", epsg3857, 'GeoJson')
+            QgsVectorFileWriter.writeAsVectorFormat(layer, tmpPath, "utf-8",
+                                                    epsg3857, 'GeoJson')
             with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" + safeName(layer.name())))
                 with open(tmpPath, "r") as f2:
@@ -100,7 +106,8 @@ def exportLayers(layers, folder, precision, optimize, popupField):
             os.remove(tmpPath)
         elif layer.type() == layer.RasterLayer:
             orgFile = layer.source()
-            destFile = os.path.join(layersFolder, safeName(layer.name()) + ".jpg")
+            destFile = os.path.join(layersFolder,
+                                    safeName(layer.name()) + ".jpg")
             settings = QSettings()
             path = unicode(settings.value('/GdalTools/gdalPath', ''))
             envval = unicode(os.getenv('PATH'))
@@ -108,7 +115,9 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                 envval += '%s%s' % (os.pathsep, path)
                 os.putenv('PATH', envval)
             subprocess.Popen(
-                ['gdal_translate -of JPEG -a_srs EPSG:3857 %s %s' % (orgFile, destFile)],
+                ['gdal_translate -of JPEG -a_srs EPSG:3857 %s %s' % (orgFile,
+                                                                     destFile)
+                ],
                 shell=True,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.PIPE,
@@ -118,8 +127,8 @@ def exportLayers(layers, folder, precision, optimize, popupField):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    return ''.join(c for c in name if c in validChars)
+    validChr = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    return ''.join(c for c in name if c in validChr)
 
 
 def removeSpaces(txt):
