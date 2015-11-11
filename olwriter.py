@@ -36,20 +36,11 @@ baseLayerGroup = "var baseLayer = "
 baseLayerGroup += "new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 
-def writeOL(iface,
-            layers,
-            groups,
-            popup,
-            visible,
-            json,
-            cluster,
-            labels,
-            settings,
-            folder):
+def writeOL(iface, layers, groups, popup, visible,
+            json, cluster, labels, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
-    folder = os.path.join(folder,
-                          'qgis2web_' + unicode(stamp))
+    folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
@@ -266,10 +257,8 @@ var lyr_%(n)s = new ol.layer.Vector({
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
                         title: "%(name)s"
-                      });''' % {"layers": layers,
-                                "url": url,
-                                "n": layerName,
-                                "name": layer.name()}
+                      });''' % {"layers": layers, "url": url,
+                                "n": layerName, "name": layer.name()}
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
             transform = QgsCoordinateTransform(provider.crs(),
@@ -324,8 +313,7 @@ def exportStyles(layers, folder):
                     symbol = renderer.rootRule().children()[0].symbol()
                 else:
                     symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol,
-                                                          stylesFolder,
+                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder,
                                                           layer_transparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
@@ -347,8 +335,7 @@ def exportStyles(layers, folder):
                 defs += "var %s = [" % varName
                 ranges = []
                 for ran in renderer.ranges():
-                    symbolstyle = getSymbolAsStyle(ran.symbol(),
-                                                   stylesFolder,
+                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,
                                                    layer_transparency)
                     ranges.append('[%f, %f, %s]' % (ran.lowerValue(),
                                                     ran.upperValue(),
@@ -395,12 +382,9 @@ def exportStyles(layers, folder):
                         var allStyles = [%(cache)s[key]];
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
-                    }''' % {"style": style,
-                            "label": labelText,
+                    }''' % {"style": style, "label": labelText,
                             "cache": "styleCache_" + safeName(layer.name()),
-                            "size": size,
-                            "color": color,
-                            "value": value}
+                            "size": size, "color": color, "value": value}
         except Exception, e:
             style = "{}"
 
@@ -410,8 +394,7 @@ def exportStyles(layers, folder):
             f.write('''%(defs)s
                     var styleCache_%(name)s={}
                     var style_%(name)s = %(style)s;''' %
-                    {"defs": defs,
-                     "name": safeName(layer.name()),
+                    {"defs": defs, "name": safeName(layer.name()),
                      "style": style})
 
 
@@ -483,8 +466,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                 borderWidth = props["outline_width"]
 
             style = ('''stroke: %s %s''' %
-                     (getStrokeStyle(borderColor,
-                                     borderStyle != "solid",
+                     (getStrokeStyle(borderColor, borderStyle != "solid",
                                      borderWidth),
                       getFillStyle(fillColor, props)))
         else:
@@ -512,8 +494,7 @@ def getIcon(path, size):
                   anchorXUnits: "pixels",
                   anchorYUnits: "pixels",
                   src: "%(path)s"
-            })''' % {"s": size,
-                     "a": anchor,
+            })''' % {"s": size, "a": anchor,
                      "path": path.replace("\\", "\\\\")}
 
 

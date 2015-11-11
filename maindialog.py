@@ -246,7 +246,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if (isinstance(projectInstance.readEntry("qgis2web",
                                    param)[0], basestring) and
                             projectInstance.readEntry("qgis2web",
-                                   param)[0] != ""):
+                                                      param)[0] != ""):
                         value = projectInstance.readEntry("qgis2web", param)[0]
                 subitem = TreeSettingItem(item, self.paramsTreeOL,
                                           param, value, dlg)
