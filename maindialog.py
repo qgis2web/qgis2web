@@ -68,8 +68,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def changeFormat(self):
         global projectInstance
-        projectInstance.writeEntry("qgis2web",
-                                   "mapFormat",
+        projectInstance.writeEntry("qgis2web", "mapFormat",
                                    self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
@@ -139,12 +138,10 @@ class MainDialog(QDialog, Ui_MainDialog):
     def saveSettings(self, paramItem, col):
         global projectInstance
         if isinstance(paramItem._value, bool):
-            projectInstance.writeEntry("qgis2web",
-                                       paramItem.name,
+            projectInstance.writeEntry("qgis2web", paramItem.name,
                                        paramItem.checkState(col))
         else:
-            projectInstance.writeEntry("qgis2web",
-                                       paramItem.name,
+            projectInstance.writeEntry("qgis2web", paramItem.name,
                                        paramItem.text(col))
         if paramItem.name == "Match project CRS":
             baseLayer = self.paramsTreeOL.findItems("Base layer",
@@ -186,10 +183,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if layer_parent.parent() is None:
                         # Layer parent is a root node.
                         # This is an orphan layer (has no parent) :(
-                        item = TreeLayerItem(self.iface,
-                                             layer,
-                                             self.layersTree,
-                                             dlg)
+                        item = TreeLayerItem(self.iface, layer,
+                                             self.layersTree, dlg)
                         self.layers_item.addChild(item)
                     else:
                         # Layer parent is not a root, it's a group then
@@ -240,8 +235,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if projectInstance.readNumEntry("qgis2web",
                                                     param)[0] != 0:
                         comboSelection = projectInstance.readNumEntry(
-                            "qgis2web",
-                            param)[0]
+                            "qgis2web", param)[0]
                     elif param == "Max zoom level":
                         comboSelection = 27
                     elif param == "Precision":
@@ -252,13 +246,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if (isinstance(projectInstance.readEntry("qgis2web",
                                    param)[0], basestring) and
                             projectInstance.readEntry("qgis2web",
-                                                      param)[0] != ""):
+                                   param)[0] != ""):
                         value = projectInstance.readEntry("qgis2web", param)[0]
-                subitem = TreeSettingItem(item,
-                                          self.paramsTreeOL,
-                                          param,
-                                          value,
-                                          dlg)
+                subitem = TreeSettingItem(item, self.paramsTreeOL,
+                                          param, value, dlg)
                 if isTuple:
                     dlg.paramsTreeOL.itemWidget(subitem,
                                                 1).setCurrentIndex(
@@ -285,102 +276,42 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def previewOL3(self):
         self.preview.settings().clearMemoryCaches()
-        (layers,
-         groups,
-         popup,
-         visible,
-         json,
-         cluster,
-         labels) = self.getLayersAndGroups()
+        (layers, groups, popup, visible,
+         json, cluster, labels) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeOL(self.iface,
-                              layers,
-                              groups,
-                              popup,
-                              visible,
-                              json,
-                              cluster,
-                              labels,
-                              params,
-                              utils.tempFolder())
+        previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
+                              cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
-        (layers,
-         groups,
-         popup,
-         visible,
-         json,
-         cluster,
-         labels) = self.getLayersAndGroups()
+        (layers, groups, popup, visible,
+         json, cluster, labels) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeLeaflet(self.iface,
-                                   utils.tempFolder(),
-                                   500,
-                                   700,
-                                   1,
-                                   layers,
-                                   visible,
-                                   "",
-                                   cluster,
-                                   labels,
-                                   0,
-                                   0,
-                                   json,
-                                   params,
-                                   popup)
+        previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1,
+                                   layers, visible, "", cluster, labels, 0, 0,
+                                   json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def saveOL(self):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
         if folder:
-            (layers,
-             groups,
-             popup,
-             visible,
-             json,
-             cluster,
-             labels) = self.getLayersAndGroups()
-            outputFile = writeOL(self.iface,
-                                 layers,
-                                 groups,
-                                 popup,
-                                 visible,
-                                 json,
-                                 cluster,
-                                 labels,
-                                 params,
-                                 folder)
+            (layers, groups, popup, visible,
+             json, cluster, labels) = self.getLayersAndGroups()
+            outputFile = writeOL(self.iface, layers, groups, popup, visible,
+                                 json, cluster, labels, params, folder)
             webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
         if folder:
-            (layers,
-             groups,
-             popup,
-             visible,
-             json,
-             cluster,
-             labels) = self.getLayersAndGroups()
-            outputFile = writeLeaflet(self.iface,
-                                      folder,
-                                      600,
-                                      400,
-                                      1,
-                                      layers,
-                                      visible,
-                                      "",
-                                      cluster,
-                                      labels,
-                                      0,
-                                      0,
-                                      json,
-                                      params,
-                                      popup)
+            (layers, groups, popup, visible,
+             json, cluster, labels) = self.getLayersAndGroups()
+            outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers,
+                                      visible, "", cluster, labels, 0, 0,
+                                      json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
     def getParameters(self):
@@ -446,8 +377,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
 class TreeGroupItem(QTreeWidgetItem):
 
-    groupIcon = QIcon(os.path.join(os.path.dirname(__file__),
-                                   "icons",
+    groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "group.gif"))
 
     def __init__(self, name, layers, tree):
@@ -471,8 +401,7 @@ class TreeGroupItem(QTreeWidgetItem):
 
 class TreeLayerItem(QTreeWidgetItem):
 
-    layerIcon = QIcon(os.path.join(os.path.dirname(__file__),
-                                   "icons",
+    layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "layer.png"))
 
     def __init__(self, iface, layer, tree, dlg):
@@ -620,15 +549,11 @@ class TreeSettingItem(QTreeWidgetItem):
             self.combo.highlighted.connect(self.clickCombo)
             self.combo.currentIndexChanged.connect(dlg.saveComboSettings)
         else:
-            # self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
 
     def clickCombo(self):
         global selectedCombo
         selectedCombo = self.name
-
-#    def toggleEnabled(self, enabledBool):
-#        self.setEnabled(enabledBool)
 
     def value(self):
         if isinstance(self._value, bool):
