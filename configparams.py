@@ -20,8 +20,8 @@ from utils import tempFolder
 
 
 def getTemplates():
-    folder = os.path.join(os.path.dirname(__file__), "templates")
-    return tuple(f[:f.find(".")] for f in os.listdir(folder) if f.endswith("html"))
+    fl = os.path.join(os.path.dirname(__file__), "templates")
+    return tuple(f[:f.find(".")] for f in os.listdir(fl) if f.endswith("html"))
 
 paramsOL = {
     "Appearance": {
@@ -61,7 +61,8 @@ paramsOL = {
     },
     "Data export": {
         "Export folder": tempFolder(),
-        "Precision": ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"),
+        "Precision": ("1", "2", "3", "4", "5", "6", "7", "8",
+                      "9", "10", "11", "12", "13", "14", "15"),
         "Minify GeoJSON files": True,
         "Delete unused fields": True,
         "Mapping library location": ("Local", "CDN")
@@ -70,8 +71,14 @@ paramsOL = {
         "Use layer scale dependent visibility": False,
         "Extent": ("Canvas extent", "Fit to layers extent"),
         "Restrict to extent": False,
-        "Max zoom level": ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28"),
-        "Min zoom level": ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28"),
+        "Max zoom level": ("1", "2", "3", "4", "5", "6", "7",
+                           "8", "9", "10", "11", "12", "13", "14",
+                           "15", "16", "17", "18", "19", "20", "21",
+                           "22", "23", "24", "25", "26", "27", "28"),
+        "Min zoom level": ("1", "2", "3", "4", "5", "6", "7",
+                           "8", "9", "10", "11", "12", "13", "14",
+                           "15", "16", "17", "18", "19", "20", "21",
+                           "22", "23", "24", "25", "26", "27", "28"),
     }
 }
 
