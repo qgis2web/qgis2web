@@ -13,9 +13,9 @@ install:
   - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update
   - sudo apt-get install -y qgis
+  - pip install --upgrade pip
   - pip install coverage
   - pip install nosexcover
-  - pip install --upgrade pip
   - pip install --upgrade pep8
   - pip install --upgrade pylint
   - pip install nose-faulthandler
@@ -28,7 +28,7 @@ before_script:
   - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
 
 script:
-  - pep8 --ignore=E501 --exclude=test ./
+  - pep8 --exclude=test ./
   - make pylint
   - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
