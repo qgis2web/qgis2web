@@ -15,8 +15,7 @@ def scaleDependentLayerScript(layer, layerName):
         feature_group.addLayer(json_{layerName}JSON);
     }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
         feature_group.removeLayer(json_{layerName}JSON);
-    }}""".format(min=scaleToZoom(min),
-                 max=scaleToZoom(max),
+    }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
                  layerName=layerName)
     return scaleDependentLayer
 
@@ -108,8 +107,7 @@ def basemapsScript(basemap, attribution, maxZoom):
             attribution: additional_attrib + ' {attribution}',
             maxZoom: {maxZoom}
         }});
-        basemap.addTo(map);""".format(basemap=basemap,
-                                      attribution=attribution,
+        basemap.addTo(map);""".format(basemap=basemap, attribution=attribution,
                                       maxZoom=maxZoom)
     return basemaps
 
@@ -165,15 +163,9 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     return popup
 
 
-def pointStyleLabelScript(safeLayerName,
-                          radius,
-                          borderWidth,
-                          borderStyle,
-                          colorName,
-                          borderColor,
-                          borderOpacity,
-                          opacity,
-                          labeltext):
+def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
+                          colorName, borderColor, borderOpacity,
+                          opacity, labeltext):
     pointStyleLabel = """
         function doStyle{safeLayerName}() {{
             return {{
@@ -188,15 +180,12 @@ def pointStyleLabelScript(safeLayerName,
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName,
-                     radius=radius,
-                     colorName=colorName,
-                     borderColor=borderColor,
+        }}""".format(safeLayerName=safeLayerName, radius=radius,
+                     colorName=colorName, borderColor=borderColor,
                      borderWidth=borderWidth * 4,
                      borderOpacity=borderOpacity if borderStyle != 0 else 0,
                      dashArray=getLineStyle(borderStyle, borderWidth),
-                     opacity=opacity,
-                     labeltext=labeltext)
+                     opacity=opacity, labeltext=labeltext)
     return pointStyleLabel
 
 
@@ -210,8 +199,7 @@ def doPointToLayerScript(safeLayerName, labeltext):
     return """
         function doPointToLayer{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName,
-                     labeltext=labeltext)
+        }}""".format(safeLayerName=safeLayerName, labeltext=labeltext)
 
 
 def wfsScript(scriptTag):
@@ -286,10 +274,8 @@ def simpleLineStyleScript(radius, colorName, penStyle, opacity):
                 color: '{colorName}',
                 dashArray: '{penStyle}',
                 opacity: {opacity}
-            }};""".format(radius=radius * 4,
-                          colorName=colorName,
-                          penStyle=penStyle,
-                          opacity=opacity)
+            }};""".format(radius=radius * 4, colorName=colorName,
+                          penStyle=penStyle, opacity=opacity)
     return lineStyle
 
 
@@ -303,12 +289,9 @@ def singlePolyStyleScript(radius, colorName, borderOpacity,
                 dashArray: '{penStyle}',
                 opacity: {borderOpacity},
                 fillOpacity: {opacity}
-            }};""".format(radius=radius,
-                          colorName=colorName,
-                          fillColor=fillColor,
-                          penStyle=penStyle,
-                          borderOpacity=borderOpacity,
-                          opacity=opacity)
+            }};""".format(radius=radius, colorName=colorName,
+                          fillColor=fillColor, penStyle=penStyle,
+                          borderOpacity=borderOpacity, opacity=opacity)
     return polyStyle
 
 
@@ -458,8 +441,7 @@ def rangeStartScript(valueAttr, r):
     rangeStart = """
         if (feature.properties.{valueAttr} >= {lowerValue} &&
                 feature.properties.{valueAttr} <= {upperValue}) {{
-""".format(valueAttr=valueAttr,
-           lowerValue=r.lowerValue(),
+""".format(valueAttr=valueAttr, lowerValue=r.lowerValue(),
            upperValue=r.upperValue())
     return rangeStart
 
@@ -481,8 +463,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
            fillColor=symbol.color().name(),
            color=symbol.symbolLayer(0).borderColor().name(),
            lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
-           opacity=opacity,
-           borderOpacity=borderOpacity,
+           opacity=opacity, borderOpacity=borderOpacity,
            dashArray=getLineStyle(symbol.symbolLayer(0).outlineStyle(),
                                   symbol.symbolLayer(0).outlineWidth()))
     return graduatedPointStyles
@@ -530,12 +511,9 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 opacity: '{borderOpacity}',
                 fillOpacity: '{opacity}',
             }}
-        }}""".format(color=symbolLayer.borderColor().name(),
-                     weight=weight,
-                     dashArray=dashArray,
-                     fillColor=fillColor,
-                     borderOpacity=borderOpacity,
-                     opacity=opacity)
+        }}""".format(color=symbolLayer.borderColor().name(), weight=weight,
+                     dashArray=dashArray, fillColor=fillColor,
+                     borderOpacity=borderOpacity, opacity=opacity)
     return graduatedPolygonStyles
 
 
@@ -585,10 +563,8 @@ def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
         format: '{wms_format}',
         transparent: true,
         continuousWorld : true,
-    }});""".format(safeLayerName=safeLayerName,
-                   wms_url=wms_url,
-                   wms_layer=wms_layer,
-                   wms_format=wms_format)
+    }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
+                   wms_layer=wms_layer, wms_format=wms_format)
     return wms
 
 
@@ -601,8 +577,7 @@ def rasterScript(safeLayerName, out_raster_name, bounds):
                                              bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """"{safeLayerName}, img_bounds_{safeLayerName});
-""".format(safeLayerName=safeLayerName,
-           out_raster_name=out_raster_name,
+""".format(safeLayerName=safeLayerName, out_raster_name=out_raster_name,
            bounds=bounds)
     return raster
 
