@@ -1,13 +1,8 @@
 import re
 
 
-def buildPointWFS(pointStyleLabel,
-                  layerName,
-                  layerSource,
-                  categoryStr,
-                  cluster_set,
-                  cluster_num,
-                  visible):
+def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
+                  cluster_set, cluster_num, visible):
     scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
@@ -61,11 +56,8 @@ def buildNonPointJSON(categoryStr, safeName, usedFields):
     return new_obj
 
 
-def buildNonPointWFS(layerName,
-                     layerSource,
-                     categoryStr,
-                     stylestr,
-                     visible):
+def buildNonPointWFS(layerName, layerSource, categoryStr,
+                     stylestr, visible):
     scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback"
     scriptTag += "%3Aget{layerName}Json".format(layerName=layerName)
