@@ -39,21 +39,9 @@ basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
 
 
-def writeLeaflet(iface,
-                 outputProjectFileName,
-                 width,
-                 height,
-                 full,
-                 layer_list,
-                 visible,
-                 opacity_raster,
-                 cluster,
-                 labels,
-                 labelhover,
-                 selected,
-                 json,
-                 params,
-                 popup):
+def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
+                 visible, opacity_raster, cluster, labels, labelhover,
+                 selected, json, params, popup):
     legends = {}
     canvas = iface.mapCanvas()
     project = QgsProject.instance()
@@ -89,14 +77,9 @@ def writeLeaflet(iface,
     QgsApplication.initQgis()
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir,
-                                               outputProjectFileName,
-                                               cluster,
-                                               labels,
-                                               measure,
-                                               matchCRS,
-                                               canvas,
-                                               mapLibLocation,
-                                               locate)
+                                               outputProjectFileName, cluster,
+                                               labels, measure, matchCRS,
+                                               canvas, mapLibLocation, locate)
     writeHTMLstart(outputIndex,
                    title,
                    cluster,
@@ -948,15 +931,8 @@ def categorizedPoint(outputProjectFileName,
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
-        safeLabel = re.sub('[\W_]+', '', cat.label())
-        legendIcon.save(os.path.join(outputProjectFileName,
-                                     "legend",
-                                     layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-        catLegend += layerName + "_" + safeLabel + """.png" /> """
-        catLegend += cat.label() + "<br />"
+        catLegend = iconLegend(symbol, cat, outputProjectFileName,
+                               layerName, catLegend)
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -1010,15 +986,8 @@ def categorizedLine(outputProjectFileName,
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
-        safeLabel = re.sub('[\W_]+', '', cat.label())
-        legendIcon.save(os.path.join(outputProjectFileName,
-                                     "legend",
-                                     layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-        catLegend += layerName + "_" + safeLabel + """.png" /> """
-        catLegend += cat.label() + "<br />"
+        catLegend = iconLegend(symbol, cat, outputProjectFileName,
+                               layerName, catLegend)
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -1062,15 +1031,8 @@ def categorizedPolygon(outputProjectFileName,
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
-        safeLabel = re.sub('[\W_]+', '', cat.label())
-        legendIcon.save(os.path.join(outputProjectFileName,
-                                     "legend",
-                                     layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-        catLegend += layerName + "_" + safeLabel + """.png" /> """
-        catLegend += cat.label() + "<br />"
+        catLegend = iconLegend(symbol, cat, outputProjectFileName,
+                               layerName, catLegend)
         symbol_transp = symbol.alpha()
         symbolLayer = symbol.symbolLayer(0)
         border_transp = float(symbolLayer.borderColor().alpha()) / 255
@@ -1192,15 +1154,8 @@ def graduatedPoint(outputProjectFileName,
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
-        safeLabel = re.sub('[\W_]+', '', r.label())
-        legendIcon.save(os.path.join(outputProjectFileName,
-                                     "legend",
-                                     layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-        catLegend += layerName + "_" + safeLabel + """.png" /> """
-        catLegend += r.label() + "<br />"
+        catLegend = iconLegend(symbol, r, outputProjectFileName,
+                               layerName, catLegend)
         symbol_transp = symbol.alpha()
         symbolLayer = symbol.symbolLayer(0)
         border_transp = float(symbolLayer.borderColor().alpha()) / 255
@@ -1252,15 +1207,8 @@ def graduatedLine(outputProjectFileName,
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
-        safeLabel = re.sub('[\W_]+', '', r.label())
-        legendIcon.save(os.path.join(outputProjectFileName,
-                                     "legend",
-                                     layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-        catLegend += layerName + "_" + safeLabel + """.png" /> """
-        catLegend += r.label() + "<br />"
+        catLegend = iconLegend(symbol, r, outputProjectFileName,
+                               layerName, catLegend)
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -1303,15 +1251,8 @@ def graduatedPolygon(outputProjectFileName,
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
-        safeLabel = re.sub('[\W_]+', '', r.label())
-        legendIcon.save(os.path.join(outputProjectFileName,
-                                     "legend",
-                                     layerName + "_" + safeLabel + ".png"))
-        catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-        catLegend += layerName + "_" + safeLabel + """.png" /> """
-        catLegend += r.label() + "<br />"
+        catLegend = iconLegend(symbol, r, outputProjectFileName,
+                               layerName, catLegend)
         symbol_transp = symbol.alpha()
         symbolLayer = symbol.symbolLayer(0)
         border_transp = float(symbolLayer.borderColor().alpha()) / 255
@@ -1337,3 +1278,16 @@ def graduatedPolygon(outputProjectFileName,
                                     safeLayerName,
                                     usedFields[count])
     return new_obj, catLegend, wfsLayers
+
+
+def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
+    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                           QSize(16, 16))
+    safeLabel = re.sub('[\W_]+', '', catr.label())
+    legendIcon.save(os.path.join(outputProjectFileName,
+                                 "legend",
+                                 layerName + "_" + safeLabel + ".png"))
+    catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+    catLegend += layerName + "_" + safeLabel + """.png" /> """
+    catLegend += catr.label() + "<br />"
+    return catLegend
