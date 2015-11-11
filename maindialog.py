@@ -179,6 +179,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             if layer.type() != QgsMapLayer.PluginLayer:
+                try:
                     if layer.type() == QgsMapLayer.VectorLayer:
                         testDump = layer.rendererV2().dump()
                     layer_parent = tree_layer.parent()
@@ -194,6 +195,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         # Layer parent is not a root, it's a group then
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
+                except:
+                    pass
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
