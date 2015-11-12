@@ -765,9 +765,8 @@ def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
          cluster_num) = graduatedPoint(outputProjectFileName, i, layerName,
                                        safeLayerName, renderer, catLegend,
                                        layer_transp, json, count, labeltext,
-                                       popFuncs, usedFields, cluster,
-                                       cluster_num, visible, wfsLayers,
-                                       categoryStr)
+                                       usedFields, cluster, cluster_num,
+                                       visible, wfsLayers, categoryStr)
     elif i.geometryType() == QGis.Line:
         new_obj, wfsLayers, catLegend = graduatedLine(outputProjectFileName, i,
                                                       layerName, safeLayerName,
@@ -793,7 +792,7 @@ def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
 
 def graduatedPoint(outputProjectFileName, i, layerName, safeLayerName,
                    renderer, catLegend, layer_transp, json, count, labeltext,
-                   popFuncs, usedFields, cluster, cluster_num, visible,
+                   usedFields, cluster, cluster_num, visible,
                    wfsLayers, categoryStr):
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
