@@ -152,7 +152,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
                                                          unicode(v).lower())])
 
-    # ADD Group
     group_list = ["baseLayer"]
     no_group_list = []
     for layer in layers:
@@ -176,7 +175,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersListString + "\n")
-        # f.write(write_group_list)
 
 
 def replaceInTemplate(template, values):
@@ -446,7 +444,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
 
             for prop in props:
-                print prop, props[prop]
             fillColor = getRGBAColor(props["color"], alpha)
 
             # for old version

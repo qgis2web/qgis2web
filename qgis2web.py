@@ -18,20 +18,16 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-# Import the PyQt and QGIS libraries
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-# Initialize Qt resources from file resources.py
 import resources_rc
-# Import the code for the dialog
 from maindialog import MainDialog
 
 
 class Qgis2Web(object):
     """Class abstraction for managing Qgis2Web plugin in QGIS."""
     def __init__(self, iface):
-        # Save reference to the QGIS interface
         self.iface = iface
 
     def initGui(self):

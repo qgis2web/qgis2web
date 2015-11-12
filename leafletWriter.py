@@ -105,7 +105,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                                            'GeoJson', selected,
                                            layerOptions=[options])
 
-                # now change the data structure to work with leaflet:
                 with open(layerFileName, "w") as f2:
                     f2.write("var json_" + unicode(safeLayerName) + "=")
                     with open(tmpFileName, "r") as tmpFile:
@@ -117,14 +116,11 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                     os.remove(tmpFileName)
                     f2.close
 
-                # now add the js files as data input for our map
                 with open(outputIndex, 'a') as f3:
                     new_src = jsonScript(safeLayerName)
-                    # store everything in the file
                     f3.write(new_src)
                     f3.close()
 
-            # raster layers - you need an installed version of gdal
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
                     in_raster = unicode(i.dataProvider().dataSourceUri())
@@ -152,7 +148,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
-    # now determine the canvas bounding box
+
     try:
         crsSrc = mapSettings.destinationCrs()
     except:
@@ -165,7 +161,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                                   mapSettings.selectionColor().name())
     if extent == "Canvas extent":
         pt0 = canvas.extent()
-        crsDest = QgsCoordinateReferenceSystem(4326)  # WGS 84 / UTM zone 33N
+        crsDest = QgsCoordinateReferenceSystem(4326)
         xform = QgsCoordinateTransform(crsSrc, crsDest)
         pt1 = xform.transform(pt0)
         bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
@@ -214,7 +210,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 layer_transp = 1 - (float(i.layerTransparency()) / 100)
                 new_obj = ""
 
-                # single marker points:
                 if (isinstance(renderer, QgsSingleSymbolRendererV2) or
                         isinstance(renderer, QgsRuleBasedRendererV2)):
                     (new_obj,
@@ -284,7 +279,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             else:
                 out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
                 pt2 = i.extent()
-                crsSrc = i.crs()    # WGS 84
+                crsSrc = i.crs()
                 crsDest = QgsCoordinateReferenceSystem(4326)
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
                 pt3 = xform.transform(pt2)
@@ -320,7 +315,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             f5addr.write(address_text)
             f5addr.close()
 
-    # let's add layer control
     if params["Appearance"]["Add layers list"]:
         if len(basemapName) == 0 or basemapName == "None" or matchCRS:
             controlStart = """
@@ -330,20 +324,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         var baseMaps = {
             '""" + unicode(basemapName) + """': basemap
         };"""
-    #    if len(basemapName) > 1:
-    #        controlStart = """
-    #    var baseMaps = {"""
-    #        for l in range(0,len(basemapName)):
-    #            if l < len(basemapName)-1:
-    #                controlStart+= """
-    #        '""" + unicode(basemapName[l]) + "': basemap_" + unicode(l) + ","
-    #            if l == len(basemapName)-1:
-    #                controlStart+= """
-    #        '""" + unicode(basemapName[l]) + "': basemap_" + unicode(l) + "};"
-        # if len
-        # control_basemap = """
-        # var baseMaps = {"""
-        # for l in range(0,len(basemapName)):
         if len(basemapName) == 0 or basemapName == "None":
             controlStart += """
             L.control.layers({},{"""
@@ -434,7 +414,6 @@ def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels,
     field_names = [field.name() for field in fields]
     if usedFields[count] != 0 and usedFields[count] != 1:
         for field in field_names:
-            # for popup_field in usedFields:
             if field == usedFields[count]:
                 new_field_names.append(field)
         field_names = new_field_names
@@ -489,7 +468,6 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
                 wfsLayers, i, layer_transp, icon_prov, labeltext, cluster,
                 cluster_num, visible, json, usedFields, legends, count,
                 popFuncs):
-    print "SINGLE"
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     else:
@@ -533,7 +511,6 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
 def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
                 safeLayerName, colorName, fill_opacity, labeltext, i, cluster,
                 cluster_num, visible, json, usedFields, wfsLayers, count):
-    print "POINT"
     radius = unicode(symbol.size() * 2)
     try:
         borderStyle = symbolLayer.outlineStyle()
@@ -570,7 +547,6 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
 
 def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
                safeLayerName, wfsLayers, popFuncs, visible, usedFields, count):
-    print "LINE"
     radius = symbol.width()
     try:
         penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
@@ -594,7 +570,6 @@ def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
 def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
                   layer_transp, symbol_transp, fill_opacity, visible, json,
                   usedFields, popFuncs, wfsLayers, count):
-    print "POLYGON"
     borderStyle = ""
     if (symbolLayer.layerType() == 'SimpleLine' or
             isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
@@ -639,7 +614,6 @@ def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
                      outputProjectFileName, layer_transp, usedFields, count,
                      legends, labeltext, cluster, cluster_num, popFuncs,
                      visible, json, wfsLayers):
-    print "CATEGORIZED"
     catLegend = i.name() + "<br />"
     if i.geometryType() == QGis.Point and not icon_prov:
         new_obj, wfsLayers = categorizedPoint(outputProjectFileName, i,
@@ -673,7 +647,6 @@ def categorizedPoint(outputProjectFileName, i, renderer, layerName,
                      safeLayerName, layer_transp, labeltext, popFuncs, cluster,
                      cluster_num, usedFields, visible, json, count,
                      wfsLayers, catLegend):
-    print "POINT"
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
     categoryStr = categoryScript(layerName, valueAttr)
@@ -716,7 +689,6 @@ def categorizedPoint(outputProjectFileName, i, renderer, layerName,
 def categorizedLine(outputProjectFileName, i, layerName, safeLayerName,
                     renderer, catLegend, layer_transp, popFuncs, usedFields,
                     json, visible, count, wfsLayers):
-    print "LINE"
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
     categoryStr = categoryScript(layerName, valueAttr)
@@ -748,7 +720,6 @@ def categorizedLine(outputProjectFileName, i, layerName, safeLayerName,
 def categorizedPolygon(outputProjectFileName, i, renderer, layerName,
                        safeLayerName, catLegend, layer_transp, usedFields,
                        visible, json, count, popFuncs, wfsLayers):
-    print "POLYGON"
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
     categoryStr = categoryScript(layerName, valueAttr)
@@ -785,7 +756,6 @@ def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
                    outputProjectFileName, layer_transp, labeltext, popFuncs,
                    cluster, cluster_num, visible, json, usedFields, count,
                    legends, wfsLayers):
-    print "GRADUATED"
     catLegend = i.name() + "<br />"
     categoryStr = graduatedStyleScript(layerName)
     if i.geometryType() == QGis.Point and not icon_prov:
@@ -825,7 +795,6 @@ def graduatedPoint(outputProjectFileName, i, layerName, safeLayerName,
                    renderer, catLegend, layer_transp, json, count, labeltext,
                    popFuncs, usedFields, cluster, cluster_num, visible,
                    wfsLayers, categoryStr):
-    print "POINT"
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
@@ -853,7 +822,6 @@ def graduatedPoint(outputProjectFileName, i, layerName, safeLayerName,
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
                                                            labeltext,
                                                            usedFields[count])
-        # add points to the cluster group
         if cluster[count] == True:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
@@ -863,7 +831,6 @@ def graduatedPoint(outputProjectFileName, i, layerName, safeLayerName,
 def graduatedLine(outputProjectFileName, i, layerName, safeLayerName, renderer,
                   catLegend, layer_transp, popFuncs, usedFields, json, visible,
                   count, wfsLayers, categoryStr):
-    print "LINE"
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()
@@ -890,7 +857,6 @@ def graduatedLine(outputProjectFileName, i, layerName, safeLayerName, renderer,
 def graduatedPolygon(outputProjectFileName, i, renderer, layerName,
                      safeLayerName, catLegend, layer_transp, usedFields,
                      visible, json, count, popFuncs, wfsLayers, categoryStr):
-    print "POLYGON"
     valueAttr = renderer.classAttribute()
     for r in renderer.ranges():
         symbol = r.symbol()

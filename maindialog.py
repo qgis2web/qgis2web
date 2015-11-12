@@ -166,9 +166,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
         root_node = QgsProject.instance().layerTreeRoot()
-        # All tree group
         tree_groups = []
-        # Get all the tree layers
         tree_layers = root_node.findLayers()
         self.layers_item = QTreeWidgetItem()
         self.layers_item.setText(0, "Layers and Groups")
@@ -181,13 +179,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                         testDump = layer.rendererV2().dump()
                     layer_parent = tree_layer.parent()
                     if layer_parent.parent() is None:
-                        # Layer parent is a root node.
-                        # This is an orphan layer (has no parent) :(
                         item = TreeLayerItem(self.iface, layer,
                                              self.layersTree, dlg)
                         self.layers_item.addChild(item)
                     else:
-                        # Layer parent is not a root, it's a group then
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
                 except:
