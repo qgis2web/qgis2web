@@ -619,7 +619,7 @@ def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
         new_obj, wfsLayers = categorizedPoint(outputProjectFileName, i,
                                               renderer, layerName,
                                               safeLayerName, layer_transp,
-                                              labeltext, popFuncs, cluster,
+                                              labeltext, cluster,
                                               cluster_num, usedFields, visible,
                                               json, count, wfsLayers,
                                               catLegend)
@@ -644,7 +644,7 @@ def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
 
 
 def categorizedPoint(outputProjectFileName, i, renderer, layerName,
-                     safeLayerName, layer_transp, labeltext, popFuncs, cluster,
+                     safeLayerName, layer_transp, labeltext, cluster,
                      cluster_num, usedFields, visible, json, count,
                      wfsLayers, catLegend):
     categories = renderer.categories()
