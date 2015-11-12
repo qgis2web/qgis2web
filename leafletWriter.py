@@ -503,7 +503,7 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
                                            symbolLayer, colorName,
                                            layer_transp, symbol_transp,
                                            fill_opacity, visible, json,
-                                           usedFields, popFuncs, wfsLayers,
+                                           usedFields, wfsLayers,
                                            count)
     return new_obj, legends, wfsLayers
 
@@ -569,7 +569,7 @@ def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
 
 def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
                   layer_transp, symbol_transp, fill_opacity, visible, json,
-                  usedFields, popFuncs, wfsLayers, count):
+                  usedFields, wfsLayers, count):
     borderStyle = ""
     if (symbolLayer.layerType() == 'SimpleLine' or
             isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
