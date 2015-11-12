@@ -85,112 +85,115 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
-    def test09_Leaflet_shp_pnt_simple(self):
-        """Leaflet shape point simple (test_qgis2web_dialog.test_Leaflet_shp_pnt_simple)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/places_few_1.shp", "point feature", "ogr")
+    def test09_Leaflet_shp_pnt_single(self):
+        """Leaflet shape point single (test_qgis2web_dialog.test_Leaflet_shp_pnt_single)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test10_Leaflet_shp_line_simple(self):
-        """Leaflet shape line simple (test_qgis2web_dialog.test_Leaflet_shp_line_simple)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
+    def test10_Leaflet_shp_line_single(self):
+        """Leaflet shape line single (test_qgis2web_dialog.test_Leaflet_shp_line_single)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test11_Leaflet_shp_poly_simple(self):
-        """Leaflet shape polygon simple (test_qgis2web_dialog.test_Leaflet_shp_poly_simple)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_feature.shp", "polygon feature", "ogr")
+    def test11_Leaflet_shp_poly_single(self):
+        """Leaflet shape polygon single (test_qgis2web_dialog.test_Leaflet_shp_poly_single)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test12_Leaflet_shp_pnt_categorized(self):
         """Leaflet shape point categorized (test_qgis2web_dialog.test_Leaflet_shp_pnt_categorized)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/places_few_1.shp", "point feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test13_Leaflet_shp_line_categorized(self):
         """Leaflet shape line categorized (test_qgis2web_dialog.test_Leaflet_shp_line_categorized)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test14_Leaflet_shp_poly_categorized(self):
         """Leaflet shape polygon categorized (test_qgis2web_dialog.test_Leaflet_shp_poly_categorized)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_feature.shp", "polygon feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test15_Leaflet_shp_pnt_graduated(self):
         """Leaflet shape point graduated (test_qgis2web_dialog.test_Leaflet_shp_pnt_graduated)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/places_few_1.shp", "point feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test16_Leaflet_shp_line_graduated(self):
         """Leaflet shape line graduated (test_qgis2web_dialog.test_Leaflet_shp_line_graduated)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line_feature.shp", "line feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test17_Leaflet_shp_poly_graduated(self):
         """Leaflet shape polygon graduated (test_qgis2web_dialog.test_Leaflet_shp_poly_graduated)."""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_feature.shp", "polygon feature", "ogr")
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_simple.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
