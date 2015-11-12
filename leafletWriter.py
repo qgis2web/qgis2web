@@ -839,7 +839,7 @@ def graduatedLine(outputProjectFileName, i, layerName, safeLayerName, renderer,
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedLineStylesScript(valueAttr, r, categoryStr,
+        categoryStr += graduatedLineStylesScript(valueAttr, r,
                                                  symbol, fill_opacity)
     categoryStr += endGraduatedStyleScript()
     if i.providerType() == 'WFS' and json[count] == False:

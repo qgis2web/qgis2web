@@ -469,7 +469,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     return graduatedPointStyles
 
 
-def graduatedLineStylesScript(valueAttr, r, categoryStr, symbol, opacity):
+def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
     graduatedLineStyles = rangeStartScript(valueAttr, r)
     graduatedLineStyles += """
             return {{
