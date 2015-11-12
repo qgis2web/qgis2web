@@ -484,15 +484,12 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
     fill_transp = float(symbol.color().alpha()) / 255
     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
     if i.geometryType() == QGis.Point and not icon_prov:
-        new_obj, cluster_num, wfsLayers = singlePoint(symbol, symbolLayer,
-                                                      layer_transp,
-                                                      symbol_transp, layerName,
-                                                      safeLayerName, colorName,
-                                                      fill_opacity, labeltext,
-                                                      i, cluster, cluster_num,
-                                                      visible, json,
-                                                      usedFields, wfsLayers,
-                                                      count)
+        (new_obj, cluster_num,
+         wfsLayers) = singlePoint(symbol, symbolLayer, layer_transp,
+                                  symbol_transp, layerName, safeLayerName,
+                                  colorName, fill_opacity, labeltext, i,
+                                  cluster, cluster_num, visible, json,
+                                  usedFields, wfsLayers, count)
     elif i.geometryType() == QGis.Line:
         new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, i,
                                         json, layerName, safeLayerName,
@@ -503,8 +500,7 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
                                            symbolLayer, colorName,
                                            layer_transp, symbol_transp,
                                            fill_opacity, visible, json,
-                                           usedFields, wfsLayers,
-                                           count)
+                                           usedFields, wfsLayers, count)
     return new_obj, legends, wfsLayers
 
 
@@ -530,11 +526,10 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
                                             fill_opacity, labeltext)
     pointToLayer = pointToLayerScript(safeLayerName)
     if i.providerType() == 'WFS' and json[count] == False:
-        new_obj, scriptTag, cluster_num = buildPointWFS(pointStyleLabel,
-                                                        layerName, i.source(),
-                                                        "", cluster[count],
-                                                        cluster_num,
-                                                        visible[count])
+        new_obj, scriptTag,
+        cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(),
+                                    "", cluster[count], cluster_num,
+                                    visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = jsonPointScript(pointStyleLabel, safeLayerName,
@@ -616,22 +611,18 @@ def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
                      visible, json, wfsLayers):
     catLegend = i.name() + "<br />"
     if i.geometryType() == QGis.Point and not icon_prov:
-        new_obj, wfsLayers = categorizedPoint(outputProjectFileName, i,
-                                              renderer, layerName,
-                                              safeLayerName, layer_transp,
-                                              labeltext, cluster,
-                                              cluster_num, usedFields, visible,
-                                              json, count, wfsLayers,
-                                              catLegend)
+        (new_obj,
+         wfsLayers) = categorizedPoint(outputProjectFileName, i, renderer,
+                                       layerName, safeLayerName, layer_transp,
+                                       labeltext, cluster, cluster_num,
+                                       usedFields, visible, json, count,
+                                       wfsLayers, catLegend)
     elif i.geometryType() == QGis.Line:
-        new_obj, wfsLayers, catLegend = categorizedLine(outputProjectFileName,
-                                                        i, layerName,
-                                                        safeLayerName,
-                                                        renderer, catLegend,
-                                                        layer_transp, popFuncs,
-                                                        usedFields, json,
-                                                        visible, count,
-                                                        wfsLayers)
+        (new_obj, wfsLayers,
+         catLegend) = categorizedLine(outputProjectFileName, i, layerName,
+                                      safeLayerName, renderer, catLegend,
+                                      layer_transp, popFuncs, usedFields, json,
+                                      visible, count, wfsLayers)
     elif i.geometryType() == QGis.Polygon:
         (new_obj,
          catLegend,
@@ -669,12 +660,10 @@ def categorizedPoint(outputProjectFileName, i, renderer, layerName,
     categoryStr += endCategoryScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedPointWFSscript(layerName, labeltext)
-        new_obj, scriptTag, cluster_num = buildPointWFS(stylestr, layerName,
-                                                        i.source(),
-                                                        categoryStr,
-                                                        cluster[count],
-                                                        cluster_num,
-                                                        visible[count])
+        (new_obj, scriptTag,
+         cluster_num) = buildPointWFS(stylestr, layerName, i.source(),
+                                      categoryStr, cluster[count], cluster_num,
+                                      visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
@@ -768,24 +757,18 @@ def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
                                        usedFields, cluster, cluster_num,
                                        visible, wfsLayers, categoryStr)
     elif i.geometryType() == QGis.Line:
-        new_obj, wfsLayers, catLegend = graduatedLine(outputProjectFileName, i,
-                                                      layerName, safeLayerName,
-                                                      renderer, catLegend,
-                                                      layer_transp, popFuncs,
-                                                      usedFields, json,
-                                                      visible, count,
-                                                      wfsLayers, categoryStr)
+        (new_obj, wfsLayers,
+         catLegend) = graduatedLine(outputProjectFileName, i, layerName,
+                                    safeLayerName, renderer, catLegend,
+                                    layer_transp, popFuncs, usedFields, json,
+                                    visible, count, wfsLayers, categoryStr)
     elif i.geometryType() == QGis.Polygon:
-        new_obj, catLegend, wfsLayers = graduatedPolygon(outputProjectFileName,
-                                                         i, renderer,
-                                                         layerName,
-                                                         safeLayerName,
-                                                         catLegend,
-                                                         layer_transp,
-                                                         usedFields, visible,
-                                                         json, count, popFuncs,
-                                                         wfsLayers,
-                                                         categoryStr)
+        (new_obj, catLegend,
+         wfsLayers) = graduatedPolygon(outputProjectFileName, i, renderer,
+                                       layerName, safeLayerName, catLegend,
+                                       layer_transp, usedFields, visible,
+                                       json, count, popFuncs, wfsLayers,
+                                       categoryStr)
     legends[layerName] = catLegend
     return new_obj, legends, wfsLayers
 
@@ -810,12 +793,10 @@ def graduatedPoint(outputProjectFileName, i, layerName, safeLayerName,
     categoryStr += endGraduatedStyleScript()
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = categorizedPointWFSscript(layerName, labeltext)
-        new_obj, scriptTag, cluster_num = buildPointWFS(stylestr, layerName,
-                                                        i.source(),
-                                                        categoryStr,
-                                                        cluster[count],
-                                                        cluster_num,
-                                                        visible[count])
+        (new_obj, scriptTag,
+         cluster_num) = buildPointWFS(stylestr, layerName, i.source(),
+                                      categoryStr, cluster[count], cluster_num,
+                                      visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
