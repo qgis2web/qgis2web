@@ -100,7 +100,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test10_Leaflet_wfs_pnt_single(self):
         """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)."""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointfeatureJson", "point feature", "WFS")
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointfeatureJson", "pointfeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -124,7 +124,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test12_Leaflet_wfs_line_single(self):
         """Leaflet WFS line single (test_qgis2web_dialog.test_Leaflet_wfs_line_single)."""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlinefeatureJson", "line feature", "wfs")
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlinefeatureJson", "linefeature", "wfs")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -146,7 +146,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test14_Leaflet_wfs_poly_single(self):
         """Leaflet WFS polygon single (test_qgis2web_dialog.test_Leaflet_wfs_poly_single)."""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonfeatureJson", "polygon feature", "WFS")
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonfeatureJson", "polygonfeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -155,7 +155,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test12_Leaflet_shp_pnt_categorized(self):
+    def test15_Leaflet_shp_pnt_categorized(self):
         """Leaflet shape point categorized (test_qgis2web_dialog.test_Leaflet_shp_pnt_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
@@ -168,9 +168,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test12_Leaflet_wfs_pnt_categorized(self):
+    def test16_Leaflet_wfs_pnt_categorized(self):
         """Leaflet WFS point categorized (test_qgis2web_dialog.test_Leaflet_wfs_pnt_categorized)."""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326", "point feature", "WFS")
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointfeatureJson", "pointfeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -181,7 +181,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test13_Leaflet_shp_line_categorized(self):
+    def test17_Leaflet_shp_line_categorized(self):
         """Leaflet shape line categorized (test_qgis2web_dialog.test_Leaflet_shp_line_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
@@ -194,7 +194,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test14_Leaflet_shp_poly_categorized(self):
+    def test19_Leaflet_shp_poly_categorized(self):
         """Leaflet shape polygon categorized (test_qgis2web_dialog.test_Leaflet_shp_poly_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
@@ -207,7 +207,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test15_Leaflet_shp_pnt_graduated(self):
+    def test21_Leaflet_shp_pnt_graduated(self):
         """Leaflet shape point graduated (test_qgis2web_dialog.test_Leaflet_shp_pnt_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
@@ -220,9 +220,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test15_Leaflet_wfs_pnt_graduated(self):
+    def test22_Leaflet_wfs_pnt_graduated(self):
         """Leaflet WFS point graduated (test_qgis2web_dialog.test_Leaflet_wfs_pnt_graduated)."""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326", "point feature", "WFS")
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointfeatureJson", "pointfeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -233,7 +233,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test16_Leaflet_shp_line_graduated(self):
+    def test23_Leaflet_shp_line_graduated(self):
         """Leaflet shape line graduated (test_qgis2web_dialog.test_Leaflet_shp_line_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
@@ -246,7 +246,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test17_Leaflet_shp_poly_graduated(self):
+    def test25_Leaflet_shp_poly_graduated(self):
         """Leaflet shape polygon graduated (test_qgis2web_dialog.test_Leaflet_shp_poly_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
