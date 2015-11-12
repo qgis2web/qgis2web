@@ -442,8 +442,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                                                    line_style != "solid",
                                                    line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
-
-            for prop in props:
             fillColor = getRGBAColor(props["color"], alpha)
 
             # for old version
