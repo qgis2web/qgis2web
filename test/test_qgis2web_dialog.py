@@ -39,6 +39,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Runs after each test."""
         registry = QgsMapLayerRegistry.instance()
         registry.removeAllMapLayers()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
         self.dialog = None
 
     def test01_preview_default(self):
