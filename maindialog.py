@@ -428,7 +428,7 @@ class TreeLayerItem(QTreeWidgetItem):
             tree.setItemWidget(self.popupItem, 1, self.combo)
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
-        if layer.customProperty("qgis2web/Visible") != 0:
+        if layer.customProperty("qgis2web/Visible") == 2:
             self.visibleCheck.setChecked(True)
         self.visibleItem.setText(0, "Visible")
         self.visibleCheck.stateChanged.connect(self.changeVisible)
@@ -438,7 +438,7 @@ class TreeLayerItem(QTreeWidgetItem):
             if layer.providerType() == 'WFS':
                 self.jsonItem = QTreeWidgetItem(self)
                 self.jsonCheck = QCheckBox()
-                if layer.customProperty("qgis2web/Encode to JSON") != 0:
+                if layer.customProperty("qgis2web/Encode to JSON") == 2:
                     self.jsonCheck.setChecked(True)
                 self.jsonItem.setText(0, "Encode to JSON")
                 self.jsonCheck.stateChanged.connect(self.changeJSON)
@@ -447,7 +447,7 @@ class TreeLayerItem(QTreeWidgetItem):
             if layer.geometryType() == QGis.Point:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
-                if layer.customProperty("qgis2web/Cluster") != 0:
+                if layer.customProperty("qgis2web/Cluster") == 2:
                     self.clusterCheck.setChecked(True)
                 self.clusterItem.setText(0, "Cluster")
                 self.clusterCheck.stateChanged.connect(self.changeCluster)
@@ -459,7 +459,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.labelsItem = QTreeWidgetItem(self)
                 self.labelsCheck = QCheckBox()
                 if palyr.enabled:
-                    if layer.customProperty("qgis2web/Label") != 0:
+                    if layer.customProperty("qgis2web/Label") == 2:
                         self.labelsCheck.setChecked(True)
                 self.labelsItem.setText(0, "Label")
                 self.labelsCheck.stateChanged.connect(self.changeLabel)

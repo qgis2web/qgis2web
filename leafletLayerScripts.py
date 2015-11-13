@@ -19,7 +19,7 @@ def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
     if cluster_set:
         new_obj += """
         var cluster_group{layerName}JSON = """.format(layerName=layerName)
-        new_obj += "new L.MarkerClusterGroup({{showCoverageOnHover: false}});"
+        new_obj += "new L.MarkerClusterGroup({showCoverageOnHover: false});"
     new_obj += """
         function get{layerName}Json(geojson) {{
             json_{layerName}""".format(layerName=layerName)

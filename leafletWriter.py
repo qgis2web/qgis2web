@@ -530,10 +530,10 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
     pointToLayer = pointToLayerScript(safeLayerName)
     if i.providerType() == 'WFS' and json[count] == False:
         print "WFS"
-        new_obj, scriptTag,
-        cluster_num = buildPointWFS(pointStyleLabel, layerName, i.source(),
-                                    "", cluster[count], cluster_num,
-                                    visible[count])
+        (new_obj, scriptTag,
+         cluster_num) = buildPointWFS(pointStyleLabel, layerName, i.source(),
+                                      "", cluster[count], cluster_num,
+                                      visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
         print "SHP"
