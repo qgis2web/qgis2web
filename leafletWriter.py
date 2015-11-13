@@ -536,7 +536,7 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
                                       visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = jsonPointScript(pointStyleLabel, safeLayerName,
                                   pointToLayer, usedFields[count])
         if cluster[count]:
@@ -562,7 +562,7 @@ def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
         new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
         new_obj += restackLayers(layerName, visible[count])
@@ -607,7 +607,7 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
         new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
         new_obj += restackLayers(layerName, visible[count])
@@ -679,7 +679,7 @@ def categorizedPoint(outputProjectFileName, i, renderer, layerName,
                                       visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
                                                            labeltext,
                                                            usedFields[count])
@@ -716,7 +716,7 @@ def categorizedLine(outputProjectFileName, i, layerName, safeLayerName,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
                                     usedFields[count])
     return new_obj, wfsLayers, catLegend
@@ -753,7 +753,7 @@ def categorizedPolygon(outputProjectFileName, i, renderer, layerName,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
                                     usedFields[count])
     return new_obj, catLegend, wfsLayers
@@ -821,7 +821,7 @@ def graduatedPoint(outputProjectFileName, i, layerName, safeLayerName,
                                       visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
                                                            labeltext,
                                                            usedFields[count])
@@ -853,7 +853,7 @@ def graduatedLine(outputProjectFileName, i, layerName, safeLayerName, renderer,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
                                     usedFields[count])
     return new_obj, wfsLayers, catLegend
@@ -885,7 +885,7 @@ def graduatedPolygon(outputProjectFileName, i, renderer, layerName,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        print "SHP"
+        print "JSON"
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
                                     usedFields[count])
     return new_obj, catLegend, wfsLayers
