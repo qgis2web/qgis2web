@@ -307,6 +307,7 @@ def exportStyles(layers, folder):
             layer_transparency = layer.layerTransparency()
             if (isinstance(renderer, QgsSingleSymbolRendererV2) or
                     isinstance(renderer, QgsRuleBasedRendererV2)):
+                print "OL3 single"
                 if isinstance(renderer, QgsRuleBasedRendererV2):
                     symbol = renderer.rootRule().children()[0].symbol()
                 else:
@@ -315,6 +316,7 @@ def exportStyles(layers, folder):
                                                           layer_transparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                print "OL3 categorized"
                 defs += "var categories_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
@@ -329,6 +331,7 @@ def exportStyles(layers, folder):
                 style = ('''var style = categories_%s[value]''' %
                          (safeName(layer.name())))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                print "OL3 graduated"
                 varName = "ranges_" + safeName(layer.name())
                 defs += "var %s = [" % varName
                 ranges = []
@@ -411,6 +414,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
+            print "point"
             color = getRGBAColor(props["color"], alpha)
             size = symbol.size()
             style = "image: %s" % getCircle(color, size, props)
@@ -421,6 +425,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                      getIcon("styles/" + os.path.basename(sl.path()),
                              sl.size()))
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
+            print "line"
 
             # Check for old version
             if 'color' in props:
@@ -442,6 +447,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                                                    line_style != "solid",
                                                    line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
+            print "polygon"
             fillColor = getRGBAColor(props["color"], alpha)
 
             # for old version

@@ -87,15 +87,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
-    def test09_Leaflet_shp_pnt_single(self):
-        """Leaflet shape point single (test_qgis2web_dialog.test_Leaflet_shp_pnt_single)."""
+    def test09_Leaflet_json_pnt_single(self):
+        """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -108,13 +108,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test11_Leaflet_shp_line_single(self):
-        """Leaflet shape line single (test_qgis2web_dialog.test_Leaflet_shp_line_single)."""
+    def test11_Leaflet_json_line_single(self):
+        """Leaflet JSON line single (test_qgis2web_dialog.test_Leaflet_json_line_single)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -135,8 +135,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test13_Leaflet_shp_poly_single(self):
-        """Leaflet shape polygon single (test_qgis2web_dialog.test_Leaflet_shp_poly_single)."""
+    def test13_Leaflet_json_poly_single(self):
+        """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -157,15 +157,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test15_Leaflet_shp_pnt_categorized(self):
-        """Leaflet shape point categorized (test_qgis2web_dialog.test_Leaflet_shp_pnt_categorized)."""
+    def test15_Leaflet_json_pnt_categorized(self):
+        """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -178,20 +178,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test17_Leaflet_shp_line_categorized(self):
-        """Leaflet shape line categorized (test_qgis2web_dialog.test_Leaflet_shp_line_categorized)."""
+    def test17_Leaflet_json_line_categorized(self):
+        """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -204,20 +204,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test19_Leaflet_shp_poly_categorized(self):
-        """Leaflet shape polygon categorized (test_qgis2web_dialog.test_Leaflet_shp_poly_categorized)."""
+    def test19_Leaflet_json_poly_categorized(self):
+        """Leaflet JSON polygon categorized (test_qgis2web_dialog.test_Leaflet_json_poly_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -230,20 +230,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test21_Leaflet_shp_pnt_graduated(self):
-        """Leaflet shape point graduated (test_qgis2web_dialog.test_Leaflet_shp_pnt_graduated)."""
+    def test21_Leaflet_json_pnt_graduated(self):
+        """Leaflet JSON point graduated (test_qgis2web_dialog.test_Leaflet_json_pnt_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -256,20 +256,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test23_Leaflet_shp_line_graduated(self):
-        """Leaflet shape line graduated (test_qgis2web_dialog.test_Leaflet_shp_line_graduated)."""
+    def test23_Leaflet_json_line_graduated(self):
+        """Leaflet JSON line graduated (test_qgis2web_dialog.test_Leaflet_json_line_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -282,20 +282,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test25_Leaflet_shp_poly_graduated(self):
-        """Leaflet shape polygon graduated (test_qgis2web_dialog.test_Leaflet_shp_poly_graduated)."""
+    def test25_Leaflet_json_poly_graduated(self):
+        """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -308,10 +308,123 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
+
+    def test27_OL3_pnt_single(self):
+        """OL3 point single (test_qgis2web_dialog.test_OL3_pnt_single)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test28_OL3_line_single(self):
+        """OL3 line single (test_qgis2web_dialog.test_OL3_line_single)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test29_OL3_poly_single(self):
+        """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test30_OL3_pnt_categorized(self):
+        """OL3 point categorized (test_qgis2web_dialog.test_OL3_pnt_categorized)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_categorized.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test31_OL3_line_categorized(self):
+        """OL3 line categorized (test_qgis2web_dialog.test_OL3_line_categorized)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test32_OL3_poly_categorized(self):
+        """OL3 polygon categorized (test_qgis2web_dialog.test_OL3_poly_categorized)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test33_OL3_pnt_graduated(self):
+        """OL3 point graduated (test_qgis2web_dialog.test_OL3_pnt_graduated)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test34_OL3_line_graduated(self):
+        """OL3 line graduated (test_qgis2web_dialog.test_OL3_line_graduated)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_graduated.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
+
+    def test35_OL3_poly_graduated(self):
+        """OL3 polygon graduated (test_qgis2web_dialog.test_OL3_poly_graduated)."""
+        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
