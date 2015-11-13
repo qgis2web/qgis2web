@@ -124,7 +124,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test12_Leaflet_wfs_line_single(self):
         """Leaflet WFS line single (test_qgis2web_dialog.test_Leaflet_wfs_line_single)."""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlinefeatureJson", "linefeature", "wfs")
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlinefeatureJson", "linefeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -194,9 +194,35 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
+    def test18_Leaflet_wfs_line_categorized(self):
+        """Leaflet WFS line categorized (test_qgis2web_dialog.test_Leaflet_wfs_line_categorized)."""
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlinefeatureJson", "linefeature", "WFS")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+
     def test19_Leaflet_shp_poly_categorized(self):
         """Leaflet shape polygon categorized (test_qgis2web_dialog.test_Leaflet_shp_poly_categorized)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+
+    def test20_Leaflet_wfs_poly_categorized(self):
+        """Leaflet WFS polygon categorized (test_qgis2web_dialog.test_Leaflet_wfs_poly_categorized)."""
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonfeatureJson", "polygonfeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
@@ -246,9 +272,35 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
+    def test24_Leaflet_wfs_line_graduated(self):
+        """Leaflet WFS line graduated (test_qgis2web_dialog.test_Leaflet_wfs_line_graduated)."""
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlinefeatureJson", "linefeature", "OGR")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_graduated.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+
     def test25_Leaflet_shp_poly_graduated(self):
         """Leaflet shape polygon graduated (test_qgis2web_dialog.test_Leaflet_shp_poly_graduated)."""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon feature", "ogr")
+        if not layer:
+            print "Layer failed to load!"
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
+        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/shp_point_single.html', 'r')
+        goodOutput = testFile.read()
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+
+    def test26_Leaflet_wfs_poly_graduated(self):
+        """Leaflet WFS polygon graduated (test_qgis2web_dialog.test_Leaflet_wfs_poly_graduated)."""
+        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonfeatureJson", "polygonfeature", "WFS")
         if not layer:
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
