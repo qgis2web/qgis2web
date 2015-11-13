@@ -484,7 +484,7 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
     fill_transp = float(symbol.color().alpha()) / 255
     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
     if i.geometryType() == QGis.Point and not icon_prov:
-        print "single point"
+        print "Leaflet single point"
         (new_obj, cluster_num,
          wfsLayers) = singlePoint(symbol, symbolLayer, layer_transp,
                                   symbol_transp, layerName, safeLayerName,
@@ -492,13 +492,13 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
                                   cluster, cluster_num, visible, json,
                                   usedFields, wfsLayers, count)
     elif i.geometryType() == QGis.Line:
-        print "single line"
+        print "Leaflet single line"
         new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, i,
                                         json, layerName, safeLayerName,
                                         wfsLayers, popFuncs, visible,
                                         usedFields, count)
     elif i.geometryType() == QGis.Polygon:
-        print "single polygon"
+        print "Leaflet single polygon"
         new_obj, wfsLayers = singlePolygon(i, layerName, safeLayerName, symbol,
                                            symbolLayer, colorName,
                                            layer_transp, symbol_transp,
@@ -620,7 +620,7 @@ def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
                      visible, json, wfsLayers):
     catLegend = i.name() + "<br />"
     if i.geometryType() == QGis.Point and not icon_prov:
-        print "categorized point"
+        print "Leaflet categorized point"
         (new_obj,
          wfsLayers) = categorizedPoint(outputProjectFileName, i, renderer,
                                        layerName, safeLayerName, layer_transp,
@@ -628,14 +628,14 @@ def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
                                        usedFields, visible, json, count,
                                        wfsLayers, catLegend)
     elif i.geometryType() == QGis.Line:
-        print "categorized line"
+        print "Leaflet categorized line"
         (new_obj, wfsLayers,
          catLegend) = categorizedLine(outputProjectFileName, i, layerName,
                                       safeLayerName, renderer, catLegend,
                                       layer_transp, popFuncs, usedFields, json,
                                       visible, count, wfsLayers)
     elif i.geometryType() == QGis.Polygon:
-        print "categorized polygon"
+        print "Leaflet categorized polygon"
         (new_obj,
          catLegend,
          wfsLayers) = categorizedPolygon(outputProjectFileName, i, renderer,
@@ -766,7 +766,7 @@ def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
     catLegend = i.name() + "<br />"
     categoryStr = graduatedStyleScript(layerName)
     if i.geometryType() == QGis.Point and not icon_prov:
-        print "graduated point"
+        print "Leaflet graduated point"
         (new_obj,
          catLegend,
          wfsLayers,
@@ -776,14 +776,14 @@ def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
                                        usedFields, cluster, cluster_num,
                                        visible, wfsLayers, categoryStr)
     elif i.geometryType() == QGis.Line:
-        print "graduated line"
+        print "Leaflet graduated line"
         (new_obj, wfsLayers,
          catLegend) = graduatedLine(outputProjectFileName, i, layerName,
                                     safeLayerName, renderer, catLegend,
                                     layer_transp, popFuncs, usedFields, json,
                                     visible, count, wfsLayers, categoryStr)
     elif i.geometryType() == QGis.Polygon:
-        print "graduated polygon"
+        print "Leaflet graduated polygon"
         (new_obj, catLegend,
          wfsLayers) = graduatedPolygon(outputProjectFileName, i, renderer,
                                        layerName, safeLayerName, catLegend,
