@@ -89,6 +89,23 @@
         <dd>Select HTML template for web map</dd>
 </dl>
 
+<h2>Reporting bugs</h2>
+<p>Please report any problems you have with qgis2web. Without this feedback, I am often completely unaware that a problem exists. To ensure no time or effort is wasted in bug reporting, please follow these steps:</p>
+<ol>
+    <li>Make sure you can reproduce the bug reliably</li>
+    <li>Reduce the complexity of your bug conditions as far as you can</li>
+    <li>Raise a Github issue, including:
+    <ul>
+        <li>the qgis2web version (or make it clear you are using Github master branch)</li>
+        <li>any Python error text/stack trace which occurs</li>
+        <li>browser JS console errors</li>
+        <li>screenshot of your settings</li>
+        <li>screenshot of the output</li>
+        <li>a link to the data you used, if possible</li>
+    </ul></li>
+</ol>
+<p>The stability of qgis2web relies on your bug reports, so please keep them coming.</p>
+
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo Klinger's qgis2leaf. It would not exist without their work. Thank you, gentlemen.</p>
 
