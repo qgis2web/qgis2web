@@ -109,5 +109,5 @@
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo Klinger's qgis2leaf. It would not exist without their work. Thank you, gentlemen.</p>
 
-<ul><li>github.com/volaya/</li>
-<li>github.com/riccardoklinger/</li></ul>
+<ul><li>github.com/volaya</li>
+<li>github.com/riccardoklinger</li></ul>
