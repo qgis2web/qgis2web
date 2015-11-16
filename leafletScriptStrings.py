@@ -191,7 +191,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
 
 def pointToLayerScript(safeLayerName):
     pointToLayer = """
-            pointToLayer: doPointToLayer{""" + safeLayerName + "}"
+            pointToLayer: doPointToLayer""" + safeLayerName
     return pointToLayer
 
 
