@@ -21,6 +21,7 @@ import re
 import math
 import time
 import shutil
+import traceback
 from qgis.core import *
 from utils import exportLayers, safeName
 from qgis.utils import iface
@@ -61,8 +62,8 @@ def writeOL(iface, layers, groups, popup, visible,
             cssAddress = "./resources/ol.css"
             jsAddress = "./resources/ol.js"
         else:
-            cssAddress = "http://openlayers.org/en/v3.10.1/css/ol.css"
-            jsAddress = "http://openlayers.org/en/v3.10.1/build/ol.js"
+            cssAddress = "http://openlayers.org/en/v3.11.1/css/ol.css"
+            jsAddress = "http://openlayers.org/en/v3.11.1/build/ol.js"
         geojsonVars = ""
         styleVars = ""
         for layer in layers:
@@ -387,7 +388,8 @@ def exportStyles(layers, folder):
                             "cache": "styleCache_" + safeName(layer.name()),
                             "size": size, "color": color, "value": value}
         except Exception, e:
-            style = "{}"
+            style = """{
+            /* """ + traceback.format_exc() + " */}"
 
         path = os.path.join(stylesFolder, safeName(layer.name()) + "_style.js")
 
@@ -507,7 +509,7 @@ def getStrokeStyle(color, dashed, width):
 
 
 def getFillStyle(color, props):
-    if props["style"] == "no":
+    if hasattr(props, "style") and props["style"] == "no":
         return ""
     else:
         return ", fill: new ol.style.Fill({color: %s})" % color

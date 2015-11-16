@@ -254,6 +254,11 @@
          <height>591</height>
         </rect>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="styleSheet">
         <string notr="true">padding: 10px;</string>
        </property>
