@@ -49,7 +49,7 @@ def getUsedFields(layer):
         fields.append(layer.rendererV2().classAttribute())
     except:
         pass
-    labelsEnabled = str(
+    labelsEnabled = unicode(
         layer.customProperty("labeling/enabled")).lower() == "true"
     if labelsEnabled:
         fields.append(layer.customProperty("labeling/fieldName"))
