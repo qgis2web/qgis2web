@@ -416,7 +416,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.combo = QComboBox()
             options = ["No popup", "Show all attributes"]
             for f in self.layer.pendingFields():
-                options.extend("FIELD:" + f.name())
+                options.append("FIELD:" + f.name())
             for option in options:
                 self.combo.addItem(option)
             self.addChild(self.popupItem)
@@ -428,7 +428,9 @@ class TreeLayerItem(QTreeWidgetItem):
             tree.setItemWidget(self.popupItem, 1, self.combo)
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
-        if layer.customProperty("qgis2web/Visible") == 2:
+        if layer.customProperty("qgis2web/Visible") == 0:
+            self.visibleCheck.setChecked(False)
+        else:
             self.visibleCheck.setChecked(True)
         self.visibleItem.setText(0, "Visible")
         self.visibleCheck.stateChanged.connect(self.changeVisible)
