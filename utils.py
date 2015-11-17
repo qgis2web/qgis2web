@@ -56,6 +56,34 @@ def getUsedFields(layer):
     return fields
 
 
+def writeTmpLayer(layer, popup):
+    usedFields = getUsedFields(layer)
+    if popup != ALL_ATTRIBUTES:
+        uri = TYPE_MAP[layer.wkbType()]
+        crs = layer.crs()
+        if crs.isValid():
+            uri += '?crs=' + crs.authid()
+        if popup != NO_POPUP:
+            usedFields.append(popup)
+        for field in usedFields:
+            fieldType = layer.pendingFields().field(field).type()
+            fieldType = "double" if (fieldType == QVariant.Double or
+                                     fieldType == QVariant.Int) else (
+                                        "string")
+            uri += '&field=' + unicode(field) + ":" + fieldType
+        newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
+        writer = newlayer.dataProvider()
+        outFeat = QgsFeature()
+        for feature in layer.getFeatures():
+            outFeat.setGeometry(feature.geometry())
+            attrs = [feature[f] for f in usedFields]
+            if attrs:
+                outFeat.setAttributes(attrs)
+            writer.addFeatures([outFeat])
+        layer = newlayer
+    return layer
+
+
 def exportLayers(layers, folder, precision, optimize, popupField):
     epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
@@ -64,30 +92,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
         re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % unicode(int(precision))))
     for layer, popup in zip(layers, popupField):
         if layer.type() == layer.VectorLayer:
-            usedFields = getUsedFields(layer)
-            if popup != ALL_ATTRIBUTES:
-                uri = TYPE_MAP[layer.wkbType()]
-                crs = layer.crs()
-                if crs.isValid():
-                    uri += '?crs=' + crs.authid()
-                if popup != NO_POPUP:
-                    usedFields.append(popup)
-                for field in usedFields:
-                    fieldType = layer.pendingFields().field(field).type()
-                    fieldType = "double" if (fieldType == QVariant.Double or
-                                             fieldType == QVariant.Int) else (
-                                                "string")
-                    uri += '&field=' + unicode(field) + ":" + fieldType
-                newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
-                writer = newlayer.dataProvider()
-                outFeat = QgsFeature()
-                for feature in layer.getFeatures():
-                    outFeat.setGeometry(feature.geometry())
-                    attrs = [feature[f] for f in usedFields]
-                    if attrs:
-                        outFeat.setAttributes(attrs)
-                    writer.addFeatures([outFeat])
-                layer = newlayer
+            layer = writeTmpLayer(layer, popup)
 
             tmpPath = os.path.join(layersFolder,
                                    safeName(layer.name()) + ".json")

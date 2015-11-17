@@ -334,14 +334,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             f6.write(controlStart)
             f6.close()
 
-        for count, i in enumerate(reversed(layer_list)):
+        for i, clustered in zip(reversed(layer_list), reversed(cluster)):
             try:
                 testDump = i.rendererV2().dump()
                 rawLayerName = i.name()
                 safeLayerName = re.sub('[\W_]+', '', rawLayerName)
                 if i.type() == QgsMapLayer.VectorLayer:
                     with open(outputIndex, 'a') as f7:
-                        if (cluster[count] == True and
+                        if (clustered == True and
                                 i.geometryType() == QGis.Point):
                             new_layer = "'" + legends[safeLayerName] + "'"
                             + ": cluster_group""" + safeLayerName + "JSON,"
