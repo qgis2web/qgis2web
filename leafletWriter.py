@@ -96,7 +96,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
-        if i.providerType() != 'WFS' or jsonEncode == True and i:
+        if i.providerType() != 'WFS' or jsonEncode is True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
                 cleanedLayer = writeTmpLayer(i, eachPopup)
@@ -341,7 +341,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 safeLayerName = re.sub('[\W_]+', '', rawLayerName)
                 if i.type() == QgsMapLayer.VectorLayer:
                     with open(outputIndex, 'a') as f7:
-                        if (clustered == True and
+                        if (clustered and
                                 i.geometryType() == QGis.Point):
                             new_layer = "'" + legends[safeLayerName] + "'"
                             + ": cluster_group""" + safeLayerName + "JSON,"
