@@ -90,13 +90,13 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
     exp_crs = QgsCoordinateReferenceSystem(4326,
                                            crs)
-    for count, i in enumerate(layer_list):
+    for i, jsonEncode in zip(layer_list, json):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
-        if i.providerType() != 'WFS' or json[count] == True and i:
+        if i.providerType() != 'WFS' or jsonEncode == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
                 writer = qgis.core.QgsVectorFileWriter
