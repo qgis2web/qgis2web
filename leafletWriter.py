@@ -33,7 +33,7 @@ from basemaps import basemapLeaflet, basemapAttributions
 from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *
-from utils import ALL_ATTRIBUTES, removeSpaces
+from utils import ALL_ATTRIBUTES, removeSpaces, writeTmpLayer, getUsedFields
 
 basemapAddresses = basemapLeaflet()
 basemapAttributions = basemapAttributions()
@@ -90,7 +90,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
     exp_crs = QgsCoordinateReferenceSystem(4326,
                                            crs)
-    for i, jsonEncode in zip(layer_list, json):
+    for i, jsonEncode, eachPopup in zip(layer_list, json, popup):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
@@ -99,10 +99,11 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         if i.providerType() != 'WFS' or jsonEncode == True and i:
             precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
+                cleanedLayer = writeTmpLayer(i, eachPopup)
                 writer = qgis.core.QgsVectorFileWriter
                 options = "COORDINATE_PRECISION=" + unicode(precision)
-                writer.writeAsVectorFormat(i, tmpFileName, 'utf-8', exp_crs,
-                                           'GeoJson', selected,
+                writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8',
+                                           exp_crs, 'GeoJson', selected,
                                            layerOptions=[options])
 
                 with open(layerFileName, "w") as f2:
@@ -193,7 +194,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             f4.write(layerOrder)
             f4.close()
     for count, i in enumerate(layer_list):
-        new_field_names = []
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         if i.type() == QgsMapLayer.VectorLayer:
@@ -201,10 +201,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 (new_pop, icon_prov,
                  labeltext, popFuncs) = labelsAndPopups(i, safeLayerName,
                                                         usedFields,
-                                                        new_field_names,
                                                         labels, labelhover,
                                                         highlight,
-                                                        popupsOnHover, count)
+                                                        popupsOnHover, popup,
+                                                        count)
                 layerName = safeLayerName
                 renderer = i.rendererV2()
                 layer_transp = 1 - (float(i.layerTransparency()) / 100)
@@ -408,14 +408,17 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     return outputIndex
 
 
-def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels,
-                    labelhover, highlight, popupsOnHover, count):
+def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
+                    highlight, popupsOnHover, popup, count):
     fields = i.pendingFields()
     field_names = [field.name() for field in fields]
-    if usedFields[count] != 0 and usedFields[count] != 1:
-        for field in field_names:
-            if field == usedFields[count]:
-                new_field_names.append(field)
+    usedFields = getUsedFields(i)
+    # print i.name() + ": " + unicode(usedFields[0])
+    if popup[count] != 0 and popup[count] != 1:
+        usedFields.append(popup[count])
+        new_field_names = []
+        for field in usedFields:
+            new_field_names.append(field)
         field_names = new_field_names
     html_prov = False
     icon_prov = False
@@ -459,7 +462,10 @@ def labelsAndPopups(i, safeLayerName, usedFields, new_field_names, labels,
             table = tablestart + row + tableend
     if not label_exp:
         labeltext = ""
-    popFuncs = popFuncsScript(table)
+    if popup[count] != 0:
+        popFuncs = popFuncsScript(table)
+    else:
+        popFuncs = ""
     new_pop = popupScript(safeLayerName, popFuncs, highlight, popupsOnHover)
     return new_pop, icon_prov, labeltext, popFuncs
 
