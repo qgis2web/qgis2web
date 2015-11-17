@@ -61,7 +61,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = (
-        re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % str(int(precision))))
+        re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % unicode(int(precision))))
     for layer, popup in zip(layers, popupField):
         if layer.type() == layer.VectorLayer:
             usedFields = getUsedFields(layer)
@@ -77,7 +77,7 @@ def exportLayers(layers, folder, precision, optimize, popupField):
                     fieldType = "double" if (fieldType == QVariant.Double or
                                              fieldType == QVariant.Int) else (
                                                 "string")
-                    uri += '&field=' + str(field) + ":" + fieldType
+                    uri += '&field=' + unicode(field) + ":" + fieldType
                 newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
                 writer = newlayer.dataProvider()
                 outFeat = QgsFeature()
