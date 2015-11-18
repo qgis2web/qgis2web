@@ -121,7 +121,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             errorHTML += traceback.format_exc().replace("\n", "<br />")
             errorHTML += "</code></body></html>"
             self.preview.setHtml(errorHTML)
-            return outputFile
+        return outputFile
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
