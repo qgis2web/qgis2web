@@ -98,7 +98,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
-        outputPath = self.dialog.leaflet.click()
+        self.dialog.leaflet.click()
         outputCode = self.dialog.preview.page().mainFrame().toHtml()
         print outputCode
 
