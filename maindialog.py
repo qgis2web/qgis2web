@@ -70,10 +70,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         global projectInstance
         projectInstance.writeEntry("qgis2web", "mapFormat",
                                    self.mapFormat.checkedButton().text())
-        outputFile = self.previewMap()
-        print "changeFormat: " + outputFile
+        self.previewMap()
         self.toggleOptions()
-        return outputFile
 
     def toggleOptions(self):
         for param, value in specificParams.iteritems():
@@ -109,9 +107,9 @@ class MainDialog(QDialog, Ui_MainDialog):
     def previewMap(self):
         try:
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-                outputFile = MainDialog.previewOL3(self)
+                MainDialog.previewOL3(self)
             else:
-                outputFile = MainDialog.previewLeaflet(self)
+                MainDialog.previewLeaflet(self)
         except Exception as e:
             errorHTML = "<html>"
             errorHTML += "<head></head>"
@@ -121,8 +119,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             errorHTML += traceback.format_exc().replace("\n", "<br />")
             errorHTML += "</code></body></html>"
             self.preview.setHtml(errorHTML)
-        print "previewMap: " + outputFile
-        return outputFile
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
@@ -281,8 +277,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
                               cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
-        print "previewOL3: " + previewFile
-        return previewFile
 
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
@@ -293,8 +287,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                                    layers, visible, "", cluster, labels, 0, 0,
                                    json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
-        print "previewLeaflet: " + previewFile
-        return previewFile
 
     def saveOL(self):
         params = self.getParameters()

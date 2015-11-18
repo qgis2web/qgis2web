@@ -99,8 +99,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         outputPath = self.dialog.leaflet.click()
-        outputFile = open(outputPath)
-        outputCode = outputFile.read()
+        outputCode = self.dialog.preview.page().mainFrame().toHtml()
         print outputCode
 
     def test10_Leaflet_wfs_pnt_single(self):
