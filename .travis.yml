@@ -6,6 +6,9 @@ python:
 virtualenv:
   system_site_packages: true
 
+addons:
+  firefox: "42.0"
+
 -before_install:
   - sudo apt-get -qq -y update
 
@@ -30,7 +33,7 @@ before_script:
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - xvfb-run --server-args="-screen 0, 1024x768x24 -extension RANDR" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
+  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
 notifications:
   email:
