@@ -83,7 +83,6 @@ paramsOL = {
 }
 
 specificParams = {
-    "Delete unused fields": "OL3",
     "Add address search": "Leaflet",
     "Add measure tool": "Leaflet",
     "Geolocate user": "Leaflet",
