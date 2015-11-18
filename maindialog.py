@@ -70,8 +70,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         global projectInstance
         projectInstance.writeEntry("qgis2web", "mapFormat",
                                    self.mapFormat.checkedButton().text())
-        self.previewMap()
+        outputFile = self.previewMap()
         self.toggleOptions()
+        return outputFile
 
     def toggleOptions(self):
         for param, value in specificParams.iteritems():
@@ -108,8 +109,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         try:
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
                 MainDialog.previewOL3(self)
+                outputFile = ""
             else:
-                MainDialog.previewLeaflet(self)
+                outputFile = MainDialog.previewLeaflet(self)
         except Exception as e:
             errorHTML = "<html>"
             errorHTML += "<head></head>"
@@ -119,6 +121,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             errorHTML += traceback.format_exc().replace("\n", "<br />")
             errorHTML += "</code></body></html>"
             self.preview.setHtml(errorHTML)
+            return outputFile
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
@@ -287,6 +290,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                                    layers, visible, "", cluster, labels, 0, 0,
                                    json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
+        return previewFile
 
     def saveOL(self):
         params = self.getParameters()
