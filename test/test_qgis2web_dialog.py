@@ -99,7 +99,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
-        outputFile = open(self.dialog.preview.url())
+        outputFile = open(self.dialog.preview.url().toString())
         outputCode = outputFile.read()
         print outputCode
 
