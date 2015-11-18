@@ -108,8 +108,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def previewMap(self):
         try:
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-                MainDialog.previewOL3(self)
-                outputFile = ""
+                outputFile = MainDialog.previewOL3(self)
             else:
                 outputFile = MainDialog.previewLeaflet(self)
         except Exception as e:
@@ -280,6 +279,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
                               cluster, labels, params, utils.tempFolder())
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
+        return previewFile
 
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
