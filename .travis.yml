@@ -6,9 +6,6 @@ python:
 virtualenv:
   system_site_packages: true
 
-addons:
-  firefox: "42.0"
-
 -before_install:
   - sudo apt-get -qq -y update
 
