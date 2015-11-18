@@ -13,7 +13,6 @@ __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
 import unittest
-from time import sleep
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
@@ -100,8 +99,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
-        sleep(10)
-        outputCode = self.dialog.preview.page().mainFrame().toHtml()
+        outputFile = open(self.dialog.preview.url())
+        outputCode = outputFile.read()
         print outputCode
 
     def test10_Leaflet_wfs_pnt_single(self):
