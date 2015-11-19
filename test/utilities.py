@@ -47,7 +47,7 @@ def get_qgis_app():
     global CANVAS  # pylint: disable=W0603
     if CANVAS is None:
         CANVAS = QgsMapCanvas(PARENT)
-        CANVAS.resize(QtCore.QSize(400, 400))
+        CANVAS.resize(QtCore.QSize(800, 600))
 
     global IFACE  # pylint: disable=W0603
     if IFACE is None:
