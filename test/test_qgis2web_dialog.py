@@ -17,7 +17,7 @@ import unittest
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
- from qgis.core import QgsProject
+from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import QFileInfo
