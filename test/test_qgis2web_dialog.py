@@ -112,7 +112,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_single.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -125,7 +125,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_single.qml")
         referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_single.html', 'r')
         referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
@@ -144,7 +144,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_single.qml")
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
@@ -155,7 +155,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_single.qml")
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
@@ -166,7 +166,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_polygon_single.qml")
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
@@ -177,7 +177,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_categorized.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_categorized.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -190,7 +190,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_categorized.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_point_categorized.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -203,7 +203,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_categorized.qml")
         referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_categorized.html', 'r')
         referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
@@ -222,7 +222,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_categorized.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -235,7 +235,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_categorized.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -248,7 +248,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_categorized.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_polygon_categorized.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -261,7 +261,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_graduated.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -274,7 +274,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_point_graduated.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -287,7 +287,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_graduated.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_graduated.qml")
         referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_graduated.html', 'r')
         referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
@@ -306,7 +306,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_categorized.qml")
 #        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_graduated.html', 'r')
 #        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
@@ -325,7 +325,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_graduated.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
@@ -338,7 +338,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_graduated.qml")
+        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_polygon_graduated.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
