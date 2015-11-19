@@ -99,7 +99,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(findItems("Extent",
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive)), 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
