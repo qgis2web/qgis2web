@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>QGIS2leaf webmap</title>
+        <title>qgis2web Leaflet webmap</title>
     
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+        <link rel="stylesheet" href="css/leaflet.css" />
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/label.css" />
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+        <script src="js/leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>
         <script src="js/label.js"></script>
         <script src="js/Autolinker.min.js"></script>
@@ -18,14 +18,15 @@
     </head>
     <body>
         <div id="map"></div>
-        <script src="data/json_placesfew1.js"></script>
+        <script src="data/json_point.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[47.5356011638,3.08160511627],[53.9332360101,18.2031138837]]);
+        })
         var hash = new L.Hash(map);
         var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';
         var feature_group = new L.featureGroup([]);
+        var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
         var layerOrder = new Array();
         function restackLayers() {
@@ -35,39 +36,34 @@
         }
         map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_placesfew1(feature, layer) {
-            var popupContent = '<table><tr><th scope="row">osm_id</th><td>' + Autolinker.link(String(feature.properties['osm_id'])) + '</td></tr><tr><th scope="row">name</th><td>' + Autolinker.link(String(feature.properties['name'])) + '</td></tr><tr><th scope="row">type</th><td>' + Autolinker.link(String(feature.properties['type'])) + '</td></tr><tr><th scope="row">population</th><td>' + Autolinker.link(String(feature.properties['population'])) + '</td></tr><tr><th scope="row">Hotlink</th><td>' + Autolinker.link(String(feature.properties['Hotlink'])) + '</td></tr></table>';
-            layer.bindPopup(popupContent);
+        function pop_point(feature, layer) {
         }
 
-        var json_placesfew1JSON = new L.geoJson(json_placesfew1, {
-            onEachFeature: pop_placesfew1, 
-        pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {
+        function doStylepoint() {
+            return {
                 radius: 4.0,
-                fillColor: '#96856c',
+                fillColor: '#843768',
                 color: '#000000',
                 weight: 0.0,
                 opacity: 1.0,
                 dashArray: '',
                 fillOpacity: 1.0
-            })
             }
-        });
-    layerOrder[layerOrder.length] = json_placesfew1JSON;
-        //add comment sign to hide this layer on the map in the initial view.
-        feature_group.addLayer(json_placesfew1JSON);
+        }
+        function doPointToLayerpoint(feature, latlng) {
+            return L.circleMarker(latlng, doStylepoint())
+        }
+        var json_pointJSON = new L.geoJson(json_point, {
+            onEachFeature: pop_point, 
+            pointToLayer: doPointToLayerpoint
+            });
+        layerOrder[layerOrder.length] = json_pointJSON;
+
+        bounds_group.addLayer(json_pointJSON);
+        feature_group.addLayer(json_pointJSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
-        map.locate({setView: true, maxZoom: 16});
-        function onLocationFound(e) {
-            var radius = e.accuracy / 2;
-            L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters from this point").openPopup();
-            L.circle(e.latlng, radius).addTo(map);
-        }
-        map.on('locationfound', onLocationFound);
-        
+        map.fitBounds(bounds_group.getBounds());
     </script>
 </body>
 </html>

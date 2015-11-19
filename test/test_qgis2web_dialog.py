@@ -105,7 +105,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
         outputFile = open(self.dialog.preview.url().toString().replace("file://",""))
         outputCode = outputFile.read()
-        print outputCode
+        self.assertEqual(outputCode, goodOutput)
 
     def test10_Leaflet_wfs_pnt_single(self):
         """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)."""
