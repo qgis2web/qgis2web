@@ -307,8 +307,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_line_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+#        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_graduated.html', 'r')
+#        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
