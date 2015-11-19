@@ -101,7 +101,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
-                                                 Qt.MatchRecursive)), 1).setCurrentIndex(1)
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
         outputFile = open(self.dialog.preview.url().toString().replace("file://",""))
         outputCode = outputFile.read()
