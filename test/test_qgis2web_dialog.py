@@ -93,7 +93,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_single.qml")
         referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
