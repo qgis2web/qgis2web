@@ -20,7 +20,8 @@ import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from PyQt4 import QtCore, QtTest
-from PyQt4.QtCore import QFileInfo, Qt.MatchFlag
+from PyQt4.QtCore import QFileInfo
+from PyQt4.QtCore.Qt import MatchFlag
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 from utilities import get_qgis_app
 
@@ -100,8 +101,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[1].setCurrentIndex(1)
+                                                (MatchExactly |
+                                                 MatchRecursive))[1].setCurrentIndex(1)
         self.dialog.leaflet.click()
         outputFile = open(self.dialog.preview.url().toString().replace("file://",""))
         outputCode = outputFile.read()
