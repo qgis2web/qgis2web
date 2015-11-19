@@ -20,7 +20,7 @@ import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from PyQt4 import QtCore, QtTest
-from PyQt4.QtCore import QFileInfo, MatchFlag
+from PyQt4.QtCore import QFileInfo, Qt.MatchFlag
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 from utilities import get_qgis_app
 
