@@ -17,7 +17,7 @@ import unittest
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
-# from qgis.core import QgsProject
+ from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import QFileInfo
@@ -95,6 +95,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
         IFACE.mapCanvas().setExtent(layer.extent())
+        QgsProject.instance().writeEntry("qgis2web", "Extent", "Fit to layers extent")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
         self.dialog = MainDialog(IFACE)
