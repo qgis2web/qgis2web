@@ -161,6 +161,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         middle += highlightScript(highlight, popupsOnHover,
                                   mapSettings.selectionColor().name())
     if extent == "Canvas extent":
+        print unicode(canvas.size().width()) + " x " + unicode(canvas.size().height())
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)
         xform = QgsCoordinateTransform(crsSrc, crsDest)
