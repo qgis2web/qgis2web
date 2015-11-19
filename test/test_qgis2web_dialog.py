@@ -156,8 +156,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_single.qml")
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_polygon_single.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test14_Leaflet_wfs_poly_single(self):
         """Leaflet WFS polygon single (test_qgis2web_dialog.test_Leaflet_wfs_poly_single)."""
@@ -180,8 +188,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_categorized.qml")
         testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
         goodOutput = testFile.read()
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_categorized.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test16_Leaflet_wfs_pnt_categorized(self):
         """Leaflet WFS point categorized (test_qgis2web_dialog.test_Leaflet_wfs_pnt_categorized)."""
@@ -236,10 +252,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
-        goodOutput = testFile.read()
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_polygon_categorized.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test20_Leaflet_wfs_poly_categorized(self):
         """Leaflet WFS polygon categorized (test_qgis2web_dialog.test_Leaflet_wfs_poly_categorized)."""
@@ -262,10 +284,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
-        goodOutput = testFile.read()
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_graduated.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test22_Leaflet_wfs_pnt_graduated(self):
         """Leaflet WFS point graduated (test_qgis2web_dialog.test_Leaflet_wfs_pnt_graduated)."""
@@ -326,10 +354,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_graduated.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
-        goodOutput = testFile.read()
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_polygon_graduated.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test26_Leaflet_wfs_poly_graduated(self):
         """Leaflet WFS polygon graduated (test_qgis2web_dialog.test_Leaflet_wfs_poly_graduated)."""

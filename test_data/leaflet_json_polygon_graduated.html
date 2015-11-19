@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>qgis2web Leaflet webmap</title>
+    
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/label.css" />
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/label.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    </head>
+    <body>
+        <div id="map"></div>
+        <script src="data/json_polygon.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';
+        var feature_group = new L.featureGroup([]);
+        var bounds_group = new L.featureGroup([]);
+        var raster_group = new L.LayerGroup([]);
+        var layerOrder = new Array();
+        function restackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                layerOrder[index].bringToFront();
+            }
+        }
+        map.on('overlayadd', restackLayers);
+        layerControl = L.control.layers({},{},{collapsed:false});
+        function pop_polygon(feature, layer) {
+        }
+
+        function doStylepolygon(feature) {
+        if (feature.properties.area >= 12.0 &&
+                feature.properties.area <= 24701.2) {
+
+            return {
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
+                fillColor: '#f7fbff',
+                opacity: '1.0',
+                fillOpacity: '1.0',
+            }
+        }
+        if (feature.properties.area >= 24701.2 &&
+                feature.properties.area <= 49390.4) {
+
+            return {
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
+                fillColor: '#c7dcef',
+                opacity: '1.0',
+                fillOpacity: '1.0',
+            }
+        }
+        if (feature.properties.area >= 49390.4 &&
+                feature.properties.area <= 74079.6) {
+
+            return {
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
+                fillColor: '#72b2d7',
+                opacity: '1.0',
+                fillOpacity: '1.0',
+            }
+        }
+        if (feature.properties.area >= 74079.6 &&
+                feature.properties.area <= 98768.8) {
+
+            return {
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
+                fillColor: '#2878b8',
+                opacity: '1.0',
+                fillOpacity: '1.0',
+            }
+        }
+        if (feature.properties.area >= 98768.8 &&
+                feature.properties.area <= 123458.0) {
+
+            return {
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
+                fillColor: '#08306b',
+                opacity: '1.0',
+                fillOpacity: '1.0',
+            }
+        }
+        }
+            var json_polygonJSON = new L.geoJson(json_polygon, {
+                onEachFeature: pop_polygon,
+                style: doStylepolygon
+            });
+            layerOrder[layerOrder.length] = json_polygonJSON;
+        bounds_group.addLayer(json_polygonJSON);
+        feature_group.addLayer(json_polygonJSON);
+        raster_group.addTo(map);
+        feature_group.addTo(map);
+        map.fitBounds(bounds_group.getBounds());
+    </script>
+</body>
+</html>
