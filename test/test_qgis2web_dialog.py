@@ -33,7 +33,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        IFACE.mapCanvas().resize(800, 600)
 
     def tearDown(self):
         """Runs after each test."""
