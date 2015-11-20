@@ -568,7 +568,8 @@ class TreeSettingItem(QTreeWidgetItem):
 
 class WebPage(QWebPage):
     """
-    Makes it possible to use a Python logger to print javascript console messages
+    Makes it possible to use a Python logger to print javascript
+    console messages
     """
     def __init__(self, logger=None, parent=None):
         super(WebPage, self).__init__(parent)
@@ -577,4 +578,4 @@ class WebPage(QWebPage):
         self.logger = logger
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        self.logger.warning("JS" + sourceID + ":" + lineNumber + "\n" + msg))
+        self.logger.warning("JS " + sourceID + ":" + lineNumber + "\n" + msg)
