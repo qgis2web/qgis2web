@@ -27,7 +27,9 @@ import qgis  # pylint: disable=unused-import
 # noinspection PyUnresolvedReferences
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtWebKit import *
 import traceback
+import logging
 
 from ui_maindialog import Ui_MainDialog
 import utils
@@ -55,6 +57,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateConfigParams(self)
         self.selectMapFormat()
         self.toggleOptions()
+        self.preview.setPage(WebPage())
         self.previewMap()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
@@ -561,3 +564,17 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.combo.currentText()
         else:
             return self.text(1)
+
+
+class WebPage(QWebPage):
+    """
+    Makes it possible to use a Python logger to print javascript console messages
+    """
+    def __init__(self, logger=None, parent=None):
+        super(WebPage, self).__init__(parent)
+        if not logger:
+            logger = logging
+        self.logger = logger
+
+    def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
+        self.logger.warning("JsConsole(%s:%d): %s" % (sourceID, lineNumber, msg))
