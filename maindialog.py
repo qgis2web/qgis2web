@@ -578,4 +578,5 @@ class WebPage(QWebPage):
         self.logger = logger
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        self.logger.warning("JS " + sourceID + ":" + lineNumber + "\n" + msg)
+        self.logger.warning("JS " + sourceID + ":" +
+                            unicode(lineNumber) + "\n" + msg)
