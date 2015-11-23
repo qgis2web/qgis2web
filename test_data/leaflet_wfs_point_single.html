@@ -28,6 +28,13 @@
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
         var layerOrder = new Array();
+        function stackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                map.removeLayer(layerOrder[index]);
+                map.addLayer(layerOrder[index]);
+            }
+            map.fitBounds(bounds_group.getBounds());
+        }
         function restackLayers() {
             for (index = 0; index < layerOrder.length; index++) {
                 layerOrder[index].bringToFront();
@@ -64,7 +71,7 @@
         layerControl.addOverlay(json_TreePreservationOrdersJSON, 'TreePreservationOrders');
         function getTreePreservationOrdersJson(geojson) {
             json_TreePreservationOrdersJSON.addData(geojson);
-            restackLayers();
+            stackLayers();
         };
         bounds_group.addLayer(json_TreePreservationOrdersJSON);
         feature_group.addLayer(json_TreePreservationOrdersJSON);
