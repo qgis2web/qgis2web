@@ -187,7 +187,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     else:
         basemapText = basemapsScript(basemapAddresses[basemapName],
                                      basemapAttributions[basemapName], maxZoom)
-    layerOrder = layerOrderScript()
+    layerOrder = layerOrderScript(extent)
     with open(outputIndex, 'a') as f4:
             f4.write(middle)
             f4.write(basemapText)
@@ -393,9 +393,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         end = locateScript()
     else:
         end = ''
-    if extent == 'Fit to layers extent':
-        end += """
-        map.fitBounds(bounds_group.getBounds());"""
     if params["Appearance"]["Add scale bar"]:
         end += """
         L.control.scale({options: {position: 'bottomleft', """
@@ -571,7 +568,7 @@ def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
         print "JSON"
         new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-        new_obj += restackLayers(layerName, visible[count])
+        new_obj += stackLayers(layerName, visible[count])
     return new_obj, wfsLayers
 
 
@@ -616,7 +613,7 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
         print "JSON"
         new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-        new_obj += restackLayers(layerName, visible[count])
+        new_obj += stackLayers(layerName, visible[count])
     return new_obj, wfsLayers
 
 

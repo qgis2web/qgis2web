@@ -112,9 +112,19 @@ def basemapsScript(basemap, attribution, maxZoom):
     return basemaps
 
 
-def layerOrderScript():
+def layerOrderScript(extent):
     layerOrder = """
         var layerOrder = new Array();
+        function stackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                map.removeLayer(layerOrder[index]);
+                map.addLayer(layerOrder[index]);
+            }"""
+    if extent == 'Fit to layers extent':
+        layerOrder += """
+            map.fitBounds(bounds_group.getBounds());"""
+    layerOrder += """
+        }
         function restackLayers() {
             for (index = 0; index < layerOrder.length; index++) {
                 layerOrder[index].bringToFront();

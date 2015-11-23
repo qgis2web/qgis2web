@@ -26,7 +26,7 @@ def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
     new_obj += "JSON.addData(geojson);"
     if visible:
         new_obj += """
-            restackLayers();"""
+            stackLayers();"""
     if cluster_set:
         new_obj += """
                 cluster_group{layerName}JSON.add""".format(layerName=layerName)
@@ -77,19 +77,16 @@ def buildNonPointWFS(layerName, layerSource, categoryStr,
     new_obj += "JSON.addData(geojson);"
     if visible:
         new_obj += """
-            restackLayers();"""
+            stackLayers();"""
     new_obj += """
         };"""
     return new_obj, scriptTag
 
 
-def restackLayers(layerName, visible):
+def stackLayers(layerName, visible):
     if visible:
         return """
         layerOrder[layerOrder.length] = json_{layerName}JSON;
-        for (index = 0; index < layerOrder.length; index++) {{
-            feature_group.removeLayer(layerOrder[index]);
-            feature_group.addLayer(layerOrder[index]);
-        }}""".format(layerName=layerName)
+        stackLayers();""".format(layerName=layerName)
     else:
         return ""
