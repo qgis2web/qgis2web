@@ -78,7 +78,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address,
         else:
             base += """
         <link rel="stylesheet" href="""
-            base += '"http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />'
+            base += '"http://cdn.leafletjs.com/leaflet-0.7.7/leaflet.css" />'
         if len(cluster_set):
             base += """
         <link rel="stylesheet" href="css/MarkerCluster.css" />
@@ -102,7 +102,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address,
         <script src="js/leaflet.js"></script>"""
         else:
             base += """
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js">"""
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.7/leaflet.js">"""
             base += '</script>'
         base += """
         <script src="js/leaflet-hash.js"></script>"""
