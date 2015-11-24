@@ -21,7 +21,7 @@
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[50.3811713865,-4.45428432373],[50.7498275961,-3.33294934741]]);
+        })
         var hash = new L.Hash(map);
         var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';
         var feature_group = new L.featureGroup([]);
@@ -42,12 +42,12 @@
         }
         map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_TreePreservationOrders(feature, layer) {
+        function pop_point(feature, layer) {
             var popupContent = '<table><tr><th scope="row">ogc_fid</th><td>' + Autolinker.link(String(feature.properties['ogc_fid'])) + '</td></tr></table>';
             layer.bindPopup(popupContent);
         }
 
-        function doStyleTreePreservationOrders() {
+        function doStylepoint() {
             return {
                 radius: 4.0,
                 fillColor: '#843768',
@@ -58,26 +58,26 @@
                 fillOpacity: 1.0
             }
         }
-        function doPointToLayerTreePreservationOrders(feature, latlng) {
-            return L.circleMarker(latlng, doStyleTreePreservationOrders())
+        function doPointToLayerpoint(feature, latlng) {
+            return L.circleMarker(latlng, doStylepoint())
         }
-        var json_TreePreservationOrdersJSON;
-        json_TreePreservationOrdersJSON = L.geoJson(null, {
-            pointToLayer: doPointToLayerTreePreservationOrders,
-            onEachFeature: pop_TreePreservationOrders
+        var json_pointJSON;
+        json_pointJSON = L.geoJson(null, {
+            pointToLayer: doPointToLayerpoint,
+            onEachFeature: pop_point
         });
-        layerOrder[layerOrder.length] = json_TreePreservationOrdersJSON;
-        feature_group.addLayer(json_TreePreservationOrdersJSON);
-        layerControl.addOverlay(json_TreePreservationOrdersJSON, 'TreePreservationOrders');
-        function getTreePreservationOrdersJson(geojson) {
-            json_TreePreservationOrdersJSON.addData(geojson);
+        layerOrder[layerOrder.length] = json_pointJSON;
+        feature_group.addLayer(json_pointJSON);
+        layerControl.addOverlay(json_pointJSON, 'point');
+        function getpointJson(geojson) {
+            json_pointJSON.addData(geojson);
             stackLayers();
         };
-        bounds_group.addLayer(json_TreePreservationOrdersJSON);
-        feature_group.addLayer(json_TreePreservationOrdersJSON);
+        bounds_group.addLayer(json_pointJSON);
+        feature_group.addLayer(json_pointJSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
     </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetTreePreservationOrdersJson'></script>
+        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointJson'></script>
 </body>
 </html>
