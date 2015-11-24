@@ -635,8 +635,11 @@ def locateScript():
 
 
 def endHTMLscript(wfsLayers):
-    endHTML = """
-        stackLayers();
+    endHTML = ""
+    if wfsLayers == "":
+        endHTML += """
+        stackLayers();"""
+    endHTML += """
     </script>{wfsLayers}
 </body>
 </html>""".format(wfsLayers=wfsLayers)
