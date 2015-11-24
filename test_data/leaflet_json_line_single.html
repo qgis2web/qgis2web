@@ -60,10 +60,7 @@
             });
             layerOrder[layerOrder.length] = json_lineJSON;
         layerOrder[layerOrder.length] = json_lineJSON;
-        for (index = 0; index < layerOrder.length; index++) {
-            feature_group.removeLayer(layerOrder[index]);
-            feature_group.addLayer(layerOrder[index]);
-        }
+        stackLayers();
         bounds_group.addLayer(json_lineJSON);
         feature_group.addLayer(json_lineJSON);
         raster_group.addTo(map);
