@@ -43,8 +43,6 @@
         map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
         function pop_point(feature, layer) {
-            var popupContent = '<table><tr><th scope="row">ogc_fid</th><td>' + Autolinker.link(String(feature.properties['ogc_fid'])) + '</td></tr></table>';
-            layer.bindPopup(popupContent);
         }
 
         function doStylepoint() {
