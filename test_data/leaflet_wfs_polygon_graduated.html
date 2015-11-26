@@ -42,101 +42,90 @@
         }
         map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_point(feature, layer) {
+        function pop_polygon(feature, layer) {
         }
 
-        function doPointToLayerpoint(feature, latlng) {
-            return L.circleMarker(latlng, doStylepoint(feature))
-        }
-        function doStylepoint(feature) {
-        if (feature.properties.ogc_fid >= 3.0 &&
-                feature.properties.ogc_fid <= 184.0) {
+        function doStylepolygon(feature) {
+        if (feature.properties.area_ha >= 0.0 &&
+                feature.properties.area_ha <= 64.24) {
 
             return {
-                radius: '4.0',
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
                 fillColor: '#f7fbff',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
                 opacity: '1.0',
-                dashArray: ''
+                fillOpacity: '1.0',
             }
         }
-
-        if (feature.properties.ogc_fid >= 184.0 &&
-                feature.properties.ogc_fid <= 365.0) {
+        if (feature.properties.area_ha >= 64.24 &&
+                feature.properties.area_ha <= 128.48) {
 
             return {
-                radius: '4.0',
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
                 fillColor: '#c7dcef',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
                 opacity: '1.0',
-                dashArray: ''
+                fillOpacity: '1.0',
             }
         }
-
-        if (feature.properties.ogc_fid >= 365.0 &&
-                feature.properties.ogc_fid <= 546.0) {
+        if (feature.properties.area_ha >= 128.48 &&
+                feature.properties.area_ha <= 192.72) {
 
             return {
-                radius: '4.0',
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
                 fillColor: '#72b2d7',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
                 opacity: '1.0',
-                dashArray: ''
+                fillOpacity: '1.0',
             }
         }
-
-        if (feature.properties.ogc_fid >= 546.0 &&
-                feature.properties.ogc_fid <= 727.0) {
+        if (feature.properties.area_ha >= 192.72 &&
+                feature.properties.area_ha <= 256.96) {
 
             return {
-                radius: '4.0',
+                color: '#000000',
+                weight: '1.04',
+                dashArray: '',
                 fillColor: '#2878b8',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
                 opacity: '1.0',
-                dashArray: ''
+                fillOpacity: '1.0',
             }
         }
-
-        if (feature.properties.ogc_fid >= 727.0 &&
-                feature.properties.ogc_fid <= 908.0) {
+        if (feature.properties.area_ha >= 256.96 &&
+                feature.properties.area_ha <= 321.2) {
 
             return {
-                radius: '4.0',
-                fillColor: '#08306b',
                 color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
+                weight: '1.04',
+                dashArray: '',
+                fillColor: '#08306b',
                 opacity: '1.0',
-                dashArray: ''
+                fillOpacity: '1.0',
             }
         }
-
         }
-        var json_pointJSON;
-        json_pointJSON = L.geoJson(null, {
-            pointToLayer: doPointToLayerpoint,
-            onEachFeature: pop_point
+        var json_polygonJSON;
+        json_polygonJSON = L.geoJson(null, {
+        style: doStylepolygon,
+        onEachFeature: function (feature, layer) {
+        },
+            onEachFeature: pop_polygon
         });
-        layerOrder[layerOrder.length] = json_pointJSON;
-        feature_group.addLayer(json_pointJSON);
-        layerControl.addOverlay(json_pointJSON, 'point');
-        function getpointJson(geojson) {
-            json_pointJSON.addData(geojson);
+        layerOrder[layerOrder.length] = json_polygonJSON;
+        feature_group.addLayer(json_polygonJSON);
+        layerControl.addOverlay(json_polygonJSON, 'polygon');
+        function getpolygonJson(geojson) {
+            json_polygonJSON.addData(geojson);
             stackLayers();
         };
-        bounds_group.addLayer(json_pointJSON);
-        feature_group.addLayer(json_pointJSON);
+        bounds_group.addLayer(json_polygonJSON);
+        feature_group.addLayer(json_polygonJSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
     </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointJson'></script>
+        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonJson'></script>
 </body>
 </html>
