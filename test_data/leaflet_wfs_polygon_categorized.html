@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>qgis2web Leaflet webmap</title>
+    
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/label.css" />
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/label.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';
+        var feature_group = new L.featureGroup([]);
+        var bounds_group = new L.featureGroup([]);
+        var raster_group = new L.LayerGroup([]);
+        var layerOrder = new Array();
+        function stackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                map.removeLayer(layerOrder[index]);
+                map.addLayer(layerOrder[index]);
+            }
+            map.fitBounds(bounds_group.getBounds());
+        }
+        function restackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                layerOrder[index].bringToFront();
+            }
+        }
+        map.on('overlayadd', restackLayers);
+        layerControl = L.control.layers({},{},{collapsed:false});
+        function pop_polygon(feature, layer) {
+        }
+
+        function doStylepolygon(feature) {
+			switch (feature.properties.district) {
+                case '               ':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#52d822',
+                    color: '#000000',
+                    dashArray: '',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                case 'CRAVEN         ':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#d26f8a',
+                    color: '#000000',
+                    dashArray: '',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                case 'RICHMONDSHIRE  ':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#ac4dce',
+                    color: '#000000',
+                    dashArray: '',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                case 'SOUTH LAKELAND ':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#30e3b3',
+                    color: '#000000',
+                    dashArray: '',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                case 'VARIOUS        ':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#0d47e5',
+                    color: '#000000',
+                    dashArray: '',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                default:
+                    return {
+                    weight: '1.04',
+                    fillColor: '#e0c066',
+                    color: '#000000',
+                    dashArray: '',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+            }
+        }
+        var json_polygonJSON;
+        json_polygonJSON = L.geoJson(null, {
+        style: doStylepolygon,
+        onEachFeature: function (feature, layer) {
+        },
+            onEachFeature: pop_polygon
+        });
+        layerOrder[layerOrder.length] = json_polygonJSON;
+        feature_group.addLayer(json_polygonJSON);
+        layerControl.addOverlay(json_polygonJSON, 'polygon');
+        function getpolygonJson(geojson) {
+            json_polygonJSON.addData(geojson);
+            stackLayers();
+        };
+        bounds_group.addLayer(json_polygonJSON);
+        feature_group.addLayer(json_polygonJSON);
+        raster_group.addTo(map);
+        feature_group.addTo(map);
+    </script>
+        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonJson'></script>
+</body>
+</html>
