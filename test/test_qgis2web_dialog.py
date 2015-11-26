@@ -446,7 +446,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         testFile = open(self.dialog.preview.url().toString().replace("file://",""))
         testOutput = testFile.read()
         testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js")
-        testOutput += testStyleFile.read()
+        testStyleOutput = testStyleFile.read()
+        print testStyleOutput
+        testOutput += testStyleOutput
         self.assertEqual(testOutput, referenceOutput)
 
     def test28_OL3_line_single(self):
