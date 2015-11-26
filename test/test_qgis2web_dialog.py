@@ -372,9 +372,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_categorized.qml")
-#        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_graduated.html', 'r')
-#        referenceOutput = referenceFile.read()
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_graduated.qml")
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_line_graduated.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
@@ -382,7 +382,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
         testFile = open(self.dialog.preview.url().toString().replace("file://",""))
         testOutput = testFile.read()
-        # self.assertEqual(testOutput, referenceOutput)
+        self.assertEqual(testOutput, referenceOutput)
 
     def test25_Leaflet_json_poly_graduated(self):
         """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)."""
