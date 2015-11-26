@@ -189,8 +189,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_polygon_single.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)."""
