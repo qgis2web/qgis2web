@@ -151,8 +151,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_line_single.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test13_Leaflet_json_poly_single(self):
         """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)."""
