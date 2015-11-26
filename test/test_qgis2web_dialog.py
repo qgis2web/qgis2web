@@ -455,8 +455,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_line_single.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test29_OL3_poly_single(self):
         """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)."""
