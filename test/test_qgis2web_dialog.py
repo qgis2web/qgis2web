@@ -445,6 +445,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         testFile = open(self.dialog.preview.url().toString().replace("file://",""))
         testOutput = testFile.read()
+        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js")
+        testOutput += testStyleFile.read()
         self.assertEqual(testOutput, referenceOutput)
 
     def test28_OL3_line_single(self):
@@ -464,8 +466,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         testFile = open(self.dialog.preview.url().toString().replace("file://",""))
         testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js")
-        testOutput += testStyleFile.read()
         self.assertEqual(testOutput, referenceOutput)
 
     def test29_OL3_poly_single(self):
