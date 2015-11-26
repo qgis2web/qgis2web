@@ -208,8 +208,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
         layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
-        goodOutput = testFile.read()
         referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_categorized.html', 'r')
         referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
@@ -228,11 +226,17 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        # layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_point_categorized.qml")
-        testFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
-        goodOutput = testFile.read()
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_point_categorized.qml")
+        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_point_categorized.html', 'r')
+        referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
+        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
+        testOutput = testFile.read()
+        self.assertEqual(testOutput, referenceOutput)
 
     def test17_Leaflet_json_line_categorized(self):
         """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)."""
