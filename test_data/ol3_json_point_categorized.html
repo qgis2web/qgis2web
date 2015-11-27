@@ -254,3 +254,48 @@
       </script>
   </body>
 </html>
+var categories_point = {"hamlet": [ new ol.style.Style({
+                            image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(167,44,208,1.0)"})})
+                        })
+                        ],
+"locality": [ new ol.style.Style({
+                            image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(91,145,210,1.0)"})})
+                        })
+                        ],
+"suburb": [ new ol.style.Style({
+                            image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(220,131,136,1.0)"})})
+                        })
+                        ],
+"village": [ new ol.style.Style({
+                            image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(38,215,100,1.0)"})})
+                        })
+                        ],
+"": [ new ol.style.Style({
+                            image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(196,231,21,1.0)"})})
+                        })
+                        ]};
+                    var styleCache_point={}
+                    var style_point = function(feature, resolution){
+                        var value = feature.get("type");
+                        var style = categories_point[value];
+                        var labelText = "";
+                        var key = value + "_" + labelText
+
+                        if (!styleCache_point[key]){
+                            var text = new ol.style.Text({
+                                  font: '10.725px Calibri,sans-serif',
+                                  text: labelText,
+                                  textBaseline: "center",
+                                  textAlign: "left",
+                                  offsetX: 5,
+                                  offsetY: 3,
+                                  fill: new ol.style.Fill({
+                                    color: "rgba(0, 0, 0, 255)"
+                                  }),
+                                });
+                            styleCache_point[key] = new ol.style.Style({"text": text})
+                        }
+                        var allStyles = [styleCache_point[key]];
+                        allStyles.push.apply(allStyles, style);
+                        return allStyles;
+                    };
