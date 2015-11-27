@@ -254,3 +254,32 @@
       </script>
   </body>
 </html>
+
+                    var styleCache_line={}
+                    var style_line = function(feature, resolution){
+                        var value = ""
+                        var style = [ new ol.style.Style({
+                            stroke: new ol.style.Stroke({color: "rgba(26,205,62,1.0)", lineDash: null, width: 0})
+                        })
+                        ];
+                        var labelText = "";
+                        var key = value + "_" + labelText
+
+                        if (!styleCache_line[key]){
+                            var text = new ol.style.Text({
+                                  font: '10.725px Calibri,sans-serif',
+                                  text: labelText,
+                                  textBaseline: "center",
+                                  textAlign: "left",
+                                  offsetX: 5,
+                                  offsetY: 3,
+                                  fill: new ol.style.Fill({
+                                    color: "rgba(0, 0, 0, 255)"
+                                  }),
+                                });
+                            styleCache_line[key] = new ol.style.Style({"text": text})
+                        }
+                        var allStyles = [styleCache_line[key]];
+                        allStyles.push.apply(allStyles, style);
+                        return allStyles;
+                    };
