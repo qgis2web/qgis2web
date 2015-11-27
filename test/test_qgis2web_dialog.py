@@ -549,7 +549,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test33_OL3_pnt_graduated(self):
-        """OL3 point graduated (test_qgis2web_dialog.test_OL3_pnt_graduated)."""
+        """OL3 point graduated (test_qgis2web_dialog.test_OL3_pnt_graduated)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
         if not layer:
             print "Layer failed to load!"
