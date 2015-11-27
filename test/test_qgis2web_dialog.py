@@ -587,6 +587,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         testFile = open(self.dialog.preview.url().toString().replace("file://",""))
         testOutput = testFile.read()
+        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js"))
+        testStyleOutput = testStyleFile.read()
+        testOutput += testStyleOutput
         self.assertEqual(testOutput, referenceOutput)
 
     def test35_OL3_poly_graduated(self):
