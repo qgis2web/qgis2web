@@ -29,13 +29,13 @@ QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 from maindialog import MainDialog
 
 class qgis2web_classDialogTest(unittest.TestCase):
-    """Test dialog works."""
+    """Test dialog works"""
 
     def setUp(self):
-        """Runs before each test."""
+        """Runs before each test"""
 
     def tearDown(self):
-        """Runs after each test."""
+        """Runs after each test"""
         registry = QgsMapLayerRegistry.instance()
         registry.removeAllMapLayers()
         self.dialog = MainDialog(IFACE)
@@ -43,51 +43,51 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = None
 
     def test01_preview_default(self):
-        """Preview default - no data (OL3) (test_qgis2web_dialog.test_preview_default)."""
+        """Preview default - no data (OL3) (test_qgis2web_dialog.test_preview_default)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.buttonPreview.click()
 
     def test02_save_default(self):
-        """Save default - no data (OL3) (test_qgis2web_dialog.test_save_default)."""
+        """Save default - no data (OL3) (test_qgis2web_dialog.test_save_default)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.buttonExport.click()
 
     def test03_toggle_Leaflet(self):
-        """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)."""
+        """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test04_preview_Leaflet(self):
-        """Preview Leaflet - no data (test_qgis2web_dialog.test_preview_Leaflet)."""
+        """Preview Leaflet - no data (test_qgis2web_dialog.test_preview_Leaflet)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonPreview.click()
 
     def test05_export_Leaflet(self):
-        """Export Leaflet - no data (test_qgis2web_dialog.test_export_Leaflet)."""
+        """Export Leaflet - no data (test_qgis2web_dialog.test_export_Leaflet)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
     def test06_toggle_OL3(self):
-        """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)."""
+        """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
 
     def test07_preview_OL3(self):
-        """Preview OL3 - no data (test_qgis2web_dialog.test_preview_OL3)."""
+        """Preview OL3 - no data (test_qgis2web_dialog.test_preview_OL3)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog.buttonPreview.click()
 
     def test08_export_OL3(self):
-        """Export OL3 - no data (test_qgis2web_dialog.test_export_OL3)."""
+        """Export OL3 - no data (test_qgis2web_dialog.test_export_OL3)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
     def test09_Leaflet_json_pnt_single(self):
-        """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)."""
+        """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -106,7 +106,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test10_Leaflet_wfs_pnt_single(self):
-        """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)."""
+        """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:27700", "point", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -125,7 +125,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test11_Leaflet_json_line_single(self):
-        """Leaflet JSON line single (test_qgis2web_dialog.test_Leaflet_json_line_single)."""
+        """Leaflet JSON line single (test_qgis2web_dialog.test_Leaflet_json_line_single)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -144,7 +144,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test12_Leaflet_wfs_line_single(self):
-        """Leaflet WFS line single (test_qgis2web_dialog.test_Leaflet_wfs_line_single)."""
+        """Leaflet WFS line single (test_qgis2web_dialog.test_Leaflet_wfs_line_single)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:27700", "line", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -163,7 +163,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test13_Leaflet_json_poly_single(self):
-        """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)."""
+        """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -182,7 +182,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test14_Leaflet_wfs_poly_single(self):
-        """Leaflet WFS polygon single (test_qgis2web_dialog.test_Leaflet_wfs_poly_single)."""
+        """Leaflet WFS polygon single (test_qgis2web_dialog.test_Leaflet_wfs_poly_single)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:27700", "polygon", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -201,7 +201,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test15_Leaflet_json_pnt_categorized(self):
-        """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)."""
+        """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -220,7 +220,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test16_Leaflet_wfs_pnt_categorized(self):
-        """Leaflet WFS point categorized (test_qgis2web_dialog.test_Leaflet_wfs_pnt_categorized)."""
+        """Leaflet WFS point categorized (test_qgis2web_dialog.test_Leaflet_wfs_pnt_categorized)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:27700", "point", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -239,7 +239,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test17_Leaflet_json_line_categorized(self):
-        """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)."""
+        """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -258,7 +258,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test18_Leaflet_wfs_line_categorized(self):
-        """Leaflet WFS line categorized (test_qgis2web_dialog.test_Leaflet_wfs_line_categorized)."""
+        """Leaflet WFS line categorized (test_qgis2web_dialog.test_Leaflet_wfs_line_categorized)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:27700", "line", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -277,7 +277,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test19_Leaflet_json_poly_categorized(self):
-        """Leaflet JSON polygon categorized (test_qgis2web_dialog.test_Leaflet_json_poly_categorized)."""
+        """Leaflet JSON polygon categorized (test_qgis2web_dialog.test_Leaflet_json_poly_categorized)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -296,7 +296,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test20_Leaflet_wfs_poly_categorized(self):
-        """Leaflet WFS polygon categorized (test_qgis2web_dialog.test_Leaflet_wfs_poly_categorized)."""
+        """Leaflet WFS polygon categorized (test_qgis2web_dialog.test_Leaflet_wfs_poly_categorized)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:27700", "polygon", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -315,7 +315,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test21_Leaflet_json_pnt_graduated(self):
-        """Leaflet JSON point graduated (test_qgis2web_dialog.test_Leaflet_json_pnt_graduated)."""
+        """Leaflet JSON point graduated (test_qgis2web_dialog.test_Leaflet_json_pnt_graduated)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -334,7 +334,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test22_Leaflet_wfs_pnt_graduated(self):
-        """Leaflet WFS point graduated (test_qgis2web_dialog.test_Leaflet_wfs_pnt_graduated)."""
+        """Leaflet WFS point graduated (test_qgis2web_dialog.test_Leaflet_wfs_pnt_graduated)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:27700", "point", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -353,7 +353,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test23_Leaflet_json_line_graduated(self):
-        """Leaflet JSON line graduated (test_qgis2web_dialog.test_Leaflet_json_line_graduated)."""
+        """Leaflet JSON line graduated (test_qgis2web_dialog.test_Leaflet_json_line_graduated)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -372,7 +372,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test24_Leaflet_wfs_line_graduated(self):
-        """Leaflet WFS line graduated (test_qgis2web_dialog.test_Leaflet_wfs_line_graduated)."""
+        """Leaflet WFS line graduated (test_qgis2web_dialog.test_Leaflet_wfs_line_graduated)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:27700", "line", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -391,7 +391,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test25_Leaflet_json_poly_graduated(self):
-        """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)."""
+        """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -410,7 +410,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test26_Leaflet_wfs_poly_graduated(self):
-        """Leaflet WFS polygon graduated (test_qgis2web_dialog.test_Leaflet_wfs_poly_graduated)."""
+        """Leaflet WFS polygon graduated (test_qgis2web_dialog.test_Leaflet_wfs_poly_graduated)"""
         layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:27700", "polygon", "WFS")
         if not layer:
             print "Layer failed to load!"
@@ -429,7 +429,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test27_OL3_pnt_single(self):
-        """OL3 point single (test_qgis2web_dialog.test_OL3_pnt_single)."""
+        """OL3 point single (test_qgis2web_dialog.test_OL3_pnt_single)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -451,7 +451,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test28_OL3_line_single(self):
-        """OL3 line single (test_qgis2web_dialog.test_OL3_line_single)."""
+        """OL3 line single (test_qgis2web_dialog.test_OL3_line_single)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -470,7 +470,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test29_OL3_poly_single(self):
-        """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)."""
+        """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -489,7 +489,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test30_OL3_pnt_categorized(self):
-        """OL3 point categorized (test_qgis2web_dialog.test_OL3_pnt_categorized)."""
+        """OL3 point categorized (test_qgis2web_dialog.test_OL3_pnt_categorized)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -511,7 +511,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test31_OL3_line_categorized(self):
-        """OL3 line categorized (test_qgis2web_dialog.test_OL3_line_categorized)."""
+        """OL3 line categorized (test_qgis2web_dialog.test_OL3_line_categorized)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -530,7 +530,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test32_OL3_poly_categorized(self):
-        """OL3 polygon categorized (test_qgis2web_dialog.test_OL3_poly_categorized)."""
+        """OL3 polygon categorized (test_qgis2web_dialog.test_OL3_poly_categorized)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -571,7 +571,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test34_OL3_line_graduated(self):
-        """OL3 line graduated (test_qgis2web_dialog.test_OL3_line_graduated)."""
+        """OL3 line graduated (test_qgis2web_dialog.test_OL3_line_graduated)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
         if not layer:
             print "Layer failed to load!"
@@ -593,7 +593,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(testOutput, referenceOutput)
 
     def test35_OL3_poly_graduated(self):
-        """OL3 polygon graduated (test_qgis2web_dialog.test_OL3_poly_graduated)."""
+        """OL3 polygon graduated (test_qgis2web_dialog.test_OL3_poly_graduated)"""
         layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
         if not layer:
             print "Layer failed to load!"
