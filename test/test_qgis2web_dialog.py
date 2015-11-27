@@ -555,7 +555,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             print "Layer failed to load!"
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_graduated.qml")
+        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_graduated.qml")
         referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_point_graduated.html', 'r')
         referenceOutput = referenceFile.read()
         self.dialog = MainDialog(IFACE)
@@ -587,7 +587,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         testFile = open(self.dialog.preview.url().toString().replace("file://",""))
         testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js"))
+        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/line_style.js"))
         testStyleOutput = testStyleFile.read()
         testOutput += testStyleOutput
         self.assertEqual(testOutput, referenceOutput)
