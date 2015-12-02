@@ -1,8 +1,6 @@
-language: python
+language: generic
 sudo: required
 dist: trusty
-python:
-  - "2.7"
 
 virtualenv:
   system_site_packages: true
