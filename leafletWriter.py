@@ -198,7 +198,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         if i.type() == QgsMapLayer.VectorLayer:
             with open(outputIndex, 'a') as f5:
-                (new_pop, icon_prov,
+                (new_pop,
                  labeltext, popFuncs) = labelsAndPopups(i, safeLayerName,
                                                         usedFields,
                                                         labels, labelhover,
@@ -217,15 +217,14 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                      wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                               layerName, safeLayerName,
                                               wfsLayers, i, layer_transp,
-                                              icon_prov, labeltext, cluster,
-                                              cluster_num, visible, json,
-                                              usedFields, legends, count,
-                                              popFuncs)
+                                              labeltext, cluster, cluster_num,
+                                              visible, json, usedFields,
+                                              legends, count, popFuncs)
                 elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                     (new_obj,
                      legends,
-                     wfsLayers) = categorizedLayer(i, icon_prov, renderer,
-                                                   layerName, safeLayerName,
+                     wfsLayers) = categorizedLayer(i, renderer, layerName,
+                                                   safeLayerName,
                                                    outputProjectFileName,
                                                    layer_transp, usedFields,
                                                    count, legends, labeltext,
@@ -236,7 +235,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                     (new_obj,
                      legends,
                      wfsLayers) = graduatedLayer(i, layerName, safeLayerName,
-                                                 icon_prov, renderer,
+                                                 renderer,
                                                  outputProjectFileName,
                                                  layer_transp, labeltext,
                                                  popFuncs, cluster,
@@ -245,13 +244,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                                                  legends, wfsLayers)
                 else:
                     print "No renderer"
-
-                if icon_prov and i.geometryType() == QGis.Point:
-                    new_obj = customMarkerScript(safeLayerName, labeltext,
-                                                 usedFields[count])
-                    if cluster[count] == True:
-                        new_obj += clusterScript(safeLayerName)
-                        cluster_num += 1
 
                 if usedFields[count] != 0:
                     f5.write(new_pop)
@@ -418,7 +410,6 @@ def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
             new_field_names.append(field)
         field_names = new_field_names
     html_prov = False
-    icon_prov = False
     label_exp = ''
     labeltext = ""
     f = ''
@@ -437,14 +428,10 @@ def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
             table = 'feature.properties.html_exp'
         if unicode(f) != "" and unicode(f) == unicode(field) and f:
             label_exp = True
-        if unicode(field) == 'icon_exp':
-            icon_prov = True
         if not html_prov:
             tablestart = "'<table>"
             row = ""
             for field in field_names:
-                if unicode(field) == "icon_exp":
-                    row += ""
                 else:
                     fieldIndex = fields.indexFromName(unicode(field))
                     editorWidget = i.editorWidgetV2(fieldIndex)
@@ -464,11 +451,11 @@ def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
     else:
         popFuncs = ""
     new_pop = popupScript(safeLayerName, popFuncs, highlight, popupsOnHover)
-    return new_pop, icon_prov, labeltext, popFuncs
+    return new_pop, labeltext, popFuncs
 
 
 def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
-                wfsLayers, i, layer_transp, icon_prov, labeltext, cluster,
+                wfsLayers, i, layer_transp, labeltext, cluster,
                 cluster_num, visible, json, usedFields, legends, count,
                 popFuncs):
     if isinstance(renderer, QgsRuleBasedRendererV2):
@@ -486,7 +473,7 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
     symbol_transp = symbol.alpha()
     fill_transp = float(symbol.color().alpha()) / 255
     fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-    if i.geometryType() == QGis.Point and not icon_prov:
+    if i.geometryType() == QGis.Point:
         print "Leaflet single point"
         (new_obj, cluster_num,
          wfsLayers) = singlePoint(symbol, symbolLayer, layer_transp,
@@ -624,12 +611,12 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
     return new_obj, wfsLayers
 
 
-def categorizedLayer(i, icon_prov, renderer, layerName, safeLayerName,
+def categorizedLayer(i, renderer, layerName, safeLayerName,
                      outputProjectFileName, layer_transp, usedFields, count,
                      legends, labeltext, cluster, cluster_num, popFuncs,
                      visible, json, wfsLayers):
     catLegend = i.name() + "<br />"
-    if i.geometryType() == QGis.Point and not icon_prov:
+    if i.geometryType() == QGis.Point:
         print "Leaflet categorized point"
         (new_obj,
          wfsLayers) = categorizedPoint(outputProjectFileName, i, renderer,
@@ -769,13 +756,13 @@ def categorizedPolygon(outputProjectFileName, i, renderer, layerName,
     return new_obj, catLegend, wfsLayers
 
 
-def graduatedLayer(i, layerName, safeLayerName, icon_prov, renderer,
+def graduatedLayer(i, layerName, safeLayerName, renderer,
                    outputProjectFileName, layer_transp, labeltext, popFuncs,
                    cluster, cluster_num, visible, json, usedFields, count,
                    legends, wfsLayers):
     catLegend = i.name() + "<br />"
     categoryStr = graduatedStyleScript(layerName)
-    if i.geometryType() == QGis.Point and not icon_prov:
+    if i.geometryType() == QGis.Point:
         print "Leaflet graduated point"
         (new_obj,
          catLegend,

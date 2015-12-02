@@ -559,39 +559,6 @@ def endGraduatedStyleScript():
     return endGraduatedStyle
 
 
-def customMarkerScript(safeLayerName, labeltext, usedFields):
-    if usedFields != 0:
-        customMarker = """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            onEachFeature: pop_{safeLayerName},
-            pointToLayer: function (feature, latlng) {{
-                return L.marker(latlng, {{
-                    icon: L.icon({{
-                        iconUrl: feature.properties.icon_exp,
-                        iconSize:     [24, 24],
-                        iconAnchor:   [12, 12],
-                        popupAnchor:  [0, -14]
-                    }})
-                }}){labeltext}
-            }}}}
-        );""".format(safeLayerName=safeLayerName, labeltext=labeltext)
-    else:
-        customMarker = """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            pointToLayer: function (feature, latlng) {{
-                return L.marker(latlng, {{
-                    icon: L.icon({{
-                        iconUrl: feature.properties.icon_exp,
-                        iconSize:     [24, 24],
-                        iconAnchor:   [12, 12],
-                        popupAnchor:  [0, -14]
-                    }})
-                }}){labeltext}
-            }}}}
-        );""".format(safeLayerName=safeLayerName, labeltext=labeltext)
-    return customMarker
-
-
 def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
     wms = """
     var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
