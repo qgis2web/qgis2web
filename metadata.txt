@@ -14,7 +14,7 @@ qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent.
 version=0.35.0
-author=Tom Chadwin
+author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
 # end of mandatory metadata
