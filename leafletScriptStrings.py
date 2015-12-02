@@ -1,3 +1,5 @@
+import os
+import shutil
 from utils import scaleToZoom
 
 
@@ -171,6 +173,30 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     popup += """{popFuncs}
         }}""".format(popFuncs=popFuncs)
     return popup
+
+
+def svgScript(safeLayerName, symbolLayer, outputFolder):
+    print "path: " + symbolLayer.path() + os.path.basename(symbolLayer.path())
+    shutil.copyfile(symbolLayer.path(), os.path.join(outputFolder, "markers",
+                                                     os.path.basename(
+                                                        symbolLayer.path())))
+    svg = """
+        var svg{safeLayerName} = L.icon({{
+            iconUrl: 'markers/{svgPath}',
+            iconSize: [{size}, {size}], // size of the icon
+        }});
+
+        function doStyle{safeLayerName}() {{
+            return {{
+                icon: svg{safeLayerName}
+            }}
+        }}
+        function doPointToLayer{safeLayerName}(feature, latlng) {{
+            return L.marker(latlng, doStyle{safeLayerName}())
+        }}""".format(safeLayerName=safeLayerName,
+                     svgPath=os.path.basename(symbolLayer.path()),
+                     size=symbolLayer.size() * 3.8)
+    return svg
 
 
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
@@ -377,9 +403,9 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
 """.format(safeLayerName=safeLayerName)
     else:
         categorizedPointJSON = """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+        var json_{sln}JSON = new L.geoJson(json_{sln}, {{
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(safeLayerName=safeLayerName)
+                return L.circleMarker(latlng, """.format(sln=safeLayerName)
         categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});

@@ -493,7 +493,8 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
                                   symbol_transp, layerName, safeLayerName,
                                   colorName, fill_opacity, labeltext, i,
                                   cluster, cluster_num, visible, json,
-                                  usedFields, wfsLayers, count)
+                                  usedFields, wfsLayers, count,
+                                  outputProjectFileName)
     elif i.geometryType() == QGis.Line:
         print "Leaflet single line"
         new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, i,
@@ -512,24 +513,30 @@ def singleLayer(renderer, outputProjectFileName, layerName, safeLayerName,
 
 def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
                 safeLayerName, colorName, fill_opacity, labeltext, i, cluster,
-                cluster_num, visible, json, usedFields, wfsLayers, count):
+                cluster_num, visible, json, usedFields, wfsLayers, count,
+                outputProjectFileName):
     radius = unicode(symbol.size() * 2)
-    try:
-        borderStyle = symbolLayer.outlineStyle()
-        border = symbolLayer.borderColor()
-        borderColor = unicode(border.name())
-        border_transp = float(border.alpha()) / 255
-        borderWidth = symbolLayer.outlineWidth()
-    except:
-        borderStyle = ""
-        borderColor = ""
-        border_transp = 0
-        borderWidth = 1
-    borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-    pointStyleLabel = pointStyleLabelScript(safeLayerName, radius, borderWidth,
-                                            borderStyle, colorName,
-                                            borderColor, borderOpacity,
-                                            fill_opacity, labeltext)
+    if isinstance(symbolLayer, QgsSvgMarkerSymbolLayerV2):
+        pointStyleLabel = svgScript(safeLayerName, symbolLayer,
+                                    outputProjectFileName)
+    else:
+        try:
+            borderStyle = symbolLayer.outlineStyle()
+            border = symbolLayer.borderColor()
+            borderColor = unicode(border.name())
+            border_transp = float(border.alpha()) / 255
+            borderWidth = symbolLayer.outlineWidth()
+        except:
+            borderStyle = ""
+            borderColor = ""
+            border_transp = 0
+            borderWidth = 1
+        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
+        pointStyleLabel = pointStyleLabelScript(safeLayerName, radius,
+                                                borderWidth, borderStyle,
+                                                colorName, borderColor,
+                                                borderOpacity, fill_opacity,
+                                                labeltext)
     pointToLayer = pointToLayerScript(safeLayerName)
     if i.providerType() == 'WFS' and json[count] == False:
         print "WFS"
