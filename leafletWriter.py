@@ -432,16 +432,15 @@ def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
             tablestart = "'<table>"
             row = ""
             for field in field_names:
-                else:
-                    fieldIndex = fields.indexFromName(unicode(field))
-                    editorWidget = i.editorWidgetV2(fieldIndex)
-                    if (editorWidget != QgsVectorLayer.Hidden and
-                            editorWidget != 'Hidden'):
-                        row += '<tr><th scope="row">'
-                        row += i.attributeDisplayName(fieldIndex)
-                        row += "</th><td>' + Autolinker.link("
-                        row += "String(feature.properties['" + unicode(field)
-                        row += "'])) + '</td></tr>"
+                fieldIndex = fields.indexFromName(unicode(field))
+                editorWidget = i.editorWidgetV2(fieldIndex)
+                if (editorWidget != QgsVectorLayer.Hidden and
+                        editorWidget != 'Hidden'):
+                    row += '<tr><th scope="row">'
+                    row += i.attributeDisplayName(fieldIndex)
+                    row += "</th><td>' + Autolinker.link("
+                    row += "String(feature.properties['" + unicode(field)
+                    row += "'])) + '</td></tr>"
             tableend = "</table>'"
             table = tablestart + row + tableend
     if not label_exp:
