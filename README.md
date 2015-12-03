@@ -23,7 +23,6 @@ output code to achieve what qgis2web cannot.</p>
 Unsupported options are disabled in the plugin UI when you select an output
 format.</p>
 <ul>
-    <li>all vector layers encoded to JSON in OL3 (ie no remote WFS layers)</li>
     <li>clustering only supported in Leaflet</li>
     <li>no rule-based rendering</li>
     <li>some SVG point markers only work in Leaflet, not OpenLayers 3</li>
