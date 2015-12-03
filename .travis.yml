@@ -16,7 +16,7 @@ install:
   - sudo pip install coverage
   - sudo pip install nosexcover
   - sudo pip install --upgrade pep8
-  - pip install --upgrade pylint
+  - sudo pip install --upgrade pylint
   - pip install nose-faulthandler
 
 before_script:
