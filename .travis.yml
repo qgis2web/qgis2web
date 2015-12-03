@@ -1,7 +1,6 @@
 language: generic
 sudo: required
-dist: precise
-group: edge
+dist: trusty
 
 virtualenv:
   system_site_packages: true
@@ -14,7 +13,7 @@ install:
   - sudo apt-get update
   - sudo apt-get install -y qgis
   - pip install --upgrade pip
-  - pip install coverage
+  - sudo pip install coverage
   - pip install nosexcover
   - pip install --upgrade pep8
   - pip install --upgrade pylint
