@@ -14,7 +14,7 @@ install:
   - sudo apt-get install -y qgis
   - pip install --upgrade pip
   - sudo pip install coverage
-  - pip install nosexcover
+  - sudo pip install nosexcover
   - pip install --upgrade pep8
   - pip install --upgrade pylint
   - pip install nose-faulthandler
