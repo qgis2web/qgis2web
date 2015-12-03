@@ -79,8 +79,7 @@ def writeOL(iface, layers, groups, popup, visible,
                     layerSource += "&outputFormat=text%2Fjavascript&"
                     layerSource += "format_options=callback%3A"
                     layerSource += "get" + safeName(layer.name()) + "Json"
-                    wfsVars += ('<script src="%s"></script>' %
-                                    layerSource)
+                    wfsVars += ('<script src="%s"></script>' % layerSource)
                 styleVars += ('<script src="styles/%s_style.js"></script>' %
                               (safeName(layer.name())))
         popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if (
@@ -262,9 +261,9 @@ var lyr_%(n)s = new ol.layer.Vector({
 function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' %
-                {"name": layer.name(), "n": layerName, "min": minResolution,
-                 "max": maxResolution})
+}''' % {"name": layer.name(), "n": layerName,
+        "min": minResolution,
+        "max": maxResolution})
         else:
             return ('''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s);
@@ -274,9 +273,8 @@ var lyr_%(n)s = new ol.layer.Vector({
                 source: jsonSource_%(n)s,%(min)s %(max)s
                 style: style_%(n)s,
                 title: "%(name)s"
-            });''' %
-                {"name": layer.name(), "n": layerName, "min": minResolution,
-                 "max": maxResolution})
+            });''' % {"name": layer.name(), "n": layerName,
+                      "min": minResolution, "max": maxResolution})
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
