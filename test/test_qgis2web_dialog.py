@@ -47,10 +47,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.buttonPreview.click()
 
-    def test02_save_default(self):
-        """Save default - no data (OL3) (test_qgis2web_dialog.test_save_default)"""
-        self.dialog = MainDialog(IFACE)
-        self.dialog.buttonExport.click()
+#    def test02_save_default(self):
+#        """Save default - no data (OL3) (test_qgis2web_dialog.test_save_default)"""
+#        self.dialog = MainDialog(IFACE)
+#        self.dialog.buttonExport.click()
 
     def test03_toggle_Leaflet(self):
         """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)"""
@@ -63,11 +63,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
         self.dialog.buttonPreview.click()
 
-    def test05_export_Leaflet(self):
-        """Export Leaflet - no data (test_qgis2web_dialog.test_export_Leaflet)"""
-        self.dialog = MainDialog(IFACE)
-        self.dialog.leaflet.click()
-        self.dialog.buttonExport.click()
+#    def test05_export_Leaflet(self):
+#        """Export Leaflet - no data (test_qgis2web_dialog.test_export_Leaflet)"""
+#        self.dialog = MainDialog(IFACE)
+#        self.dialog.leaflet.click()
+#        self.dialog.buttonExport.click()
 
     def test06_toggle_OL3(self):
         """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)"""
@@ -80,11 +80,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         self.dialog.buttonPreview.click()
 
-    def test08_export_OL3(self):
-        """Export OL3 - no data (test_qgis2web_dialog.test_export_OL3)"""
-        self.dialog = MainDialog(IFACE)
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
+#    def test08_export_OL3(self):
+#        """Export OL3 - no data (test_qgis2web_dialog.test_export_OL3)"""
+#        self.dialog = MainDialog(IFACE)
+#        self.dialog.ol3.click()
+#        self.dialog.buttonExport.click()
 
     def test09_Leaflet_json_pnt_single(self):
         """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)"""
