@@ -91,6 +91,5 @@ specificParams = {
 }
 
 specificOptions = {
-    "Encode to JSON": "Leaflet",
     "Cluster": "Leaflet"
 }

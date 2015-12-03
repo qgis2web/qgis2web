@@ -55,9 +55,9 @@ def writeOL(iface, layers, groups, popup, visible,
             usedFields = [ALL_ATTRIBUTES] * len(popup)
         else:
             usedFields = popup
-        exportLayers(layers, folder, precision, optimize, usedFields)
+        exportLayers(layers, folder, precision, optimize, usedFields, json)
         exportStyles(layers, folder)
-        writeLayersAndGroups(layers, groups, visible, folder, settings)
+        writeLayersAndGroups(layers, groups, visible, folder, settings, json)
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = "./resources/ol.css"
             jsAddress = "./resources/ol.js"
@@ -65,11 +65,22 @@ def writeOL(iface, layers, groups, popup, visible,
             cssAddress = "http://openlayers.org/en/v3.11.1/css/ol.css"
             jsAddress = "http://openlayers.org/en/v3.11.1/build/ol.js"
         geojsonVars = ""
+        wfsVars = ""
         styleVars = ""
-        for layer in layers:
+        for layer, encode2json in zip(layers, json):
             if layer.type() == layer.VectorLayer:
-                geojsonVars += ('<script src="layers/%s"></script>' %
-                                (safeName(layer.name()) + ".js"))
+                if layer.providerType() != "WFS" or encode2json:
+                    geojsonVars += ('<script src="layers/%s"></script>' %
+                                    (safeName(layer.name()) + ".js"))
+                else:
+                    layerSource = layer.source()
+                    layerSource = re.sub('SRSNAME\=EPSG\:\d+',
+                                         'SRSNAME=EPSG:3857', layerSource)
+                    layerSource += "&outputFormat=text%2Fjavascript&"
+                    layerSource += "format_options=callback%3A"
+                    layerSource += "get" + safeName(layer.name()) + "Json"
+                    wfsVars += ('<script src="%s"></script>' %
+                                    layerSource)
                 styleVars += ('<script src="styles/%s_style.js"></script>' %
                               (safeName(layer.name())))
         popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if (
@@ -103,6 +114,7 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@STYLEVARS@": styleVars,
                   "@BACKGROUNDCOLOR@": backgroundColor,
                   "@GEOJSONVARS@": geojsonVars,
+                  "@WFSVARS@": wfsVars,
                   "@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
                   "@POPUPLAYERS@": popupLayers,
@@ -119,7 +131,7 @@ def writeOL(iface, layers, groups, popup, visible,
     return os.path.join(folder, "index.html")
 
 
-def writeLayersAndGroups(layers, groups, visible, folder, settings):
+def writeLayersAndGroups(layers, groups, visible, folder, settings, json):
 
     baseLayerSetting = settings["Appearance"]["Base layer"]
     baseLayer = baseLayerGroup % baseLayers[baseLayerSetting]
@@ -127,9 +139,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings):
     scaleVisibility = (settings["Scale/Zoom"]
                                ["Use layer scale dependent visibility"])
     layerVars = ""
-    for layer in layers:
+    for layer, encode2json in zip(layers, json):
         layerVars += "\n".join([layerToJavascript(layer,
-                                                  scaleVisibility)])
+                                                  scaleVisibility,
+                                                  encode2json)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -223,7 +236,7 @@ def bounds(iface, useCanvas, layers):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def layerToJavascript(layer, scaleVisibility):
+def layerToJavascript(layer, scaleVisibility, encode2json):
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
@@ -234,7 +247,26 @@ def layerToJavascript(layer, scaleVisibility):
         maxResolution = ""
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
-        return ('''var format_%(n)s = new ol.format.GeoJSON();
+        if layer.providerType() == "WFS" and not encode2json:
+            return ('''var format_%(n)s = new ol.format.GeoJSON();
+var jsonSource_%(n)s = new ol.source.Vector({
+    format: format_%(n)s
+});
+
+var lyr_%(n)s = new ol.layer.Vector({
+    source: jsonSource_%(n)s,%(min)s %(max)s
+    style: style_%(n)s,
+    title: "%(name)s"
+});
+
+function get%(n)sJson(geojson) {
+    var features_%(n)s = format_%(n)s.readFeatures(geojson);
+    jsonSource_%(n)s.addFeatures(features_%(n)s);
+}''' %
+                {"name": layer.name(), "n": layerName, "min": minResolution,
+                 "max": maxResolution})
+        else:
+            return ('''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s);
 var jsonSource_%(n)s = new ol.source.Vector();
 jsonSource_%(n)s.addFeatures(features_%(n)s);

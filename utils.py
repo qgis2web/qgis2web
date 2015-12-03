@@ -84,14 +84,15 @@ def writeTmpLayer(layer, popup):
     return layer
 
 
-def exportLayers(layers, folder, precision, optimize, popupField):
+def exportLayers(layers, folder, precision, optimize, popupField, json):
     epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = (
         re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % unicode(int(precision))))
-    for layer, popup in zip(layers, popupField):
-        if layer.type() == layer.VectorLayer:
+    for layer, encode2json, popup in zip(layers, json, popupField):
+        if layer.type() == layer.VectorLayer and (layer.providerType() != "WFS"
+                                                  or encode2json):
             layer = writeTmpLayer(layer, popup)
 
             tmpPath = os.path.join(layersFolder,
