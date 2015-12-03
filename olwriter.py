@@ -262,8 +262,7 @@ function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
 }''' % {"name": layer.name(), "n": layerName,
-        "min": minResolution,
-        "max": maxResolution})
+        "min": minResolution, "max": maxResolution})
         else:
             return ('''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s);
