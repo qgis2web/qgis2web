@@ -17,7 +17,7 @@ install:
   - sudo pip install nosexcover
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
-  - pip install nose-faulthandler
+  - sudo pip install nose-faulthandler
 
 before_script:
   - echo "Build starting on " `date`
