@@ -1,6 +1,6 @@
 language: generic
 sudo: required
-dist: trusty
+dist: precise
 
 virtualenv:
   system_site_packages: true
@@ -13,6 +13,8 @@ install:
   - sudo apt-get update
   - sudo apt-get install -y qgis
   - pip install --upgrade pip
+  - pip install coverage
+  - pip install nosexcover
   - pip install --upgrade pep8
   - pip install --upgrade pylint
   - pip install nose-faulthandler
@@ -27,7 +29,7 @@ before_script:
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xunit --verbose
+  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
 notifications:
   email:
