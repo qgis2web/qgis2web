@@ -1,6 +1,7 @@
 language: generic
 sudo: required
 dist: precise
+group: edge
 
 virtualenv:
   system_site_packages: true
