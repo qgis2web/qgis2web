@@ -67,7 +67,7 @@ def crsScript(crsAuthId, crsProj4):
             resolutions: [2800, 1400, 700, 350, """.format(crsAuthId=crsAuthId,
                                                            crsProj4=crsProj4)
     crs += """175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-        }});"""
+        });"""
     return crs
 
 
