@@ -55,7 +55,8 @@ def writeOL(iface, layers, groups, popup, visible,
             usedFields = [ALL_ATTRIBUTES] * len(popup)
         else:
             usedFields = popup
-        exportLayers(layers, folder, precision, optimize, usedFields, json)
+        exportLayers(iface, layers, folder, precision,
+                     optimize, usedFields, json)
         exportStyles(layers, folder)
         writeLayersAndGroups(layers, groups, visible, folder, settings, json)
         if settings["Data export"]["Mapping library location"] == "Local":
@@ -94,9 +95,11 @@ def writeOL(iface, layers, groups, popup, visible,
         pageTitle = QgsProject.instance().title()
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = mapSettings.backgroundColor().name()
+        print settings["Appearance"]["Match project CRS"]
         mapbounds = bounds(iface,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
-                           layers)
+                           layers,
+                           settings["Appearance"]["Match project CRS"])
         mapextent = "extent: %s," % mapbounds if (
             settings["Scale/Zoom"]["Restrict to extent"]) else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
@@ -106,7 +109,21 @@ def writeOL(iface, layers, groups, popup, visible,
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
+        proj4 = ""
+        projdef = ""
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+        if settings["Appearance"]["Match project CRS"]:
+            proj4 = """
+<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
+            proj4 += "</script>"
+            projdef = "proj4.defs('{epsg}','{defn}');".format(
+                epsg=mapSettings.destinationCrs().authid(),
+                defn=mapSettings.destinationCrs().toProj4())
+            projdef += "prj = ol.proj.get('{prj}'); ".format(
+                prj=mapSettings.destinationCrs().authid())
+            projdef += "var fromLonLat = ol.proj.getTransform"
+            projdef += "('EPSG:4326', prj);"
+            view += ", projection: prj"
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
@@ -120,7 +137,9 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@VIEW@": view,
                   "@ONHOVER@": onHover,
                   "@DOHIGHLIGHT@": highlight,
-                  "@HIGHLIGHTFILL@": highlightFill}
+                  "@HIGHLIGHTFILL@": highlightFill,
+                  "@PROJ4@": proj4,
+                  "@PROJDEF@": projdef}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = settings["Appearance"]["Template"]
@@ -200,32 +219,40 @@ def replaceInTemplate(template, values):
     return s
 
 
-def bounds(iface, useCanvas, layers):
+def bounds(iface, useCanvas, layers, matchCRS):
     if useCanvas:
         canvas = iface.mapCanvas()
         try:
             canvasCrs = canvas.mapSettings().destinationCrs()
         except:
             canvasCrs = canvas.mapRenderer().destinationCrs()
-        transform = QgsCoordinateTransform(canvasCrs,
-                                           QgsCoordinateReferenceSystem(
-                                               "EPSG:3857"))
-        try:
-            extent = transform.transform(canvas.extent())
-        except QgsCsException:
-            extent = QgsRectangle(-20026376.39, -20048966.10,
-                                  20026376.39, 20048966.10)
-    else:
-        extent = None
-        for layer in layers:
-            transform = QgsCoordinateTransform(layer.crs(),
+        if not matchCRS:
+            transform = QgsCoordinateTransform(canvasCrs,
                                                QgsCoordinateReferenceSystem(
                                                    "EPSG:3857"))
             try:
-                layerExtent = transform.transform(layer.extent())
+                extent = transform.transform(canvas.extent())
             except QgsCsException:
-                layerExtent = QgsRectangle(-20026376.39, -20048966.10,
-                                           20026376.39, 20048966.10)
+                extent = QgsRectangle(-20026376.39, -20048966.10,
+                                      20026376.39, 20048966.10)
+        else:
+            extent = canvas.extent()
+    else:
+        extent = None
+        for layer in layers:
+            print matchCRS
+            if not matchCRS:
+                transform = QgsCoordinateTransform(layer.crs(),
+                                   QgsCoordinateReferenceSystem(
+                                       "EPSG:3857"))
+                try:
+                    layerExtent = transform.transform(layer.extent())
+                except QgsCsException:
+                    layerExtent = QgsRectangle(-20026376.39, -20048966.10,
+                                               20026376.39, 20048966.10)
+            else:
+                print "kjhkjhkjh"
+                layerExtent = layer.extent()
             if extent is None:
                 extent = layerExtent
             else:

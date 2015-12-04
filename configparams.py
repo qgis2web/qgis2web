@@ -86,7 +86,6 @@ specificParams = {
     "Add address search": "Leaflet",
     "Add measure tool": "Leaflet",
     "Geolocate user": "Leaflet",
-    "Match project CRS": "Leaflet",
     "Template": "OL3"
 }
 
