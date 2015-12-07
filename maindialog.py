@@ -542,6 +542,7 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(value, tuple):
             self.combo = QComboBox()
             self.combo.setSizeAdjustPolicy(0)
+            # self.combo.view().setSelectionMode(3)
             for option in value:
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
