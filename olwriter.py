@@ -77,8 +77,9 @@ def writeOL(iface, layers, groups, popup, visible,
                                     (safeName(layer.name()) + ".js"))
                 else:
                     layerSource = layer.source()
-                    layerSource = re.sub('SRSNAME\=EPSG\:\d+',
-                                         'SRSNAME=EPSG:3857', layerSource)
+                    if not matchCRS:
+                        layerSource = re.sub('SRSNAME\=EPSG\:\d+',
+                                             'SRSNAME=EPSG:3857', layerSource)
                     layerSource += "&outputFormat=text%2Fjavascript&"
                     layerSource += "format_options=callback%3A"
                     layerSource += "get" + safeName(layer.name()) + "Json"
@@ -117,7 +118,7 @@ def writeOL(iface, layers, groups, popup, visible,
             proj4 = """
 <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
             proj4 += "</script>"
-            projdef = "proj4.defs('{epsg}','{defn}');".format(
+            projdef = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
                 epsg=mapSettings.destinationCrs().authid(),
                 defn=mapSettings.destinationCrs().toProj4())
             view += ", projection: '%s'" % (

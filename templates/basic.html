@@ -54,8 +54,8 @@
       .ol-popup-closer:after {
         content: "X";
       }
-    </style>
-    <script src="@JSADDRESS@"></script>@PROJ4@
+    </style>@PROJ4@@PROJDEF@
+    <script src="@JSADDRESS@"></script>
     <script src="./resources/ol3-layerswitcher.js"></script>
     <script src="./resources/Autolinker.min.js"></script>
 
@@ -71,7 +71,7 @@
           <div id="popup-content"></div>
         </div>  
     </div>
-    <script>@PROJDEF@
+    <script>
       var container = document.getElementById('popup');
       var content = document.getElementById('popup-content');
       var closer = document.getElementById('popup-closer');
