@@ -240,18 +240,15 @@ def bounds(iface, useCanvas, layers, matchCRS):
     else:
         extent = None
         for layer in layers:
-            print matchCRS
             if not matchCRS:
-                transform = QgsCoordinateTransform(layer.crs(),
-                                    QgsCoordinateReferenceSystem(
-                                                                 "EPSG:3857"))
+                epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
+                transform = QgsCoordinateTransform(layer.crs(), epsg3857)
                 try:
                     layerExtent = transform.transform(layer.extent())
                 except QgsCsException:
                     layerExtent = QgsRectangle(-20026376.39, -20048966.10,
                                                20026376.39, 20048966.10)
             else:
-                print "kjhkjhkjh"
                 layerExtent = layer.extent()
             if extent is None:
                 extent = layerExtent
