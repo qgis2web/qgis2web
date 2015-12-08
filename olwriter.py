@@ -243,8 +243,8 @@ def bounds(iface, useCanvas, layers, matchCRS):
             print matchCRS
             if not matchCRS:
                 transform = QgsCoordinateTransform(layer.crs(),
-                                   QgsCoordinateReferenceSystem(
-                                       "EPSG:3857"))
+                                    QgsCoordinateReferenceSystem(
+                                                                 "EPSG:3857"))
                 try:
                     layerExtent = transform.transform(layer.extent())
                 except QgsCsException:
