@@ -33,6 +33,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test"""
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Base layer",
+                                                (Qt.MatchExactly |
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(0)
 
     def tearDown(self):
         """Runs after each test"""
