@@ -84,8 +84,9 @@ def writeTmpLayer(layer, popup):
     return layer
 
 
-def exportLayers(layers, folder, precision, optimize, popupField, json):
-    epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
+def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
+    srcCrs = iface.mapCanvas().mapSettings().destinationCrs()
+    epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = (
@@ -99,7 +100,7 @@ def exportLayers(layers, folder, precision, optimize, popupField, json):
                                    safeName(layer.name()) + ".json")
             path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
             QgsVectorFileWriter.writeAsVectorFormat(layer, tmpPath, "utf-8",
-                                                    epsg3857, 'GeoJson')
+                                                    epsg4326, 'GeoJson')
             with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" + safeName(layer.name())))
                 with open(tmpPath, "r") as f2:

@@ -48,6 +48,7 @@ def writeOL(iface, layers, groups, popup, visible,
             shutil.copytree(os.path.join(os.path.dirname(__file__),
                                          "resources"),
                             dst)
+        matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
         cleanUnusedFields = settings["Data export"]["Delete unused fields"]
@@ -55,9 +56,11 @@ def writeOL(iface, layers, groups, popup, visible,
             usedFields = [ALL_ATTRIBUTES] * len(popup)
         else:
             usedFields = popup
-        exportLayers(layers, folder, precision, optimize, usedFields, json)
+        exportLayers(iface, layers, folder, precision,
+                     optimize, usedFields, json)
         exportStyles(layers, folder)
-        writeLayersAndGroups(layers, groups, visible, folder, settings, json)
+        writeLayersAndGroups(layers, groups, visible, folder,
+                             settings, json, matchCRS)
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = "./resources/ol.css"
             jsAddress = "./resources/ol.js"
@@ -74,8 +77,9 @@ def writeOL(iface, layers, groups, popup, visible,
                                     (safeName(layer.name()) + ".js"))
                 else:
                     layerSource = layer.source()
-                    layerSource = re.sub('SRSNAME\=EPSG\:\d+',
-                                         'SRSNAME=EPSG:3857', layerSource)
+                    if not matchCRS:
+                        layerSource = re.sub('SRSNAME\=EPSG\:\d+',
+                                             'SRSNAME=EPSG:3857', layerSource)
                     layerSource += "&outputFormat=text%2Fjavascript&"
                     layerSource += "format_options=callback%3A"
                     layerSource += "get" + safeName(layer.name()) + "Json"
@@ -96,7 +100,8 @@ def writeOL(iface, layers, groups, popup, visible,
         backgroundColor = mapSettings.backgroundColor().name()
         mapbounds = bounds(iface,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
-                           layers)
+                           layers,
+                           settings["Appearance"]["Match project CRS"])
         mapextent = "extent: %s," % mapbounds if (
             settings["Scale/Zoom"]["Restrict to extent"]) else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
@@ -106,7 +111,18 @@ def writeOL(iface, layers, groups, popup, visible,
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
+        proj4 = ""
+        projdef = ""
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+        if settings["Appearance"]["Match project CRS"]:
+            proj4 = """
+<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
+            proj4 += "</script>"
+            projdef = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
+                epsg=mapSettings.destinationCrs().authid(),
+                defn=mapSettings.destinationCrs().toProj4())
+            view += ", projection: '%s'" % (
+                mapSettings.destinationCrs().authid())
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
@@ -120,7 +136,9 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@VIEW@": view,
                   "@ONHOVER@": onHover,
                   "@DOHIGHLIGHT@": highlight,
-                  "@HIGHLIGHTFILL@": highlightFill}
+                  "@HIGHLIGHTFILL@": highlightFill,
+                  "@PROJ4@": proj4,
+                  "@PROJDEF@": projdef}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = settings["Appearance"]["Template"]
@@ -130,7 +148,8 @@ def writeOL(iface, layers, groups, popup, visible,
     return os.path.join(folder, "index.html")
 
 
-def writeLayersAndGroups(layers, groups, visible, folder, settings, json):
+def writeLayersAndGroups(layers, groups, visible, folder,
+                         settings, json, matchCRS):
 
     baseLayerSetting = settings["Appearance"]["Base layer"]
     baseLayer = baseLayerGroup % baseLayers[baseLayerSetting]
@@ -139,9 +158,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, settings, json):
                                ["Use layer scale dependent visibility"])
     layerVars = ""
     for layer, encode2json in zip(layers, json):
-        layerVars += "\n".join([layerToJavascript(layer,
+        layerVars += "\n".join([layerToJavascript(iface, layer,
                                                   scaleVisibility,
-                                                  encode2json)])
+                                                  encode2json, matchCRS)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -200,32 +219,37 @@ def replaceInTemplate(template, values):
     return s
 
 
-def bounds(iface, useCanvas, layers):
+def bounds(iface, useCanvas, layers, matchCRS):
     if useCanvas:
         canvas = iface.mapCanvas()
         try:
             canvasCrs = canvas.mapSettings().destinationCrs()
         except:
             canvasCrs = canvas.mapRenderer().destinationCrs()
-        transform = QgsCoordinateTransform(canvasCrs,
-                                           QgsCoordinateReferenceSystem(
-                                               "EPSG:3857"))
-        try:
-            extent = transform.transform(canvas.extent())
-        except QgsCsException:
-            extent = QgsRectangle(-20026376.39, -20048966.10,
-                                  20026376.39, 20048966.10)
-    else:
-        extent = None
-        for layer in layers:
-            transform = QgsCoordinateTransform(layer.crs(),
+        if not matchCRS:
+            transform = QgsCoordinateTransform(canvasCrs,
                                                QgsCoordinateReferenceSystem(
                                                    "EPSG:3857"))
             try:
-                layerExtent = transform.transform(layer.extent())
+                extent = transform.transform(canvas.extent())
             except QgsCsException:
-                layerExtent = QgsRectangle(-20026376.39, -20048966.10,
-                                           20026376.39, 20048966.10)
+                extent = QgsRectangle(-20026376.39, -20048966.10,
+                                      20026376.39, 20048966.10)
+        else:
+            extent = canvas.extent()
+    else:
+        extent = None
+        for layer in layers:
+            if not matchCRS:
+                epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
+                transform = QgsCoordinateTransform(layer.crs(), epsg3857)
+                try:
+                    layerExtent = transform.transform(layer.extent())
+                except QgsCsException:
+                    layerExtent = QgsRectangle(-20026376.39, -20048966.10,
+                                               20026376.39, 20048966.10)
+            else:
+                layerExtent = layer.extent()
             if extent is None:
                 extent = layerExtent
             else:
@@ -235,7 +259,7 @@ def bounds(iface, useCanvas, layers):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def layerToJavascript(layer, scaleVisibility, encode2json):
+def layerToJavascript(iface, layer, scaleVisibility, encode2json, matchCRS):
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
@@ -246,6 +270,14 @@ def layerToJavascript(layer, scaleVisibility, encode2json):
         maxResolution = ""
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
+        if matchCRS:
+            mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
+            crsConvert = """
+            {dataProjection: 'EPSG:4326', featureProjection: '%(d)s'}""" % {
+                "d": mapCRS}
+        else:
+            crsConvert = """
+            {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
         if layer.providerType() == "WFS" and not encode2json:
             return ('''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
@@ -266,7 +298,7 @@ function get%(n)sJson(geojson) {
                         "min": minResolution, "max": maxResolution})
         else:
             return ('''var format_%(n)s = new ol.format.GeoJSON();
-var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s);
+var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector();
 jsonSource_%(n)s.addFeatures(features_%(n)s);
 var lyr_%(n)s = new ol.layer.Vector({
@@ -274,7 +306,8 @@ var lyr_%(n)s = new ol.layer.Vector({
                 style: style_%(n)s,
                 title: "%(name)s"
             });''' % {"name": layer.name(), "n": layerName,
-                      "min": minResolution, "max": maxResolution})
+                      "min": minResolution, "max": maxResolution,
+                      "crs": crsConvert})
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
