@@ -176,7 +176,6 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 
 
 def svgScript(safeLayerName, symbolLayer, outputFolder):
-    print "path: " + symbolLayer.path() + os.path.basename(symbolLayer.path())
     shutil.copyfile(symbolLayer.path(), os.path.join(outputFolder, "markers",
                                                      os.path.basename(
                                                         symbolLayer.path())))
