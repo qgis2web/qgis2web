@@ -424,7 +424,7 @@ def labelsAndPopups(i, safeLayerName, usedFields, labelhover,
             html_prov = True
             table = 'feature.properties.html_exp'
         if (unicode(f) != "" and unicode(f) == unicode(field) and
-            f and palyr.enabled):
+                f and palyr.enabled):
             label_exp = True
         if not html_prov:
             tablestart = "'<table>"
