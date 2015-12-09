@@ -5,8 +5,7 @@ import shutil
 
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
-                         labels, measure, matchCRS, canvas,
-                         mapLibLocation, locate):
+                         measure, matchCRS, canvas, mapLibLocation, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -40,9 +39,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
                         cssStore + 'MarkerCluster.css')
         shutil.copyfile(cssDir + 'MarkerCluster.Default.css',
                         cssStore + 'MarkerCluster.Default.css')
-    if len(labels):
-        shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
-        shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
+    shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
+    shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
     if measure:
         shutil.copyfile(jsDir + 'leaflet.draw.js', jsStore + 'leaflet.draw.js')
         shutil.copyfile(cssDir + 'leaflet.draw.css',
@@ -59,8 +57,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     return dataStore, cssStore
 
 
-def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address,
-                   measure, matchCRS, canvas, full, mapLibLocation):
+def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
+                   matchCRS, canvas, full, mapLibLocation):
     with open(outputIndex, 'w') as f_html:
         base = """<!DOCTYPE html>
 <html>
@@ -87,8 +85,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address,
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
         base += """
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">"""
-        if len(labels):
-            base += """
+        base += """
         <link rel="stylesheet" href="css/label.css" />"""
         if address:
             base += """
@@ -108,8 +105,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, labels, address,
             base += '</script>'
         base += """
         <script src="js/leaflet-hash.js"></script>"""
-        if len(labels):
-            base += """
+        base += """
         <script src="js/label.js"></script>"""
         base += """
         <script src="js/Autolinker.min.js"></script>"""

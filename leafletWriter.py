@@ -40,8 +40,8 @@ basemapAttributions = basemapAttributions()
 
 
 def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
-                 visible, opacity_raster, cluster, labels, labelhover,
-                 selected, json, params, popup):
+                 visible, opacity_raster, cluster, labelhover, selected, json,
+                 params, popup):
     legends = {}
     canvas = iface.mapCanvas()
     project = QgsProject.instance()
@@ -78,9 +78,9 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir,
                                                outputProjectFileName, cluster,
-                                               labels, measure, matchCRS,
+                                               measure, matchCRS,
                                                canvas, mapLibLocation, locate)
-    writeHTMLstart(outputIndex, title, cluster, labels, addressSearch, measure,
+    writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
                    matchCRS, canvas, full, mapLibLocation)
     writeCSS(cssStore, full, height, width,
              mapSettings.backgroundColor().name())
@@ -201,8 +201,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 (new_pop,
                  labeltext, popFuncs) = labelsAndPopups(i, safeLayerName,
                                                         usedFields,
-                                                        labels, labelhover,
-                                                        highlight,
+                                                        labelhover, highlight,
                                                         popupsOnHover, popup,
                                                         count)
                 layerName = safeLayerName
@@ -397,7 +396,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     return outputIndex
 
 
-def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
+def labelsAndPopups(i, safeLayerName, usedFields, labelhover,
                     highlight, popupsOnHover, popup, count):
     fields = i.pendingFields()
     field_names = [field.name() for field in fields]
@@ -412,20 +411,20 @@ def labelsAndPopups(i, safeLayerName, usedFields, labels, labelhover,
     label_exp = ''
     labeltext = ""
     f = ''
-    if labels[count]:
-        palyr = QgsPalLayerSettings()
-        palyr.readFromLayer(i)
-        f = palyr.fieldName
-        label_exp = False
-        labeltext = ".bindLabel(feature.properties." + unicode(f)
-        if not labelhover:
-            labeltext += ", {noHide: true, offset: [-0, -16]}"
-        labeltext += ")"
+    palyr = QgsPalLayerSettings()
+    palyr.readFromLayer(i)
+    f = palyr.fieldName
+    label_exp = False
+    labeltext = ".bindLabel(feature.properties." + unicode(f)
+    if not labelhover:
+        labeltext += ", {noHide: true, offset: [-0, -16]}"
+    labeltext += ")"
     for field in field_names:
         if unicode(field) == 'html_exp':
             html_prov = True
             table = 'feature.properties.html_exp'
-        if unicode(f) != "" and unicode(f) == unicode(field) and f:
+        if (unicode(f) != "" and unicode(f) == unicode(field) and
+            f and palyr.enabled):
             label_exp = True
         if not html_prov:
             tablestart = "'<table>"
@@ -500,7 +499,7 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
     radius = unicode(symbol.size() * 2)
     if isinstance(symbolLayer, QgsSvgMarkerSymbolLayerV2):
         pointStyleLabel = svgScript(safeLayerName, symbolLayer,
-                                    outputProjectFileName)
+                                    outputProjectFileName, labeltext)
     else:
         try:
             borderStyle = symbolLayer.outlineStyle()

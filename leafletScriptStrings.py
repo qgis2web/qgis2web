@@ -175,7 +175,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     return popup
 
 
-def svgScript(safeLayerName, symbolLayer, outputFolder):
+def svgScript(safeLayerName, symbolLayer, outputFolder, labeltext):
     shutil.copyfile(symbolLayer.path(), os.path.join(outputFolder, "markers",
                                                      os.path.basename(
                                                         symbolLayer.path())))
@@ -191,10 +191,11 @@ def svgScript(safeLayerName, symbolLayer, outputFolder):
             }}
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.marker(latlng, doStyle{safeLayerName}())
+            return L.marker(latlng, doStyle{safeLayerName}()){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8)
+                     size=symbolLayer.size() * 3.8,
+                     labeltext=labeltext)
     return svg
 
 

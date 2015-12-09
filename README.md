@@ -45,9 +45,6 @@ format.</p>
         file</dd>
     <dt>Cluster</dt>
         <dd>Use Leaflet cluster plugin to cluster features</dd>
-    <dt>Label</dt>
-        <dd>Use layer's label as set in QGIS (Leaflet only supports point
-        labels)</dd>
 </dl>
 
 <h3>General options</h3>
@@ -101,7 +98,8 @@ format.</p>
     <dt>Highlight features</dt>
         <dd>Highlight features on mouseover</dd>
     <dt>Match project CRS</dt>
-        <dd>Create web map in same projection as QGIS project</dd>
+        <dd>Create web map in same projection as QGIS project, otherwise the
+        webmap is projected in EPSG:3857</dd>
     <dt>Show popups on hover</dt>
         <dd>Show popups when mouse hovers over feature</dd>
     <dt>Template</dt>

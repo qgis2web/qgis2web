@@ -275,7 +275,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def previewOL3(self):
         self.preview.settings().clearMemoryCaches()
         (layers, groups, popup, visible,
-         json, cluster, labels) = self.getLayersAndGroups()
+         json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
                               cluster, labels, params, utils.tempFolder())
@@ -284,10 +284,10 @@ class MainDialog(QDialog, Ui_MainDialog):
     def previewLeaflet(self):
         self.preview.settings().clearMemoryCaches()
         (layers, groups, popup, visible,
-         json, cluster, labels) = self.getLayersAndGroups()
+         json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
         previewFile = writeLeaflet(self.iface, utils.tempFolder(), 500, 700, 1,
-                                   layers, visible, "", cluster, labels, 0, 0,
+                                   layers, visible, "", cluster, 0, 0,
                                    json, params, popup)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
@@ -296,7 +296,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = params["Data export"]["Export folder"]
         if folder:
             (layers, groups, popup, visible,
-             json, cluster, labels) = self.getLayersAndGroups()
+             json, cluster) = self.getLayersAndGroups()
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
                                  json, cluster, labels, params, folder)
             webbrowser.open_new_tab(outputFile)
@@ -306,9 +306,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         folder = params["Data export"]["Export folder"]
         if folder:
             (layers, groups, popup, visible,
-             json, cluster, labels) = self.getLayersAndGroups()
+             json, cluster) = self.getLayersAndGroups()
             outputFile = writeLeaflet(self.iface, folder, 600, 400, 1, layers,
-                                      visible, "", cluster, labels, 0, 0,
+                                      visible, "", cluster, 0, 0,
                                       json, params, popup)
             webbrowser.open_new_tab(outputFile)
 
@@ -326,7 +326,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         visible = []
         json = []
         cluster = []
-        labels = []
         for i in xrange(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
@@ -336,7 +335,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                     visible.append(item.visible)
                     json.append(item.json)
                     cluster.append(item.cluster)
-                    labels.append(item.labels)
             else:
                 group = item.name
                 groupLayers = []
@@ -358,10 +356,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                         cluster.append(True)
                     else:
                         cluster.append(False)
-                    if hasattr(item, "labels") and item.labels:
-                        labels.append(True)
-                    else:
-                        labels.append(False)
                 groups[group] = groupLayers[::-1]
 
         return (layers[::-1],
@@ -369,8 +363,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 popup[::-1],
                 visible[::-1],
                 json[::-1],
-                cluster[::-1],
-                labels[::-1])
+                cluster[::-1])
 
 
 class TreeGroupItem(QTreeWidgetItem):
@@ -458,18 +451,6 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterCheck.stateChanged.connect(self.changeCluster)
                 self.addChild(self.clusterItem)
                 tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
-            palyr = QgsPalLayerSettings()
-            palyr.readFromLayer(layer)
-            if palyr.fieldName:
-                self.labelsItem = QTreeWidgetItem(self)
-                self.labelsCheck = QCheckBox()
-                if palyr.enabled:
-                    if layer.customProperty("qgis2web/Label") == 2:
-                        self.labelsCheck.setChecked(True)
-                self.labelsItem.setText(0, "Label")
-                self.labelsCheck.stateChanged.connect(self.changeLabel)
-                self.addChild(self.labelsItem)
-                tree.setItemWidget(self.labelsItem, 1, self.labelsCheck)
 
     @property
     def popup(self):
@@ -498,13 +479,6 @@ class TreeLayerItem(QTreeWidgetItem):
     def cluster(self):
         try:
             return self.clusterCheck.isChecked()
-        except:
-            return False
-
-    @property
-    def labels(self):
-        try:
-            return self.labelsCheck.isChecked()
         except:
             return False
 
