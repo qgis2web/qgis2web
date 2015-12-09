@@ -38,7 +38,7 @@ baseLayerGroup += "new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 
 def writeOL(iface, layers, groups, popup, visible,
-            json, cluster, labels, settings, folder):
+            json, cluster, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
