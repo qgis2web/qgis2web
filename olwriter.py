@@ -398,10 +398,10 @@ def exportStyles(layers, folder, clustered):
                 else:
                     symbol = renderer.symbol()
                 if cluster:
-                    style = "var size = feature.get('features').length;"
+                    style = "var size = feature.get('features').length;\n"
                 else:
-                    style = "var size = 0;"
-                style += "\nvar style = " + getSymbolAsStyle(symbol,
+                    style = "var size = 0;\n"
+                style += "var style = " + getSymbolAsStyle(symbol,
                                                              stylesFolder,
                                                              layer_alpha)
                 value = 'var value = ""'
@@ -449,33 +449,33 @@ def exportStyles(layers, folder, clustered):
             b = layer.customProperty("labeling/textColorB")
             color = "rgba(%s, %s, %s, 255)" % (r, g, b)
             style = '''function(feature, resolution){
-                        %(value)s
-                        %(style)s;
-                        if (%(label)s) {
-                            var labelText = %(label)s;
-                        } else {
-                            var labelText = ""
-                        }
-                        var key = value + "_" + labelText
+    %(value)s
+    %(style)s;
+    if (%(label)s) {
+        var labelText = %(label)s;
+    } else {
+        var labelText = ""
+    }
+    var key = value + "_" + labelText
 
-                        if (!%(cache)s[key]){
-                            var text = new ol.style.Text({
-                                  font: '%(size)spx Calibri,sans-serif',
-                                  text: labelText,
-                                  textBaseline: "center",
-                                  textAlign: "left",
-                                  offsetX: 5,
-                                  offsetY: 3,
-                                  fill: new ol.style.Fill({
-                                    color: "%(color)s"
-                                  }),
-                                });
-                            %(cache)s[key] = new ol.style.Style({"text": text})
-                        }
-                        var allStyles = [%(cache)s[key]];
-                        allStyles.push.apply(allStyles, style);
-                        return allStyles;
-                    }''' % {"style": style, "label": labelText,
+    if (!%(cache)s[key]){
+        var text = new ol.style.Text({
+              font: '%(size)spx Calibri,sans-serif',
+              text: labelText,
+              textBaseline: "center",
+              textAlign: "left",
+              offsetX: 5,
+              offsetY: 3,
+              fill: new ol.style.Fill({
+                color: "%(color)s"
+              }),
+            });
+        %(cache)s[key] = new ol.style.Style({"text": text})
+    }
+    var allStyles = [%(cache)s[key]];
+    allStyles.push.apply(allStyles, style);
+    return allStyles;
+}''' % {"style": style, "label": labelText,
                             "cache": "styleCache_" + safeName(layer.name()),
                             "size": size, "color": color, "value": value}
         except Exception, e:
@@ -486,8 +486,8 @@ def exportStyles(layers, folder, clustered):
 
         with codecs.open(path, "w", "utf-8") as f:
             f.write('''%(defs)s
-                    var styleCache_%(name)s={}
-                    var style_%(name)s = %(style)s;''' %
+var styleCache_%(name)s={}
+var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": safeName(layer.name()),
                      "style": style})
 
@@ -571,8 +571,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
 def getCircle(color, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
-                stroke: %s
-                %s})""" %
+                            stroke: %s%s})""" %
             (size,
              getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
              getFillStyle(color, props)))
