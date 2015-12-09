@@ -424,7 +424,11 @@ def exportStyles(layers, folder):
             style = '''function(feature, resolution){
                         %(value)s
                         %(style)s;
-                        var labelText = %(label)s;
+                        if (%(label)s) {
+                            var labelText = %(label)s;
+                        } else {
+                            var labelText = ""
+                        }
                         var key = value + "_" + labelText
 
                         if (!%(cache)s[key]){
