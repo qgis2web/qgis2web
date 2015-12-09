@@ -401,9 +401,9 @@ def exportStyles(layers, folder, clustered):
                     style = "var size = feature.get('features').length;\n"
                 else:
                     style = "var size = 0;\n"
-                style += "var style = " + getSymbolAsStyle(symbol,
-                                                             stylesFolder,
-                                                             layer_alpha)
+                style += "    var style = " + getSymbolAsStyle(symbol,
+                                                               stylesFolder,
+                                                               layer_alpha)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
@@ -563,15 +563,14 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         else:
             style = ""
         styles.append('''new ol.style.Style({
-                            %s
-                        })
-                        ''' % style)
+        %s
+    })''' % style)
     return "[ %s]" % ",".join(styles)
 
 
 def getCircle(color, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
-                            stroke: %s%s})""" %
+            stroke: %s%s})""" %
             (size,
              getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
              getFillStyle(color, props)))
