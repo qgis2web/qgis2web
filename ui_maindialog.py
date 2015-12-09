@@ -18,11 +18,13 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
@@ -31,8 +33,8 @@ class Ui_MainDialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(
             QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")),
-                          QtGui.QIcon.Normal,
-                          QtGui.QIcon.Off)
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
         self.horizontalLayout_3 = QtGui.QHBoxLayout(MainDialog)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
