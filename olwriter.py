@@ -390,7 +390,7 @@ def exportStyles(layers, folder, clustered):
         defs = ""
         try:
             renderer = layer.rendererV2()
-            layer_transparency = layer.layerTransparency()
+            layer_alpha = layer.layerTransparency()
             if (isinstance(renderer, QgsSingleSymbolRendererV2) or
                     isinstance(renderer, QgsRuleBasedRendererV2)):
                 if isinstance(renderer, QgsRuleBasedRendererV2):
@@ -402,8 +402,8 @@ def exportStyles(layers, folder, clustered):
                 else:
                     style = "var size = 0;"
                 style += "\nvar style = " + getSymbolAsStyle(symbol,
-                                                           stylesFolder,
-                                                           layer_transparency)
+                                                             stylesFolder,
+                                                             layer_alpha)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
@@ -413,7 +413,7 @@ def exportStyles(layers, folder, clustered):
                                 (cat.value(), getSymbolAsStyle(
                                     cat.symbol(),
                                     stylesFolder,
-                                    layer_transparency)))
+                                    layer_alpha)))
                 defs += ",\n".join(cats) + "};"
                 value = ('var value = feature.get("%s");' %
                          renderer.classAttribute())
@@ -425,7 +425,7 @@ def exportStyles(layers, folder, clustered):
                 ranges = []
                 for ran in renderer.ranges():
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                                   layer_transparency)
+                                                   layer_alpha)
                     ranges.append('[%f, %f, %s]' % (ran.lowerValue(),
                                                     ran.upperValue(),
                                                     symbolstyle))
