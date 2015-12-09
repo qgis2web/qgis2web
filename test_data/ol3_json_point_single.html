@@ -255,35 +255,37 @@
   </body>
 </html>
 
-                    var styleCache_point={}
-                    var style_point = function(feature, resolution){
-                        var value = ""
-                        var style = [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: 2.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(132,55,104,1.0)"})})
-                        })
-                        ];
-                        if ("") {
-                            var labelText = "";
-                        } else {
-                            var labelText = ""
-                        }
-                        var key = value + "_" + labelText
+var styleCache_point={}
+var style_point = function(feature, resolution){
+    var value = ""
+    var size = 0;
+    var style = [ new ol.style.Style({
+        image: new ol.style.Circle({radius: 2.0 + size,
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}) , fill: new ol.style.Fill({color: "rgba(132,55,104,1.0)"})})
+    })
+    ];
+    if ("") {
+        var labelText = "";
+    } else {
+        var labelText = ""
+    }
+    var key = value + "_" + labelText
 
-                        if (!styleCache_point[key]){
-                            var text = new ol.style.Text({
-                                  font: '10.725px Calibri,sans-serif',
-                                  text: labelText,
-                                  textBaseline: "center",
-                                  textAlign: "left",
-                                  offsetX: 5,
-                                  offsetY: 3,
-                                  fill: new ol.style.Fill({
-                                    color: "rgba(0, 0, 0, 255)"
-                                  }),
-                                });
-                            styleCache_point[key] = new ol.style.Style({"text": text})
-                        }
-                        var allStyles = [styleCache_point[key]];
-                        allStyles.push.apply(allStyles, style);
-                        return allStyles;
-                    };
+    if (!styleCache_point[key]){
+        var text = new ol.style.Text({
+              font: '10.725px Calibri,sans-serif',
+              text: labelText,
+              textBaseline: "center",
+              textAlign: "left",
+              offsetX: 5,
+              offsetY: 3,
+              fill: new ol.style.Fill({
+                color: "rgba(0, 0, 0, 255)"
+              }),
+            });
+        styleCache_point[key] = new ol.style.Style({"text": text})
+    }
+    var allStyles = [styleCache_point[key]];
+    allStyles.push.apply(allStyles, style);
+    return allStyles;
+};

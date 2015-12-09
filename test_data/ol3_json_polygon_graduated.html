@@ -255,58 +255,58 @@
   </body>
 </html>
 var ranges_polygon = [[12.000000, 24701.200000, [ new ol.style.Style({
-                            stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(247,251,255,1.0)"})
-                        })
-                        ]],
+    stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(247,251,255,1.0)"})
+})
+]],
 [24701.200000, 49390.400000, [ new ol.style.Style({
-                            stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(199,220,239,1.0)"})
-                        })
-                        ]],
+    stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(199,220,239,1.0)"})
+})
+]],
 [49390.400000, 74079.600000, [ new ol.style.Style({
-                            stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(114,178,215,1.0)"})
-                        })
-                        ]],
+    stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(114,178,215,1.0)"})
+})
+]],
 [74079.600000, 98768.800000, [ new ol.style.Style({
-                            stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(40,120,184,1.0)"})
-                        })
-                        ]],
+    stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(40,120,184,1.0)"})
+})
+]],
 [98768.800000, 123458.000000, [ new ol.style.Style({
-                            stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(8,48,107,1.0)"})
-                        })
-                        ]]];
-                    var styleCache_polygon={}
-                    var style_polygon = function(feature, resolution){
-                        var value = feature.get("area");
-                        var style = ranges_polygon[0][2];
-                            for (i = 0; i < ranges_polygon.length; i++){
-                                var range = ranges_polygon[i];
-                                if (value > range[0] && value<=range[1]){
-                                    style =  range[2];
-                                }
-                            }
-                            ;
-                        if ("") {
-                            var labelText = "";
-                        } else {
-                            var labelText = ""
-                        }
-                        var key = value + "_" + labelText
+    stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(8,48,107,1.0)"})
+})
+]]];
+var styleCache_polygon={}
+var style_polygon = function(feature, resolution){
+var value = feature.get("area");
+var style = ranges_polygon[0][2];
+    for (i = 0; i < ranges_polygon.length; i++){
+        var range = ranges_polygon[i];
+        if (value > range[0] && value<=range[1]){
+            style =  range[2];
+        }
+    }
+    ;
+if ("") {
+    var labelText = "";
+} else {
+    var labelText = ""
+}
+var key = value + "_" + labelText
 
-                        if (!styleCache_polygon[key]){
-                            var text = new ol.style.Text({
-                                  font: '10.725px Calibri,sans-serif',
-                                  text: labelText,
-                                  textBaseline: "center",
-                                  textAlign: "left",
-                                  offsetX: 5,
-                                  offsetY: 3,
-                                  fill: new ol.style.Fill({
-                                    color: "rgba(0, 0, 0, 255)"
-                                  }),
-                                });
-                            styleCache_polygon[key] = new ol.style.Style({"text": text})
-                        }
-                        var allStyles = [styleCache_polygon[key]];
-                        allStyles.push.apply(allStyles, style);
-                        return allStyles;
-                    };
+if (!styleCache_polygon[key]){
+    var text = new ol.style.Text({
+          font: '10.725px Calibri,sans-serif',
+          text: labelText,
+          textBaseline: "center",
+          textAlign: "left",
+          offsetX: 5,
+          offsetY: 3,
+          fill: new ol.style.Fill({
+            color: "rgba(0, 0, 0, 255)"
+          }),
+        });
+    styleCache_polygon[key] = new ol.style.Style({"text": text})
+}
+var allStyles = [styleCache_polygon[key]];
+allStyles.push.apply(allStyles, style);
+return allStyles;
+};
