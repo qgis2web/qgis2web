@@ -23,10 +23,8 @@ output code to achieve what qgis2web cannot.</p>
 Unsupported options are disabled in the plugin UI when you select an output
 format.</p>
 <ul>
-    <li>clustering only supported in Leaflet</li>
     <li>no rule-based rendering</li>
-    <li>some SVG point markers only work in Leaflet, not OpenLayers 3</li>
-    <li>[unconfirmed] SVG point markers sometimes do not appear in the preview
+    <li>SVG point markers sometimes do not appear in the preview
     pane, but work when the map is exported</li>
 </ul>
 
