@@ -90,5 +90,4 @@ specificParams = {
 }
 
 specificOptions = {
-    "Cluster": "Leaflet"
 }

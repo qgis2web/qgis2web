@@ -38,7 +38,7 @@ baseLayerGroup += "new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 
 def writeOL(iface, layers, groups, popup, visible,
-            json, cluster, settings, folder):
+            json, clustered, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
@@ -58,9 +58,9 @@ def writeOL(iface, layers, groups, popup, visible,
             usedFields = popup
         exportLayers(iface, layers, folder, precision,
                      optimize, usedFields, json)
-        exportStyles(layers, folder)
+        exportStyles(layers, folder, clustered)
         writeLayersAndGroups(layers, groups, visible, folder,
-                             settings, json, matchCRS)
+                             settings, json, matchCRS, clustered)
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = "./resources/ol.css"
             jsAddress = "./resources/ol.js"
@@ -149,7 +149,7 @@ def writeOL(iface, layers, groups, popup, visible,
 
 
 def writeLayersAndGroups(layers, groups, visible, folder,
-                         settings, json, matchCRS):
+                         settings, json, matchCRS, clustered):
 
     baseLayerSetting = settings["Appearance"]["Base layer"]
     baseLayer = baseLayerGroup % baseLayers[baseLayerSetting]
@@ -157,10 +157,10 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     scaleVisibility = (settings["Scale/Zoom"]
                                ["Use layer scale dependent visibility"])
     layerVars = ""
-    for layer, encode2json in zip(layers, json):
+    for layer, encode2json, cluster in zip(layers, json, clustered):
         layerVars += "\n".join([layerToJavascript(iface, layer,
-                                                  scaleVisibility,
-                                                  encode2json, matchCRS)])
+                                                  scaleVisibility, encode2json,
+                                                  matchCRS, cluster)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -259,7 +259,8 @@ def bounds(iface, useCanvas, layers, matchCRS):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def layerToJavascript(iface, layer, scaleVisibility, encode2json, matchCRS):
+def layerToJavascript(iface, layer, scaleVisibility,
+                      encode2json, matchCRS, cluster):
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
@@ -279,13 +280,22 @@ def layerToJavascript(iface, layer, scaleVisibility, encode2json, matchCRS):
             crsConvert = """
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
         if layer.providerType() == "WFS" and not encode2json:
-            return ('''var format_%(n)s = new ol.format.GeoJSON();
+            layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
     format: format_%(n)s
-});
-
-var lyr_%(n)s = new ol.layer.Vector({
-    source: jsonSource_%(n)s,%(min)s %(max)s
+});''' % {"n": layerName}
+            if cluster:
+                layerCode += '''cluster_%(n)s = new ol.source.Cluster({
+  distance: 40,
+  source: jsonSource_%(n)s
+});''' % {"n": layerName}
+            layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
+    source: ''' % {"n": layerName}
+            if cluster:
+                layerCode += 'cluster_%(n)s,' % {"n": layerName}
+            else:
+                layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
+            layerCode += '''%(min)s %(max)s
     style: style_%(n)s,
     title: "%(name)s"
 });
@@ -295,19 +305,31 @@ function get%(n)sJson(geojson) {
     jsonSource_%(n)s.addFeatures(features_%(n)s);
 }''' % {
                         "name": layer.name(), "n": layerName,
-                        "min": minResolution, "max": maxResolution})
+                        "min": minResolution, "max": maxResolution}
+            return layerCode
         else:
-            return ('''var format_%(n)s = new ol.format.GeoJSON();
+            layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector();
-jsonSource_%(n)s.addFeatures(features_%(n)s);
-var lyr_%(n)s = new ol.layer.Vector({
-                source: jsonSource_%(n)s,%(min)s %(max)s
+jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
+                                                    "crs": crsConvert}
+            if cluster:
+                layerCode += '''cluster_%(n)s = new ol.source.Cluster({
+  distance: 40,
+  source: jsonSource_%(n)s
+});''' % {"n": layerName}
+            layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
+                source:''' % {"n": layerName}
+            if cluster:
+                layerCode += 'cluster_%(n)s,' % {"n": layerName}
+            else:
+                layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
+            layerCode += '''%(min)s %(max)s
                 style: style_%(n)s,
                 title: "%(name)s"
             });''' % {"name": layer.name(), "n": layerName,
-                      "min": minResolution, "max": maxResolution,
-                      "crs": crsConvert})
+                      "min": minResolution, "max": maxResolution}
+            return layerCode
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -348,10 +370,10 @@ var lyr_%(n)s = new ol.layer.Vector({
                                   "row": provider.ySize()}
 
 
-def exportStyles(layers, folder):
+def exportStyles(layers, folder, clustered):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
-    for layer in layers:
+    for layer, cluster in zip(layers, clustered):
         if layer.type() != layer.VectorLayer:
             continue
         labelsEnabled = unicode(
@@ -375,7 +397,11 @@ def exportStyles(layers, folder):
                     symbol = renderer.rootRule().children()[0].symbol()
                 else:
                     symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder,
+                if cluster:
+                    style = "var size = feature.get('features').length;"
+                else:
+                    style = "var size = 0;"
+                style += "var style = " + getSymbolAsStyle(symbol, stylesFolder,
                                                           layer_transparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
@@ -543,7 +569,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
 
 def getCircle(color, size, props):
-    return ("new ol.style.Circle({radius: %s, stroke: %s %s})" %
+    return ("""new ol.style.Circle({radius: %s + size,
+                stroke: %s %s})""" %
             (size,
              getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
              getFillStyle(color, props)))
