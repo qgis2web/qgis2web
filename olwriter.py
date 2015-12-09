@@ -286,7 +286,7 @@ var jsonSource_%(n)s = new ol.source.Vector({
 });''' % {"n": layerName}
             if cluster:
                 layerCode += '''cluster_%(n)s = new ol.source.Cluster({
-  distance: 40,
+  distance: 10,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
             layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
@@ -315,7 +315,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                                     "crs": crsConvert}
             if cluster:
                 layerCode += '''cluster_%(n)s = new ol.source.Cluster({
-  distance: 40,
+  distance: 10,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
             layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
@@ -401,8 +401,9 @@ def exportStyles(layers, folder, clustered):
                     style = "var size = feature.get('features').length;"
                 else:
                     style = "var size = 0;"
-                style += "var style = " + getSymbolAsStyle(symbol, stylesFolder,
-                                                          layer_transparency)
+                style += "\nvar style = " + getSymbolAsStyle(symbol,
+                                                           stylesFolder,
+                                                           layer_transparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
@@ -570,7 +571,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
 def getCircle(color, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
-                stroke: %s %s})""" %
+                stroke: %s
+                %s})""" %
             (size,
              getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
              getFillStyle(color, props)))
