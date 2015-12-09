@@ -270,7 +270,11 @@ var categories_polygon = {"big": [ new ol.style.Style({
                     var style_polygon = function(feature, resolution){
                         var value = feature.get("name");
                         var style = categories_polygon[value];
-                        var labelText = "";
+                        if ("") {
+                            var labelText = "";
+                        } else {
+                            var labelText = ""
+                        }
                         var key = value + "_" + labelText
 
                         if (!styleCache_polygon[key]){

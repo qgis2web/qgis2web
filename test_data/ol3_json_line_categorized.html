@@ -270,7 +270,11 @@ var categories_line = {"test line": [ new ol.style.Style({
                     var style_line = function(feature, resolution){
                         var value = feature.get("name");
                         var style = categories_line[value];
-                        var labelText = "";
+                        if ("") {
+                            var labelText = "";
+                        } else {
+                            var labelText = ""
+                        }
                         var key = value + "_" + labelText
 
                         if (!styleCache_line[key]){

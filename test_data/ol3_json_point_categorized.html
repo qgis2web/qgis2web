@@ -278,7 +278,11 @@ var categories_point = {"hamlet": [ new ol.style.Style({
                     var style_point = function(feature, resolution){
                         var value = feature.get("type");
                         var style = categories_point[value];
-                        var labelText = "";
+                        if ("") {
+                            var labelText = "";
+                        } else {
+                            var labelText = ""
+                        }
                         var key = value + "_" + labelText
 
                         if (!styleCache_point[key]){

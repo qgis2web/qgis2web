@@ -285,7 +285,11 @@ var ranges_line = [[99999.000000, 20079999.000000, [ new ol.style.Style({
                                 }
                             }
                             ;
-                        var labelText = "";
+                        if ("") {
+                            var labelText = "";
+                        } else {
+                            var labelText = ""
+                        }
                         var key = value + "_" + labelText
 
                         if (!styleCache_line[key]){

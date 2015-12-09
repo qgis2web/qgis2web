@@ -285,7 +285,11 @@ var ranges_point = [[0.000000, 3313.000000, [ new ol.style.Style({
                                 }
                             }
                             ;
-                        var labelText = "";
+                        if ("") {
+                            var labelText = "";
+                        } else {
+                            var labelText = ""
+                        }
                         var key = value + "_" + labelText
 
                         if (!styleCache_point[key]){
