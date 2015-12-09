@@ -476,8 +476,8 @@ def exportStyles(layers, folder, clustered):
     allStyles.push.apply(allStyles, style);
     return allStyles;
 }''' % {"style": style, "label": labelText,
-                            "cache": "styleCache_" + safeName(layer.name()),
-                            "size": size, "color": color, "value": value}
+        "cache": "styleCache_" + safeName(layer.name()),
+        "size": size, "color": color, "value": value}
         except Exception, e:
             style = """{
             /* """ + traceback.format_exc() + " */}"
