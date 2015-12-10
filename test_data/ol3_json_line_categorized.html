@@ -254,18 +254,16 @@
       </script>
   </body>
 </html>
+var size = 0;
 var categories_line = {"test line": [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(26,205,62,1.0)", lineDash: null, width: 0})
-    })
-    ],
+    })],
 "test_line long": [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(72,36,233,1.0)", lineDash: null, width: 0})
-    })
-    ],
+    })],
 "": [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(202,72,43,1.0)", lineDash: null, width: 0})
-    })
-    ]};
+    })]};
 var styleCache_line={}
 var style_line = function(feature, resolution){
     var value = feature.get("name");
