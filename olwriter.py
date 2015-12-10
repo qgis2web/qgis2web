@@ -123,7 +123,7 @@ def writeOL(iface, layers, groups, popup, visible,
                 defn=mapSettings.destinationCrs().toProj4())
             view += ", projection: '%s'" % (
                 mapSettings.destinationCrs().authid())
-        geolocate = geolocation(settings["Appearance"]["Geolocate user"]);
+        geolocate = geolocation(settings["Appearance"]["Geolocate user"])
         geocode = settings["Appearance"]["Add address search"]
         geocodingLinks = geocodeLinks(geocode)
         geocodingScript = geocodeScript(geocode)
@@ -662,9 +662,12 @@ var geolocateOverlay = new ol.layer.Vector({
 
 def geocodeLinks(geocode):
     if geocode:
-        return """
-    <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/ol3-geocoder.min.css" rel="stylesheet">
-    <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/ol3-geocoder.js"></script>"""
+        returnVal = """
+    <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
+        returnVal += """ol3-geocoder.min.css" rel="stylesheet">
+    <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
+        returnVal += """ol3-geocoder.js"></script>"""
+        return returnVal
     else:
         return ""
 
