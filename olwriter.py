@@ -439,13 +439,13 @@ def exportStyles(layers, folder, clustered):
                 value = ('var value = feature.get("%s");' %
                          renderer.classAttribute())
                 style = '''var style = %(v)s[0][2];
-                            for (i = 0; i < %(v)s.length; i++){
-                                var range = %(v)s[i];
-                                if (value > range[0] && value<=range[1]){
-                                    style =  range[2];
-                                }
-                            }
-                            ''' % {"v": varName}
+    for (i = 0; i < %(v)s.length; i++){
+        var range = %(v)s[i];
+        if (value > range[0] && value<=range[1]){
+            style =  range[2];
+        }
+    }
+    ''' % {"v": varName}
             if layer.customProperty("labeling/fontSize"):
                 size = float(layer.customProperty("labeling/fontSize")) * 1.3
             else:
