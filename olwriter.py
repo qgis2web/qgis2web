@@ -444,8 +444,7 @@ def exportStyles(layers, folder, clustered):
         if (value > range[0] && value<=range[1]){
             style =  range[2];
         }
-    }
-    ''' % {"v": varName}
+    }''' % {"v": varName}
             if layer.customProperty("labeling/fontSize"):
                 size = float(layer.customProperty("labeling/fontSize")) * 1.3
             else:
