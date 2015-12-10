@@ -274,13 +274,13 @@ var styleCache_line={}
 var style_line = function(feature, resolution){
     var value = feature.get("length");
     var style = ranges_line[0][2];
-        for (i = 0; i < ranges_line.length; i++){
-            var range = ranges_line[i];
-            if (value > range[0] && value<=range[1]){
-                style =  range[2];
-            }
+    for (i = 0; i < ranges_line.length; i++){
+        var range = ranges_line[i];
+        if (value > range[0] && value<=range[1]){
+            style =  range[2];
         }
-        ;
+    }
+    
     if ("") {
         var labelText = "";
     } else {
