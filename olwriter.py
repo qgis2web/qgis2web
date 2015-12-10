@@ -261,6 +261,12 @@ def bounds(iface, useCanvas, layers, matchCRS):
 
 def layerToJavascript(iface, layer, scaleVisibility,
                       encode2json, matchCRS, cluster):
+    renderer = layer.rendererV2()
+    if cluster and (isinstance(renderer, QgsSingleSymbolRendererV2) or
+                    isinstance(renderer, QgsRuleBasedRendererV2)):
+        cluster = True
+    else:
+        cluster = False
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
@@ -387,7 +393,7 @@ def exportStyles(layers, folder, clustered):
                 labelText = '""'
         else:
             labelText = '""'
-        defs = ""
+        defs = "var size = 0;\n"
         try:
             renderer = layer.rendererV2()
             layer_alpha = layer.layerTransparency()
