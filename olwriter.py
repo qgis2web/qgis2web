@@ -124,6 +124,9 @@ def writeOL(iface, layers, groups, popup, visible,
             view += ", projection: '%s'" % (
                 mapSettings.destinationCrs().authid())
         geolocate = geolocation(settings["Appearance"]["Geolocate user"]);
+        geocode = settings["Appearance"]["Add address search"]
+        geocodingLinks = geocodeLinks(geocode)
+        geocodingScript = geocodeScript(geocode)
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
@@ -140,7 +143,9 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@HIGHLIGHTFILL@": highlightFill,
                   "@PROJ4@": proj4,
                   "@PROJDEF@": projdef,
-                  "@GEOLOCATE@": geolocate}
+                  "@GEOLOCATE@": geolocate,
+                  "@GEOCODINGLINKS@": geocodingLinks,
+                  "@GEOCODINGSCRIPT@": geocodingScript}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = settings["Appearance"]["Template"]
@@ -651,5 +656,29 @@ var geolocateOverlay = new ol.layer.Vector({
     features: [accuracyFeature, positionFeature]
   })
 });"""
+    else:
+        return ""
+
+
+def geocodeLinks(geocode):
+    if geocode:
+        return """
+    <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/ol3-geocoder.min.css" rel="stylesheet">
+    <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/ol3-geocoder.js"></script>"""
+    else:
+        return ""
+
+
+def geocodeScript(geocode):
+    if geocode:
+        return """
+var geocoder = new Geocoder('nominatim', {
+  provider: 'osm',
+  lang: 'en-US',
+  placeholder: 'Search for ...',
+  limit: 5,
+  keepOpen: true
+});
+map.addControl(geocoder);"""
     else:
         return ""

@@ -83,7 +83,6 @@ paramsOL = {
 }
 
 specificParams = {
-    "Add address search": "Leaflet",
     "Add measure tool": "Leaflet",
     "Template": "OL3"
 }
