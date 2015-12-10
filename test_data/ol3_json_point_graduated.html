@@ -256,25 +256,25 @@
 </html>
 var size = 0;
 var ranges_point = [[0.000000, 3313.000000, [ new ol.style.Style({
-        image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(247,251,255,1.0)"})})
-    })
-    ]],
+        image: new ol.style.Circle({radius: 5.0 + size,
+            stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(247,251,255,1.0)"})})
+    })]],
 [3313.000000, 6626.000000, [ new ol.style.Style({
-        image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(199,220,239,1.0)"})})
-    })
-    ]],
+        image: new ol.style.Circle({radius: 5.0 + size,
+            stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(199,220,239,1.0)"})})
+    })]],
 [6626.000000, 9939.000000, [ new ol.style.Style({
-        image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(114,178,215,1.0)"})})
-    })
-    ]],
+        image: new ol.style.Circle({radius: 5.0 + size,
+            stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(114,178,215,1.0)"})})
+    })]],
 [9939.000000, 13252.000000, [ new ol.style.Style({
-        image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(40,120,184,1.0)"})})
-    })
-    ]],
+        image: new ol.style.Circle({radius: 5.0 + size,
+            stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(40,120,184,1.0)"})})
+    })]],
 [13252.000000, 16565.000000, [ new ol.style.Style({
-        image: new ol.style.Circle({radius: 5.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(8,48,107,1.0)"})})
-    })
-    ]]];
+        image: new ol.style.Circle({radius: 5.0 + size,
+            stroke: new ol.style.Stroke({color: 'rgba(0,0,0,255)', lineDash: null, width: 1}), fill: new ol.style.Fill({color: "rgba(8,48,107,1.0)"})})
+    })]]];
 var styleCache_point={}
 var style_point = function(feature, resolution){
     var value = feature.get("population");
