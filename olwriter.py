@@ -123,6 +123,7 @@ def writeOL(iface, layers, groups, popup, visible,
                 defn=mapSettings.destinationCrs().toProj4())
             view += ", projection: '%s'" % (
                 mapSettings.destinationCrs().authid())
+        geolocate = geolocation(settings["Appearance"]["Geolocate user"]);
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@JSADDRESS@": jsAddress,
@@ -138,7 +139,8 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@DOHIGHLIGHT@": highlight,
                   "@HIGHLIGHTFILL@": highlightFill,
                   "@PROJ4@": proj4,
-                  "@PROJDEF@": projdef}
+                  "@PROJDEF@": projdef,
+                  "@GEOLOCATE@": geolocate}
 
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = settings["Appearance"]["Template"]
@@ -607,3 +609,47 @@ def getFillStyle(color, props):
         return ""
     else:
         return ", fill: new ol.style.Fill({color: %s})" % color
+
+
+def geolocation(geolocate):
+    if geolocate:
+        return """
+      var geolocation = new ol.Geolocation({
+  projection: map.getView().getProjection()
+});
+
+geolocation.setTracking(true);
+
+var accuracyFeature = new ol.Feature();
+geolocation.on('change:accuracyGeometry', function() {
+  accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+});
+
+var positionFeature = new ol.Feature();
+positionFeature.setStyle(new ol.style.Style({
+  image: new ol.style.Circle({
+    radius: 6,
+    fill: new ol.style.Fill({
+      color: '#3399CC'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#fff',
+      width: 2
+    })
+  })
+}));
+
+geolocation.on('change:position', function() {
+  var coordinates = geolocation.getPosition();
+  positionFeature.setGeometry(coordinates ?
+      new ol.geom.Point(coordinates) : null);
+});
+
+var geolocateOverlay = new ol.layer.Vector({
+  map: map,
+  source: new ol.source.Vector({
+    features: [accuracyFeature, positionFeature]
+  })
+});"""
+    else:
+        return ""

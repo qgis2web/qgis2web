@@ -85,7 +85,6 @@ paramsOL = {
 specificParams = {
     "Add address search": "Leaflet",
     "Add measure tool": "Leaflet",
-    "Geolocate user": "Leaflet",
     "Template": "OL3"
 }
 
