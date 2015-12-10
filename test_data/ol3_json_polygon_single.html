@@ -258,6 +258,7 @@
 var styleCache_polygon={}
 var style_polygon = function(feature, resolution){
     var value = ""
+    var size = 0;
     var style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(193,125,222,1.0)"})
     })
