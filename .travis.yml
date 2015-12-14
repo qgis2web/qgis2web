@@ -6,7 +6,7 @@ virtualenv:
   system_site_packages: true
 
 -before_install:
-  - sudo sed -i 's/us-central1.gce/us-central1.gce.clouds/' /etc/apt/sources.list && sudo apt-get update
+  - sudo apt-get -qq -y update
 
 install:
   - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
