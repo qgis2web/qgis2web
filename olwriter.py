@@ -494,7 +494,7 @@ def writeLayersAndGroups(layers, groups, visible, folder,
 
 
 def replaceInTemplate(template, values):
-    path = os.path.join(os.path.dirname(__file__), "templates", template)
+    path = os.path.join(os.path.dirname(__file__), "OL3_templates", template)
     with open(path) as f:
         lines = f.readlines()
     s = "".join(lines)
