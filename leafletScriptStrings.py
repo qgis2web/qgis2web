@@ -633,9 +633,7 @@ def endHTMLscript(wfsLayers):
         endHTML += """
         stackLayers();"""
     endHTML += """
-    </script>{wfsLayers}
-</body>
-</html>""".format(wfsLayers=wfsLayers)
+    </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
 
 

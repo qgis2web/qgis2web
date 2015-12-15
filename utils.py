@@ -183,3 +183,13 @@ def scaleToZoom(scale):
         return 1
     else:
         return 0
+
+
+def replaceInTemplate(template, values):
+    path = os.path.join(os.path.dirname(__file__), "templates", template)
+    with open(path) as f:
+        lines = f.readlines()
+    s = "".join(lines)
+    for name, value in values.iteritems():
+        s = s.replace(name, value)
+    return s

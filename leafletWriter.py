@@ -68,6 +68,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     measure = params["Appearance"]["Add measure tool"]
     highlight = params["Appearance"]["Highlight features"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
+    template = params["Appearance"]["Template"]
 
     if not cleanUnusedFields:
         usedFields = [ALL_ATTRIBUTES] * len(popup)
@@ -80,13 +81,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                                                outputProjectFileName, cluster,
                                                measure, matchCRS,
                                                canvas, mapLibLocation, locate)
-    writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                   matchCRS, canvas, full, mapLibLocation)
     writeCSS(cssStore, full, height, width,
              mapSettings.backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
+    new_src = ""
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
     exp_crs = QgsCoordinateReferenceSystem(4326,
                                            crs)
@@ -117,10 +117,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                     os.remove(tmpFileName)
                     f2.close
 
-                with open(outputIndex, 'a') as f3:
-                    new_src = jsonScript(safeLayerName)
-                    f3.write(new_src)
-                    f3.close()
+                new_src += jsonScript(safeLayerName)
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
@@ -188,76 +185,73 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         basemapText = basemapsScript(basemapAddresses[basemapName],
                                      basemapAttributions[basemapName], maxZoom)
     layerOrder = layerOrderScript(extent)
-    with open(outputIndex, 'a') as f4:
-            f4.write(middle)
-            f4.write(basemapText)
-            f4.write(layerOrder)
-            f4.close()
+    new_src += middle
+    new_src += basemapText
+    new_src += layerOrder
+
     for count, i in enumerate(layer_list):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
         if i.type() == QgsMapLayer.VectorLayer:
-            with open(outputIndex, 'a') as f5:
-                (new_pop,
-                 labeltext, popFuncs) = labelsAndPopups(i, safeLayerName,
-                                                        usedFields,
-                                                        labelhover, highlight,
-                                                        popupsOnHover, popup,
-                                                        count)
-                layerName = safeLayerName
-                renderer = i.rendererV2()
-                layer_transp = 1 - (float(i.layerTransparency()) / 100)
-                new_obj = ""
+            (new_pop,
+             labeltext, popFuncs) = labelsAndPopups(i, safeLayerName,
+                                                    usedFields,
+                                                    labelhover, highlight,
+                                                    popupsOnHover, popup,
+                                                    count)
+            layerName = safeLayerName
+            renderer = i.rendererV2()
+            layer_transp = 1 - (float(i.layerTransparency()) / 100)
+            new_obj = ""
 
-                if (isinstance(renderer, QgsSingleSymbolRendererV2) or
-                        isinstance(renderer, QgsRuleBasedRendererV2)):
-                    (new_obj,
-                     legends,
-                     wfsLayers) = singleLayer(renderer, outputProjectFileName,
-                                              layerName, safeLayerName,
-                                              wfsLayers, i, layer_transp,
-                                              labeltext, cluster, cluster_num,
-                                              visible, json, usedFields,
-                                              legends, count, popFuncs)
-                elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                    (new_obj,
-                     legends,
-                     wfsLayers) = categorizedLayer(i, renderer, layerName,
-                                                   safeLayerName,
-                                                   outputProjectFileName,
-                                                   layer_transp, usedFields,
-                                                   count, legends, labeltext,
-                                                   cluster, cluster_num,
-                                                   popFuncs, visible,
-                                                   json, wfsLayers)
-                elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                    (new_obj,
-                     legends,
-                     wfsLayers) = graduatedLayer(i, layerName, safeLayerName,
-                                                 renderer,
-                                                 outputProjectFileName,
-                                                 layer_transp, labeltext,
-                                                 popFuncs, cluster,
-                                                 cluster_num, visible, json,
-                                                 usedFields, count,
-                                                 legends, wfsLayers)
+            if (isinstance(renderer, QgsSingleSymbolRendererV2) or
+                    isinstance(renderer, QgsRuleBasedRendererV2)):
+                (new_obj,
+                 legends,
+                 wfsLayers) = singleLayer(renderer, outputProjectFileName,
+                                          layerName, safeLayerName,
+                                          wfsLayers, i, layer_transp,
+                                          labeltext, cluster, cluster_num,
+                                          visible, json, usedFields,
+                                          legends, count, popFuncs)
+            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                (new_obj,
+                 legends,
+                 wfsLayers) = categorizedLayer(i, renderer, layerName,
+                                               safeLayerName,
+                                               outputProjectFileName,
+                                               layer_transp, usedFields,
+                                               count, legends, labeltext,
+                                               cluster, cluster_num,
+                                               popFuncs, visible,
+                                               json, wfsLayers)
+            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                (new_obj,
+                 legends,
+                 wfsLayers) = graduatedLayer(i, layerName, safeLayerName,
+                                             renderer,
+                                             outputProjectFileName,
+                                             layer_transp, labeltext,
+                                             popFuncs, cluster,
+                                             cluster_num, visible, json,
+                                             usedFields, count,
+                                             legends, wfsLayers)
+            else:
+                print "No renderer"
+
+            if usedFields[count] != 0:
+                new_src += new_pop
+            new_src += """
+""" + new_obj
+            new_src += """
+        bounds_group.addLayer(json_""" + safeLayerName + """JSON);"""
+            if visible[count]:
+                if cluster[count] == False:
+                    new_src += """
+        feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
                 else:
-                    print "No renderer"
-
-                if usedFields[count] != 0:
-                    f5.write(new_pop)
-                f5.write("""
-""" + new_obj)
-                f5.write("""
-        bounds_group.addLayer(json_""" + safeLayerName + """JSON);""")
-                if visible[count]:
-                    if cluster[count] == False:
-                        f5.write("""
-        feature_group.addLayer(json_""" + safeLayerName + """JSON);""")
-                    else:
-                        f5.write("""
-        cluster_group""" + safeLayerName + """JSON.addTo(map);""")
-                f5.close()
+                    new_src += """
+        cluster_group""" + safeLayerName + """JSON.addTo(map);"""
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
                 d = parse_qs(i.source())
@@ -284,27 +278,17 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             if visible[count]:
                 new_obj += """
         raster_group.addLayer(overlay_""" + safeLayerName + """);"""
-            with open(outputIndex, 'a') as f5_raster:
-                f5_raster.write(new_obj)
-                f5_raster.close()
-    with open(outputIndex, 'a') as f5fgroup:
-        f5fgroup.write("""
+            new_src += new_obj
+    new_src += """
         raster_group.addTo(map);
-        feature_group.addTo(map);""")
-        f5fgroup.close()
-    with open(outputIndex, 'a') as f5scaleDependent:
-        f5scaleDependent.write(scaleDependentLayers)
-        f5scaleDependent.close()
+        feature_group.addTo(map);"""
+    new_src += scaleDependentLayers
     if title != "":
         titleStart = titleSubScript(title)
-        with open(outputIndex, 'a') as f5contr:
-            f5contr.write(titleStart)
-            f5contr.close()
+        new_src += titleStart
     if addressSearch:
         address_text = addressSearchScript()
-        with open(outputIndex, 'a') as f5addr:
-            f5addr.write(address_text)
-            f5addr.close()
+        new_src += address_text
 
     if params["Appearance"]["Add layers list"]:
         if len(basemapName) == 0 or basemapName == "None" or matchCRS:
@@ -321,9 +305,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         else:
             controlStart += """
             L.control.layers(baseMaps,{"""
-        with open(outputIndex, 'a') as f6:
-            f6.write(controlStart)
-            f6.close()
+        new_src += controlStart
 
         for i, clustered in zip(reversed(layer_list), reversed(cluster)):
             try:
@@ -331,54 +313,38 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 rawLayerName = i.name()
                 safeLayerName = re.sub('[\W_]+', '', rawLayerName)
                 if i.type() == QgsMapLayer.VectorLayer:
-                    with open(outputIndex, 'a') as f7:
-                        if (clustered and
-                                i.geometryType() == QGis.Point):
-                            new_layer = "'" + legends[safeLayerName] + "'"
-                            + ": cluster_group""" + safeLayerName + "JSON,"
-                        else:
-                            new_layer = "'" + legends[safeLayerName] + "':"
-                            new_layer += " json_" + safeLayerName + "JSON,"
-                        f7.write(new_layer)
-                        f7.close()
+                    if (clustered and
+                            i.geometryType() == QGis.Point):
+                        new_layer = "'" + legends[safeLayerName] + "'"
+                        + ": cluster_group""" + safeLayerName + "JSON,"
+                    else:
+                        new_layer = "'" + legends[safeLayerName] + "':"
+                        new_layer += " json_" + safeLayerName + "JSON,"
+                    new_src += new_layer
                 elif i.type() == QgsMapLayer.RasterLayer:
-                    with open(outputIndex, 'a') as f7:
-                        new_layer = '"' + rawLayerName + '"' + ": overlay_"
-                        new_layer += safeLayerName + ""","""
-                        f7.write(new_layer)
-                        f7.close()
+                    new_layer = '"' + rawLayerName + '"' + ": overlay_"
+                    new_layer += safeLayerName + ""","""
+                    new_src += new_layer
             except:
                 pass
         controlEnd = "},{collapsed:false}).addTo(map);"
 
-        with open(outputIndex, 'rb+') as f8:
-            f8.seek(-1, os.SEEK_END)
-            f8.truncate()
-            f8.write(controlEnd)
-            f8.close()
+        new_src += controlEnd
     if opacity_raster:
         opacityStart = """
         function updateOpacity(value) {
         """
-        with open(outputIndex, 'a') as f9:
-            f9.write(opacityStart)
-            f9.close()
+        new_src += opacityStart
 
         for i in layer_list:
             rawLayerName = i.name()
             safeLayerName = re.sub('[\W_]+', '', rawLayerName)
             if i.type() == QgsMapLayer.RasterLayer:
-                with open(outputIndex, 'a') as f10:
-                    new_opc = """
-                    overlay_""" + safeLayerName + """.setOpacity(value);"""
-                    f10.write(new_opc)
-                    f10.close()
+                new_opc = """
+                overlay_""" + safeLayerName + """.setOpacity(value);"""
+                new_src += new_opc
         opacityEnd = """}"""
-        with open(outputIndex, 'rb+') as f11:
-            f11.seek(-1, os.SEEK_END)
-            f11.truncate()
-            f11.write(opacityEnd)
-            f11.close()
+        new_src += opacityEnd
 
     if locate:
         end = locateScript()
@@ -390,9 +356,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         end += "maxWidth: 100, metric: true, imperial: false, "
         end += "updateWhenIdle: false}}).addTo(map);"
     end += endHTMLscript(wfsLayers)
-    with open(outputIndex, 'a') as f12:
-        f12.write(end)
-        f12.close()
+    new_src += end
+    writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
+                   matchCRS, canvas, full, mapLibLocation, new_src,
+                   template)
     return outputIndex
 
 
