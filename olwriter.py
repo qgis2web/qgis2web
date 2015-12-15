@@ -62,11 +62,14 @@ def writeOL(iface, layers, groups, popup, visible,
         writeLayersAndGroups(layers, groups, visible, folder,
                              settings, json, matchCRS, clustered)
         if settings["Data export"]["Mapping library location"] == "Local":
-            cssAddress = """<link rel="stylesheet" href="./resources/ol.css" />"""
+            cssAddress = """<link rel="stylesheet" """
+            cssAddress += """href="./resources/ol.css" />"""
             jsAddress = """<script src="./resources/ol.js"></script>"""
         else:
-            cssAddress = """<link rel="stylesheet" href="http://openlayers.org/en/v3.11.1/css/ol.css" />"""
-            jsAddress = """<script src="http://openlayers.org/en/v3.11.1/build/ol.js"></script>"""
+            cssAddress = """<link rel="stylesheet" href="http://"""
+            cssAddress += """openlayers.org/en/v3.11.1/css/ol.css" />"""
+            jsAddress = """<script src="http://openlayers.org/en/v3.11.1/"""
+            jsAddress += """build/ol.js"></script>"""
         geojsonVars = ""
         wfsVars = ""
         styleVars = ""

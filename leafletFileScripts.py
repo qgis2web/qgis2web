@@ -123,7 +123,6 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         crsJS = ""
 
-
     values = {"@PAGETITLE@": webpage_name,
               "@CSSADDRESS@": cssAddress,
               "@EXTRACSS@": extracss,
