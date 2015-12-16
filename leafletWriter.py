@@ -403,9 +403,11 @@ def labelsAndPopups(i, safeLayerName, usedFields, labelhover,
                         editorWidget != 'Hidden'):
                     row += '<tr><th scope="row">'
                     row += i.attributeDisplayName(fieldIndex)
-                    row += "</th><td>' + Autolinker.link("
+                    row += "</th><td>' + "
+                    row += "(feature.properties['" + unicode(field) + "'] "
+                    row += "!== null ? Autolinker.link("
                     row += "String(feature.properties['" + unicode(field)
-                    row += "'])) + '</td></tr>"
+                    row += "'])) : '') + '</td></tr>"
             tableend = "</table>'"
             table = tablestart + row + tableend
     if not label_exp:
@@ -463,7 +465,7 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
                 safeLayerName, colorName, fill_opacity, labeltext, i, cluster,
                 cluster_num, visible, json, usedFields, wfsLayers, count,
                 outputProjectFileName):
-    radius = unicode(symbol.size() * 2)
+    radius = unicode(symbol.size())
     if isinstance(symbolLayer, QgsSvgMarkerSymbolLayerV2):
         pointStyleLabel = svgScript(safeLayerName, symbolLayer,
                                     outputProjectFileName, labeltext)

@@ -291,7 +291,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                     dashArray: '{dashArray}',
                     fillOpacity: '{opacity}',
                 }};
-                break;""".format(radius=symbol.size() * 2,
+                break;""".format(radius=symbol.size(),
                                  fillColor=symbol.color().name(),
                                  color=symbolLayer.borderColor().name(),
                                  borderWidth=symbolLayer.outlineWidth() * 4,
@@ -495,7 +495,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 dashArray: '{dashArray}'
             }}
         }}
-""".format(radius=symbol.size() * 2,
+""".format(radius=symbol.size(),
            fillColor=symbol.color().name(),
            color=symbol.symbolLayer(0).borderColor().name(),
            lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
