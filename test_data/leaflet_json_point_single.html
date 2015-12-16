@@ -42,11 +42,11 @@
         
     </div>
     
-        <script src="data/json_Placesfew2.js"></script>
+        <script src="data/json_point.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[47.7952180701,1.50842980734],[52.7080065978,20.0920555596]]);
+        })
         var hash = new L.Hash(map);
         var additional_attrib = '<a href="https://github.com/tomchadwin/qgis2web" target ="_blank">qgis2web</a>';
         var feature_group = new L.featureGroup([]);
@@ -58,6 +58,7 @@
                 map.removeLayer(layerOrder[index]);
                 map.addLayer(layerOrder[index]);
             }
+            map.fitBounds(bounds_group.getBounds());
         }
         function restackLayers() {
             for (index = 0; index < layerOrder.length; index++) {
@@ -66,12 +67,10 @@
         }
         map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_Placesfew2(feature, layer) {
-            var popupContent = '<table><tr><th scope="row">osm_id</th><td>' + Autolinker.link(String(feature.properties['osm_id'])) + '</td></tr><tr><th scope="row">name</th><td>' + Autolinker.link(String(feature.properties['name'])) + '</td></tr><tr><th scope="row">type</th><td>' + Autolinker.link(String(feature.properties['type'])) + '</td></tr><tr><th scope="row">population</th><td>' + Autolinker.link(String(feature.properties['population'])) + '</td></tr></table>';
-            layer.bindPopup(popupContent);
+        function pop_point(feature, layer) {
         }
 
-        function doStylePlacesfew2() {
+        function doStylepoint() {
             return {
                 radius: 4.0,
                 fillColor: '#843768',
@@ -82,17 +81,17 @@
                 fillOpacity: 1.0
             }
         }
-        function doPointToLayerPlacesfew2(feature, latlng) {
-            return L.circleMarker(latlng, doStylePlacesfew2())
+        function doPointToLayerpoint(feature, latlng) {
+            return L.circleMarker(latlng, doStylepoint())
         }
-        var json_Placesfew2JSON = new L.geoJson(json_Placesfew2, {
-            onEachFeature: pop_Placesfew2, 
-            pointToLayer: doPointToLayerPlacesfew2
+        var json_pointJSON = new L.geoJson(json_point, {
+            onEachFeature: pop_point, 
+            pointToLayer: doPointToLayerpoint
             });
-        layerOrder[layerOrder.length] = json_Placesfew2JSON;
+        layerOrder[layerOrder.length] = json_pointJSON;
 
-        bounds_group.addLayer(json_Placesfew2JSON);
-        feature_group.addLayer(json_Placesfew2JSON);
+        bounds_group.addLayer(json_pointJSON);
+        feature_group.addLayer(json_pointJSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();
