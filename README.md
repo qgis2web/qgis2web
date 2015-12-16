@@ -19,13 +19,12 @@ CSS to create a web map as close to the QGIS project as possible.</p>
 only possible in <em>either</em> OpenLayers 3 <em>or</em> Leaflet. qgis2web
 tries its best to produce a publish-ready map, but you can always edit the
 output code to achieve what qgis2web cannot.</p>
-<p>Not all features are supported in both OpenLayers 3 and Leaflet export.
-Unsupported options are disabled in the plugin UI when you select an output
-format.</p>
 <ul>
     <li>no rule-based rendering</li>
     <li>SVG point markers sometimes do not appear in the preview
-    pane, but work when the map is exported</li>
+        pane, but work when the map is exported</li>
+    <li>in OL3 maps, only single rendered points cluster, not categorized
+        or graduated</li>
 </ul>
 
 <h3>Layer options</h3>
@@ -35,12 +34,12 @@ format.</p>
         </dd> 
     <dt>Visible</dt>
         <dd>Select whether the layer will be visible on map load. This only
-        determines visibility - the layer will be loaded regardless of this
-        setting</dd> 
+            determines visibility - the layer will be loaded regardless of this
+            setting</dd> 
     <dt>Encode to JSON</dt>
         <dd>If unchecked, WFS layers will remain remote WFS layers in the
-        Leaflet map. If checked, the layer will be written to a local GeoJSON
-        file</dd>
+            Leaflet map. If checked, the layer will be written to a local
+            GeoJSON file</dd>
     <dt>Cluster</dt>
         <dd>Use Leaflet cluster plugin to cluster features</dd>
 </dl>
@@ -51,15 +50,15 @@ format.</p>
 <dl>
     <dt>Delete unused fields</dt>
         <dd>If not all fields are selected in "Info popup content", remove the
-        undisplayed fields from the GeoJSON</dd>
+            undisplayed fields from the GeoJSON</dd>
     <dt>Export folder</dt>
         <dd>The folder where the webmap will be saved</dd> 
     <dt>Mapping library location</dt>
         <dd>Select whether to use a local copy of OL3/Leaflet, or whether to
-        call them from their CDN</dd>
+            call them from their CDN</dd>
     <dt>Minify GeoJSON files</dt>
         <dd>Remove unnecessary whitespace from exported GeoJSON to reduce file
-        size</dd>
+            size</dd>
     <dt>Precision</dt>
         <dd>Simplify geometry to reduce file size</dd>
 </dl>
@@ -68,7 +67,7 @@ format.</p>
 <dl>
     <dt>Extent</dt>
         <dd>Either match the current QGIS view or show all contents of all
-        layers</dd>
+            layers</dd>
     <dt>Max zoom level</dt>
         <dd>How far the web map will zoom in</dd>
     <dt>Min zoom level</dt>
@@ -101,7 +100,8 @@ format.</p>
     <dt>Show popups on hover</dt>
         <dd>Show popups when mouse hovers over feature</dd>
     <dt>Template</dt>
-        <dd>Select HTML template for web map</dd>
+        <dd>Select HTML template for web map - add templates to the /templates
+            directory</dd>
 </dl>
 
 <h2>Reporting bugs</h2>
@@ -109,12 +109,14 @@ format.</p>
 am often completely unaware that a problem exists. To ensure no time or effort
 is wasted in bug reporting, please follow these steps:</p>
 <ol>
+    <li>Check the issues on Github to see whether the bug has already been
+        reported, and if so, add your information to that issue</li>
     <li>Make sure you can reproduce the bug reliably</li>
     <li>Reduce the complexity of your bug conditions as far as you can</li>
     <li>Raise a Github issue, including:
     <ul>
         <li>the qgis2web version (or make it clear you are using Github master
-        branch)</li>
+            branch)</li>
         <li>any Python error text/stack trace which occurs</li>
         <li>browser JS console errors</li>
         <li>screenshot of your settings</li>
@@ -130,5 +132,7 @@ coming.</p>
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
 gentlemen.</p>
 
-<ul><li>github.com/volaya</li>
-<li>github.com/riccardoklinger</li></ul>
+<ul>
+    <li>github.com/volaya</li>
+    <li>github.com/riccardoklinger</li>
+</ul>
