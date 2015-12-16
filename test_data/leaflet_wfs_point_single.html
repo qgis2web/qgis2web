@@ -1,23 +1,47 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>qgis2web Leaflet webmap</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="css/leaflet.css" />
-        <link rel="stylesheet" href="css/MarkerCluster.css" />
-        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/label.css" />
+    <link rel="stylesheet" href="css/leaflet.css" />
+    
+    <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+    <link rel="stylesheet" href="css/label.css" />
+    
+    <link rel="stylesheet" href="css/MarkerCluster.css" />
+    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+    
+    
+    
+    
+    
         <script src="js/leaflet.js"></script>
+    
         <script src="js/leaflet-hash.js"></script>
         <script src="js/label.js"></script>
         <script src="js/Autolinker.min.js"></script>
+    
+    
+    
+    
+    <script src="./resources/Autolinker.min.js"></script>
+    
+    
         <script src="js/leaflet.markercluster.js"></script>
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    </head>
-    <body>
-        <div id="map"></div>
+    
+    
+     
+    <title></title>
+  </head>
+  <body>
+    <div id="map">
+        
+    </div>
+    
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -42,10 +66,10 @@
         }
         map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_point(feature, layer) {
+        function pop_TreePreservationOrders(feature, layer) {
         }
 
-        function doStylepoint() {
+        function doStyleTreePreservationOrders() {
             return {
                 radius: 4.0,
                 fillColor: '#843768',
@@ -56,26 +80,28 @@
                 fillOpacity: 1.0
             }
         }
-        function doPointToLayerpoint(feature, latlng) {
-            return L.circleMarker(latlng, doStylepoint())
+        function doPointToLayerTreePreservationOrders(feature, latlng) {
+            return L.circleMarker(latlng, doStyleTreePreservationOrders())
         }
-        var json_pointJSON;
-        json_pointJSON = L.geoJson(null, {
-            pointToLayer: doPointToLayerpoint,
-            onEachFeature: pop_point
+        var json_TreePreservationOrdersJSON;
+        json_TreePreservationOrdersJSON = L.geoJson(null, {
+            pointToLayer: doPointToLayerTreePreservationOrders,
+            onEachFeature: pop_TreePreservationOrders
         });
-        layerOrder[layerOrder.length] = json_pointJSON;
-        feature_group.addLayer(json_pointJSON);
-        layerControl.addOverlay(json_pointJSON, 'point');
-        function getpointJson(geojson) {
-            json_pointJSON.addData(geojson);
+        layerOrder[layerOrder.length] = json_TreePreservationOrdersJSON;
+        feature_group.addLayer(json_TreePreservationOrdersJSON);
+        layerControl.addOverlay(json_TreePreservationOrdersJSON, 'TreePreservationOrders');
+        function getTreePreservationOrdersJson(geojson) {
+            json_TreePreservationOrdersJSON.addData(geojson);
             stackLayers();
         };
-        bounds_group.addLayer(json_pointJSON);
-        feature_group.addLayer(json_pointJSON);
+        bounds_group.addLayer(json_TreePreservationOrdersJSON);
+        feature_group.addLayer(json_TreePreservationOrdersJSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
     </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointJson'></script>
-</body>
+        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetTreePreservationOrdersJson'></script>
+    
+    
+  </body>
 </html>
