@@ -38,10 +38,10 @@ output code to achieve what qgis2web cannot.</p>
             setting</dd> 
     <dt>Encode to JSON</dt>
         <dd>If unchecked, WFS layers will remain remote WFS layers in the
-            Leaflet map. If checked, the layer will be written to a local
-            GeoJSON file</dd>
+            webmap. If checked, the layer will be written to a local GeoJSON
+            file</dd>
     <dt>Cluster</dt>
-        <dd>Use Leaflet cluster plugin to cluster features</dd>
+        <dd>Cluster point features</dd>
 </dl>
 
 <h3>General options</h3>
@@ -55,7 +55,7 @@ output code to achieve what qgis2web cannot.</p>
         <dd>The folder where the webmap will be saved</dd> 
     <dt>Mapping library location</dt>
         <dd>Select whether to use a local copy of OL3/Leaflet, or whether to
-            call them from their CDN</dd>
+            call the library from its CDN</dd>
     <dt>Minify GeoJSON files</dt>
         <dd>Remove unnecessary whitespace from exported GeoJSON to reduce file
             size</dd>
@@ -69,13 +69,13 @@ output code to achieve what qgis2web cannot.</p>
         <dd>Either match the current QGIS view or show all contents of all
             layers</dd>
     <dt>Max zoom level</dt>
-        <dd>How far the web map will zoom in</dd>
+        <dd>How far the webmap will zoom in</dd>
     <dt>Min zoom level</dt>
-        <dd>How far the web map will zoom out</dd>
+        <dd>How far the webmap will zoom out</dd>
     <dt>Restrict to extent</dt>
         <dd>Prevent panning or zooming beyond the selected extent</dd>
     <dt>Use layer scale dependent visibility</dt>
-        <dd>Respect scale dependent visibility settings from QGIS</dd>
+        <dd>Respect scale-dependent visibility settings from QGIS</dd>
 </dl>
 
 <h4>Appearance</h4>
@@ -95,13 +95,13 @@ output code to achieve what qgis2web cannot.</p>
     <dt>Highlight features</dt>
         <dd>Highlight features on mouseover</dd>
     <dt>Match project CRS</dt>
-        <dd>Create web map in same projection as QGIS project, otherwise the
+        <dd>Create webmap in same projection as QGIS project, otherwise the
         webmap is projected in EPSG:3857</dd>
     <dt>Show popups on hover</dt>
-        <dd>Show popups when mouse hovers over feature</dd>
+        <dd>Show popups when mouse hovers over features</dd>
     <dt>Template</dt>
-        <dd>Select HTML template for web map - add templates to the /templates
-            directory</dd>
+        <dd>Select HTML template for webmap - add your own templates to the
+            /templates directory</dd>
 </dl>
 
 <h2>Reporting bugs</h2>
@@ -110,9 +110,11 @@ am often completely unaware that a problem exists. To ensure no time or effort
 is wasted in bug reporting, please follow these steps:</p>
 <ol>
     <li>Check the issues on Github to see whether the bug has already been
-        reported, and if so, add your information to that issue</li>
+        reported, and if so, read through all the comments on the issue, and
+        add any additional informaton from your experience of the bug</li>
     <li>Make sure you can reproduce the bug reliably</li>
-    <li>Reduce the complexity of your bug conditions as far as you can</li>
+    <li>Reduce the complexity of your bug conditions as far as you can,
+        especially by reducing the number of layers, ideally to one</li>
     <li>Raise a Github issue, including:
     <ul>
         <li>the qgis2web version (or make it clear you are using Github master
