@@ -148,7 +148,8 @@
             popupText = '<table>';
             for ( var i=0; i<currentFeatureKeys.length;i++) {
                 if (currentFeatureKeys[i] != 'geometry') {
-                    popupField = '<th>' + currentFeatureKeys[i] + ':</th><td>' + Autolinker.link(currentFeature.get(currentFeatureKeys[i])) + '</td>';
+                    popupField = '<th>' + currentFeatureKeys[i] + ':</th><td>'
+                    popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                     popupText = popupText + '<tr>' + popupField + '</tr>';
                 }
             }
