@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent.
-version=0.40.0
+version=1.0.0-beta1
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2015/12/14 0.40.0 OL3 Geolocate user, OL3 address search
+changelog=2015/12/16 1.0.0-beta1 OL3 measure tool, Leaflet template, bump OL to 3.12.0, correct Leaflet point size, Leaflet null attributes, update README
+    2015/12/14 0.40.0 OL3 Geolocate user, OL3 address search
     2015/12/10 0.39.0 OL3 clustering (single styles only), Leaflet SVG labels, label setting removed from GUI, GUI updated, README updated, remove 'null' labels
     2015/12/08 0.38.0 OL3 "Match project CRS", OL3 exported JSON now in EPSG:4326
     2015/12/04 0.37.0 OL3 remote WFS layers, fix Leaflet "Match project CRS", remove old Leaflet custom marker code, migrate to new Travis infrastructure, remove export tests
