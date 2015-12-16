@@ -103,7 +103,13 @@ def writeOL(iface, layers, groups, popup, visible,
                 'new measureControl()')
         pageTitle = QgsProject.instance().title()
         mapSettings = iface.mapCanvas().mapSettings()
-        backgroundColor = mapSettings.backgroundColor().name()
+        backgroundColor = """
+    <style>
+      html, body {{
+          background-color: {bgcol};
+        }}
+    </style>
+""".format(bgcol=mapSettings.backgroundColor().name())
         mapbounds = bounds(iface,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
                            layers,
@@ -420,7 +426,7 @@ addInteraction();"""
                   "@EXTRACSS@": extracss,
                   "@JSADDRESS@": jsAddress,
                   "@OL3_STYLEVARS@": styleVars,
-                  "@BACKGROUNDCOLOR@": backgroundColor,
+                  "@OL3_BACKGROUNDCOLOR@": backgroundColor,
                   "@OL3_POPUP@": ol3popup,
                   "@OL3_GEOJSONVARS@": geojsonVars,
                   "@OL3_WFSVARS@": wfsVars,

@@ -11,29 +11,28 @@
     @LEAFLET_CLUSTERCSS@
     @LEAFLET_ADDRESSCSS@
     @LEAFLET_MEASURECSS@
-
-    <style>
-      html, body {
-          background-color: @BACKGROUNDCOLOR@;
-        }
-    </style>@OL3_PROJ4@@OL3_PROJDEF@
+    @OL3_BACKGROUNDCOLOR@
+    @OL3_PROJ4@@OL3_PROJDEF@
     @JSADDRESS@
     @LEAFLET_EXTRAJS@
     @LEAFLET_ADDRESSJS@
     @LEAFLET_MEASUREJS@
     @LEAFLET_CRSJS@
     @OL3_LAYERSWITCHER@
-    <script src="./resources/Autolinker.min.js"></script>@OL3_GEOCODINGLINKS@@LEAFLET_CLUSTERJS@
-
+    <script src="./resources/Autolinker.min.js"></script>
+    @OL3_GEOCODINGLINKS@
+    @LEAFLET_CLUSTERJS@
     @OL3_GEOJSONVARS@
     @OL3_STYLEVARS@
-  @OL3_LAYERS@ 
+    @OL3_LAYERS@ 
     <title>@PAGETITLE@</title>
   </head>
   <body>
     <div id="map">
         @OL3_POPUP@
     </div>
-    @QGIS2WEBJS@@OL3_MEASURESTYLE@@OL3_WFSVARS@
+    @QGIS2WEBJS@
+    @OL3_MEASURESTYLE@
+    @OL3_WFSVARS@
   </body>
 </html>
