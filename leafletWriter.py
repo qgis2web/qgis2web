@@ -519,7 +519,7 @@ def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
     else:
         new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-        new_obj += stackLayers(layerName, visible[count])
+        # new_obj += stackLayers(layerName, visible[count])
     return new_obj, wfsLayers
 
 
@@ -562,7 +562,7 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
     else:
         new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
         new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
-        new_obj += stackLayers(layerName, visible[count])
+        # new_obj += stackLayers(layerName, visible[count])
     return new_obj, wfsLayers
 
 
