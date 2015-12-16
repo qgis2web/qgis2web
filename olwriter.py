@@ -23,7 +23,7 @@ import time
 import shutil
 import traceback
 from qgis.core import *
-from utils import exportLayers, safeName
+from utils import exportLayers, safeName, replaceInTemplate
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -62,11 +62,14 @@ def writeOL(iface, layers, groups, popup, visible,
         writeLayersAndGroups(layers, groups, visible, folder,
                              settings, json, matchCRS, clustered)
         if settings["Data export"]["Mapping library location"] == "Local":
-            cssAddress = "./resources/ol.css"
-            jsAddress = "./resources/ol.js"
+            cssAddress = """<link rel="stylesheet" """
+            cssAddress += """href="./resources/ol.css" />"""
+            jsAddress = """<script src="./resources/ol.js"></script>"""
         else:
-            cssAddress = "http://openlayers.org/en/v3.11.1/css/ol.css"
-            jsAddress = "http://openlayers.org/en/v3.11.1/build/ol.js"
+            cssAddress = """<link rel="stylesheet" href="http://"""
+            cssAddress += """openlayers.org/en/v3.12.0/css/ol.css" />"""
+            jsAddress = """<script src="http://openlayers.org/en/v3.12.0/"""
+            jsAddress += """build/ol.js"></script>"""
         geojsonVars = ""
         wfsVars = ""
         styleVars = ""
@@ -100,7 +103,13 @@ def writeOL(iface, layers, groups, popup, visible,
                 'new measureControl()')
         pageTitle = QgsProject.instance().title()
         mapSettings = iface.mapCanvas().mapSettings()
-        backgroundColor = mapSettings.backgroundColor().name()
+        backgroundColor = """
+    <style>
+      html, body {{
+          background-color: {bgcol};
+        }}
+    </style>
+""".format(bgcol=mapSettings.backgroundColor().name())
         mapbounds = bounds(iface,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
                            layers,
@@ -400,33 +409,59 @@ addInteraction();"""
         geocode = settings["Appearance"]["Add address search"]
         geocodingLinks = geocodeLinks(geocode)
         geocodingScript = geocodeScript(geocode)
+        extracss = """
+        <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
+        <link rel="stylesheet" href="./resources/qgis2web.css">"""
+        ol3layerswitcher = """
+        <script src="./resources/ol3-layerswitcher.js"></script>"""
+        ol3popup = """<div id="popup" class="ol-popup">
+          <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+          <div id="popup-content"></div>
+        </div>"""
+        ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>"""
+        ol3layers = """
+        <script src="./layers/layers.js" type="text/javascript"></script>"""
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
+                  "@EXTRACSS@": extracss,
                   "@JSADDRESS@": jsAddress,
-                  "@STYLEVARS@": styleVars,
-                  "@BACKGROUNDCOLOR@": backgroundColor,
-                  "@GEOJSONVARS@": geojsonVars,
-                  "@WFSVARS@": wfsVars,
-                  "@BOUNDS@": mapbounds,
+                  "@OL3_STYLEVARS@": styleVars,
+                  "@OL3_BACKGROUNDCOLOR@": backgroundColor,
+                  "@OL3_POPUP@": ol3popup,
+                  "@OL3_GEOJSONVARS@": geojsonVars,
+                  "@OL3_WFSVARS@": wfsVars,
+                  "@OL3_PROJ4@": proj4,
+                  "@OL3_PROJDEF@": projdef,
+                  "@OL3_GEOCODINGLINKS@": geocodingLinks,
+                  "@QGIS2WEBJS@": ol3qgis2webjs,
+                  "@OL3_LAYERSWITCHER@": ol3layerswitcher,
+                  "@OL3_LAYERS@": ol3layers,
+                  "@OL3_MEASURESTYLE@": measureStyle,
+                  "@LEAFLET_ADDRESSCSS@": "",
+                  "@LEAFLET_MEASURECSS@": "",
+                  "@LEAFLET_EXTRAJS@": "",
+                  "@LEAFLET_ADDRESSJS@": "",
+                  "@LEAFLET_MEASUREJS@": "",
+                  "@LEAFLET_CRSJS@": "",
+                  "@LEAFLET_CLUSTERCSS@": "",
+                  "@LEAFLET_CLUSTERJS@": ""}
+        with open(os.path.join(folder, "index.html"), "w") as f:
+            htmlTemplate = settings["Appearance"]["Template"]
+            f.write(replaceInTemplate(htmlTemplate + ".html", values))
+        values = {"@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
                   "@POPUPLAYERS@": popupLayers,
                   "@VIEW@": view,
                   "@ONHOVER@": onHover,
                   "@DOHIGHLIGHT@": highlight,
                   "@HIGHLIGHTFILL@": highlightFill,
-                  "@PROJ4@": proj4,
-                  "@PROJDEF@": projdef,
                   "@GEOLOCATE@": geolocate,
-                  "@GEOCODINGLINKS@": geocodingLinks,
                   "@GEOCODINGSCRIPT@": geocodingScript,
                   "@MEASURECONTROL@": measureControl,
                   "@MEASURING@": measuring,
-                  "@MEASURE@": measure,
-                  "@MEASURESTYLE@": measureStyle}
-
-        with open(os.path.join(folder, "index.html"), "w") as f:
-            htmlTemplate = settings["Appearance"]["Template"]
-            f.write(replaceInTemplate(htmlTemplate + ".html", values))
+                  "@MEASURE@": measure}
+        with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
+            f.write(replaceInScript("qgis2web.js", values))
     finally:
         QApplication.restoreOverrideCursor()
     return os.path.join(folder, "index.html")
@@ -493,8 +528,8 @@ def writeLayersAndGroups(layers, groups, visible, folder,
         f.write(layersListString + "\n")
 
 
-def replaceInTemplate(template, values):
-    path = os.path.join(os.path.dirname(__file__), "OL3_templates", template)
+def replaceInScript(template, values):
+    path = os.path.join(os.path.dirname(__file__), "resources", template)
     with open(path) as f:
         lines = f.readlines()
     s = "".join(lines)

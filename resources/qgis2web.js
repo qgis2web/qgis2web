@@ -1,77 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="@CSSADDRESS@">
-    <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
-
-
-    <style>
-      html, body {
-          height: 100%;
-          padding: 0;
-          margin: 0;
-          font-family: sans-serif;
-          font-size: small;
-          background-color: @BACKGROUNDCOLOR@;
-        }
-      th, td {
-        vertical-align: top;
-        text-align: left;
-      }
-        #map {
-          width: 100%;
-          height: 100%;
-        }
-
-      .ol-popup {
-        display: none;
-        position: absolute;
-        background-color: white;
-        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-        padding: 15px;
-        border-radius: 10px;
-        border: 1px solid #cccccc;
-        bottom: 12px;
-        left: -50px;   
-        height: auto;
-        width: auto;
-        min-width: 100px;     
-      }
-      
-      .ol-popup-closer {
-        text-decoration: none;
-        position: absolute;
-        top: 2px;
-        right: 8px;
-      }
-      .ol-popup-closer:after {
-        content: "X";
-      }
-    </style>@PROJ4@@PROJDEF@
-    <script src="@JSADDRESS@"></script>
-    <script src="./resources/ol3-layerswitcher.js"></script>
-    <script src="./resources/Autolinker.min.js"></script>@GEOCODINGLINKS@
-
-    @GEOJSONVARS@
-    @STYLEVARS@
-  <script src="./layers/layers.js" type="text/javascript"></script> 
-    <title>@PAGETITLE@</title>
-  </head>
-  <body>
-    <div id="map">
-        <div id="popup" class="ol-popup">
-          <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-          <div id="popup-content"></div>
-        </div>  
-    </div>
-    <script>@MEASURECONTROL@
+@MEASURECONTROL@
       var container = document.getElementById('popup');
       var content = document.getElementById('popup-content');
       var closer = document.getElementById('popup-closer');
@@ -251,6 +178,3 @@
       map.on('singleclick', function(evt) {
         onSingleClick(evt);
       });@MEASURE@@GEOLOCATE@@GEOCODINGSCRIPT@
-      </script>@MEASURESTYLE@@WFSVARS@
-  </body>
-</html>

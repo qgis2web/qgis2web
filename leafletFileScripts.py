@@ -2,6 +2,7 @@
 
 import os
 import shutil
+from utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
@@ -58,81 +59,96 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, canvas, full, mapLibLocation):
-    with open(outputIndex, 'w') as f_html:
-        base = """<!DOCTYPE html>
-<html>
-    <head>"""
-        if webpage_name == "":
-            base += """
-        <title>qgis2web Leaflet webmap</title>
-    """
-        else:
-            base += """
-        <title>""" + (webpage_name).encode('utf-8') + """</title>"""
-        base += """
-        <meta charset="utf-8" />"""
-        if mapLibLocation == "Local":
-            base += """
-        <link rel="stylesheet" href="css/leaflet.css" />"""
-        else:
-            base += """
-        <link rel="stylesheet" href="""
-            base += '"http://cdn.leafletjs.com/leaflet-0.7.7/leaflet.css" />'
-        if len(cluster_set):
-            base += """
-        <link rel="stylesheet" href="css/MarkerCluster.css" />
-        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
-        base += """
-        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">"""
-        base += """
-        <link rel="stylesheet" href="css/label.css" />"""
-        if address:
-            base += """
-        <link rel="stylesheet" href="""
-            base += 'http://k4r573n.github.io/leaflet-control-osm-geocoder/'
-            base += 'Control.OSMGeocoder.css" />'
-        if measure:
-            base += """
-        <link rel="stylesheet" href="css/leaflet.draw.css" />
-        <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
-        if mapLibLocation == "Local":
-            base += """
+                   matchCRS, canvas, full, mapLibLocation, qgis2webJS,
+                   template):
+    if webpage_name == "":
+        pass
+    else:
+        webpage_name = webpage_name.encode('utf-8')
+    if mapLibLocation == "Local":
+        cssAddress = """
+    <link rel="stylesheet" href="css/leaflet.css" />"""
+        jsAddress = """
         <script src="js/leaflet.js"></script>"""
-        else:
-            base += """
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.7/leaflet.js">"""
-            base += '</script>'
-        base += """
-        <script src="js/leaflet-hash.js"></script>"""
-        base += """
-        <script src="js/label.js"></script>"""
-        base += """
-        <script src="js/Autolinker.min.js"></script>"""
-        if address:
-            base += """
-        <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/"""
-            base += 'Control.OSMGeocoder.js"></script>'
-        if len(cluster_set):
-            base += """
+    else:
+        cssAddress = """
+    <link rel="stylesheet" href="""
+        cssAddress += '"http://http://cdn.leafletjs.com/leaflet/v0.7.7/'
+        cssAddress += 'leaflet.css" />'
+        jsAddress = """
+        <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js">"""
+        jsAddress += '</script>'
+    extracss = """
+    <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+    <link rel="stylesheet" href="css/label.css" />"""
+    if len(cluster_set):
+        clusterCSS = """
+    <link rel="stylesheet" href="css/MarkerCluster.css" />
+    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
+        clusterJS = """
         <script src="js/leaflet.markercluster.js"></script>"""
-        if measure:
-            base += """
-        <script src="js/leaflet.draw.js"></script>
-        <script src="js/leaflet.measurecontrol.js"></script>"""
-        if (matchCRS and
-                canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
-            base += """
-        <script src="js/proj4.js"></script>
-        <script src="js/proj4leaflet.js"></script>"""
-        if full == 1:
-            base += """
-        <meta name="viewport" content="initial-scale=1.0, """
-            base += 'user-scalable=no" />'
-        base += """
-    </head>
-    <body>
-        <div id="map"></div>"""
+    else:
+        clusterCSS = ""
+        clusterJS = ""
+    if address:
+        addressCSS = """
+    <link rel="stylesheet" href="""
+        addressCSS += 'http://k4r573n.github.io/leaflet-control-osm-geocoder/'
+        addressCSS += 'Control.OSMGeocoder.css" />'
+        addressJS = """
+    <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/"""
+        addressJS += 'Control.OSMGeocoder.js"></script>'
+    else:
+        addressCSS = ""
+        addressJS = ""
+    if measure:
+        measureCSS = """
+    <link rel="stylesheet" href="css/leaflet.draw.css" />
+    <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
+        measureJS = """
+    <script src="js/leaflet.draw.js"></script>
+    <script src="js/leaflet.measurecontrol.js"></script>"""
+    else:
+        measureCSS = ""
+        measureJS = ""
+    extraJS = """
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/label.js"></script>
+        <script src="js/Autolinker.min.js"></script>"""
+    if (matchCRS and
+            canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
+        crsJS = """
+    <script src="js/proj4.js"></script>
+    <script src="js/proj4leaflet.js"></script>"""
+    else:
+        crsJS = ""
+
+    values = {"@PAGETITLE@": webpage_name,
+              "@CSSADDRESS@": cssAddress,
+              "@EXTRACSS@": extracss,
+              "@JSADDRESS@": jsAddress,
+              "@LEAFLET_CLUSTERCSS@": clusterCSS,
+              "@LEAFLET_CLUSTERJS@": clusterJS,
+              "@LEAFLET_ADDRESSCSS@": addressCSS,
+              "@LEAFLET_MEASURECSS@": measureCSS,
+              "@LEAFLET_EXTRAJS@": extraJS,
+              "@LEAFLET_ADDRESSJS@": addressJS,
+              "@LEAFLET_MEASUREJS@": measureJS,
+              "@LEAFLET_CRSJS@": crsJS,
+              "@QGIS2WEBJS@": qgis2webJS,
+              "@OL3_BACKGROUNDCOLOR@": "",
+              "@OL3_STYLEVARS@": "",
+              "@OL3_POPUP@": "",
+              "@OL3_GEOJSONVARS@": "",
+              "@OL3_WFSVARS@": "",
+              "@OL3_PROJ4@": "",
+              "@OL3_PROJDEF@": "",
+              "@OL3_GEOCODINGLINKS@": "",
+              "@OL3_LAYERSWITCHER@": "",
+              "@OL3_LAYERS@": "",
+              "@OL3_MEASURESTYLE@": ""}
+    with open(outputIndex, 'w') as f_html:
+        base = replaceInTemplate(template + ".html", values)
         f_html.write(base)
         f_html.close()
 

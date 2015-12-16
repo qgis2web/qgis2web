@@ -20,7 +20,7 @@ from utils import tempFolder
 
 
 def getTemplates():
-    fl = os.path.join(os.path.dirname(__file__), "OL3_templates")
+    fl = os.path.join(os.path.dirname(__file__), "templates")
     return tuple(f[:f.find(".")] for f in os.listdir(fl) if f.endswith("html"))
 
 paramsOL = {
@@ -83,7 +83,6 @@ paramsOL = {
 }
 
 specificParams = {
-    "Template": "OL3"
 }
 
 specificOptions = {
