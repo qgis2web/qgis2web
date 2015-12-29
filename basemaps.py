@@ -205,7 +205,7 @@ new ol.layer.Tile({
 new ol.layer.Tile({
     title: 'OpenWeatherMap Precipitation',
     source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png',
+        url:'http://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png',
         attributions: [new ol.Attribution({html:'%s'})]
     })
 })""" % basemapAttributions()['OpenWeatherMap Precipitation'],
