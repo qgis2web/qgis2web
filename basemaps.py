@@ -136,7 +136,7 @@ new ol.layer.Tile({
         url: 'http://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png',
         attributions: [new ol.Attribution({html:'%s'})]
     })
-})"""% basemapAttributions()['Thunderforest Outdoors'],
+})""" % basemapAttributions()['Thunderforest Outdoors'],
         "OpenMapSurfer Roads": """
 new ol.layer.Tile({
     title: 'OpenMapSurfer Roads',
