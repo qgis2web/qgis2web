@@ -579,7 +579,7 @@ def rasterScript(safeLayerName, out_raster_name, bounds):
                                              out_raster_name=out_raster_name,
                                              bounds=bounds)
     raster += "new L.imageOverlay(img_"
-    raster += """"{safeLayerName}, img_bounds_{safeLayerName});
+    raster += """{safeLayerName}, img_bounds_{safeLayerName});
 """.format(safeLayerName=safeLayerName, out_raster_name=out_raster_name,
            bounds=bounds)
     return raster
