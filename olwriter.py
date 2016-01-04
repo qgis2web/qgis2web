@@ -67,8 +67,8 @@ def writeOL(iface, layers, groups, popup, visible,
             jsAddress = """<script src="./resources/ol.js"></script>"""
         else:
             cssAddress = """<link rel="stylesheet" href="http://"""
-            cssAddress += """openlayers.org/en/v3.12.0/css/ol.css" />"""
-            jsAddress = """<script src="http://openlayers.org/en/v3.12.0/"""
+            cssAddress += """openlayers.org/en/v3.12.1/css/ol.css" />"""
+            jsAddress = """<script src="http://openlayers.org/en/v3.12.1/"""
             jsAddress += """build/ol.js"></script>"""
         geojsonVars = ""
         wfsVars = ""
