@@ -462,6 +462,9 @@ addInteraction();"""
                   "@MEASURE@": measure}
         with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
             f.write(replaceInScript("qgis2web.js", values))
+    except Exception as e:
+        print "FAIL"
+        print traceback.format_exc()
     finally:
         QApplication.restoreOverrideCursor()
     return os.path.join(folder, "index.html")
@@ -580,12 +583,6 @@ def bounds(iface, useCanvas, layers, matchCRS):
 
 def layerToJavascript(iface, layer, scaleVisibility,
                       encode2json, matchCRS, cluster):
-    renderer = layer.rendererV2()
-    if cluster and (isinstance(renderer, QgsSingleSymbolRendererV2) or
-                    isinstance(renderer, QgsRuleBasedRendererV2)):
-        cluster = True
-    else:
-        cluster = False
     if scaleVisibility and layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
@@ -596,6 +593,12 @@ def layerToJavascript(iface, layer, scaleVisibility,
         maxResolution = ""
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
+        renderer = layer.rendererV2()
+        if cluster and (isinstance(renderer, QgsSingleSymbolRendererV2) or
+                        isinstance(renderer, QgsRuleBasedRendererV2)):
+            cluster = True
+        else:
+            cluster = False
         if matchCRS:
             mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
             crsConvert = """
@@ -682,7 +685,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                             opacity: 1,
                             title: "%(name)s",
                             source: new ol.source.ImageStatic({
-                               url: "./layers/%(n)s.jpg",
+                               url: "./layers/%(n)s.png",
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
                                 imageSize: [%(col)d, %(row)d],

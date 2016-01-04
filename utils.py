@@ -19,7 +19,9 @@ import os
 import re
 from PyQt4.QtCore import *
 from qgis.core import *
-import subprocess
+import processing
+from subprocess import *
+import tempfile
 
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
@@ -112,23 +114,28 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         f.write(line)
             os.remove(tmpPath)
         elif layer.type() == layer.RasterLayer:
-            orgFile = layer.source()
-            destFile = os.path.join(layersFolder,
-                                    safeName(layer.name()) + ".jpg")
-            settings = QSettings()
-            path = unicode(settings.value('/GdalTools/gdalPath', ''))
-            envval = unicode(os.getenv('PATH'))
-            if not path.lower() in envval.lower().split(os.pathsep):
-                envval += '%s%s' % (os.pathsep, path)
-                os.putenv('PATH', envval)
-            subprocess.Popen(
-                ['gdal_translate -of JPEG -a_srs EPSG:3857 %s %s' %
-                    (orgFile, destFile)],
-                shell=True,
-                stdout=subprocess.PIPE,
-                stdin=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=False)
+            in_raster = unicode(layer.dataProvider().dataSourceUri())
+            prov_raster = os.path.join(tempfile.gettempdir(),
+                                       'json_' + safeName(layer.name()) +
+                                       '_prov.tif')
+            out_raster = os.path.join(layersFolder,
+                                      safeName(layer.name()) + ".png")
+            crsSrc = layer.crs()
+            crsDest = QgsCoordinateReferenceSystem(4326)
+            xform = QgsCoordinateTransform(crsSrc, crsDest)
+            extentRep = xform.transform(layer.extent())
+            extentRepNew = ','.join([unicode(extentRep.xMinimum()),
+                                     unicode(extentRep.xMaximum()),
+                                     unicode(extentRep.yMinimum()),
+                                     unicode(extentRep.yMaximum())])
+            processing.runalg("gdalogr:warpreproject", in_raster,
+                              layer.crs().authid(), "EPSG:4326", "", 0, 1,
+                              0, -1, 75, 6, 1, False, 0, False, "",
+                              prov_raster)
+            processing.runalg("gdalogr:translate", prov_raster, 100,
+                              True, "", 0, "", extentRepNew, False, 0,
+                              0, 75, 6, 1, False, 0, False, "",
+                              out_raster)
 
 
 def safeName(name):
