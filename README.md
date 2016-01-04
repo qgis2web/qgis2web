@@ -10,6 +10,19 @@
     <li>Download and unzip to your QGIS plugins directory</li>
 </ul>
 
+<h2>Usage</h2>
+<p>Prepare your map as far as possible in QGIS, as you want it to appear in
+your webmap. Specific tasks you can carry out to improve your webmap include:
+</p>
+<ul>
+    <li>Set your project title, and background and highlight colours in 
+    <code>Project > Project Properties...</code></li>
+    <li>Give your layers human-friendly names in the <code>Layers Panel</code>
+    </li>
+    <li>Give your layer columns human friendly names via <code>Layer >
+    Properties > Fields > Alias</code></li>
+</ul>
+
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies.
 This means that their respective functionality differs in many ways. qgis2web
