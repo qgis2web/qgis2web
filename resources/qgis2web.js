@@ -11,8 +11,12 @@
         element: container
       });
 
+      var expandedAttribution = new ol.control.Attribution({
+        collapsible: false
+      });
+
       var map = new ol.Map({
-        controls: ol.control.defaults().extend([
+        controls: ol.control.defaults({attribution:false}).extend([
           @CONTROLS@
         ]),
         target: document.getElementById('map'),

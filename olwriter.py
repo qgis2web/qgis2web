@@ -92,7 +92,7 @@ def writeOL(iface, layers, groups, popup, visible,
         popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if (
             isinstance(field, basestring)) else
             unicode(field) for field in popup])
-        controls = []
+        controls = ['expandedAttribution']  # Check qgis2web.js 14:7
         if settings["Appearance"]["Add scale bar"]:
             controls.append("new ol.control.ScaleLine({})")
         if settings["Appearance"]["Add layers list"]:
