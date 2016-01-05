@@ -473,8 +473,14 @@ addInteraction();"""
 def writeLayersAndGroups(layers, groups, visible, folder,
                          settings, json, matchCRS, clustered):
 
-    baseLayerSetting = settings["Appearance"]["Base layer"]
-    baseLayer = baseLayerGroup % baseLayers[baseLayerSetting]
+    basemapList = settings["Appearance"]["Base layer"]
+    basemaps = ""
+    comma = ""
+    for count, basemap in enumerate(basemapList):
+        basemaps += comma + baseLayers[basemap.text()]
+        comma = ", "
+
+    baseLayer = baseLayerGroup % basemaps
 
     scaleVisibility = (settings["Scale/Zoom"]
                                ["Use layer scale dependent visibility"])

@@ -1,6 +1,10 @@
 import os
 import shutil
 from utils import scaleToZoom
+from basemaps import basemapLeaflet, basemapAttributions
+
+basemapAddresses = basemapLeaflet()
+basemapAttributions = basemapAttributions()
 
 
 def jsonScript(layer):
@@ -103,13 +107,17 @@ def featureGroupsScript():
     return featureGroups
 
 
-def basemapsScript(basemap, attribution, maxZoom):
-    basemaps = """
-        var basemap = L.tileLayer('{basemap}', {{
+def basemapsScript(basemapList, maxZoom):
+    basemaps = ""
+    for count, basemap in enumerate(basemapList):
+        basemaps += """
+        var basemap{count} = L.tileLayer('{basemap}', {{
             attribution: additional_attrib + ' {attribution}',
             maxZoom: {maxZoom}
         }});
-        basemap.addTo(map);""".format(basemap=basemap, attribution=attribution,
+        basemap{count}.addTo(map);""".format(count=count,
+                                      basemap=basemapAddresses[basemap.text()],
+                                      attribution=basemapAttributions[basemap.text()],
                                       maxZoom=maxZoom)
     return basemaps
 
