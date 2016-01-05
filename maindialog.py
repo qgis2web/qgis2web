@@ -267,7 +267,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.basemaps.setSelectionMode(multiSelect)
         attrFields = []
         for i in range(len(baselayers)):
-            print baselayers[i]
             for key in baselayers[i]:
                 attrFields.append(key)
         self.basemaps.addItems(attrFields)
