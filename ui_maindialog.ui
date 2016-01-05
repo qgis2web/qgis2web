@@ -231,6 +231,9 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QListWidget" name="basemaps"/>
+           </item>
           </layout>
          </widget>
         </widget>

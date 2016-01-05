@@ -34,7 +34,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def setUp(self):
         """Runs before each test"""
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Base layer",
+        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Template",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(0)
 

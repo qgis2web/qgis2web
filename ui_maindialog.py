@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Dec 09 13:02:29 2015
+# Created: Tue Jan 05 13:21:20 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,10 +31,10 @@ class Ui_MainDialog(object):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
         MainDialog.resize(994, 647)
         icon = QtGui.QIcon()
-        icon.addPixmap(
-            QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(
+                _fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")),
+                QtGui.QIcon.Normal,
+                QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
         self.horizontalLayout_3 = QtGui.QHBoxLayout(MainDialog)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
@@ -56,8 +56,8 @@ class Ui_MainDialog(object):
                                        QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        h4w = self.splitter_2.sizePolicy().hasHeightForWidth()
-        sizePolicy.setHeightForWidth(h4w)
+        sizePolicy.setHeightForWidth(
+                self.splitter_2.sizePolicy().hasHeightForWidth())
         self.splitter_2.setSizePolicy(sizePolicy)
         self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_2.setObjectName(_fromUtf8("splitter_2"))
@@ -71,8 +71,8 @@ class Ui_MainDialog(object):
         self.splitter.setObjectName(_fromUtf8("splitter"))
         self.layersTree = QtGui.QTreeWidget(self.splitter)
         self.layersTree.setMinimumSize(QtCore.QSize(400, 0))
-        scrolloff = QtCore.Qt.ScrollBarAlwaysOff
-        self.layersTree.setHorizontalScrollBarPolicy(scrolloff)
+        self.layersTree.setHorizontalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAlwaysOff)
         self.layersTree.setObjectName(_fromUtf8("layersTree"))
         self.layersTree.headerItem().setText(0, _fromUtf8("1"))
         self.layersTree.header().setVisible(False)
@@ -88,7 +88,8 @@ class Ui_MainDialog(object):
         self.paramsTreeOL.setMinimumSize(QtCore.QSize(300, 0))
         self.paramsTreeOL.setFrameShape(QtGui.QFrame.StyledPanel)
         self.paramsTreeOL.setFrameShadow(QtGui.QFrame.Sunken)
-        self.paramsTreeOL.setHorizontalScrollBarPolicy(scrolloff)
+        self.paramsTreeOL.setHorizontalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAlwaysOff)
         self.paramsTreeOL.setObjectName(_fromUtf8("paramsTreeOL"))
         self.paramsTreeOL.header().setVisible(False)
         self.paramsTreeOL.header().setCascadingSectionResizes(False)
@@ -114,8 +115,10 @@ class Ui_MainDialog(object):
         self.buttonPreview = QtGui.QPushButton(self.widget)
         self.buttonPreview.setMinimumSize(QtCore.QSize(0, 24))
         icon1 = QtGui.QIcon()
-        px2 = QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.gif"))
-        icon1.addPixmap(px2, QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(
+                ":/plugins/qgis2web/icons/preview.gif")),
+                QtGui.QIcon.Normal,
+                QtGui.QIcon.Off)
         self.buttonPreview.setIcon(icon1)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
@@ -127,7 +130,7 @@ class Ui_MainDialog(object):
         self.verticalLayout.addWidget(self.splitter)
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.splitter_2)
         self.verticalLayoutWidget_2.setObjectName(
-            _fromUtf8("verticalLayoutWidget_2"))
+                _fromUtf8("verticalLayoutWidget_2"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setMargin(0)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
@@ -136,17 +139,20 @@ class Ui_MainDialog(object):
                                        QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        previewh4w = self.preview.sizePolicy().hasHeightForWidth()
-        sizePolicy.setHeightForWidth(previewh4w)
+        sizePolicy.setHeightForWidth(
+                self.preview.sizePolicy().hasHeightForWidth())
         self.preview.setSizePolicy(sizePolicy)
         self.preview.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.preview.setObjectName(_fromUtf8("preview"))
         self.verticalLayout_2.addWidget(self.preview)
+        self.basemaps = QtGui.QListWidget(self.verticalLayoutWidget_2)
+        self.basemaps.setObjectName(_fromUtf8("basemaps"))
+        self.verticalLayout_2.addWidget(self.basemaps)
         self.horizontalLayout.addWidget(self.splitter_2)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setStyleSheet(
-            _fromUtf8("background-color: rgb(255, 255, 255);"))
+                _fromUtf8("background-color: rgb(255, 255, 255);"))
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
         self.horizontalLayout_4 = QtGui.QHBoxLayout(self.tab_2)
         self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
@@ -168,10 +174,10 @@ class Ui_MainDialog(object):
         QtCore.QMetaObject.connectSlotsByName(MainDialog)
 
     def retranslateUi(self, MainDialog):
-        MainDialog.setWindowTitle(_translate("MainDialog", "Export to web map",
-                                             None))
+        MainDialog.setWindowTitle(_translate("MainDialog",
+                                             "Export to web map", None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog", "2",
-                                             None))
+                                                           None))
         self.paramsTreeOL.headerItem().setText(0, _translate("MainDialog",
                                                              "Setting", None))
         self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog",

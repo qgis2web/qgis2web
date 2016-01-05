@@ -33,7 +33,6 @@ INSTRUCTION ON FILE USAGE:
 
 def basemapLeaflet():
     dictionary = {
-        'None': '',
         'OSM Standard': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         'Stamen Toner': 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png',
         'OSM DE': ('http://{s}.tile.openstreetmap.de/tiles/' +
@@ -81,7 +80,6 @@ def basemapLeaflet():
 
 def basemapOL():
     dictionary = {
-        "None": "",
         "Stamen Watercolor": """new ol.layer.Tile({
                                     title: 'Stamen watercolor',
                                     source: new ol.source.Stamen({
@@ -255,7 +253,6 @@ new ol.layer.Tile({
 
 def basemapAttributions():
     dictionary = {
-        'None': '',
         'OSM Standard': """\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
