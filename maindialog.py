@@ -28,12 +28,13 @@ import qgis  # pylint: disable=unused-import
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
+from PyQt4 import QtGui
 import traceback
 import logging
 
 from ui_maindialog import Ui_MainDialog
 import utils
-from configparams import paramsOL, specificParams, specificOptions
+from configparams import paramsOL, baselayers, specificParams, specificOptions
 from olwriter import writeOL
 from leafletWriter import *
 
@@ -55,6 +56,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         self.populate_layers_and_groups(self)
         self.populateConfigParams(self)
+        self.populateBasemaps()
         self.selectMapFormat()
         self.toggleOptions()
         self.preview.setPage(WebPage())
@@ -260,6 +262,16 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.resizeColumnToContents(0)
         self.paramsTreeOL.resizeColumnToContents(1)
 
+    def populateBasemaps(self):
+        selectMulti = QtGui.QAbstractItemView.ExtendedSelection
+        self.basemaps.setSelectionMode(selectMulti)
+        attrFields = []
+        for i in range(len(baselayers)):
+            print baselayers[i]
+            for key in baselayers[i]:
+                attrFields.append(key)
+        self.basemaps.addItems(attrFields)
+
     def selectMapFormat(self):
         global projectInstance
         if projectInstance.readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
@@ -317,6 +329,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         for group, settings in self.items.iteritems():
             for param, item in settings.iteritems():
                 parameters[group][param] = item.value()
+        basemaps = self.basemaps.selectedItems()
+        parameters["Appearance"]["Base layer"] = basemaps
         return parameters
 
     def getLayersAndGroups(self):

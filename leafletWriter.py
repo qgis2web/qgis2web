@@ -35,9 +35,6 @@ from leafletLayerScripts import *
 from leafletScriptStrings import *
 from utils import ALL_ATTRIBUTES, removeSpaces, writeTmpLayer, getUsedFields
 
-basemapAddresses = basemapLeaflet()
-basemapAttributions = basemapAttributions()
-
 
 def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                  visible, opacity_raster, cluster, labelhover, selected, json,
@@ -61,7 +58,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
     scaleDependent = (params["Scale/Zoom"]
                             ["Use layer scale dependent visibility"])
-    basemapName = params["Appearance"]["Base layer"]
+    basemapList = params["Appearance"]["Base layer"]
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
     locate = params["Appearance"]["Geolocate user"]
@@ -121,7 +118,27 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
-                    in_raster = unicode(i.dataProvider().dataSourceUri())
+                    pipelayer = i
+                    pipeextent = pipelayer.extent()
+                    pipewidth, pipeheight = (pipelayer.width(),
+                                             pipelayer.height())
+                    piperenderer = pipelayer.renderer()
+                    pipeprovider = pipelayer.dataProvider()
+                    crs = pipelayer.crs().toWkt()
+                    pipe = QgsRasterPipe()
+                    pipe.set(pipeprovider.clone())
+                    pipe.set(piperenderer.clone())
+                    pipedFile = os.path.join(tempfile.gettempdir(),
+                                             safeLayerName + '_pipe.tif')
+                    print pipedFile
+                    file_writer = QgsRasterFileWriter(pipedFile)
+                    file_writer.writeRaster(pipe,
+                                            pipewidth,
+                                            pipeheight,
+                                            pipeextent,
+                                            pipelayer.crs())
+
+                    in_raster = pipedFile
                     prov_raster = os.path.join(tempfile.gettempdir(),
                                                'json_' + safeLayerName +
                                                '_prov.tif')
@@ -136,7 +153,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                                              unicode(extentRep.yMaximum())])
                     processing.runalg("gdalogr:warpreproject", in_raster,
                                       i.crs().authid(), "EPSG:4326", "", 0, 1,
-                                      0, -1, 75, 6, 1, False, 0, False, "",
+                                      5, 2, 75, 6, 1, False, 0, False, "",
                                       prov_raster)
                     processing.runalg("gdalogr:translate", prov_raster, 100,
                                       True, "", 0, "", extentRepNew, False, 0,
@@ -178,12 +195,10 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         middle += mapScript(extent, matchCRS, crsAuthId, measure,
                             maxZoom, minZoom, 0)
     middle += featureGroupsScript()
-    if (basemapName == 0 or basemapName == "" or
-            basemapName == "None" or matchCRS):
+    if (len(basemapList) == 0 or matchCRS):
         basemapText = ""
     else:
-        basemapText = basemapsScript(basemapAddresses[basemapName],
-                                     basemapAttributions[basemapName], maxZoom)
+        basemapText = basemapsScript(basemapList, maxZoom)
     layerOrder = layerOrderScript(extent)
     new_src += middle
     new_src += basemapText
@@ -291,15 +306,19 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         new_src += address_text
 
     if params["Appearance"]["Add layers list"]:
-        if len(basemapName) == 0 or basemapName == "None" or matchCRS:
+        if len(basemapList) == 0 or matchCRS:
             controlStart = """
         var baseMaps = {};"""
         else:
+            comma = ""
             controlStart = """
-        var baseMaps = {
-            '""" + unicode(basemapName) + """': basemap
-        };"""
-        if len(basemapName) == 0 or basemapName == "None":
+        var baseMaps = {"""
+            for count, basemap in enumerate(basemapList):
+                controlStart += comma + "'" + unicode(basemap.text())
+                controlStart += "': basemap" + unicode(count)
+                comma = ", "
+            controlStart += "};"
+        if len(basemapList) == 0:
             controlStart += """
             L.control.layers({},{"""
         else:
