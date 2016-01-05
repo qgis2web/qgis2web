@@ -26,30 +26,6 @@ def getTemplates():
 paramsOL = {
     "Appearance": {
         "Add layers list": False,
-        "Base layer": (
-            "None",
-            "OSM Standard",
-            "Stamen Toner",
-            "OSM DE",
-            "OSM HOT",
-            "Thunderforest Cycle",
-            "Thunderforest Transport",
-            "Thunderforest Landscape",
-            "Thunderforest Outdoors",
-            "OpenMapSurfer Roads",
-            "OpenMapSurfer adminb",
-            "OpenMapSurfer roadsg",
-            "MapQuestOpen OSM",
-            "MapQuestOpen Aerial",
-            "Stamen Terrain",
-            "Stamen Watercolor",
-            "OpenWeatherMap Clouds",
-            "OpenWeatherMap Precipitation",
-            "OpenWeatherMap Rain",
-            "OpenWeatherMap Pressure",
-            "OpenWeatherMap Wind",
-            "OpenWeatherMap Temp",
-            "OpenWeatherMap Snow"),
         "Match project CRS": False,
         "Add scale bar": False,
         "Add address search": False,
@@ -81,6 +57,31 @@ paramsOL = {
                            "22", "23", "24", "25", "26", "27", "28"),
     }
 }
+
+baselayers = (
+            "OSM Standard",
+            "Stamen Toner",
+            "OSM DE",
+            "OSM HOT",
+            "Thunderforest Cycle",
+            "Thunderforest Transport",
+            "Thunderforest Landscape",
+            "Thunderforest Outdoors",
+            "OpenMapSurfer Roads",
+            "OpenMapSurfer adminb",
+            "OpenMapSurfer roadsg",
+            "MapQuestOpen OSM",
+            "MapQuestOpen Aerial",
+            "Stamen Terrain",
+            "Stamen Watercolor",
+            "OpenWeatherMap Clouds",
+            "OpenWeatherMap Precipitation",
+            "OpenWeatherMap Rain",
+            "OpenWeatherMap Pressure",
+            "OpenWeatherMap Wind",
+            "OpenWeatherMap Temp",
+            "OpenWeatherMap Snow"),
+
 
 specificParams = {
 }
