@@ -314,7 +314,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
             controlStart = """
         var baseMaps = {"""
             for count, basemap in enumerate(basemapList):
-                controlStart += comma + "'" + unicode(basemap.text()) + "': basemap" + unicode(count)
+                controlStart += comma + "'" + unicode(basemap.text())
+                controlStart += "': basemap" + unicode(count)
                 comma = ", "
             controlStart += "};"
         if len(basemapList) == 0:

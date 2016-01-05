@@ -263,7 +263,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.resizeColumnToContents(1)
 
     def populateBasemaps(self):
-        self.basemaps.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        multiSelect = QtGui.QAbstractItemView.ExtendedSelection
+        self.basemaps.setSelectionMode(multiSelect)
         attrFields = []
         for i in range(len(baselayers)):
             print baselayers[i]

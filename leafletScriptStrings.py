@@ -110,15 +110,17 @@ def featureGroupsScript():
 def basemapsScript(basemapList, maxZoom):
     basemaps = ""
     for count, basemap in enumerate(basemapList):
+        bmText = basemapAddresses[basemap.text()]
+        bmAttr = basemapAttributions[basemap.text()]
         basemaps += """
         var basemap{count} = L.tileLayer('{basemap}', {{
             attribution: additional_attrib + ' {attribution}',
             maxZoom: {maxZoom}
         }});
         basemap{count}.addTo(map);""".format(count=count,
-                                      basemap=basemapAddresses[basemap.text()],
-                                      attribution=basemapAttributions[basemap.text()],
-                                      maxZoom=maxZoom)
+                                             basemap=bmText,
+                                             attribution=bmAttr,
+                                             maxZoom=maxZoom)
     return basemaps
 
 
