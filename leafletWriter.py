@@ -132,8 +132,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                     pipe.set(pipeprovider.clone())
                     pipe.set(piperenderer.clone())
                     pipedFile = os.path.join(tempfile.gettempdir(),
-                                               safeLayerName +
-                                               '_pipe.tif')
+                                             safeLayerName + '_pipe.tif')
                     print pipedFile
                     file_writer = QgsRasterFileWriter(pipedFile)
                     file_writer.writeRaster(pipe,
