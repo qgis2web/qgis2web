@@ -123,7 +123,8 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 if i.dataProvider().name() != "wms":
                     pipelayer = i
                     pipeextent = pipelayer.extent()
-                    pipewidth, pipeheight = pipelayer.width(), pipelayer.height()
+                    pipewidth, pipeheight = (pipelayer.width(),
+                                             pipelayer.height())
                     piperenderer = pipelayer.renderer()
                     pipeprovider = pipelayer.dataProvider()
                     crs = pipelayer.crs().toWkt()
