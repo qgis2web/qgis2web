@@ -260,20 +260,14 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             onEachFeature: pop_{safeLayerName}, {pointToLayer}
-            }});
-        layerOrder[layerOrder.length]""".format(safeLayerName=safeLayerName,
-                                                pointToLayer=pointToLayer)
-        jsonPoint += """ = json_{safeLayerName}JSON;
-""".format(safeLayerName=safeLayerName)
+            }});""".format(safeLayerName=safeLayerName,
+                           pointToLayer=pointToLayer)
     else:
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             {pointToLayer}
-            }});
-        layerOrder[layerOrder.length]""".format(safeLayerName=safeLayerName,
-                                                pointToLayer=pointToLayer)
-        jsonPoint += """ = json_{safeLayerName}JSON;
-""".format(safeLayerName=safeLayerName)
+            }});""".format(safeLayerName=safeLayerName,
+                           pointToLayer=pointToLayer)
     return jsonPoint
 
 
@@ -285,6 +279,12 @@ def clusterScript(safeLayerName):
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(json_{safeLayerName}JSON);
 """.format(safeLayerName=safeLayerName)
+    if cluster:
+        layercode = "cluster_group" + safeLayerName + "JSON"
+    else:
+        layercode = "json_" + safeLayerName + "JSON"
+    cluster += """
+        layerOrder[layerOrder.length] = """ + layercode
     return cluster
 
 
