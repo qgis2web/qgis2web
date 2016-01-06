@@ -519,6 +519,10 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp, layerName,
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
+        else:
+            new_obj += """
+        layerOrder[layerOrder.length] = json_{layer}JSON;""".format(
+                    layer=safeLayerName)
     return new_obj, cluster_num, wfsLayers
 
 
