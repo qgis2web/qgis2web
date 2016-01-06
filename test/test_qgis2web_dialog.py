@@ -29,7 +29,7 @@ QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 from maindialog import MainDialog
 
 class qgis2web_classDialogTest(unittest.TestCase):
-    """Test dialog works"""
+    """Test most common plugin actions"""
 
     def setUp(self):
         """Runs before each test"""
