@@ -77,6 +77,11 @@ def crsScript(crsAuthId, crsProj4):
 
 def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
     map = """
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
         var map = L.map('map', {"""
     if matchCRS and crsAuthId != 'EPSG:4326':
         map += """
@@ -582,17 +587,17 @@ def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
     return wms
 
 
-def rasterScript(safeLayerName, out_raster_name, bounds):
+def rasterScript(safeLayerName, out_raster, bounds):
     raster = """
-    var img_{safeLayerName} = '{out_raster_name}';
-    var img_bounds_{safeLayerName} = {bounds};
-    var overlay_{safeLayerName} = """.format(safeLayerName=safeLayerName,
-                                             out_raster_name=out_raster_name,
-                                             bounds=bounds)
+        var img_{safeLayerName} = '{out_raster}';
+        var img_bounds_{safeLayerName} = {bounds};
+        var overlay_{safeLayerName} = """.format(safeLayerName=safeLayerName,
+                                                 out_raster=out_raster,
+                                                 bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
-""".format(safeLayerName=safeLayerName, out_raster_name=out_raster_name,
-           bounds=bounds)
+        bounds_group.addLayer(overlay_{safeLayerName});""".format(
+                safeLayerName=safeLayerName)
     return raster
 
 
