@@ -285,6 +285,7 @@ def clusterScript(safeLayerName):
         layercode = "json_" + safeLayerName + "JSON"
     cluster += """
         layerOrder[layerOrder.length] = """ + layercode + """;
+
 """
     return cluster
 
