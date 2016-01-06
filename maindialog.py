@@ -53,6 +53,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
+        self.resize(QSettings().value("qgis2web/size", QSize(994, 647)))
+        self.move(QSettings().value("qgis2web/pos", QPoint(50, 50)))
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         self.populate_layers_and_groups(self)
         self.populateConfigParams(self)
@@ -377,6 +379,11 @@ class MainDialog(QDialog, Ui_MainDialog):
                 visible[::-1],
                 json[::-1],
                 cluster[::-1])
+
+    def closeEvent(self, event):
+        QSettings().setValue("qgis2web/size", self.size())
+        QSettings().setValue("qgis2web/pos", self.pos())
+        event.accept()
 
 
 class TreeGroupItem(QTreeWidgetItem):
