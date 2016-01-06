@@ -192,8 +192,8 @@
             pointToLayer: doPointToLayerpoint,
             onEachFeature: pop_point
         });
-        feature_group.addLayer(json_pointJSON);
         layerControl.addOverlay(json_pointJSON, 'point');
+        feature_group.addLayer(json_pointJSON);
         layerOrder[layerOrder.length] = json_pointJSON;
         function getpointJson(geojson) {
             json_pointJSON.addData(geojson);
