@@ -447,6 +447,8 @@ addInteraction();"""
                   "@LEAFLET_CLUSTERJS@": ""}
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = settings["Appearance"]["Template"]
+            if htmlTemplate == "":
+                htmlTemplate = "basic"
             f.write(replaceInTemplate(htmlTemplate + ".html", values))
         values = {"@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
