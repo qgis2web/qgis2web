@@ -36,7 +36,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Template",
                                                 (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(0)
+                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
 
     def tearDown(self):
         """Runs after each test"""
