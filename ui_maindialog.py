@@ -90,6 +90,7 @@ class Ui_MainDialog(object):
         self.paramsTreeOL.setFrameShadow(QtGui.QFrame.Sunken)
         self.paramsTreeOL.setHorizontalScrollBarPolicy(
                 QtCore.Qt.ScrollBarAlwaysOff)
+        self.paramsTreeOL.setAutoScroll(False)
         self.paramsTreeOL.setObjectName(_fromUtf8("paramsTreeOL"))
         self.paramsTreeOL.header().setVisible(False)
         self.paramsTreeOL.header().setCascadingSectionResizes(False)

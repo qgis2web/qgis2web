@@ -59,8 +59,7 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, canvas, full, mapLibLocation, qgis2webJS,
-                   template):
+                   matchCRS, canvas, mapLibLocation, qgis2webJS, template):
     if webpage_name == "":
         pass
     else:
@@ -123,6 +122,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         crsJS = ""
 
+    canvasSize = canvas.size()
     values = {"@PAGETITLE@": webpage_name,
               "@CSSADDRESS@": cssAddress,
               "@EXTRACSS@": extracss,
@@ -136,6 +136,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_MEASUREJS@": measureJS,
               "@LEAFLET_CRSJS@": crsJS,
               "@QGIS2WEBJS@": qgis2webJS,
+              "@MAP_WIDTH@": unicode(canvasSize.width()) + "px",
+              "@MAP_HEIGHT@": unicode(canvasSize.height()) + "px",
               "@OL3_BACKGROUNDCOLOR@": "",
               "@OL3_STYLEVARS@": "",
               "@OL3_POPUP@": "",
@@ -153,30 +155,12 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         f_html.close()
 
 
-def writeCSS(cssStore, full, height, width, backgroundColor):
+def writeCSS(cssStore, backgroundColor):
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
-body {
-    padding: 0;
-    margin: 0;
-}"""
-        if full == 1:
-            text += """
-html, body, #map {
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
+#map {
     background-color: """ + backgroundColor + """
-}"""
-        else:
-            text += """
-html, body, #map {
-    height: """ + str(height) + """px;
-    width: """ + str(width) + """px;
-    background-color: """ + backgroundColor + """;
-}"""
-        text += """
+}
 th {
     text-align: left;
     vertical-align: top;

@@ -421,10 +421,13 @@ addInteraction();"""
         ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>"""
         ol3layers = """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
+        mapSize = iface.mapCanvas().size()
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
                   "@JSADDRESS@": jsAddress,
+                  "@MAP_WIDTH@": unicode(mapSize.width()) + "px",
+                  "@MAP_HEIGHT@": unicode(mapSize.height()) + "px",
                   "@OL3_STYLEVARS@": styleVars,
                   "@OL3_BACKGROUNDCOLOR@": backgroundColor,
                   "@OL3_POPUP@": ol3popup,

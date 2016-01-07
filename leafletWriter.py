@@ -36,9 +36,8 @@ from leafletScriptStrings import *
 from utils import ALL_ATTRIBUTES, removeSpaces, writeTmpLayer, getUsedFields
 
 
-def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
-                 visible, opacity_raster, cluster, labelhover, selected, json,
-                 params, popup):
+def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
+                 cluster, json, params, popup):
     legends = {}
     canvas = iface.mapCanvas()
     project = QgsProject.instance()
@@ -78,8 +77,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                                                outputProjectFileName, cluster,
                                                measure, matchCRS,
                                                canvas, mapLibLocation, locate)
-    writeCSS(cssStore, full, height, width,
-             mapSettings.backgroundColor().name())
+    writeCSS(cssStore, mapSettings.backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
@@ -100,7 +98,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
                 writer = qgis.core.QgsVectorFileWriter
                 options = "COORDINATE_PRECISION=" + unicode(precision)
                 writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8',
-                                           exp_crs, 'GeoJson', selected,
+                                           exp_crs, 'GeoJson', 0,
                                            layerOptions=[options])
 
                 with open(layerFileName, "w") as f2:
@@ -210,8 +208,7 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         if i.type() == QgsMapLayer.VectorLayer:
             (new_pop,
              labeltext, popFuncs) = labelsAndPopups(i, safeLayerName,
-                                                    usedFields,
-                                                    labelhover, highlight,
+                                                    usedFields, highlight,
                                                     popupsOnHover, popup,
                                                     count)
             layerName = safeLayerName
@@ -349,21 +346,6 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
         controlEnd = "},{collapsed:false}).addTo(map);"
 
         new_src += controlEnd
-    if opacity_raster:
-        opacityStart = """
-        function updateOpacity(value) {
-        """
-        new_src += opacityStart
-
-        for i in layer_list:
-            rawLayerName = i.name()
-            safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-            if i.type() == QgsMapLayer.RasterLayer:
-                new_opc = """
-                overlay_""" + safeLayerName + """.setOpacity(value);"""
-                new_src += new_opc
-        opacityEnd = """}"""
-        new_src += opacityEnd
 
     if locate:
         end = locateScript()
@@ -377,13 +359,12 @@ def writeLeaflet(iface, outputProjectFileName, width, height, full, layer_list,
     end += endHTMLscript(wfsLayers)
     new_src += end
     writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                   matchCRS, canvas, full, mapLibLocation, new_src,
-                   template)
+                   matchCRS, canvas, mapLibLocation, new_src, template)
     return outputIndex
 
 
-def labelsAndPopups(i, safeLayerName, usedFields, labelhover,
-                    highlight, popupsOnHover, popup, count):
+def labelsAndPopups(i, safeLayerName, usedFields, highlight,
+                    popupsOnHover, popup, count):
     fields = i.pendingFields()
     field_names = [field.name() for field in fields]
     usedFields = getUsedFields(i)
@@ -402,8 +383,7 @@ def labelsAndPopups(i, safeLayerName, usedFields, labelhover,
     f = palyr.fieldName
     label_exp = False
     labeltext = ".bindLabel(feature.properties." + unicode(f)
-    if not labelhover:
-        labeltext += ", {noHide: true, offset: [-0, -16]}"
+    labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
     for field in field_names:
         if unicode(field) == 'html_exp':
