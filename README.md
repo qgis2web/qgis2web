@@ -22,6 +22,12 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
     <li>Give your layer columns human friendly names via <code>Layer >
     Properties > Fields > Alias</code></li>
 </ul>
+<p>Run qgis2web from the Web menu, or via its icon. If required, choose a
+basemap from the drop-down below the preview pane, and click "Update preview".
+</p>
+<p>The top-left pane lets you set options for each layer in your map. The
+bottom-left pane sets overall options. All options are saved to your QGIS
+project file.</p>
 
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies.
@@ -38,6 +44,7 @@ output code to achieve what qgis2web cannot.</p>
         pane, but work when the map is exported</li>
     <li>in OL3 maps, only single rendered points cluster, not categorized
         or graduated</li>
+    <li>rasters are exported unstyled</li>
 </ul>
 
 <h3>Layer options</h3>
@@ -101,8 +108,6 @@ output code to achieve what qgis2web cannot.</p>
         <dd>Include interactive measuring widget</dd>
     <dt>Add scale bar</dt>
         <dd>Include scale bar</dd>
-    <dt>Base layer</dt>
-        <dd>Select basemap layer</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
     <dt>Highlight features</dt>
