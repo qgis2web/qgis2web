@@ -930,8 +930,11 @@ def getStrokeStyle(color, dashed, width):
     width = math.floor(float(width) * 3.8)
     dash = dashed.replace("dash", "10,5")
     dash = dash.replace("dot", "1,5")
+    dash = dash.replace("solid", "")
     dash = dash.replace(" ", ",")
     dash = "[%s]" % dash
+    if dash == "[]":
+        dash = "null"
     return ("new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" %
             (color, dash, width))
 
