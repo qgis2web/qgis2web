@@ -45,6 +45,8 @@ output code to achieve what qgis2web cannot.</p>
     <li>in OL3 maps, only single rendered points cluster, not categorized
         or graduated</li>
     <li>rasters are exported unstyled</li>
+    <li>line style (dashed/dotted) does not appear in OL3 preview works in
+        export</li>
 </ul>
 
 <h3>Layer options</h3>

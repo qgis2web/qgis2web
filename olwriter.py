@@ -873,8 +873,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             else:
                 line_style = props["line_style"]
 
-            style = "stroke: %s" % (getStrokeStyle(color,
-                                                   line_style != "solid",
+            style = "stroke: %s" % (getStrokeStyle(color, line_style,
                                                    line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             fillColor = getRGBAColor(props["color"], alpha)
@@ -896,8 +895,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                 borderWidth = props["outline_width"]
 
             style = ('''stroke: %s %s''' %
-                     (getStrokeStyle(borderColor, borderStyle != "solid",
-                                     borderWidth),
+                     (getStrokeStyle(borderColor, borderStyle, borderWidth),
                       getFillStyle(fillColor, props)))
         else:
             style = ""
@@ -930,7 +928,10 @@ def getIcon(path, size):
 
 def getStrokeStyle(color, dashed, width):
     width = math.floor(float(width) * 3.8)
-    dash = "[3]" if dashed else "null"
+    dash = dashed.replace("dash", "10,5")
+    dash = dash.replace("dot", "1,5")
+    dash = dash.replace(" ", ",")
+    dash = "[%s]" % dash
     return ("new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" %
             (color, dash, width))
 
