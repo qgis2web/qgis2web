@@ -909,7 +909,7 @@ def getCircle(color, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
             stroke: %s%s})""" %
             (size,
-             getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
+             getStrokeStyle("'rgba(0,0,0,255)'", "", "0.5"),
              getFillStyle(color, props)))
 
 
