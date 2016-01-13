@@ -954,9 +954,9 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
     if linejoin == 64:
         joinString = "bevel"
     strokeString = ("new ol.style.Stroke({color: %s, lineDash: %s, " %
-                        (color, dash))
+                    (color, dash))
     strokeString += ("lineCap: '%s', lineJoin: '%s', width: %d})" %
-                        (capString, joinString, width))
+                     (capString, joinString, width))
     return strokeString
 
 

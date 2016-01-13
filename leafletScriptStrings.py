@@ -448,11 +448,11 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
 
 
 def categorizedLineStylesScript(symbol, opacity):
-    (dashArray, capString, joinString) = getLineStyle(
-                                            symbol.symbolLayer(0).penStyle(),
-                                            symbol.width(),
-                                            symbol.symbolLayer(0).penCapStyle(),
-                                            symbol.symbolLayer(0).penJoinStyle())
+    (dashArray, capString,
+     joinString) = getLineStyle(symbol.symbolLayer(0).penStyle(),
+                                symbol.width(),
+                                symbol.symbolLayer(0).penCapStyle(),
+                                symbol.symbolLayer(0).penJoinStyle())
     categorizedLineStyles = """
                     color: '{color}',
                     weight: '{weight}',
@@ -481,10 +481,11 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 
 def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
     symbolLayer = symbol.symbolLayer(0)
-    (dashArray, capString, joinString) = getLineStyle(symbolLayer.borderStyle(),
-                                  symbolLayer.borderWidth(),
-                                  symbolLayer.penCapStyle(),
-                                  symbolLayer.penJoinStyle())
+    (dashArray, capString,
+     joinString) = getLineStyle(symbolLayer.borderStyle(),
+                                symbolLayer.borderWidth(),
+                                symbolLayer.penCapStyle(),
+                                symbolLayer.penJoinStyle())
     if symbolLayer.brushStyle() == 0:
         fillColor = "none"
     else:
@@ -533,9 +534,9 @@ def rangeStartScript(valueAttr, r):
 def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     (dashArray, capString,
      joinString) = getLineStyle(symbol.symbolLayer(0).outlineStyle(),
-                              symbol.symbolLayer(0).outlineWidth(),
-                              symbol.symbolLayer(0).penCapStyle(),
-                              symbol.symbolLayer(0).penLineStyle())
+                                symbol.symbolLayer(0).outlineWidth(),
+                                symbol.symbolLayer(0).penCapStyle(),
+                                symbol.symbolLayer(0).penLineStyle())
     graduatedPointStyles = rangeStartScript(valueAttr, r)
     graduatedPointStyles += """
             return {{
