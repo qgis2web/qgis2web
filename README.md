@@ -158,3 +158,6 @@ gentlemen.</p>
     <li>github.com/volaya</li>
     <li>github.com/riccardoklinger</li>
 </ul>
+
+
+[![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
