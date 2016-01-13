@@ -523,11 +523,15 @@ def singleLine(symbol, colorName, fill_opacity, i, json, layerName,
                safeLayerName, wfsLayers, popFuncs, visible, usedFields, count):
     radius = symbol.width()
     try:
-        penStyle = getLineStyle(symbol.symbolLayer(0).penStyle(), radius)
+        (penStyle,
+         capString,
+         joinString) = getLineStyle(symbol.symbolLayer(0).penStyle(), radius,
+                                    symbol.symbolLayer(0).penCapStyle(),
+                                    symbol.symbolLayer(0).penJoinStyle())
     except:
         penStyle = ""
-    lineStyle = simpleLineStyleScript(radius, colorName,
-                                      penStyle, fill_opacity)
+    lineStyle = simpleLineStyleScript(radius, colorName, penStyle, capString,
+                                      joinString, fill_opacity)
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
         new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "",
@@ -556,7 +560,10 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
             radius = symbolLayer.borderWidth()
             border = symbolLayer.borderColor()
             borderColor = unicode(border.name())
-            borderStyle = getLineStyle(symbolLayer.borderStyle(), radius)
+            (borderStyle, capString,
+             joinString) = getLineStyle(symbolLayer.borderStyle(), radius,
+                                        symbolLayer.penCapStyle(),
+                                        symbolLayer.penJoinStyle())
             border_transp = float(border.alpha()) / 255
             if symbolLayer.borderStyle() == 0:
                 radius = "0"
@@ -566,11 +573,14 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
             radius = 1
             borderColor = "#000000"
             borderStyle = ""
+            capString = ""
+            joinString = ""
             border_transp = 1
             colorName = "#ffffff"
     borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
     polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity,
-                                      colorName, borderStyle, fill_opacity)
+                                      colorName, borderStyle, capString,
+                                      joinString, fill_opacity)
     if i.providerType() == 'WFS' and json[count] == False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
         new_obj, scriptTag = buildNonPointWFS(layerName, i.source(), "",

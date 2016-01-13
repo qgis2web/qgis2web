@@ -873,8 +873,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             else:
                 line_style = props["line_style"]
 
+            lineCap = sl.penCapStyle()
+            lineJoin = sl.penJoinStyle()
+
             style = "stroke: %s" % (getStrokeStyle(color, line_style,
-                                                   line_width))
+                                                   line_width, lineCap,
+                                                   lineJoin))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             fillColor = getRGBAColor(props["color"], alpha)
 
@@ -894,8 +898,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             else:
                 borderWidth = props["outline_width"]
 
+            lineCap = sl.penCapStyle()
+            lineJoin = sl.penJoinStyle()
+
             style = ('''stroke: %s %s''' %
-                     (getStrokeStyle(borderColor, borderStyle, borderWidth),
+                     (getStrokeStyle(borderColor, borderStyle, borderWidth,
+                                     lineCap, lineJoin),
                       getFillStyle(fillColor, props)))
         else:
             style = ""
@@ -909,7 +917,7 @@ def getCircle(color, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
             stroke: %s%s})""" %
             (size,
-             getStrokeStyle("'rgba(0,0,0,255)'", "", "0.5"),
+             getStrokeStyle("'rgba(0,0,0,255)'", "", "0.5", 0, 0),
              getFillStyle(color, props)))
 
 
@@ -926,7 +934,7 @@ def getIcon(path, size):
                      "path": path.replace("\\", "\\\\")}
 
 
-def getStrokeStyle(color, dashed, width):
+def getStrokeStyle(color, dashed, width, linecap, linejoin):
     width = math.floor(float(width) * 3.8)
     dash = dashed.replace("dash", "10,5")
     dash = dash.replace("dot", "1,5")
@@ -935,8 +943,21 @@ def getStrokeStyle(color, dashed, width):
     dash = "[%s]" % dash
     if dash == "[]":
         dash = "null"
-    return ("new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" %
-            (color, dash, width))
+    capString = "round"
+    if linecap == 0:
+        capString = "butt"
+    if linecap == 16:
+        capString = "square"
+    joinString = "round"
+    if linejoin == 0:
+        joinString = "miter"
+    if linejoin == 64:
+        joinString = "bevel"
+    strokeString = ("new ol.style.Stroke({color: %s, lineDash: %s, " %
+                        (color, dash))
+    strokeString += ("lineCap: '%s', lineJoin: '%s', width: %d})" %
+                        (capString, joinString, width))
+    return strokeString
 
 
 def getFillStyle(color, props):
