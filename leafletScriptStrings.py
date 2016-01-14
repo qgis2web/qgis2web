@@ -740,6 +740,8 @@ def getLineStyle(penType, lineWidth, penCap, penJoin):
     else:
         penStyle = ""
     capString = "square"
+    print penCap
+    print penJoin
     if penCap == 0:
         capString = "butt"
     if penCap == 32:

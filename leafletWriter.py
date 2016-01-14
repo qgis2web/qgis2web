@@ -560,8 +560,8 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
             capStyle = symbolLayer.penCapStyle()
             joinStyle = symbolLayer.penJoinStyle()
         except:
-            capStyle = 0
-            joinStyle = 0
+            capStyle = 16
+            joinStyle = 64
         try:
             radius = symbolLayer.borderWidth()
             border = symbolLayer.borderColor()
