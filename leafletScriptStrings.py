@@ -303,9 +303,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
     symbolLayer = symbol.symbolLayer(0)
     (dashArray, capString, joinString) = getLineStyle(
                                              symbolLayer.outlineStyle(),
-                                             symbolLayer.outlineWidth(),
-                                             symbolLayer.penCapStyle(),
-                                             symbolLayer.penJoinStyle())
+                                             symbolLayer.outlineWidth(), 0, 0)
     if symbolLayer.outlineStyle() == 0:
         borderOpacity = 0
     styleValues = """
@@ -315,8 +313,6 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                     weight: {borderWidth},
                     opacity: {borderOpacity},
                     dashArray: '{dashArray}',
-                    lineCap: '{capString}',
-                    lineJoin: '{joinString}',
                     fillOpacity: '{opacity}',
                 }};
                 break;""".format(radius=symbol.size(),
@@ -324,8 +320,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                                  color=symbolLayer.borderColor().name(),
                                  borderWidth=symbolLayer.outlineWidth() * 4,
                                  borderOpacity=borderOpacity,
-                                 dashArray=dashArray, capString=capString,
-                                 joinString=joinString, opacity=opacity)
+                                 dashArray=dashArray, opacity=opacity)
     return styleValues
 
 
@@ -540,9 +535,7 @@ def rangeStartScript(valueAttr, r):
 def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     (dashArray, capString,
      joinString) = getLineStyle(symbol.symbolLayer(0).outlineStyle(),
-                                symbol.symbolLayer(0).outlineWidth(),
-                                symbol.symbolLayer(0).penCapStyle(),
-                                symbol.symbolLayer(0).penLineStyle())
+                                symbol.symbolLayer(0).outlineWidth(), 0, 0)
     graduatedPointStyles = rangeStartScript(valueAttr, r)
     graduatedPointStyles += """
             return {{
@@ -552,8 +545,6 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 weight: {lineWeight},
                 fillOpacity: '{opacity}',
                 opacity: '{borderOpacity}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
                 dashArray: '{dashArray}'
             }}
         }}
@@ -562,7 +553,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
            color=symbol.symbolLayer(0).borderColor().name(),
            lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
            opacity=opacity, borderOpacity=borderOpacity,
-           dashArray=dashArray, capString=capString, joinString=joinString)
+           dashArray=dashArray)
     return graduatedPointStyles
 
 
@@ -571,7 +562,7 @@ def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
     (dashArray, capString, joinString) = getLineStyle(sl.penStyle(),
                                                       symbol.width(),
                                                       sl.penCapStyle(),
-                                                      sl.penLineStyle())
+                                                      sl.penJoinStyle())
     graduatedLineStyles = rangeStartScript(valueAttr, r)
     graduatedLineStyles += """
             return {{
