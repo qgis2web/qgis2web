@@ -898,8 +898,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             else:
                 borderWidth = props["outline_width"]
 
-            lineCap = sl.penCapStyle()
-            lineJoin = sl.penJoinStyle()
+            try:
+                lineCap = sl.penCapStyle()
+                lineJoin = sl.penJoinStyle()
+            except:
+                lineCap = 0
+                lineJoin = 0
 
             style = ('''stroke: %s %s''' %
                      (getStrokeStyle(borderColor, borderStyle, borderWidth,
@@ -961,9 +965,13 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
 
 
 def getFillStyle(color, props):
-    if hasattr(props, "style") and props["style"] == "no":
+    for prop in props:
+        print prop + ": *" + props[prop] + "*"
+    if props["style"] == "no":
+        print "true"
         return ""
     else:
+        print "false"
         return ", fill: new ol.style.Fill({color: %s})" % color
 
 
