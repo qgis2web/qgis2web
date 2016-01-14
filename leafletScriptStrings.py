@@ -704,8 +704,6 @@ def endHTMLscript(wfsLayers):
 
 
 def getLineStyle(penType, lineWidth, penCap, penJoin):
-    print "Cap: " + unicode(penCap)
-    print "Join: " + unicode(penJoin)
     if lineWidth > 1:
         dash = lineWidth * 10
         dot = lineWidth * 1

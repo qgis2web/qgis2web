@@ -965,13 +965,9 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
 
 
 def getFillStyle(color, props):
-    for prop in props:
-        print prop + ": *" + props[prop] + "*"
     if props["style"] == "no":
-        print "true"
         return ""
     else:
-        print "false"
         return ", fill: new ol.style.Fill({color: %s})" % color
 
 
