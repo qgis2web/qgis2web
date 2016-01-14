@@ -481,11 +481,17 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 
 def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
     symbolLayer = symbol.symbolLayer(0)
+    try:
+        capStyle = symbolLayer.penCapStyle()
+        joinStyle = symbolLayer.penJoinStyle()
+    except:
+        capStyle = 0
+        joinStyle = 0
     (dashArray, capString,
      joinString) = getLineStyle(symbolLayer.borderStyle(),
                                 symbolLayer.borderWidth(),
-                                symbolLayer.penCapStyle(),
-                                symbolLayer.penJoinStyle())
+                                capStyle,
+                                joinStyle)
     if symbolLayer.brushStyle() == 0:
         fillColor = "none"
     else:
@@ -587,16 +593,22 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     symbolLayer = symbol.symbolLayer(0)
     if symbolLayer.borderStyle() == 0:
         weight = "0"
-    else:
-        weight = symbolLayer.borderWidth() * 4
-    if symbolLayer.borderStyle() == 0:
         dashArray = "0"
+        capString = ""
+        joinString = ""
     else:
+        try:
+            capStyle = symbolLayer.penCapStyle()
+            joinStyle = symbolLayer.penJoinStyle()
+        except:
+            capStyle = 0
+            joinStyle = 0
+        weight = symbolLayer.borderWidth() * 4
         (dashArray, capString,
          joinString) = getLineStyle(symbolLayer.borderStyle(),
                                     symbolLayer.borderWidth(),
-                                    symbolLayer.penCapStyle(),
-                                    symbolLayer.penJoinStyle())
+                                    capStyle,
+                                    joinStyle)
     if symbolLayer.brushStyle() == 0:
         fillColor = "0"
     else:
@@ -609,6 +621,7 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 dashArray: '{dashArray}',
                 lineCap: '{capString}',
                 lineJoin: '{joinString}',
+                fillColor: '{fillColor}',
                 opacity: '{borderOpacity}',
                 fillOpacity: '{opacity}',
             }}
