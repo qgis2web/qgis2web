@@ -60,13 +60,13 @@
 </html>
 var size = 0;
 var categories_polygon = {"big": [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(193,125,222,1.0)"})
+        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}) , fill: new ol.style.Fill({color: "rgba(193,125,222,1.0)"})
     })],
 "small": [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(116,202,176,1.0)"})
+        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}) , fill: new ol.style.Fill({color: "rgba(116,202,176,1.0)"})
     })],
 "": [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}) , fill: new ol.style.Fill({color: "rgba(202,165,77,1.0)"})
+        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}) , fill: new ol.style.Fill({color: "rgba(202,165,77,1.0)"})
     })]};
 var styleCache_polygon={}
 var style_polygon = function(feature, resolution){

@@ -965,10 +965,12 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
 
 
 def getFillStyle(color, props):
-    if props["style"] == "no":
-        return ""
-    else:
-        return ", fill: new ol.style.Fill({color: %s})" % color
+    try:
+        if props["style"] == "no":
+            return ""
+    except:
+        pass
+    return ", fill: new ol.style.Fill({color: %s})" % color
 
 
 def geolocation(geolocate):
