@@ -557,13 +557,18 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
         border_transp = float(symbol.color().alpha()) / 255
     else:
         try:
+            capStyle = symbolLayer.penCapStyle()
+            joinStyle = symbolLayer.penJoinStyle()
+        except:
+            capStyle = 0
+            joinStyle = 0
+        try:
             radius = symbolLayer.borderWidth()
             border = symbolLayer.borderColor()
             borderColor = unicode(border.name())
             (borderStyle, capString,
              joinString) = getLineStyle(symbolLayer.borderStyle(), radius,
-                                        symbolLayer.penCapStyle(),
-                                        symbolLayer.penJoinStyle())
+                                        capStyle, joinStyle)
             border_transp = float(border.alpha()) / 255
             if symbolLayer.borderStyle() == 0:
                 radius = "0"
@@ -578,7 +583,7 @@ def singlePolygon(i, layerName, safeLayerName, symbol, symbolLayer, colorName,
             border_transp = 1
             colorName = "#ffffff"
     borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-    polyStyle = singlePolyStyleScript(radius * 4, borderColor, borderOpacity,
+    polyStyle = singlePolyStyleScript(radius, borderColor, borderOpacity,
                                       colorName, borderStyle, capString,
                                       joinString, fill_opacity)
     if i.providerType() == 'WFS' and json[count] is False:
