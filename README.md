@@ -3,7 +3,7 @@
 
 <h2>Installation</h2>
 <ul>
-    <li>In QGIS, select Plugins > Manage and Install Plugins...</li>
+    <li>In QGIS, select <code>Plugins > Manage and Install Plugins...</code></li>
 </ul>
 <p>or:</p>
 <ul>
@@ -23,13 +23,11 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
     Properties > Fields > Alias</code></li>
 </ul>
 <p>Run qgis2web from the Web menu, or via its icon. If required, choose a
-basemap from the drop-down below the preview pane, and click "Update preview".
-</p>
+basemap from the list below the preview pane, and click "Update preview".
+CTRL/CMD-click for multiple basemaps.</p>
 <p>The top-left pane lets you set options for each layer in your map. The
 bottom-left pane sets overall options. All options are saved to your QGIS
 project file.</p>
-<p>If you want to add basemaps to your webmap, select them from the list
-bottom-right. CTRL/CMD-click for multiple basemaps.</p>
 
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies.
@@ -47,8 +45,9 @@ output code to achieve what qgis2web cannot.</p>
     <li>in OL3 maps, only single rendered points cluster, not categorized
         or graduated</li>
     <li>rasters are exported unstyled</li>
-    <li>line style (dashed/dotted) does not appear in OL3 preview works in
+    <li>line style (dashed/dotted) does not appear in OL3 preview, but works in
         export</li>
+    <li>Leaflet cannot label lines and polygons, only points</li>
 </ul>
 
 <h3>Layer options</h3>
@@ -74,7 +73,8 @@ output code to achieve what qgis2web cannot.</p>
 <dl>
     <dt>Delete unused fields</dt>
         <dd>If not all fields are selected in "Info popup content", remove the
-            undisplayed fields from the GeoJSON</dd>
+            undisplayed fields from the GeoJSON - helps to reduce file
+            size</dd>
     <dt>Export folder</dt>
         <dd>The folder where the webmap will be saved</dd> 
     <dt>Mapping library location</dt>
@@ -98,8 +98,6 @@ output code to achieve what qgis2web cannot.</p>
         <dd>How far the webmap will zoom out</dd>
     <dt>Restrict to extent</dt>
         <dd>Prevent panning or zooming beyond the selected extent</dd>
-    <dt>Use layer scale dependent visibility</dt>
-        <dd>Respect scale-dependent visibility settings from QGIS</dd>
 </dl>
 
 <h4>Appearance</h4>
@@ -154,9 +152,11 @@ coming.</p>
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
-gentlemen.</p>
+gentlemen. Thanks are also very much due to Paolo Cavallini, who suggested
+the merge.</p>
 
 <ul>
     <li>github.com/volaya</li>
     <li>github.com/riccardoklinger</li>
+    <li>github.com/pcav</li>
 </ul>
