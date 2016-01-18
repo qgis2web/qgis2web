@@ -55,8 +55,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
     extent = params["Scale/Zoom"]["Extent"]
     minZoom = params["Scale/Zoom"]["Min zoom level"]
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
-    scaleDependent = (params["Scale/Zoom"]
-                            ["Use layer scale dependent visibility"])
     basemapList = params["Appearance"]["Base layer"]
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
@@ -169,7 +167,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
                     del prov_raster
                     os.remove(os.path.join(tempfile.gettempdir(),
                                            'json_' + name_ts + '_prov.tif'))
-        if scaleDependent and i.hasScaleBasedVisibility():
+        if i.hasScaleBasedVisibility():
             scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)

@@ -487,12 +487,9 @@ def writeLayersAndGroups(layers, groups, visible, folder,
 
     baseLayer = baseLayerGroup % basemaps
 
-    scaleVisibility = (settings["Scale/Zoom"]
-                               ["Use layer scale dependent visibility"])
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
-        layerVars += "\n".join([layerToJavascript(iface, layer,
-                                                  scaleVisibility, encode2json,
+        layerVars += "\n".join([layerToJavascript(iface, layer, encode2json,
                                                   matchCRS, cluster)])
     groupVars = ""
     groupedLayers = {}
@@ -592,9 +589,8 @@ def bounds(iface, useCanvas, layers, matchCRS):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def layerToJavascript(iface, layer, scaleVisibility,
-                      encode2json, matchCRS, cluster):
-    if scaleVisibility and layer.hasScaleBasedVisibility():
+def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
+    if layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
         minResolution = "\nminResolution:%s,\n" % unicode(minRes)

@@ -44,7 +44,6 @@ paramsOL = {
         "Mapping library location": ("Local", "CDN")
     },
     "Scale/Zoom": {
-        "Use layer scale dependent visibility": False,
         "Extent": ("Canvas extent", "Fit to layers extent"),
         "Restrict to extent": False,
         "Max zoom level": ("1", "2", "3", "4", "5", "6", "7",

@@ -28,6 +28,8 @@ basemap from the drop-down below the preview pane, and click "Update preview".
 <p>The top-left pane lets you set options for each layer in your map. The
 bottom-left pane sets overall options. All options are saved to your QGIS
 project file.</p>
+<p>If you want to add basemaps to your webmap, select them from the list
+bottom-right. CTRL/CMD-click for multiple basemaps.</p>
 
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies.
