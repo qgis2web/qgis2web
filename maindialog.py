@@ -373,7 +373,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     continue
                 for j in xrange(item.childCount()):
                     child = item.child(j)
-                    layer = child.layer()
+                    layer = child.getLayer()
                     groupLayers.append(layer)
                     layers.append(layer)
                     popup.append(utils.NO_POPUP)
