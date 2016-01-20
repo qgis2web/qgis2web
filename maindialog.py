@@ -173,32 +173,34 @@ class MainDialog(QDialog, Ui_MainDialog):
         root_node = QgsProject.instance().layerTreeRoot()
         tree_groups = []
         tree_layers = root_node.findLayers()
-        self.layers_item = QTreeWidgetItem()
+
+        self.layers_item = self.traverseTree(root_node, self.iface,
+                                             self.layersTree,
+                                             QTreeWidgetItem(), dlg)
         self.layers_item.setText(0, "Layers and Groups")
+#        for tree_layer in tree_layers:
+#            layer = tree_layer.layer()
+#            if layer.type() != QgsMapLayer.PluginLayer:
+#                try:
+#                    if layer.type() == QgsMapLayer.VectorLayer:
+#                        testDump = layer.rendererV2().dump()
+#                    layer_parent = tree_layer.parent()
+#                    if layer_parent.parent() is None:
+#                        item = TreeLayerItem(self.iface, layer,
+#                                             self.layersTree, dlg)
+#                        self.layers_item.addChild(item)
+#                    else:
+#                        if layer_parent not in tree_groups:
+#                            tree_groups.append(layer_parent)
+#                except:
+#                    pass
 
-        for tree_layer in tree_layers:
-            layer = tree_layer.layer()
-            if layer.type() != QgsMapLayer.PluginLayer:
-                try:
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.rendererV2().dump()
-                    layer_parent = tree_layer.parent()
-                    if layer_parent.parent() is None:
-                        item = TreeLayerItem(self.iface, layer,
-                                             self.layersTree, dlg)
-                        self.layers_item.addChild(item)
-                    else:
-                        if layer_parent not in tree_groups:
-                            tree_groups.append(layer_parent)
-                except:
-                    pass
-
-        for tree_group in tree_groups:
-            group_name = tree_group.name()
-            group_layers = [
-                tree_layer.layer() for tree_layer in tree_group.findLayers()]
-            item = TreeGroupItem(group_name, group_layers, self.layersTree)
-            self.layers_item.addChild(item)
+#        for tree_group in tree_groups:
+#            group_name = tree_group.name()
+#            group_layers = [
+#                tree_layer.layer() for tree_layer in tree_group.findLayers()]
+#            item = TreeGroupItem(group_name, group_layers, self.layersTree)
+#            self.layers_item.addChild(item)
 
         self.layersTree.addTopLevelItem(self.layers_item)
         self.layersTree.expandAll()
@@ -208,6 +210,24 @@ class MainDialog(QDialog, Ui_MainDialog):
             item = self.layers_item.child(i)
             if item.checkState(0) != Qt.Checked:
                 item.setExpanded(False)
+
+    def traverseTree(self, node, iface, tree, treeItem, dlg):  
+        children = node.children()
+        for child in children:
+            if isinstance(child, QgsLayerTreeGroup):
+                item = TreeGroupItem(child.name(), tree)
+                treeItem.addChild(item)
+                self.traverseTree(child, iface, tree, item, dlg)
+            else:
+                if child.layer().type() != QgsMapLayer.PluginLayer:
+                    # try:
+                    #     if child.layer().type() == QgsMapLayer.VectorLayer:
+                    #         testDump = child.layer().rendererV2().dump()
+                        item = TreeLayerItem(iface, child.layer(), tree, dlg)
+                        treeItem.addChild(item)
+                    # except:
+                    #     pass
+        return treeItem
 
     def populateConfigParams(self, dlg):
         global selectedCombo, projectInstance
@@ -351,7 +371,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 groupLayers = []
                 if item.checkState(0) != Qt.Checked:
                     continue
-                for layer in item.layers:
+                for j in xrange(item.childCount()):
+                    child = item.child(j)
+                    layer = child.layer()
                     groupLayers.append(layer)
                     layers.append(layer)
                     popup.append(utils.NO_POPUP)
@@ -387,9 +409,8 @@ class TreeGroupItem(QTreeWidgetItem):
     groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "group.gif"))
 
-    def __init__(self, name, layers, tree):
+    def __init__(self, name, tree):
         QTreeWidgetItem.__init__(self)
-        self.layers = layers
         self.name = name
         self.setText(0, name)
         self.setIcon(0, self.groupIcon)
