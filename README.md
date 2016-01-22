@@ -140,7 +140,8 @@ is wasted in bug reporting, please follow these steps:</p>
         <li>the qgis2web version (or make it clear you are using Github master
             branch)</li>
         <li>any Python error text/stack trace which occurs</li>
-        <li>browser JS console errors</li>
+        <li>browser JS console errors - press F12 in qgis2web to open the 
+            developer toolbar and find the console</li>
         <li>screenshot of your settings</li>
         <li>screenshot of the output</li>
         <li>a link to the data you used, if possible</li>
