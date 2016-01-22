@@ -79,7 +79,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.filter = devToggleFilter()
         self.installEventFilter(self.filter)
 
-
     def changeFormat(self):
         global projectInstance
         projectInstance.writeEntry("qgis2web", "mapFormat",
