@@ -68,7 +68,7 @@ def writeOL(iface, layers, groups, popup, visible,
             if (typeof this !== 'function') {
               // closest thing possible to the ECMAScript 5
               // internal IsCallable function
-              throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+              throw new TypeError('Function#bind - not callable');
             }
 
             var aArgs   = Array.prototype.slice.call(arguments, 1),
@@ -83,7 +83,7 @@ def writeOL(iface, layers, groups, popup, visible,
 
             if (this.prototype) {
               // native functions don't have a prototype
-              fNOP.prototype = this.prototype; 
+              fNOP.prototype = this.prototype;
             }
             fBound.prototype = new fNOP();
 
