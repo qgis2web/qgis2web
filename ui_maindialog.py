@@ -145,6 +145,8 @@ class Ui_MainDialog(object):
         self.preview.setSizePolicy(sizePolicy)
         self.preview.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.preview.setObjectName(_fromUtf8("preview"))
+        self.preview.settings().setAttribute(
+            QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         self.verticalLayout_2.addWidget(self.preview)
         self.basemaps = QtGui.QListWidget(self.verticalLayoutWidget_2)
         self.basemaps.setObjectName(_fromUtf8("basemaps"))
