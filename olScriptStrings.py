@@ -35,6 +35,7 @@ measureControl = function(opt_options) {
 ol.inherits(measureControl, ol.control.Control);"""
     return measureControl
 
+
 def measuringScript():
     measuring = """
  if (evt.dragging) {
@@ -56,6 +57,7 @@ def measuringScript():
       helpTooltip.setPosition(evt.coordinate);
   document.getElementById('helpTooltipElement').removeClass('hidden');"""
     return measuring
+
 
 def measureScript():
     measure = """
@@ -228,6 +230,7 @@ var formatLength = function(line) {
 
 addInteraction();"""
     return measure
+
 
 def measureStyleScript():
     measureStyle = """
