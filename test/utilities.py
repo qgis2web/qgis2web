@@ -1,8 +1,13 @@
 # coding=utf-8
 """Common functionality used by regression tests."""
 
+import os
 import sys
 import logging
+import urlparse
+
+from qgis.core import QgsVectorLayer, QgsRasterLayer
+
 
 LOGGER = logging.getLogger('QGIS')
 QGIS_APP = None  # Static variable used to hold hand to running QGIS app
@@ -54,6 +59,80 @@ def get_qgis_app():
         # QgisInterface is a stub implementation of the QGIS plugin interface
         # noinspection PyPep8Naming
         IFACE = QgisInterface(CANVAS)
-        a = 'tes'
 
     return QGIS_APP, CANVAS, IFACE, PARENT
+
+
+def test_data_path(*args):
+    """Return the absolute path to the test data or directory path.
+
+    :param args: List of path.
+    :type args: list
+
+    :return: Absolute path to the test data or dir path.
+    :rtype: str
+
+    """
+    path = os.path.dirname(__file__)
+    path = os.path.abspath(os.path.join(path, 'data'))
+    for item in args:
+        path = os.path.abspath(os.path.join(path, item))
+
+    return path
+
+
+def load_layer(layer_path):
+    """Helper to load and return a single QGIS layer.
+
+    :param layer_path: Path name to raster or vector file.
+    :type layer_path: str
+
+    :returns: Layer instance.
+    :rtype: QgsMapLayer
+    """
+    # Extract basename and absolute path
+    file_name = os.path.split(layer_path)[-1]  # In case path was absolute
+    base_name, extension = os.path.splitext(file_name)
+
+    # Create QGis Layer Instance
+    if extension in ['.asc', '.tif']:
+        layer = QgsRasterLayer(layer_path, base_name)
+    elif extension in ['.shp']:
+        layer = QgsVectorLayer(layer_path, base_name, 'ogr')
+    else:
+        message = 'File %s had illegal extension' % layer_path
+        raise Exception(message)
+
+    # noinspection PyUnresolvedReferences
+    message = 'Layer "%s" is not valid' % layer.source()
+    # noinspection PyUnresolvedReferences
+    if not layer.isValid():
+        print message
+    # noinspection PyUnresolvedReferences
+    if not layer.isValid():
+        raise Exception(message)
+    return layer
+
+
+def load_wfs_layer(url, name):
+    """Helper to load wfs layer and load it as QGIS layer.
+
+    :param url: The complete URL to the WFS layer.
+    :type url: str
+
+    :param name: The layer name.
+    :type name: str
+
+    :returns: Layer instance.
+    :rtype: QgsMapLayer
+    """
+    layer = QgsVectorLayer(url, name, 'WFS')
+    # noinspection PyUnresolvedReferences
+    message = 'Layer "%s" is not valid' % layer.source()
+    # noinspection PyUnresolvedReferences
+    if not layer.isValid():
+        print message
+    # noinspection PyUnresolvedReferences
+    if not layer.isValid():
+        raise Exception(message)
+    return layer

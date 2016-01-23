@@ -22,11 +22,12 @@ from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QDialogButtonBox, QDialog
-from utilities import get_qgis_app
+
+from maindialog import MainDialog
+from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
-from maindialog import MainDialog
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test most common plugin actions"""
@@ -92,543 +93,807 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_json_pnt_single(self):
         """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'point.shp')
+        style_path = test_data_path('style', 'point_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_json_point_single.html'), 'r')
+        control_output = control_file.read()
+
+        # Export to web map
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
 
     def test10_Leaflet_wfs_pnt_single(self):
         """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:27700", "point", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
+                     ':dnpa-tpo-point&SRSNAME=EPSG:27700')
+        layer_style = test_data_path('style', 'point_single.qml')
+        layer = load_wfs_layer(layer_url, 'point')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_point_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(
+                test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test11_Leaflet_json_line_single(self):
         """Leaflet JSON line single (test_qgis2web_dialog.test_Leaflet_json_line_single)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'line.shp')
+        style_path = test_data_path('style', 'line_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(
+                test_data_path('control', 'leaflet_json_line_single.html'), 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test12_Leaflet_wfs_line_single(self):
         """Leaflet WFS line single (test_qgis2web_dialog.test_Leaflet_wfs_line_single)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:27700", "line", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
+                     ':27700')
+        layer_style = test_data_path('style', 'line_single.qml')
+        layer = load_wfs_layer(layer_url, 'line')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_line_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(
+                test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
+        control_output = control_file.read()
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test13_Leaflet_json_poly_single(self):
         """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'polygon.shp')
+        style_path = test_data_path('style', 'polygon_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_polygon_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_json_polygon_single.html'), 'r')
+        control_output = control_file.read()
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test14_Leaflet_wfs_poly_single(self):
         """Leaflet WFS polygon single (test_qgis2web_dialog.test_Leaflet_wfs_poly_single)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:27700", "polygon", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
+                     ':27700')
+        layer_style = test_data_path('style', 'polygon_single.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_polygon_single.html')
+        layer = load_wfs_layer(layer_url, 'polygon')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_polygon_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        control_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        control_output = control_file.read()
+        self.assertEqual(control_output, control_output)
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'point.shp')
+        style_path = test_data_path('style', 'json_point_categorized.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_json_point_categorized.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(self.dialog.preview.url().toString().replace("file://",""))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test16_Leaflet_wfs_pnt_categorized(self):
         """Leaflet WFS point categorized (test_qgis2web_dialog.test_Leaflet_wfs_pnt_categorized)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:27700", "point", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
+                     ':dnpa-tpo-point&SRSNAME=EPSG:27700')
+        layer_style = test_data_path('style', 'wfs_point_categorized.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_point_categorized.html')
+        layer = load_wfs_layer(layer_url, 'point')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_point_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_point_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+        test_file = open(self.dialog.preview.url().toString().replace("file://",""))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test17_Leaflet_json_line_categorized(self):
         """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'line.shp')
+        style_path = test_data_path('style', 'json_line_categorized.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_json_line_categorized.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test18_Leaflet_wfs_line_categorized(self):
         """Leaflet WFS line categorized (test_qgis2web_dialog.test_Leaflet_wfs_line_categorized)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:27700", "line", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
+                     ':27700')
+        layer_style = test_data_path('style', 'wfs_line_categorized.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_line_categorized.html')
+        layer = load_wfs_layer(layer_url, 'line')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_line_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test19_Leaflet_json_poly_categorized(self):
         """Leaflet JSON polygon categorized (test_qgis2web_dialog.test_Leaflet_json_poly_categorized)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'polygon.shp')
+        style_path = test_data_path('style', 'json_polygon_categorized.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_json_polygon_categorized.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_polygon_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test20_Leaflet_wfs_poly_categorized(self):
         """Leaflet WFS polygon categorized (test_qgis2web_dialog.test_Leaflet_wfs_poly_categorized)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:27700", "polygon", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
+                     ':27700')
+        layer_style = test_data_path('style', 'wfs_polygon_categorized.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_polygon_categorized.html')
+        layer = load_wfs_layer(layer_url, 'polygon')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_polygon_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_polygon_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Leaflet JSON point graduated (test_qgis2web_dialog.test_Leaflet_json_pnt_graduated)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'point.shp')
+        style_path = test_data_path('style', 'json_point_graduated.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_json_point_graduated.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_point_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test22_Leaflet_wfs_pnt_graduated(self):
         """Leaflet WFS point graduated (test_qgis2web_dialog.test_Leaflet_wfs_pnt_graduated)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:27700", "point", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
+                     ':dnpa-tpo-point&SRSNAME=EPSG:27700')
+        layer_style = test_data_path('style', 'wfs_point_graduated.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_point_graduated.html')
+        layer = load_wfs_layer(layer_url, 'point')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_point_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_point_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test23_Leaflet_json_line_graduated(self):
         """Leaflet JSON line graduated (test_qgis2web_dialog.test_Leaflet_json_line_graduated)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'line.shp')
+        layer_style = test_data_path('style', 'json_line_graduated.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_json_line_graduated.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_line_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(self.dialog.preview.url().toString().replace(
+                "file://",""))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test24_Leaflet_wfs_line_graduated(self):
         """Leaflet WFS line graduated (test_qgis2web_dialog.test_Leaflet_wfs_line_graduated)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:27700", "line", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
+                     ':27700')
+        layer_style = test_data_path('style', 'wfs_line_graduated.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_line_graduated.html')
+        layer = load_wfs_layer(layer_url, 'line')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_line_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_line_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(self.dialog.preview.url().toString().replace(
+                "file://", ""))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test25_Leaflet_json_poly_graduated(self):
         """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'polygon.shp')
+        layer_style = test_data_path('style', 'json_polygon_graduated.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_json_polygon_graduated.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_json_polygon_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(self.dialog.preview.url().toString().replace(
+                "file://", ""))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test26_Leaflet_wfs_poly_graduated(self):
         """Leaflet WFS polygon graduated (test_qgis2web_dialog.test_Leaflet_wfs_poly_graduated)"""
-        layer = QgsVectorLayer("http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:27700", "polygon", "WFS")
-        if not layer:
-            print "Layer failed to load!"
+        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
+                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
+                     ':27700')
+        layer_style = test_data_path('style', 'wfs_polygon_graduated.qml')
+        control_path = test_data_path(
+                'control', 'leaflet_wfs_polygon_graduated.html')
+        layer = load_wfs_layer(layer_url, 'polygon')
+        layer.loadNamedStyle(layer_style)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/wfs_polygon_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/leaflet_wfs_polygon_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(self.dialog.preview.url().toString().replace(
+                "file://", ""))
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test27_OL3_pnt_single(self):
         """OL3 point single (test_qgis2web_dialog.test_OL3_pnt_single)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'point.shp')
+        style_path = test_data_path('style', 'point_single.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_point_single.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/point_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_point_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/point_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test28_OL3_line_single(self):
         """OL3 line single (test_qgis2web_dialog.test_OL3_line_single)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'line.shp')
+        style_path = test_data_path('style', 'line_single.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_line_single.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/line_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_line_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/line_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/line_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test29_OL3_poly_single(self):
         """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'polygon.shp')
+        style_path = test_data_path('style', 'polygon_single.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_polygon_single.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/polygon_single.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_polygon_single.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/polygon_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/polygon_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test30_OL3_pnt_categorized(self):
         """OL3 point categorized (test_qgis2web_dialog.test_OL3_pnt_categorized)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'point.shp')
+        style_path = test_data_path('style', 'json_point_categorized.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_point_categorized.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_point_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        "Extent", (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/point_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test31_OL3_line_categorized(self):
         """OL3 line categorized (test_qgis2web_dialog.test_OL3_line_categorized)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'line.shp')
+        style_path = test_data_path('style', 'json_line_categorized.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_line_categorized.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_line_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/line_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/line_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test32_OL3_poly_categorized(self):
         """OL3 polygon categorized (test_qgis2web_dialog.test_OL3_poly_categorized)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'polygon.shp')
+        style_path = test_data_path('style', 'json_polygon_categorized.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_polygon_categorized.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_categorized.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_polygon_categorized.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/polygon_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/polygon_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test33_OL3_pnt_graduated(self):
         """OL3 point graduated (test_qgis2web_dialog.test_OL3_pnt_graduated)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/point.shp", "point", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'point.shp')
+        style_path = test_data_path('style', 'json_point_graduated.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_point_graduated.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_point_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_point_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/point_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/point_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test34_OL3_line_graduated(self):
         """OL3 line graduated (test_qgis2web_dialog.test_OL3_line_graduated)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/line.shp", "line", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'line.shp')
+        style_path = test_data_path('style', 'json_line_graduated.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_line_graduated.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_line_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_line_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/line_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/line_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
     def test35_OL3_poly_graduated(self):
         """OL3 polygon graduated (test_qgis2web_dialog.test_OL3_poly_graduated)"""
-        layer = QgsVectorLayer("/home/travis/build/tomchadwin/qgis2web/test_data/polygon.shp", "polygon", "ogr")
-        if not layer:
-            print "Layer failed to load!"
+        layer_path = test_data_path('layer', 'polygon.shp')
+        style_path = test_data_path('style', 'json_polygon_graduated.qml')
+        control_path = test_data_path(
+                'control', 'ol3_json_polygon_graduated.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        layer.loadNamedStyle("/home/travis/build/tomchadwin/qgis2web/test_data/json_polygon_graduated.qml")
-        referenceFile = open('/home/travis/build/tomchadwin/qgis2web/test_data/ol3_json_polygon_graduated.html', 'r')
-        referenceOutput = referenceFile.read()
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.dialog.ol3.click()
-        testFile = open(self.dialog.preview.url().toString().replace("file://",""))
-        testOutput = testFile.read()
-        testStyleFile = open(self.dialog.preview.url().toString().replace("file://","").replace("index.html", "styles/polygon_style.js"))
-        testStyleOutput = testStyleFile.read()
-        testOutput += testStyleOutput
-        self.assertEqual(testOutput, referenceOutput)
+
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        test_style_file = open(
+                self.dialog.preview.url().toString().replace(
+                        'file://', '').replace(
+                        'index.html', 'styles/polygon_style.js'))
+        test_style_output = test_style_file.read()
+        test_output += test_style_output
+        self.assertEqual(test_output, control_output)
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
