@@ -61,7 +61,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateBasemaps()
         self.selectMapFormat()
         self.toggleOptions()
-        self.preview.setPage(WebPage())
         self.previewMap()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.paramsTreeOL.itemChanged.connect(self.saveSettings)
@@ -72,6 +71,13 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.helpField.setSource(QUrl.fromLocalFile(os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             "README.md")))
+        self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
+        self.devConsole.setFixedHeight(0)
+        self.devConsole.setObjectName("devConsole")
+        self.devConsole.setPage(self.preview.page())
+        self.verticalLayout_2.insertWidget(1, self.devConsole)
+        self.filter = devToggleFilter()
+        self.installEventFilter(self.filter)
 
     def changeFormat(self):
         global projectInstance
@@ -382,6 +388,21 @@ class MainDialog(QDialog, Ui_MainDialog):
         event.accept()
 
 
+class devToggleFilter(QObject):
+    devToggle = pyqtSignal()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress:
+            if event.key() == Qt.Key_F12:
+                self.devToggle.emit()
+                if obj.devConsole.height() != 0:
+                    obj.devConsole.setFixedHeight(0)
+                else:
+                    obj.devConsole.setFixedHeight(168)
+                return True
+        return False
+
+
 class TreeGroupItem(QTreeWidgetItem):
 
     groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
@@ -554,19 +575,3 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.combo.currentText()
         else:
             return self.text(1)
-
-
-class WebPage(QWebPage):
-    """
-    Makes it possible to use a Python logger to print javascript
-    console messages
-    """
-    def __init__(self, logger=None, parent=None):
-        super(WebPage, self).__init__(parent)
-        if not logger:
-            logger = logging
-        self.logger = logger
-
-    def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        self.logger.warning("JS " + sourceID + ":" +
-                            unicode(lineNumber) + "\n" + msg)
