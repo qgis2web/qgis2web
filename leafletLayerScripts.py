@@ -139,14 +139,14 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
     new_src += """
 """ + new_obj
     new_src += """
-bounds_group.addLayer(json_""" + safeLayerName + """JSON);"""
+        bounds_group.addLayer(json_""" + safeLayerName + """JSON);"""
     if visible[count]:
         if cluster[count] is False:
             new_src += """
-feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
+        feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
         else:
             new_src += """
-cluster_group""" + safeLayerName + """JSON.addTo(map);"""
+        cluster_group""" + safeLayerName + """JSON.addTo(map);"""
     return new_src, legends, wfsLayers
 
 
