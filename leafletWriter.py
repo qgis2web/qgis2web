@@ -20,7 +20,6 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QSize
 from qgis.core import *
 import qgis.utils
 import os
@@ -250,15 +249,3 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
     writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
                    matchCRS, canvas, mapLibLocation, new_src, template)
     return outputIndex
-
-
-def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
-    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                           QSize(16, 16))
-    safeLabel = re.sub('[\W_]+', '', catr.label())
-    legendIcon.save(os.path.join(outputProjectFileName, "legend",
-                                 layerName + "_" + safeLabel + ".png"))
-    catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-    catLegend += layerName + "_" + safeLabel + """.png" /> """
-    catLegend += catr.label() + "<br />"
-    return catLegend

@@ -1,5 +1,8 @@
+import re
 import os
 import shutil
+from PyQt4.QtCore import QSize
+from qgis.core import *
 from utils import scaleToZoom
 from basemaps import basemapLeaflet, basemapAttributions
 
@@ -212,6 +215,18 @@ def svgScript(safeLayerName, symbolLayer, outputFolder, labeltext):
                      size=symbolLayer.size() * 3.8,
                      labeltext=labeltext)
     return svg
+
+
+def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
+    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                           QSize(16, 16))
+    safeLabel = re.sub('[\W_]+', '', catr.label())
+    legendIcon.save(os.path.join(outputProjectFileName, "legend",
+                                 layerName + "_" + safeLabel + ".png"))
+    catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
+    catLegend += layerName + "_" + safeLabel + """.png" /> """
+    catLegend += catr.label() + "<br />"
+    return catLegend
 
 
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
