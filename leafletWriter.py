@@ -33,7 +33,7 @@ from basemaps import basemapLeaflet, basemapAttributions
 from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *
-from utils import ALL_ATTRIBUTES, removeSpaces, writeTmpLayer, getUsedFields
+from utils import ALL_ATTRIBUTES, removeSpaces, getUsedFields
 
 
 def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
@@ -63,6 +63,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
     highlight = params["Appearance"]["Highlight features"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
+    precision = params["Data export"]["Precision"]
 
     if not cleanUnusedFields:
         usedFields = [ALL_ATTRIBUTES] * len(popup)
@@ -90,26 +91,9 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
         if i.providerType() != 'WFS' or jsonEncode is True and i:
-            precision = params["Data export"]["Precision"]
             if i.type() == QgsMapLayer.VectorLayer:
-                cleanedLayer = writeTmpLayer(i, eachPopup)
-                writer = qgis.core.QgsVectorFileWriter
-                options = "COORDINATE_PRECISION=" + unicode(precision)
-                writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8',
-                                           exp_crs, 'GeoJson', 0,
-                                           layerOptions=[options])
-
-                with open(layerFileName, "w") as f2:
-                    f2.write("var json_" + unicode(safeLayerName) + "=")
-                    with open(tmpFileName, "r") as tmpFile:
-                        for line in tmpFile:
-                            if minify:
-                                line = line.strip("\n\t ")
-                                line = removeSpaces(line)
-                            f2.write(line)
-                    os.remove(tmpFileName)
-                    f2.close
-
+                writeJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
+                               layerFileName, safeLayerName, minify)
                 new_src += jsonScript(safeLayerName)
 
             elif i.type() == QgsMapLayer.RasterLayer:

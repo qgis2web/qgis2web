@@ -1,4 +1,28 @@
 import re
+import os
+from qgis.core import *
+from utils import writeTmpLayer
+
+
+def writeJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
+                   layerFileName, safeLayerName, minify):
+    cleanedLayer = writeTmpLayer(i, eachPopup)
+    writer = QgsVectorFileWriter
+    options = "COORDINATE_PRECISION=" + unicode(precision)
+    writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8',
+                               exp_crs, 'GeoJson', 0,
+                               layerOptions=[options])
+
+    with open(layerFileName, "w") as f2:
+        f2.write("var json_" + unicode(safeLayerName) + "=")
+        with open(tmpFileName, "r") as tmpFile:
+            for line in tmpFile:
+                if minify:
+                    line = line.strip("\n\t ")
+                    line = removeSpaces(line)
+                f2.write(line)
+        os.remove(tmpFileName)
+        f2.close
 
 
 def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
