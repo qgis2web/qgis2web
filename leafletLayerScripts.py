@@ -35,29 +35,23 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     name_ts = safeLayerName + unicode(time.time())
     pipelayer = i
     pipeextent = pipelayer.extent()
-    pipewidth, pipeheight = (pipelayer.width(),
-                             pipelayer.height())
+    pipewidth, pipeheight = (pipelayer.width(), pipelayer.height())
     piperenderer = pipelayer.renderer()
     pipeprovider = pipelayer.dataProvider()
     crs = pipelayer.crs().toWkt()
     pipe = QgsRasterPipe()
     pipe.set(pipeprovider.clone())
     pipe.set(piperenderer.clone())
-    pipedFile = os.path.join(tempfile.gettempdir(),
-                             name_ts + '_pipe.tif')
+    pipedFile = os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif')
     print "pipedFile: " + pipedFile
     file_writer = QgsRasterFileWriter(pipedFile)
-    file_writer.writeRaster(pipe,
-                            pipewidth,
-                            pipeheight,
-                            pipeextent,
-                            pipelayer.crs())
+    file_writer.writeRaster(pipe, pipewidth, pipeheight,
+                            pipeextent, pipelayer.crs())
 
     in_raster = pipedFile
     print "in_raster: " + in_raster
     prov_raster = os.path.join(tempfile.gettempdir(),
-                               'json_' + name_ts +
-                               '_prov.tif')
+                               'json_' + name_ts + '_prov.tif')
     print "prov_raster: " + prov_raster
     out_raster = dataPath + '.png'
     print "out_raster: " + out_raster
@@ -69,21 +63,18 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                              unicode(extentRep.xMaximum()),
                              unicode(extentRep.yMinimum()),
                              unicode(extentRep.yMaximum())])
-    processing.runalg("gdalogr:warpreproject", in_raster,
-                      i.crs().authid(), "EPSG:4326", "", 0, 1,
-                      5, 2, 75, 6, 1, False, 0, False, "",
-                      prov_raster)
+    processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(),
+                      "EPSG:4326", "", 0, 1, 5, 2, 75, 6, 1, False, 0, False,
+                      "", prov_raster)
     del in_raster
     del pipedFile
-    os.remove(os.path.join(tempfile.gettempdir(),
-                           name_ts + '_pipe.tif'))
-    processing.runalg("gdalogr:translate", prov_raster, 100,
-                      True, "", 0, "", extentRepNew, False, 0,
-                      0, 75, 6, 1, False, 0, False, "",
+    # os.remove(os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif'))
+    processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "",
+                      extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "",
                       out_raster)
     del prov_raster
-    os.remove(os.path.join(tempfile.gettempdir(),
-                           'json_' + name_ts + '_prov.tif'))
+    # os.remove(os.path.join(tempfile.gettempdir(),
+    #                        'json_' + name_ts + '_prov.tif'))
 
 
 def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,

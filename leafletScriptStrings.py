@@ -661,8 +661,8 @@ def wmsScript(i, safeLayerName, wms_url, wms_layer, wms_format):
     return wms
 
 
-def rasterScript(i, safeLayerName, out_raster, bounds):
-    out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
+def rasterScript(i, safeLayerName):
+    out_raster = 'data/' + 'json_' + safeLayerName + '.png'
     pt2 = i.extent()
     crsSrc = i.crs()
     crsDest = QgsCoordinateReferenceSystem(4326)
@@ -670,10 +670,10 @@ def rasterScript(i, safeLayerName, out_raster, bounds):
     pt3 = xform.transform(pt2)
     bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
                     pt3.xMinimum(), pt3.xMaximum()]
-    bounds2 = '[[' + unicode(pt3.yMinimum()) + ','
-    bounds2 += unicode(pt3.xMinimum()) + '],['
-    bounds2 += unicode(pt3.yMaximum()) + ','
-    bounds2 += unicode(pt3.xMaximum()) + ']]'
+    bounds = '[[' + unicode(pt3.yMinimum()) + ','
+    bounds += unicode(pt3.xMinimum()) + '],['
+    bounds += unicode(pt3.yMaximum()) + ','
+    bounds += unicode(pt3.xMaximum()) + ']]'
     raster = """
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};
@@ -703,6 +703,60 @@ def titleSubScript(webmap_head):
     return titleSub
 
 
+def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
+    if len(basemapList) == 0 or matchCRS:
+        controlStart = """
+    var baseMaps = {};"""
+    else:
+        comma = ""
+        controlStart = """
+    var baseMaps = {"""
+        for count, basemap in enumerate(basemapList):
+            controlStart += comma + "'" + unicode(basemap.text())
+            controlStart += "': basemap" + unicode(count)
+            comma = ", "
+        controlStart += "};"
+    if len(basemapList) == 0:
+        controlStart += """
+        L.control.layers({},{"""
+    else:
+        controlStart += """
+        L.control.layers(baseMaps,{"""
+    layersList = controlStart
+
+    for i, clustered in zip(reversed(layer_list), reversed(cluster)):
+        try:
+            testDump = i.rendererV2().dump()
+            rawLayerName = i.name()
+            safeLayerName = re.sub('[\W_]+', '', rawLayerName)
+            if i.type() == QgsMapLayer.VectorLayer:
+                if (clustered and
+                        i.geometryType() == QGis.Point):
+                    new_layer = "'" + legends[safeLayerName] + "'"
+                    + ": cluster_group""" + safeLayerName + "JSON,"
+                else:
+                    new_layer = "'" + legends[safeLayerName] + "':"
+                    new_layer += " json_" + safeLayerName + "JSON,"
+                layersList += new_layer
+            elif i.type() == QgsMapLayer.RasterLayer:
+                new_layer = '"' + rawLayerName + '"' + ": overlay_"
+                new_layer += safeLayerName + ""","""
+                layersList += new_layer
+        except:
+            pass
+    controlEnd = "},{collapsed:false}).addTo(map);"
+    layersList += controlEnd
+    return layersList
+
+
+def scaleBar():
+        scaleBar = """
+        L.control.scale({options: {position: 'bottomleft', """
+        scaleBar += "maxWidth: 100, metric: true, imperial: false, "
+        scaleBar += "updateWhenIdle: false}}).addTo(map);"
+        return scaleBar
+
+        
 def addressSearchScript():
     addressSearch = """
         var osmGeocoder = new L.Control.OSMGeocoder({

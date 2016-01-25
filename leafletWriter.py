@@ -157,8 +157,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
                 new_obj = wmsScript(i, safeLayerName, wms_url,
                                     wms_layer, wms_format)
             else:
-                new_obj = rasterScript(i, safeLayerName, out_raster_name,
-                                       bounds2)
+                new_obj = rasterScript(i, safeLayerName)
             if visible[count]:
                 new_obj += """
         raster_group.addLayer(overlay_""" + safeLayerName + """);"""
@@ -175,59 +174,14 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
         new_src += address_text
 
     if params["Appearance"]["Add layers list"]:
-        if len(basemapList) == 0 or matchCRS:
-            controlStart = """
-        var baseMaps = {};"""
-        else:
-            comma = ""
-            controlStart = """
-        var baseMaps = {"""
-            for count, basemap in enumerate(basemapList):
-                controlStart += comma + "'" + unicode(basemap.text())
-                controlStart += "': basemap" + unicode(count)
-                comma = ", "
-            controlStart += "};"
-        if len(basemapList) == 0:
-            controlStart += """
-            L.control.layers({},{"""
-        else:
-            controlStart += """
-            L.control.layers(baseMaps,{"""
-        new_src += controlStart
-
-        for i, clustered in zip(reversed(layer_list), reversed(cluster)):
-            try:
-                testDump = i.rendererV2().dump()
-                rawLayerName = i.name()
-                safeLayerName = re.sub('[\W_]+', '', rawLayerName)
-                if i.type() == QgsMapLayer.VectorLayer:
-                    if (clustered and
-                            i.geometryType() == QGis.Point):
-                        new_layer = "'" + legends[safeLayerName] + "'"
-                        + ": cluster_group""" + safeLayerName + "JSON,"
-                    else:
-                        new_layer = "'" + legends[safeLayerName] + "':"
-                        new_layer += " json_" + safeLayerName + "JSON,"
-                    new_src += new_layer
-                elif i.type() == QgsMapLayer.RasterLayer:
-                    new_layer = '"' + rawLayerName + '"' + ": overlay_"
-                    new_layer += safeLayerName + ""","""
-                    new_src += new_layer
-            except:
-                pass
-        controlEnd = "},{collapsed:false}).addTo(map);"
-
-        new_src += controlEnd
-
+        new_src += addLayersList(basemapList, matchCRS, layer_list,
+                                 cluster, legends)
     if locate:
         end = locateScript()
     else:
         end = ''
     if params["Appearance"]["Add scale bar"]:
-        end += """
-        L.control.scale({options: {position: 'bottomleft', """
-        end += "maxWidth: 100, metric: true, imperial: false, "
-        end += "updateWhenIdle: false}}).addTo(map);"
+        end += scaleBar()
     end += endHTMLscript(wfsLayers)
     new_src += end
     writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
