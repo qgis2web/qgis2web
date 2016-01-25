@@ -756,7 +756,7 @@ def scaleBar():
         scaleBar += "updateWhenIdle: false}}).addTo(map);"
         return scaleBar
 
-        
+
 def addressSearchScript():
     addressSearch = """
         var osmGeocoder = new L.Control.OSMGeocoder({
