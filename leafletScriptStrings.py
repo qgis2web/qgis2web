@@ -644,7 +644,12 @@ def endGraduatedStyleScript():
     return endGraduatedStyle
 
 
-def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
+def wmsScript(i, safeLayerName, wms_url, wms_layer, wms_format):
+    d = parse_qs(i.source())
+    wms_url = d['url'][0]
+    wms_layer = d['layers'][0]
+    wms_format = d['format'][0]
+    wms_crs = d['crs'][0]
     wms = """
     var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
         layers: '{wms_layer}',
@@ -656,7 +661,19 @@ def wmsScript(safeLayerName, wms_url, wms_layer, wms_format):
     return wms
 
 
-def rasterScript(safeLayerName, out_raster, bounds):
+def rasterScript(i, safeLayerName, out_raster, bounds):
+    out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
+    pt2 = i.extent()
+    crsSrc = i.crs()
+    crsDest = QgsCoordinateReferenceSystem(4326)
+    xform = QgsCoordinateTransform(crsSrc, crsDest)
+    pt3 = xform.transform(pt2)
+    bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
+                    pt3.xMinimum(), pt3.xMaximum()]
+    bounds2 = '[[' + unicode(pt3.yMinimum()) + ','
+    bounds2 += unicode(pt3.xMinimum()) + '],['
+    bounds2 += unicode(pt3.yMaximum()) + ','
+    bounds2 += unicode(pt3.xMaximum()) + ']]'
     raster = """
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};

@@ -49,6 +49,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
     cleanUnusedFields = params["Data export"]["Delete unused fields"]
     mapLibLocation = params["Data export"]["Mapping library location"]
     minify = params["Data export"]["Minify GeoJSON files"]
+    precision = params["Data export"]["Precision"]
     extent = params["Scale/Zoom"]["Extent"]
     minZoom = params["Scale/Zoom"]["Min zoom level"]
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
@@ -60,7 +61,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
     highlight = params["Appearance"]["Highlight features"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
-    precision = params["Data export"]["Precision"]
 
     if not cleanUnusedFields:
         usedFields = [ALL_ATTRIBUTES] * len(popup)
@@ -154,27 +154,11 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
                                            visible, json, legends, new_src)
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
-                d = parse_qs(i.source())
-                wms_url = d['url'][0]
-                wms_layer = d['layers'][0]
-                wms_format = d['format'][0]
-                wms_crs = d['crs'][0]
-                new_obj = wmsScript(safeLayerName, wms_url,
+                new_obj = wmsScript(i, safeLayerName, wms_url,
                                     wms_layer, wms_format)
             else:
-                out_raster_name = 'data/' + 'json_' + safeLayerName + '.png'
-                pt2 = i.extent()
-                crsSrc = i.crs()
-                crsDest = QgsCoordinateReferenceSystem(4326)
-                xform = QgsCoordinateTransform(crsSrc, crsDest)
-                pt3 = xform.transform(pt2)
-                bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
-                                pt3.xMinimum(), pt3.xMaximum()]
-                bounds2 = '[[' + unicode(pt3.yMinimum()) + ','
-                bounds2 += unicode(pt3.xMinimum()) + '],['
-                bounds2 += unicode(pt3.yMaximum()) + ','
-                bounds2 += unicode(pt3.xMaximum()) + ']]'
-                new_obj = rasterScript(safeLayerName, out_raster_name, bounds2)
+                new_obj = rasterScript(i, safeLayerName, out_raster_name,
+                                       bounds2)
             if visible[count]:
                 new_obj += """
         raster_group.addLayer(overlay_""" + safeLayerName + """);"""
