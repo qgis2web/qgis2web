@@ -23,7 +23,6 @@
 from qgis.core import *
 import qgis.utils
 import os
-from urlparse import parse_qs
 import time
 import re
 from basemaps import basemapLeaflet, basemapAttributions
@@ -154,8 +153,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
                                            visible, json, legends, new_src)
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
-                new_obj = wmsScript(i, safeLayerName, wms_url,
-                                    wms_layer, wms_format)
+                new_obj = wmsScript(i, safeLayerName)
             else:
                 new_obj = rasterScript(i, safeLayerName)
             if visible[count]:

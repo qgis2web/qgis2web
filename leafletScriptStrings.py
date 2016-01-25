@@ -1,6 +1,7 @@
 import re
 import os
 import shutil
+from urlparse import parse_qs
 from PyQt4.QtCore import QSize
 from qgis.core import *
 from utils import scaleToZoom
@@ -644,7 +645,7 @@ def endGraduatedStyleScript():
     return endGraduatedStyle
 
 
-def wmsScript(i, safeLayerName, wms_url, wms_layer, wms_format):
+def wmsScript(i, safeLayerName):
     d = parse_qs(i.source())
     wms_url = d['url'][0]
     wms_layer = d['layers'][0]
