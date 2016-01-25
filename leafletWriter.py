@@ -21,13 +21,11 @@
 """
 
 from PyQt4.QtCore import QSize
-import processing
 from qgis.core import *
 import qgis.utils
 import os
 from urlparse import parse_qs
 import time
-import tempfile
 import re
 from basemaps import basemapLeaflet, basemapAttributions
 from leafletFileScripts import *
@@ -98,59 +96,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
-                    print "Raster type: " + unicode(i.rasterType())
-                    name_ts = safeLayerName + unicode(time.time())
-                    pipelayer = i
-                    pipeextent = pipelayer.extent()
-                    pipewidth, pipeheight = (pipelayer.width(),
-                                             pipelayer.height())
-                    piperenderer = pipelayer.renderer()
-                    pipeprovider = pipelayer.dataProvider()
-                    crs = pipelayer.crs().toWkt()
-                    pipe = QgsRasterPipe()
-                    pipe.set(pipeprovider.clone())
-                    pipe.set(piperenderer.clone())
-                    pipedFile = os.path.join(tempfile.gettempdir(),
-                                             name_ts + '_pipe.tif')
-                    print "pipedFile: " + pipedFile
-                    file_writer = QgsRasterFileWriter(pipedFile)
-                    file_writer.writeRaster(pipe,
-                                            pipewidth,
-                                            pipeheight,
-                                            pipeextent,
-                                            pipelayer.crs())
-
-                    in_raster = pipedFile
-                    print "in_raster: " + in_raster
-                    prov_raster = os.path.join(tempfile.gettempdir(),
-                                               'json_' + name_ts +
-                                               '_prov.tif')
-                    print "prov_raster: " + prov_raster
-                    out_raster = dataPath + '.png'
-                    print "out_raster: " + out_raster
-                    crsSrc = i.crs()
-                    crsDest = QgsCoordinateReferenceSystem(4326)
-                    xform = QgsCoordinateTransform(crsSrc, crsDest)
-                    extentRep = xform.transform(i.extent())
-                    extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                                             unicode(extentRep.xMaximum()),
-                                             unicode(extentRep.yMinimum()),
-                                             unicode(extentRep.yMaximum())])
-                    processing.runalg("gdalogr:warpreproject", in_raster,
-                                      i.crs().authid(), "EPSG:4326", "", 0, 1,
-                                      5, 2, 75, 6, 1, False, 0, False, "",
-                                      prov_raster)
-                    del in_raster
-                    del pipedFile
-                    os.remove(os.path.join(tempfile.gettempdir(),
-                                           name_ts + '_pipe.tif'))
-                    processing.runalg("gdalogr:translate", prov_raster, 100,
-                                      True, "", 0, "", extentRepNew, False, 0,
-                                      0, 75, 6, 1, False, 0, False, "",
-                                      out_raster)
-                    del prov_raster
-                    os.remove(os.path.join(tempfile.gettempdir(),
-                                           'json_' + name_ts + '_prov.tif'))
+                    writeRasterLayer(i, safeLayerName, dataPath)
         if i.hasScaleBasedVisibility():
             scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
     if scaleDependentLayers != "":
