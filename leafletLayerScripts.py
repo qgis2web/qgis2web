@@ -33,22 +33,23 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
 def exportRasterLayer(i, safeLayerName, dataPath):
     print "Raster type: " + unicode(i.rasterType())
     name_ts = safeLayerName + unicode(time.time())
-    pipelayer = i
-    pipeextent = pipelayer.extent()
-    pipewidth, pipeheight = (pipelayer.width(), pipelayer.height())
-    piperenderer = pipelayer.renderer()
-    pipeprovider = pipelayer.dataProvider()
-    crs = pipelayer.crs().toWkt()
-    pipe = QgsRasterPipe()
-    pipe.set(pipeprovider.clone())
-    pipe.set(piperenderer.clone())
-    pipedFile = os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif')
-    print "pipedFile: " + pipedFile
-    file_writer = QgsRasterFileWriter(pipedFile)
-    file_writer.writeRaster(pipe, pipewidth, pipeheight,
-                            pipeextent, pipelayer.crs())
+    # pipelayer = i
+    # pipeextent = pipelayer.extent()
+    # pipewidth, pipeheight = (pipelayer.width(), pipelayer.height())
+    # piperenderer = pipelayer.renderer()
+    # pipeprovider = pipelayer.dataProvider()
+    # crs = pipelayer.crs().toWkt()
+    # pipe = QgsRasterPipe()
+    # pipe.set(pipeprovider.clone())
+    # pipe.set(piperenderer.clone())
+    # pipedFile = os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif')
+    # print "pipedFile: " + pipedFile
+    # file_writer = QgsRasterFileWriter(pipedFile)
+    # file_writer.writeRaster(pipe, pipewidth, pipeheight,
+    #                        pipeextent, pipelayer.crs())
 
-    in_raster = pipedFile
+    # in_raster = pipedFile
+    in_raster = unicode(i.dataProvider().dataSourceUri())
     print "in_raster: " + in_raster
     prov_raster = os.path.join(tempfile.gettempdir(),
                                'json_' + name_ts + '_prov.tif')
@@ -56,7 +57,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     out_raster = dataPath + '.png'
     print "out_raster: " + out_raster
     crsSrc = i.crs()
-    crsDest = QgsCoordinateReferenceSystem(4326)
+    crsDest = QgsCoordinateReferenceSystem(3857)
     xform = QgsCoordinateTransform(crsSrc, crsDest)
     extentRep = xform.transform(i.extent())
     extentRepNew = ','.join([unicode(extentRep.xMinimum()),
@@ -64,10 +65,10 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                              unicode(extentRep.yMinimum()),
                              unicode(extentRep.yMaximum())])
     processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(),
-                      "EPSG:4326", "", 0, 1, 5, 2, 75, 6, 1, False, 0, False,
+                      "EPSG:3857", "", 0, 1, 5, 2, 75, 6, 1, False, 0, False,
                       "", prov_raster)
     del in_raster
-    del pipedFile
+    # del pipedFile
     # os.remove(os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif'))
     processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "",
                       extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "",
