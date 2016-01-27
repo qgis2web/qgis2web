@@ -610,9 +610,7 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
 
 def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
                   cluster_set, cluster_num, visible):
-    scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
-    scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
-    scriptTag += "get" + layerName + "Json"
+    scriptTag = getWFSScriptTag(layerSource, layerName)
     new_obj = pointStyleLabel + categoryStr + """
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{
@@ -671,9 +669,7 @@ def buildNonPointJSON(categoryStr, safeName, usedFields):
 
 def buildNonPointWFS(layerName, layerSource, categoryStr,
                      stylestr, visible):
-    scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
-    scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback"
-    scriptTag += "%3Aget{layerName}Json".format(layerName=layerName)
+    scriptTag = getWFSScriptTag(layerSource, layerName)
     new_obj = categoryStr + """
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{{stylestr},
@@ -695,6 +691,12 @@ def buildNonPointWFS(layerName, layerSource, categoryStr,
         };"""
     return new_obj, scriptTag
 
+
+def getWFSScriptTag(layerSource, layerName):
+    scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
+    scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
+    scriptTag += "get" + layerName + "Json"
+    return scriptTag
 
 def stackLayers(layerName, visible):
     if visible:
