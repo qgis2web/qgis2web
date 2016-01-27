@@ -276,12 +276,12 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
 def singleLine(symbol, colorName, fill_opacity, i, json, safeLayerName,
                wfsLayers, visible, usedFields, count):
     radius = symbol.width()
+    sl = symbol.symbolLayer(0)
     try:
         (penStyle,
          capString,
-         joinString) = getLineStyle(symbol.symbolLayer(0).penStyle(), radius,
-                                    symbol.symbolLayer(0).penCapStyle(),
-                                    symbol.symbolLayer(0).penJoinStyle())
+         joinString) = getLineStyle(sl.penStyle(), radius, sl.penCapStyle(),
+                                    sl.penJoinStyle())
     except:
         penStyle = ""
     lineStyle = simpleLineStyleScript(radius, colorName, penStyle, capString,
