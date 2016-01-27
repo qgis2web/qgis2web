@@ -216,7 +216,7 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers, i,
     elif i.geometryType() == QGis.Line:
         new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, i,
                                         json, safeLayerName, wfsLayers,
-                                        popFuncs, visible, usedFields, count)
+                                        visible, usedFields, count)
     elif i.geometryType() == QGis.Polygon:
         new_obj, wfsLayers = singlePolygon(i, safeLayerName, symbol,
                                            symbolLayer, colorName,
@@ -274,7 +274,7 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
 
 
 def singleLine(symbol, colorName, fill_opacity, i, json, safeLayerName,
-               wfsLayers, popFuncs, visible, usedFields, count):
+               wfsLayers, visible, usedFields, count):
     radius = symbol.width()
     try:
         (penStyle,
