@@ -81,7 +81,7 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                      popup, count, outputProjectFileName, wfsLayers, cluster,
                      cluster_num, visible, json, legends, new_src):
     (new_pop, labeltext,
-     popFuncs) = labelsAndPopups(i, safeLayerName,usedFields, highlight,
+     popFuncs) = labelsAndPopups(i, safeLayerName, usedFields, highlight,
                                  popupsOnHover, popup, count)
     renderer = i.rendererV2()
     layer_transp = 1 - (float(i.layerTransparency()) / 100)

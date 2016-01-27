@@ -126,8 +126,7 @@ def basemapsScript(basemapList, maxZoom):
             attribution: additional_attrib + ' {attribution}',
             maxZoom: {maxZoom}
         }});
-        basemap{count}.addTo(map);""".format(count=count,
-                                             basemap=bmText,
+        basemap{count}.addTo(map);""".format(count=count, basemap=bmText,
                                              attribution=bmAttr,
                                              maxZoom=maxZoom)
     return basemaps
@@ -213,8 +212,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder, labeltext):
             return L.marker(latlng, doStyle{safeLayerName}()){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8,
-                     labeltext=labeltext)
+                     size=symbolLayer.size() * 3.8, labeltext=labeltext)
     return svg
 
 
@@ -231,8 +229,8 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 
 
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
-                          colorName, borderColor, borderOpacity,
-                          opacity, labeltext):
+                          colorName, borderColor, borderOpacity, opacity,
+                          labeltext):
     (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
                                                       0, 0)
     pointStyleLabel = """
@@ -256,8 +254,8 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                      borderWidth=borderWidth * 4,
                      borderOpacity=borderOpacity if borderStyle != 0 else 0,
                      dashArray=dashArray, capString=capString,
-                     joinString=joinString,
-                     opacity=opacity, labeltext=labeltext)
+                     joinString=joinString, opacity=opacity,
+                     labeltext=labeltext)
     return pointStyleLabel
 
 
@@ -340,8 +338,8 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
     return styleValues
 
 
-def simpleLineStyleScript(radius, colorName, penStyle, capString,
-                          joinString, opacity):
+def simpleLineStyleScript(radius, colorName, penStyle, capString, joinString,
+                          opacity):
     lineStyle = """
             return {{
                 weight: {radius},
@@ -459,11 +457,10 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
 
 
 def categorizedLineStylesScript(symbol, opacity):
+    sl = symbol.symbolLayer(0)
     (dashArray, capString,
-     joinString) = getLineStyle(symbol.symbolLayer(0).penStyle(),
-                                symbol.width(),
-                                symbol.symbolLayer(0).penCapStyle(),
-                                symbol.symbolLayer(0).penJoinStyle())
+     joinString) = getLineStyle(sl.penStyle(), symbol.width(),
+                                sl.penCapStyle(), sl.penJoinStyle())
     categorizedLineStyles = """
                     color: '{color}',
                     weight: '{weight}',
@@ -473,11 +470,8 @@ def categorizedLineStylesScript(symbol, opacity):
                     opacity: '{opacity}',
                 }};
                 break;
-""".format(color=symbol.color().name(),
-           weight=symbol.width() * 4,
-           dashArray=dashArray,
-           capString=capString,
-           joinString=joinString,
+""".format(color=symbol.color().name(), weight=symbol.width() * 4,
+           dashArray=dashArray, capString=capString, joinString=joinString,
            opacity=opacity)
     return categorizedLineStyles
 
@@ -491,26 +485,24 @@ def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
 
 
 def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
-    symbolLayer = symbol.symbolLayer(0)
+    sl = symbol.symbolLayer(0)
     try:
-        capStyle = symbolLayer.penCapStyle()
-        joinStyle = symbolLayer.penJoinStyle()
+        capStyle = sl.penCapStyle()
+        joinStyle = sl.penJoinStyle()
     except:
         capStyle = 0
         joinStyle = 0
     (dashArray, capString,
-     joinString) = getLineStyle(symbolLayer.borderStyle(),
-                                symbolLayer.borderWidth(),
-                                capStyle,
+     joinString) = getLineStyle(sl.borderStyle(), sl.borderWidth(), capStyle,
                                 joinStyle)
-    if symbolLayer.brushStyle() == 0:
+    if sl.brushStyle() == 0:
         fillColor = "none"
     else:
         fillColor = symbol.color().name()
-    if symbolLayer.borderStyle() == 0:
+    if sl.borderStyle() == 0:
         color = "none"
     else:
-        color = symbolLayer.borderColor().name()
+        color = sl.borderColor().name()
     categorizedPolygonStyles = """
                     weight: '{weight}',
                     fillColor: '{fillColor}',
@@ -522,14 +514,9 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
                     fillOpacity: '{opacity}',
                 }};
                 break;
-""".format(weight=symbolLayer.borderWidth() * 4,
-           fillColor=fillColor,
-           color=color,
-           dashArray=dashArray,
-           capString=capString,
-           joinString=joinString,
-           borderOpacity=borderOpacity,
-           opacity=opacity)
+""".format(weight=sl.borderWidth() * 4, fillColor=fillColor, color=color,
+           dashArray=dashArray, capString=capString, joinString=joinString,
+           borderOpacity=borderOpacity, opacity=opacity)
     return categorizedPolygonStyles
 
 
@@ -549,9 +536,9 @@ def rangeStartScript(valueAttr, r):
 
 
 def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
+    sl = symbol.symbolLayer(0)
     (dashArray, capString,
-     joinString) = getLineStyle(symbol.symbolLayer(0).outlineStyle(),
-                                symbol.symbolLayer(0).outlineWidth(), 0, 0)
+     joinString) = getLineStyle(sl.outlineStyle(), sl.outlineWidth(), 0, 0)
     graduatedPointStyles = rangeStartScript(valueAttr, r)
     graduatedPointStyles += """
             return {{
@@ -564,21 +551,17 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 dashArray: '{dashArray}'
             }}
         }}
-""".format(radius=symbol.size(),
-           fillColor=symbol.color().name(),
-           color=symbol.symbolLayer(0).borderColor().name(),
-           lineWeight=symbol.symbolLayer(0).outlineWidth() * 4,
-           opacity=opacity, borderOpacity=borderOpacity,
-           dashArray=dashArray)
+""".format(radius=symbol.size(), fillColor=symbol.color().name(),
+           color=sl.borderColor().name(), lineWeight=sl.outlineWidth() * 4,
+           opacity=opacity, borderOpacity=borderOpacity, dashArray=dashArray)
     return graduatedPointStyles
 
 
 def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
     sl = symbol.symbolLayer(0)
-    (dashArray, capString, joinString) = getLineStyle(sl.penStyle(),
-                                                      symbol.width(),
-                                                      sl.penCapStyle(),
-                                                      sl.penJoinStyle())
+    (dashArray, capString,
+     joinString) = getLineStyle(sl.penStyle(), symbol.width(),
+                                sl.penCapStyle(), sl.penJoinStyle())
     graduatedLineStyles = rangeStartScript(valueAttr, r)
     graduatedLineStyles += """
             return {{
@@ -589,7 +572,7 @@ def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
                 lineJoin: '{joinString}',
                 opacity: '{opacity}',
             }}
-        }}""".format(color=symbol.symbolLayer(0).color().name(),
+        }}""".format(color=sl.color().name(),
                      weight=symbol.width() * 4, dashArray=dashArray,
                      capString=capString, joinString=joinString,
                      opacity=opacity)
@@ -597,26 +580,24 @@ def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
 
 
 def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
-    symbolLayer = symbol.symbolLayer(0)
-    if symbolLayer.borderStyle() == 0:
+    sl = symbol.symbolLayer(0)
+    if sl.borderStyle() == 0:
         weight = "0"
         dashArray = "0"
         capString = ""
         joinString = ""
     else:
         try:
-            capStyle = symbolLayer.penCapStyle()
-            joinStyle = symbolLayer.penJoinStyle()
+            capStyle = sl.penCapStyle()
+            joinStyle = sl.penJoinStyle()
         except:
             capStyle = 0
             joinStyle = 0
-        weight = symbolLayer.borderWidth() * 4
+        weight = sl.borderWidth() * 4
         (dashArray, capString,
-         joinString) = getLineStyle(symbolLayer.borderStyle(),
-                                    symbolLayer.borderWidth(),
-                                    capStyle,
-                                    joinStyle)
-    if symbolLayer.brushStyle() == 0:
+         joinString) = getLineStyle(sl.borderStyle(), sl.borderWidth(),
+                                    capStyle, joinStyle)
+    if sl.brushStyle() == 0:
         fillColor = "0"
     else:
         fillColor = symbol.color().name()
