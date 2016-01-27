@@ -613,7 +613,7 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 opacity: '{borderOpacity}',
                 fillOpacity: '{opacity}',
             }}
-        }}""".format(color=symbolLayer.borderColor().name(), weight=weight,
+        }}""".format(color=sl.borderColor().name(), weight=weight,
                      dashArray=dashArray, capString=capString,
                      joinString=joinString, fillColor=fillColor,
                      borderOpacity=borderOpacity, opacity=opacity)
