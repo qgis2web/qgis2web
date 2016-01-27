@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- qgis2leaf
-                                 A QGIS plugin
- QGIS to Leaflet creation program
+ qgis2web
+ (c) Tom Chadwin
+ 
+ leafletWriter.py original by:
                              -------------------
         begin                : 2014-04-29
         copyright            : (C) 2013 by Riccardo Klinger
@@ -32,8 +33,8 @@ from leafletScriptStrings import *
 from utils import ALL_ATTRIBUTES, removeSpaces
 
 
-def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
-                 cluster, json, params, popup):
+def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
+                 json, params, popup):
     legends = {}
     canvas = iface.mapCanvas()
     project = QgsProject.instance()
@@ -70,16 +71,15 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir,
                                                outputProjectFileName, cluster,
-                                               measure, matchCRS,
-                                               canvas, mapLibLocation, locate)
+                                               measure, matchCRS, canvas,
+                                               mapLibLocation, locate)
     writeCSS(cssStore, mapSettings.backgroundColor().name())
 
     wfsLayers = ""
     scaleDependentLayers = ""
     new_src = ""
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
-    exp_crs = QgsCoordinateReferenceSystem(4326,
-                                           crs)
+    exp_crs = QgsCoordinateReferenceSystem(4326, crs)
     for i, jsonEncode, eachPopup in zip(layer_list, json, popup):
         rawLayerName = i.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName)
@@ -108,8 +108,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
     crsProj4 = crsSrc.toProj4()
     middle = openScript()
     if highlight or popupsOnHover:
-        middle += highlightScript(highlight, popupsOnHover,
-                                  mapSettings.selectionColor().name())
+        selectionColor = mapSettings.selectionColor().name()
+        middle += highlightScript(highlight, popupsOnHover, selectionColor)
     if extent == "Canvas extent":
         pt0 = canvas.extent()
         crsDest = QgsCoordinateReferenceSystem(4326)
@@ -123,13 +123,13 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
         bounds += unicode(pt1.xMaximum()) + ']]'
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure,
-                            maxZoom, minZoom, bounds)
+        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
+                            minZoom, bounds)
     else:
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure,
-                            maxZoom, minZoom, 0)
+        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
+                            minZoom, 0)
     middle += featureGroupsScript()
     if (len(basemapList) == 0 or matchCRS):
         basemapText = ""
@@ -172,8 +172,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible,
         new_src += address_text
 
     if params["Appearance"]["Add layers list"]:
-        new_src += addLayersList(basemapList, matchCRS, layer_list,
-                                 cluster, legends)
+        new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
+                                 legends)
     if locate:
         end = locateScript()
     else:
