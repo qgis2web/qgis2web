@@ -698,6 +698,7 @@ def getWFSScriptTag(layerSource, layerName):
     scriptTag += "get" + layerName + "Json"
     return scriptTag
 
+
 def stackLayers(layerName, visible):
     if visible:
         return """

@@ -195,9 +195,9 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 
 
 def svgScript(safeLayerName, symbolLayer, outputFolder, labeltext):
-    shutil.copyfile(symbolLayer.path(), os.path.join(outputFolder, "markers",
-                                                     os.path.basename(
-                                                        symbolLayer.path())))
+    slPath = symbolLayer.path()
+    shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
+                                         os.path.basename(slPath)))
     svg = """
         var svg{safeLayerName} = L.icon({{
             iconUrl: 'markers/{svgPath}',
