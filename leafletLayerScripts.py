@@ -364,9 +364,10 @@ def categorizedLayer(i, renderer, safeLayerName, outputProjectFileName,
                                        catLegend)
     elif i.geometryType() == QGis.Line:
         (new_obj, wfsLayers,
-         catLegend) = categorizedLine(outputProjectFileName, i, safeLayerName, renderer, catLegend,
-                                      layer_transp, popFuncs, usedFields, json,
-                                      visible, count, wfsLayers)
+         catLegend) = categorizedLine(outputProjectFileName, i, safeLayerName,
+                                      renderer, catLegend, layer_transp,
+                                      popFuncs, usedFields, json, visible,
+                                      count, wfsLayers)
     elif i.geometryType() == QGis.Polygon:
         (new_obj,
          catLegend,
