@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 import os
 import shutil
 from utils import replaceInTemplate
@@ -146,6 +147,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_MEASURESTYLE@": ""}
     with open(outputIndex, 'w') as f_html:
         base = replaceInTemplate(template + ".html", values)
+        # base = re.sub('\n[\s_]+\n', '\n', base)
         f_html.write(base)
         f_html.close()
 
