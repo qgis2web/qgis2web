@@ -106,11 +106,11 @@ def writeOL(iface, layers, groups, popup, visible,
         pageTitle = QgsProject.instance().title()
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = """
-    <style>
-      html, body {{
-          background-color: {bgcol};
-        }}
-    </style>
+        <style>
+          html, body {{
+              background-color: {bgcol};
+            }}
+        </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
         mapbounds = bounds(iface,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
