@@ -160,7 +160,8 @@ def writeOL(iface, layers, groups, popup, visible,
           <a href="#" id="popup-closer" class="ol-popup-closer"></a>
           <div id="popup-content"></div>
         </div>"""
-        ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>"""
+        ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
+        <script src="./resources/Autolinker.min.js"></script>"""
         ol3layers = """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
         mapSize = iface.mapCanvas().size()
