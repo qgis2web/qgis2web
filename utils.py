@@ -121,7 +121,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             out_raster = os.path.join(layersFolder,
                                       safeName(layer.name()) + ".png")
             crsSrc = layer.crs()
-            crsDest = QgsCoordinateReferenceSystem(4326)
+            crsDest = QgsCoordinateReferenceSystem(3857)
             xform = QgsCoordinateTransform(crsSrc, crsDest)
             extentRep = xform.transform(layer.extent())
             extentRepNew = ','.join([unicode(extentRep.xMinimum()),
@@ -129,7 +129,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                                      unicode(extentRep.yMinimum()),
                                      unicode(extentRep.yMaximum())])
             processing.runalg("gdalogr:warpreproject", in_raster,
-                              layer.crs().authid(), "EPSG:4326", "", 0, 1,
+                              layer.crs().authid(), "EPSG:3857", "", 0, 1,
                               0, -1, 75, 6, 1, False, 0, False, "",
                               prov_raster)
             processing.runalg("gdalogr:translate", prov_raster, 100,
