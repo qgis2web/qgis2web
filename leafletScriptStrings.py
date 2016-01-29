@@ -664,7 +664,8 @@ def rasterScript(i, safeLayerName):
                                                  bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
-        bounds_group.addLayer(overlay_{safeLayerName});""".format(
+        bounds_group.addLayer(overlay_{safeLayerName});
+        layerOrder[layerOrder.length] = overlay_{safeLayerName};""".format(
                 safeLayerName=safeLayerName)
     return raster
 

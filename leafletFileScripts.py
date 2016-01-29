@@ -65,27 +65,23 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         webpage_name = webpage_name.encode('utf-8')
     if mapLibLocation == "Local":
-        cssAddress = """
-    <link rel="stylesheet" href="css/leaflet.css" />"""
-        jsAddress = """
-        <script src="js/leaflet.js"></script>"""
+        cssAddress = '<link rel="stylesheet" href="css/leaflet.css" />'
+        jsAddress = '<script src="js/leaflet.js"></script>'
     else:
-        cssAddress = """
-    <link rel="stylesheet" href="""
+        cssAddress = '<link rel="stylesheet" href='
         cssAddress += '"http://http://cdn.leafletjs.com/leaflet/v0.7.7/'
         cssAddress += 'leaflet.css" />'
-        jsAddress = """
-        <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js">"""
-        jsAddress += '</script>'
-    extracss = """
-    <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        jsAddress = '<script src="http://'
+        jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
+    extracss = '<link rel="stylesheet" type="text/css" '
+    extracss += """href="css/qgis2web.css">
     <link rel="stylesheet" href="css/label.css" />"""
     if len(cluster_set):
-        clusterCSS = """
-    <link rel="stylesheet" href="css/MarkerCluster.css" />
+        clusterCSS = '<link rel="stylesheet" '
+        clusterCSS += """href="css/MarkerCluster.css" />
     <link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
-        clusterJS = """
-        <script src="js/leaflet.markercluster.js"></script>"""
+        clusterJS = '<script src="js/leaflet.markercluster.js">'
+        clusterJS += "</script>"
     else:
         clusterCSS = ""
         clusterJS = ""
@@ -110,10 +106,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         measureCSS = ""
         measureJS = ""
-    extraJS = """
-        <script src="js/leaflet-hash.js"></script>
-        <script src="js/label.js"></script>
-        <script src="js/Autolinker.min.js"></script>"""
+    extraJS = """<script src="js/leaflet-hash.js"></script>
+    <script src="js/label.js"></script>
+    <script src="js/Autolinker.min.js"></script>"""
     if (matchCRS and
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
         crsJS = """
