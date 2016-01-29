@@ -76,11 +76,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
     extracss = '<link rel="stylesheet" type="text/css" '
     extracss += """href="css/qgis2web.css">
-    <link rel="stylesheet" href="css/label.css" />"""
+        <link rel="stylesheet" href="css/label.css" />"""
     if len(cluster_set):
         clusterCSS = '<link rel="stylesheet" '
         clusterCSS += """href="css/MarkerCluster.css" />
-    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />"""
         clusterJS = '<script src="js/leaflet.markercluster.js">'
         clusterJS += "</script>"
     else:
@@ -88,33 +88,33 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         clusterJS = ""
     if address:
         addressCSS = """
-    <link rel="stylesheet" href="""
+        <link rel="stylesheet" href="""
         addressCSS += 'http://k4r573n.github.io/leaflet-control-osm-geocoder/'
         addressCSS += 'Control.OSMGeocoder.css" />'
         addressJS = """
-    <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/"""
+        <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/"""
         addressJS += 'Control.OSMGeocoder.js"></script>'
     else:
         addressCSS = ""
         addressJS = ""
     if measure:
         measureCSS = """
-    <link rel="stylesheet" href="css/leaflet.draw.css" />
-    <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
+        <link rel="stylesheet" href="css/leaflet.draw.css" />
+        <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
         measureJS = """
-    <script src="js/leaflet.draw.js"></script>
-    <script src="js/leaflet.measurecontrol.js"></script>"""
+        <script src="js/leaflet.draw.js"></script>
+        <script src="js/leaflet.measurecontrol.js"></script>"""
     else:
         measureCSS = ""
         measureJS = ""
     extraJS = """<script src="js/leaflet-hash.js"></script>
-    <script src="js/label.js"></script>
-    <script src="js/Autolinker.min.js"></script>"""
+        <script src="js/label.js"></script>
+        <script src="js/Autolinker.min.js"></script>"""
     if (matchCRS and
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
         crsJS = """
-    <script src="js/proj4.js"></script>
-    <script src="js/proj4leaflet.js"></script>"""
+        <script src="js/proj4.js"></script>
+        <script src="js/proj4leaflet.js"></script>"""
     else:
         crsJS = ""
 

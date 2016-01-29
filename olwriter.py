@@ -195,7 +195,9 @@ def writeOL(iface, layers, groups, popup, visible,
             htmlTemplate = settings["Appearance"]["Template"]
             if htmlTemplate == "":
                 htmlTemplate = "basic"
-            f.write(replaceInTemplate(htmlTemplate + ".html", values))
+            templateOutput = replaceInTemplate(htmlTemplate + ".html", values)
+            templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
+            f.write(templateOutput)
         values = {"@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
                   "@POPUPLAYERS@": popupLayers,
