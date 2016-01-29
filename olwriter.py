@@ -107,8 +107,8 @@ def writeOL(iface, layers, groups, popup, visible,
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = """
         <style>
-          html, body {{
-              background-color: {bgcol};
+            html, body {{
+                background-color: {bgcol};
             }}
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
@@ -157,9 +157,9 @@ def writeOL(iface, layers, groups, popup, visible,
         ol3layerswitcher = """
         <script src="./resources/ol3-layerswitcher.js"></script>"""
         ol3popup = """<div id="popup" class="ol-popup">
-          <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-          <div id="popup-content"></div>
-        </div>"""
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>"""
         ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
         <script src="./resources/Autolinker.min.js"></script>"""
         ol3layers = """
