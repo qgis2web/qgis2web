@@ -440,7 +440,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                url: "./layers/%(n)s.png",
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
-                                imageSize: [%(col)d, %(row)d],
+                                //imageSize: [%(col)d, %(row)d],
                                 imageExtent: %(extent)s
                             })
                         });''' % {"n": layerName,
