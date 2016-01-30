@@ -17,6 +17,7 @@
 
 import os
 import re
+import time
 from PyQt4.QtCore import *
 from qgis.core import *
 import processing
@@ -114,10 +115,10 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         f.write(line)
             os.remove(tmpPath)
         elif layer.type() == layer.RasterLayer:
+            name_ts = safeName(layer.name()) + unicode(time.time())
             in_raster = unicode(layer.dataProvider().dataSourceUri())
             prov_raster = os.path.join(tempfile.gettempdir(),
-                                       'json_' + safeName(layer.name()) +
-                                       '_prov.tif')
+                                       'json_' + name_ts + '_prov.tif')
             out_raster = os.path.join(layersFolder,
                                       safeName(layer.name()) + ".png")
             crsSrc = layer.crs()
