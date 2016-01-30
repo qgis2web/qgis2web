@@ -67,9 +67,11 @@
         var popupField;
         var popupText = '';
         var currentFeature;
+        var currentLayer;
         var currentFeatureKeys;
         map.forEachFeatureAtPixel(pixel, function(feature, layer) {
           currentFeature = feature;
+          currentLayer = layer;
           currentFeatureKeys = currentFeature.getKeys();
           var field = popupLayers[layersList.indexOf(layer) - 1];
           if (field == NO_POPUP){          
@@ -99,11 +101,16 @@
             }
             if (currentFeature) {
               if (currentFeature.getGeometry().getType() == 'Point') {
+
+                var styleDefinition = currentLayer.getStyle().toString();
+                var radius = styleDefinition.split('radius')[1].split(' ')[1];
+
                 highlightStyle = new ol.style.Style({
                 image: new ol.style.Circle({
                   fill: new ol.style.Fill({
                     color: "@HIGHLIGHTFILL@"
-                  })
+                  }),
+                  radius: radius
                 })
                })
               } else {
