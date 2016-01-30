@@ -103,7 +103,8 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
         map += """.fitBounds(""" + bounds + """);"""
     map += """
         var hash = new L.Hash(map);"""
-    map += """map.attributionControl.addAttribution('<a href="""
+    map += """
+        map.attributionControl.addAttribution('<a href="""
     map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
     map += "qgis2web</a>');"
     return map
