@@ -102,9 +102,10 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
     if extent == "Canvas extent":
         map += """.fitBounds(""" + bounds + """);"""
     map += """
-        var hash = new L.Hash(map);
-        var additional_attrib = '<a href="https://github.com/tomchadwin/"""
-    map += """qgis2web" target ="_blank">qgis2web</a>';"""
+        var hash = new L.Hash(map);"""
+    map += """map.attributionControl.addAttribution('<a href="""
+    map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
+    map += "qgis2web</a>');"
     return map
 
 
@@ -123,7 +124,7 @@ def basemapsScript(basemapList, maxZoom):
         bmAttr = basemapAttributions[basemap.text()]
         basemaps += """
         var basemap{count} = L.tileLayer('{basemap}', {{
-            attribution: additional_attrib + ' {attribution}',
+            attribution: '{attribution}',
             maxZoom: {maxZoom}
         }});
         basemap{count}.addTo(map);""".format(count=count, basemap=bmText,
