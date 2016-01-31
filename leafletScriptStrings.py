@@ -53,10 +53,17 @@ def highlightScript(highlight, popupsOnHover, highlightFill):
             highlightLayer = e.target;"""
     if highlight:
         highlightScript += """
-            highlightLayer.setStyle({
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '""" + highlightFill + """',
+              });
+            } else {
+              highlightLayer.setStyle({
                 fillColor: '""" + highlightFill + """',
                 fillOpacity: 1
-            });
+              });
+            }
 
             if (!L.Browser.ie && !L.Browser.opera) {
                 highlightLayer.bringToFront();
