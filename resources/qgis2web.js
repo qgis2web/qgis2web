@@ -100,9 +100,9 @@
               featureOverlay.getSource().removeFeature(highlight);
             }
             if (currentFeature) {
-              if (currentFeature.getGeometry().getType() == 'Point') {
+              var styleDefinition = currentLayer.getStyle().toString();
 
-                var styleDefinition = currentLayer.getStyle().toString();
+              if (currentFeature.getGeometry().getType() == 'Point') {
                 var radius = styleDefinition.split('radius')[1].split(' ')[1];
 
                 highlightStyle = new ol.style.Style({
@@ -113,11 +113,25 @@
                   radius: radius
                 })
                })
+              } else if (currentFeature.getGeometry().getType() == 'LineString') {
+
+                var featureWidth = styleDefinition.split('width')[1].split(' ')[1].replace('})','');
+
+                highlightStyle = new ol.style.Style({
+                  stroke: new ol.style.Stroke(
+                    {
+                      color: '@HIGHLIGHTFILL@',
+                      lineDash: null,
+                      width: featureWidth
+                    }
+                  )
+                });
+
               } else {
                 highlightStyle = new ol.style.Style({
                   fill: new ol.style.Fill({
                     color: '@HIGHLIGHTFILL@'
-                  }),
+                  })
                 })
               }
               featureOverlay.getSource().addFeature(currentFeature);
