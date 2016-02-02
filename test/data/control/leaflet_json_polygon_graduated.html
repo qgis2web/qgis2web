@@ -134,11 +134,11 @@
             }
         }
         }
-            var json_polygonJSON = new L.geoJson(json_polygon, {
-                onEachFeature: pop_polygon,
-                style: doStylepolygon
-            });
-            layerOrder[layerOrder.length] = json_polygonJSON;
+        var json_polygonJSON = new L.geoJson(json_polygon, {
+            onEachFeature: pop_polygon,
+            style: doStylepolygon
+        });
+        layerOrder[layerOrder.length] = json_polygonJSON;
         bounds_group.addLayer(json_polygonJSON);
         feature_group.addLayer(json_polygonJSON);
         raster_group.addTo(map);

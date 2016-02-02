@@ -99,11 +99,11 @@
 
             }
         }
-            var json_lineJSON = new L.geoJson(json_line, {
-                onEachFeature: pop_line,
-                style: doStyleline
-            });
-            layerOrder[layerOrder.length] = json_lineJSON;
+        var json_lineJSON = new L.geoJson(json_line, {
+            onEachFeature: pop_line,
+            style: doStyleline
+        });
+        layerOrder[layerOrder.length] = json_lineJSON;
         bounds_group.addLayer(json_lineJSON);
         feature_group.addLayer(json_lineJSON);
         raster_group.addTo(map);
