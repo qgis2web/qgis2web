@@ -641,18 +641,18 @@ def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
 def buildNonPointJSON(categoryStr, safeName, usedFields):
     if usedFields != 0:
         new_obj = categoryStr + """
-            var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
-                onEachFeature: pop_{safeName},
-                style: doStyle{safeName}
-            }});
-            layerOrder[layerOrder.length]""".format(safeName=safeName)
+        var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
+            onEachFeature: pop_{safeName},
+            style: doStyle{safeName}
+        }});
+        layerOrder[layerOrder.length]""".format(safeName=safeName)
         new_obj += " = json_{safeName}JSON;".format(safeName=safeName)
     else:
         new_obj = categoryStr + """
-            var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
-                style: doStyle{safeName}
-            }});
-            layerOrder[layerOrder.length] = """.format(safeName=safeName)
+        var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
+            style: doStyle{safeName}
+        }});
+        layerOrder[layerOrder.length] = """.format(safeName=safeName)
         new_obj += "json_{safeName}JSON;".format(safeName=safeName)
     return new_obj
 

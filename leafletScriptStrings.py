@@ -698,21 +698,17 @@ def titleSubScript(webmap_head):
 def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
     if len(basemapList) == 0 or matchCRS:
         controlStart = """
-    var baseMaps = {};"""
+        var baseMaps = {};"""
     else:
         comma = ""
         controlStart = """
-    var baseMaps = {"""
+        var baseMaps = {"""
         for count, basemap in enumerate(basemapList):
             controlStart += comma + "'" + unicode(basemap.text())
             controlStart += "': basemap" + unicode(count)
             comma = ", "
         controlStart += "};"
-    if len(basemapList) == 0:
-        controlStart += """
-        L.control.layers({},{"""
-    else:
-        controlStart += """
+    controlStart += """
         L.control.layers(baseMaps,{"""
     layersList = controlStart
 
