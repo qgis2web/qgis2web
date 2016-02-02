@@ -107,9 +107,9 @@ def writeOL(iface, layers, groups, popup, visible,
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = """
         <style>
-            html, body {{
-                background-color: {bgcol};
-            }}
+        html, body {{
+            background-color: {bgcol};
+        }}
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
         mapbounds = bounds(iface,
