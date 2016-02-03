@@ -151,7 +151,9 @@ def layerOrderScript(extent):
             }"""
     if extent == 'Fit to layers extent':
         layerOrder += """
-            map.fitBounds(bounds_group.getBounds());"""
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }"""
     layerOrder += """
         }
         function restackLayers() {
