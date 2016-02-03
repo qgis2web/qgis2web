@@ -63,10 +63,6 @@ def highlightScript(highlight, popupsOnHover, highlightFill):
                 fillColor: '""" + highlightFill + """',
                 fillOpacity: 1
               });
-            }
-
-            if (!L.Browser.ie && !L.Browser.opera) {
-                highlightLayer.bringToFront();
             }"""
     if popupsOnHover:
         highlightScript += """
