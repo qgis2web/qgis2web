@@ -639,13 +639,13 @@ def wmsScript(i, safeLayerName):
     wms_format = d['format'][0]
     wms_crs = d['crs'][0]
     wms = """
-    var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
-        layers: '{wms_layer}',
-        format: '{wms_format}',
-        transparent: true,
-        continuousWorld : true,
-    }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
-                   wms_layer=wms_layer, wms_format=wms_format)
+        var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
+            layers: '{wms_layer}',
+            format: '{wms_format}',
+            transparent: true,
+            continuousWorld : true,
+        }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
+                       wms_layer=wms_layer, wms_format=wms_format)
     return wms
 
 
