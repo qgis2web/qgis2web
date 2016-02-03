@@ -159,7 +159,6 @@ def layerOrderScript(extent):
                 layerOrder[index].bringToFront();
             }
         }
-        map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});"""
     return layerOrder
 
@@ -775,7 +774,8 @@ def endHTMLscript(wfsLayers):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
-        stackLayers();"""
+        stackLayers();
+        map.on('overlayadd', restackLayers);"""
     endHTML += """
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
