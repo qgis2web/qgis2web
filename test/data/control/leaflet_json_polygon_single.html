@@ -50,7 +50,9 @@
                 map.removeLayer(layerOrder[index]);
                 map.addLayer(layerOrder[index]);
             }
-            map.fitBounds(bounds_group.getBounds());
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
         function restackLayers() {
             for (index = 0; index < layerOrder.length; index++) {

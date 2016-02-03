@@ -133,7 +133,7 @@ def basemapsScript(basemapList, maxZoom):
         basemaps += """
         var basemap{count} = L.tileLayer('{basemap}', {{
             attribution: '{attribution}',
-            maxZoom: {maxZoom} 
+            maxZoom: {maxZoom}
         }});
         basemap{count}.addTo(map);""".format(count=count, basemap=bmText,
                                              attribution=bmAttr,
