@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent.
-version=1.0.0-RC2
+version=1.0.0-RC3
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/01/15 1.0.0-RC2 Scale-dependent visibility widget removed from GUI, README updated, OL upgraded to 3.13.0, web inspector added, OL3 export refactored, tests refactored, Leaflet export refactored, revert Leaflet styled rasters, change Leaflet raster export to EPSG:3857
+changelog=2016/02/03 1.0.0-RC3 Leaflet refactor, OL3 output tidy, Leaflet output tidy, qgis2web attribution on maps with no basemaps, qgis2web attribution on OL3 maps, format OL3 attribution, Leaflet rasters missing from layers list, remove broken Leaflet Autolinker link, OL3 rasters misprojected (thanks, @lucacasagrande!), OL3 highlight points (thanks, @lucacasagrande!), highlight lines (thanks @lucacasagrande!), Leaflet fit to layers with no map layers, Leaflet layers missing on map load, Leaflet highlighted layer comes to front
+    2016/01/15 1.0.0-RC2 Scale-dependent visibility widget removed from GUI, README updated, OL upgraded to 3.13.0, web inspector added, OL3 export refactored, tests refactored, Leaflet export refactored, revert Leaflet styled rasters, change Leaflet raster export to EPSG:3857
     2016/01/15 1.0.0-RC1 LineCap and lineJoin, remove Leaflet border multiplier, OL3 line style bug, OL3 "No brush" fill bug, updated README, Gitter integration
     2016/01/11 1.0.0-beta3 Non-full-screen template, save dialog size and position, Leaflet code cleanup, prevent options horizontal scroll, Leaflet cluster error, Leaflet rasters only with "Fit to layers", basemaps GUI altered, disable base layers on Match CRS, 1.0.0-beta2 changelog corrected, more work for rendered rasters (incomplete)
     2016/01/05 1.0.0-beta2 Multiple basemaps, OL3 basemap attribution, OL3 missing attribute values, template improvements, OL3 raster error, Leaflet raster error, OL to 3.12.1, add usage instructions to README, initial work for rendered rasters (incomplete)
