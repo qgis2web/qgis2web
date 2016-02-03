@@ -57,7 +57,6 @@
                 layerOrder[index].bringToFront();
             }
         }
-        map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
         function pop_polygon(feature, layer) {
         }
@@ -144,6 +143,7 @@
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();
+        map.on('overlayadd', restackLayers);
         </script>
     </body>
 </html>
