@@ -774,9 +774,9 @@ def endHTMLscript(wfsLayers):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
-        stackLayers();
-        map.on('overlayadd', restackLayers);"""
+        stackLayers();"""
     endHTML += """
+        map.on('overlayadd', restackLayers);
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
 

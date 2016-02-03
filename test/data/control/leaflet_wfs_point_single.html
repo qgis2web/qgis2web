@@ -56,7 +56,6 @@
                 layerOrder[index].bringToFront();
             }
         }
-        map.on('overlayadd', restackLayers);
         layerControl = L.control.layers({},{},{collapsed:false});
         function pop_point(feature, layer) {
         }
@@ -93,6 +92,7 @@
         feature_group.addLayer(json_pointJSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
+        map.on('overlayadd', restackLayers);
         </script>
         <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpointJson'></script>
     </body>
