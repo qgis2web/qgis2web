@@ -89,7 +89,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     if address:
         addressCSS = """
         <link rel="stylesheet" href="""
-        addressCSS += 'http://k4r573n.github.io/leaflet-control-osm-geocoder/'
+        addressCSS += '"http://k4r573n.github.io/leaflet-control-osm-geocoder/'
         addressCSS += 'Control.OSMGeocoder.css" />'
         addressJS = """
         <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/"""
