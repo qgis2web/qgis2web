@@ -718,7 +718,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
                 if (clustered and
                         i.geometryType() == QGis.Point):
                     new_layer = "'" + legends[safeLayerName] + "'"
-                    + ": cluster_group""" + safeLayerName + "JSON,"
+                    new_layer += ": cluster_group""" + safeLayerName + "JSON,"
                 else:
                     new_layer = "'" + legends[safeLayerName] + "':"
                     new_layer += " json_" + safeLayerName + "JSON,"
