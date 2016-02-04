@@ -166,7 +166,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     new_src += scaleDependentLayers
     if title != "":
         titleStart = titleSubScript(title)
-        new_src += titleStart
+        new_src += unicode(titleStart)
     if addressSearch:
         address_text = addressSearchScript()
         new_src += address_text
