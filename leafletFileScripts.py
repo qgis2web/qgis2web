@@ -3,6 +3,7 @@
 import re
 import os
 import shutil
+import codecs
 from utils import replaceInTemplate
 
 
@@ -145,11 +146,12 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_LAYERSWITCHER@": "",
               "@OL3_LAYERS@": "",
               "@OL3_MEASURESTYLE@": ""}
-    with open(outputIndex, 'w') as f_html:
+
+    with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)
         base = re.sub('\n[\s_]+\n', '\n', base)
-        f_html.write(unicode(base))
-        f_html.close()
+        f.write(unicode(base))
+        f.close()
 
 
 def writeCSS(cssStore, backgroundColor):
