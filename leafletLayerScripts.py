@@ -6,7 +6,7 @@ from PyQt4.QtCore import QSize
 from qgis.core import *
 import processing
 from leafletScriptStrings import *
-from utils import writeTmpLayer, getUsedFields
+from utils import writeTmpLayer, getUsedFields, removeSpaces
 
 
 def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
