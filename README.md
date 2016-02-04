@@ -1,5 +1,6 @@
 <h1>qgis2web</h1>
-<p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap</p>
+<p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap. No
+server-side software required.</p>
 
 <h2>Installation</h2>
 <ul>
@@ -26,8 +27,8 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
 basemap from the list below the preview pane, and click "Update preview".
 CTRL/CMD-click for multiple basemaps.</p>
 <p>The top-left pane lets you set options for each layer in your map. The
-bottom-left pane sets overall options. All options are saved to your QGIS
-project file.</p>
+bottom-left pane sets overall options. All options are written to your QGIS
+project, so save your proejct if you want to keep these settings.</p>
 
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies.
@@ -36,8 +37,8 @@ does its best to interpret a QGIS project and to export HTML, Javascript, and
 CSS to create a web map as close to the QGIS project as possible.</p>
 <p>However, many elements of a QGIS project cannot be reproduced, and many are
 only possible in <em>either</em> OpenLayers 3 <em>or</em> Leaflet. qgis2web
-tries its best to produce a publish-ready map, but you can always edit the
-output code to achieve what qgis2web cannot.</p>
+tries its best to produce a publish-ready map, but you can always manually edit
+the output code to achieve what qgis2web cannot.</p>
 <ul>
     <li>no rule-based rendering</li>
     <li>SVG point markers sometimes do not appear in the preview
@@ -91,7 +92,7 @@ output code to achieve what qgis2web cannot.</p>
 <dl>
     <dt>Extent</dt>
         <dd>Either match the current QGIS view or show all contents of all
-            layers</dd>
+            layers (only local GeoJSON and rasters, not WFS/WMS)</dd>
     <dt>Max zoom level</dt>
         <dd>How far the webmap will zoom in</dd>
     <dt>Min zoom level</dt>
@@ -103,13 +104,13 @@ output code to achieve what qgis2web cannot.</p>
 <h4>Appearance</h4>
 <dl>
     <dt>Add address search</dt>
-        <dd>Add field to allow searching for locations</dd>
+        <dd>Add field to allow searching for locations (geocode)</dd>
     <dt>Add layers list</dt>
         <dd>Include list of layers (with legend icons, where possible)</dd>
     <dt>Add measure tool</dt>
         <dd>Include interactive measuring widget</dd>
     <dt>Add scale bar</dt>
-        <dd>Include scale bar</dd>
+        <dd>Include dynamic scale bar</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
     <dt>Highlight features</dt>
@@ -154,7 +155,7 @@ coming.</p>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
 gentlemen. Thanks are also very much due to Paolo Cavallini, who suggested
-the merge.</p>
+and supported the merge.</p>
 
 <ul>
     <li>github.com/volaya</li>
