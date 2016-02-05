@@ -29,7 +29,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_point.js"></script>
+        <script src="data/json_point0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,10 +60,10 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_point(feature, layer) {
+        function pop_point0(feature, layer) {
         }
 
-        function doStylepoint() {
+        function doStylepoint0() {
             return {
                 radius: 2.0,
                 fillColor: '#843768',
@@ -76,17 +76,17 @@
                 fillOpacity: 1.0
             }
         }
-        function doPointToLayerpoint(feature, latlng) {
-            return L.circleMarker(latlng, doStylepoint())
+        function doPointToLayerpoint0(feature, latlng) {
+            return L.circleMarker(latlng, doStylepoint0())
         }
-        var json_pointJSON = new L.geoJson(json_point, {
-            onEachFeature: pop_point, 
-            pointToLayer: doPointToLayerpoint
+        var json_point0JSON = new L.geoJson(json_point0, {
+            onEachFeature: pop_point0, 
+            pointToLayer: doPointToLayerpoint0
             });
-        layerOrder[layerOrder.length] = json_pointJSON;
+        layerOrder[layerOrder.length] = json_point0JSON;
 
-        bounds_group.addLayer(json_pointJSON);
-        feature_group.addLayer(json_pointJSON);
+        bounds_group.addLayer(json_point0JSON);
+        feature_group.addLayer(json_point0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();
