@@ -82,7 +82,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     exp_crs = QgsCoordinateReferenceSystem(4326, crs)
     for i, jsonEncode, eachPopup in zip(layer_list, json, popup):
         rawLayerName = i.name()
-        safeLayerName = re.sub('[\W_]+', '', rawLayerName)
+        safeLayerName = i.id()
         dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
@@ -142,7 +142,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
 
     for count, i in enumerate(layer_list):
         rawLayerName = i.name()
-        safeLayerName = re.sub('[\W_]+', '', rawLayerName)
+        safeLayerName = i.id()
         if i.type() == QgsMapLayer.VectorLayer:
             (new_src,
              legends,
