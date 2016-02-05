@@ -59,10 +59,10 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_polygon(feature, layer) {
+        function pop_polygon0(feature, layer) {
         }
 
-        function doStylepolygon(feature) {
+        function doStylepolygon0(feature) {
         if (feature.properties.area_ha >= 0.0 &&
                 feature.properties.area_ha <= 64.24) {
 
@@ -134,22 +134,22 @@
             }
         }
         }
-        var json_polygonJSON;
-        json_polygonJSON = L.geoJson(null, {
-        style: doStylepolygon,
+        var json_polygon0JSON;
+        json_polygon0JSON = L.geoJson(null, {
+        style: doStylepolygon0,
         onEachFeature: function (feature, layer) {
         },
-            onEachFeature: pop_polygon
+            onEachFeature: pop_polygon0
         });
-        layerOrder[layerOrder.length] = json_polygonJSON;
-        feature_group.addLayer(json_polygonJSON);
-        layerControl.addOverlay(json_polygonJSON, 'polygon');
-        function getpolygonJson(geojson) {
-            json_polygonJSON.addData(geojson);
+        layerOrder[layerOrder.length] = json_polygon0JSON;
+        feature_group.addLayer(json_polygon0JSON);
+        layerControl.addOverlay(json_polygon0JSON, 'polygon');
+        function getpolygon0Json(geojson) {
+            json_polygon0JSON.addData(geojson);
             stackLayers();
         };
-        bounds_group.addLayer(json_polygonJSON);
-        feature_group.addLayer(json_polygonJSON);
+        bounds_group.addLayer(json_polygon0JSON);
+        feature_group.addLayer(json_polygon0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         map.on('overlayadd', restackLayers);

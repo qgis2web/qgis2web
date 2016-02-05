@@ -29,7 +29,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_line.js"></script>
+        <script src="data/json_line0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,10 +60,10 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_line(feature, layer) {
+        function pop_line0(feature, layer) {
         }
 
-        function doStyleline(feature) {
+        function doStyleline0(feature) {
             return {
                 weight: 1.04,
                 color: '#1acd3e',
@@ -73,13 +73,13 @@
                 opacity: 1.0
             };
         }
-        var json_lineJSON = new L.geoJson(json_line, {
-            onEachFeature: pop_line,
-            style: doStyleline
+        var json_line0JSON = new L.geoJson(json_line0, {
+            onEachFeature: pop_line0,
+            style: doStyleline0
         });
-        layerOrder[layerOrder.length] = json_lineJSON;
-        bounds_group.addLayer(json_lineJSON);
-        feature_group.addLayer(json_lineJSON);
+        layerOrder[layerOrder.length] = json_line0JSON;
+        bounds_group.addLayer(json_line0JSON);
+        feature_group.addLayer(json_line0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();

@@ -59,10 +59,10 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_line(feature, layer) {
+        function pop_line0(feature, layer) {
         }
 
-        function doStyleline(feature) {
+        function doStyleline0(feature) {
 			switch (feature.properties.star_rating) {
                 case '2    ':
                     return {
@@ -121,22 +121,22 @@
 
             }
         }
-        var json_lineJSON;
-        json_lineJSON = L.geoJson(null, {
-        style: doStyleline,
+        var json_line0JSON;
+        json_line0JSON = L.geoJson(null, {
+        style: doStyleline0,
         onEachFeature: function (feature, layer) {
         },
-            onEachFeature: pop_line
+            onEachFeature: pop_line0
         });
-        layerOrder[layerOrder.length] = json_lineJSON;
-        feature_group.addLayer(json_lineJSON);
-        layerControl.addOverlay(json_lineJSON, 'line');
-        function getlineJson(geojson) {
-            json_lineJSON.addData(geojson);
+        layerOrder[layerOrder.length] = json_line0JSON;
+        feature_group.addLayer(json_line0JSON);
+        layerControl.addOverlay(json_line0JSON, 'line');
+        function getline0Json(geojson) {
+            json_line0JSON.addData(geojson);
             stackLayers();
         };
-        bounds_group.addLayer(json_lineJSON);
-        feature_group.addLayer(json_lineJSON);
+        bounds_group.addLayer(json_line0JSON);
+        feature_group.addLayer(json_line0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         map.on('overlayadd', restackLayers);

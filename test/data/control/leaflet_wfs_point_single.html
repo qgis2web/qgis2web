@@ -59,10 +59,10 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_point(feature, layer) {
+        function pop_point0(feature, layer) {
         }
 
-        function doStylepoint() {
+        function doStylepoint0() {
             return {
                 radius: 2.0,
                 fillColor: '#843768',
@@ -75,23 +75,23 @@
                 fillOpacity: 1.0
             }
         }
-        function doPointToLayerpoint(feature, latlng) {
-            return L.circleMarker(latlng, doStylepoint())
+        function doPointToLayerpoint0(feature, latlng) {
+            return L.circleMarker(latlng, doStylepoint0())
         }
-        var json_pointJSON;
-        json_pointJSON = L.geoJson(null, {
-            pointToLayer: doPointToLayerpoint,
-            onEachFeature: pop_point
+        var json_point0JSON;
+        json_point0JSON = L.geoJson(null, {
+            pointToLayer: doPointToLayerpoint0,
+            onEachFeature: pop_point0
         });
-        layerControl.addOverlay(json_pointJSON, 'point');
-        feature_group.addLayer(json_pointJSON);
-        layerOrder[layerOrder.length] = json_pointJSON;
-        function getpointJson(geojson) {
-            json_pointJSON.addData(geojson);
+        layerControl.addOverlay(json_point0JSON, 'point');
+        feature_group.addLayer(json_point0JSON);
+        layerOrder[layerOrder.length] = json_point0JSON;
+        function getpoint0Json(geojson) {
+            json_point0JSON.addData(geojson);
             stackLayers();
         };
-        bounds_group.addLayer(json_pointJSON);
-        feature_group.addLayer(json_pointJSON);
+        bounds_group.addLayer(json_point0JSON);
+        feature_group.addLayer(json_point0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         map.on('overlayadd', restackLayers);
