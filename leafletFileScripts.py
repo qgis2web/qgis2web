@@ -65,7 +65,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     if webpage_name == "":
         pass
     else:
-        webpage_name = webpage_name.encode('utf-8')
+        webpage_name = unicode(webpage_name)
     if mapLibLocation == "Local":
         cssAddress = '<link rel="stylesheet" href="css/leaflet.css" />'
         jsAddress = '<script src="js/leaflet.js"></script>'
