@@ -256,10 +256,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
         self.dialog.leaflet.click()
 
-        control_file = open(
+        test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
-        control_output = control_file.read()
-        self.assertEqual(control_output, control_output)
+        test_output = test_file.read()
+        self.assertEqual(test_output, control_output)
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)"""
