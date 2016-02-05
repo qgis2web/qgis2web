@@ -143,7 +143,7 @@
         });
         layerOrder[layerOrder.length] = json_polygon0JSON;
         feature_group.addLayer(json_polygon0JSON);
-        layerControl.addOverlay(json_polygon0JSON, 'polygon');
+        layerControl.addOverlay(json_polygon0JSON, 'polygon0');
         function getpolygon0Json(geojson) {
             json_polygon0JSON.addData(geojson);
             stackLayers();
@@ -154,6 +154,6 @@
         feature_group.addTo(map);
         map.on('overlayadd', restackLayers);
         </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetpolygonJson'></script>
+        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetpolygon0Json'></script>
     </body>
 </html>

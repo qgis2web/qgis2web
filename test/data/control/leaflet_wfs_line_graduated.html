@@ -133,7 +133,7 @@
         });
         layerOrder[layerOrder.length] = json_line0JSON;
         feature_group.addLayer(json_line0JSON);
-        layerControl.addOverlay(json_line0JSON, 'line');
+        layerControl.addOverlay(json_line0JSON, 'line0');
         function getline0Json(geojson) {
             json_line0JSON.addData(geojson);
             stackLayers();
@@ -144,6 +144,6 @@
         feature_group.addTo(map);
         map.on('overlayadd', restackLayers);
         </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetlineJson'></script>
+        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetline0Json'></script>
     </body>
 </html>
