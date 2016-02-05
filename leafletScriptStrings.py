@@ -709,10 +709,13 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
         L.control.layers(baseMaps,{"""
     layersList = controlStart
 
+    lyrCount = 0
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
-            safeLayerName = i.id()
+            safeLayerName = (re.sub('[\W_]+', '', rawLayerName) +
+                             unicode(lyrCount))
+            lyrCount += 1
             if i.type() == QgsMapLayer.VectorLayer:
                 testDump = i.rendererV2().dump()
                 if (clustered and
