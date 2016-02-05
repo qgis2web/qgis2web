@@ -349,8 +349,8 @@ def categorizedLayer(i, renderer, safeLayerName, outputProjectFileName,
                      cluster, cluster_num, popFuncs, visible, json, wfsLayers):
     catLegend = i.name() + "<br />"
     if i.geometryType() == QGis.Point:
-        (new_obj,
-         wfsLayers) = categorizedPoint(outputProjectFileName, i, renderer,
+        (new_obj, wfsLayers,
+         catLegend) = categorizedPoint(outputProjectFileName, i, renderer,
                                        safeLayerName, layer_transp, labeltext,
                                        cluster, cluster_num, usedFields,
                                        visible, json, count, wfsLayers,
@@ -408,7 +408,7 @@ def categorizedPoint(outputProjectFileName, i, renderer, safeLayerName,
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
         cluster_num += 1
-    return new_obj, wfsLayers
+    return new_obj, wfsLayers, catLegend
 
 
 def categorizedLine(outputProjectFileName, i, safeLayerName, renderer,
