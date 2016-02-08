@@ -444,11 +444,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
                 return L.circleMarker(latlng, """.format(sln=safeLayerName)
         categorizedPointJSON += """doStyle{sln}(feature)){label}
             }}
-        }});
-            layerOrder[layerOrder.length] = json_""".format(sln=safeLayerName,
-                                                            label=labeltext)
-        categorizedPointJSON += """{safeLayerName}JSON;
-""".format(safeLayerName=safeLayerName)
+        }});""".format(sln=safeLayerName, label=labeltext)
     else:
         categorizedPointJSON = """
         var json_{sln}JSON = new L.geoJson(json_{sln}, {{
@@ -456,9 +452,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
                 return L.circleMarker(latlng, """.format(sln=safeLayerName)
         categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
             }}
-        }});
-            layerOrder[layerOrder.length] = json_{safeLayerName}JSON;
-""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+        }});""".format(safeLayerName=safeLayerName, labeltext=labeltext)
     return categorizedPointJSON
 
 

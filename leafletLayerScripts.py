@@ -407,7 +407,11 @@ def categorizedPoint(outputProjectFileName, i, renderer, safeLayerName,
                                                            usedFields[count])
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
-        cluster_num += 1
+            cluster_num += 1
+        else:
+            new_obj += """
+        layerOrder[layerOrder.length] = json_{layer}JSON;
+""".format(layer=safeLayerName)
     return new_obj, wfsLayers, catLegend
 
 
@@ -537,6 +541,10 @@ def graduatedPoint(outputProjectFileName, i, safeLayerName, renderer,
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
+        else:
+            new_obj += """
+        layerOrder[layerOrder.length] = json_{layer}JSON;
+""".format(layer=safeLayerName)
     return new_obj, catLegend, wfsLayers, cluster_num
 
 
