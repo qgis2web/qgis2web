@@ -31,7 +31,7 @@ paramsOL = {
         "Add address search": False,
         "Add measure tool": False,
         "Show popups on hover": False,
-        "Highlight features": False,
+        "Highlight on hover": False,
         "Geolocate user": False,
         "Template": getTemplates()
     },
