@@ -58,7 +58,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     addressSearch = params["Appearance"]["Add address search"]
     locate = params["Appearance"]["Geolocate user"]
     measure = params["Appearance"]["Add measure tool"]
-    highlight = params["Appearance"]["Highlight features"]
+    highlight = params["Appearance"]["Highlight on hover"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
 

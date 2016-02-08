@@ -121,7 +121,7 @@ def writeOL(iface, layers, groups, popup, visible,
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
         popupsOnHover = settings["Appearance"]["Show popups on hover"]
-        highlightFeatures = settings["Appearance"]["Highlight features"]
+        highlightFeatures = settings["Appearance"]["Highlight on hover"]
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
