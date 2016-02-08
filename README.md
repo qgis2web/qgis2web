@@ -113,7 +113,7 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Include dynamic scale bar</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
-    <dt>Highlight features</dt>
+    <dt>Highlight on hover</dt>
         <dd>Highlight features on mouseover</dd>
     <dt>Match project CRS</dt>
         <dd>Create webmap in same projection as QGIS project, otherwise the
