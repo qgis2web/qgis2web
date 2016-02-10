@@ -17,11 +17,13 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
 </p>
 <ul>
     <li>Set your project title, and background and highlight colours in 
-    <code>Project > Project Properties...</code></li>
+        <code>Project > Project Properties...</code></li>
     <li>Give your layers human-friendly names in the <code>Layers Panel</code>
     </li>
     <li>Give your layer columns human friendly names via <code>Layer >
     Properties > Fields > Alias</code></li>
+    <li>Style your layers, and set their scale-dependent visibility, if
+        required</li>
 </ul>
 <p>Run qgis2web from the Web menu, or via its icon. If required, choose a
 basemap from the list below the preview pane, and click "Update preview".

@@ -420,9 +420,13 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
-                        title: "%(name)s"
+                        title: "%(name)s",
+                        %(minRes)s
+                        %(maxRes)s
                       });''' % {"layers": layers, "url": url,
-                                "n": layerName, "name": layer.name()}
+                                "n": layerName, "name": layer.name(),
+                                "minRes": minResolution,
+                                "maxRes": maxResolution}
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
             transform = QgsCoordinateTransform(provider.crs(),
@@ -436,6 +440,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             return '''var lyr_%(n)s = new ol.layer.Image({
                             opacity: 1,
                             title: "%(name)s",
+                            %(minRes)s
+                            %(maxRes)s
                             source: new ol.source.ImageStatic({
                                url: "./layers/%(n)s.png",
                                 projection: 'EPSG:3857',
@@ -447,6 +453,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                   "extent": sExtent,
                                   "col": provider.xSize(),
                                   "name": layer.name(),
+                                  "minRes": minResolution,
+                                  "maxRes": maxResolution,
                                   "row": provider.ySize()}
 
 
