@@ -162,6 +162,7 @@ def layerOrderScript(extent):
 
 
 def popFuncsScript(table):
+    table = table.encode("utf-8")
     popFuncs = """
             var popupContent = {table};
             layer.bindPopup(popupContent);""".format(table=table)

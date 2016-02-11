@@ -112,7 +112,7 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
         print "No renderer"
 
     if usedFields[count] != 0:
-        new_src += new_pop
+        new_src += new_pop.decode("utf-8")
     new_src += """
 """ + new_obj
     new_src += """
