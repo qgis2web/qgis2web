@@ -58,7 +58,7 @@ changelog=2016/02/12 1.0.0 Leaflet JSON categorized/graduated clusters, OL3 rast
     2015/07/17 0.21.1 Fix unbound crsProj4 error, remove legacy Leaflet legend code
     2015/07/17 0.21.0 Fix crash with rule-based renderers (use first rule style for all features), improve readme
     2015/07/16 0.20.0 Leaflet legend icons for categorized/graduated layers, Leaflet raster JS error
-    2015/07/15 0.19.0 Leaflet legend icons for simple symbols,  disable base layer if Match CRS selected, fixed UnboundLocalError
+    2015/07/15 0.19.0 Leaflet legend icons for simple symbols, disable base layer if Match CRS selected, fixed UnboundLocalError
     2015/07/15 0.18.0 jQuery removed from OL3 output, OL3 upgraded to current stable (3.7.0)
     2015/07/14 0.17.0 OL3 scale-dependent visibility fixed, default label display corrected, Leaflet code tidied, UI simplified, map library local or CDN
     2015/07/13 0.16.1 Leaflet scale-dependent visibility improvement, Leaflet simpleline error
@@ -71,7 +71,7 @@ changelog=2016/02/12 1.0.0 Leaflet JSON categorized/graduated clusters, OL3 rast
 	2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
 	2015/06/19 0.13.4 BROKEN Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
 	2015/06/18 0.13.3 Leaflet style improvements: simple line opacity, graduated point outline weight and pen style, graduated line pen style, graduated polygon border pen style
-	2015/06/17 0.13.2 Leaflet point border width/line style; Leaflet categorized polygon border width; Fit to layers extent fixed; QSettings namespaced; Unicode error fixed; Numeric settings now combos; UI tidied; UI labels not editable
+	2015/06/17 0.13.2 Leaflet point border width/line style, Leaflet categorized polygon border width, "Fit to layers exten"t fixed, QSettings namespaced, unicode error fixed, numeric settings now combos, UI tidied, UI labels not editable
 	2015/06/16 0.13.1 Fill style "No Brush" observed in Leaflet, border/fill transparency decoupled in Leaflet
 	2015/06/16 0.13.0 Leaflet measure tool (thanks to https://github.com/boesiii), Leaflet string handling improvements
 	2015/06/15 0.12.2 New mandatory metadata item added
