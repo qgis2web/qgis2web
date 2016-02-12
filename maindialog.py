@@ -40,7 +40,6 @@ from leafletWriter import *
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-selectedCombo = "None"
 selectedLayerCombo = "None"
 projectInstance = QgsProject.instance()
 
@@ -63,7 +62,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.toggleOptions()
         self.previewMap()
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
-        self.paramsTreeOL.itemChanged.connect(self.saveSettings)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonPreview.clicked.connect(self.previewMap)
@@ -151,6 +149,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveSettings(self, paramItem, col):
         global projectInstance
+        projectInstance.removeEntry("qgis2web", paramItem.name)
         if isinstance(paramItem._value, bool):
             projectInstance.writeEntry("qgis2web", paramItem.name,
                                        paramItem.checkState(col))
@@ -163,11 +162,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 baseLayer.setDisabled(True)
             else:
                 baseLayer.setDisabled(False)
-
-    def saveComboSettings(self, value):
-        global selectedCombo, projectInstance
-        if selectedCombo != "None":
-            projectInstance.writeEntry("qgis2web", selectedCombo, value)
 
     def saveLayerComboSettings(self, value):
         global selectedLayerCombo
@@ -217,7 +211,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 item.setExpanded(False)
 
     def populateConfigParams(self, dlg):
-        global selectedCombo, projectInstance
+        global projectInstance
         self.items = defaultdict(dict)
         for group, settings in paramsOL.iteritems():
             item = QTreeWidgetItem()
@@ -225,19 +219,14 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, value in settings.iteritems():
                 isTuple = False
                 if isinstance(value, bool):
-                    if projectInstance.readBoolEntry("qgis2web",
-                                                     param)[0] == 2:
-                        value = True
-                    if projectInstance.readBoolEntry("qgis2web",
-                                                     param)[0] == 0:
-                        value = False
+                    value = projectInstance.readBoolEntry("qgis2web",
+                                                          param)[0]
                 elif isinstance(value, int):
                     if projectInstance.readNumEntry("qgis2web",
                                                     param)[0] != 0:
                         value = projectInstance.readNumEntry("qgis2web",
                                                              param)[0]
                 elif isinstance(value, tuple):
-                    selectedCombo = param
                     isTuple = True
                     if projectInstance.readNumEntry("qgis2web",
                                                     param)[0] != 0:
@@ -337,6 +326,20 @@ class MainDialog(QDialog, Ui_MainDialog):
         parameters["Appearance"]["Base layer"] = basemaps
         return parameters
 
+    def saveParameters(self):
+        global projectInstance
+        projectInstance.removeEntry("qgis2web", "/")
+        parameters = defaultdict(dict)
+        for group, settings in self.items.iteritems():
+            for param, item in settings.iteritems():
+                projectInstance.writeEntry("qgis2web", param, item.setting())
+        basemaps = self.basemaps.selectedItems()
+        for count, basemap in enumerate(basemaps):
+            projectInstance.writeEntry("qgis2web",
+                                       "Base layer/Basemap" + unicode(count),
+                                       basemap.text())
+        return parameters
+
     def getLayersAndGroups(self):
         layers = []
         groups = {}
@@ -384,6 +387,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 cluster[::-1])
 
     def closeEvent(self, event):
+        self.saveParameters()
         QSettings().setValue("qgis2web/size", self.size())
         QSettings().setValue("qgis2web/pos", self.pos())
         event.accept()
@@ -558,14 +562,8 @@ class TreeSettingItem(QTreeWidgetItem):
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
             index = self.combo.currentIndex()
-            self.combo.highlighted.connect(self.clickCombo)
-            self.combo.currentIndexChanged.connect(dlg.saveComboSettings)
         else:
             self.setText(1, unicode(value))
-
-    def clickCombo(self):
-        global selectedCombo
-        selectedCombo = self.name
 
     def value(self):
         if isinstance(self._value, bool):
@@ -574,5 +572,15 @@ class TreeSettingItem(QTreeWidgetItem):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
             return self.combo.currentText()
+        else:
+            return self.text(1)
+
+    def setting(self):
+        if isinstance(self._value, bool):
+            return self.checkState(1) == Qt.Checked
+        elif isinstance(self._value, (int, float)):
+            return float(self.text(1))
+        elif isinstance(self._value, tuple):
+            return self.combo.currentIndex()
         else:
             return self.text(1)
