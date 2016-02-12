@@ -266,6 +266,13 @@ class MainDialog(QDialog, Ui_MainDialog):
             for key in baselayers[i]:
                 attrFields.append(key)
         self.basemaps.addItems(attrFields)
+        basemaps = projectInstance.readEntry("qgis2web", "Basemaps")[0]
+        for basemap in basemaps.split(","):
+            try:
+                self.basemaps.findItems(basemap,
+                                        (Qt.MatchExactly))[0].setSelected(True)
+            except:
+                pass
 
     def selectMapFormat(self):
         global projectInstance
@@ -334,10 +341,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, item in settings.iteritems():
                 projectInstance.writeEntry("qgis2web", param, item.setting())
         basemaps = self.basemaps.selectedItems()
-        for count, basemap in enumerate(basemaps):
-            projectInstance.writeEntry("qgis2web",
-                                       "Base layer/Basemap" + unicode(count),
-                                       basemap.text())
+        basemaplist = ",".join(basemap.text() for basemap in basemaps)
+        projectInstance.writeEntry("qgis2web", "Basemaps", basemaplist)
         return parameters
 
     def getLayersAndGroups(self):

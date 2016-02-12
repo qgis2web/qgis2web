@@ -21,7 +21,8 @@ from utils import tempFolder
 
 def getTemplates():
     fl = os.path.join(os.path.dirname(__file__), "templates")
-    return tuple(f[:f.find(".")] for f in reversed(os.listdir(fl)) if f.endswith("html"))
+    return tuple(f[:f.find(".")] for f in reversed(os.listdir(fl))
+                 if f.endswith("html"))
 
 paramsOL = {
     "Appearance": {
