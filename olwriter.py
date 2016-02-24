@@ -62,7 +62,7 @@ def writeOL(iface, layers, groups, popup, visible,
         exportStyles(layers, folder, clustered)
         writeLayersAndGroups(layers, groups, visible, folder,
                              settings, json, matchCRS, clustered)
-        jsAddress = '<script src="resources/bind_polyfill.js"></script>'
+        jsAddress = '<script src="resources/polyfills.js"></script>'
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = """<link rel="stylesheet" """
             cssAddress += """href="./resources/ol.css" />"""
