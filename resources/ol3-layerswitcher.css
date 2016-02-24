@@ -1,3 +1,11 @@
+.layer-switcher.shown.ol-control {
+    background-color: transparent;
+}
+
+.layer-switcher.shown.ol-control:hover {
+    background-color: transparent;
+}
+
 .layer-switcher {
     position: absolute;
     top: 3.5em;
@@ -5,14 +13,19 @@
     text-align: left;
 }
 
-.layer-switcher .panel {
-    padding-right: 50px;
-    border: 1px solid #cccccc;
-    background-color: white;
+.layer-switcher.shown {
+    bottom: 3em;
 }
 
 .layer-switcher .panel {
+    padding: 0 1em 0 0;
+    margin: 0;
+    border: 4px solid #eee;
+    border-radius: 4px;
+    background-color: white;
     display: none;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 .layer-switcher.shown .panel {
@@ -30,6 +43,10 @@
     border: none;
 }
 
+.layer-switcher.shown button {
+    display: none;
+}
+
 .layer-switcher button:focus, .layer-switcher button:hover {
     background-color: white;
 }
@@ -45,4 +62,31 @@
 
 .layer-switcher li.group > label {
     font-weight: bold;
+}
+
+.layer-switcher li.layer {
+    display: table;
+}
+
+.layer-switcher li.layer label, .layer-switcher li.layer input {
+    display: table-cell;
+    vertical-align: sub;
+}
+
+.layer-switcher input {
+    margin: 4px;
+}
+
+.layer-switcher.touch ::-webkit-scrollbar {
+    width: 4px;
+}
+
+.layer-switcher.touch ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.layer-switcher.touch ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }

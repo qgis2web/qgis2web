@@ -1,8 +1,10 @@
 /**
  * OpenLayers 3 Layer Switcher Control.
+ * See [the examples](./examples) for usage.
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.ControlOptions} options Control options.
+ * @param {Object} opt_options Control options, extends olx.control.ControlOptions adding:
+ *                              **`tipLabel`** `String` - the button tooltip.
  */
 ol.control.LayerSwitcher = function(opt_options) {
 
@@ -14,6 +16,9 @@ ol.control.LayerSwitcher = function(opt_options) {
     this.mapListeners = [];
 
     this.hiddenClassName = 'ol-unselectable ol-control layer-switcher';
+    if (ol.control.LayerSwitcher.isTouchDevice_()) {
+        this.hiddenClassName += ' touch';
+    }
     this.shownClassName = this.hiddenClassName + ' shown';
 
     var element = document.createElement('div');
@@ -26,20 +31,23 @@ ol.control.LayerSwitcher = function(opt_options) {
     this.panel = document.createElement('div');
     this.panel.className = 'panel';
     element.appendChild(this.panel);
+    ol.control.LayerSwitcher.enableTouchScroll_(this.panel);
 
     var this_ = this;
 
-    element.onmouseover = function(e) {
+    button.onmouseover = function(e) {
         this_.showPanel();
     };
 
     button.onclick = function(e) {
+        e = e || window.event;
         this_.showPanel();
+        e.preventDefault();
     };
 
-    element.onmouseout = function(e) {
+    this_.panel.onmouseout = function(e) {
         e = e || window.event;
-        if (!element.contains(e.toElement)) {
+        if (!this_.panel.contains(e.toElement || e.relatedTarget)) {
             this_.hidePanel();
         }
     };
@@ -54,7 +62,7 @@ ol.control.LayerSwitcher = function(opt_options) {
 ol.inherits(ol.control.LayerSwitcher, ol.control.Control);
 
 /**
- * Show the layer panel
+ * Show the layer panel.
  */
 ol.control.LayerSwitcher.prototype.showPanel = function() {
     if (this.element.className != this.shownClassName) {
@@ -64,7 +72,7 @@ ol.control.LayerSwitcher.prototype.showPanel = function() {
 };
 
 /**
- * Hide the layer panel
+ * Hide the layer panel.
  */
 ol.control.LayerSwitcher.prototype.hidePanel = function() {
     if (this.element.className != this.hiddenClassName) {
@@ -73,7 +81,7 @@ ol.control.LayerSwitcher.prototype.hidePanel = function() {
 };
 
 /**
- * Cause the panel to be re-draw to represent the current layer state.
+ * Re-draw the layer panel to represent the current state of the layers.
  */
 ol.control.LayerSwitcher.prototype.renderPanel = function() {
 
@@ -111,7 +119,8 @@ ol.control.LayerSwitcher.prototype.setMap = function(map) {
 };
 
 /**
- * Ensure only the top-most base layer is visible if more than one is visible
+ * Ensure only the top-most base layer is visible if more than one is visible.
+ * @private
  */
 ol.control.LayerSwitcher.prototype.ensureTopVisibleBaseLayerShown_ = function() {
     var lastVisibleBaseLyr;
@@ -156,7 +165,7 @@ ol.control.LayerSwitcher.prototype.renderLayer_ = function(lyr, idx) {
     var li = document.createElement('li');
 
     var lyrTitle = lyr.get('title');
-    var lyrId = lyr.get('title').replace(' ', '-') + '_' + idx;
+    var lyrId = lyr.get('title').replace(/\s+/g, '-') + '_' + idx;
 
     var label = document.createElement('label');
 
@@ -172,6 +181,7 @@ ol.control.LayerSwitcher.prototype.renderLayer_ = function(lyr, idx) {
 
     } else {
 
+        li.className = 'layer';
         var input = document.createElement('input');
         if (lyr.get('type') === 'base') {
             input.type = 'radio';
@@ -213,11 +223,11 @@ ol.control.LayerSwitcher.prototype.renderLayers_ = function(lyr, elm) {
 };
 
 /**
- * Call the supplied function for each layer in the passed layer group
+ * **Static** Call the supplied function for each layer in the passed layer group
  * recursing nested groups.
  * @param {ol.layer.Group} lyr The layer group to start iterating from.
- * @param {Function} fn Callback which will be called for each ol.layer.Base
- * found under lyr. The signature for fn is the same as ol.Collection#forEach
+ * @param {Function} fn Callback which will be called for each `ol.layer.Base`
+ * found under `lyr`. The signature for `fn` is the same as `ol.Collection#forEach`
  */
 ol.control.LayerSwitcher.forEachRecursive = function(lyr, fn) {
     lyr.getLayers().forEach(function(lyr, idx, a) {
@@ -226,4 +236,35 @@ ol.control.LayerSwitcher.forEachRecursive = function(lyr, fn) {
             ol.control.LayerSwitcher.forEachRecursive(lyr, fn);
         }
     });
+};
+
+/**
+* @private
+* @desc Apply workaround to enable scrolling of overflowing content within an
+* element. Adapted from https://gist.github.com/chrismbarr/4107472
+*/
+ol.control.LayerSwitcher.enableTouchScroll_ = function(elm) {
+   if(ol.control.LayerSwitcher.isTouchDevice_()){
+       var scrollStartPos = 0;
+       elm.addEventListener("touchstart", function(event) {
+           scrollStartPos = this.scrollTop + event.touches[0].pageY;
+       }, false);
+       elm.addEventListener("touchmove", function(event) {
+           this.scrollTop = scrollStartPos - event.touches[0].pageY;
+       }, false);
+   }
+};
+
+/**
+ * @private
+ * @desc Determine if the current browser supports touch events. Adapted from
+ * https://gist.github.com/chrismbarr/4107472
+ */
+ol.control.LayerSwitcher.isTouchDevice_ = function() {
+    try {
+        document.createEvent("TouchEvent");
+        return true;
+    } catch(e) {
+        return false;
+    }
 };
