@@ -164,3 +164,28 @@ and supported the merge.</p>
     <li>github.com/riccardoklinger</li>
     <li>github.com/pcav</li>
 </ul>
+
+<p>Obviously, qgis2web could not exist without the following monumental
+software:</p>
+
+<ul>
+    <li>QGIS</li>
+    <li>OpenLayers 3</li>
+    <li>Leaflet</li>
+</ul>
+
+<p>In addition, the following libraries have been used:</p>
+
+<ul>
+    <li>ol3-layerswitcher, by @walkermatt</li>
+    <li>Autolinker.js, by @gregjacobs</li>
+    <li>requestAnimationFrame polyfill, by @paulirish</li>
+    <li>Function.prototype.bind polyfill, by Mozilla</li>
+    <li>Leaflet.draw, by @jacobtoye</li>
+    <li>Leaflet.label, by @jacobtoye</li>
+    <li>Leaflet.markercluster, by @danzel</li>
+    <li>Leaflet.MeasureControl, by @makinacorpus</li>
+    <li>leaflet-hash, by @mlevans</li>
+    <li>Proj4js, by @madair, @calvinmetcalf, and other</li>
+    <li>Proj4Leaflet, by @kartena</li>
+</ul>
