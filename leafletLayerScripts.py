@@ -2,7 +2,8 @@ import re
 import os
 import time
 import tempfile
-from PyQt4.QtCore import QSize
+import traceback
+from PyQt4.QtCore import QSize, QVariant
 from qgis.core import *
 import processing
 from leafletScriptStrings import *
@@ -12,6 +13,33 @@ from utils import writeTmpLayer, getUsedFields, removeSpaces
 def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                     layerFileName, safeLayerName, minify):
     cleanedLayer = writeTmpLayer(i, eachPopup)
+    if i.rendererV2().type() == "25dRenderer":
+        # print safeLayerName + " is 2.5d"
+        provider = cleanedLayer.dataProvider()
+        provider.addAttributes([QgsField("height", QVariant.Double),
+                                QgsField("wallColor", QVariant.String),
+                                QgsField("roofColor", QVariant.String)])
+        cleanedLayer.updateFields()
+        fields = cleanedLayer.pendingFields()
+        feats = i.getFeatures()
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.layerScope(i))
+        expression = QgsExpression('eval(@qgis_25d_height)')
+        for feat in feats:
+            context.setFeature(feat)
+            height = expression.evaluate(context)
+            symbol = i.rendererV2().symbolForFeature(feat)
+            shadows = symbol.symbolLayer(0).paintEffect().effectList()[0].enabled()
+            wallColor = symbol.symbolLayer(1).subSymbol().color().name()
+            roofColor = symbol.symbolLayer(2).subSymbol().color().name()
+            try:
+                height = height * 5
+            except:
+                pass
+            provider.changeAttributeValues({feat.id():
+                    {fields.indexFromName("height"): height,
+                     fields.indexFromName("wallColor"): wallColor,
+                     fields.indexFromName("roofColor"): roofColor}})
     writer = QgsVectorFileWriter
     options = "COORDINATE_PRECISION=" + unicode(precision)
     writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8', exp_crs,
@@ -89,12 +117,14 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
 
     if (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
+        print safeLayerName + ": single"
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, i, layer_transp,
                                   labeltext, cluster, cluster_num, visible,
                                   json, usedFields, legends, count, popFuncs)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        print safeLayerName + ": categorized"
         (new_obj, legends,
          wfsLayers) = categorizedLayer(i, renderer, safeLayerName,
                                        outputProjectFileName, layer_transp,
@@ -102,14 +132,19 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                                        cluster, cluster_num, popFuncs, visible,
                                        json, wfsLayers)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        print safeLayerName + ": graduated"
         (new_obj, legends,
          wfsLayers) = graduatedLayer(i, safeLayerName, renderer,
                                      outputProjectFileName, layer_transp,
                                      labeltext, popFuncs, cluster, cluster_num,
                                      visible, json, usedFields, count, legends,
                                      wfsLayers)
-    else:
-        print "No renderer"
+    elif isinstance(renderer, Qgs25DRenderer):
+        print safeLayerName + ": 2.5d"
+    elif renderer.type() == "25dRenderer":
+        new_obj = """
+        var osmb = new OSMBuildings(map).date(new Date('2015-07-15 08:00:00'));
+        osmb.set(json_{sln});""".format(sln=safeLayerName)
 
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")

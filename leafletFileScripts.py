@@ -34,6 +34,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
                             jsStore + 'images/marker-shadow.png')
     shutil.copyfile(jsDir + 'Autolinker.min.js',
                     jsStore + 'Autolinker.min.js')
+    shutil.copyfile(jsDir + 'OSMBuildings-Leaflet.js',
+                    jsStore + 'OSMBuildings-Leaflet.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     if len(cluster_set):
         shutil.copyfile(jsDir + 'leaflet.markercluster.js',
@@ -75,6 +77,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         cssAddress += 'leaflet.css" />'
         jsAddress = '<script src="http://'
         jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
+    jsAddress += '<script src="js/OSMBuildings-Leaflet.js"></script>'
     extracss = '<link rel="stylesheet" type="text/css" '
     extracss += """href="css/qgis2web.css">
         <link rel="stylesheet" href="css/label.css" />"""
