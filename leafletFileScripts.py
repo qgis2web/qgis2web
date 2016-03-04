@@ -77,7 +77,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         cssAddress += 'leaflet.css" />'
         jsAddress = '<script src="http://'
         jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
-    jsAddress += '<script src="js/OSMBuildings-Leaflet.js"></script>'
+    jsAddress += """
+        <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" type="text/css" '
     extracss += """href="css/qgis2web.css">
         <link rel="stylesheet" href="css/label.css" />"""

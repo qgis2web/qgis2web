@@ -102,31 +102,37 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             try:
                 if layer.rendererV2().type() == "25dRenderer":
                     print cleanLayer.name() + " is 2.5d"
-                    cleanLayer.dataProvider().addAttributes([QgsField("height", QVariant.Double)])
+                    cleanLayer.dataProvider().addAttributes([QgsField("height",
+                                                             QVariant.Double)])
                     cleanLayer.updateFields()
                     fields = cleanLayer.pendingFields()
                     feats = layer.getFeatures()
                     context = QgsExpressionContext()
-                    context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+                    context.appendScope(
+                        QgsExpressionContextUtils.layerScope(layer))
                     expression = QgsExpression('eval(@qgis_25d_height)')
                     for feat in feats:
-                        context.setFeature( feat )
-                        val = expression.evaluate( context )
+                        context.setFeature(feat)
+                        val = expression.evaluate(context)
                         try:
                             val = val * 5
                         except:
                             pass
-                        cleanLayer.dataProvider().changeAttributeValues({feat.id(): {fields.indexFromName("height"): val}})
+                        cleanLayer.dataProvider().changeAttributeValues(
+                            {feat.id(): {fields.indexFromName("height"): val}})
             except:
                 print traceback.format_exc()
 
             tmpPath = os.path.join(layersFolder,
                                    safeName(cleanLayer.name()) + ".json")
-            path = os.path.join(layersFolder, safeName(cleanLayer.name()) + ".js")
-            QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8",
-                                                    epsg4326, 'GeoJson')
+            path = os.path.join(layersFolder,
+                                safeName(cleanLayer.name()) + ".js")
+            QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
+                                                    "utf-8", epsg4326,
+                                                    'GeoJson')
             with open(path, "w") as f:
-                f.write("var %s = " % ("geojson_" + safeName(cleanLayer.name())))
+                f.write("var %s = " % ("geojson_" +
+                                       safeName(cleanLayer.name())))
                 with open(tmpPath, "r") as f2:
                     for line in f2:
                         line = reducePrecision.sub(r"\1", line)
