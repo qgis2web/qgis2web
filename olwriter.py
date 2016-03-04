@@ -244,6 +244,10 @@ def writeLayersAndGroups(layers, groups, visible, folder,
         try:
             if layer.rendererV2().type() == "25dRenderer":
                 pass
+            else:
+                layerVars += "\n".join([layerToJavascript(iface, layer,
+                                                          encode2json,
+                                                          matchCRS, cluster)])
         except:
             layerVars += "\n".join([layerToJavascript(iface, layer,
                                                       encode2json, matchCRS,
@@ -271,6 +275,8 @@ def writeLayersAndGroups(layers, groups, visible, folder,
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(geojson_{sln});""".format(shadows='', sln=safeName(layer.name()))
+            else:
+                mapLayers.append("lyr_" + safeName(layer.name()))
         except:
             mapLayers.append("lyr_" + safeName(layer.name()))
     visibility = ""
@@ -284,6 +290,14 @@ osmb.set(geojson_{sln});""".format(shadows='', sln=safeName(layer.name()))
         try:
             if layer.rendererV2().type() == "25dRenderer":
                 pass
+            else:
+                if layer.id() in groupedLayers:
+                    groupName = groupedLayers[layer.id()]
+                    if groupName not in usedGroups:
+                        group_list.append("group_" + safeName(groupName))
+                        usedGroups.append(groupName)
+                else:
+                    no_group_list.append("lyr_" + safeName(layer.name()))
         except:
             if layer.id() in groupedLayers:
                 groupName = groupedLayers[layer.id()]
