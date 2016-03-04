@@ -29,7 +29,6 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
             context.setFeature(feat)
             height = expression.evaluate(context)
             symbol = i.rendererV2().symbolForFeature(feat)
-            shadows = symbol.symbolLayer(0).paintEffect().effectList()[0].enabled()
             wallColor = symbol.symbolLayer(1).subSymbol().color().name()
             roofColor = symbol.symbolLayer(2).subSymbol().color().name()
             try:
@@ -142,9 +141,15 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
     elif isinstance(renderer, Qgs25DRenderer):
         print safeLayerName + ": 2.5d"
     elif renderer.type() == "25dRenderer":
+        shadows = ""
+        for feat in i.getFeatures():
+            symbol = i.rendererV2().symbolForFeature(feat)
+            if not symbol.symbolLayer(0).paintEffect().effectList()[0].enabled():
+                shadows = "'2015-07-15 10:00:00'"
+
         new_obj = """
-        var osmb = new OSMBuildings(map).date(new Date('2015-07-15 08:00:00'));
-        osmb.set(json_{sln});""".format(sln=safeLayerName)
+        var osmb = new OSMBuildings(map).date(new Date({shadows}));
+        osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
 
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")
