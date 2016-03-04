@@ -165,7 +165,9 @@ def writeOL(iface, layers, groups, popup, visible,
                 <div id="popup-content"></div>
             </div>"""
         ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>
+        <script src="./resources/Autolinker.min.js"></script>"""
+        if osmb != "":
+            ol3qgis2webjs += """
         <script>{osmb}</script>""".format(osmb=osmb)
         ol3layers = """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
@@ -588,9 +590,9 @@ def exportStyles(layers, folder, clustered):
     allStyles.push.apply(allStyles, style);
     return allStyles;
 }''' % {
-                "style": style, "label": labelText,
-                "cache": "styleCache_" + safeName(layer.name()),
-                "size": size, "color": color, "value": value}
+                    "style": style, "label": labelText,
+                    "cache": "styleCache_" + safeName(layer.name()),
+                    "size": size, "color": color, "value": value}
             else:
                 style = "''"
         except Exception, e:
