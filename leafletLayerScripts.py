@@ -36,9 +36,9 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
             except:
                 pass
             provider.changeAttributeValues({feat.id():
-                    {fields.indexFromName("height"): height,
-                     fields.indexFromName("wallColor"): wallColor,
-                     fields.indexFromName("roofColor"): roofColor}})
+                        {fields.indexFromName("height"): height,
+                         fields.indexFromName("wallColor"): wallColor,
+                         fields.indexFromName("roofColor"): roofColor}})
     writer = QgsVectorFileWriter
     options = "COORDINATE_PRECISION=" + unicode(precision)
     writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8', exp_crs,
@@ -143,8 +143,8 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
     elif renderer.type() == "25dRenderer":
         shadows = ""
         for feat in i.getFeatures():
-            symbol = i.rendererV2().symbolForFeature(feat)
-            if not symbol.symbolLayer(0).paintEffect().effectList()[0].enabled():
+            symbolLayer = i.rendererV2().symbolForFeature(feat).symbolLayer(0)
+            if not symbolLayer.paintEffect().effectList()[0].enabled():
                 shadows = "'2015-07-15 10:00:00'"
 
         new_obj = """
