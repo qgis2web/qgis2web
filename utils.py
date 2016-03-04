@@ -101,25 +101,41 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             cleanLayer = writeTmpLayer(layer, popup)
             try:
                 if layer.rendererV2().type() == "25dRenderer":
-                    print cleanLayer.name() + " is 2.5d"
-                    cleanLayer.dataProvider().addAttributes([QgsField("height",
-                                                             QVariant.Double)])
+                    # print safeLayerName + " is 2.5d"
+                    provider = cleanLayer.dataProvider()
+                    provider.addAttributes([QgsField("height",
+                                                     QVariant.Double),
+                                            QgsField("wallColor",
+                                                     QVariant.String),
+                                            QgsField("roofColor",
+                                                     QVariant.String)])
                     cleanLayer.updateFields()
                     fields = cleanLayer.pendingFields()
                     feats = layer.getFeatures()
                     context = QgsExpressionContext()
                     context.appendScope(
-                        QgsExpressionContextUtils.layerScope(layer))
+                                QgsExpressionContextUtils.layerScope(layer))
                     expression = QgsExpression('eval(@qgis_25d_height)')
                     for feat in feats:
                         context.setFeature(feat)
-                        val = expression.evaluate(context)
+                        height = expression.evaluate(context)
+                        symbol = layer.rendererV2().symbolForFeature(feat)
+                        wallLayer = symbol.symbolLayer(1)
+                        roofLayer = symbol.symbolLayer(2)
+                        wallColor = wallLayer.subSymbol().color().name()
+                        roofColor = roofLayer.subSymbol().color().name()
                         try:
-                            val = val * 5
+                            height = height * 5
                         except:
                             pass
-                        cleanLayer.dataProvider().changeAttributeValues(
-                            {feat.id(): {fields.indexFromName("height"): val}})
+                        heightField = fields.indexFromName("height")
+                        wallField = fields.indexFromName("wallColor")
+                        roofField = fields.indexFromName("roofColor")
+                        provider.changeAttributeValues(
+                                {feat.id():
+                                 {heightField: height,
+                                  wallField: wallColor,
+                                  roofField: roofColor}})
             except:
                 print traceback.format_exc()
 

@@ -60,8 +60,8 @@ def writeOL(iface, layers, groups, popup, visible,
         exportLayers(iface, layers, folder, precision,
                      optimize, usedFields, json)
         exportStyles(layers, folder, clustered)
-        writeLayersAndGroups(layers, groups, visible, folder,
-                             settings, json, matchCRS, clustered)
+        osmb = writeLayersAndGroups(layers, groups, visible, folder,
+                                    settings, json, matchCRS, clustered)
         jsAddress = '<script src="resources/polyfills.js"></script>'
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = """<link rel="stylesheet" """
@@ -165,7 +165,8 @@ def writeOL(iface, layers, groups, popup, visible,
                 <div id="popup-content"></div>
             </div>"""
         ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>"""
+        <script src="./resources/Autolinker.min.js"></script>
+        <script>{osmb}</script>""".format(osmb=osmb)
         ol3layers = """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
         mapSize = iface.mapCanvas().size()
@@ -238,8 +239,13 @@ def writeLayersAndGroups(layers, groups, visible, folder,
 
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
-        layerVars += "\n".join([layerToJavascript(iface, layer, encode2json,
-                                                  matchCRS, cluster)])
+        try:
+            if layer.rendererV2().type() == "25dRenderer":
+                pass
+        except:
+            layerVars += "\n".join([layerToJavascript(iface, layer,
+                                                      encode2json, matchCRS,
+                                                      cluster)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -256,8 +262,15 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     if settings["Appearance"]["Base layer"] != "None":
         mapLayers.append("baseLayer")
     usedGroups = []
+    osmb = ""
     for layer in layers:
-        mapLayers.append("lyr_" + safeName(layer.name()))
+        try:
+            if layer.rendererV2().type() == "25dRenderer":
+                osmb = """
+var osmb = new OSMBuildings(map).date(new Date({shadows}));
+osmb.set(geojson_{sln});""".format(shadows='', sln=safeName(layer.name()))
+        except:
+            mapLayers.append("lyr_" + safeName(layer.name()))
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
@@ -266,13 +279,17 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     group_list = ["baseLayer"]
     no_group_list = []
     for layer in layers:
-        if layer.id() in groupedLayers:
-            groupName = groupedLayers[layer.id()]
-            if groupName not in usedGroups:
-                group_list.append("group_" + safeName(groupName))
-                usedGroups.append(groupName)
-        else:
-            no_group_list.append("lyr_" + safeName(layer.name()))
+        try:
+            if layer.rendererV2().type() == "25dRenderer":
+                pass
+        except:
+            if layer.id() in groupedLayers:
+                groupName = groupedLayers[layer.id()]
+                if groupName not in usedGroups:
+                    group_list.append("group_" + safeName(groupName))
+                    usedGroups.append(groupName)
+            else:
+                no_group_list.append("lyr_" + safeName(layer.name()))
 
     layersList = []
     for layer in (group_list + no_group_list):
@@ -286,6 +303,7 @@ def writeLayersAndGroups(layers, groups, visible, folder,
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersListString + "\n")
+    return osmb
 
 
 def replaceInScript(template, values):
@@ -531,6 +549,8 @@ def exportStyles(layers, folder, clustered):
             style =  range[2];
         }
     }''' % {"v": varName}
+            else:
+                style = ""
             if layer.customProperty("labeling/fontSize"):
                 size = float(layer.customProperty("labeling/fontSize")) * 1.3
             else:
@@ -539,7 +559,8 @@ def exportStyles(layers, folder, clustered):
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
             color = "rgba(%s, %s, %s, 255)" % (r, g, b)
-            style = '''function(feature, resolution){
+            if style != "":
+                style = '''function(feature, resolution){
     %(value)s
     %(style)s;
     if (%(label)s) {
@@ -570,9 +591,12 @@ def exportStyles(layers, folder, clustered):
                 "style": style, "label": labelText,
                 "cache": "styleCache_" + safeName(layer.name()),
                 "size": size, "color": color, "value": value}
+            else:
+                style = "''"
         except Exception, e:
             style = """{
             /* """ + traceback.format_exc() + " */}"
+            print traceback.format_exc()
 
         path = os.path.join(stylesFolder, safeName(layer.name()) + "_style.js")
 

@@ -13,35 +13,39 @@ from utils import writeTmpLayer, getUsedFields, removeSpaces
 def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                     layerFileName, safeLayerName, minify):
     cleanedLayer = writeTmpLayer(i, eachPopup)
-    if i.rendererV2().type() == "25dRenderer":
-        # print safeLayerName + " is 2.5d"
-        provider = cleanedLayer.dataProvider()
-        provider.addAttributes([QgsField("height", QVariant.Double),
-                                QgsField("wallColor", QVariant.String),
-                                QgsField("roofColor", QVariant.String)])
-        cleanedLayer.updateFields()
-        fields = cleanedLayer.pendingFields()
-        feats = i.getFeatures()
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.layerScope(i))
-        expression = QgsExpression('eval(@qgis_25d_height)')
-        for feat in feats:
-            context.setFeature(feat)
-            height = expression.evaluate(context)
-            symbol = i.rendererV2().symbolForFeature(feat)
-            wallColor = symbol.symbolLayer(1).subSymbol().color().name()
-            roofColor = symbol.symbolLayer(2).subSymbol().color().name()
-            try:
-                height = height * 5
-            except:
-                pass
-            heightField = fields.indexFromName("height")
-            wallField = fields.indexFromName("wallColor")
-            roofField = fields.indexFromName("roofColor")
-            provider.changeAttributeValues({feat.id():
-                                            {heightField: height,
-                                             wallField: wallColor,
-                                             roofField: roofColor}})
+    try:
+        if i.rendererV2().type() == "25dRenderer":
+            # print safeLayerName + " is 2.5d"
+            provider = cleanedLayer.dataProvider()
+            provider.addAttributes([QgsField("height", QVariant.Double),
+                                    QgsField("wallColor", QVariant.String),
+                                    QgsField("roofColor", QVariant.String)])
+            cleanedLayer.updateFields()
+            fields = cleanedLayer.pendingFields()
+            feats = i.getFeatures()
+            context = QgsExpressionContext()
+            context.appendScope(QgsExpressionContextUtils.layerScope(i))
+            expression = QgsExpression('eval(@qgis_25d_height)')
+            for feat in feats:
+                context.setFeature(feat)
+                height = expression.evaluate(context)
+                symbol = i.rendererV2().symbolForFeature(feat)
+                wallColor = symbol.symbolLayer(1).subSymbol().color().name()
+                roofColor = symbol.symbolLayer(2).subSymbol().color().name()
+                try:
+                    height = height * 5
+                except:
+                    pass
+                heightField = fields.indexFromName("height")
+                wallField = fields.indexFromName("wallColor")
+                roofField = fields.indexFromName("roofColor")
+                provider.changeAttributeValues({feat.id():
+                                                {heightField: height,
+                                                 wallField: wallColor,
+                                                 roofField: roofColor}})
+    except:
+        print traceback.format_exc()
+
     writer = QgsVectorFileWriter
     options = "COORDINATE_PRECISION=" + unicode(precision)
     writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8', exp_crs,
