@@ -35,10 +35,13 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                 height = height * 5
             except:
                 pass
+            heightField = fields.indexFromName("height")
+            wallField = fields.indexFromName("wallColor")
+            roofField = fields.indexFromName("roofColor")
             provider.changeAttributeValues({feat.id():
-                        {fields.indexFromName("height"): height,
-                         fields.indexFromName("wallColor"): wallColor,
-                         fields.indexFromName("roofColor"): roofColor}})
+                                            {heightField: height,
+                                             wallField: wallColor,
+                                             roofField: roofColor}})
     writer = QgsVectorFileWriter
     options = "COORDINATE_PRECISION=" + unicode(precision)
     writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8', exp_crs,

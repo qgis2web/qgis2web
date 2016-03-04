@@ -188,4 +188,5 @@ software:</p>
     <li>leaflet-hash, by @mlevans</li>
     <li>Proj4js, by @madair, @calvinmetcalf, and other</li>
     <li>Proj4Leaflet, by @kartena</li>
+    <li>OSMBuildings, by @kekscom</li>
 </ul>
