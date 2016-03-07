@@ -23,7 +23,7 @@ email=tom.chadwin@nnpa.org.uk
 
 # Uncomment the following line and add your changelog entries:
 changelog=2016/03/04 1.2.0 2.5d OL3 render (thanks, @kekscom!), added credit to 1.1.0 changelog metadata
-    2016/03/04 1.1.0 ol3-layerswitcher updated, bump to OL3.14.2, add required polyfills, expand credits, 2.5d Leaflet render (thanks, @m-kuhn!)
+    2016/03/04 1.1.0 ol3-layerswitcher updated (thanks, @walkermatt!), bump to OL3.14.2, add required polyfills, expand credits, 2.5d Leaflet render (thanks, @m-kuhn!)
     2016/02/12 1.0.0 Leaflet JSON categorized/graduated clusters, OL3 raster scale-dependent visibility, Leaflet unicode field aliases, refactor and fix save settings, correct canvas-size template, tweak UI, update README
     2016/02/05 1.0.0-RC3 Leaflet refactor, Openlayers bumped to 3.13.1, OL3 output tidy, Leaflet output tidy, qgis2web attribution on maps with no basemaps, qgis2web attribution on OL3 maps, format OL3 attribution, Leaflet rasters missing from layers list, remove broken Leaflet Autolinker link, OL3 rasters misprojected (thanks, @lucacasagrande!), OL3 highlight points (thanks, @lucacasagrande!), highlight lines (thanks @lucacasagrande!), Leaflet fit to layers with no map layers, Leaflet layers missing on map load, Leaflet highlighted layer comes to front, fix Leaflet geocode CSS URL, fix Leaflet clusters in layers list, handle non-ASCII project and layer names (thanks @akbargumbira!), Leaflet categorized point layers list, updated README
     2016/01/15 1.0.0-RC2 Scale-dependent visibility widget removed from GUI, README updated, OL upgraded to 3.13.0, web inspector added, OL3 export refactored, tests refactored, Leaflet export refactored, revert Leaflet styled rasters, change Leaflet raster export to EPSG:3857
