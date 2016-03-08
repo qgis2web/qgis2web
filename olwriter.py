@@ -272,9 +272,14 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     for layer in layers:
         try:
             if layer.rendererV2().type() == "25dRenderer":
+                shadows = ""
+                for feat in layer.getFeatures():
+                    symbolLayer = layer.rendererV2().symbolForFeature(feat).symbolLayer(0)
+                    if not symbolLayer.paintEffect().effectList()[0].enabled():
+                        shadows = "'2015-07-15 10:00:00'"
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
-osmb.set(geojson_{sln});""".format(shadows='', sln=safeName(layer.name()))
+osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             else:
                 mapLayers.append("lyr_" + safeName(layer.name()))
         except:
@@ -640,8 +645,11 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
         props = sl.properties()
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             color = getRGBAColor(props["color"], alpha)
+            borderColor = getRGBAColor(props["outline_color"], alpha)
+            borderWidth = props["outline_width"]
             size = symbol.size()
-            style = "image: %s" % getCircle(color, size, props)
+            style = "image: %s" % getCircle(color, borderColor, borderWidth,
+                                            size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
@@ -710,11 +718,11 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
     return "[ %s]" % ",".join(styles)
 
 
-def getCircle(color, size, props):
+def getCircle(color, borderColor, borderWidth, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
             stroke: %s%s})""" %
             (size,
-             getStrokeStyle("'rgba(0,0,0,255)'", "", "0.5", 0, 0),
+             getStrokeStyle(borderColor, "", borderWidth, 0, 0),
              getFillStyle(color, props)))
 
 

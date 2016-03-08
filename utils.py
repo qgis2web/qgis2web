@@ -182,6 +182,41 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                               out_raster)
 
 
+def is25d(layer):
+    print "is25d() called"
+    renderer = layer.rendererV2()
+    symbols = []
+    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        categories = renderer.categories()
+        for category in categories:
+            symbols.append(category.symbol())
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        ranges = renderer.ranges()
+        for range in ranges:
+            symbols.append(range.symbol())
+    else:
+        features = layer.getFeatures()
+        for feature in features:
+            symbol = renderer.symbolForFeature(feature)
+            symbols.append(symbol)
+
+    for sym in symbols:
+        try:
+            sl0 = sym.symbolLayer(0)
+            sl1 = sym.symbolLayer(1)
+            sl2 = sym.symbolLayer(2)
+            print "geomgen: " + unicode(isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2))
+            if (sl0.paintEffect().effectList()[0].enabled() and
+                    isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
+                    isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
+                print layer.name() + " is 2.5d"
+                return True
+        except:
+            print traceback.format_exc()
+    print layer.name() + " is NOT 2.5d"
+    return False
+
+
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
     validChr = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
