@@ -271,10 +271,11 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     osmb = ""
     for layer in layers:
         try:
-            if layer.rendererV2().type() == "25dRenderer":
+            renderer = layer.rendererV2()
+            if renderer.type() == "25dRenderer":
                 shadows = ""
                 for feat in layer.getFeatures():
-                    symbolLayer = layer.rendererV2().symbolForFeature(feat).symbolLayer(0)
+                    symbolLayer = renderer.symbolForFeature(feat).symbolLayer(0)
                     if not symbolLayer.paintEffect().effectList()[0].enabled():
                         shadows = "'2015-07-15 10:00:00'"
                 osmb = """

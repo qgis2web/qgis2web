@@ -205,7 +205,6 @@ def is25d(layer):
             sl0 = sym.symbolLayer(0)
             sl1 = sym.symbolLayer(1)
             sl2 = sym.symbolLayer(2)
-            print "geomgen: " + unicode(isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2))
             if (sl0.paintEffect().effectList()[0].enabled() and
                     isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
                     isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
