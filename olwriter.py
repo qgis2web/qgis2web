@@ -275,7 +275,8 @@ def writeLayersAndGroups(layers, groups, visible, folder,
             if renderer.type() == "25dRenderer":
                 shadows = ""
                 for feat in layer.getFeatures():
-                    symbolLayer = renderer.symbolForFeature(feat).symbolLayer(0)
+                    symbol = renderer.symbolForFeature(feat)
+                    symbolLayer = symbol.symbolLayer(0)
                     if not symbolLayer.paintEffect().effectList()[0].enabled():
                         shadows = "'2015-07-15 10:00:00'"
                 osmb = """
