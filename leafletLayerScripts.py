@@ -43,7 +43,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
             cleanedLayer.changeAttributeValue(feat.id(), wallField, wallColor)
             cleanedLayer.changeAttributeValue(feat.id(), roofField, roofColor)
         cleanedLayer.commitChanges()
-        renderer.stopRender(renderContext) 
+        renderer.stopRender(renderContext)
 
     writer = QgsVectorFileWriter
     options = "COORDINATE_PRECISION=" + unicode(precision)
