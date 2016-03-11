@@ -91,7 +91,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         if i.providerType() != 'WFS' or jsonEncode is True and i:
             if i.type() == QgsMapLayer.VectorLayer:
                 exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
-                                layerFileName, safeLayerName, minify)
+                                layerFileName, safeLayerName, minify, canvas)
                 new_src += jsonScript(safeLayerName)
 
             elif i.type() == QgsMapLayer.RasterLayer:
@@ -154,7 +154,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                                            highlight, popupsOnHover, popup,
                                            count, outputProjectFileName,
                                            wfsLayers, cluster, cluster_num,
-                                           visible, json, legends, new_src)
+                                           visible, json, legends, new_src,
+                                           canvas)
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
                 new_obj = wmsScript(i, safeLayerName)

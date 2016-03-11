@@ -7,44 +7,43 @@ from PyQt4.QtCore import QSize, QVariant
 from qgis.core import *
 import processing
 from leafletScriptStrings import *
-from utils import writeTmpLayer, getUsedFields, removeSpaces
+from utils import writeTmpLayer, getUsedFields, removeSpaces, is25d
 
 
 def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
-                    layerFileName, safeLayerName, minify):
+                    layerFileName, safeLayerName, minify, canvas):
     cleanedLayer = writeTmpLayer(i, eachPopup)
-    try:
-        if i.rendererV2().type() == "25dRenderer":
-            # print safeLayerName + " is 2.5d"
-            provider = cleanedLayer.dataProvider()
-            provider.addAttributes([QgsField("height", QVariant.Double),
-                                    QgsField("wallColor", QVariant.String),
-                                    QgsField("roofColor", QVariant.String)])
-            cleanedLayer.updateFields()
-            fields = cleanedLayer.pendingFields()
-            feats = i.getFeatures()
-            context = QgsExpressionContext()
-            context.appendScope(QgsExpressionContextUtils.layerScope(i))
-            expression = QgsExpression('eval(@qgis_25d_height)')
-            for feat in feats:
-                context.setFeature(feat)
-                height = expression.evaluate(context)
-                symbol = i.rendererV2().symbolForFeature(feat)
-                wallColor = symbol.symbolLayer(1).subSymbol().color().name()
-                roofColor = symbol.symbolLayer(2).subSymbol().color().name()
-                try:
-                    height = height * 5
-                except:
-                    pass
-                heightField = fields.indexFromName("height")
-                wallField = fields.indexFromName("wallColor")
-                roofField = fields.indexFromName("roofColor")
-                provider.changeAttributeValues({feat.id():
-                                                {heightField: height,
-                                                 wallField: wallColor,
-                                                 roofField: roofColor}})
-    except:
-        print traceback.format_exc()
+    if is25d(i, canvas):
+        # print safeLayerName + " is 2.5d"
+        provider = cleanedLayer.dataProvider()
+        provider.addAttributes([QgsField("height", QVariant.Double),
+                                QgsField("wallColor", QVariant.String),
+                                QgsField("roofColor", QVariant.String)])
+        cleanedLayer.updateFields()
+        fields = cleanedLayer.pendingFields()
+        renderer = i.rendererV2()
+        renderContext = QgsRenderContext.fromMapSettings(
+                canvas.mapSettings())
+        feats = i.getFeatures()
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.layerScope(i))
+        expression = QgsExpression('eval(@qgis_25d_height)')
+        heightField = fields.indexFromName("height")
+        wallField = fields.indexFromName("wallColor")
+        roofField = fields.indexFromName("roofColor")
+        renderer.startRender(renderContext, fields)
+        cleanedLayer.startEditing()
+        for feat in feats:
+            context.setFeature(feat)
+            height = expression.evaluate(context)
+            symbol = renderer.symbolForFeature(feat)
+            wallColor = symbol.symbolLayer(1).subSymbol().color().name()
+            roofColor = symbol.symbolLayer(2).subSymbol().color().name()
+            cleanedLayer.changeAttributeValue(feat.id(), heightField, height)
+            cleanedLayer.changeAttributeValue(feat.id(), wallField, wallColor)
+            cleanedLayer.changeAttributeValue(feat.id(), roofField, roofColor)
+        cleanedLayer.commitChanges()
+        renderer.stopRender(renderContext) 
 
     writer = QgsVectorFileWriter
     options = "COORDINATE_PRECISION=" + unicode(precision)
@@ -113,7 +112,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
 
 def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                      popup, count, outputProjectFileName, wfsLayers, cluster,
-                     cluster_num, visible, json, legends, new_src):
+                     cluster_num, visible, json, legends, new_src, canvas):
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(i, safeLayerName, usedFields, highlight,
                                  popupsOnHover, popup, count)
@@ -121,7 +120,22 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
     layer_transp = 1 - (float(i.layerTransparency()) / 100)
     new_obj = ""
 
-    if (isinstance(renderer, QgsSingleSymbolRendererV2) or
+    if is25d(i, canvas):
+        shadows = ""
+        renderer = i.rendererV2()
+        renderContext = QgsRenderContext.fromMapSettings(
+                canvas.mapSettings())
+        fields = i.pendingFields()
+        renderer.startRender(renderContext, fields)
+        for feat in i.getFeatures():
+            symbolLayer = renderer.symbolForFeature(feat).symbolLayer(0)
+            if not symbolLayer.paintEffect().effectList()[0].enabled():
+                shadows = "'2015-07-15 10:00:00'"
+        renderer.stopRender(renderContext)
+        new_obj = """
+        var osmb = new OSMBuildings(map).date(new Date({shadows}));
+        osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
+    elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
         print safeLayerName + ": single"
         (new_obj, legends,
@@ -147,35 +161,14 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                                      wfsLayers)
     elif isinstance(renderer, Qgs25DRenderer):
         print safeLayerName + ": 2.5d"
-    elif renderer.type() == "25dRenderer":
-        shadows = ""
-        for feat in i.getFeatures():
-            symbolLayer = i.rendererV2().symbolForFeature(feat).symbolLayer(0)
-            if not symbolLayer.paintEffect().effectList()[0].enabled():
-                shadows = "'2015-07-15 10:00:00'"
-
-        new_obj = """
-        var osmb = new OSMBuildings(map).date(new Date({shadows}));
-        osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
 
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")
     new_src += """
 """ + new_obj
-    try:
-        if i.rendererV2().type() == "25dRenderer":
-            pass
-        else:
-            new_src += """
-        bounds_group.addLayer(json_""" + safeLayerName + """JSON);"""
-            if visible[count]:
-                if cluster[count] is False:
-                    new_src += """
-        feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
-                else:
-                    new_src += """
-        cluster_group""" + safeLayerName + """JSON.addTo(map);"""
-    except:
+    if is25d(i, canvas):
+        pass
+    else:
         new_src += """
         bounds_group.addLayer(json_""" + safeLayerName + """JSON);"""
         if visible[count]:

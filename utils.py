@@ -182,7 +182,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                               out_raster)
 
 
-def is25d(layer):
+def is25d(layer, canvas):
     print "is25d() called"
     renderer = layer.rendererV2()
     symbols = []
@@ -195,16 +195,27 @@ def is25d(layer):
         for range in ranges:
             symbols.append(range.symbol())
     else:
+        renderContext = QgsRenderContext.fromMapSettings(
+                canvas.mapSettings())
+        fields = layer.pendingFields()
         features = layer.getFeatures()
+        renderer.startRender(renderContext, fields)
         for feature in features:
             symbol = renderer.symbolForFeature(feature)
             symbols.append(symbol)
+        renderer.stopRender(renderContext)
 
     for sym in symbols:
         try:
             sl0 = sym.symbolLayer(0)
             sl1 = sym.symbolLayer(1)
             sl2 = sym.symbolLayer(2)
+            if sl0.paintEffect().effectList()[0].enabled():
+                print "Shadows"
+            if isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2):
+                print "Walls"
+            if isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2):
+                print "Roof"
             if (sl0.paintEffect().effectList()[0].enabled() and
                     isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
                     isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
