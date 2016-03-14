@@ -14,7 +14,6 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                     layerFileName, safeLayerName, minify, canvas):
     cleanedLayer = writeTmpLayer(i, eachPopup)
     if is25d(i, canvas):
-        # print safeLayerName + " is 2.5d"
         provider = cleanedLayer.dataProvider()
         provider.addAttributes([QgsField("height", QVariant.Double),
                                 QgsField("wallColor", QVariant.String),

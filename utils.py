@@ -89,7 +89,8 @@ def writeTmpLayer(layer, popup):
 
 
 def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
-    srcCrs = iface.mapCanvas().mapSettings().destinationCrs()
+    canvas = iface.mapCanvas()
+    srcCrs = canvas.mapSettings().destinationCrs()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
@@ -99,45 +100,59 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
             cleanLayer = writeTmpLayer(layer, popup)
-            try:
-                if layer.rendererV2().type() == "25dRenderer":
-                    # print safeLayerName + " is 2.5d"
-                    provider = cleanLayer.dataProvider()
-                    provider.addAttributes([QgsField("height",
-                                                     QVariant.Double),
-                                            QgsField("wallColor",
-                                                     QVariant.String),
-                                            QgsField("roofColor",
-                                                     QVariant.String)])
-                    cleanLayer.updateFields()
-                    fields = cleanLayer.pendingFields()
-                    feats = layer.getFeatures()
-                    context = QgsExpressionContext()
-                    context.appendScope(
-                                QgsExpressionContextUtils.layerScope(layer))
-                    expression = QgsExpression('eval(@qgis_25d_height)')
-                    for feat in feats:
-                        context.setFeature(feat)
-                        height = expression.evaluate(context)
-                        symbol = layer.rendererV2().symbolForFeature(feat)
-                        wallLayer = symbol.symbolLayer(1)
-                        roofLayer = symbol.symbolLayer(2)
-                        wallColor = wallLayer.subSymbol().color().name()
-                        roofColor = roofLayer.subSymbol().color().name()
-                        try:
-                            height = height * 5
-                        except:
-                            pass
-                        heightField = fields.indexFromName("height")
-                        wallField = fields.indexFromName("wallColor")
-                        roofField = fields.indexFromName("roofColor")
-                        provider.changeAttributeValues(
-                                {feat.id():
-                                 {heightField: height,
-                                  wallField: wallColor,
-                                  roofField: roofColor}})
-            except:
-                print traceback.format_exc()
+            if is25d(layer, canvas):
+                provider = cleanLayer.dataProvider()
+                provider.addAttributes([QgsField("height", QVariant.Double),
+                                        QgsField("wallColor", QVariant.String),
+                                        QgsField("roofColor", 
+                                                 QVariant.String)])
+                cleanLayer.updateFields()
+                fields = cleanLayer.pendingFields()
+                renderer = layer.rendererV2()
+                renderContext = QgsRenderContext.fromMapSettings(
+                        canvas.mapSettings())
+                feats = layer.getFeatures()
+                context = QgsExpressionContext()
+                context.appendScope(
+                        QgsExpressionContextUtils.layerScope(layer))
+                expression = QgsExpression('eval(@qgis_25d_height)')
+                heightField = fields.indexFromName("height")
+                wallField = fields.indexFromName("wallColor")
+                roofField = fields.indexFromName("roofColor")
+                renderer.startRender(renderContext, fields)
+                cleanLayer.startEditing()
+                for feat in feats:
+                    context.setFeature(feat)
+                    height = expression.evaluate(context)
+                    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                        classAttribute = renderer.classAttribute()
+                        attrValue = feat.attribute(classAttribute)
+                        catIndex = renderer.categoryIndexForValue(attrValue)
+                        categories = renderer.categories()
+                        symbol = categories[catIndex].symbol()
+                    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                        classAttribute = renderer.classAttribute()
+                        attrValue = feat.attribute(classAttribute)
+                        ranges = renderer.ranges()
+                        for range in ranges:
+                            if (attrValue >= range.lowerValue() and
+                                    attrValue <= range.upperValue()):
+                                symbol = range.symbol().clone()
+                    else:
+                        symbol = renderer.symbolForFeature2(feat,
+                                                            renderContext)
+                    sl1 = symbol.symbolLayer(1)
+                    sl2 = symbol.symbolLayer(2)
+                    wallColor = sl1.subSymbol().color().name()
+                    roofColor = sl2.subSymbol().color().name()
+                    cleanLayer.changeAttributeValue(feat.id(), heightField,
+                                                    height)
+                    cleanLayer.changeAttributeValue(feat.id(), wallField,
+                                                    wallColor)
+                    cleanLayer.changeAttributeValue(feat.id(), roofField,
+                                                    roofColor)
+                cleanLayer.commitChanges()
+                renderer.stopRender(renderContext)
 
             tmpPath = os.path.join(layersFolder,
                                    safeName(cleanLayer.name()) + ".json")
@@ -183,7 +198,6 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
 
 
 def is25d(layer, canvas):
-    print "is25d() called"
     try:
         renderer = layer.rendererV2()
         symbols = []
@@ -213,9 +227,7 @@ def is25d(layer, canvas):
             if (sl0.paintEffect().effectList()[0].enabled() and
                     isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
                     isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
-                print layer.name() + " is 2.5d"
                 return True
-        print layer.name() + " is NOT 2.5d"
         return False
     except:
         print traceback.format_exc()

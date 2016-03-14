@@ -23,7 +23,7 @@ import time
 import shutil
 import traceback
 from qgis.core import *
-from utils import exportLayers, safeName, replaceInTemplate
+from utils import exportLayers, safeName, replaceInTemplate, is25d
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -61,7 +61,7 @@ def writeOL(iface, layers, groups, popup, visible,
                      optimize, usedFields, json)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder,
-                                    settings, json, matchCRS, clustered)
+                                    settings, json, matchCRS, clustered, iface)
         jsAddress = '<script src="resources/polyfills.js"></script>'
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = """<link rel="stylesheet" """
@@ -228,8 +228,9 @@ def writeOL(iface, layers, groups, popup, visible,
 
 
 def writeLayersAndGroups(layers, groups, visible, folder,
-                         settings, json, matchCRS, clustered):
+                         settings, json, matchCRS, clustered, iface):
 
+    canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
     basemaps = ""
     comma = ""
@@ -242,7 +243,7 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
         try:
-            if layer.rendererV2().type() == "25dRenderer":
+            if is25d(layer, canvas):
                 pass
             else:
                 layerVars += "\n".join([layerToJavascript(iface, layer,
@@ -272,13 +273,35 @@ def writeLayersAndGroups(layers, groups, visible, folder,
     for layer in layers:
         try:
             renderer = layer.rendererV2()
-            if renderer.type() == "25dRenderer":
+            if is25d(layer, canvas):
                 shadows = ""
+                renderer = layer.rendererV2()
+                renderContext = QgsRenderContext.fromMapSettings(
+                        canvas.mapSettings())
+                fields = layer.pendingFields()
+                renderer.startRender(renderContext, fields)
                 for feat in layer.getFeatures():
-                    symbol = renderer.symbolForFeature(feat)
+                    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                        classAttribute = renderer.classAttribute()
+                        attrValue = feat.attribute(classAttribute)
+                        catIndex = renderer.categoryIndexForValue(attrValue)
+                        categories = renderer.categories()
+                        symbol = categories[catIndex].symbol()
+                    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                        classAttribute = renderer.classAttribute()
+                        attrValue = feat.attribute(classAttribute)
+                        ranges = renderer.ranges()
+                        for range in ranges:
+                            if (attrValue >= range.lowerValue() and
+                                    attrValue <= range.upperValue()):
+                                symbol = range.symbol().clone()
+                    else:
+                        symbol = renderer.symbolForFeature2(feat,
+                                                            renderContext)
                     symbolLayer = symbol.symbolLayer(0)
                     if not symbolLayer.paintEffect().effectList()[0].enabled():
                         shadows = "'2015-07-15 10:00:00'"
+                renderer.stopRender(renderContext)
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
@@ -295,7 +318,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     no_group_list = []
     for layer in layers:
         try:
-            if layer.rendererV2().type() == "25dRenderer":
+            if is25d(layer, canvas):
                 pass
             else:
                 if layer.id() in groupedLayers:
@@ -389,7 +412,8 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
         minResolution = ""
         maxResolution = ""
     layerName = safeName(layer.name())
-    if layer.type() == layer.VectorLayer:
+    if layer.type() == layer.VectorLayer and not is25d(layer,
+                                                       iface.mapCanvas()):
         renderer = layer.rendererV2()
         if cluster and (isinstance(renderer, QgsSingleSymbolRendererV2) or
                         isinstance(renderer, QgsRuleBasedRendererV2)):
