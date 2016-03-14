@@ -36,7 +36,22 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
         for feat in feats:
             context.setFeature(feat)
             height = expression.evaluate(context)
-            symbol = renderer.symbolForFeature(feat)
+            if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                classAttribute = renderer.classAttribute()
+                attrValue = feat.attribute(classAttribute)
+                catIndex = renderer.categoryIndexForValue(attrValue)
+                categories = renderer.categories()
+                symbol = categories[catIndex].symbol()
+            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                classAttribute = renderer.classAttribute()
+                attrValue = feat.attribute(classAttribute)
+                ranges = renderer.ranges()
+                for range in ranges:
+                    if (attrValue >= range.lowerValue() and
+                            attrValue <= range.upperValue()):
+                        symbol = range.symbol().clone()
+            else:
+                symbol = renderer.symbolForFeature2(feat, renderContext)
             wallColor = symbol.symbolLayer(1).subSymbol().color().name()
             roofColor = symbol.symbolLayer(2).subSymbol().color().name()
             cleanedLayer.changeAttributeValue(feat.id(), heightField, height)
@@ -128,7 +143,23 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
         fields = i.pendingFields()
         renderer.startRender(renderContext, fields)
         for feat in i.getFeatures():
-            symbolLayer = renderer.symbolForFeature(feat).symbolLayer(0)
+            if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                classAttribute = renderer.classAttribute()
+                attrValue = feat.attribute(classAttribute)
+                catIndex = renderer.categoryIndexForValue(attrValue)
+                categories = renderer.categories()
+                symbol = categories[catIndex].symbol()
+            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                classAttribute = renderer.classAttribute()
+                attrValue = feat.attribute(classAttribute)
+                ranges = renderer.ranges()
+                for range in ranges:
+                    if (attrValue >= range.lowerValue() and
+                            attrValue <= range.upperValue()):
+                        symbol = range.symbol().clone()
+            else:
+                symbol = renderer.symbolForFeature2(feat, renderContext)
+            symbolLayer = symbol.symbolLayer(0)
             if not symbolLayer.paintEffect().effectList()[0].enabled():
                 shadows = "'2015-07-15 10:00:00'"
         renderer.stopRender(renderContext)
