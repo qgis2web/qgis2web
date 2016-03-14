@@ -216,7 +216,7 @@ def is25d(layer, canvas):
             features = layer.getFeatures()
             renderer.startRender(renderContext, fields)
             for feature in features:
-                symbol = renderer.symbolForFeature(feature)
+                symbol = renderer.symbolForFeature2(feature, renderContext)
                 symbols.append(symbol)
             renderer.stopRender(renderContext)
 
