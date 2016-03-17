@@ -610,8 +610,8 @@ def exportStyles(layers, folder, clustered):
                 style = '''function(feature, resolution){
     %(value)s
     %(style)s;
-    if (%(label)s) {
-        var labelText = %(label)s;
+    if (%(label)s !== null) {
+        var labelText = String(%(label)s);
     } else {
         var labelText = ""
     }
