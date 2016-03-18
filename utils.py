@@ -61,31 +61,34 @@ def getUsedFields(layer):
 
 
 def writeTmpLayer(layer, popup):
-    usedFields = getUsedFields(layer)
     if popup != ALL_ATTRIBUTES:
-        uri = TYPE_MAP[layer.wkbType()]
-        crs = layer.crs()
-        if crs.isValid():
-            uri += '?crs=' + crs.authid()
+        usedFields = getUsedFields(layer)
         if popup != NO_POPUP:
             usedFields.append(popup)
-        for field in usedFields:
-            fieldType = layer.pendingFields().field(field).type()
-            fieldType = "double" if (fieldType == QVariant.Double or
-                                     fieldType == QVariant.Int) else (
-                                        "string")
-            uri += '&field=' + unicode(field) + ":" + fieldType
-        newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
-        writer = newlayer.dataProvider()
-        outFeat = QgsFeature()
-        for feature in layer.getFeatures():
-            outFeat.setGeometry(feature.geometry())
-            attrs = [feature[f] for f in usedFields]
-            if attrs:
-                outFeat.setAttributes(attrs)
-            writer.addFeatures([outFeat])
-        layer = newlayer
-    return layer
+    else:
+        usedFields = []
+        for count, field in enumerate(layer.pendingFields()):
+            usedFields.append(count)
+    uri = TYPE_MAP[layer.wkbType()]
+    crs = layer.crs()
+    if crs.isValid():
+        uri += '?crs=' + crs.authid()
+    for field in usedFields:
+        fieldType = layer.pendingFields().field(field).type()
+        fieldType = "double" if (fieldType == QVariant.Double or
+                                 fieldType == QVariant.Int) else (
+                                    "string")
+        uri += '&field=' + unicode(field) + ":" + fieldType
+    newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
+    writer = newlayer.dataProvider()
+    outFeat = QgsFeature()
+    for feature in layer.getFeatures():
+        outFeat.setGeometry(feature.geometry())
+        attrs = [feature[f] for f in usedFields]
+        if attrs:
+            outFeat.setAttributes(attrs)
+        writer.addFeatures([outFeat])
+    return newlayer
 
 
 def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
@@ -145,12 +148,11 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                     sl2 = symbol.symbolLayer(2)
                     wallColor = sl1.subSymbol().color().name()
                     roofColor = sl2.subSymbol().color().name()
-                    cleanLayer.changeAttributeValue(feat.id(), heightField,
-                                                    height)
-                    cleanLayer.changeAttributeValue(feat.id(), wallField,
-                                                    wallColor)
-                    cleanLayer.changeAttributeValue(feat.id(), roofField,
-                                                    roofColor)
+                    provider.changeAttributeValues(
+                            {feat.id():
+                             {heightField: height,
+                             wallField: wallColor,
+                             roofField: roofColor}})
                 cleanLayer.commitChanges()
                 renderer.stopRender(renderContext)
 
