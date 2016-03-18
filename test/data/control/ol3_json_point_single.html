@@ -52,8 +52,8 @@ var style_point = function(feature, resolution){
         image: new ol.style.Circle({radius: 2.0 + size,
             stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(132,55,104,1.0)"})})
     })];
-    if ("") {
-        var labelText = "";
+    if ("" !== null) {
+        var labelText = String("");
     } else {
         var labelText = ""
     }
