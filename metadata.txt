@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/03/18 1.3.2 Stop 2.5d renderer altering source layer (thanks, @nyalldawson!),  OL3 non-string labels
+changelog=2016/03/18 1.3.2 Stop 2.5d renderer altering source layer (thanks, @nyalldawson!), OL3 non-string labels
     2016/03/15 1.3.1 Change symbolForFeature() to symbolForFeature2() (thanks, @anitagraser!)
     2016/03/14 1.3.0 Converted 2.5 layers (thanks, @m-kuhn and @nyalldawson!)
     2016/03/09 1.2.1 2.5d OL3 shadows, OL3 point border width and colour
