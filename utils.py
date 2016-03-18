@@ -230,7 +230,7 @@ def is25d(layer, canvas):
                 return True
         return False
     except:
-        print traceback.format_exc()
+        # print traceback.format_exc()
         return False
 
 

@@ -56,8 +56,8 @@ var styleCache_line={}
 var style_line = function(feature, resolution){
     var value = feature.get("name");
     var style = categories_line[value];
-    if ("") {
-        var labelText = "";
+    if ("" !== null) {
+        var labelText = String("");
     } else {
         var labelText = ""
     }
