@@ -61,12 +61,11 @@ def getUsedFields(layer):
 
 
 def writeTmpLayer(layer, popup):
+    usedFields = getUsedFields(layer)
     if popup != ALL_ATTRIBUTES:
-        usedFields = getUsedFields(layer)
         if popup != NO_POPUP:
             usedFields.append(popup)
     else:
-        usedFields = []
         for count, field in enumerate(layer.pendingFields()):
             usedFields.append(count)
     uri = TYPE_MAP[layer.wkbType()]
