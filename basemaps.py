@@ -53,9 +53,9 @@ def basemapLeaflet():
         'OpenMapSurfer roadsg': ('http://openmapsurfer.uni-hd.de/tiles/' +
                                  'roadsg/x={x}&y={y}&z={z}'),
         'MapQuest OSM': ('http://otile1.mqcdn.com/tiles/1.0.0/map/' +
-                             '{z}/{x}/{y}.jpeg'),
+                         '{z}/{x}/{y}.jpeg'),
         'MapQuest Aerial': ('http://otile1.mqcdn.com/tiles/1.0.0/sat/' +
-                                '{z}/{x}/{y}.jpg'),
+                            '{z}/{x}/{y}.jpg'),
         'Stamen Terrain': 'http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png',
         'Stamen Watercolor': ('http://a.tile.stamen.com/watercolor/' +
                               '{z}/{x}/{y}.png'),

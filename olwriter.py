@@ -31,6 +31,7 @@ from olScriptStrings import *
 from utils import ALL_ATTRIBUTES
 from basemaps import basemapOL
 
+
 def writeOL(iface, layers, groups, popup, visible,
             json, clustered, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -225,12 +226,12 @@ def writeLayersAndGroups(layers, groups, visible, folder,
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
-    basemaps = ','.join([basemapOL()[item.text()] for _, item in enumerate(basemapList)])
+    basemaps = [basemapOL()[item.text()] for _, item in enumerate(basemapList)]
 
     baseLayer = """var baseLayer = new ol.layer.Group({
     'title': 'Base maps',
     layers: [%s\n]
-});""" % basemaps
+});""" % ','.join(basemaps)
 
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
