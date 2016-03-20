@@ -79,177 +79,186 @@ def basemapLeaflet():
 
 
 def basemapOL():
-    dictionary = {
-        "Stamen Watercolor": """new ol.layer.Tile({
-                                    title: 'Stamen watercolor',
-                                    source: new ol.source.Stamen({
-                                        layer: 'watercolor'
-                                    })
-                                })""",
-        "Stamen Toner": """new ol.layer.Tile({title: 'Stamen toner',
-                                              source: new ol.source.Stamen({
-                                                layer: 'toner'
-                                              })
-                                            })""",
-        "Stamen Terrain": """new ol.layer.Tile({title: 'Stamen terrain',
-                                                source: new ol.source.Stamen({
-                                                    layer: 'terrain'
-                                                })
-                                              })""",
-        "OSM Standard": """new ol.layer.Tile({title: 'OSM',
-                                              source: new ol.source.OSM()
-                                            })""",
-        "MapQuestOpen OSM": """new ol.layer.Tile({
-                                    title: 'MapQuest OSM',
-                                    source: new ol.source.MapQuest({
-                                        layer: 'osm'
-                                    })
-                               })""",
-        "MapQuestOpen Aerial": """new ol.layer.Tile({
-                                    title: 'MapQuest Aerial',
-                                    source: new ol.source.MapQuest({
-                                        layer: 'sat'
-                                    })
-                                  })""",
-        "Thunderforest Transport": """
-new ol.layer.Tile({
-    title: 'Thunderforest Transport',
-    source: new ol.source.XYZ({
-        url: 'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['Thunderforest Transport'],
-        "Thunderforest Landscape": """
-new ol.layer.Tile({
-    title: 'Thunderforest Landscape',
-    source: new ol.source.XYZ({
-        url: 'http://tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['Thunderforest Landscape'],
-        "Thunderforest Outdoors": """
-new ol.layer.Tile({
-    title: 'Thunderforest Outdoors',
-    source: new ol.source.XYZ({
-        url: 'http://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['Thunderforest Outdoors'],
-        "OpenMapSurfer Roads": """
-new ol.layer.Tile({
-    title: 'OpenMapSurfer Roads',
-    source: new ol.source.XYZ({
-        url: 'http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenMapSurfer Roads'],
-        "OpenMapSurfer adminb": """
-new ol.layer.Tile({
-    title: 'OpenMapSurfer adminb',
-    source: new ol.source.XYZ({
-        url: 'http://openmapsurfer.uni-hd.de/tiles/adminb/x={x}&y={y}&z={z}',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenMapSurfer adminb'],
-        "OpenMapSurfer roadsg": """
-new ol.layer.Tile({
-    title: 'OpenMapSurfer roadsg',
-    source: new ol.source.XYZ({
-        url: 'http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenMapSurfer roadsg'],
-        "OSM HOT": """
-new ol.layer.Tile({
-    title: 'OSM HOT',
-    source: new ol.source.XYZ({
-        url: 'http://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OSM HOT'],
-        "OpenSeaMap": """
-new ol.layer.Tile({
-    title: 'OpenSeaMap',
-    source: new ol.source.XYZ({
-        url: 'http://t1.openseamap.org/seamark/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenSeaMap'],
-        "Thunderforest Cycle": """
-new ol.layer.Tile({
-    title: 'Thunderforest Cycle',
-    source: new ol.source.XYZ({
-        url: 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['Thunderforest Cycle'],
-        "OSM DE": """
-new ol.layer.Tile({
-    title: 'OSM DE',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OSM DE'],
-        "OpenWeatherMap Clouds": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Clouds',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Clouds'],
-        "OpenWeatherMap Precipitation": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Precipitation',
-    source: new ol.source.XYZ({
-        url:'http://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Precipitation'],
-        "OpenWeatherMap Rain": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Rain',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/rain/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Rain'],
-        "OpenWeatherMap Pressure": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Pressure',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/pressure/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Pressure'],
-        "OpenWeatherMap Wind": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Wind',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/wind/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Wind'],
-        "OpenWeatherMap Temp": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Temp',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/temp/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Temp'],
-        "OpenWeatherMap Snow": """
-new ol.layer.Tile({
-    title: 'OpenWeatherMap Snow',
-    source: new ol.source.XYZ({
-        url: 'http://tile.openweathermap.org/map/snow/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({html:'%s'})]
-    })
-})""" % basemapAttributions()['OpenWeatherMap Snow']
+    basemaps = {
+        "Stamen Watercolor": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.Stamen({{
+                layer: 'watercolor'
+            }})
+        }})""",
+        "Stamen Toner": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+                source: new ol.source.Stamen({{
+                layer: 'toner'
+                }})
+        }})""",
+        "Stamen Terrain": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.Stamen({{
+                layer: 'terrain'
+            }})
+        }})""",
+        "OSM": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.OSM()
+        }})""",
+        "MapQuest OSM": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.MapQuest({{
+                layer: 'osm'
+            }})
+        }})""",
+        "MapQuest Aerial": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.MapQuest({{
+                layer: 'sat'
+            }})
+        }})""",
+        "Thunderforest Transport": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.thunderforest.com/transport/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "Thunderforest Landscape": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.thunderforest.com/landscape/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "Thunderforest Outdoors": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.thunderforest.com/outdoors/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenMapSurfer Roads": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://openmapsurfer.uni-hd.de/tiles/roads/x={{x}}&y={{y}}&z={{z}}',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenMapSurfer adminb": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://openmapsurfer.uni-hd.de/tiles/adminb/x={{x}}&y={{y}}&z={{z}}',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenMapSurfer roadsg": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://openmapsurfer.uni-hd.de/tiles/roadsg/x={{x}}&y={{y}}&z={{z}}',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OSM HOT": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://{{a-c}}.tile.openstreetmap.fr/hot/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenSeaMap": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://t1.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "Thunderforest Cycle": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.thunderforest.com/cycle/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OSM DE": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openstreetmap.de/tiles/osmde/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Clouds": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openweathermap.org/map/clouds/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Precipitation": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url:'http://tile.openweathermap.org/map/precipitation/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Rain": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openweathermap.org/map/rain/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Pressure": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openweathermap.org/map/pressure/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Wind": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openweathermap.org/map/wind/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Temp": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openweathermap.org/map/temp/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})""",
+        "OpenWeatherMap Snow": """new ol.layer.Tile({{
+            'title': '{title}',
+            'type': 'base',
+            source: new ol.source.XYZ({{
+                url: 'http://tile.openweathermap.org/map/snow/{{z}}/{{x}}/{{y}}.png',
+                attributions: [new ol.Attribution({{html: '{attr}'}})]
+            }})
+        }})"""
     }
-    return dictionary
-
+    basemaps = {k: v.format(**{'title': k, 'attr': basemapAttributions[k]}) for k, v in basemaps.iteritems()}
+    return basemaps
 
 basemapAttributions = {
     'OSM': """\
