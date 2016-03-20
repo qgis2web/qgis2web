@@ -26,7 +26,7 @@ import qgis.utils
 import os
 import time
 import re
-from basemaps import basemapLeaflet, basemapAttributions
+from basemaps import basemapLeaflet
 from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *

@@ -33,7 +33,7 @@ INSTRUCTION ON FILE USAGE:
 
 def basemapLeaflet():
     dictionary = {
-        'OSM Standard': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'OSM': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         'Stamen Toner': 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png',
         'OSM DE': ('http://{s}.tile.openstreetmap.de/tiles/' +
                    'osmde/{z}/{x}/{y}.png'),
@@ -52,9 +52,9 @@ def basemapLeaflet():
                                  'adminb/x={x}&y={y}&z={z}'),
         'OpenMapSurfer roadsg': ('http://openmapsurfer.uni-hd.de/tiles/' +
                                  'roadsg/x={x}&y={y}&z={z}'),
-        'MapQuestOpen OSM': ('http://otile1.mqcdn.com/tiles/1.0.0/map/' +
+        'MapQuest OSM': ('http://otile1.mqcdn.com/tiles/1.0.0/map/' +
                              '{z}/{x}/{y}.jpeg'),
-        'MapQuestOpen Aerial': ('http://otile1.mqcdn.com/tiles/1.0.0/sat/' +
+        'MapQuest Aerial': ('http://otile1.mqcdn.com/tiles/1.0.0/sat/' +
                                 '{z}/{x}/{y}.jpg'),
         'Stamen Terrain': 'http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png',
         'Stamen Watercolor': ('http://a.tile.stamen.com/watercolor/' +
@@ -251,93 +251,91 @@ new ol.layer.Tile({
     return dictionary
 
 
-def basemapAttributions():
-    dictionary = {
-        'OSM Standard': """\
+basemapAttributions = {
+    'OSM': """\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'Stamen Toner': """\
+    'Stamen Toner': """\
 Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
 <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map\
 data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>\
 contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'OSM DE': """\
+    'OSM DE': """\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'OSM HOT': """\
+    'OSM HOT': """\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,\
 Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">\
 Humanitarian OpenStreetMap Team</a>""",
-        'OpenSeaMap': """\
+    'OpenSeaMap': """\
 Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a>\
 contributors""",
-        'Thunderforest Cycle': """\
+    'Thunderforest Cycle': """\
 &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>,\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'Thunderforest Transport': """\
+    'Thunderforest Transport': """\
 &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>,\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'Thunderforest Landscape': """\
+    'Thunderforest Landscape': """\
 &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>,\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'Thunderforest Outdoors': """\
+    'Thunderforest Outdoors': """\
 &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>,\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'OpenMapSurfer Roads': """\
+    'OpenMapSurfer Roads': """\
 Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @\
 University of Heidelberg</a> &mdash; Map data:\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'OpenMapSurfer adminb': """\
+    'OpenMapSurfer adminb': """\
 Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @\
 University of Heidelberg</a> &mdash; Map data:\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'OpenMapSurfer roadsg': """\
+    'OpenMapSurfer roadsg': """\
 Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @\
 University of Heidelberg</a> &mdash; Map data:\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-        'MapQuestOpen OSM': """\
+    'MapQuest OSM': """\
 Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash;\
 Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>\
 contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">\
 CC-BY-SA</a>""",
-        'MapQuestOpen Aerial': """\
+    'MapQuest Aerial': """\
 Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash;\
 Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture,\
 Farm Service Agency""",
-        'Stamen Terrain': """\
+    'Stamen Terrain': """\
 Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
 <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;\
 Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>\
 contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">\
 CC-BY-SA</a>""",
-        'Stamen Watercolor': """\
+    'Stamen Watercolor': """\
 Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
 <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;\
 Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>\
 contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">\
 CC-BY-SA</a>""",
-        'OpenWeatherMap Clouds': """\
+    'OpenWeatherMap Clouds': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>""",
-        'OpenWeatherMap Precipitation': """\
+    'OpenWeatherMap Precipitation': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>""",
-        'OpenWeatherMap Rain': """\
+    'OpenWeatherMap Rain': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>""",
-        'OpenWeatherMap Pressure': """\
+    'OpenWeatherMap Pressure': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>""",
-        'OpenWeatherMap Wind': """\
+    'OpenWeatherMap Wind': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>""",
-        'OpenWeatherMap Temp': """\
+    'OpenWeatherMap Temp': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>""",
-        'OpenWeatherMap Snow': """\
+    'OpenWeatherMap Snow': """\
 Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>"""
-    }
-    return dictionary
+}

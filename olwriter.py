@@ -29,10 +29,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from olScriptStrings import *
 from utils import ALL_ATTRIBUTES
-from basemaps import basemapOL, basemapAttributions
+from basemaps import basemapOL
 
 baseLayers = basemapOL()
-basemapAttributions = basemapAttributions()
 
 baseLayerGroup = "var baseLayer = "
 baseLayerGroup += "new ol.layer.Group({'title': 'Base maps',layers: [%s]});"

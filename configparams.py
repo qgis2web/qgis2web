@@ -59,7 +59,7 @@ paramsOL = {
 }
 
 baselayers = (
-            "OSM Standard",
+            "OSM",
             "Stamen Toner",
             "OSM DE",
             "OSM HOT",
@@ -70,8 +70,8 @@ baselayers = (
             "OpenMapSurfer Roads",
             "OpenMapSurfer adminb",
             "OpenMapSurfer roadsg",
-            "MapQuestOpen OSM",
-            "MapQuestOpen Aerial",
+            "MapQuest OSM",
+            "MapQuest Aerial",
             "Stamen Terrain",
             "Stamen Watercolor",
             "OpenWeatherMap Clouds",

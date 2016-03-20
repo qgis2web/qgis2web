@@ -8,7 +8,6 @@ from utils import scaleToZoom
 from basemaps import basemapLeaflet, basemapAttributions
 
 basemapAddresses = basemapLeaflet()
-basemapAttributions = basemapAttributions()
 
 
 def jsonScript(layer):
