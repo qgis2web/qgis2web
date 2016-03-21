@@ -895,8 +895,103 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
+    def test36_OL3_layer_list(self):
+        """OL3 A layer list is present when selected"""
+
+        layer_path = test_data_path('layer', 'point.shp')
+        layer = load_layer(layer_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        dialog = MainDialog(IFACE)
+
+        # Ensure the OpenLayers 3 option is selected
+        dialog.ol3.click()
+
+        # Check the 'Add layers list' checkbox
+        dialog.items['Appearance'].get('Add layers list').setCheckState(1, QtCore.Qt.Checked)
+
+        # Click the 'Update preview' button to ensure the preview URL is
+        # updated
+        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+
+        test_qgis2web_output = read_output(dialog.preview.url().toString(), 'resources/qgis2web.js')
+        assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
+
+        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        assert 'title: "point"' in test_layers_output
+
+    def test37_OL3_base_layers_have_type_base(self):
+        """OL3 Ensure base layers have a type property with a value of 'base'"""
+
+        layer_path = test_data_path('layer', 'point.shp')
+        layer = load_layer(layer_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        dialog = MainDialog(IFACE)
+
+        # Ensure the OpenLayers 3 option is selected
+        dialog.ol3.click()
+
+        # Select a base map
+        dialog.basemaps.item(0).setSelected(True)
+
+        # Click the 'Update preview' button to ensure the preview URL is
+        # updated
+        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+
+        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        assert "'type': 'base'" in test_layers_output
+
+    def test39_OL3_base_group_only_included_when_base_map_selected(self):
+        """OL3 Only include the 'Base maps' group when +1 base maps are selected"""
+
+        layer_path = test_data_path('layer', 'point.shp')
+        layer = load_layer(layer_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        dialog = MainDialog(IFACE)
+
+        # Ensure the OpenLayers 3 option is selected
+        dialog.ol3.click()
+
+        # Ensure no base maps are selected
+        for i in range(dialog.basemaps.count()):
+            dialog.basemaps.item(i).setSelected(False)
+
+        # Click the 'Update preview' button to ensure the preview URL is
+        # updated
+        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+
+        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        assert "new ol.layer.Group" not in test_layers_output
+
+        # Select a base map
+        dialog.basemaps.item(0).setSelected(True)
+
+        # Click the 'Update preview' button to ensure the preview URL is
+        # updated
+        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+
+        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        assert "new ol.layer.Group" in test_layers_output
+
+
+def read_output(url, path):
+    """ Given a url for the index.html file of a preview or export and the
+    relative path to an output file open the file and return it's contents as a
+    string """
+    abs_path = url.replace('file://', '').replace('index.html', path)
+    with open(abs_path) as f:
+        return f.read()
+
+
 if __name__ == "__main__":
     suite = unittest.makeSuite(qgis2web_classDialogTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
-

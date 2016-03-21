@@ -29,13 +29,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from olScriptStrings import *
 from utils import ALL_ATTRIBUTES
-from basemaps import basemapOL, basemapAttributions
-
-baseLayers = basemapOL()
-basemapAttributions = basemapAttributions()
-
-baseLayerGroup = "var baseLayer = "
-baseLayerGroup += "new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
+from basemaps import basemapOL
 
 
 def writeOL(iface, layers, groups, popup, visible,
@@ -232,13 +226,12 @@ def writeLayersAndGroups(layers, groups, visible, folder,
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
-    basemaps = ""
-    comma = ""
-    for count, basemap in enumerate(basemapList):
-        basemaps += comma + baseLayers[basemap.text()]
-        comma = ", "
+    basemaps = [basemapOL()[item.text()] for _, item in enumerate(basemapList)]
 
-    baseLayer = baseLayerGroup % basemaps
+    baseLayer = """var baseLayer = new ol.layer.Group({
+    'title': 'Base maps',
+    layers: [%s\n]
+});""" % ','.join(basemaps)
 
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
@@ -265,9 +258,7 @@ def writeLayersAndGroups(layers, groups, visible, folder,
                        group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
-    mapLayers = []
-    if settings["Appearance"]["Base layer"] != "None":
-        mapLayers.append("baseLayer")
+    mapLayers = ["baseLayer"]
     usedGroups = []
     osmb = ""
     for layer in layers:
@@ -314,7 +305,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
                                                          unicode(v).lower())])
 
-    group_list = ["baseLayer"]
+    group_list = ["baseLayer"] if len(basemapList) else []
     no_group_list = []
     for layer in layers:
         try:
@@ -344,7 +335,8 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
-        f.write(baseLayer + "\n")
+        if basemapList:
+            f.write(baseLayer + "\n")
         f.write(layerVars + "\n")
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
