@@ -177,6 +177,14 @@ software:</p>
     <li>Leaflet</li>
 </ul>
 
+<p>Thanks are also due for major code contributions to:</p>
+
+<ul>
+    <li>github.com/akbargumbira</li>
+    <li>github.com/lucacasagrande</li>
+    <li>github.com/walkermatt</li>
+</ul>
+
 <p>In addition, the following libraries have been used:</p>
 
 <ul>
