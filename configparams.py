@@ -15,12 +15,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from qgis.core import QgsApplication
 import os
+import shutil
 from utils import tempFolder
 
 
 def getTemplates():
-    fl = os.path.join(os.path.dirname(__file__), "templates")
+    fl = os.path.join(QgsApplication.qgisSettingsDirPath(),
+                      "qgis2web",
+                      "templates")
+    if not os.path.exists(fl):
+        shutil.copytree(os.path.join(os.path.dirname(__file__),
+                                     "templates"),
+                                    fl)
     return tuple(f[:f.find(".")] for f in reversed(os.listdir(fl))
                  if f.endswith("html"))
 

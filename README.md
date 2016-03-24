@@ -129,7 +129,7 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Show popups when mouse hovers over features</dd>
     <dt>Template</dt>
         <dd>Select HTML template for webmap - add your own templates to the
-            /templates directory</dd>
+            /qgis2web/templates directory in your .qgis2 folder</dd>
 </dl>
 
 <h2>Reporting bugs</h2>
