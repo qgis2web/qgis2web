@@ -28,7 +28,7 @@ def getTemplates():
     if not os.path.exists(fl):
         shutil.copytree(os.path.join(os.path.dirname(__file__),
                                      "templates"),
-                                    fl)
+                        fl)
     return tuple(f[:f.find(".")] for f in reversed(os.listdir(fl))
                  if f.endswith("html"))
 
