@@ -74,10 +74,11 @@ def writeTmpLayer(layer, popup):
         uri += '?crs=' + crs.authid()
     for field in usedFields:
         fieldType = layer.pendingFields().field(field).type()
+        fieldName = layer.pendingFields().field(field).name()
         fieldType = "double" if (fieldType == QVariant.Double or
                                  fieldType == QVariant.Int) else (
                                     "string")
-        uri += '&field=' + unicode(field) + ":" + fieldType
+        uri += '&field=' + unicode(fieldName) + ":" + fieldType
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()
     outFeat = QgsFeature()
