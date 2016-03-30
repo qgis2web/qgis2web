@@ -68,6 +68,7 @@ paramsOL = {
 
 baselayers = (
             "OSM",
+            "OSM B&W",
             "Stamen Toner",
             "OSM DE",
             "OSM HOT",

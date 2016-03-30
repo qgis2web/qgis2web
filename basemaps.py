@@ -34,6 +34,8 @@ INSTRUCTION ON FILE USAGE:
 def basemapLeaflet():
     dictionary = {
         'OSM': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'OSM B&W': ('http://{s}.www.toolserver.org/tiles/bw-mapnik/' +
+                    '{z}/{x}/{y}.png'),
         'Stamen Toner': 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png',
         'OSM DE': ('http://{s}.tile.openstreetmap.de/tiles/' +
                    'osmde/{z}/{x}/{y}.png'),
@@ -109,6 +111,16 @@ new ol.layer.Tile({{
     'title': '{title}',
     'type': 'base',
     source: new ol.source.OSM()
+}})""",
+        "OSM B&W": """
+new ol.layer.Tile({{
+    'title': '{title}',
+    'type': 'base',
+    source: new ol.source.XYZ({{
+        url: \
+'http://{{a-c}}.www.toolserver.org/tiles/bw-mapnik/{{z}}/{{x}}/{{y}}.png',
+        attributions: [new ol.Attribution({{html: '{attr}'}})]
+    }})
 }})""",
         "MapQuest OSM": """
 new ol.layer.Tile({{
@@ -291,6 +303,8 @@ new ol.layer.Tile({{
 basemapAttributions = {
     'OSM': """\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
+<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
+    'OSM B&W': """\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
     'Stamen Toner': """\
 Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
