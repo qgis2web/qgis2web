@@ -31,10 +31,12 @@ ALL_ATTRIBUTES = 1
 TYPE_MAP = {
     QGis.WKBPoint: 'Point',
     QGis.WKBLineString: 'LineString',
+    QGis.WKBLineString25D: 'LineString',
     QGis.WKBPolygon: 'Polygon',
     QGis.WKBPolygon25D: 'Polygon',
     QGis.WKBMultiPoint: 'MultiPoint',
     QGis.WKBMultiLineString: 'MultiLineString',
+    QGis.WKBMultiLineString25D: 'MultiLineString',
     QGis.WKBMultiPolygon: 'MultiPolygon',
     QGis.WKBMultiPolygon25D: 'MultiPolygon'}
 
