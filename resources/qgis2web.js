@@ -32,7 +32,21 @@ map.getView().fit(@BOUNDS@, map.getSize());
 var NO_POPUP = 0
 var ALL_FIELDS = 1
 
-@POPUPLAYERS@
+/**
+ * Returns either NO_POPUP, ALL_FIELDS or the name of a single field to use for
+ * a given layer
+ * @param layerList {Array} List of ol.Layer instances
+ * @param layer {ol.Layer} Layer to find field info about
+ */
+function getPopupFields(layerList, layer) {
+    @POPUPLAYERS@
+    // Determine the index that the layer will have in the popupLayers Array,
+    // if the layersList contains more items than popupLayers then we need to
+    // adjust the index to take into account the base maps group
+    var idx = layersList.indexOf(layer) - (layersList.length - popupLayers.length);
+    return popupLayers[idx];
+}
+
 
 var collection = new ol.Collection();
 var featureOverlay = new ol.layer.Vector({
@@ -73,8 +87,8 @@ var onPointerMove = function(evt) {
         currentFeature = feature;
         currentLayer = layer;
         currentFeatureKeys = currentFeature.getKeys();
-        var field = popupLayers[layersList.indexOf(layer) - 1];
-        if (field == NO_POPUP) {          
+        var field = getPopupFields(layersList, layer);
+        if (field == NO_POPUP) {
         } else if (field == ALL_FIELDS) {
             popupText = '<table>';
             for (var i=0; i<currentFeatureKeys.length; i++) {
@@ -164,8 +178,8 @@ var onSingleClick = function(evt) {
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         currentFeature = feature;
         currentFeatureKeys = currentFeature.getKeys();
-        var field = popupLayers[layersList.indexOf(layer) - 1];
-        if (field == NO_POPUP) {          
+        var field = getPopupFields(layersList, layer);
+        if (field == NO_POPUP) {
         } else if (field == ALL_FIELDS) {
             popupText = '<table>';
             for (var i=0; i<currentFeatureKeys.length; i++) {
