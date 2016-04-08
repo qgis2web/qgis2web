@@ -139,11 +139,17 @@ def writeOL(iface, layers, groups, popup, visible,
             measureControl = measureControlScript()
             measuring = measuringScript()
             measure = measureScript()
+            if settings["Appearance"]["Measure tool units"] == "US" :
+                measureUnit = measureUnitFeetScript()
+            else:
+                measureUnit = measureUnitMetricScript()
+                #print measureUnit
             measureStyle = measureStyleScript()
         else:
             measureControl = ""
             measuring = ""
             measure = ""
+            measureUnit = ""
             measureStyle = ""
         geolocate = geolocation(settings["Appearance"]["Geolocate user"])
         geocode = settings["Appearance"]["Add address search"]
@@ -210,7 +216,8 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@GEOCODINGSCRIPT@": geocodingScript,
                   "@MEASURECONTROL@": measureControl,
                   "@MEASURING@": measuring,
-                  "@MEASURE@": measure}
+                  "@MEASURE@": measure,
+                  "@MEASUREUNIT@": measureUnit}
         with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
             f.write(replaceInScript("qgis2web.js", values))
     except Exception as e:
@@ -764,7 +771,8 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
     dash = dash.replace("solid", "")
     dash = dash.replace(" ", ",")
     dash = "[%s]" % dash
-    if dash == "[]":
+    print "dash =" + str(dash)
+    if dash == "[]" or dash == "[no]":
         dash = "null"
     capString = "round"
     if linecap == 0:

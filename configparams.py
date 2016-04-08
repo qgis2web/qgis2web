@@ -39,6 +39,7 @@ paramsOL = {
         "Add scale bar": False,
         "Add address search": False,
         "Add measure tool": False,
+        "Measure tool units": ("Metric", "US"),
         "Show popups on hover": False,
         "Highlight on hover": False,
         "Geolocate user": False,

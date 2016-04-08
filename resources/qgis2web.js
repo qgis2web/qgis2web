@@ -215,6 +215,7 @@ map.on('singleclick', function(evt) {
     onSingleClick(evt);
 });
 @MEASURE@
+@MEASUREUNIT@
 @GEOLOCATE@
 @GEOCODINGSCRIPT@
 
