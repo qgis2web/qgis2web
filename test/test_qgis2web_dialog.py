@@ -127,7 +127,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
-                     ':dnpa-tpo-point&SRSNAME=EPSG:27700')
+                     ':dnpa-tpo-point&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         layer_style = test_data_path('style', 'point_single.qml')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
