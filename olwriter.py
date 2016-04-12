@@ -695,9 +695,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             lineCap = sl.penCapStyle()
             lineJoin = sl.penJoinStyle()
 
-            style = "stroke: %s" % (getStrokeStyle(color, line_style,
-                                                   line_width, lineCap,
-                                                   lineJoin))
+            style = getStrokeStyle(color, line_style, line_width,
+                                   lineCap, lineJoin)
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             fillColor = getRGBAColor(props["color"], alpha)
 
@@ -724,7 +723,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                 lineCap = 0
                 lineJoin = 0
 
-            style = ('''stroke: %s %s''' %
+            style = ('''%s %s''' %
                      (getStrokeStyle(borderColor, borderStyle, borderWidth,
                                      lineCap, lineJoin),
                       getFillStyle(fillColor, props)))
@@ -738,7 +737,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
 
 def getCircle(color, borderColor, borderWidth, size, props):
     return ("""new ol.style.Circle({radius: %s + size,
-            stroke: %s%s})""" %
+            %s%s})""" %
             (size,
              getStrokeStyle(borderColor, "", borderWidth, 0, 0),
              getFillStyle(color, props)))
@@ -758,6 +757,8 @@ def getIcon(path, size):
 
 
 def getStrokeStyle(color, dashed, width, linecap, linejoin):
+    if dashed == "no":
+        return "" 
     width = math.floor(float(width) * 3.8)
     dash = dashed.replace("dash", "10,5")
     dash = dash.replace("dot", "1,5")
@@ -776,9 +777,9 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
         joinString = "miter"
     if linejoin == 64:
         joinString = "bevel"
-    strokeString = ("new ol.style.Stroke({color: %s, lineDash: %s, " %
+    strokeString = ("stroke: new ol.style.Stroke({color: %s, lineDash: %s, " %
                     (color, dash))
-    strokeString += ("lineCap: '%s', lineJoin: '%s', width: %d})" %
+    strokeString += ("lineCap: '%s', lineJoin: '%s', width: %d}), " %
                      (capString, joinString, width))
     return strokeString
 
@@ -789,7 +790,7 @@ def getFillStyle(color, props):
             return ""
     except:
         pass
-    return ", fill: new ol.style.Fill({color: %s})" % color
+    return "fill: new ol.style.Fill({color: %s})" % color
 
 
 def geolocation(geolocate):
