@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.4
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=1.5.0
+version=1.5.1
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/03/30 1.5.0 OSM B&W basemap added , fix popups (thanks @lucacasagrande and @walkermatt!), move templates to .qgis2, handle 2.5D lines, README updated
+changelog=2016/04/12 1.5.1 Basemaps README/Help text clarified, templates read from .qgis, OL3 "No pen", workaround odd test WFS point layer issue
+    2016/03/30 1.5.0 OSM B&W basemap added , fix popups (thanks @lucacasagrande and @walkermatt!), move templates to .qgis2, handle 2.5D lines, README updated
     2016/03/21 1.4.0 OL3 layer control rewrite (thanks, @walkermatt!), OL3 point numeric labels, README updated
     2016/03/18 1.3.2 Stop 2.5d renderer altering source layer (thanks, @nyalldawson!), OL3 non-string labels
     2016/03/15 1.3.1 Change symbolForFeature() to symbolForFeature2() (thanks, @anitagraser!)
