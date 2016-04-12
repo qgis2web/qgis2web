@@ -758,7 +758,7 @@ def getIcon(path, size):
 
 def getStrokeStyle(color, dashed, width, linecap, linejoin):
     if dashed == "no":
-        return "" 
+        return ""
     width = math.floor(float(width) * 3.8)
     dash = dashed.replace("dash", "10,5")
     dash = dash.replace("dot", "1,5")
