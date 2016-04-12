@@ -291,7 +291,10 @@ def scaleToZoom(scale):
 
 
 def replaceInTemplate(template, values):
-    path = os.path.join(os.path.dirname(__file__), "templates", template)
+    path = os.path.join(QgsApplication.qgisSettingsDirPath(),
+                        "qgis2web",
+                        "templates",
+                        template)
     with open(path) as f:
         lines = f.readlines()
     s = "".join(lines)
