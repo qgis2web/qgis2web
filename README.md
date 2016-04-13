@@ -137,6 +137,7 @@ the output code to achieve what qgis2web cannot.</p>
 am often completely unaware that a problem exists. To ensure no time or effort
 is wasted in bug reporting, please follow these steps:</p>
 <ol>
+    <li>Make sure you are using the latest release of qgis2web</li>
     <li>Check the issues on Github to see whether the bug has already been
         reported, and if so, read through all the comments on the issue, and
         add any additional informaton from your experience of the bug</li>
@@ -158,12 +159,41 @@ is wasted in bug reporting, please follow these steps:</p>
 <p>The stability of qgis2web relies on your bug reports, so please keep them
 coming.</p>
 
+<h2>Development</h2>
+<p>qgis2web is largely developed by me, with significant contribtions from a
+few others. Please, please do contribute, as there is so much more to do.</p>
+
+<p>As for the overall direction of the plugin, there is now basically feature
+parity between Leaflet and OL3 exports. Any new features should be implemented
+in both formats, or I am not keen for it to be included.</p>
+
+<p>The core philosophy of the plugin is: don’t get the plugin to do anything
+which QGIS can already do. Also, keep focused on producing good-quality maps,
+reproducing as much from QGIS as possible, rather than adding extra new
+functionality.</p>
+
+<p>Coding guidelines:</p>
+<ul>
+    <li>Comply with PEP8</li>
+    <li>Don’t break the tests themselves (all in test/test_qgis2web_dialog.py)
+    </li>
+    <li>Anything which alters the output for the basic tests will mean updating
+    the control files in /test/data/control</li>
+    <li>Write tests for new functionality</li>
+</ul>
+
+<p>Other improvements required are:</p>
+<ul>
+    <li>Improve code quality/refactor</li>
+    <li>Write tests for more functionality - coverage is currently very low
+    </li>
+</ul>
+
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
 gentlemen. Thanks are also very much due to Paolo Cavallini, who suggested
 and supported the merge.</p>
-
 <ul>
     <li>github.com/volaya</li>
     <li>github.com/riccardoklinger</li>
@@ -172,7 +202,6 @@ and supported the merge.</p>
 
 <p>Obviously, qgis2web could not exist without the following monumental
 software:</p>
-
 <ul>
     <li>QGIS</li>
     <li>OpenLayers 3</li>
@@ -180,7 +209,6 @@ software:</p>
 </ul>
 
 <p>Thanks are also due for major code contributions to:</p>
-
 <ul>
     <li>github.com/akbargumbira</li>
     <li>github.com/lucacasagrande</li>
@@ -188,7 +216,6 @@ software:</p>
 </ul>
 
 <p>In addition, the following libraries have been used:</p>
-
 <ul>
     <li>ol3-layerswitcher, by @walkermatt</li>
     <li>Autolinker.js, by @gregjacobs</li>
