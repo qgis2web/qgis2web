@@ -29,7 +29,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 from PyQt4 import QtGui
-from PyQt4.QtNetwork import QNetworkProxyFactory
 import traceback
 import logging
 
@@ -43,7 +42,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 selectedLayerCombo = "None"
 projectInstance = QgsProject.instance()
-QNetworkProxyFactory.setUseSystemConfiguration(True)
 
 
 class MainDialog(QDialog, Ui_MainDialog):
