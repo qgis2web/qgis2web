@@ -45,6 +45,7 @@ selectedLayerCombo = "None"
 projectInstance = QgsProject.instance()
 QNetworkProxyFactory.setUseSystemConfiguration(True)
 
+
 class MainDialog(QDialog, Ui_MainDialog):
     """The main dialog of QGIS2Web plugin."""
     items = {}
