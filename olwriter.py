@@ -657,7 +657,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
-        alpha = layer_transparency / float(100)
+        alpha = 1-(layer_transparency / float(100))
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
