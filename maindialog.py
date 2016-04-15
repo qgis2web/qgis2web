@@ -55,6 +55,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.resize(QSettings().value("qgis2web/size", QSize(994, 647)))
         self.move(QSettings().value("qgis2web/pos", QPoint(50, 50)))
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
+        webview = self.preview.page()
+        webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
         self.populate_layers_and_groups(self)
         self.populateConfigParams(self)
         self.populateBasemaps()
