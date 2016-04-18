@@ -18,8 +18,8 @@
         <script src="./resources/ol.js"></script>
         <script src="resources/OSMBuildings-OL3.js"></script>
         <script src="./resources/ol3-layerswitcher.js"></script>
-        <script src="layers/lakes.js"></script>
-        <script src="styles/lakes_style.js"></script>
+        <script src="layers/line.js"></script>
+        <script src="styles/line_style.js"></script>
         <script src="./layers/layers.js" type="text/javascript"></script> 
         <style>
         html, body, #map {
@@ -44,12 +44,12 @@
 </html>
 var size = 0;
 
-var styleCache_lakes={}
-var style_lakes = function(feature, resolution){
+var styleCache_line={}
+var style_line = function(feature, resolution){
     var value = ""
     var size = 0;
     var style = [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(56,204,206,1.0)"})
+        stroke: new ol.style.Stroke({color: "rgba(26,205,62,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
     })];
     if ("" !== null) {
         var labelText = String("");
@@ -58,7 +58,7 @@ var style_lakes = function(feature, resolution){
     }
     var key = value + "_" + labelText
 
-    if (!styleCache_lakes[key]){
+    if (!styleCache_line[key]){
         var text = new ol.style.Text({
               font: '10.725px Calibri,sans-serif',
               text: labelText,
@@ -70,9 +70,9 @@ var style_lakes = function(feature, resolution){
                 color: "rgba(0, 0, 0, 255)"
               }),
             });
-        styleCache_lakes[key] = new ol.style.Style({"text": text})
+        styleCache_line[key] = new ol.style.Style({"text": text})
     }
-    var allStyles = [styleCache_lakes[key]];
+    var allStyles = [styleCache_line[key]];
     allStyles.push.apply(allStyles, style);
     return allStyles;
 };
