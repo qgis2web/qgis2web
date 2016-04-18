@@ -191,6 +191,7 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                                      wfsLayers)
     elif isinstance(renderer, Qgs25DRenderer):
         # print safeLayerName + ": 2.5d"
+        pass
 
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")
