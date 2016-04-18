@@ -167,14 +167,14 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
     elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
-        print safeLayerName + ": single"
+        # print safeLayerName + ": single"
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, i, layer_transp,
                                   labeltext, cluster, cluster_num, visible,
                                   json, usedFields, legends, count, popFuncs)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        print safeLayerName + ": categorized"
+        # print safeLayerName + ": categorized"
         (new_obj, legends,
          wfsLayers) = categorizedLayer(i, renderer, safeLayerName,
                                        outputProjectFileName, layer_transp,
@@ -182,7 +182,7 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                                        cluster, cluster_num, popFuncs, visible,
                                        json, wfsLayers)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        print safeLayerName + ": graduated"
+        # print safeLayerName + ": graduated"
         (new_obj, legends,
          wfsLayers) = graduatedLayer(i, safeLayerName, renderer,
                                      outputProjectFileName, layer_transp,
@@ -190,7 +190,7 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                                      visible, json, usedFields, count, legends,
                                      wfsLayers)
     elif isinstance(renderer, Qgs25DRenderer):
-        print safeLayerName + ": 2.5d"
+        # print safeLayerName + ": 2.5d"
 
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")
