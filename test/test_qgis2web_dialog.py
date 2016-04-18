@@ -898,7 +898,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test36_OL3_layer_list(self):
         """OL3 A layer list is present when selected"""
 
-        layer_path = test_data_path('layer', 'point.shp')
+        layer_path = test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -920,12 +920,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
         assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
 
         test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
-        assert 'title: "point"' in test_layers_output
+        assert 'title: "airports"' in test_layers_output
 
     def test37_OL3_base_layers_have_type_base(self):
         """OL3 Ensure base layers have a type property with a value of 'base'"""
 
-        layer_path = test_data_path('layer', 'point.shp')
+        layer_path = test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -949,7 +949,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test39_OL3_base_group_only_included_when_base_map_selected(self):
         """OL3 Only include the 'Base maps' group when +1 base maps are selected"""
 
-        layer_path = test_data_path('layer', 'point.shp')
+        layer_path = test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
