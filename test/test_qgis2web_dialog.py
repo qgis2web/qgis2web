@@ -93,8 +93,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_json_pnt_single(self):
         """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)"""
-        layer_path = test_data_path('layer', 'point.shp')
-        style_path = test_data_path('style', 'point_single.qml')
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -154,8 +154,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test11_Leaflet_json_line_single(self):
         """Leaflet JSON line single (test_qgis2web_dialog.test_Leaflet_json_line_single)"""
-        layer_path = test_data_path('layer', 'line.shp')
-        style_path = test_data_path('style', 'line_single.qml')
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        style_path = test_data_path('style', 'pipelines_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -207,8 +207,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test13_Leaflet_json_poly_single(self):
         """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)"""
-        layer_path = test_data_path('layer', 'polygon.shp')
-        style_path = test_data_path('style', 'polygon_single.qml')
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'lakes_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -263,8 +263,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)"""
-        layer_path = test_data_path('layer', 'point.shp')
-        style_path = test_data_path('style', 'json_point_categorized.qml')
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_categorized.qml')
         control_path = test_data_path(
                 'control', 'leaflet_json_point_categorized.html')
 
@@ -316,8 +316,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test17_Leaflet_json_line_categorized(self):
         """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)"""
-        layer_path = test_data_path('layer', 'line.shp')
-        style_path = test_data_path('style', 'json_line_categorized.qml')
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        style_path = test_data_path('style', 'pipelines_categorized.qml')
         control_path = test_data_path(
                 'control', 'leaflet_json_line_categorized.html')
         layer = load_layer(layer_path)
@@ -371,8 +371,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test19_Leaflet_json_poly_categorized(self):
         """Leaflet JSON polygon categorized (test_qgis2web_dialog.test_Leaflet_json_poly_categorized)"""
-        layer_path = test_data_path('layer', 'polygon.shp')
-        style_path = test_data_path('style', 'json_polygon_categorized.qml')
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'lakes_categorized.qml')
         control_path = test_data_path(
                 'control', 'leaflet_json_polygon_categorized.html')
         layer = load_layer(layer_path)
@@ -427,8 +427,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Leaflet JSON point graduated (test_qgis2web_dialog.test_Leaflet_json_pnt_graduated)"""
-        layer_path = test_data_path('layer', 'point.shp')
-        style_path = test_data_path('style', 'json_point_graduated.qml')
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_graduated.qml')
         control_path = test_data_path(
                 'control', 'leaflet_json_point_graduated.html')
         layer = load_layer(layer_path)
@@ -483,8 +483,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test23_Leaflet_json_line_graduated(self):
         """Leaflet JSON line graduated (test_qgis2web_dialog.test_Leaflet_json_line_graduated)"""
-        layer_path = test_data_path('layer', 'line.shp')
-        layer_style = test_data_path('style', 'json_line_graduated.qml')
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        layer_style = test_data_path('style', 'pipelines_graduated.qml')
         control_path = test_data_path(
                 'control', 'leaflet_json_line_graduated.html')
         layer = load_layer(layer_path)
@@ -540,8 +540,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test25_Leaflet_json_poly_graduated(self):
         """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)"""
-        layer_path = test_data_path('layer', 'polygon.shp')
-        layer_style = test_data_path('style', 'json_polygon_graduated.qml')
+        layer_path = test_data_path('layer', 'lakes.shp')
+        layer_style = test_data_path('style', 'lakes_graduated.qml')
         control_path = test_data_path(
                 'control', 'leaflet_json_polygon_graduated.html')
         layer = load_layer(layer_path)
@@ -597,8 +597,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test27_OL3_pnt_single(self):
         """OL3 point single (test_qgis2web_dialog.test_OL3_pnt_single)"""
-        layer_path = test_data_path('layer', 'point.shp')
-        style_path = test_data_path('style', 'point_single.qml')
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_point_single.html')
         layer = load_layer(layer_path)
@@ -624,15 +624,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/point_style.js'))
+                        'index.html', 'styles/airports_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test28_OL3_line_single(self):
         """OL3 line single (test_qgis2web_dialog.test_OL3_line_single)"""
-        layer_path = test_data_path('layer', 'line.shp')
-        style_path = test_data_path('style', 'line_single.qml')
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        style_path = test_data_path('style', 'pipelines_single.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_line_single.html')
         layer = load_layer(layer_path)
@@ -658,15 +658,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/line_style.js'))
+                        'index.html', 'styles/pipelines_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test29_OL3_poly_single(self):
         """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)"""
-        layer_path = test_data_path('layer', 'polygon.shp')
-        style_path = test_data_path('style', 'polygon_single.qml')
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'lakes_single.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_polygon_single.html')
         layer = load_layer(layer_path)
@@ -691,15 +691,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/polygon_style.js'))
+                        'index.html', 'styles/lakes_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test30_OL3_pnt_categorized(self):
         """OL3 point categorized (test_qgis2web_dialog.test_OL3_pnt_categorized)"""
-        layer_path = test_data_path('layer', 'point.shp')
-        style_path = test_data_path('style', 'json_point_categorized.qml')
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_categorized.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_point_categorized.html')
         layer = load_layer(layer_path)
@@ -725,15 +725,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/point_style.js'))
+                        'index.html', 'styles/airports_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test31_OL3_line_categorized(self):
         """OL3 line categorized (test_qgis2web_dialog.test_OL3_line_categorized)"""
-        layer_path = test_data_path('layer', 'line.shp')
-        style_path = test_data_path('style', 'json_line_categorized.qml')
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        style_path = test_data_path('style', 'pipelines_categorized.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_line_categorized.html')
         layer = load_layer(layer_path)
@@ -758,15 +758,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/line_style.js'))
+                        'index.html', 'styles/pipelines_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test32_OL3_poly_categorized(self):
         """OL3 polygon categorized (test_qgis2web_dialog.test_OL3_poly_categorized)"""
-        layer_path = test_data_path('layer', 'polygon.shp')
-        style_path = test_data_path('style', 'json_polygon_categorized.qml')
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'lakes_categorized.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_polygon_categorized.html')
         layer = load_layer(layer_path)
@@ -791,15 +791,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/polygon_style.js'))
+                        'index.html', 'styles/lakes_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test33_OL3_pnt_graduated(self):
         """OL3 point graduated (test_qgis2web_dialog.test_OL3_pnt_graduated)"""
-        layer_path = test_data_path('layer', 'point.shp')
-        style_path = test_data_path('style', 'json_point_graduated.qml')
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_graduated.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_point_graduated.html')
         layer = load_layer(layer_path)
@@ -831,8 +831,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test34_OL3_line_graduated(self):
         """OL3 line graduated (test_qgis2web_dialog.test_OL3_line_graduated)"""
-        layer_path = test_data_path('layer', 'line.shp')
-        style_path = test_data_path('style', 'json_line_graduated.qml')
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        style_path = test_data_path('style', 'pipelines_graduated.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_line_graduated.html')
         layer = load_layer(layer_path)
@@ -857,15 +857,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/line_style.js'))
+                        'index.html', 'styles/pipelines_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
 
     def test35_OL3_poly_graduated(self):
         """OL3 polygon graduated (test_qgis2web_dialog.test_OL3_poly_graduated)"""
-        layer_path = test_data_path('layer', 'polygon.shp')
-        style_path = test_data_path('style', 'json_polygon_graduated.qml')
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'lakes_graduated.qml')
         control_path = test_data_path(
                 'control', 'ol3_json_polygon_graduated.html')
         layer = load_layer(layer_path)
@@ -890,7 +890,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/polygon_style.js'))
+                        'index.html', 'styles/lakes_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
         self.assertEqual(test_output, control_output)
