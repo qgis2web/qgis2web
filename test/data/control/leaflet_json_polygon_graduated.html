@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_polygon0.js"></script>
+        <script src="data/json_lakes0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -61,12 +61,12 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_polygon0(feature, layer) {
+        function pop_lakes0(feature, layer) {
         }
 
-        function doStylepolygon0(feature) {
-        if (feature.properties.area >= 12.0 &&
-                feature.properties.area <= 24701.2) {
+        function doStylelakes0(feature) {
+        if (feature.properties.AREA_MI >= 20.057 &&
+                feature.properties.AREA_MI <= 219.6906) {
 
             return {
                 color: '#000000',
@@ -79,8 +79,8 @@
                 fillOpacity: '1.0',
             }
         }
-        if (feature.properties.area >= 24701.2 &&
-                feature.properties.area <= 49390.4) {
+        if (feature.properties.AREA_MI >= 219.6906 &&
+                feature.properties.AREA_MI <= 419.3242) {
 
             return {
                 color: '#000000',
@@ -93,8 +93,8 @@
                 fillOpacity: '1.0',
             }
         }
-        if (feature.properties.area >= 49390.4 &&
-                feature.properties.area <= 74079.6) {
+        if (feature.properties.AREA_MI >= 419.3242 &&
+                feature.properties.AREA_MI <= 618.9578) {
 
             return {
                 color: '#000000',
@@ -107,8 +107,8 @@
                 fillOpacity: '1.0',
             }
         }
-        if (feature.properties.area >= 74079.6 &&
-                feature.properties.area <= 98768.8) {
+        if (feature.properties.AREA_MI >= 618.9578 &&
+                feature.properties.AREA_MI <= 818.5914) {
 
             return {
                 color: '#000000',
@@ -121,8 +121,8 @@
                 fillOpacity: '1.0',
             }
         }
-        if (feature.properties.area >= 98768.8 &&
-                feature.properties.area <= 123458.0) {
+        if (feature.properties.AREA_MI >= 818.5914 &&
+                feature.properties.AREA_MI <= 1018.225) {
 
             return {
                 color: '#000000',
@@ -136,13 +136,13 @@
             }
         }
         }
-        var json_polygon0JSON = new L.geoJson(json_polygon0, {
-            onEachFeature: pop_polygon0,
-            style: doStylepolygon0
+        var json_lakes0JSON = new L.geoJson(json_lakes0, {
+            onEachFeature: pop_lakes0,
+            style: doStylelakes0
         });
-        layerOrder[layerOrder.length] = json_polygon0JSON;
-        bounds_group.addLayer(json_polygon0JSON);
-        feature_group.addLayer(json_polygon0JSON);
+        layerOrder[layerOrder.length] = json_lakes0JSON;
+        bounds_group.addLayer(json_lakes0JSON);
+        feature_group.addLayer(json_lakes0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();

@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_lakes0.js"></script>
+        <script src="data/json_polygon0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -61,28 +61,59 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_lakes0(feature, layer) {
+        function pop_polygon0(feature, layer) {
         }
 
-        function doStylelakes0(feature) {
-            return {
-                weight: 0.26,
-                color: '#000000',
-                fillColor: '#38ccce',
-                dashArray: '',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                opacity: 1.0,
-                fillOpacity: 1.0
-            };
+        function doStylepolygon0(feature) {
+			switch (feature.properties.name) {
+                case 'big':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#c17dde',
+                    color: '#000000',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                case 'small':
+                    return {
+                    weight: '1.04',
+                    fillColor: '#74cab0',
+                    color: '#000000',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+                default:
+                    return {
+                    weight: '1.04',
+                    fillColor: '#caa54d',
+                    color: '#000000',
+                    dashArray: '',
+                    lineCap: 'butt',
+                    lineJoin: 'miter',
+                    opacity: '1.0',
+                    fillOpacity: '1.0',
+                };
+                break;
+
+            }
         }
-        var json_lakes0JSON = new L.geoJson(json_lakes0, {
-            onEachFeature: pop_lakes0,
-            style: doStylelakes0
+        var json_polygon0JSON = new L.geoJson(json_polygon0, {
+            onEachFeature: pop_polygon0,
+            style: doStylepolygon0
         });
-        layerOrder[layerOrder.length] = json_lakes0JSON;
-        bounds_group.addLayer(json_lakes0JSON);
-        feature_group.addLayer(json_lakes0JSON);
+        layerOrder[layerOrder.length] = json_polygon0JSON;
+        bounds_group.addLayer(json_polygon0JSON);
+        feature_group.addLayer(json_polygon0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();
