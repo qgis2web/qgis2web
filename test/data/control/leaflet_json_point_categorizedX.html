@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_airports0.js"></script>
+        <script src="data/json_point0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -61,49 +61,49 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_airports0(feature, layer) {
+        function pop_point0(feature, layer) {
         }
 
-        function doStyleairports0(feature) {
-			switch (feature.properties.USE) {
-                case 'Civilian/Public':
+        function doStylepoint0(feature) {
+			switch (feature.properties.type) {
+                case 'hamlet':
                     return {
-                    radius: '2.0',
-                    fillColor: '#de1ac1',
-                    color: '#000000',
+                    radius: '5.0',
+                    fillColor: '#a72cd0',
+                    color: '#ffffff',
                     weight: 0.0,
                     opacity: 1.0,
                     dashArray: '',
                     fillOpacity: '1.0',
                 };
                 break;
-                case 'Joint Military/Civilian':
+                case 'locality':
                     return {
-                    radius: '2.0',
-                    fillColor: '#7075ce',
-                    color: '#000000',
+                    radius: '5.0',
+                    fillColor: '#5b91d2',
+                    color: '#ffffff',
                     weight: 0.0,
                     opacity: 1.0,
                     dashArray: '',
                     fillOpacity: '1.0',
                 };
                 break;
-                case 'Military':
+                case 'suburb':
                     return {
-                    radius: '2.0',
-                    fillColor: '#d7865d',
-                    color: '#000000',
+                    radius: '5.0',
+                    fillColor: '#dc8388',
+                    color: '#ffffff',
                     weight: 0.0,
                     opacity: 1.0,
                     dashArray: '',
                     fillOpacity: '1.0',
                 };
                 break;
-                case 'Other':
+                case 'village':
                     return {
-                    radius: '2.0',
-                    fillColor: '#7ade29',
-                    color: '#000000',
+                    radius: '5.0',
+                    fillColor: '#26d764',
+                    color: '#ffffff',
                     weight: 0.0,
                     opacity: 1.0,
                     dashArray: '',
@@ -112,9 +112,9 @@
                 break;
                 default:
                     return {
-                    radius: '2.0',
-                    fillColor: '#56dab9',
-                    color: '#000000',
+                    radius: '5.0',
+                    fillColor: '#c4e715',
+                    color: '#ffffff',
                     weight: 0.0,
                     opacity: 1.0,
                     dashArray: '',
@@ -123,16 +123,16 @@
                 break;
             }
         }
-        var json_airports0JSON = new L.geoJson(json_airports0, {
-            onEachFeature: pop_airports0,
+        var json_point0JSON = new L.geoJson(json_point0, {
+            onEachFeature: pop_point0,
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, doStyleairports0(feature))
+                return L.circleMarker(latlng, doStylepoint0(feature))
             }
         });
-        layerOrder[layerOrder.length] = json_airports0JSON;
+        layerOrder[layerOrder.length] = json_point0JSON;
 
-        bounds_group.addLayer(json_airports0JSON);
-        feature_group.addLayer(json_airports0JSON);
+        bounds_group.addLayer(json_point0JSON);
+        feature_group.addLayer(json_point0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();

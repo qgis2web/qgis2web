@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_point0.js"></script>
+        <script src="data/json_airports0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -61,17 +61,17 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
-        function pop_point0(feature, layer) {
+        function pop_airports0(feature, layer) {
         }
 
-        function doStylepoint0(feature) {
-        if (feature.properties.population >= 0.0 &&
-                feature.properties.population <= 3313.0) {
+        function doStyleairports0(feature) {
+        if (feature.properties.ELEV >= 9.0 &&
+                feature.properties.ELEV <= 321.0) {
 
             return {
-                radius: '5.0',
+                radius: '2.0',
                 fillColor: '#f7fbff',
-                color: '#ffffff',
+                color: '#000000',
                 weight: 0.0,
                 fillOpacity: '1.0',
                 opacity: '1.0',
@@ -79,13 +79,13 @@
             }
         }
 
-        if (feature.properties.population >= 3313.0 &&
-                feature.properties.population <= 6626.0) {
+        if (feature.properties.ELEV >= 321.0 &&
+                feature.properties.ELEV <= 633.0) {
 
             return {
-                radius: '5.0',
+                radius: '2.0',
                 fillColor: '#c7dcef',
-                color: '#ffffff',
+                color: '#000000',
                 weight: 0.0,
                 fillOpacity: '1.0',
                 opacity: '1.0',
@@ -93,13 +93,13 @@
             }
         }
 
-        if (feature.properties.population >= 6626.0 &&
-                feature.properties.population <= 9939.0) {
+        if (feature.properties.ELEV >= 633.0 &&
+                feature.properties.ELEV <= 945.0) {
 
             return {
-                radius: '5.0',
+                radius: '2.0',
                 fillColor: '#72b2d7',
-                color: '#ffffff',
+                color: '#000000',
                 weight: 0.0,
                 fillOpacity: '1.0',
                 opacity: '1.0',
@@ -107,13 +107,13 @@
             }
         }
 
-        if (feature.properties.population >= 9939.0 &&
-                feature.properties.population <= 13252.0) {
+        if (feature.properties.ELEV >= 945.0 &&
+                feature.properties.ELEV <= 1257.0) {
 
             return {
-                radius: '5.0',
+                radius: '2.0',
                 fillColor: '#2878b8',
-                color: '#ffffff',
+                color: '#000000',
                 weight: 0.0,
                 fillOpacity: '1.0',
                 opacity: '1.0',
@@ -121,13 +121,13 @@
             }
         }
 
-        if (feature.properties.population >= 13252.0 &&
-                feature.properties.population <= 16565.0) {
+        if (feature.properties.ELEV >= 1257.0 &&
+                feature.properties.ELEV <= 1569.0) {
 
             return {
-                radius: '5.0',
+                radius: '2.0',
                 fillColor: '#08306b',
-                color: '#ffffff',
+                color: '#000000',
                 weight: 0.0,
                 fillOpacity: '1.0',
                 opacity: '1.0',
@@ -136,16 +136,16 @@
         }
 
         }
-        var json_point0JSON = new L.geoJson(json_point0, {
-            onEachFeature: pop_point0,
+        var json_airports0JSON = new L.geoJson(json_airports0, {
+            onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, doStylepoint0(feature))
+                return L.circleMarker(latlng, doStyleairports0(feature))
             }
         });
-        layerOrder[layerOrder.length] = json_point0JSON;
+        layerOrder[layerOrder.length] = json_airports0JSON;
 
-        bounds_group.addLayer(json_point0JSON);
-        feature_group.addLayer(json_point0JSON);
+        bounds_group.addLayer(json_airports0JSON);
+        feature_group.addLayer(json_airports0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         stackLayers();
