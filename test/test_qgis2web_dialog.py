@@ -1254,12 +1254,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        control_file = open(
-                test_data_path(
-                        'control', 'ol3_geolocate.js'), 'r')
-        control_output = control_file.read()
-
-
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
