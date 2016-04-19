@@ -1029,7 +1029,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         control_file = open(
                 test_data_path(
-                        'control', 'ol3_scalebar.html'), 'r')
+                        'control', 'ol3_scalebar.js'), 'r')
         control_output = control_file.read()
 
 
