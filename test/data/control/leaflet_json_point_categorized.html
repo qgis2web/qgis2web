@@ -45,11 +45,12 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
+        var initialOrder = new Array();
         var layerOrder = new Array();
         function stackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                map.removeLayer(layerOrder[index]);
-                map.addLayer(layerOrder[index]);
+            for (index = 0; index < initialOrder.length; index++) {
+                map.removeLayer(initialOrder[index]);
+                map.addLayer(initialOrder[index]);
             }
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
@@ -132,6 +133,7 @@
         layerOrder[layerOrder.length] = json_airports0JSON;
 
         bounds_group.addLayer(json_airports0JSON);
+        initialOrder[initialOrder.length] = json_airports0JSON;
         feature_group.addLayer(json_airports0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
