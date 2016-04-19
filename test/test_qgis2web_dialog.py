@@ -48,51 +48,51 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = None
 
     def test01_preview_default(self):
-        """Preview default - no data (OL3) (test_qgis2web_dialog.test_preview_default)"""
+        """Preview default - no data (OL3)"""
         self.dialog = MainDialog(IFACE)
         self.dialog.buttonPreview.click()
 
 #    def test02_save_default(self):
-#        """Save default - no data (OL3) (test_qgis2web_dialog.test_save_default)"""
+#        """Save default - no data (OL3)"""
 #        self.dialog = MainDialog(IFACE)
 #        self.dialog.buttonExport.click()
 
     def test03_toggle_Leaflet(self):
-        """Toggle to Leaflet (test_qgis2web_dialog.test_toggle_Leaflet)"""
+        """Toggle to Leaflet - no data"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
     def test04_preview_Leaflet(self):
-        """Preview Leaflet - no data (test_qgis2web_dialog.test_preview_Leaflet)"""
+        """Preview Leaflet - no data"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonPreview.click()
 
 #    def test05_export_Leaflet(self):
-#        """Export Leaflet - no data (test_qgis2web_dialog.test_export_Leaflet)"""
+#        """Export Leaflet - no data"""
 #        self.dialog = MainDialog(IFACE)
 #        self.dialog.leaflet.click()
 #        self.dialog.buttonExport.click()
 
     def test06_toggle_OL3(self):
-        """Toggle to OL3 (test_qgis2web_dialog.test_toggle_OL3)"""
+        """Toggle to OL3 - no data"""
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
 
     def test07_preview_OL3(self):
-        """Preview OL3 - no data (test_qgis2web_dialog.test_preview_OL3)"""
+        """Preview OL3 - no data"""
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog.buttonPreview.click()
 
 #    def test08_export_OL3(self):
-#        """Export OL3 - no data (test_qgis2web_dialog.test_export_OL3)"""
+#        """Export OL3 - no data"""
 #        self.dialog = MainDialog(IFACE)
 #        self.dialog.ol3.click()
 #        self.dialog.buttonExport.click()
 
     def test09_Leaflet_json_pnt_single(self):
-        """Leaflet JSON point single (test_qgis2web_dialog.test_Leaflet_json_pnt_single)"""
+        """Leaflet JSON point single"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
@@ -124,7 +124,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test10_Leaflet_wfs_pnt_single(self):
-        """Leaflet WFS point single (test_qgis2web_dialog.test_Leaflet_wfs_pnt_single)"""
+        """Leaflet WFS point single"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
                      ':dnpa-tpo-point&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
@@ -153,7 +153,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test11_Leaflet_json_line_single(self):
-        """Leaflet JSON line single (test_qgis2web_dialog.test_Leaflet_json_line_single)"""
+        """Leaflet JSON line single"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         style_path = test_data_path('style', 'pipelines_single.qml')
         layer = load_layer(layer_path)
@@ -179,7 +179,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test12_Leaflet_wfs_line_single(self):
-        """Leaflet WFS line single (test_qgis2web_dialog.test_Leaflet_wfs_line_single)"""
+        """Leaflet WFS line single"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
@@ -206,7 +206,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test13_Leaflet_json_poly_single(self):
-        """Leaflet JSON polygon single (test_qgis2web_dialog.test_Leaflet_json_poly_single)"""
+        """Leaflet JSON polygon single"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_single.qml')
         layer = load_layer(layer_path)
@@ -232,7 +232,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test14_Leaflet_wfs_poly_single(self):
-        """Leaflet WFS polygon single (test_qgis2web_dialog.test_Leaflet_wfs_poly_single)"""
+        """Leaflet WFS polygon single"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
@@ -262,7 +262,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test15_Leaflet_json_pnt_categorized(self):
-        """Leaflet JSON point categorized (test_qgis2web_dialog.test_Leaflet_json_pnt_categorized)"""
+        """Leaflet JSON point categorized"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_categorized.qml')
         control_path = test_data_path(
@@ -289,7 +289,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test16_Leaflet_wfs_pnt_categorized(self):
-        """Leaflet WFS point categorized (test_qgis2web_dialog.test_Leaflet_wfs_pnt_categorized)"""
+        """Leaflet WFS point categorized"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
                      ':dnpa-tpo-point&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
@@ -315,7 +315,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test17_Leaflet_json_line_categorized(self):
-        """Leaflet JSON line categorized (test_qgis2web_dialog.test_Leaflet_json_line_categorized)"""
+        """Leaflet JSON line categorized"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         style_path = test_data_path('style', 'pipelines_categorized.qml')
         control_path = test_data_path(
@@ -341,7 +341,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test18_Leaflet_wfs_line_categorized(self):
-        """Leaflet WFS line categorized (test_qgis2web_dialog.test_Leaflet_wfs_line_categorized)"""
+        """Leaflet WFS line categorized"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
@@ -370,7 +370,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test19_Leaflet_json_poly_categorized(self):
-        """Leaflet JSON polygon categorized (test_qgis2web_dialog.test_Leaflet_json_poly_categorized)"""
+        """Leaflet JSON polygon categorized"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_categorized.qml')
         control_path = test_data_path(
@@ -397,7 +397,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test20_Leaflet_wfs_poly_categorized(self):
-        """Leaflet WFS polygon categorized (test_qgis2web_dialog.test_Leaflet_wfs_poly_categorized)"""
+        """Leaflet WFS polygon categorized"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
@@ -426,7 +426,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test21_Leaflet_json_pnt_graduated(self):
-        """Leaflet JSON point graduated (test_qgis2web_dialog.test_Leaflet_json_pnt_graduated)"""
+        """Leaflet JSON point graduated"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_graduated.qml')
         control_path = test_data_path(
@@ -453,7 +453,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test22_Leaflet_wfs_pnt_graduated(self):
-        """Leaflet WFS point graduated (test_qgis2web_dialog.test_Leaflet_wfs_pnt_graduated)"""
+        """Leaflet WFS point graduated"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor'
                      ':dnpa-tpo-point&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
@@ -482,7 +482,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test23_Leaflet_json_line_graduated(self):
-        """Leaflet JSON line graduated (test_qgis2web_dialog.test_Leaflet_json_line_graduated)"""
+        """Leaflet JSON line graduated"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         layer_style = test_data_path('style', 'pipelines_graduated.qml')
         control_path = test_data_path(
@@ -509,7 +509,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test24_Leaflet_wfs_line_graduated(self):
-        """Leaflet WFS line graduated (test_qgis2web_dialog.test_Leaflet_wfs_line_graduated)"""
+        """Leaflet WFS line graduated"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
@@ -539,7 +539,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test25_Leaflet_json_poly_graduated(self):
-        """Leaflet JSON polygon graduated (test_qgis2web_dialog.test_Leaflet_json_poly_graduated)"""
+        """Leaflet JSON polygon graduated"""
         layer_path = test_data_path('layer', 'lakes.shp')
         layer_style = test_data_path('style', 'lakes_graduated.qml')
         control_path = test_data_path(
@@ -566,7 +566,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test26_Leaflet_wfs_poly_graduated(self):
-        """Leaflet WFS polygon graduated (test_qgis2web_dialog.test_Leaflet_wfs_poly_graduated)"""
+        """Leaflet WFS polygon graduated"""
         layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
                      '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
@@ -596,7 +596,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test27_OL3_pnt_single(self):
-        """OL3 point single (test_qgis2web_dialog.test_OL3_pnt_single)"""
+        """OL3 point single"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         control_path = test_data_path(
@@ -630,7 +630,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test28_OL3_line_single(self):
-        """OL3 line single (test_qgis2web_dialog.test_OL3_line_single)"""
+        """OL3 line single"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         style_path = test_data_path('style', 'pipelines_single.qml')
         control_path = test_data_path(
@@ -664,7 +664,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test29_OL3_poly_single(self):
-        """OL3 polygon single (test_qgis2web_dialog.test_OL3_poly_single)"""
+        """OL3 polygon single"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_single.qml')
         control_path = test_data_path(
@@ -697,7 +697,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test30_OL3_pnt_categorized(self):
-        """OL3 point categorized (test_qgis2web_dialog.test_OL3_pnt_categorized)"""
+        """OL3 point categorized"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_categorized.qml')
         control_path = test_data_path(
@@ -731,7 +731,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test31_OL3_line_categorized(self):
-        """OL3 line categorized (test_qgis2web_dialog.test_OL3_line_categorized)"""
+        """OL3 line categorized"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         style_path = test_data_path('style', 'pipelines_categorized.qml')
         control_path = test_data_path(
@@ -764,7 +764,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test32_OL3_poly_categorized(self):
-        """OL3 polygon categorized (test_qgis2web_dialog.test_OL3_poly_categorized)"""
+        """OL3 polygon categorized"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_categorized.qml')
         control_path = test_data_path(
@@ -797,7 +797,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test33_OL3_pnt_graduated(self):
-        """OL3 point graduated (test_qgis2web_dialog.test_OL3_pnt_graduated)"""
+        """OL3 point graduated"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_graduated.qml')
         control_path = test_data_path(
@@ -830,7 +830,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test34_OL3_line_graduated(self):
-        """OL3 line graduated (test_qgis2web_dialog.test_OL3_line_graduated)"""
+        """OL3 line graduated"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         style_path = test_data_path('style', 'pipelines_graduated.qml')
         control_path = test_data_path(
@@ -863,7 +863,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test35_OL3_poly_graduated(self):
-        """OL3 polygon graduated (test_qgis2web_dialog.test_OL3_poly_graduated)"""
+        """OL3 polygon graduated"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_graduated.qml')
         control_path = test_data_path(
