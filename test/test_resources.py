@@ -33,7 +33,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         pass
 
     def test_icon_png(self):
-        """Read icon from resources (test_resources.test_icon_png)."""
+        """Read icon from resources"""
         path = ':/plugins/qgis2web_class/icon.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
