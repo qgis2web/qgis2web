@@ -414,7 +414,8 @@ def eachCategoryScript(catValue):
     else:
         valQuote = ""
     eachCategory = """
-                case """ + valQuote + unicode(catValue) + valQuote + """:
+                case """ + valQuote + unicode(catValue).replace("'", "\\'")
+    eachCategory += valQuote + """:
                     return {"""
     return eachCategory
 
