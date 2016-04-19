@@ -1263,7 +1263,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
         # Check the 'Add scale bar' checkbox
         self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.leaflet.click()
+        self.dialog.ol3.click()
 
         control_file = open(
                 test_data_path(
