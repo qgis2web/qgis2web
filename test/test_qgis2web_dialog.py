@@ -997,6 +997,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'control', 'leaflet_scalebar.html'), 'r')
         control_output = control_file.read()
 
+        # Check the 'Add scale bar' checkbox
+        dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
+
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
