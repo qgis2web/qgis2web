@@ -1131,7 +1131,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test44_Leaflet_address(self):
-        """Leaflet measure"""
+        """Leaflet address search"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
