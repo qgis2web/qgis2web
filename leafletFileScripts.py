@@ -73,7 +73,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress = '<script src="js/leaflet.js"></script>'
     else:
         cssAddress = '<link rel="stylesheet" href='
-        cssAddress += '"http://http://cdn.leafletjs.com/leaflet/v0.7.7/'
+        cssAddress += '"http://cdn.leafletjs.com/leaflet/v0.7.7/'
         cssAddress += 'leaflet.css" />'
         jsAddress = '<script src="http://'
         jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
