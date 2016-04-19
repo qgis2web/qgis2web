@@ -1120,7 +1120,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
         control_file = open(
                 test_data_path(
-                        'control', 'ol3_scalebar.js'), 'r')
+                        'control', 'ol3_measure.js'), 'r')
         control_output = control_file.read()
 
 
