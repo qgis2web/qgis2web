@@ -138,11 +138,12 @@ def basemapsScript(basemapList, maxZoom):
 
 def layerOrderScript(extent):
     layerOrder = """
+        var initialOrder = new Array();
         var layerOrder = new Array();
         function stackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                map.removeLayer(layerOrder[index]);
-                map.addLayer(layerOrder[index]);
+            for (index = 0; index < initialOrder.length; index++) {
+                map.removeLayer(initialOrder[index]);
+                map.addLayer(initialOrder[index]);
             }"""
     if extent == 'Fit to layers extent':
         layerOrder += """
