@@ -1109,7 +1109,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         control_file = open(
                 test_data_path(
-                        'control', 'ol3_smeasure.html'), 'r')
+                        'control', 'ol3_measure.html'), 'r')
         control_output = control_file.read()
 
 
