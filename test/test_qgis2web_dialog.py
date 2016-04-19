@@ -1104,12 +1104,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         # Check the 'Add scale bar' checkbox
-        self.dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get('Add measure tool').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
         control_file = open(
                 test_data_path(
-                        'control', 'ol3_scalebar.html'), 'r')
+                        'control', 'ol3_smeasure.html'), 'r')
         control_output = control_file.read()
 
 
