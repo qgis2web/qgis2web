@@ -1045,7 +1045,51 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         # Open the test file
-        test_output = read_output(dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+    def test43_OL3_measure(self):
+        """OL3 measure control"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        # Check the 'Add scale bar' checkbox
+        self.dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_scalebar.html'), 'r')
+        control_output = control_file.read()
+
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_scalebar.js'), 'r')
+        control_output = control_file.read()
+
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
