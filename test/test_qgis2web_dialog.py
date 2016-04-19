@@ -983,7 +983,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
     def test40_Leaflet_scalebar(self):
-        """Leaflet JSON point single"""
+        """Leaflet scale bar"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
