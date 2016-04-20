@@ -1005,6 +1005,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
+
         # Check the 'Add scale bar' checkbox
         self.dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
@@ -1040,6 +1041,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
+
         # Check the 'Add scale bar' checkbox
         self.dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
@@ -1073,7 +1075,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Add measure tool' checkbox
         self.dialog.items['Appearance'].get('Add measure tool').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
@@ -1103,7 +1106,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Add measure tool' checkbox
         self.dialog.items['Appearance'].get('Add measure tool').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
@@ -1153,7 +1157,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Add address search' checkbox
         self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
@@ -1182,7 +1187,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Add address search' checkbox
         self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
@@ -1232,7 +1238,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Geolocate user' checkbox
         self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
@@ -1261,7 +1268,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Geolocate user' checkbox
         self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
@@ -1300,7 +1308,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Highlight on hover' checkbox
         self.dialog.items['Appearance'].get('Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
@@ -1329,7 +1338,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Highlight on hover' checkbox
         self.dialog.items['Appearance'].get('Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
@@ -1370,7 +1380,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        # Check the 'Add scale bar' checkbox
+
+        # Check the 'Match project CRS' checkbox
         self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
@@ -1378,6 +1389,55 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+    def test51_OL3_CRS(self):
+        """OL3 match CRS"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        crs = QgsCoordinateReferenceSystem("EPSG:2964")
+        IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+                # Check the 'Match project CRS' checkbox
+        self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_crs.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_crs.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
