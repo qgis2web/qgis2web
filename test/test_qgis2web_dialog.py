@@ -1354,7 +1354,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-
+        crs = QgsCoordinateReferenceSystem("EPSG:2964")
+        iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        
         control_file = open(
                 test_data_path(
                         'control', 'leaflet_crs.html'), 'r')
