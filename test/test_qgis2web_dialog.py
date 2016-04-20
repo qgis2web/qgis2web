@@ -1583,6 +1583,39 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
+    def test56_OL3_cluster(self):
+        """OL3 cluster"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Check the 'Cluster' checkbox
+        self.dialog.layers_item.child(0).clusterCheck.setChecked(True)
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_cluster.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
