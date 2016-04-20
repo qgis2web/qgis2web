@@ -18,7 +18,7 @@ import unittest
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QDialogButtonBox, QDialog
