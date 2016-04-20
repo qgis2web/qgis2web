@@ -1640,7 +1640,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Check the 'Cluster' checkbox
+        # Select popup: all fields
         self.dialog.layers_item.child(0).combo.setCurrentIndex(1)
         self.dialog.leaflet.click()
 
@@ -1648,6 +1648,39 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+    def test58_OL3_popup_all(self):
+        """OL3 popup (all fields)"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Select popup: all fields
+        self.dialog.layers_item.child(0).combo.setCurrentIndex(1)
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_popup_all.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
