@@ -31,7 +31,7 @@ class TestInit(unittest.TestCase):
     """
 
     def test_read_init(self):
-        """Plugin __init__ will validate on plugins.qgis.org (test_init.test_read_init)."""
+        """Plugin __init__ will validate on plugins.qgis.org"""
 
         # You should update this list according to the latest in
         # https://github.com/qgis/qgis-django/blob/master/qgis-app/
