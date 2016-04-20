@@ -99,8 +99,6 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
-    reducePrecision = (
-        re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % unicode(int(precision))))
     for layer, encode2json, popup in zip(layers, json, popupField):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
@@ -162,15 +160,19 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                                    safeName(cleanLayer.name()) + ".json")
             path = os.path.join(layersFolder,
                                 safeName(cleanLayer.name()) + ".js")
+            if precision != "maintain":
+                options = "COORDINATE_PRECISION=" + unicode(precision)
+            else:
+                options = ""
             QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
                                                     "utf-8", epsg4326,
-                                                    'GeoJson')
+                                                    'GeoJson', 0,
+                                                    layerOptions=[options])
             with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" +
                                        safeName(cleanLayer.name())))
                 with open(tmpPath, "r") as f2:
                     for line in f2:
-                        line = reducePrecision.sub(r"\1", line)
                         if optimize:
                             line = line.strip("\n\t ")
                             line = removeSpaces(line)

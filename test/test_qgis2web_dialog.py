@@ -1826,6 +1826,72 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
+    def test62_leaflet_precision(self):
+        """Leaflet precision"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Set 'Precision' combo to '3'
+        self.dialog.items['Data export'].get('Precision').setCurrentIndex(3)
+        self.dialog.leaflet.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_precision.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'data/json_airports0.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+    def test63_ol3_precision(self):
+        """OL3 precision"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Set 'Precision' combo to '3'
+        self.dialog.items['Data export'].get('Precision').setCurrentIndex(3)
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_precision.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the

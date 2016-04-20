@@ -60,7 +60,10 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
         renderer.stopRender(renderContext)
 
     writer = QgsVectorFileWriter
-    options = "COORDINATE_PRECISION=" + unicode(precision)
+    if precision != "maintain":
+        options = "COORDINATE_PRECISION=" + unicode(precision)
+    else:
+        options = ""
     writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8', exp_crs,
                                'GeoJson', 0, layerOptions=[options])
 

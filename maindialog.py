@@ -236,8 +236,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                             "qgis2web", param)[0]
                     elif param == "Max zoom level":
                         comboSelection = 27
-                    elif param == "Precision":
-                        comboSelection = 5
                     else:
                         comboSelection = 0
                 else:
