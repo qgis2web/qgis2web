@@ -1278,7 +1278,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test48_Leaflet_highlight(self):
-        """Leaflet hoghlight on hover"""
+        """Leaflet highlight on hover"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
@@ -1313,7 +1313,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output)
 
     def test49_OL3_highlight(self):
-        """OL3 hoghlight on hover"""
+        """OL3 highlight on hover"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
@@ -1341,6 +1341,41 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+    def test50_Leaflet_CRS(self):
+        """Leaflet match CRS"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_crs.html'), 'r')
+        control_output = control_file.read()
+
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        # Check the 'Add scale bar' checkbox
+        self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.leaflet.click()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
