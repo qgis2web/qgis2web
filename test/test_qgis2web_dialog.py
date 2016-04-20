@@ -1503,7 +1503,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Check the 'Visible' checkbox
-        self.dialog.layers_item.child(0).visible = False
+        self.dialog.layers_item.child(0).visibleCheck.setChecked(False)
         self.dialog.leaflet.click()
 
         # Open the test file
