@@ -1845,7 +1845,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Set 'Precision' combo to '3'
-        self.dialog.items['Data export'].get('Precision').setCurrentIndex(3)
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(3)
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -1878,7 +1878,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Set 'Precision' combo to '3'
-        self.dialog.items['Data export'].get('Precision').setCurrentIndex(3)
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(3)
         self.dialog.ol3.click()
 
         control_file = open(
