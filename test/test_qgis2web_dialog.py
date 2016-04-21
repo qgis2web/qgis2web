@@ -2003,6 +2003,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Does the file exist
         customLocn = '/tmp/customfolder/'
         testLocn = self.dialog.preview.url().toString().replace('file://', '')
+        print "testLocn: " + testLocn
         assert customLocn in testLocn
 
 
