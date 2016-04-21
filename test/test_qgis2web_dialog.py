@@ -2000,7 +2000,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(
                 self.dialog.paramsTreeOL.findItems(
                         'Export folder',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0]).setText(1, '/tmp/customfolder')
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0], 1).setText(0, '/tmp/customfolder')
         self.dialog.ol3.click()
 
         # Does the file exist
