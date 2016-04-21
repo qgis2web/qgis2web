@@ -1924,6 +1924,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
+        # Set 'Mapping library location' combo to 'CDN'
+        self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
         self.dialog.leaflet.click()
 
         # Open the test file
@@ -1958,6 +1960,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
+        # Set 'Mapping library location' combo to 'CDN'
+        self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
         self.dialog.ol3.click()
 
         # Open the test file
