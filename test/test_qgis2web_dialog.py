@@ -1779,6 +1779,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.items['Data export'].get('Delete unused fields').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
+        # Set 'Precision' combo to '6'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
+        self.dialog.ol3.click()
+
         control_file = open(
                 test_data_path(
                         'control', 'leaflet_deleteunused.js'), 'r')
@@ -1813,6 +1817,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Delete unused fields' checkbox
         self.dialog.items['Data export'].get('Delete unused fields').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.ol3.click()
+
+        # Set 'Precision' combo to '6'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
         self.dialog.ol3.click()
 
         control_file = open(
