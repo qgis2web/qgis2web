@@ -1804,7 +1804,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        # Export to web map
+        # Export to web map 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
                 self.dialog.paramsTreeOL.findItems(
