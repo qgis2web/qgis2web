@@ -1997,7 +1997,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Set 'Export folder'
-        self.dialog.items['Data export'].get('Export folder').setText(1, '/tmp/customfolder')
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Export folder',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setText('/tmp/customfolder')
         self.dialog.ol3.click()
 
         # Does the file exist
