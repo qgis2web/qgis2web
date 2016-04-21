@@ -2024,8 +2024,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Check the 'Minify GeoJSON fields' checkbox
-        self.dialog.items['Data export'].get('Minify GeoJSON fields').setCheckState(1, QtCore.Qt.Checked)
+        # Check the 'Minify GeoJSON files' checkbox
+        self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.leaflet.click()
 
         # Set 'Precision' combo to '5'
@@ -2061,8 +2061,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Check the 'Minify GeoJSON fields' checkbox
-        self.dialog.items['Data export'].get('Minify GeoJSON fields').setCheckState(1, QtCore.Qt.Checked)
+        # Check the 'Minify GeoJSON files' checkbox
+        self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
         # Set 'Precision' combo to '5'
