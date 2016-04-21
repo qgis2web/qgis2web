@@ -2006,6 +2006,80 @@ class qgis2web_classDialogTest(unittest.TestCase):
         print "testLocn: " + testLocn
         assert customLocn in testLocn
 
+    def test67_leaflet_minify(self):
+        """Leaflet minify"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Check the 'Minify GeoJSON fields' checkbox
+        self.dialog.items['Data export'].get('Minify GeoJSON fields').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.leaflet.click()
+
+        # Set 'Precision' combo to '5'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(5)
+        self.dialog.leaflet.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_deleteunused.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'data/json_airports0.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
+    def test68_ol3_minify(self):
+        """OL3 minify"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Check the 'Minify GeoJSON fields' checkbox
+        self.dialog.items['Data export'].get('Minify GeoJSON fields').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.ol3.click()
+
+        # Set 'Precision' combo to '5'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(5)
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_deleteunused.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports.js')
+
+        # Compare with control file
+        self.assertEqual(test_output, control_output)
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
