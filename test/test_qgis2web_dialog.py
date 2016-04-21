@@ -1781,7 +1781,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Set 'Precision' combo to '6'
         self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
-        self.dialog.ol3.click()
+        self.dialog.leaflet.click()
 
         control_file = open(
                 test_data_path(
@@ -1804,7 +1804,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        # Export to web map 
+        # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
                 self.dialog.paramsTreeOL.findItems(
