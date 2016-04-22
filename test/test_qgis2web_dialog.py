@@ -2029,7 +2029,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Minify GeoJSON files' checkbox
         self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.leaflet.click()
 
         # Set 'Precision' combo to '6'
         self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
@@ -2066,7 +2065,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Minify GeoJSON files' checkbox
         self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.ol3.click()
 
         # Set 'Precision' combo to '6'
         self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
@@ -2109,7 +2107,77 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Test for expected output
-        self.assert "}).fitBounds([[" in test_output
+        assert "}).fitBounds([[" in test_output
+
+    def test70_Leaflet_maxzoom(self):
+        """Leaflet max zoom"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Set 'Max zoom' combo to '20'
+        self.dialog.items['Scale/Zoom'].get('Max zoom level').combo.setCurrentIndex(19)
+        self.dialog.leaflet.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_maxzoom.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Test for expected output
+        self.assertEqual(test_output, control_output)
+
+    def test72_Leaflet_minzoom(self):
+        """Leaflet min zoom"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Set 'Min zoom' combo to '6'
+        self.dialog.items['Scale/Zoom'].get('Min zoom level').combo.setCurrentIndex(5)
+        self.dialog.leaflet.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_minzoom.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Test for expected output
+        self.assertEqual(test_output, control_output)
 
 
 def read_output(url, path):
