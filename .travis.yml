@@ -10,15 +10,24 @@ install:
   - sudo add-apt-repository http://qgis.org/debian-ltr
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
-  - sudo pip install nose2
+  - sudo pip install --upgrade pip
+  - sudo pip install coverage
+  - sudo pip install nosexcover
+  - sudo pip install --upgrade pep8
+  - sudo pip install --upgrade pylint
 
 before_script:
-  - export PATH=/usr/bin:$PATH
+  - echo "Build starting on " `date`
+  - export QGIS_PREFIX_PATH=/usr
+  - export PYTHONPATH=${QGIS_PREFIX_PATH}/share/qgis/python/:${QGIS_PREFIX_PATH}/share/qgis/python/plugins:`pwd`
+  - echo "PYTHONPATH:" $PYTHONPATH
+  - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
 
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - xvfb-run nose2
+  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
+
 
 notifications:
   email:
