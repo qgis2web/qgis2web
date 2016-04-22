@@ -2303,7 +2303,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                             Qt.MatchRecursive))[0].setText(1,
                                                     '/tmp/customfolder')
         self.dialog.ol3.click()
-        testLocn = self.dialog.buttonExport.click()
+        testLocn = self.dialog.buttonExport.click() &
 
         # Does the file exist
         customLocn = '/tmp/customfolder/'
