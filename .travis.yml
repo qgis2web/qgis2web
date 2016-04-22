@@ -7,7 +7,6 @@ virtualenv:
 
 -before_install:
   - sudo apt-get -qq -y update
-  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x24"
 
 install:
   - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
@@ -29,7 +28,7 @@ before_script:
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
+  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
 notifications:
   email:
