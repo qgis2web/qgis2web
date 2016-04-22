@@ -2260,8 +2260,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(
                 self.dialog.paramsTreeOL.findItems(
                         'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[1],
-                1).setCurrentIndex(0)
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
 
         # Check the 'Restrict to extent' checkbox
         self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
