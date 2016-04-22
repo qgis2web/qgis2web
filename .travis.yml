@@ -24,11 +24,15 @@ before_script:
   - export PYTHONPATH=${QGIS_PREFIX_PATH}/share/qgis/python/:${QGIS_PREFIX_PATH}/share/qgis/python/plugins:`pwd`
   - echo "PYTHONPATH:" $PYTHONPATH
   - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
 
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
+  - nosetests -s --nologcapture -A 'not slow' -v --with-id --with-xcoverage --with-xunit --verbose --cover-package=qgis2web
 
 notifications:
   email:
