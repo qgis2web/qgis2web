@@ -2245,7 +2245,42 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
-    def test74_ol3_restricttoextent(self):
+    def test74_Leaflet_restricttoextent(self):
+        """Leaflet restrict to extent"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        # Check the 'Restrict to extent' checkbox
+        self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.leaflet.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_restricttoextent.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Test for expected output
+        self.assertEqual(test_output, control_output)
+
+    def test75_ol3_restricttoextent(self):
         """OL3 restrict to extent"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
