@@ -2037,7 +2037,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         control_file = open(
                 test_data_path(
-                        'control', 'leaflet_deleteunused.js'), 'r')
+                        'control', 'leaflet_minify.js'), 'r')
         control_output = control_file.read()
 
         # Open the test file
@@ -2074,7 +2074,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         control_file = open(
                 test_data_path(
-                        'control', 'ol3_deleteunused.js'), 'r')
+                        'control', 'ol3_minify.js'), 'r')
         control_output = control_file.read()
 
         # Open the test file
