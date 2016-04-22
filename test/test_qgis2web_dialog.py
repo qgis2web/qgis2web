@@ -2301,7 +2301,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Check the 'Restrict to extent' checkbox
         self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
 
-        self.dialog.leaflet.click()
+        self.dialog.ol3.click()
 
         # Open the test file
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
