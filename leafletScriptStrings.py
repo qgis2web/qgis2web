@@ -136,7 +136,7 @@ def basemapsScript(basemapList, maxZoom):
     return basemaps
 
 
-def layerOrderScript(extent):
+def layerOrderScript(extent, restrictToExtent):
     layerOrder = """
         var initialOrder = new Array();
         var layerOrder = new Array();
@@ -150,6 +150,9 @@ def layerOrderScript(extent):
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }"""
+    if restrictToExtent:
+        layerOrder += """
+            map.setMaxBounds(map.getBounds());"""
     layerOrder += """
         }
         function restackLayers() {

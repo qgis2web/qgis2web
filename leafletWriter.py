@@ -53,6 +53,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     extent = params["Scale/Zoom"]["Extent"]
     minZoom = params["Scale/Zoom"]["Min zoom level"]
     maxZoom = params["Scale/Zoom"]["Max zoom level"]
+    restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
     basemapList = params["Appearance"]["Base layer"]
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
@@ -137,7 +138,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         basemapText = ""
     else:
         basemapText = basemapsScript(basemapList, maxZoom)
-    layerOrder = layerOrderScript(extent)
+    layerOrder = layerOrderScript(extent, restrictToExtent)
     new_src += middle
     new_src += basemapText
     new_src += layerOrder
