@@ -2307,7 +2307,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Does the file exist
         customLocn = '/tmp/customfolder/'
-        print "testLocn: " + testLocn
+        print testLocn
         assert customLocn in testLocn
 
 def read_output(url, path):

@@ -136,10 +136,9 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            exportFile = MainDialog.saveOL(self)
+            MainDialog.saveOL(self)
         else:
-            exportFile = MainDialog.saveLeaf(self)
-        return exportFile
+            MainDialog.saveLeaf(self)
 
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
@@ -313,11 +312,9 @@ class MainDialog(QDialog, Ui_MainDialog):
              json, cluster) = self.getLayersAndGroups()
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
                                  json, cluster, params, folder)
-            try:
-                webbrowser.get("firefox %s").open_new_tab(outputFile)
-            except:
+            if (not os.environ.get('CI') and
+                not os.environ.get('TRAVIS'))
                 webbrowser.open_new_tab(outputFile)
-            return outputFile
 
     def saveLeaf(self):
         params = self.getParameters()
@@ -328,7 +325,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             outputFile = writeLeaflet(self.iface, folder, layers, visible,
                                       cluster, json, params, popup)
             webbrowser.open_new_tab(outputFile)
-            return outputFile
 
     def getParameters(self):
         parameters = defaultdict(dict)
