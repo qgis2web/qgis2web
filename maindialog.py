@@ -313,7 +313,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
                                  json, cluster, params, folder)
             if (not os.environ.get('CI') and
-                not os.environ.get('TRAVIS'))
+                    not os.environ.get('TRAVIS')):
                 webbrowser.open_new_tab(outputFile)
 
     def saveLeaf(self):
