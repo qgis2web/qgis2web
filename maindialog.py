@@ -313,7 +313,10 @@ class MainDialog(QDialog, Ui_MainDialog):
              json, cluster) = self.getLayersAndGroups()
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
                                  json, cluster, params, folder)
-            webbrowser.open_new_tab(outputFile)
+            try:
+                webbrowser.get("firefox").open_new_tab(outputFile)
+            except:
+                webbrowser.open_new_tab(outputFile)
             return outputFile
 
     def saveLeaf(self):
