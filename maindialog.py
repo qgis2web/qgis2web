@@ -314,7 +314,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
                                  json, cluster, params, folder)
             try:
-                webbrowser.get("firefox").open_new_tab(outputFile)
+                webbrowser.get("firefox %s").open_new_tab(outputFile)
             except:
                 webbrowser.open_new_tab(outputFile)
             return outputFile
