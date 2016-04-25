@@ -5,6 +5,11 @@ dist: trusty
 -before_install:
   - sudo apt-get -qq -y update
 
+matrix:
+  install:
+    - sudo add-apt-repository http://qgis.org/debian-ltr
+    - sudo add-apt-repository http://qgis.org/debian
+
 install:
   - sudo apt-get install python-software-properties
   - sudo apt-get update
@@ -14,11 +19,6 @@ install:
   - sudo pip install nosexcover
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
-
-matrix:
-  install:
-    - sudo add-apt-repository http://qgis.org/debian-ltr
-    - sudo add-apt-repository http://qgis.org/debian
 
 before_script:
   - echo "Build starting on " `date`
