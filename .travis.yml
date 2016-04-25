@@ -5,13 +5,11 @@ dist: trusty
 -before_install:
   - sudo apt-get -qq -y update
 
-matrix:
-  install:
-    - sudo add-apt-repository http://qgis.org/debian-ltr
-    - sudo add-apt-repository http://qgis.org/debian
-
 install:
   - sudo apt-get install python-software-properties
+  matrix:
+    - sudo add-apt-repository http://qgis.org/debian-ltr
+    - sudo add-apt-repository http://qgis.org/debian
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
   - sudo pip install --upgrade pip
