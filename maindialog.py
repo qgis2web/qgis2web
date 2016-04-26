@@ -136,10 +136,9 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            exportPath = MainDialog.saveOL(self)
+            MainDialog.saveOL(self)
         else:
-            exportPath = MainDialog.saveLeaf(self)
-        return exportPath
+            MainDialog.saveLeaf(self)
 
     def changeSetting(self, paramItem, col):
         if hasattr(paramItem, "name") and paramItem.name == "Export folder":
@@ -316,7 +315,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             if (not os.environ.get('CI') and
                     not os.environ.get('TRAVIS')):
                 webbrowser.open_new_tab(outputFile)
-        return folder
 
     def saveLeaf(self):
         params = self.getParameters()
@@ -327,7 +325,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             outputFile = writeLeaflet(self.iface, folder, layers, visible,
                                       cluster, json, params, popup)
             webbrowser.open_new_tab(outputFile)
-        return folder
 
     def getParameters(self):
         parameters = defaultdict(dict)

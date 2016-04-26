@@ -2298,16 +2298,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Set 'Export folder'
+        customLocn = '/tmp/customfolder/'
         self.dialog.paramsTreeOL.findItems('Export folder',
                                            (Qt.MatchExactly |
                                             Qt.MatchRecursive))[0].setText(1,
-                                                    '/tmp/customfolder')
+                                                    customLocn)
         self.dialog.ol3.click()
-        testLocn = self.dialog.buttonExport.click()
+        self.dialog.buttonExport.click()
 
         # Does the file exist
-        customLocn = '/tmp/customfolder/'
-        print "testLocn: " + unicode(testLocn)
+        for pth in os.listdir(customLocn):
+            if os.path.isdir(os.path.join(customLocn, pth)):
+                outputFolder = os.path.join(customLocn, pth)
+
+        print "testLocn: " + outputFolder
         assert customLocn in testLocn
 
 def read_output(url, path):
