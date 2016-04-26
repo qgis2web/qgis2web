@@ -2312,8 +2312,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
             if os.path.isdir(os.path.join(customLocn, pth)):
                 outputFolder = os.path.join(customLocn, pth)
 
-        print "testLocn: " + outputFolder
-        assert customLocn in testLocn
+        outputFile = os.path.join(outputFolder, "index.html")
+        assert os.path.isfile(outputFile)
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
