@@ -1819,8 +1819,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.items['Data export'].get('Delete unused fields').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
-        # Set 'Precision' combo to '6'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
+        # Set 'Precision' combo to '2'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(2)
         self.dialog.ol3.click()
 
         control_file = open(
@@ -1885,8 +1885,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Set 'Precision' combo to '3'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(3)
+        # Set 'Precision' combo to '2'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(2)
         self.dialog.ol3.click()
 
         control_file = open(
@@ -2029,8 +2029,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Check the 'Minify GeoJSON files' checkbox
         self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
 
-        # Set 'Precision' combo to '6'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
+        # Set 'Precision' combo to '2'
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(2)
         self.dialog.ol3.click()
 
         control_file = open(
