@@ -1820,7 +1820,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         # Set 'Precision' combo to '6'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(5)
         self.dialog.ol3.click()
 
         control_file = open(
@@ -1886,7 +1886,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Set 'Precision' combo to '3'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(3)
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(5)
         self.dialog.ol3.click()
 
         control_file = open(
@@ -2030,7 +2030,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
 
         # Set 'Precision' combo to '6'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
+        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(5)
         self.dialog.ol3.click()
 
         control_file = open(
