@@ -13,6 +13,7 @@ __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
 import unittest
+import os
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
