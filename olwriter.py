@@ -139,7 +139,7 @@ def writeOL(iface, layers, groups, popup, visible,
             measureControl = measureControlScript()
             measuring = measuringScript()
             measure = measureScript()
-            if settings["Appearance"]["Measure tool units"] == "US" :
+            if settings["Appearance"]["Measure tool units"] == "Imperial" :
                 measureUnit = measureUnitFeetScript()
             else:
                 measureUnit = measureUnitMetricScript()

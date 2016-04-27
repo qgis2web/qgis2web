@@ -51,7 +51,7 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
                         jsStore + 'leaflet.draw.js')
         shutil.copyfile(cssDir + 'leaflet.draw.css',
                         cssStore + 'leaflet.draw.css')
-        if measureUnit == "US":
+        if measureUnit == "Imperial":
             shutil.copyfile(jsDir + 'leaflet.measurecontrolFeet.js',
                             jsStore + 'leaflet.measurecontrol.js')
         else:

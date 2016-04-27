@@ -209,26 +209,6 @@ function createMeasureTooltip() {
 }
 
 """
-#/**
-# * format length output
-# * @param {ol.geom.LineString} line
-# * @return {string}
-# */
-#var formatLength = function(line) {
-#  var length;
-#    length = Math.round(line.getLength() * 100) / 100;
-#  var output;
-#  if (length > 100) {
-#    output = (Math.round(length / 1000 * 100) / 100) +
-#        ' ' + 'km';
-#  } else {
-#    output = (Math.round(length * 100) / 100) +
-#        ' ' + 'm';
-#  }
-#  return output;
-#};
-
-#addInteraction();
     return measure
     
 def measureUnitFeetScript():
@@ -262,7 +242,11 @@ var formatLength = function(line) {
     //console.error(feet_length); //gives you the red error message
     
     var output;
-    output = (Math.round(feet_length * 100) / 100) + 'ft';
+    if (feet_length > 5280) {
+        output = (Math.round(feet_length / 5280 * 100) / 100) + ' miles';
+    } else {
+        output = (Math.round(feet_length * 100) / 100) + ' ft';
+    }
     return output;
 };
 
