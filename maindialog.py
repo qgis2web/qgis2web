@@ -68,9 +68,19 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonPreview.clicked.connect(self.previewMap)
         self.buttonExport.clicked.connect(self.saveMap)
-        self.helpField.setSource(QUrl.fromLocalFile(os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            "README.md")))
+        readme = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                              "README.md")
+        helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                              "helpFile.md")
+        lines = open(readme, 'r').readlines()
+        lines[0] = "This is the new first line \n"
+        helpFile = open(helpText, 'w')
+        for ct, line in enumerate(lines):
+            if ct > 1:
+                helpFile.write(line)
+        helpFile.close()
+        self.helpField.setSource(QUrl.fromLocalFile(helpText))
+        print self.helpField
         self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
         self.devConsole.setFixedHeight(0)
         self.devConsole.setObjectName("devConsole")
