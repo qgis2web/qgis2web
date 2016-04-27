@@ -74,13 +74,12 @@ class MainDialog(QDialog, Ui_MainDialog):
                               "helpFile.md")
         lines = open(readme, 'r').readlines()
         lines[0] = "This is the new first line \n"
-        helpFile = open(helpText, 'w')
-        for ct, line in enumerate(lines):
-            if ct > 1:
-                helpFile.write(line)
-        helpFile.close()
+        with open(helpText, 'w') as helpFile:
+            for ct, line in enumerate(lines):
+                if ct > 1:
+                    helpFile.write(line)
+            helpFile.close()
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
-        print self.helpField
         self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
         self.devConsole.setFixedHeight(0)
         self.devConsole.setObjectName("devConsole")
