@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tomchadwin/qgis2web.svg?branch=master)](https://travis-ci.org/tomchadwin/qgis2web)
+
 <h1>qgis2web</h1>
 <p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap. No
 server-side software required.</p>
