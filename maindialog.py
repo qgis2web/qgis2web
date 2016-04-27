@@ -71,7 +71,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         readme = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                               "README.md")
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                              "helpFile.md")
+                                "helpFile.md")
         lines = open(readme, 'r').readlines()
         lines[0] = "This is the new first line \n"
         with open(helpText, 'w') as helpFile:
