@@ -226,6 +226,7 @@ var geocoder = new Geocoder('nominatim', {
 });
 map.addControl(geocoder);
 
+
 var attribution = document.getElementsByClassName('ol-attribution')[0];
 var attributionList = attribution.getElementsByTagName('ul')[0];
 var firstLayerAttribution = attributionList.getElementsByTagName('li')[0];

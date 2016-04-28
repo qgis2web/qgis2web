@@ -255,6 +255,7 @@ var geolocateOverlay = new ol.layer.Vector({
 });
 
 
+
 var attribution = document.getElementsByClassName('ol-attribution')[0];
 var attributionList = attribution.getElementsByTagName('ul')[0];
 var firstLayerAttribution = attributionList.getElementsByTagName('li')[0];
