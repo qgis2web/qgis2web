@@ -279,7 +279,6 @@ var formatLength = function(line) {
 
 addInteraction();
 """
-    print "measure unit metric"
     return measureUnitMetric
 
 
