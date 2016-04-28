@@ -192,6 +192,19 @@ functionality.</p>
     </li>
 </ul>
 
+<h2>Testing</h2>
+<p>All commits and PRs are tested by Travis. The tests are in
+<code>/test</code>, specifically <code>/test/
+test_qgis2web_dialog.py</code>. If you want to run these tests locally on
+Linux, do the following to prepare:</p>
+
+<pre><code>apt-get install python-pip
+pip install nose
+cd ~/.qgis2/python/plugins/qgis2web
+source scripts/run-env-linux.sh [/path/to/qgis/installation]</code></pre>
+
+<p>Run the tests with <code>make test</code>.
+
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
