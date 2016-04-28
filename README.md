@@ -177,6 +177,7 @@ functionality.</p>
 <p>Coding guidelines:</p>
 <ul>
     <li>Comply with PEP8</li>
+    <li>Remove <code>print</code> statements before making a pull request</li>
     <li>Don’t break the tests themselves (all in test/test_qgis2web_dialog.py)
     </li>
     <li>Anything which alters the output for the basic tests will mean updating
