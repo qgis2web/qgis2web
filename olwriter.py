@@ -771,7 +771,6 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
     dash = dash.replace("solid", "")
     dash = dash.replace(" ", ",")
     dash = "[%s]" % dash
-    print "dash =" + str(dash)
     if dash == "[]" or dash == "[no]":
         dash = "null"
     capString = "round"
