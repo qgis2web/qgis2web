@@ -18,6 +18,7 @@ install:
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
   - sudo pip install --upgrade pip
   - sudo pip install coverage
+  - sudo pip install nose
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
 
