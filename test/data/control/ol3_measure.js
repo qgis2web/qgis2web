@@ -414,6 +414,8 @@ function createMeasureTooltip() {
 }
 
 
+var wgs84Sphere = new ol.Sphere(6378137);
+
 /**
  * format length output
  * @param {ol.geom.LineString} line

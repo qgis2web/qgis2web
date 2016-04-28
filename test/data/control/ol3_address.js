@@ -217,6 +217,7 @@ map.on('singleclick', function(evt) {
 
 
 
+
 var geocoder = new Geocoder('nominatim', {
   provider: 'osm',
   lang: 'en-US',
@@ -225,7 +226,6 @@ var geocoder = new Geocoder('nominatim', {
   keepOpen: true
 });
 map.addControl(geocoder);
-
 
 var attribution = document.getElementsByClassName('ol-attribution')[0];
 var attributionList = attribution.getElementsByTagName('ul')[0];

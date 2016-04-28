@@ -216,6 +216,7 @@ map.on('singleclick', function(evt) {
 });
 
 
+
       var geolocation = new ol.Geolocation({
   projection: map.getView().getProjection()
 });
@@ -253,7 +254,6 @@ var geolocateOverlay = new ol.layer.Vector({
     features: [accuracyFeature, positionFeature]
   })
 });
-
 
 
 var attribution = document.getElementsByClassName('ol-attribution')[0];

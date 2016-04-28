@@ -212,14 +212,12 @@ function createMeasureTooltip() {
     return measure
     
 def measureUnitFeetScript():
-    measureUnitFeet = """
+    measureUnitFeet = """function convertToFeet(length) {
+    feet_length = length * 3.2808;
+    return feet_length
+}
     
-    function convertToFeet(length) {
-        feet_length = length * 3.2808;
-        return feet_length
-    }
-    
-    var wgs84Sphere = new ol.Sphere(6378137);
+var wgs84Sphere = new ol.Sphere(6378137);
 
 /**
  * format length output
@@ -256,11 +254,8 @@ addInteraction();
     return measureUnitFeet
   
 def measureUnitMetricScript():
-    measureUnitMetric = """
-    
-    var wgs84Sphere = new ol.Sphere(6378137);
+    measureUnitMetric = """var wgs84Sphere = new ol.Sphere(6378137);
 
-    
 /**
  * format length output
  * @param {ol.geom.LineString} line
@@ -278,7 +273,7 @@ var formatLength = function(line) {
         ' ' + 'm';
   }
   return output;
-  };
+};
 
 addInteraction();
   """
