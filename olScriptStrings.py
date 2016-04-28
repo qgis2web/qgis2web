@@ -208,7 +208,59 @@ function createMeasureTooltip() {
   map.addOverlay(measureTooltip);
 }
 
+"""
+    return measure
+    
+def measureUnitFeetScript():
+    measureUnitFeet = """
+    
+    function convertToFeet(length) {
+        feet_length = length * 3.2808;
+        return feet_length
+    }
+    
+    var wgs84Sphere = new ol.Sphere(6378137);
 
+/**
+ * format length output
+ * @param {ol.geom.LineString} line
+ * @return {string}
+ */
+var formatLength = function(line) {
+  var length;
+  var coordinates = line.getCoordinates();
+  length = 0;
+  var sourceProj = map.getView().getProjection();
+  for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
+      var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
+      length += wgs84Sphere.haversineDistance(c1, c2);
+    }
+    //length = Math.round(line.getLength() * 100) / 100;
+    //console.error(length); //gives you the red error message
+    feet_length = convertToFeet(length)
+    //console.error(feet_length); //gives you the red error message
+    
+    var output;
+    if (feet_length > 5280) {
+        output = (Math.round(feet_length / 5280 * 100) / 100) + ' miles';
+    } else {
+        output = (Math.round(feet_length * 100) / 100) + ' ft';
+    }
+    return output;
+};
+
+addInteraction();
+  """
+    print "meaure unit feet"
+    return measureUnitFeet
+  
+def measureUnitMetricScript():
+    measureUnitMetric = """
+    
+    var wgs84Sphere = new ol.Sphere(6378137);
+
+    
 /**
  * format length output
  * @param {ol.geom.LineString} line
@@ -226,10 +278,13 @@ var formatLength = function(line) {
         ' ' + 'm';
   }
   return output;
-};
+  };
 
-addInteraction();"""
-    return measure
+addInteraction();
+  """
+    print "measure unit metric"
+    return measureUnitMetric
+
 
 
 def measureStyleScript():

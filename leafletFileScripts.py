@@ -8,7 +8,7 @@ from utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
-                         measure, matchCRS, canvas, mapLibLocation, locate):
+                         measure, measureUnit, matchCRS, canvas, mapLibLocation, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -47,11 +47,17 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
     shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
     if measure:
-        shutil.copyfile(jsDir + 'leaflet.draw.js', jsStore + 'leaflet.draw.js')
+        shutil.copyfile(jsDir + 'leaflet.draw.js', 
+                        jsStore + 'leaflet.draw.js')
         shutil.copyfile(cssDir + 'leaflet.draw.css',
                         cssStore + 'leaflet.draw.css')
-        shutil.copyfile(jsDir + 'leaflet.measurecontrol.js',
-                        jsStore + 'leaflet.measurecontrol.js')
+        if measureUnit == "Imperial":
+            shutil.copyfile(jsDir + 'leaflet.measurecontrolFeet.js',
+                            jsStore + 'leaflet.measurecontrol.js')
+        else:
+            shutil.copyfile(jsDir + 'leaflet.measurecontrol.js',
+                            jsStore + 'leaflet.measurecontrol.js')
+        
         shutil.copyfile(cssDir + 'leaflet.measurecontrol.css',
                         cssStore + 'leaflet.measurecontrol.css')
         shutil.copytree(cssDir + 'images', cssStore + 'images')
