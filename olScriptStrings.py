@@ -210,13 +210,14 @@ function createMeasureTooltip() {
 
 """
     return measure
-    
+
+
 def measureUnitFeetScript():
     measureUnitFeet = """function convertToFeet(length) {
     feet_length = length * 3.2808;
     return feet_length
 }
-    
+
 var wgs84Sphere = new ol.Sphere(6378137);
 
 /**
@@ -238,7 +239,7 @@ var formatLength = function(line) {
     //console.error(length); //gives you the red error message
     feet_length = convertToFeet(length)
     //console.error(feet_length); //gives you the red error message
-    
+
     var output;
     if (feet_length > 5280) {
         output = (Math.round(feet_length / 5280 * 100) / 100) + ' miles';
@@ -249,10 +250,11 @@ var formatLength = function(line) {
 };
 
 addInteraction();
-  """
+"""
     print "meaure unit feet"
     return measureUnitFeet
-  
+
+
 def measureUnitMetricScript():
     measureUnitMetric = """var wgs84Sphere = new ol.Sphere(6378137);
 
@@ -276,10 +278,9 @@ var formatLength = function(line) {
 };
 
 addInteraction();
-  """
+"""
     print "measure unit metric"
     return measureUnitMetric
-
 
 
 def measureStyleScript():

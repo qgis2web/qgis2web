@@ -73,8 +73,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir,
                                                outputProjectFileName, cluster,
-                                               measure, measureUnit, matchCRS, canvas,
-                                               mapLibLocation, locate)
+                                               measure, measureUnit, matchCRS,
+                                               canvas, mapLibLocation, locate)
     writeCSS(cssStore, mapSettings.backgroundColor().name())
 
     wfsLayers = ""
