@@ -104,10 +104,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
-    try:
-        crsSrc = mapSettings.destinationCrs()
-    except:
-        crsSrc = canvas.mapRenderer().destinationCrs()
+    crsSrc = mapSettings.destinationCrs()
     crsAuthId = crsSrc.authid()
     crsProj4 = crsSrc.toProj4()
     middle = openScript()
