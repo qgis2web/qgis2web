@@ -590,13 +590,3 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.combo.currentText()
         else:
             return self.text(1)
-
-    def setting(self):
-        if isinstance(self._value, bool):
-            return self.checkState(1) == Qt.Checked
-        elif isinstance(self._value, (int, float)):
-            return float(self.text(1))
-        elif isinstance(self._value, tuple):
-            return self.combo.currentIndex()
-        else:
-            return self.text(1)
