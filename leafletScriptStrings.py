@@ -275,13 +275,6 @@ def pointToLayerScript(safeLayerName):
     return pointToLayer
 
 
-def doPointToLayerScript(safeLayerName, labeltext):
-    return """
-        function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName, labeltext=labeltext)
-
-
 def wfsScript(scriptTag):
     wfs = """
         <script src='{scriptTag}'></script>""".format(scriptTag=scriptTag)
