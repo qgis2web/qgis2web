@@ -306,10 +306,7 @@ def clusterScript(safeLayerName):
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(json_{safeLayerName}JSON);
 """.format(safeLayerName=safeLayerName)
-    if cluster:
-        layercode = "cluster_group" + safeLayerName + "JSON"
-    else:
-        layercode = "json_" + safeLayerName + "JSON"
+    layercode = "cluster_group" + safeLayerName + "JSON"
     cluster += """
         layerOrder[layerOrder.length] = """ + layercode + """;
 """
