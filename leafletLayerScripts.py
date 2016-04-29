@@ -785,12 +785,3 @@ def getWFSScriptTag(layerSource, layerName):
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
     return scriptTag
-
-
-def stackLayers(layerName, visible):
-    if visible:
-        return """
-        layerOrder[layerOrder.length] = json_{layerName}JSON;
-        stackLayers();""".format(layerName=layerName)
-    else:
-        return ""
