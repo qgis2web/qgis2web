@@ -205,6 +205,51 @@ source scripts/run-env-linux.sh [/path/to/qgis/installation]</code></pre>
 
 <p>Run the tests with <code>make test</code>.
 
+<p>Untested functionality includes:</p>
+<ul>
+    <li>rasters</li>
+    <li>2.5d renders</li>
+    <li>labels</li>
+    <li>rule-based renderer</li>
+    <li>SVG markers</li>
+    <li>polygon border style "No pen"</li>
+    <li>polygon fill style "No brush"</li>
+    <li>line cap/join styles</li>
+    <li>change export folder via mouse click</li>
+    <li>save settings</li>
+    <li>click layer popup combo</li>
+    <li>unchecked layers initially collapsed and non-visible</li>
+    <li>restore saved project/layer settings</li>
+    <li>open dev console</li>
+    <li>WFS encode to JSON</li>
+    <li>Leaflet polygon outline: simple line</li>
+    <li>Leaflet line style (dot/dash)</li>
+    <li>Leaflet line width > 1</li>
+    <li>Leaflet categorized clusters</li>
+    <li>Leaflet graduated clusters</li>
+    <li>Leaflet WMS</li>
+    <li>Leaflet WFS clusters</li>
+    <li>Leaflet JSON non-point popups</li>
+    <li>Leaflet scale-dependent visibility</li>
+    <li>Leaflet match CRS</li>
+    <li>Leaflet basemaps</li>
+    <li>Leaflet basemaps + layers list</li>
+    <li>Leaflet cluster + layers list</li>
+    <li>Leaflet raster + layers list</li>
+    <li>Leaflet project title</li>
+    <li>Leaflet highlight + popups on hover</li>
+    <li>Leaflet categorized on non-string column</li>
+    <li>Leaflet categorized JSON point without popup</li>
+    <li>Leaflet custom popup contents via <code>html_prov</code></li>
+    <li>Leaflet export</li>
+    <li>OL3 measure - imperial units</li>
+    <li>OL3 blank template value</li>
+    <li>OL3 layer groups</li>
+    <li>OL3 canvas extent</li>
+    <li>OL3 WFS cluster</li>
+    <li>OL3 layer transparency</li>
+</ul>
+
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
