@@ -289,12 +289,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
 
-    def tempIndexFile(self):
-        folder = utils.tempFolder()
-        url = "file:///" + os.path.join(folder,
-                                        "index.html").replace("\\", "/")
-        return url
-
     def previewOL3(self):
         self.preview.settings().clearMemoryCaches()
         (layers, groups, popup, visible,
