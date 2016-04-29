@@ -222,6 +222,7 @@ source scripts/run-env-linux.sh [/path/to/qgis/installation]</code></pre>
     <li>restore saved project/layer settings</li>
     <li>open dev console</li>
     <li>WFS encode to JSON</li>
+    <li>close qgis2web</li>
     <li>Leaflet polygon outline: simple line</li>
     <li>Leaflet line style (dot/dash)</li>
     <li>Leaflet line width > 1</li>
@@ -249,6 +250,10 @@ source scripts/run-env-linux.sh [/path/to/qgis/installation]</code></pre>
     <li>OL3 WFS cluster</li>
     <li>OL3 layer transparency</li>
 </ul>
+
+<p>If anyone has time to write tests for any of this, it will benefit the
+plugin hugely. If you do, make sure you delete the tests from this list. Some
+of the items above I don't even know how to test...</p>
 
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
