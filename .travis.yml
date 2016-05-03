@@ -5,7 +5,7 @@ dist: trusty
 env:
   - QGIS_REPO=http://qgis.org/debian-ltr
   - QGIS_REPO=http://qgis.org/debian
-#  - QGIS_REPO=http://qgis.org/debian-nightly currently generates too much output
+  - QGIS_REPO=http://qgis.org/debian-nightly
 
 
 -before_install:
@@ -32,7 +32,7 @@ before_script:
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-coverage --verbose
+  - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-coverage --verbose
 
 
 notifications:
