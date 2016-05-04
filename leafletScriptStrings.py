@@ -94,7 +94,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
             crs: crs,
             continuousWorld: false,
             worldCopyJump: false, """
-    if measure:
+    if measure != "None":
         map += """
             measureControl:true,"""
     map += """
