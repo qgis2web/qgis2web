@@ -1077,8 +1077,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Check the 'Add measure tool' checkbox
-        self.dialog.items['Appearance'].get('Add measure tool').setCheckState(1, QtCore.Qt.Checked)
+        # Set the 'Measure tool' combo
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Measure tool',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
 
         # Open the test file
@@ -1108,8 +1112,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Check the 'Add measure tool' checkbox
-        self.dialog.items['Appearance'].get('Add measure tool').setCheckState(1, QtCore.Qt.Checked)
+        # Set the 'Measure tool' combo
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Measure tool',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.dialog.ol3.click()
 
         control_file = open(
