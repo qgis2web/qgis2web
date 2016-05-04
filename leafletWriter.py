@@ -58,8 +58,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     matchCRS = params["Appearance"]["Match project CRS"]
     addressSearch = params["Appearance"]["Add address search"]
     locate = params["Appearance"]["Geolocate user"]
-    measure = params["Appearance"]["Add measure tool"]
-    measureUnit = params["Appearance"]["Measure tool units"]
+    measure = params["Appearance"]["Measure tool"]
     highlight = params["Appearance"]["Highlight on hover"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
@@ -73,8 +72,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir,
                                                outputProjectFileName, cluster,
-                                               measure, measureUnit, matchCRS,
-                                               canvas, mapLibLocation, locate)
+                                               measure, matchCRS, canvas,
+                                               mapLibLocation, locate)
     writeCSS(cssStore, mapSettings.backgroundColor().name())
 
     wfsLayers = ""

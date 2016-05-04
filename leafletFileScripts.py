@@ -8,8 +8,7 @@ from utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
-                         measure, measureUnit, matchCRS, canvas,
-                         mapLibLocation, locate):
+                         measure, matchCRS, canvas, mapLibLocation, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -47,12 +46,12 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
                         cssStore + 'MarkerCluster.Default.css')
     shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
     shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
-    if measure:
+    if measure != "None":
         shutil.copyfile(jsDir + 'leaflet.draw.js',
                         jsStore + 'leaflet.draw.js')
         shutil.copyfile(cssDir + 'leaflet.draw.css',
                         cssStore + 'leaflet.draw.css')
-        if measureUnit == "Imperial":
+        if measure == "Imperial":
             shutil.copyfile(jsDir + 'leaflet.measurecontrolFeet.js',
                             jsStore + 'leaflet.measurecontrol.js')
         else:
@@ -109,7 +108,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         addressCSS = ""
         addressJS = ""
-    if measure:
+    if measure != "None":
         measureCSS = """
         <link rel="stylesheet" href="css/leaflet.draw.css" />
         <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""

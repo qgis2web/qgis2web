@@ -98,7 +98,7 @@ def writeOL(iface, layers, groups, popup, visible,
         if settings["Appearance"]["Add layers list"]:
             controls.append(
                 'new ol.control.LayerSwitcher({tipLabel: "Layers"})')
-        if settings["Appearance"]["Add measure tool"]:
+        if settings["Appearance"]["Measure tool"] != "None":
             controls.append(
                 'new measureControl()')
         pageTitle = QgsProject.instance().title()
@@ -135,11 +135,11 @@ def writeOL(iface, layers, groups, popup, visible,
                 defn=mapSettings.destinationCrs().toProj4())
             view += ", projection: '%s'" % (
                 mapSettings.destinationCrs().authid())
-        if settings["Appearance"]["Add measure tool"]:
+        if settings["Appearance"]["Measure tool"] != "None":
             measureControl = measureControlScript()
             measuring = measuringScript()
             measure = measureScript()
-            if settings["Appearance"]["Measure tool units"] == "Imperial":
+            if settings["Appearance"]["Measure tool"] == "Imperial":
                 measureUnit = measureUnitFeetScript()
             else:
                 measureUnit = measureUnitMetricScript()
