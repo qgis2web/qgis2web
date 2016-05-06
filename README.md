@@ -183,6 +183,8 @@ functionality.</p>
     <li>Anything which alters the output for the basic tests will mean updating
     the control files in /test/data/control</li>
     <li>Write tests for new functionality</li>
+    <li>Don't introduce a new client-side library for something which can
+    easily be done without it (I'm looking at you, jQuery)</li>
 </ul>
 
 <p>Other improvements required are:</p>
