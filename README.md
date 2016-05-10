@@ -264,9 +264,9 @@ Klinger's qgis2leaf. It would not exist without their work. Thank you,
 gentlemen. Thanks are also very much due to Paolo Cavallini, who suggested
 and supported the merge.</p>
 <ul>
-    <li>github.com/volaya</li>
-    <li>github.com/riccardoklinger</li>
-    <li>github.com/pcav</li>
+    <li>@volaya</li>
+    <li>@riccardoklinger</li>
+    <li>@pcav</li>
 </ul>
 
 <p>Obviously, qgis2web could not exist without the following monumental
@@ -279,9 +279,10 @@ software:</p>
 
 <p>Thanks are also due for major code contributions to:</p>
 <ul>
-    <li>github.com/akbargumbira</li>
-    <li>github.com/lucacasagrande</li>
-    <li>github.com/walkermatt</li>
+    <li>@akbargumbira</li>
+    <li>@lucacasagrande</li>
+    <li>@walkermatt</li>
+    <li>@boesiii</li>
 </ul>
 
 <p>In addition, the following libraries have been used:</p>
@@ -289,7 +290,7 @@ software:</p>
     <li>ol3-layerswitcher, by @walkermatt</li>
     <li>Autolinker.js, by @gregjacobs</li>
     <li>requestAnimationFrame polyfill, by @paulirish</li>
-    <li>Function.prototype.bind polyfill, by Mozilla</li>
+    <li>Function.prototype.bind polyfill, by @mozilla</li>
     <li>Leaflet.draw, by @jacobtoye</li>
     <li>Leaflet.label, by @jacobtoye</li>
     <li>Leaflet.markercluster, by @danzel</li>
