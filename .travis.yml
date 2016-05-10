@@ -21,7 +21,7 @@ install:
   - sudo pip install nose
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
-
+  - sudo pip install python-coveralls
 before_script:
   - echo "Build starting on " `date`
   - export QGIS_PREFIX_PATH=/usr
@@ -33,6 +33,9 @@ script:
   - pep8 --exclude=test ./
   - make pylint
   - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-coverage --verbose
+
+after_success:
+  - coveralls
 
 
 notifications:
