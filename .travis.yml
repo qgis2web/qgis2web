@@ -32,7 +32,7 @@ before_script:
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-coverage --verbose
+  - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-id --with-coverage --verbose --cover-package=qgis2web --cover-package=maindialog
 
 after_success:
   - coveralls
