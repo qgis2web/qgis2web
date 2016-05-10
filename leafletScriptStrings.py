@@ -366,7 +366,7 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
                 lineJoin: '{joinString}',
                 opacity: {borderOpacity},
                 fillOpacity: {opacity}
-            }};""".format(radius=radius, colorName=colorName,
+            }};""".format(radius=radius * 4, colorName=colorName,
                           fillColor=fillColor, penStyle=penStyle,
                           capString=capString, joinString=joinString,
                           borderOpacity=borderOpacity, opacity=opacity)
