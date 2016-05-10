@@ -76,7 +76,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         lines[0] = "This is the new first line \n"
         with open(helpText, 'w') as helpFile:
             for ct, line in enumerate(lines):
-                if ct > 1:
+                if ct > 2:
                     helpFile.write(line)
             helpFile.close()
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
