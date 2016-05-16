@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/05/16 1.8.1 Single polygon border width (thanks, @boesiii!), integrate Coveralls, say "no" to jQuery in README dev section
+changelog=2016/05/16 1.8.1 Leaflet single polygon border width (thanks, @boesiii!), integrate Coveralls, say "no" to jQuery in README dev section
     2016/05/04 1.8.0 Measure tool: metric/imperial (thanks, @boesiii!), Travis status on README, Gitter badge on README, dev info in README, test info in README, coverage info in README, unused functions removed
     2016/04/26 1.7.0 Maintain precision option, OL3 transparency, Leaflet CDN, Leaflet layer visibility, Leaflet apostrophe in field name, 2.5d points, Leaflet restrict to extent, expand test suite, test on LTR, current, and nightly (thanks, @m-kuhn!), use QGIS example layers in tests
     2016/04/15 1.6.0 Make preview proxy aware, bump OL to 3.15.1, add development info to README and improve debug instructions
