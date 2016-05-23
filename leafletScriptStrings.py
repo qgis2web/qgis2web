@@ -321,7 +321,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
     if symbolLayer.outlineStyle() == 0:
         borderOpacity = 0
     styleValues = """
-                    radius: '{radius}',
+                    radius: {radius},
                     fillColor: '{fillColor}',
                     color: '{color}',
                     weight: {borderWidth},
@@ -537,7 +537,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
     graduatedPointStyles = rangeStartScript(valueAttr, r)
     graduatedPointStyles += """
             return {{
-                radius: '{radius}',
+                radius: {radius},
                 fillColor: '{fillColor}',
                 color: '{color}',
                 weight: {lineWeight},
