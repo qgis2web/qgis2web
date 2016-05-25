@@ -2282,6 +2282,37 @@ class qgis2web_classDialogTest(unittest.TestCase):
         assert "extent: [" in test_output
 
 
+    def test76_Leaflet_25d(self):
+        """Leaflet 2.5d"""
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_25d.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Test for expected output
+        self.assertEqual(test_output, control_output)
+
     def test99_export_folder(self):
         """Export folder"""
         layer_path = test_data_path('layer', 'airports.shp')
