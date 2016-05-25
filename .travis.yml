@@ -1,5 +1,4 @@
-language: python
-cache: pip
+language: generic
 sudo: required
 dist: trusty
 
