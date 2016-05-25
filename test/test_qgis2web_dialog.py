@@ -2314,6 +2314,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
             # Test for expected output
             self.assertEqual(test_output, control_output)
+        else:
+            print "skip"
 
     def test77_OL3_25d(self):
         """OL3 2.5d"""
@@ -2348,6 +2350,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
             # Test for expected output
             self.assertEqual(test_output, control_output)
+        else:
+            print "skip"
 
     def test99_export_folder(self):
         """Export folder"""
