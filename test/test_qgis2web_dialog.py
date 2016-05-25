@@ -2300,6 +2300,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
+        self.dialog.leaflet.click()
+
         control_file = open(
                 test_data_path(
                         'control', 'leaflet_25d.html'), 'r')
