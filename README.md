@@ -211,7 +211,6 @@ source scripts/run-env-linux.sh [/path/to/qgis/installation]</code></pre>
 <p>Untested functionality includes:</p>
 <ul>
     <li>rasters</li>
-    <li>2.5d renders</li>
     <li>labels</li>
     <li>rule-based renderer</li>
     <li>SVG markers</li>
