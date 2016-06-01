@@ -151,7 +151,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                     wallColor = sl1.subSymbol().color().name()
                     roofColor = sl2.subSymbol().color().name()
                     provider.changeAttributeValues(
-                            {feat.id():
+                            {feat.id() + 1:
                              {heightField: height,
                              wallField: wallColor,
                              roofField: roofColor}})
