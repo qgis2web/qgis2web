@@ -53,9 +53,12 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                 symbol = renderer.symbolForFeature2(feat, renderContext)
             wallColor = symbol.symbolLayer(1).subSymbol().color().name()
             roofColor = symbol.symbolLayer(2).subSymbol().color().name()
-            cleanedLayer.changeAttributeValue(feat.id() + 1, heightField, height)
-            cleanedLayer.changeAttributeValue(feat.id() + 1, wallField, wallColor)
-            cleanedLayer.changeAttributeValue(feat.id() + 1, roofField, roofColor)
+            cleanedLayer.changeAttributeValue(feat.id() + 1,
+                                              heightField, height)
+            cleanedLayer.changeAttributeValue(feat.id() + 1,
+                                              wallField, wallColor)
+            cleanedLayer.changeAttributeValue(feat.id() + 1,
+                                              roofField, roofColor)
         cleanedLayer.commitChanges()
         renderer.stopRender(renderContext)
 
