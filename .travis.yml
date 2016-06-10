@@ -7,6 +7,8 @@ env:
   - QGIS_REPO=http://qgis.org/debian
   - QGIS_REPO=http://qgis.org/debian-nightly
 
+virtualenv: 
+  system_site_packages: true 
 
 addons: 
   apt: 
