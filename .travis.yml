@@ -17,6 +17,7 @@ addons:
 
 -before_install:
   - sudo apt-get -qq -y update
+  - export PATH=$(echo $PATH | tr ':' "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s|::|:|g")
 
 install:
   - sudo add-apt-repository ${QGIS_REPO}
