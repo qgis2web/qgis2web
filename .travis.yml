@@ -1,6 +1,11 @@
 language: python
 sudo: required
 dist: trusty
+cache: 
+  directories: 
+    - $HOME/.cache/pip 
+python: 
+  - "2.7" 
 
 env:
   - QGIS_REPO=http://qgis.org/debian-ltr
