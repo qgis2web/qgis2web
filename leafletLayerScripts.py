@@ -240,7 +240,8 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     palyr.readFromLayer(i)
     f = palyr.fieldName
     label_exp = False
-    labeltext = ".bindLabel(feature.properties." + unicode(f)
+    labeltext = ".bindLabel((feature.properties." + unicode(f)
+    labeltext += " !== null?String(feature.properties." + unicode(f) +  "):'')"
     labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
     for field in field_names:
