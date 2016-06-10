@@ -16,12 +16,12 @@ install:
   - sudo add-apt-repository ${QGIS_REPO}
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
-  - sudo pip install --upgrade pip
-  - sudo pip install coverage
-  - sudo pip install nose
-  - sudo pip install --upgrade pep8
-  - sudo pip install --upgrade pylint
-  - sudo pip install python-coveralls
+  - pip install --upgrade pip
+  - pip install coverage
+  - pip install nose
+  - pip install --upgrade pep8
+  - pip install --upgrade pylint
+  - pip install python-coveralls
 before_script:
   - echo "Build starting on " `date`
   - export QGIS_PREFIX_PATH=/usr
