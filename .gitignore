@@ -219,3 +219,10 @@ pip-log.txt
 .idea
 
 helpFile.md
+
+
+#############
+## IntelliJ/Idea
+#############
+.idea/
+
