@@ -11,10 +11,14 @@ measureControl = function(opt_options) {
   var handleMeasure = function(e) {
     if (!measuring) {
         this_.getMap().addInteraction(draw);
+        createHelpTooltip();
+        createMeasureTooltip();
         measuring = true;
     } else {
         this_.getMap().removeInteraction(draw);
         measuring = false;
+        this_.getMap().removeOverlay(helpTooltip);
+        this_.getMap().removeOverlay(measureTooltip);
     }
   };
 
@@ -117,6 +121,12 @@ var onPointerMove = function(evt) {
     var currentLayer;
     var currentFeatureKeys;
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+        // We only care about features from layers in the layersList, ignore
+        // any other layers which the map might contain such as the vector
+        // layer used by the measure tool
+        if (layersList.indexOf(layer) === -1) {
+            return;
+        }
         currentFeature = feature;
         currentLayer = layer;
         currentFeatureKeys = currentFeature.getKeys();
@@ -138,25 +148,6 @@ var onPointerMove = function(evt) {
                 popupText = '<strong>' + field + ':</strong> ' + value;
             }  
         }
-        
- if (evt.dragging) {
-    return;
-  }
-  /** @type {string} */
-    var helpMsg = 'Click to start drawing';
-
-      if (sketch) {
-        var geom = (sketch.getGeometry());
-        if (geom instanceof ol.geom.Polygon) {
-          helpMsg = continuePolygonMsg;
-        } else if (geom instanceof ol.geom.LineString) {
-          helpMsg = continueLineMsg;
-        }
-      }
-
-      helpTooltipElement.innerHTML = helpMsg;
-      helpTooltip.setPosition(evt.coordinate);
-  document.getElementById('helpTooltipElement').removeClass('hidden');          
     });
 
     if (doHighlight) {
@@ -259,6 +250,28 @@ var onSingleClick = function(evt) {
     }
 };
 
+
+    map.on('pointermove', function(evt) {
+        if (evt.dragging) {
+            return;
+        }
+        if (measuring) {
+            /** @type {string} */
+            var helpMsg = 'Click to start drawing';
+            if (sketch) {
+                var geom = (sketch.getGeometry());
+                if (geom instanceof ol.geom.Polygon) {
+                    helpMsg = continuePolygonMsg;
+                } else if (geom instanceof ol.geom.LineString) {
+                    helpMsg = continueLineMsg;
+                }
+            }
+            helpTooltipElement.innerHTML = helpMsg;
+            helpTooltip.setPosition(evt.coordinate);
+        }
+    });
+    
+
 map.on('pointermove', function(evt) {
     onPointerMove(evt);
 });
@@ -314,6 +327,27 @@ var continueLineMsg = 'Click to continue drawing the line';
 
 var source = new ol.source.Vector();
 
+var measureLayer = new ol.layer.Vector({
+    source: source,
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(255, 255, 255, 0.2)'
+        }),
+        stroke: new ol.style.Stroke({
+            color: '#ffcc33',
+            width: 3
+        }),
+        image: new ol.style.Circle({
+            radius: 7,
+            fill: new ol.style.Fill({
+                color: '#ffcc33'
+            })
+        })
+    })
+});
+
+map.addLayer(measureLayer);
+
 var draw; // global so we can remove it later
 function addInteraction() {
   var type = 'LineString';
@@ -340,10 +374,6 @@ function addInteraction() {
       })
     })
   });
-  //map.addInteraction(draw);
-
-  createMeasureTooltip();
-  createHelpTooltip();
 
   var listener;
   draw.on('drawstart',
