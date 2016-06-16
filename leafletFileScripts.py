@@ -15,6 +15,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     jsDir = pluginDir + os.sep + 'js' + os.sep
     dataStore = os.path.join(outputProjectFileName, 'data')
     os.makedirs(dataStore)
+    imageStore = os.path.join(outputProjectFileName, 'images')
+    os.makedirs(imageStore)
     legendStore = os.path.join(outputProjectFileName, 'legend')
     os.makedirs(legendStore)
     cssStore = os.path.join(outputProjectFileName, 'css')
