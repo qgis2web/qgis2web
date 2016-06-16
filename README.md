@@ -196,17 +196,35 @@ functionality.</p>
 </ul>
 
 <h2>Testing</h2>
-<p>All commits and PRs are tested by Travis. The tests are in
-<code>/test</code>, specifically <code>/test/
-test_qgis2web_dialog.py</code>. If you want to run these tests locally on
-Linux, do the following to prepare:</p>
 
-<pre><code>apt-get install python-pip
+<p>All commits and PRs are tested by Travis. The tests are in <code>/test</code>, specifically <code>/test/test_qgis2web_dialog.py</code>. If you want to run these tests locally on Linux, do the following to prepare (assumes Ubuntu or derivative):</p>
+
+<pre><code># Install the pip Python package manager
+
+apt-get install python-pip
+
+# Using pip install nose which is used to run the tests
+
 pip install nose
-cd ~/.qgis2/python/plugins/qgis2web
-source scripts/run-env-linux.sh [/path/to/qgis/installation]</code></pre>
 
-<p>Run the tests with <code>make test</code>.
+# Change to the directory which contains the plugin code
+
+cd ~/.qgis2/python/plugins/qgis2web
+
+# Set up the enviroment specifying the prefix path under which QGIS is
+# installed (commonly /usr or /usr/local).
+
+source scripts/run-env-linux.sh /usr
+
+# Set the QGIS_REPO environent variable to match the QGIS version you are using:
+# http://qgis.org/debian-ltr for long term support version
+# http://qgis.org/debian for current version
+# http://qgis.org/debian-nightly for current master / nightly version
+
+export QGIS_REPO=http://qgis.org/debian-ltr
+</code></pre>
+<p>Run the tests with:</p>
+<pre><code>make test</code></pre>
 
 <p>Untested functionality includes:</p>
 <ul>

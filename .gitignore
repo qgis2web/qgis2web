@@ -201,6 +201,7 @@ var/
 sdist/
 develop-eggs/
 .installed.cfg
+.noseids
 
 # Installer logs
 pip-log.txt
