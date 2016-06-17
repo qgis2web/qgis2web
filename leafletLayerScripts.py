@@ -108,7 +108,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
 
             photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
             photo_file_name = os.path.join(os.path.dirname(layerFileName),
-                                           '..','images', photo_file_name)
+                                           '..', 'images', photo_file_name)
 
             try:
                 shutil.copyfile(source_file_name, photo_file_name)
@@ -292,7 +292,7 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
                 fieldIndex = fields.indexFromName(unicode(field))
                 editorWidget = i.editFormConfig().widgetType(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
-                            editorWidget == 'Hidden'):
+                        editorWidget == 'Hidden'):
                     continue
 
                 row += '<tr><th scope="row">'
