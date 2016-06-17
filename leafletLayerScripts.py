@@ -92,7 +92,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
         try:
             widget = i.editFormConfig().widgetType(field_index)
         except:
-            widget = i.editorWidgetV2(fieldIndex)
+            widget = i.editorWidgetV2(field_index)
         if widget != 'Photo':
             return
 
