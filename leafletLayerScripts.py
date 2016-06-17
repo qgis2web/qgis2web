@@ -102,10 +102,13 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
 
             source_file_name = photo_file_name
             if not os.path.isabs(source_file_name):
-                source_file_name = os.path.join(os.path.dirname(QgsProject.instance().fileName()), source_file_name)
+                prj_fname = QgsProject.instance().fileName()
+                source_file_name = os.path.join(os.path.dirname(prj_fname),
+                                                source_file_name)
 
             photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
-            photo_file_name = os.path.join(os.path.dirname(layerFileName), '..', 'images', photo_file_name)
+            photo_file_name = os.path.join(os.path.dirname(layerFileName),
+                                           '..','images', photo_file_name)
 
             try:
                 shutil.copyfile(source_file_name, photo_file_name)
@@ -288,8 +291,8 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
             for field in field_names:
                 fieldIndex = fields.indexFromName(unicode(field))
                 editorWidget = i.editFormConfig().widgetType(fieldIndex)
-                if editorWidget == QgsVectorLayer.Hidden or \
-                                editorWidget == 'Hidden':
+                if (editorWidget == QgsVectorLayer.Hidden or
+                            editorWidget == 'Hidden'):
                     continue
 
                 row += '<tr><th scope="row">'
@@ -298,10 +301,12 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
                 row += "(feature.properties['" + unicode(field) + "'] "
                 row += "!== null ? "
 
-                if editorWidget == QgsVectorLayer.Photo or editorWidget == 'Photo':
+                if (editorWidget == QgsVectorLayer.Photo or
+                        editorWidget == 'Photo'):
                     row += "'<img src=\"images/' + "
                     row += "String(feature.properties['" + unicode(field)
-                    row += "']).replace(/[\\\/:]/g, '_').trim() + '\">' : '') + '"
+                    row += "']).replace(/[\\\/:]/g, '_').trim()"
+                    row += " + '\">' : '') + '"
                 else:
                     row += "Autolinker.link("
                     row += "String(feature.properties['" + unicode(field)
