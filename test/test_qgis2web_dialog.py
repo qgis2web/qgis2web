@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
 import unittest
 import os
+import difflib
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
@@ -122,7 +123,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test10_Leaflet_wfs_pnt_single(self):
         """Leaflet WFS point single"""
@@ -151,7 +152,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test11_Leaflet_json_line_single(self):
         """Leaflet JSON line single"""
@@ -177,7 +179,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test12_Leaflet_wfs_line_single(self):
         """Leaflet WFS line single"""
@@ -204,7 +207,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test13_Leaflet_json_poly_single(self):
         """Leaflet JSON polygon single"""
@@ -230,7 +234,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test14_Leaflet_wfs_poly_single(self):
         """Leaflet WFS polygon single"""
@@ -260,7 +265,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized"""
@@ -287,7 +293,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         test_file = open(self.dialog.preview.url().toString().replace("file://",""))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test16_Leaflet_wfs_pnt_categorized(self):
         """Leaflet WFS point categorized"""
@@ -313,7 +320,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
         test_file = open(self.dialog.preview.url().toString().replace("file://",""))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test17_Leaflet_json_line_categorized(self):
         """Leaflet JSON line categorized"""
@@ -339,7 +347,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test18_Leaflet_wfs_line_categorized(self):
         """Leaflet WFS line categorized"""
@@ -368,7 +377,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test19_Leaflet_json_poly_categorized(self):
         """Leaflet JSON polygon categorized"""
@@ -395,7 +405,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test20_Leaflet_wfs_poly_categorized(self):
         """Leaflet WFS polygon categorized"""
@@ -424,7 +435,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Leaflet JSON point graduated"""
@@ -451,7 +463,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test22_Leaflet_wfs_pnt_graduated(self):
         """Leaflet WFS point graduated"""
@@ -480,7 +493,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test23_Leaflet_json_line_graduated(self):
         """Leaflet JSON line graduated"""
@@ -507,7 +521,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(self.dialog.preview.url().toString().replace(
                 "file://",""))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test24_Leaflet_wfs_line_graduated(self):
         """Leaflet WFS line graduated"""
@@ -537,7 +552,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(self.dialog.preview.url().toString().replace(
                 "file://", ""))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test25_Leaflet_json_poly_graduated(self):
         """Leaflet JSON polygon graduated"""
@@ -564,7 +580,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(self.dialog.preview.url().toString().replace(
                 "file://", ""))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test26_Leaflet_wfs_poly_graduated(self):
         """Leaflet WFS polygon graduated"""
@@ -594,7 +611,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_file = open(self.dialog.preview.url().toString().replace(
                 "file://", ""))
         test_output = test_file.read()
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test27_OL3_pnt_single(self):
         """OL3 point single"""
@@ -628,7 +646,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/airports_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test28_OL3_line_single(self):
         """OL3 line single"""
@@ -662,7 +681,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/pipelines_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test29_OL3_poly_single(self):
         """OL3 polygon single"""
@@ -695,7 +715,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/lakes_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test30_OL3_pnt_categorized(self):
         """OL3 point categorized"""
@@ -729,7 +750,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/airports_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test31_OL3_line_categorized(self):
         """OL3 line categorized"""
@@ -762,7 +784,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/pipelines_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test32_OL3_poly_categorized(self):
         """OL3 polygon categorized"""
@@ -795,7 +818,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/lakes_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test33_OL3_pnt_graduated(self):
         """OL3 point graduated"""
@@ -828,7 +852,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/airports_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test34_OL3_line_graduated(self):
         """OL3 line graduated"""
@@ -861,7 +886,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/pipelines_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test35_OL3_poly_graduated(self):
         """OL3 polygon graduated"""
@@ -894,7 +920,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'index.html', 'styles/lakes_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test36_OL3_layer_list(self):
         """OL3 A layer list is present when selected"""
@@ -1017,7 +1044,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test41_OL3_scalebar(self):
         """OL3 scale bar"""
@@ -1051,7 +1079,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test42_Leaflet_measure(self):
         """Leaflet measure"""
@@ -1091,7 +1119,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
 
     def test43_OL3_measure(self):
@@ -1130,18 +1158,18 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
+
         control_file = open(
                 test_data_path(
                         'control', 'ol3_measure.js'), 'r')
         control_output = control_file.read()
 
-
         # Open the test file
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test44_Leaflet_address(self):
         """Leaflet address search"""
@@ -1177,7 +1205,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test45_OL3_address(self):
         """OL3 address search"""
@@ -1211,7 +1239,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
         control_file = open(
                 test_data_path(
                         'control', 'ol3_address.js'), 'r')
@@ -1222,7 +1250,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test46_Leaflet_geolocate(self):
         """Leaflet geolocate user"""
@@ -1258,7 +1286,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test47_OL3_geolocate(self):
         """OL3 geolocate user"""
@@ -1292,7 +1320,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test48_Leaflet_highlight(self):
         """Leaflet highlight on hover"""
@@ -1328,7 +1356,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test49_OL3_highlight(self):
         """OL3 highlight on hover"""
@@ -1362,7 +1390,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test50_Leaflet_CRS(self):
         """Leaflet match CRS"""
@@ -1400,7 +1428,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test51_OL3_CRS(self):
         """OL3 match CRS"""
@@ -1438,7 +1466,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
         control_file = open(
                 test_data_path(
@@ -1449,7 +1477,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test52_Leaflet_layerslist(self):
         """Leaflet add layers list"""
@@ -1485,7 +1513,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test53_Leaflet_visible(self):
         """Leaflet visible"""
@@ -1521,7 +1549,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test54_OL3_visible(self):
         """OL3 visible"""
@@ -1554,7 +1582,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test55_Leaflet_cluster(self):
         """Leaflet cluster"""
@@ -1590,7 +1618,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test56_OL3_cluster(self):
         """OL3 cluster"""
@@ -1623,7 +1651,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test57_Leaflet_popup_all(self):
         """Leaflet popup (all fields)"""
@@ -1659,7 +1687,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test58_OL3_popup_all(self):
         """OL3 popup (all fields)"""
@@ -1692,7 +1720,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test58_Leaflet_popup_single(self):
         """Leaflet popup (single field)"""
@@ -1728,7 +1756,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test59_OL3_popup_single(self):
         """OL3 popup (single field)"""
@@ -1761,7 +1789,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test60_leaflet_deleteunused(self):
         """Leaflet delete unused fields"""
@@ -1801,7 +1829,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'data/json_airports0.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test61_ol3_deleteunused(self):
         """OL3 delete unused fields"""
@@ -1841,7 +1869,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test62_leaflet_precision(self):
         """Leaflet precision"""
@@ -1874,7 +1902,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'data/json_airports0.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test63_ol3_precision(self):
         """OL3 precision"""
@@ -1907,7 +1935,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test64_Leaflet_cdn(self):
         """Leaflet CDN"""
@@ -1943,7 +1971,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test65_OL3_cdn(self):
         """Leaflet CDN"""
@@ -1979,7 +2007,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test67_leaflet_minify(self):
         """Leaflet minify"""
@@ -2114,7 +2142,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Test for expected output
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test71_ol3_maxzoom(self):
         """OL3 max zoom"""
@@ -2147,7 +2175,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test72_Leaflet_minzoom(self):
         """Leaflet min zoom"""
@@ -2182,7 +2210,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Test for expected output
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test73_ol3_minzoom(self):
         """OL3 min zoom"""
@@ -2215,7 +2243,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
         # Compare with control file
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test74_Leaflet_restricttoextent(self):
         """Leaflet restrict to extent"""
@@ -2250,7 +2278,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_output = test_file.read()
 
         # Test for expected output
-        self.assertEqual(test_output, control_output)
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test75_ol3_restricttoextent(self):
         """OL3 restrict to extent"""
@@ -2313,7 +2341,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             test_output = test_file.read()
 
             # Test for expected output
-            self.assertEqual(test_output, control_output)
+            self.assertEqual(test_output, control_output, diff(control_output, test_output))
         else:
             print "skip"
 
@@ -2349,7 +2377,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             test_output = test_file.read()
 
             # Test for expected output
-            self.assertEqual(test_output, control_output)
+            self.assertEqual(test_output, control_output, diff(control_output, test_output))
         else:
             print "skip"
 
@@ -2401,6 +2429,11 @@ def read_output(url, path):
     abs_path = url.replace('file://', '').replace('index.html', path)
     with open(abs_path) as f:
         return f.read()
+
+
+def diff(control_output, test_output):
+    """ Produce a unified diff given two strings splitting on newline """
+    return '\n'.join(list(difflib.unified_diff(control_output.split('\n'), test_output.split('\n'), lineterm='')))
 
 
 if __name__ == "__main__":
