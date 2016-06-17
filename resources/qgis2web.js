@@ -84,6 +84,12 @@ var onPointerMove = function(evt) {
     var currentLayer;
     var currentFeatureKeys;
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+        // We only care about features from layers in the layersList, ignore
+        // any other layers which the map might contain such as the vector
+        // layer used by the measure tool
+        if (layersList.indexOf(layer) === -1) {
+            return;
+        }
         currentFeature = feature;
         currentLayer = layer;
         currentFeatureKeys = currentFeature.getKeys();
@@ -105,7 +111,6 @@ var onPointerMove = function(evt) {
                 popupText = '<strong>' + field + ':</strong> ' + value;
             }  
         }
-        @MEASURING@          
     });
 
     if (doHighlight) {
@@ -207,6 +212,8 @@ var onSingleClick = function(evt) {
         closer.blur();
     }
 };
+
+@MEASURING@
 
 map.on('pointermove', function(evt) {
     onPointerMove(evt);

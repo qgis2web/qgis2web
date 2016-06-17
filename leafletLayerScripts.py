@@ -3,6 +3,7 @@ import os
 import time
 import tempfile
 import traceback
+import shutil
 from PyQt4.QtCore import QSize, QVariant
 from qgis.core import *
 import processing
@@ -79,7 +80,44 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                     line = removeSpaces(line)
                 f2.write(line)
         os.remove(tmpFileName)
-        f2.close
+
+    if eachPopup == 0:
+        pass
+    elif eachPopup == 1:
+        # TODO: Something clever with images like what I have done below.
+        pass
+    else:
+        field_index = i.fieldNameIndex(eachPopup)
+
+        try:
+            widget = i.editFormConfig().widgetType(field_index)
+        except:
+            widget = i.editorWidgetV2(field_index)
+        if widget != 'Photo':
+            return
+
+        fr = QgsFeatureRequest()
+        fr.setSubsetOfAttributes([field_index])
+
+        for feature in i.getFeatures(fr):
+            photo_file_name = feature.attribute(eachPopup)
+            if type(photo_file_name) is not unicode:
+                continue
+
+            source_file_name = photo_file_name
+            if not os.path.isabs(source_file_name):
+                prj_fname = QgsProject.instance().fileName()
+                source_file_name = os.path.join(os.path.dirname(prj_fname),
+                                                source_file_name)
+
+            photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
+            photo_file_name = os.path.join(os.path.dirname(layerFileName),
+                                           '..', 'images', photo_file_name)
+
+            try:
+                shutil.copyfile(source_file_name, photo_file_name)
+            except IOError as e:
+                print source_file_name
 
 
 def exportRasterLayer(i, safeLayerName, dataPath):
@@ -256,16 +294,32 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
             row = ""
             for field in field_names:
                 fieldIndex = fields.indexFromName(unicode(field))
-                editorWidget = i.editorWidgetV2(fieldIndex)
-                if (editorWidget != QgsVectorLayer.Hidden and
-                        editorWidget != 'Hidden'):
-                    row += '<tr><th scope="row">'
-                    row += i.attributeDisplayName(fieldIndex)
-                    row += "</th><td>' + "
-                    row += "(feature.properties['" + unicode(field) + "'] "
-                    row += "!== null ? Autolinker.link("
+                try:
+                    editorWidget = i.editFormConfig().widgetType(fieldIndex)
+                except:
+                    editorWidget = i.editorWidgetV2(fieldIndex)
+                if (editorWidget == QgsVectorLayer.Hidden or
+                        editorWidget == 'Hidden'):
+                    continue
+
+                row += '<tr><th scope="row">'
+                row += i.attributeDisplayName(fieldIndex)
+                row += "</th><td>' + "
+                row += "(feature.properties['" + unicode(field) + "'] "
+                row += "!== null ? "
+
+                if (editorWidget == QgsVectorLayer.Photo or
+                        editorWidget == 'Photo'):
+                    row += "'<img src=\"images/' + "
                     row += "String(feature.properties['" + unicode(field)
-                    row += "'])) : '') + '</td></tr>"
+                    row += "']).replace(/[\\\/:]/g, '_').trim()"
+                    row += " + '\">' : '') + '"
+                else:
+                    row += "Autolinker.link("
+                    row += "String(feature.properties['" + unicode(field)
+                    row += "'])) : '') + '"
+
+                row += "</td></tr>"
             tableend = "</table>'"
             table = tablestart + row + tableend
     if not label_exp:
