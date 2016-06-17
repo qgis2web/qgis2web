@@ -89,7 +89,11 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
     else:
         field_index = i.fieldNameIndex(eachPopup)
 
-        if i.editFormConfig().widgetType(field_index) != 'Photo':
+        try:
+            widget = i.editFormConfig().widgetType(field_index)
+        except:
+            widget = i.editorWidgetV2()
+        if widget != 'Photo':
             return
 
         fr = QgsFeatureRequest()
@@ -113,7 +117,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
             try:
                 shutil.copyfile(source_file_name, photo_file_name)
             except IOError as e:
-                print('Can\'t find file "{0}"'.format(source_file_name))
+                print source_file_name
 
 
 def exportRasterLayer(i, safeLayerName, dataPath):
@@ -290,7 +294,10 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
             row = ""
             for field in field_names:
                 fieldIndex = fields.indexFromName(unicode(field))
-                editorWidget = i.editFormConfig().widgetType(fieldIndex)
+                try:
+                    editorWidget = i.editFormConfig().widgetType(fieldIndex)
+                except:
+                    editorWidget = i.editorWidgetV2()
                 if (editorWidget == QgsVectorLayer.Hidden or
                         editorWidget == 'Hidden'):
                     continue
