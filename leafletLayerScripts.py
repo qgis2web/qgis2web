@@ -92,7 +92,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
         try:
             widget = i.editFormConfig().widgetType(field_index)
         except:
-            widget = i.editorWidgetV2()
+            widget = i.editorWidgetV2(fieldIndex)
         if widget != 'Photo':
             return
 
@@ -297,7 +297,7 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
                 try:
                     editorWidget = i.editFormConfig().widgetType(fieldIndex)
                 except:
-                    editorWidget = i.editorWidgetV2()
+                    editorWidget = i.editorWidgetV2(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
                         editorWidget == 'Hidden'):
                     continue
