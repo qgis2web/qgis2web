@@ -117,7 +117,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
             try:
                 shutil.copyfile(source_file_name, photo_file_name)
             except IOError as e:
-                print source_file_name
+                pass
 
 
 def exportRasterLayer(i, safeLayerName, dataPath):
