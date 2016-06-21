@@ -496,14 +496,19 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                 "maxRes": maxResolution}
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
-            transform = QgsCoordinateTransform(provider.crs(),
-                                               QgsCoordinateReferenceSystem(
-                                                   "EPSG:3857"))
-            extent = transform.transform(provider.extent())
-            sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(),
-                                            extent.yMinimum(),
-                                            extent.xMaximum(),
-                                            extent.yMaximum())
+
+            crsSrc = layer.crs()
+            crsDest = QgsCoordinateReferenceSystem(3857)
+
+            xform = QgsCoordinateTransform(crsSrc, crsDest)
+            extentRep = xform.transform(layer.extent())
+
+
+            sExtent = "[%f, %f, %f, %f]" % (extentRep.xMinimum(),
+                                            extentRep.yMinimum(),
+                                            extentRep.xMaximum(),
+                                            extentRep.yMaximum())
+
             return '''var lyr_%(n)s = new ol.layer.Image({
                             opacity: 1,
                             title: "%(name)s",

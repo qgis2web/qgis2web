@@ -16,14 +16,28 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import re
 import time
-import random
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QDir, QVariant
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsVectorLayer,
+    QgsFeature,
+    QgsField,
+    QgsRenderContext,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsExpression,
+    QgsCategorizedSymbolRendererV2,
+    QgsGraduatedSymbolRendererV2,
+    QgsVectorFileWriter,
+    QgsRasterPipe,
+    QgsRasterFileWriter,
+    QgsCoordinateTransform,
+    QgsGeometryGeneratorSymbolLayerV2,
+    QgsApplication,
+    QGis
+)
 import processing
-from subprocess import *
-import traceback
 import tempfile
 
 NO_POPUP = 0
@@ -97,8 +111,8 @@ def writeTmpLayer(layer, popup):
 
 
 def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
+
     canvas = iface.mapCanvas()
-    srcCrs = canvas.mapSettings().destinationCrs()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
@@ -236,7 +250,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
 
             processing.runalg("gdalogr:translate", piped_3857, 100,
                               True, "", 0, "", extentRepNew, False, 5,
-                              4, 75, 6, 1, False, 0, False, "-B 1 -B 2 -B 3",
+                              4, 75, 6, 1, False, 0, False, "",
                               out_raster)
 
 def is25d(layer, canvas):
@@ -276,7 +290,7 @@ def is25d(layer, canvas):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChr = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    validChr = '_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChr)
 
 
