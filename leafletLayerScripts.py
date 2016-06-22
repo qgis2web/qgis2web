@@ -1,11 +1,32 @@
 import re
 import os
-import time
 import tempfile
-import traceback
 import shutil
 from PyQt4.QtCore import QSize, QVariant
-from qgis.core import *
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsVectorLayer,
+    QgsField,
+    QgsRenderContext,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsExpression,
+    QgsCategorizedSymbolRendererV2,
+    QgsGraduatedSymbolRendererV2,
+    QgsVectorFileWriter,
+    QgsRasterPipe,
+    QgsRasterFileWriter,
+    QgsCoordinateTransform,
+    QgsFeatureRequest,
+    QgsProject,
+    QgsSingleSymbolRendererV2,
+    QgsRuleBasedRendererV2,
+    Qgs25DRenderer,
+    QgsPalLayerSettings,
+    QgsSymbolLayerV2Utils,
+    QgsSvgMarkerSymbolLayerV2
+)
+from qgis.utils import QGis
 import processing
 from leafletScriptStrings import *
 from utils import writeTmpLayer, getUsedFields, removeSpaces, is25d
@@ -117,7 +138,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
             try:
                 shutil.copyfile(source_file_name, photo_file_name)
             except IOError as e:
-                print source_file_name
+                print source_file_name, e
 
 
 def exportRasterLayer(i, safeLayerName, dataPath):
@@ -164,18 +185,32 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     piped_3857 = os.path.join(tempfile.gettempdir(),
                                name_ts + '_piped_3857.tif')
 
-    processing.runalg("gdalogr:warpreproject",piped_file,
-          layer.crs().authid(),"EPSG:3857","", 0, 0,
-          extentRepNew,0,4,75,6,1,False,0,False,"",piped_3857)
-
-
     #Export layer as PNG
     out_raster = dataPath + '.png'
 
-    processing.runalg("gdalogr:translate", piped_3857, 100,
-                      True, "", 0, "", extentRepNew, False, 5,
-                      4, 75, 6, 1, False, 0, False, "",
+    qgis_version = QGis.QGIS_VERSION
+
+    if int(qgis_version.split('.')[1]) < 15:
+
+        processing.runalg("gdalogr:warpreproject", piped_file,
+                      layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                      0, -1, 75, 6, 1, False, 0, False, "",
+                      piped_3857)
+        processing.runalg("gdalogr:translate", piped_3857, 100,
+                      True, "", 0, "", extentRepNew, False, 0,
+                      0, 75, 6, 1, False, 0, False, "",
                       out_raster)
+    else:
+
+        processing.runalg("gdalogr:warpreproject",piped_file,
+              layer.crs().authid(),"EPSG:3857","", 0, 0,
+              extentRepNew,0,4,75,6,1,False,0,False,"",piped_3857)
+
+
+        processing.runalg("gdalogr:translate", piped_3857, 100,
+                          True, "", 0, "", extentRepNew, False, 5,
+                          4, 75, 6, 1, False, 0, False, "",
+                          out_raster)
 
     del piped_3857
     del piped_file

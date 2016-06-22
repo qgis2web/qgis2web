@@ -34,9 +34,9 @@ from qgis.core import (
     QgsRasterFileWriter,
     QgsCoordinateTransform,
     QgsGeometryGeneratorSymbolLayerV2,
-    QgsApplication,
-    QGis
+    QgsApplication
 )
+from qgis.utils import QGis
 import processing
 import tempfile
 
@@ -239,19 +239,32 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             #Reproject in 3857
             piped_3857 = os.path.join(tempfile.gettempdir(),
                                        name_ts + '_piped_3857.tif')
-
-            processing.runalg("gdalogr:warpreproject",piped_file,
-                  layer.crs().authid(),"EPSG:3857","", 0, 0,
-                  extentRepNew,0,4,75,6,1,False,0,False,"",piped_3857)
-
-
             #Export layer as PNG
             out_raster = os.path.join(layersFolder,layer.name() + ".png")
 
-            processing.runalg("gdalogr:translate", piped_3857, 100,
-                              True, "", 0, "", extentRepNew, False, 5,
-                              4, 75, 6, 1, False, 0, False, "",
+            qgis_version = utils.QGis.QGIS_VERSION
+
+            if int(qgis_version.split('.')[1]) < 15:
+
+                processing.runalg("gdalogr:warpreproject", piped_file,
+                              layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                              0, -1, 75, 6, 1, False, 0, False, "",
+                              piped_3857)
+                processing.runalg("gdalogr:translate", piped_3857, 100,
+                              True, "", 0, "", extentRepNew, False, 0,
+                              0, 75, 6, 1, False, 0, False, "",
                               out_raster)
+            else:
+
+                processing.runalg("gdalogr:warpreproject",piped_file,
+                      layer.crs().authid(),"EPSG:3857","", 0, 0,
+                      extentRepNew,0,4,75,6,1,False,0,False,"",piped_3857)
+
+
+                processing.runalg("gdalogr:translate", piped_3857, 100,
+                                  True, "", 0, "", extentRepNew, False, 5,
+                                  4, 75, 6, 1, False, 0, False, "",
+                                  out_raster)
 
 def is25d(layer, canvas):
     try:
