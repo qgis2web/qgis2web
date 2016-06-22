@@ -13,3 +13,4 @@ jsonSource_airports.addFeatures(features_airports);cluster_airports = new ol.sou
 
 lyr_airports.setVisible(true);
 var layersList = [lyr_airports];
+lyr_airports.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
