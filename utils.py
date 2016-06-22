@@ -242,7 +242,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             #Export layer as PNG
             out_raster = os.path.join(layersFolder,layer.name() + ".png")
 
-            qgis_version = utils.QGis.QGIS_VERSION
+            qgis_version = QGis.QGIS_VERSION
 
             if int(qgis_version.split('.')[1]) < 15:
 
