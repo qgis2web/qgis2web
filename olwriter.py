@@ -37,6 +37,8 @@ def writeOL(iface, layers, groups, popup, visible,
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
+    imagesFolder = os.path.join(folder, "images")
+    QDir().mkpath(imagesFolder)
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
@@ -352,6 +354,23 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
                     {"name": safeName(layer.name()), "fields": fields})
         fieldAliases += fields
 
+    fieldImages = ""
+    for layer in layers:
+        fieldList = layer.pendingFields()
+        fields = ""
+        for f in fieldList:
+            fieldIndex = fieldList.indexFromName(unicode(f.name()))
+            try:
+                widget = layer.editFormConfig().widgetType(fieldIndex)
+            except:
+                widget = layer.editorWidgetV2(fieldIndex)
+            fields += "'%(field)s': '%(image)s', " % (
+                    {"field": f.name(),
+                     "image": widget})
+        fields = "lyr_%(name)s.set('fieldImages', {%(fields)s});\n" % (
+                    {"name": safeName(layer.name()), "fields": fields})
+        fieldImages += fields
+
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if basemapList:
@@ -361,6 +380,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         f.write(visibility + "\n")
         f.write(layersListString + "\n")
         f.write(fieldAliases)
+        f.write(fieldImages)
     return osmb
 
 

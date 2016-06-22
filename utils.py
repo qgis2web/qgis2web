@@ -18,6 +18,7 @@
 import os
 import re
 import time
+import shutil
 from PyQt4.QtCore import *
 from qgis.core import *
 import processing
@@ -105,6 +106,9 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
             cleanLayer = writeTmpLayer(layer, popup)
+            fields = layer.pendingFields()
+            for field in fields:
+                exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
             if is25d(layer, canvas):
                 provider = cleanLayer.dataProvider()
                 provider.addAttributes([QgsField("height", QVariant.Double),
@@ -305,3 +309,37 @@ def replaceInTemplate(template, values):
     for name, value in values.iteritems():
         s = s.replace(name, value)
     return s
+
+
+def exportImages(layer, field, layerFileName):
+    field_index = layer.fieldNameIndex(field)
+
+    try:
+        widget = layer.editFormConfig().widgetType(field_index)
+    except:
+        widget = layer.editorWidgetV2(field_index)
+    if widget != 'Photo':
+        return
+
+    fr = QgsFeatureRequest()
+    fr.setSubsetOfAttributes([field_index])
+
+    for feature in layer.getFeatures(fr):
+        photo_file_name = feature.attribute(field)
+        if type(photo_file_name) is not unicode:
+            continue
+
+        source_file_name = photo_file_name
+        if not os.path.isabs(source_file_name):
+            prj_fname = QgsProject.instance().fileName()
+            source_file_name = os.path.join(os.path.dirname(prj_fname),
+                                            source_file_name)
+
+        photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
+        photo_file_name = os.path.join(os.path.dirname(layerFileName),
+                                       '..', 'images', photo_file_name)
+
+        try:
+            shutil.copyfile(source_file_name, photo_file_name)
+        except IOError as e:
+            pass

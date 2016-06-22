@@ -3,12 +3,12 @@ import os
 import time
 import tempfile
 import traceback
-import shutil
 from PyQt4.QtCore import QSize, QVariant
 from qgis.core import *
 import processing
 from leafletScriptStrings import *
-from utils import writeTmpLayer, getUsedFields, removeSpaces, is25d
+from utils import (writeTmpLayer, getUsedFields, removeSpaces,
+                   is25d, exportImages)
 
 
 def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
@@ -814,37 +814,3 @@ def getWFSScriptTag(layerSource, layerName):
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
     return scriptTag
-
-
-def exportImages(i, field, layerFileName):
-    field_index = i.fieldNameIndex(field)
-
-    try:
-        widget = i.editFormConfig().widgetType(field_index)
-    except:
-        widget = i.editorWidgetV2(field_index)
-    if widget != 'Photo':
-        return
-
-    fr = QgsFeatureRequest()
-    fr.setSubsetOfAttributes([field_index])
-
-    for feature in i.getFeatures(fr):
-        photo_file_name = feature.attribute(field)
-        if type(photo_file_name) is not unicode:
-            continue
-
-        source_file_name = photo_file_name
-        if not os.path.isabs(source_file_name):
-            prj_fname = QgsProject.instance().fileName()
-            source_file_name = os.path.join(os.path.dirname(prj_fname),
-                                            source_file_name)
-
-        photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
-        photo_file_name = os.path.join(os.path.dirname(layerFileName),
-                                       '..', 'images', photo_file_name)
-
-        try:
-            shutil.copyfile(source_file_name, photo_file_name)
-        except IOError as e:
-            pass
