@@ -360,7 +360,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersListString + "\n")
-        f.write(fieldAliases + "\n")
+        f.write(fieldAliases)
     return osmb
 
 
