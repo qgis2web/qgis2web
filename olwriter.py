@@ -339,6 +339,19 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         layersList.append(layer)
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
 
+    fieldAliases = ""
+    for layer in layers:
+        fieldList = layer.pendingFields()
+        fields = ""
+        for f in fieldList:
+            fieldIndex = fieldList.indexFromName(unicode(f.name()))
+            fields += "'%(field)s': '%(alias)s', " % (
+                    {"field": f.name(),
+                     "alias": layer.attributeDisplayName(fieldIndex)})
+        fields = "lyr_%(name)s.set('fieldAliases', {%(fields)s});\n" % (
+                    {"name": safeName(layer.name()), "fields": fields})
+        fieldAliases += fields
+
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if basemapList:
@@ -347,6 +360,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersListString + "\n")
+        f.write(fieldAliases + "\n")
     return osmb
 
 
