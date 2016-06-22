@@ -84,41 +84,11 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
     if eachPopup == 0:
         pass
     elif eachPopup == 1:
-        # TODO: Something clever with images like what I have done below.
-        pass
+        fields = i.pendingFields()
+        for field in fields:
+            exportImages(i, field.name(), layerFileName)
     else:
-        field_index = i.fieldNameIndex(eachPopup)
-
-        try:
-            widget = i.editFormConfig().widgetType(field_index)
-        except:
-            widget = i.editorWidgetV2(field_index)
-        if widget != 'Photo':
-            return
-
-        fr = QgsFeatureRequest()
-        fr.setSubsetOfAttributes([field_index])
-
-        for feature in i.getFeatures(fr):
-            photo_file_name = feature.attribute(eachPopup)
-            if type(photo_file_name) is not unicode:
-                continue
-
-            source_file_name = photo_file_name
-            if not os.path.isabs(source_file_name):
-                prj_fname = QgsProject.instance().fileName()
-                source_file_name = os.path.join(os.path.dirname(prj_fname),
-                                                source_file_name)
-
-            photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
-            photo_file_name = os.path.join(os.path.dirname(layerFileName),
-                                           '..', 'images', photo_file_name)
-
-            try:
-                shutil.copyfile(source_file_name, photo_file_name)
-            except IOError as e:
-                pass
-
+        exportImages(i, eachPopup, layerFileName)
 
 def exportRasterLayer(i, safeLayerName, dataPath):
     print "Raster type: " + unicode(i.rasterType())
@@ -843,3 +813,37 @@ def getWFSScriptTag(layerSource, layerName):
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
     return scriptTag
+
+
+def exportImages(i, field, layerFileName):
+    field_index = i.fieldNameIndex(field)
+
+    try:
+        widget = i.editFormConfig().widgetType(field_index)
+    except:
+        widget = i.editorWidgetV2(field_index)
+    if widget != 'Photo':
+        return
+
+    fr = QgsFeatureRequest()
+    fr.setSubsetOfAttributes([field_index])
+
+    for feature in i.getFeatures(fr):
+        photo_file_name = feature.attribute(field)
+        if type(photo_file_name) is not unicode:
+            continue
+
+        source_file_name = photo_file_name
+        if not os.path.isabs(source_file_name):
+            prj_fname = QgsProject.instance().fileName()
+            source_file_name = os.path.join(os.path.dirname(prj_fname),
+                                            source_file_name)
+
+        photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
+        photo_file_name = os.path.join(os.path.dirname(layerFileName),
+                                       '..', 'images', photo_file_name)
+
+        try:
+            shutil.copyfile(source_file_name, photo_file_name)
+        except IOError as e:
+            pass
