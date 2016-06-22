@@ -258,7 +258,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
 
                 processing.runalg("gdalogr:warpreproject",piped_file,
                       layer.crs().authid(),"EPSG:3857","", 0, 0,
-                      extentRepNew,0,4,75,6,1,False,0,False,"",piped_3857)
+                      extentRepNew,"EPSG:3857",0,4,75,6,1,False,0,False,"",piped_3857)
 
 
                 processing.runalg("gdalogr:translate", piped_3857, 100,
