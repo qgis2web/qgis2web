@@ -90,6 +90,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
     else:
         exportImages(i, eachPopup, layerFileName)
 
+
 def exportRasterLayer(i, safeLayerName, dataPath):
     print "Raster type: " + unicode(i.rasterType())
     name_ts = safeLayerName + unicode(time.time())
