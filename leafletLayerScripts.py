@@ -1,8 +1,8 @@
 import re
 import os
 import tempfile
-import shutil
 from PyQt4.QtCore import QSize, QVariant
+import time
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsVectorLayer,
@@ -17,8 +17,6 @@ from qgis.core import (
     QgsRasterPipe,
     QgsRasterFileWriter,
     QgsCoordinateTransform,
-    QgsFeatureRequest,
-    QgsProject,
     QgsSingleSymbolRendererV2,
     QgsRuleBasedRendererV2,
     Qgs25DRenderer,
@@ -115,7 +113,7 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
 
 def exportRasterLayer(i, safeLayerName, dataPath):
     layer = i
-    name_ts = safeLayerName
+    name_ts = safeLayerName + unicode(int(time.time()))
 
     #We need to create a new file to export style
     piped_file = os.path.join(
@@ -183,9 +181,6 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           True, "", 0, "", extentRepNew, False, 5,
                           4, 75, 6, 1, False, 0, False, "",
                           out_raster)
-
-    del piped_3857
-    del piped_file
 
 def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                      popup, count, outputProjectFileName, wfsLayers, cluster,
