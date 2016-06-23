@@ -17,8 +17,12 @@
 
 import os
 import time
+import re
+import shutil
 from PyQt4.QtCore import QDir, QVariant
 from qgis.core import (
+    QgsProject,
+    QgsFeatureRequest,
     QgsCoordinateReferenceSystem,
     QgsVectorLayer,
     QgsFeature,
@@ -203,14 +207,14 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
 
             name_ts = safeName(layer.name()) + unicode(int(time.time()))
 
-            #We need to create a new file to export style
+            # We need to create a new file to export style
             piped_file = os.path.join(
                 tempfile.gettempdir(),
                 name_ts + '_piped.tif'
             )
 
             piped_extent = layer.extent()
-            piped_width  = layer.height()
+            piped_width = layer.height()
             piped_height = layer.width()
             piped_crs = layer.crs()
             piped_renderer = layer.renderer()
@@ -235,39 +239,41 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             extentRep = xform.transform(layer.extent())
 
             extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                         unicode(extentRep.xMaximum()),
-                         unicode(extentRep.yMinimum()),
-                         unicode(extentRep.yMaximum())])
+                                     unicode(extentRep.xMaximum()),
+                                     unicode(extentRep.yMinimum()),
+                                     unicode(extentRep.yMaximum())])
 
-            #Reproject in 3857
+            # Reproject in 3857
             piped_3857 = os.path.join(tempfile.gettempdir(),
-                                       name_ts + '_piped_3857.tif')
-            #Export layer as PNG
-            out_raster = os.path.join(layersFolder,layer.name() + ".png")
+                                      name_ts + '_piped_3857.tif')
+            # Export layer as PNG
+            out_raster = os.path.join(layersFolder, layer.name() + ".png")
 
             qgis_version = QGis.QGIS_VERSION
 
             if int(qgis_version.split('.')[1]) < 15:
 
                 processing.runalg("gdalogr:warpreproject", piped_file,
-                              layer.crs().authid(), "EPSG:3857", "", 0, 1,
-                              0, -1, 75, 6, 1, False, 0, False, "",
-                              piped_3857)
+                                  layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                                  0, -1, 75, 6, 1, False, 0, False, "",
+                                  piped_3857)
                 processing.runalg("gdalogr:translate", piped_3857, 100,
-                              True, "", 0, "", extentRepNew, False, 0,
-                              0, 75, 6, 1, False, 0, False, "",
-                              out_raster)
+                                  True, "", 0, "", extentRepNew, False, 0,
+                                  0, 75, 6, 1, False, 0, False, "",
+                                  out_raster)
             else:
 
-                processing.runalg("gdalogr:warpreproject",piped_file,
-                      layer.crs().authid(),"EPSG:3857","", 0, 0,
-                      extentRepNew,"EPSG:3857",0,4,75,6,1,False,0,False,"",piped_3857)
-
+                processing.runalg("gdalogr:warpreproject", piped_file,
+                                  layer.crs().authid(), "EPSG:3857", "", 0, 0,
+                                  extentRepNew, "EPSG:3857", 0, 4, 75, 6, 1,
+                                  False, 0, False, "",
+                                  piped_3857)
 
                 processing.runalg("gdalogr:translate", piped_3857, 100,
                                   True, "", 0, "", extentRepNew, False, 5,
                                   4, 75, 6, 1, False, 0, False, "",
                                   out_raster)
+
 
 def is25d(layer, canvas):
     try:
@@ -306,7 +312,7 @@ def is25d(layer, canvas):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChr = '_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    validChr = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChr)
 
 

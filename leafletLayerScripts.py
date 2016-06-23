@@ -22,7 +22,8 @@ from qgis.core import (
     Qgs25DRenderer,
     QgsPalLayerSettings,
     QgsSymbolLayerV2Utils,
-    QgsSvgMarkerSymbolLayerV2
+    QgsSvgMarkerSymbolLayerV2,
+    QgsSimpleLineSymbolLayerV2
 )
 from qgis.utils import QGis
 import processing
@@ -115,14 +116,14 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     layer = i
     name_ts = safeLayerName + unicode(int(time.time()))
 
-    #We need to create a new file to export style
+    # We need to create a new file to export style
     piped_file = os.path.join(
         tempfile.gettempdir(),
         name_ts + '_piped.tif'
     )
 
     piped_extent = layer.extent()
-    piped_width  = layer.height()
+    piped_width = layer.height()
     piped_height = layer.width()
     piped_crs = layer.crs()
     piped_renderer = layer.renderer()
@@ -147,15 +148,15 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     extentRep = xform.transform(layer.extent())
 
     extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                 unicode(extentRep.xMaximum()),
-                 unicode(extentRep.yMinimum()),
-                 unicode(extentRep.yMaximum())])
+                            unicode(extentRep.xMaximum()),
+                            unicode(extentRep.yMinimum()),
+                            unicode(extentRep.yMaximum())])
 
-    #Reproject in 3857
+    # Reproject in 3857
     piped_3857 = os.path.join(tempfile.gettempdir(),
-                               name_ts + '_piped_3857.tif')
+                              name_ts + '_piped_3857.tif')
 
-    #Export layer as PNG
+    # Export layer as PNG
     out_raster = dataPath + '.png'
 
     qgis_version = QGis.QGIS_VERSION
@@ -163,24 +164,24 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     if int(qgis_version.split('.')[1]) < 15:
 
         processing.runalg("gdalogr:warpreproject", piped_file,
-                      layer.crs().authid(), "EPSG:3857", "", 0, 1,
-                      0, -1, 75, 6, 1, False, 0, False, "",
-                      piped_3857)
+                          layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                          0, -1, 75, 6, 1, False, 0, False, "",
+                          piped_3857)
         processing.runalg("gdalogr:translate", piped_3857, 100,
-                      True, "", 0, "", extentRepNew, False, 0,
-                      0, 75, 6, 1, False, 0, False, "",
-                      out_raster)
+                          True, "", 0, "", extentRepNew, False, 0,
+                          0, 75, 6, 1, False, 0, False, "",
+                          out_raster)
     else:
-
-        processing.runalg("gdalogr:warpreproject",piped_file,
-              layer.crs().authid(),"EPSG:3857","", 0, 0,
-              extentRepNew,"EPSG:3857",0,4,75,6,1,False,0,False,"",piped_3857)
-
+        processing.runalg("gdalogr:warpreproject", piped_file,
+                          layer.crs().authid(), "EPSG:3857", "", 0, 0,
+                          extentRepNew, "EPSG:3857", 0, 4, 75, 6, 1, False, 0,
+                          False, "", piped_3857)
 
         processing.runalg("gdalogr:translate", piped_3857, 100,
                           True, "", 0, "", extentRepNew, False, 5,
                           4, 75, 6, 1, False, 0, False, "",
                           out_raster)
+
 
 def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
                      popup, count, outputProjectFileName, wfsLayers, cluster,

@@ -538,7 +538,6 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             xform = QgsCoordinateTransform(crsSrc, crsDest)
             extentRep = xform.transform(layer.extent())
 
-
             sExtent = "[%f, %f, %f, %f]" % (extentRep.xMinimum(),
                                             extentRep.yMinimum(),
                                             extentRep.xMaximum(),
