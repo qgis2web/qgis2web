@@ -342,34 +342,34 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
 
     fieldAliases = ""
-    for layer in layers:
-        fieldList = layer.pendingFields()
-        fields = ""
-        for f in fieldList:
-            fieldIndex = fieldList.indexFromName(unicode(f.name()))
-            fields += "'%(field)s': '%(alias)s', " % (
-                    {"field": f.name(),
-                     "alias": layer.attributeDisplayName(fieldIndex)})
-        fields = "lyr_%(name)s.set('fieldAliases', {%(fields)s});\n" % (
-                    {"name": safeName(layer.name()), "fields": fields})
-        fieldAliases += fields
-
     fieldImages = ""
     for layer in layers:
-        fieldList = layer.pendingFields()
-        fields = ""
-        for f in fieldList:
-            fieldIndex = fieldList.indexFromName(unicode(f.name()))
-            try:
-                widget = layer.editFormConfig().widgetType(fieldIndex)
-            except:
-                widget = layer.editorWidgetV2(fieldIndex)
-            fields += "'%(field)s': '%(image)s', " % (
-                    {"field": f.name(),
-                     "image": widget})
-        fields = "lyr_%(name)s.set('fieldImages', {%(fields)s});\n" % (
-                    {"name": safeName(layer.name()), "fields": fields})
-        fieldImages += fields
+        if layer.type() == layer.VectorLayer:
+            fieldList = layer.pendingFields()
+            aliasFields = ""
+            imageFields = ""
+            for f in fieldList:
+                fieldIndex = fieldList.indexFromName(unicode(f.name()))
+                aliasFields += "'%(field)s': '%(alias)s', " % (
+                        {"field": f.name(),
+                         "alias": layer.attributeDisplayName(fieldIndex)})
+                try:
+                    widget = layer.editFormConfig().widgetType(fieldIndex)
+                except:
+                    widget = layer.editorWidgetV2(fieldIndex)
+                imageFields += "'%(field)s': '%(image)s', " % (
+                        {"field": f.name(),
+                         "image": widget})
+            aliasFields = "{%(aliasFields)s});\n" % (
+                        {"aliasFields": aliasFields})
+            aliasFields = "lyr_%(name)s.set('fieldAliases', " % (
+                        {"name": safeName(layer.name())}) + aliasFields
+            fieldAliases += aliasFields
+            imageFields = "{%(imageFields)s});\n" % (
+                        {"imageFields": imageFields})
+            imageFields = "lyr_%(name)s.set('fieldImages', " % (
+                        {"name": safeName(layer.name())}) + imageFields
+            fieldImages += imageFields
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
