@@ -22,6 +22,7 @@ import math
 import time
 import shutil
 import traceback
+import xml.etree.ElementTree
 from qgis.core import *
 from utils import exportLayers, safeName, replaceInTemplate, is25d
 from qgis.utils import iface
@@ -710,10 +711,15 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                                             size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
+            svg = xml.etree.ElementTree.parse(sl.path()).getroot()
+            svgWidth = svg.attrib["width"]
+            svgWidth = re.sub("px", "", svgWidth)
+            svgHeight = svg.attrib["height"]
+            svgHeight = re.sub("px", "", svgHeight)
             shutil.copy(sl.path(), path)
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
-                             sl.size()))
+                             sl.size(), svgWidth, svgHeight))
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
             # Check for old version
@@ -783,16 +789,20 @@ def getCircle(color, borderColor, borderWidth, size, props):
              getFillStyle(color, props)))
 
 
-def getIcon(path, size):
+def getIcon(path, size, svgWidth, svgHeight):
     size = math.floor(float(size) * 3.8)
     anchor = size / 2
+    scale = unicode(float(size)/float(svgWidth))
     return '''new ol.style.Icon({
-                  size: [%(s)d, %(s)d],
+                  imgSize: [%(w)s, %(h)s],
+                  scale: %(scale)s,
                   anchor: [%(a)d, %(a)d],
                   anchorXUnits: "pixels",
                   anchorYUnits: "pixels",
                   src: "%(path)s"
-            })''' % {"s": size, "a": anchor,
+            })''' % {"w": svgWidth, "h": svgHeight,
+                     "scale": scale,
+                     "s": size, "a": anchor,
                      "path": path.replace("\\", "\\\\")}
 
 
