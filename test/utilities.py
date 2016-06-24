@@ -95,7 +95,7 @@ def load_layer(layer_path):
     base_name, extension = os.path.splitext(file_name)
 
     # Create QGis Layer Instance
-    if extension in ['.asc', '.tif']:
+    if extension in ['.asc', '.tif', '.png']:
         layer = QgsRasterLayer(layer_path, base_name)
     elif extension in ['.shp']:
         layer = QgsVectorLayer(layer_path, base_name, 'ogr')
