@@ -2439,13 +2439,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         control_file = open(
                 test_data_path(
-                        'control', 'ol3_raster.html'), 'r')
+                        'control', 'ol3_raster.js'), 'r')
         control_output = control_file.read()
 
         # Open the test file
-        test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
-        test_output = test_file.read()
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
