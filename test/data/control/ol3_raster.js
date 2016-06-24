@@ -1,4 +1,4 @@
-var lyr_3857 = new ol.layer.Image({
+var lyr_test = new ol.layer.Image({
                             opacity: 1,
                             title: "test",
                             
@@ -12,5 +12,5 @@ var lyr_3857 = new ol.layer.Image({
                             })
                         });
 
-lyr_3857.setVisible(true);
-var layersList = [lyr_3857];
+lyr_test.setVisible(true);
+var layersList = [lyr_test];
