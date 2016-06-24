@@ -1,10 +1,10 @@
 var lyr_3857 = new ol.layer.Image({
                             opacity: 1,
-                            title: "3857",
+                            title: "test",
                             
                             
                             source: new ol.source.ImageStatic({
-                               url: "./layers/3857.png",
+                               url: "./layers/test.png",
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
                                 //imageSize: [1000, 1003],
