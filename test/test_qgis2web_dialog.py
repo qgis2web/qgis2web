@@ -2424,6 +2424,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
+        iface.mapCanvas().mapRenderer().setDestinationCrs("EPSG:3857")
+
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2456,6 +2458,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
+
+        iface.mapCanvas().mapRenderer().setDestinationCrs("EPSG:3857")
 
         control_file = open(
                 test_data_path(
