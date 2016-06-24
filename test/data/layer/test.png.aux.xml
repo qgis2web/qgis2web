@@ -1,0 +1,23 @@
+<PAMDataset>
+  <SRS>PROJCS["WGS 84 / Pseudo-Mercator",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Mercator_1SP"],PARAMETER["central_meridian",0],PARAMETER["scale_factor",1],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["X",EAST],AXIS["Y",NORTH],EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"],AUTHORITY["EPSG","3857"]]</SRS>
+  <GeoTransform>-2.3498452997206882e+005, 1.7410175903221792e+000, 0.0000000000000000e+000, 7.3579016422293540e+006, 0.0000000000000000e+000,-1.7410175903221792e+000</GeoTransform>
+  <PAMRasterBand band="1">
+    <NoDataValue>-9.99900000000000E+003</NoDataValue>
+    <Histograms>
+      <HistItem>
+        <HistMin>30.47418088046022</HistMin>
+        <HistMax>84.88581972989179</HistMax>
+        <BucketCount>55</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>1</Approximate>
+        <HistCounts>799|114|267|5231|4503|3164|2200|938|1009|930|655|640|547|511|515|368|357|377|416|432|941|1007|847|709|592|513|315|321|320|236|204|192|207|193|190|264|320|252|77|30|31|33|48|22|0|15|6|0|1|1|1|0|0|1|8</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_MAXIMUM">84.400001525879</MDI>
+      <MDI key="STATISTICS_MEAN">42.007178267149</MDI>
+      <MDI key="STATISTICS_MINIMUM">30.959999084473</MDI>
+      <MDI key="STATISTICS_STDDEV">9.5662727493089</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
