@@ -20,26 +20,7 @@ import time
 import re
 import shutil
 from PyQt4.QtCore import QDir, QVariant
-from qgis.core import (
-    QgsProject,
-    QgsFeatureRequest,
-    QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
-    QgsFeature,
-    QgsField,
-    QgsRenderContext,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
-    QgsExpression,
-    QgsCategorizedSymbolRendererV2,
-    QgsGraduatedSymbolRendererV2,
-    QgsVectorFileWriter,
-    QgsRasterPipe,
-    QgsRasterFileWriter,
-    QgsCoordinateTransform,
-    QgsGeometryGeneratorSymbolLayerV2,
-    QgsApplication
-)
+from qgis.core import *
 from qgis.utils import QGis
 import processing
 import tempfile

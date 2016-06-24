@@ -3,28 +3,7 @@ import os
 import tempfile
 from PyQt4.QtCore import QSize, QVariant
 import time
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
-    QgsField,
-    QgsRenderContext,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
-    QgsExpression,
-    QgsCategorizedSymbolRendererV2,
-    QgsGraduatedSymbolRendererV2,
-    QgsVectorFileWriter,
-    QgsRasterPipe,
-    QgsRasterFileWriter,
-    QgsCoordinateTransform,
-    QgsSingleSymbolRendererV2,
-    QgsRuleBasedRendererV2,
-    Qgs25DRenderer,
-    QgsPalLayerSettings,
-    QgsSymbolLayerV2Utils,
-    QgsSvgMarkerSymbolLayerV2,
-    QgsSimpleLineSymbolLayerV2
-)
+from qgis.core import *
 from qgis.utils import QGis
 import processing
 from leafletScriptStrings import *
