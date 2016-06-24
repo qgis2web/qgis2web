@@ -2381,6 +2381,76 @@ class qgis2web_classDialogTest(unittest.TestCase):
         else:
             print "skip"
 
+    def test78_Leaflet_raster(self):
+        """Leaflet raster"""
+        layer_path = test_data_path('layer', 'test.png')
+        # style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        # layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        self.dialog.leaflet.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_raster.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(
+                self.dialog.preview.url().toString().replace('file://', ''))
+        test_output = test_file.read()
+
+        # Test for expected output
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
+        
+        # test for exported raster file
+        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'data/json_test0.png'))
+
+    def test79_OL3_raster(self):
+        """OL3 raster"""
+        layer_path = test_data_path('layer', 'test.png')
+        # style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        # layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+
+        self.dialog.ol3.click()
+
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_raster.js'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+
+        # Test for expected output
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
+
+        # test for exported raster file
+        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'layers/test.png'))
+
     def test99_export_folder(self):
         """Export folder"""
         layer_path = test_data_path('layer', 'airports.shp')

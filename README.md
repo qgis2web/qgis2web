@@ -228,7 +228,6 @@ export QGIS_REPO=http://qgis.org/debian-ltr
 
 <p>Untested functionality includes:</p>
 <ul>
-    <li>rasters</li>
     <li>labels</li>
     <li>rule-based renderer</li>
     <li>SVG markers</li>
