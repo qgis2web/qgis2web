@@ -2413,6 +2413,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
+        
+        # test for exported raster file
+        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'data/json_test0.png'))
 
     def test79_OL3_raster(self):
         """OL3 raster"""
@@ -2446,6 +2449,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
+
+        # test for exported raster file
+        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'layers/test.png'))
 
     def test99_export_folder(self):
         """Export folder"""
