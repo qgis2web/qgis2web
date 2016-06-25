@@ -16,14 +16,13 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import re
 import time
+import re
 import shutil
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QDir, QVariant
 from qgis.core import *
+from qgis.utils import QGis
 import processing
-from subprocess import *
-import traceback
 import tempfile
 
 NO_POPUP = 0
@@ -97,8 +96,8 @@ def writeTmpLayer(layer, popup):
 
 
 def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
+
     canvas = iface.mapCanvas()
-    srcCrs = canvas.mapSettings().destinationCrs()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
@@ -184,29 +183,77 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                             line = removeSpaces(line)
                         f.write(line)
             os.remove(tmpPath)
+
         elif layer.type() == layer.RasterLayer:
-            name_ts = safeName(layer.name()) + unicode(time.time())
-            in_raster = unicode(layer.dataProvider().dataSourceUri())
-            prov_raster = os.path.join(tempfile.gettempdir(),
-                                       'json_' + name_ts + '_prov.tif')
-            out_raster = os.path.join(layersFolder,
-                                      safeName(layer.name()) + ".png")
+
+            name_ts = safeName(layer.name()) + unicode(int(time.time()))
+
+            # We need to create a new file to export style
+            piped_file = os.path.join(
+                tempfile.gettempdir(),
+                name_ts + '_piped.tif'
+            )
+
+            piped_extent = layer.extent()
+            piped_width = layer.height()
+            piped_height = layer.width()
+            piped_crs = layer.crs()
+            piped_renderer = layer.renderer()
+            piped_provider = layer.dataProvider()
+
+            pipe = QgsRasterPipe()
+            pipe.set(piped_provider.clone())
+            pipe.set(piped_renderer.clone())
+
+            file_writer = QgsRasterFileWriter(piped_file)
+
+            file_writer.writeRaster(pipe,
+                                    piped_width,
+                                    piped_height,
+                                    piped_extent,
+                                    piped_crs)
+
+            # Extent of the layer in EPSG:3857
             crsSrc = layer.crs()
             crsDest = QgsCoordinateReferenceSystem(3857)
             xform = QgsCoordinateTransform(crsSrc, crsDest)
             extentRep = xform.transform(layer.extent())
+
             extentRepNew = ','.join([unicode(extentRep.xMinimum()),
                                      unicode(extentRep.xMaximum()),
                                      unicode(extentRep.yMinimum()),
                                      unicode(extentRep.yMaximum())])
-            processing.runalg("gdalogr:warpreproject", in_raster,
-                              layer.crs().authid(), "EPSG:3857", "", 0, 1,
-                              0, -1, 75, 6, 1, False, 0, False, "",
-                              prov_raster)
-            processing.runalg("gdalogr:translate", prov_raster, 100,
-                              True, "", 0, "", extentRepNew, False, 0,
-                              0, 75, 6, 1, False, 0, False, "",
-                              out_raster)
+
+            # Reproject in 3857
+            piped_3857 = os.path.join(tempfile.gettempdir(),
+                                      name_ts + '_piped_3857.tif')
+            # Export layer as PNG
+            out_raster = os.path.join(layersFolder, layer.name() + ".png")
+
+            qgis_version = QGis.QGIS_VERSION
+
+            if int(qgis_version.split('.')[1]) < 15:
+
+                processing.runalg("gdalogr:warpreproject", piped_file,
+                                  layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                                  0, -1, 75, 6, 1, False, 0, False, "",
+                                  piped_3857)
+                processing.runalg("gdalogr:translate", piped_3857, 100,
+                                  True, "", 0, "", extentRepNew, False, 0,
+                                  0, 75, 6, 1, False, 0, False, "",
+                                  out_raster)
+            else:
+
+                processing.runalg("gdalogr:warpreproject", piped_file,
+                                  layer.crs().authid(), "EPSG:3857", "", 0, 0,
+                                  extentRepNew, "EPSG:3857", 0, 4, 75, 6, 1,
+                                  False, 0, False, "",
+                                  piped_3857)
+
+                processing.runalg("gdalogr:translate", piped_3857, 100,
+                                  True, "", 0, "", extentRepNew, False, 5,
+                                  4, 75, 6, 1, False, 0, False, "",
+                                  out_raster)
 
 
 def is25d(layer, canvas):
@@ -246,7 +293,7 @@ def is25d(layer, canvas):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChr = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    validChr = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChr)
 
 

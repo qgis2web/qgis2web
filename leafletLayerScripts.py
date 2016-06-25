@@ -1,10 +1,10 @@
 import re
 import os
-import time
 import tempfile
-import traceback
 from PyQt4.QtCore import QSize, QVariant
+import time
 from qgis.core import *
+from qgis.utils import QGis
 import processing
 from leafletScriptStrings import *
 from utils import (writeTmpLayer, getUsedFields, removeSpaces,
@@ -92,51 +92,74 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
 
 
 def exportRasterLayer(i, safeLayerName, dataPath):
-    print "Raster type: " + unicode(i.rasterType())
-    name_ts = safeLayerName + unicode(time.time())
-    # pipelayer = i
-    # pipeextent = pipelayer.extent()
-    # pipewidth, pipeheight = (pipelayer.width(), pipelayer.height())
-    # piperenderer = pipelayer.renderer()
-    # pipeprovider = pipelayer.dataProvider()
-    # crs = pipelayer.crs().toWkt()
-    # pipe = QgsRasterPipe()
-    # pipe.set(pipeprovider.clone())
-    # pipe.set(piperenderer.clone())
-    # pipedFile = os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif')
-    # print "pipedFile: " + pipedFile
-    # file_writer = QgsRasterFileWriter(pipedFile)
-    # file_writer.writeRaster(pipe, pipewidth, pipeheight, pipeextent,
-    #                         pipelayer.crs())
+    layer = i
+    name_ts = safeLayerName + unicode(int(time.time()))
 
-    # in_raster = pipedFile
-    in_raster = unicode(i.dataProvider().dataSourceUri())
-    print "in_raster: " + in_raster
-    prov_raster = os.path.join(tempfile.gettempdir(),
-                               'json_' + name_ts + '_prov.tif')
-    print "prov_raster: " + prov_raster
-    out_raster = dataPath + '.png'
-    print "out_raster: " + out_raster
-    crsSrc = i.crs()
+    # We need to create a new file to export style
+    piped_file = os.path.join(
+        tempfile.gettempdir(),
+        name_ts + '_piped.tif'
+    )
+
+    piped_extent = layer.extent()
+    piped_width = layer.height()
+    piped_height = layer.width()
+    piped_crs = layer.crs()
+    piped_renderer = layer.renderer()
+    piped_provider = layer.dataProvider()
+
+    pipe = QgsRasterPipe()
+    pipe.set(piped_provider.clone())
+    pipe.set(piped_renderer.clone())
+
+    file_writer = QgsRasterFileWriter(piped_file)
+
+    file_writer.writeRaster(pipe,
+                            piped_width,
+                            piped_height,
+                            piped_extent,
+                            piped_crs)
+
+    # Extent of the layer in EPSG:3857
+    crsSrc = layer.crs()
     crsDest = QgsCoordinateReferenceSystem(3857)
     xform = QgsCoordinateTransform(crsSrc, crsDest)
-    extentRep = xform.transform(i.extent())
+    extentRep = xform.transform(layer.extent())
+
     extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                             unicode(extentRep.xMaximum()),
-                             unicode(extentRep.yMinimum()),
-                             unicode(extentRep.yMaximum())])
-    processing.runalg("gdalogr:warpreproject", in_raster, i.crs().authid(),
-                      "EPSG:3857", "", 0, 1, 5, 2, 75, 6, 1, False, 0, False,
-                      "", prov_raster)
-    del in_raster
-    # del pipedFile
-    # os.remove(os.path.join(tempfile.gettempdir(), name_ts + '_pipe.tif'))
-    processing.runalg("gdalogr:translate", prov_raster, 100, True, "", 0, "",
-                      extentRepNew, False, 0, 0, 75, 6, 1, False, 0, False, "",
-                      out_raster)
-    del prov_raster
-    # os.remove(os.path.join(tempfile.gettempdir(),
-    #                        'json_' + name_ts + '_prov.tif'))
+                            unicode(extentRep.xMaximum()),
+                            unicode(extentRep.yMinimum()),
+                            unicode(extentRep.yMaximum())])
+
+    # Reproject in 3857
+    piped_3857 = os.path.join(tempfile.gettempdir(),
+                              name_ts + '_piped_3857.tif')
+
+    # Export layer as PNG
+    out_raster = dataPath + '.png'
+
+    qgis_version = QGis.QGIS_VERSION
+
+    if int(qgis_version.split('.')[1]) < 15:
+
+        processing.runalg("gdalogr:warpreproject", piped_file,
+                          layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                          0, -1, 75, 6, 1, False, 0, False, "",
+                          piped_3857)
+        processing.runalg("gdalogr:translate", piped_3857, 100,
+                          True, "", 0, "", extentRepNew, False, 0,
+                          0, 75, 6, 1, False, 0, False, "",
+                          out_raster)
+    else:
+        processing.runalg("gdalogr:warpreproject", piped_file,
+                          layer.crs().authid(), "EPSG:3857", "", 0, 0,
+                          extentRepNew, "EPSG:3857", 0, 4, 75, 6, 1, False, 0,
+                          False, "", piped_3857)
+
+        processing.runalg("gdalogr:translate", piped_3857, 100,
+                          True, "", 0, "", extentRepNew, False, 5,
+                          4, 75, 6, 1, False, 0, False, "",
+                          out_raster)
 
 
 def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
