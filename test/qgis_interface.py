@@ -96,7 +96,12 @@ class QgisInterface(QObject):
             :rtype: QgsAlgorithm  ?
             """
             Processing.initialize()
-            for provider in Processing.algs.values():
+            algorithms = list()
+            try:
+                algorithms = Processing.algs.values()
+            except AttributeError:
+                algorithms = Processing.algs().values()
+            for provider in algorithms:
                 if name in provider:
                     return provider[name]
             return None
