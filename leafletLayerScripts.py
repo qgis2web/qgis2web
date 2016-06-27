@@ -152,6 +152,8 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           out_raster)
     else:
         try:
+            print "1"
+            print processing.alghelp("gdalogr:warpreproject")
             warpArgs = {
                 "INPUT": piped_file,
                 "SOURCE_SRS": layer.crs().authid(),
@@ -177,6 +179,8 @@ def exportRasterLayer(i, safeLayerName, dataPath):
             for val in procRtn:
                 pass
         except:
+            print "2"
+            print processing.alghelp("gdalogr:warpreproject")
             warpArgs = {
                 "INPUT": piped_file,
                 "SOURCE_SRS": layer.crs().authid(),
