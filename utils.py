@@ -233,7 +233,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
             qgis_version = QGis.QGIS_VERSION
 
             if int(qgis_version.split('.')[1]) < 15:
-
+                print "old"
                 processing.runalg("gdalogr:warpreproject", piped_file,
                                   layer.crs().authid(), "EPSG:3857", "", 0, 1,
                                   0, -1, 75, 6, 1, False, 0, False, "",
@@ -243,12 +243,48 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                                   0, 75, 6, 1, False, 0, False, "",
                                   out_raster)
             else:
-
-                processing.runalg("gdalogr:warpreproject", piped_file,
-                                  layer.crs().authid(), "EPSG:3857", "", 0, 0,
-                                  extentRepNew, "EPSG:3857", 0, 4, 75, 6, 1,
-                                  False, 0, False, "",
-                                  piped_3857)
+                try:
+                    warpArgs = {
+                        "INPUT": piped_file,
+                        "SOURCE_SRS": layer.crs().authid(),
+                        "DEST_SRS": "EPSG:3857",
+                        "NO_DATA": "",
+                        "TR": 0,
+                        "METHOD": 0,
+                        "RTYPE": 0,
+                        "COMPRESS": 4,
+                        "JPEGCOMPRESSION": 75,
+                        "ZLEVEL": 6,
+                        "PREDICTOR": 1,
+                        "TILED": False,
+                        "BIGTIFF": 0,
+                        "TFW": False,
+                        "EXTRA": "",
+                        "OUTPUT": piped_3857
+                    }
+                    processing.runalg("gdalogr:warpreproject", warpArgs)
+                except:
+                    warpArgs = {
+                        "INPUT": piped_file,
+                        "SOURCE_SRS": layer.crs().authid(),
+                        "DEST_SRS": "EPSG:3857",
+                        "NO_DATA": "",
+                        "TR": 0,
+                        "METHOD": 0,
+                        "RAST_EXT": extentRepNew,
+                        "EXT_CRS": "EPSG:3857",
+                        "RTYPE": 0,
+                        "COMPRESS": 4,
+                        "JPEGCOMPRESSION": 75,
+                        "ZLEVEL": 6,
+                        "PREDICTOR": 1,
+                        "TILED": False,
+                        "BIGTIFF": 0,
+                        "TFW": False,
+                        "EXTRA": "",
+                        "OUTPUT": piped_3857
+                    }
+                    processing.runalg("gdalogr:warpreproject", warpArgs)
 
                 processing.runalg("gdalogr:translate", piped_3857, 100,
                                   True, "", 0, "", extentRepNew, False, 5,
