@@ -159,26 +159,6 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                 "NO_DATA": "",
                 "TR": 0,
                 "METHOD": 0,
-                "RTYPE": 0,
-                "COMPRESS": 4,
-                "JPEGCOMPRESSION": 75,
-                "ZLEVEL": 6,
-                "PREDICTOR": 1,
-                "TILED": False,
-                "BIGTIFF": 0,
-                "TFW": False,
-                "EXTRA": "",
-                "OUTPUT": piped_3857
-            }
-            processing.runalg("gdalogr:warpreproject", warpArgs)
-        except:
-            warpArgs = {
-                "INPUT": piped_file,
-                "SOURCE_SRS": layer.crs().authid(),
-                "DEST_SRS": "EPSG:3857",
-                "NO_DATA": "",
-                "TR": 0,
-                "METHOD": 0,
                 "RAST_EXT": extentRepNew,
                 "EXT_CRS": "EPSG:3857",
                 "RTYPE": 0,
@@ -192,7 +172,30 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                 "EXTRA": "",
                 "OUTPUT": piped_3857
             }
-            processing.runalg("gdalogr:warpreproject", warpArgs)
+            procRtn =  processing.runalg("gdalogr:warpreproject", warpArgs)
+            # force exception on algorithm fail
+            for val in procRtn:
+                pass
+        except:
+            warpArgs = {
+                "INPUT": piped_file,
+                "SOURCE_SRS": layer.crs().authid(),
+                "DEST_SRS": "EPSG:3857",
+                "NO_DATA": "",
+                "TR": 0,
+                "METHOD": 0,
+                "RTYPE": 0,
+                "COMPRESS": 4,
+                "JPEGCOMPRESSION": 75,
+                "ZLEVEL": 6,
+                "PREDICTOR": 1,
+                "TILED": False,
+                "BIGTIFF": 0,
+                "TFW": False,
+                "EXTRA": "",
+                "OUTPUT": piped_3857
+            }
+            procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
 
         processing.runalg("gdalogr:translate", piped_3857, 100,
                           True, "", 0, "", extentRepNew, False, 5,
