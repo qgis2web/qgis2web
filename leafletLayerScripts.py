@@ -141,7 +141,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
     qgis_version = QGis.QGIS_VERSION
 
     if int(qgis_version.split('.')[1]) < 15:
-
+        print "old"
         processing.runalg("gdalogr:warpreproject", piped_file,
                           layer.crs().authid(), "EPSG:3857", "", 0, 1,
                           0, -1, 75, 6, 1, False, 0, False, "",
@@ -151,6 +151,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           0, 75, 6, 1, False, 0, False, "",
                           out_raster)
     else:
+        print "new"
         """try:
             print "1"
             warpArgs = {
