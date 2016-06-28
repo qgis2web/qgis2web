@@ -151,7 +151,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           0, 75, 6, 1, False, 0, False, "",
                           out_raster)
     else:
-"""        try:
+        """try:
             print "1"
             warpArgs = {
                 "INPUT": piped_file,
@@ -205,7 +205,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                 # force exception on algorithm fail
                 # for val in procRtn:
                 #     pass
-"""            except:
+        """    except:
                 print "3"
                 warpArgs = {
                     "INPUT": piped_file,
