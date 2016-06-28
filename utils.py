@@ -290,8 +290,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                     "EXTRA": "",
                     "OUTPUT": piped_3857
                 }
-                procRtn = processing.runalg("gdalogr:warpreproject",
-                                            warpArgs)
+                procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
                 # force exception on algorithm fail
                 for val in procRtn:
                     pass
