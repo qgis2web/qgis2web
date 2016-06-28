@@ -151,7 +151,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           0, 75, 6, 1, False, 0, False, "",
                           out_raster)
     else:
-        try:
+"""        try:
             print "1"
             warpArgs = {
                 "INPUT": piped_file,
@@ -179,33 +179,33 @@ def exportRasterLayer(i, safeLayerName, dataPath):
             for val in procRtn:
                 pass
         except:
-            try:
-                print "2"
-                warpArgs = {
-                    "INPUT": piped_file,
-                    "SOURCE_SRS": layer.crs().authid(),
-                    "DEST_SRS": "EPSG:3857",
-                    "NO_DATA": "",
-                    "TR": 0,
-                    "METHOD": 0,
-                    "RAST_EXT": extentRepNew,
-                    "RTYPE": 0,
-                    "COMPRESS": 4,
-                    "JPEGCOMPRESSION": 75,
-                    "ZLEVEL": 6,
-                    "PREDICTOR": 1,
-                    "TILED": False,
-                    "BIGTIFF": 0,
-                    "TFW": False,
-                    "EXTRA": "",
-                    "OUTPUT": piped_3857
-                }
-                procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
-                print 22
+            try:"""
+                # print "2"
+        warpArgs = {
+            "INPUT": piped_file,
+            "SOURCE_SRS": layer.crs().authid(),
+            "DEST_SRS": "EPSG:3857",
+            "NO_DATA": "",
+            "TR": 0,
+            "METHOD": 0,
+            "RAST_EXT": extentRepNew,
+            "RTYPE": 0,
+            "COMPRESS": 4,
+            "JPEGCOMPRESSION": 75,
+            "ZLEVEL": 6,
+            "PREDICTOR": 1,
+            "TILED": False,
+            "BIGTIFF": 0,
+            "TFW": False,
+            "EXTRA": "",
+            "OUTPUT": piped_3857
+        }
+        procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+                # print 22
                 # force exception on algorithm fail
-                for val in procRtn:
-                    pass
-            except:
+                # for val in procRtn:
+                #     pass
+"""            except:
                 print "3"
                 warpArgs = {
                     "INPUT": piped_file,
@@ -226,7 +226,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                     "OUTPUT": piped_3857
                 }
                 procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
-                print 33
+                print 33"""
 
         processing.runalg("gdalogr:translate", piped_3857, 100,
                           True, "", 0, "", extentRepNew, False, 5,
