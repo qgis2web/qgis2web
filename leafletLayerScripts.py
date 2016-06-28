@@ -152,7 +152,6 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           out_raster)
     else:
         try:
-            print "1"
             warpArgs = {
                 "INPUT": piped_file,
                 "SOURCE_SRS": layer.crs().authid(),
@@ -174,13 +173,11 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                 "OUTPUT": piped_3857
             }
             procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
-            print 11
             # force exception on algorithm fail
             for val in procRtn:
                 pass
         except:
             try:
-                print "2"
                 warpArgs = {
                     "INPUT": piped_file,
                     "SOURCE_SRS": layer.crs().authid(),
@@ -201,12 +198,10 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                     "OUTPUT": piped_3857
                 }
                 procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
-                print 22
                 # force exception on algorithm fail
                 for val in procRtn:
                     pass
             except:
-                print "3"
                 warpArgs = {
                     "INPUT": piped_file,
                     "SOURCE_SRS": layer.crs().authid(),
@@ -226,7 +221,6 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                     "OUTPUT": piped_3857
                 }
                 procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
-                print 33
 
         processing.runalg("gdalogr:translate", piped_3857, 100,
                           True, "", 0, "", extentRepNew, False, 5,
