@@ -23,7 +23,6 @@ from PyQt4.QtCore import QDir, QVariant
 from qgis.core import *
 from qgis.utils import QGis
 import processing
-from processing.gui.SilentProgress import SilentProgress
 import tempfile
 
 NO_POPUP = 0
@@ -272,7 +271,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         pass
                 except:
                     try:"""
-                progress = SilentProgress()
+                progress = processing.gui.SilentProgress.SilentProgress()
                 warpArgs = {
                     "INPUT": piped_file,
                     "SOURCE_SRS": layer.crs().authid(),
