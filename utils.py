@@ -23,6 +23,7 @@ from PyQt4.QtCore import QDir, QVariant
 from qgis.core import *
 from qgis.utils import QGis
 import processing
+from processing.gui.SilentProgress import SilentProgress
 import tempfile
 
 NO_POPUP = 0
@@ -271,6 +272,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         pass
                 except:
                     try:"""
+                progress = SilentProgress()
                 warpArgs = {
                     "INPUT": piped_file,
                     "SOURCE_SRS": layer.crs().authid(),
@@ -288,7 +290,8 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                     "BIGTIFF": 0,
                     "TFW": False,
                     "EXTRA": "",
-                    "OUTPUT": piped_3857
+                    "OUTPUT": piped_3857,
+                    "PROGRESS": progress
                 }
                 processing.runalg("gdalogr:warpreproject", warpArgs)
                 # force exception on algorithm fail
