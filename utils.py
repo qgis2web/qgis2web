@@ -294,7 +294,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                 # force exception on algorithm fail
                 # for val in procRtn:
                 #    pass
-                    """except:
+                """except:
                         warpArgs = {
                             "INPUT": piped_file,
                             "SOURCE_SRS": layer.crs().authid(),
