@@ -189,8 +189,6 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                     "NO_DATA": "",
                     "TR": 0,
                     "METHOD": 0,
-                    "RAST_EXT": extentRepNew,
-                    "EXT_CRS": "EPSG:3857",
                     "RTYPE": 0,
                     "COMPRESS": 4,
                     "JPEGCOMPRESSION": 75,

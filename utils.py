@@ -251,6 +251,8 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         "NO_DATA": "",
                         "TR": 0,
                         "METHOD": 0,
+                        "RAST_EXT": extentRepNew,
+                        "EXT_CRS": "EPSG:3857",
                         "RTYPE": 0,
                         "COMPRESS": 4,
                         "JPEGCOMPRESSION": 75,
@@ -262,7 +264,10 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         "EXTRA": "",
                         "OUTPUT": piped_3857
                     }
-                    processing.runalg("gdalogr:warpreproject", warpArgs)
+                    procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+                    # force exception on algorithm fail
+                    for val in procRtn:
+                        pass
                 except:
                     warpArgs = {
                         "INPUT": piped_file,
@@ -271,8 +276,6 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         "NO_DATA": "",
                         "TR": 0,
                         "METHOD": 0,
-                        "RAST_EXT": extentRepNew,
-                        "EXT_CRS": "EPSG:3857",
                         "RTYPE": 0,
                         "COMPRESS": 4,
                         "JPEGCOMPRESSION": 75,
