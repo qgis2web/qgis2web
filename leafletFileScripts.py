@@ -190,6 +190,9 @@ th {
 }
 .leaflet-container {
     background: #fff;
+}
+.leaflet-popup-content {
+    width:auto !important;
 }"""
         f_css.write(text)
         f_css.close()

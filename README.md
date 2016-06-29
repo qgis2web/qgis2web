@@ -27,6 +27,8 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
         Properties > Fields > Alias</code></li>
     <li>Hide the columns you don't want to appear in your popups by changing
         their Edit widget to "Hidden"</li>
+    <li>If any of your fields contain image filenames, change their Edit
+        widget to "Photo" to have the images appear in popups</li>
     <li>Style your layers, and set their scale-dependent visibility, if
         required</li>
 </ul>
