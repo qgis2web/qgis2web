@@ -17,7 +17,7 @@ scope of this plugin.</p>
 
 <h2>Installation</h2>
 <ul>
-    <li>In QGIS, select <code>Plugins > Manage and Install Plugins...</code></li>
+    <li>In QGIS, select <code>Plugins > Manage and Install Plugins..</code></li>
 </ul>
 <p>or:</p>
 <ul>
@@ -50,7 +50,9 @@ You could:
 
 <p>Run qgis2web from the <code>Web</code> menu or via its icon.</p>
 
-<p>The top-left pane sets options for each map layer. The bottom-left pane sets overall options. These are written to your QGIS project, so save your project if you want to keep them.</p>
+<p>The top-left pane sets options for each map layer. The bottom-left pane sets
+overall options. These are written to your QGIS project, so save your project if
+you want to keep them.</p>
 
 <h3>Layer options</h3>
 <dl>
@@ -143,12 +145,16 @@ You could:
 </ul>
 
 <h2>Reporting bugs</h2>
-<p>Please report any problems you have with qgis2web as we may be unaware that a problem exists. Save time and effort by following these steps:</p>
+<p>Please report any problems you have with qgis2web as we may be unaware that a
+problem exists. Save time and effort by following these steps:</p>
 <ol>
     <li>Make sure you are using the latest release of qgis2web</li>
-    <li>Check the issues on Github to see whether the bug has already been reported, and if so, read through all the comments on the issue, and add any additional information from your experience of the bug</li>
+    <li>Check the issues on Github to see whether the bug has already been
+        reported, and if so, read through all the comments on the issue, and add
+        any additional information from your experience of the bug</li>
     <li>Make sure you can reproduce the bug reliably</li>
-    <li>Reduce the complexity of your bug conditions as far as you can, especially by reducing the number of layers, ideally to one</li>
+    <li>Reduce the complexity of your bug conditions as far as you can,
+        especially by reducing the number of layers, ideally to one</li>
     <li>Raise a Github issue, including:
         <ul>
             <li>the qgis2web version (or make it clear if you are using the
