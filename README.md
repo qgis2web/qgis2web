@@ -42,6 +42,8 @@ You could:
         Properties > Fields > Alias</code></li>
     <li>Hide columns that you don't want to appear in popups by changing their
         <code>Edit widget</code> to <code>Hidden</code></li>
+    <li>If any of your fields contain image filenames, change their Edit
+        widget to "Photo" to have the images appear in popups</li>
     <li>Style your layers</li>
     <li>Set scale-dependent visibility of layers</li>
 </ul>
@@ -245,7 +247,6 @@ sip.</p>
 
 <h3>Untested functionality</h3>
 <ul>
-    <li>rasters</li>
     <li>labels</li>
     <li>rule-based renderer</li>
     <li>SVG markers</li>
