@@ -203,26 +203,18 @@ If you want to run these tests locally on Linux, do the following to prepare
 (assumes Ubuntu or derivative):</p>
 
 <p>Install the pip Python package manager</p>
-<pre><code>
-apt-get install python-pip
-</code></pre>
+<pre><code>apt-get install python-pip</code></pre>
 
 <p>Install nose and coverage which are used to run the tests</p>
-<pre><code>
-pip install nose
-pip install coverage
-</code></pre>
+<pre><code>pip install nose
+pip install coverage</code></pre>
 
 <p>Change to the directory which contains the plugin code</p>
-<pre><code>
-cd ~/.qgis2/python/plugins/qgis2web
-</code></pre>
+<pre><code>cd ~/.qgis2/python/plugins/qgis2web</code></pre>
 
 <p>Set up the environment specifying the prefix path under which QGIS is
 installed (commonly /usr or /usr/local).</p>
-<pre><code>
-source scripts/run-env-linux.sh /usr
-</code></pre>
+<pre><code>source scripts/run-env-linux.sh /usr</code></pre>
 
 <p>Set the QGIS_REPO environment variable to match the QGIS version you are
 using:</p>
@@ -231,26 +223,20 @@ using:</p>
     <li>http://qgis.org/debian for current version</li>
     <li>http://qgis.org/debian-nightly for current master / nightly version</li>
 </ul>
-<pre><code>
-export QGIS_REPO=http://qgis.org/debian-ltr
-</code></pre>
+<pre><code>export QGIS_REPO=http://qgis.org/debian-ltr</code></pre>
 
 <p>Run the tests with:</p>
-<pre><code>
-make test
-</code></pre>
+<pre><code>make test</code></pre>
 
 <h3>Mac OS X</h3>
 <p>qgis can be fully installed using homebrew
 https://github.com/OSGeo/homebrew-osgeo4mac.</p>
 
 <p>There is a shell script to set the qgis paths:</p>
-<pre><code>
-pip install nose
+<pre><code>pip install nose
 pip install coverage
 source scripts/run-env-osx-homebrew.sh
-make test
-</code></pre>
+make test</code></pre>
 
 <h3>virtualenv</h3>
 <p>There may be a problem using virtualenv with pyqgis (or someone might get it
