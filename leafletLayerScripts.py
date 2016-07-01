@@ -355,11 +355,9 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
                 if val == 'inline label':
                     row += '<th scope="row">'
                     row += i.attributeDisplayName(fieldIndex)
-                    row += '</th>'
-                row += '<td'
-                if val == "header label":
-                    row += ' colspan="2"'
-                row += ">"
+                    row += '</th><td>'
+                else:
+                    row += '<td colspan="2">'
                 if val == "header label":
                     row += '<strong>'
                     row += i.attributeDisplayName(fieldIndex)
