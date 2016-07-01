@@ -353,7 +353,8 @@ def is25d(layer, canvas):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChr = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    validChr = '-_0123456789abcdefghijklmnopqrstuvwxyz' \
+               'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChr)
 
 
