@@ -71,6 +71,8 @@
         }
         layerControl = L.control.layers({},{},{collapsed:false});
         function pop_airports0(feature, layer) {
+            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td></tr></table>';
+            layer.bindPopup(popupContent);
         }
 
         function doStyleairports0() {
