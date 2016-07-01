@@ -191,9 +191,10 @@ var onSingleClick = function(evt) {
                 if (currentFeatureKeys[i] != 'geometry') {
                     popupField = '';
                     if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                        popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th>';
+                        popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
+                    } else {
+                        popupField += '<td colspan="2">';
                     }
-                    popupField += '<td>';
                     if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
                         popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                     }
