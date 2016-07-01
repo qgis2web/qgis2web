@@ -1653,144 +1653,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
-    def test57_Leaflet_popup_all(self):
-        """Leaflet popup (all fields)"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        control_file = open(
-                test_data_path(
-                        'control', 'leaflet_popup_all.html'), 'r')
-        control_output = control_file.read()
-
-
-        # Export to web map
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-
-        # Select popup: all fields
-        self.dialog.layers_item.child(0).combo.setCurrentIndex(1)
-        self.dialog.leaflet.click()
-
-        # Open the test file
-        test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
-        test_output = test_file.read()
-
-        # Compare with control file
-        self.assertEqual(test_output, control_output, diff(control_output, test_output))
-
-    def test58_OL3_popup_all(self):
-        """OL3 popup (all fields)"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-
-        # Select popup: all fields
-        self.dialog.layers_item.child(0).combo.setCurrentIndex(1)
-        self.dialog.ol3.click()
-
-        control_file = open(
-                test_data_path(
-                        'control', 'ol3_popup_all.js'), 'r')
-        control_output = control_file.read()
-
-        # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
-
-        # Compare with control file
-        self.assertEqual(test_output, control_output, diff(control_output, test_output))
-
-    def test58_Leaflet_popup_single(self):
-        """Leaflet popup (single field)"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        control_file = open(
-                test_data_path(
-                        'control', 'leaflet_popup_single.html'), 'r')
-        control_output = control_file.read()
-
-
-        # Export to web map
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-
-        # Select popup: single field
-        self.dialog.layers_item.child(0).combo.setCurrentIndex(2)
-        self.dialog.leaflet.click()
-
-        # Open the test file
-        test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
-        test_output = test_file.read()
-
-        # Compare with control file
-        self.assertEqual(test_output, control_output, diff(control_output, test_output))
-
-    def test59_OL3_popup_single(self):
-        """OL3 popup (single field)"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-
-        # Select popup: single field
-        self.dialog.layers_item.child(0).combo.setCurrentIndex(2)
-        self.dialog.ol3.click()
-
-        control_file = open(
-                test_data_path(
-                        'control', 'ol3_popup_single.js'), 'r')
-        control_output = control_file.read()
-
-        # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
-
-        # Compare with control file
-        self.assertEqual(test_output, control_output, diff(control_output, test_output))
-
     def test60_leaflet_deleteunused(self):
         """Leaflet delete unused fields"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -1808,9 +1670,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-
-        # Select popup: single field
-        self.dialog.layers_item.child(0).combo.setCurrentIndex(2)
 
         # Check the 'Delete unused fields' checkbox
         self.dialog.items['Data export'].get('Delete unused fields').setCheckState(1, QtCore.Qt.Checked)
@@ -1848,9 +1707,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-
-        # Select popup: single field
-        self.dialog.layers_item.child(0).combo.setCurrentIndex(2)
 
         # Check the 'Delete unused fields' checkbox
         self.dialog.items['Data export'].get('Delete unused fields').setCheckState(1, QtCore.Qt.Checked)
