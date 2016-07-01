@@ -65,8 +65,8 @@ the output code to achieve what qgis2web cannot.</p>
 
 <h3>Layer options</h3>
 <dl>
-    <dt>Info popup content</dt>
-        <dd>Select which fields will appear in popups when features are clicked
+    <dt>Popup fields</dt>
+        <dd>Specify how each field will be labelled in popups
         </dd> 
     <dt>Visible</dt>
         <dd>Select whether the layer will be visible on map load. This only
