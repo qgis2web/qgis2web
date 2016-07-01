@@ -76,7 +76,7 @@ var ALL_FIELDS = 1
  * @param layer {ol.Layer} Layer to find field info about
  */
 function getPopupFields(layerList, layer) {
-    popupLayers = [0];
+    popupLayers = [1];
     // Determine the index that the layer will have in the popupLayers Array,
     // if the layersList contains more items than popupLayers then we need to
     // adjust the index to take into account the base maps group
@@ -226,7 +226,15 @@ var onSingleClick = function(evt) {
             popupText = '<table>';
             for (var i=0; i<currentFeatureKeys.length; i++) {
                 if (currentFeatureKeys[i] != 'geometry') {
-                    popupField = '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>'
+                    popupField = '';
+                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
+                        popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
+                    } else {
+                        popupField += '<td colspan="2">';
+                    }
+                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
+                        popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
+                    }
                     if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
                         popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                     } else {
