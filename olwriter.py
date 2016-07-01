@@ -55,9 +55,9 @@ def writeOL(iface, layers, groups, popup, visible,
         else:
             usedFields = popup
         exportLayers(iface, layers, folder, precision,
-                     optimize, usedFields, json)
+                     optimize, popup, json)
         exportStyles(layers, folder, clustered)
-        osmb = writeLayersAndGroups(layers, groups, visible, folder,
+        osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered, iface)
         jsAddress = '<script src="resources/polyfills.js"></script>'
         if settings["Data export"]["Mapping library location"] == "Local":
@@ -92,9 +92,7 @@ def writeOL(iface, layers, groups, popup, visible,
                     wfsVars += ('<script src="%s"></script>' % layerSource)
                 styleVars += ('<script src="styles/%s_style.js"></script>' %
                               (safeName(layer.name())))
-        popupLayers = "popupLayers = [%s];" % ",".join(['"%s"' % field if (
-            isinstance(field, basestring)) else
-            unicode(field) for field in popup])
+        popupLayers = "popupLayers = [%s];" % ",".join(['1' for field in popup])
         controls = ['expandedAttribution']  # Check qgis2web.js 14:7
         if settings["Appearance"]["Add scale bar"]:
             controls.append("new ol.control.ScaleLine({})")
@@ -230,7 +228,7 @@ def writeOL(iface, layers, groups, popup, visible,
     return os.path.join(folder, "index.html")
 
 
-def writeLayersAndGroups(layers, groups, visible, folder,
+def writeLayersAndGroups(layers, groups, visible, folder, popup,
                          settings, json, matchCRS, clustered, iface):
 
     canvas = iface.mapCanvas()
@@ -344,11 +342,19 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
 
     fieldAliases = ""
     fieldImages = ""
-    for layer in layers:
+    for layer, labels in zip(layers, popup):
         if layer.type() == layer.VectorLayer:
             fieldList = layer.pendingFields()
             aliasFields = ""
             imageFields = ""
+            fieldLabels = ""
+            for field, label in zip(labels.keys(), labels.values()):
+                fieldLabels += "'%(field)s': '%(label)s', " % (
+                        {"field": field, "label": label})
+            fieldLabels = "{%(fieldLabels)s});\n" % (
+                    {"fieldLabels": fieldLabels})
+            fieldLabels = "lyr_%(name)s.set('fieldLabels', " % (
+                        {"name": safeName(layer.name())}) + fieldLabels
             for f in fieldList:
                 fieldIndex = fieldList.indexFromName(unicode(f.name()))
                 aliasFields += "'%(field)s': '%(alias)s', " % (
@@ -382,6 +388,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         f.write(layersListString + "\n")
         f.write(fieldAliases)
         f.write(fieldImages)
+        f.write(fieldLabels)
     return osmb
 
 

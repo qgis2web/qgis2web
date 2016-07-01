@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import sys
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import webbrowser
 
 # This import is to enable SIP API V2
@@ -187,6 +187,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         tree_layers = root_node.findLayers()
         self.layers_item = QTreeWidgetItem()
         self.layers_item.setText(0, "Layers and Groups")
+        self.layersTree.setColumnCount(3)
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
@@ -460,20 +461,21 @@ class TreeLayerItem(QTreeWidgetItem):
             self.setCheckState(0, Qt.Unchecked)
         if layer.type() == layer.VectorLayer:
             self.popupItem = QTreeWidgetItem(self)
-            self.popupItem.setText(0, "Info popup content")
-            self.combo = QComboBox()
-            options = ["No popup", "Show all attributes"]
-            for f in self.layer.pendingFields():
-                options.append("FIELD:" + f.name())
+            self.popupItem.setText(0, "Popup fields")
+            options = []
+            fields = self.layer.pendingFields()
+            for f in fields:
+                options.append(f.name())
             for option in options:
-                self.combo.addItem(option)
+                self.attr = QTreeWidgetItem(self)
+                self.attrWidget = QComboBox()
+                self.attrWidget.addItem("no label")
+                self.attrWidget.addItem("inline label")
+                self.attrWidget.addItem("header label")
+                self.attr.setText(1, option)
+                self.popupItem.addChild(self.attr)
+                tree.setItemWidget(self.attr, 2, self.attrWidget)
             self.addChild(self.popupItem)
-            if layer.customProperty("qgis2web/Info popup content"):
-                self.combo.setCurrentIndex(int(
-                    layer.customProperty("qgis2web/Info popup content")))
-            self.combo.highlighted.connect(self.clickCombo)
-            self.combo.currentIndexChanged.connect(dlg.saveLayerComboSettings)
-            tree.setItemWidget(self.popupItem, 1, self.combo)
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
         if layer.customProperty("qgis2web/Visible") == 0:
@@ -506,14 +508,15 @@ class TreeLayerItem(QTreeWidgetItem):
 
     @property
     def popup(self):
-        try:
-            idx = self.combo.currentIndex()
-            if idx < 2:
-                popup = idx
-            else:
-                popup = self.combo.currentText()[len("FIELD:"):]
-        except:
-            popup = utils.NO_POPUP
+        popup = []
+        self.tree = self.treeWidget()
+        for p in xrange(self.childCount()):
+            item = self.child(p).text(1)
+            if item != "":
+                popupVal = self.tree.itemWidget(self.child(p), 2).currentText()
+                pair = (item, popupVal)
+                popup.append(pair)
+        popup = OrderedDict(popup)
         return popup
 
     @property

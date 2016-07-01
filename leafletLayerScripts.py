@@ -81,14 +81,9 @@ def exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                 f2.write(line)
         os.remove(tmpFileName)
 
-    if eachPopup == 0:
-        pass
-    elif eachPopup == 1:
-        fields = i.pendingFields()
-        for field in fields:
-            exportImages(i, field.name(), layerFileName)
-    else:
-        exportImages(i, eachPopup, layerFileName)
+    fields = i.pendingFields()
+    for field in fields:
+        exportImages(i, field.name(), layerFileName)
 
 
 def exportRasterLayer(i, safeLayerName, dataPath):
@@ -322,14 +317,8 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
 def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
                     popup, count):
     fields = i.pendingFields()
-    field_names = [field.name() for field in fields]
-    usedFields = getUsedFields(i)
-    if popup[count] != 0 and popup[count] != 1:
-        usedFields.append(popup[count])
-        new_field_names = []
-        for field in usedFields:
-            new_field_names.append(field)
-        field_names = new_field_names
+    field_names = popup[count].keys()
+    field_vals = popup[count].values()
     html_prov = False
     label_exp = ''
     labeltext = ""
@@ -342,7 +331,7 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     labeltext += " !== null?String(feature.properties." + unicode(f) + "):'')"
     labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
-    for field in field_names:
+    for field in popup[count]:
         if unicode(field) == 'html_exp':
             html_prov = True
             table = 'feature.properties.html_exp'
@@ -352,7 +341,7 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
         if not html_prov:
             tablestart = "'<table>"
             row = ""
-            for field in field_names:
+            for field, val in zip(field_names, field_vals):
                 fieldIndex = fields.indexFromName(unicode(field))
                 try:
                     editorWidget = i.editFormConfig().widgetType(fieldIndex)
@@ -362,10 +351,21 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
                         editorWidget == 'Hidden'):
                     continue
 
-                row += '<tr><th scope="row">'
-                row += i.attributeDisplayName(fieldIndex)
-                row += "</th><td>' + "
-                row += "(feature.properties['" + unicode(field) + "'] "
+                row += '<tr>'
+                if val == 'inline label':
+                    row += '<th scope="row">'
+                    row += i.attributeDisplayName(fieldIndex)
+                    row += '</th>'
+                row += '<td'
+                if val == "header label":
+                    row += ' colspan="2"'
+                row += ">"
+                if val == "header label":
+                    row += '<strong>'
+                    row += i.attributeDisplayName(fieldIndex)
+                    row += '</strong><br />'
+                row += "' + "
+                row += "(feature.properties[\'" + unicode(field) + "\'] "
                 row += "!== null ? "
 
                 if (editorWidget == QgsVectorLayer.Photo or

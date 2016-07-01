@@ -189,7 +189,14 @@ var onSingleClick = function(evt) {
             popupText = '<table>';
             for (var i=0; i<currentFeatureKeys.length; i++) {
                 if (currentFeatureKeys[i] != 'geometry') {
-                    popupField = '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>'
+                    popupField = '';
+                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
+                        popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th>';
+                    }
+                    popupField += '<td>';
+                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
+                        popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
+                    }
                     if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
                         popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                     } else {
