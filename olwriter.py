@@ -342,19 +342,21 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
 
     fieldAliases = ""
     fieldImages = ""
+    fieldLabels = ""
     for layer, labels in zip(layers, popup):
         if layer.type() == layer.VectorLayer:
             fieldList = layer.pendingFields()
             aliasFields = ""
             imageFields = ""
-            fieldLabels = ""
+            labelFields = ""
             for field, label in zip(labels.keys(), labels.values()):
-                fieldLabels += "'%(field)s': '%(label)s', " % (
+                labelFields += "'%(field)s': '%(label)s', " % (
                         {"field": field, "label": label})
-            fieldLabels = "{%(fieldLabels)s});\n" % (
-                    {"fieldLabels": fieldLabels})
-            fieldLabels = "lyr_%(name)s.set('fieldLabels', " % (
-                        {"name": safeName(layer.name())}) + fieldLabels
+            labelFields = "{%(labelFields)s});\n" % (
+                    {"labelFields": labelFields})
+            labelFields = "lyr_%(name)s.set('fieldLabels', " % (
+                        {"name": safeName(layer.name())}) + labelFields
+            fieldLabels += labelFields
             for f in fieldList:
                 fieldIndex = fieldList.indexFromName(unicode(f.name()))
                 aliasFields += "'%(field)s': '%(alias)s', " % (
