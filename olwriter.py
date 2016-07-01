@@ -92,7 +92,8 @@ def writeOL(iface, layers, groups, popup, visible,
                     wfsVars += ('<script src="%s"></script>' % layerSource)
                 styleVars += ('<script src="styles/%s_style.js"></script>' %
                               (safeName(layer.name())))
-        popupLayers = "popupLayers = [%s];" % ",".join(['1' for field in popup])
+        popupLayers = "popupLayers = [%s];" % ",".join(
+                ['1' for field in popup])
         controls = ['expandedAttribution']  # Check qgis2web.js 14:7
         if settings["Appearance"]["Add scale bar"]:
             controls.append("new ol.control.ScaleLine({})")
