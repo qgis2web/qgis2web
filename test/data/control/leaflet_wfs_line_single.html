@@ -62,6 +62,8 @@
         }
         layerControl = L.control.layers({},{},{collapsed:false});
         function pop_line0(feature, layer) {
+            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['route_code'] !== null ? Autolinker.link(String(feature.properties['route_code'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['linear_length_km'] !== null ? Autolinker.link(String(feature.properties['linear_length_km'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['date_inspected'] !== null ? Autolinker.link(String(feature.properties['date_inspected'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['star_rating'] !== null ? Autolinker.link(String(feature.properties['star_rating'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['works_required'] !== null ? Autolinker.link(String(feature.properties['works_required'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['barriers'] !== null ? Autolinker.link(String(feature.properties['barriers'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['surface_type'] !== null ? Autolinker.link(String(feature.properties['surface_type'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['width'] !== null ? Autolinker.link(String(feature.properties['width'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['gradient'] !== null ? Autolinker.link(String(feature.properties['gradient'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['cross_slope'] !== null ? Autolinker.link(String(feature.properties['cross_slope'])) : '') + '</td></tr></table>';
+            layer.bindPopup(popupContent);
         }
 
         var json_line0JSON;

@@ -62,6 +62,8 @@
         }
         layerControl = L.control.layers({},{},{collapsed:false});
         function pop_point0(feature, layer) {
+            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['ref'] !== null ? Autolinker.link(String(feature.properties['ref'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['objtype'] !== null ? Autolinker.link(String(feature.properties['objtype'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ogc_fid'] !== null ? Autolinker.link(String(feature.properties['ogc_fid'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['tpo_name'] !== null ? Autolinker.link(String(feature.properties['tpo_name'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['digitised'] !== null ? Autolinker.link(String(feature.properties['digitised'])) : '') + '</td></tr></table>';
+            layer.bindPopup(popupContent);
         }
 
         function doPointToLayerpoint0(feature, latlng) {
