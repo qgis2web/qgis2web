@@ -99,7 +99,7 @@ var onPointerMove = function(evt) {
             popupText = '<table>';
             for (var i=0; i<currentFeatureKeys.length; i++) {
                 if (currentFeatureKeys[i] != 'geometry') {
-                    popupField = '<th>' + layer.get('fieldsAliases')[currentFeatureKeys[i]] + ':</th>'
+                    popupField = '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th>'
                     popupField += '<td>'+ currentFeature.get(currentFeatureKeys[i]) + '</td>';
                     popupText = popupText + '<tr>' + popupField + '</tr>';
                 }
