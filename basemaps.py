@@ -54,10 +54,6 @@ def basemapLeaflet():
                                  'adminb/x={x}&y={y}&z={z}'),
         'OpenMapSurfer roadsg': ('http://openmapsurfer.uni-hd.de/tiles/' +
                                  'roadsg/x={x}&y={y}&z={z}'),
-        'MapQuest OSM': ('http://otile1.mqcdn.com/tiles/1.0.0/map/' +
-                         '{z}/{x}/{y}.jpeg'),
-        'MapQuest Aerial': ('http://otile1.mqcdn.com/tiles/1.0.0/sat/' +
-                            '{z}/{x}/{y}.jpg'),
         'Stamen Terrain': 'http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png',
         'Stamen Watercolor': ('http://a.tile.stamen.com/watercolor/' +
                               '{z}/{x}/{y}.png'),
@@ -120,22 +116,6 @@ new ol.layer.Tile({{
         url: \
 'http://{{a-c}}.www.toolserver.org/tiles/bw-mapnik/{{z}}/{{x}}/{{y}}.png',
         attributions: [new ol.Attribution({{html: '{attr}'}})]
-    }})
-}})""",
-        "MapQuest OSM": """
-new ol.layer.Tile({{
-    'title': '{title}',
-    'type': 'base',
-    source: new ol.source.MapQuest({{
-        layer: 'osm'
-    }})
-}})""",
-        "MapQuest Aerial": """
-new ol.layer.Tile({{
-    'title': '{title}',
-    'type': 'base',
-    source: new ol.source.MapQuest({{
-        layer: 'sat'
     }})
 }})""",
         "Thunderforest Transport": """
@@ -355,15 +335,6 @@ Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @\
 University of Heidelberg</a> &mdash; Map data:\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>""",
-    'MapQuest OSM': """\
-Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash;\
-Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>\
-contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">\
-CC-BY-SA</a>""",
-    'MapQuest Aerial': """\
-Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash;\
-Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture,\
-Farm Service Agency""",
     'Stamen Terrain': """\
 Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
 <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;\
