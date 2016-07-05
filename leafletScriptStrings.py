@@ -241,6 +241,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                           colorName, borderColor, borderOpacity, opacity,
                           labeltext):
+    radius = float(radius) * 2
     (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
                                                       0, 0)
     pointStyleLabel = """
@@ -329,7 +330,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                     dashArray: '{dashArray}',
                     fillOpacity: '{opacity}',
                 }};
-                break;""".format(radius=symbol.size(),
+                break;""".format(radius=symbol.size() * 2,
                                  fillColor=symbol.color().name(),
                                  color=symbolLayer.borderColor().name(),
                                  borderWidth=symbolLayer.outlineWidth() * 4,
@@ -546,7 +547,7 @@ def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                 dashArray: '{dashArray}'
             }}
         }}
-""".format(radius=symbol.size(), fillColor=symbol.color().name(),
+""".format(radius=symbol.size() * 2, fillColor=symbol.color().name(),
            color=sl.borderColor().name(), lineWeight=sl.outlineWidth() * 4,
            opacity=opacity, borderOpacity=borderOpacity, dashArray=dashArray)
     return graduatedPointStyles
