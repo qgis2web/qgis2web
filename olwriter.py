@@ -653,6 +653,7 @@ def exportStyles(layers, folder, clustered):
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
             color = "rgba(%s, %s, %s, 255)" % (r, g, b)
+            face = layer.customProperty("labeling/fontFamily")
             if style != "":
                 style = '''function(feature, resolution){
     %(value)s
@@ -666,7 +667,7 @@ def exportStyles(layers, folder, clustered):
 
     if (!%(cache)s[key]){
         var text = new ol.style.Text({
-              font: '%(size)spx Calibri,sans-serif',
+              font: '%(size)spx \\'%(face)s\\', sans-serif',
               text: labelText,
               textBaseline: "center",
               textAlign: "left",
@@ -684,7 +685,7 @@ def exportStyles(layers, folder, clustered):
 }''' % {
                     "style": style, "label": labelText,
                     "cache": "styleCache_" + safeName(layer.name()),
-                    "size": size, "color": color, "value": value}
+                    "size": size, "face": face, "color": color, "value": value}
             else:
                 style = "''"
         except Exception, e:

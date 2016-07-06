@@ -325,10 +325,24 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     f = ''
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(i)
+    font = palyr.textFont
+    fontSize = font.pointSize()
+    fontFamily = font.family()
+    fontItalic = font.italic()
+    fontBold = font.bold()
+    fontColor = palyr.textColor.name()
+    fontUnderline = font.underline()
+    xOffset = palyr.xOffset
+    yOffset = palyr.yOffset
+    styleStart = "'<span style=\"color: %s; font-size: %dpt; " % (
+            fontColor, fontSize)
+    styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
+    styleEnd = " + '</span>'"
     f = palyr.fieldName
     label_exp = False
     labeltext = ".bindLabel((feature.properties." + unicode(f)
-    labeltext += " !== null?String(feature.properties." + unicode(f) + "):'')"
+    labeltext += " !== null?String(%sfeature.properties.%s)%s:'')" % (
+            styleStart, unicode(f), styleEnd)
     labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
     for field in popup[count]:
