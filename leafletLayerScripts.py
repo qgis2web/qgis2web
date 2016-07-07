@@ -325,6 +325,12 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     f = ''
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(i)
+    palyr.shapeDraw
+    bgColor = palyr.shapeFillColor.name()
+    borderWidth = palyr.shapeBorderWidth
+    borderColor = palyr.shapeBorderColor.name()
+    x = palyr.shapeSize.x()
+    y = palyr.shapeSize.y()
     font = palyr.textFont
     fontSize = font.pointSize()
     fontFamily = font.family()
@@ -334,10 +340,18 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     fontUnderline = font.underline()
     xOffset = palyr.xOffset
     yOffset = palyr.yOffset
-    styleStart = "'<span style=\"color: %s; font-size: %dpt; " % (
+    styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (
             fontColor, fontSize)
+    if palyr.shapeDraw:
+        styleStart += "background-color: %s; " % bgColor
+        styleStart += "border: %dpx solid %s; " % (borderWidth, borderColor)
+    if palyr.shapeSizeType == 0:
+        styleStart += "padding: %dpx %dpx; " % (y, x)
+    if palyr.shapeSizeType == 1:
+        styleStart += "width: %dpx; " % x
+        styleStart += "height: %dpx; " % y
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
-    styleEnd = " + '</span>'"
+    styleEnd = " + '</div>'"
     f = palyr.fieldName
     label_exp = False
     labeltext = ".bindLabel((feature.properties." + unicode(f)
