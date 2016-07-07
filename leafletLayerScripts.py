@@ -345,11 +345,15 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     if palyr.shapeDraw:
         styleStart += "background-color: %s; " % bgColor
         styleStart += "border: %dpx solid %s; " % (borderWidth, borderColor)
-    if palyr.shapeSizeType == 0:
-        styleStart += "padding: %dpx %dpx; " % (y, x)
-    if palyr.shapeSizeType == 1:
-        styleStart += "width: %dpx; " % x
-        styleStart += "height: %dpx; " % y
+        if palyr.shapeSizeType == 0:
+            styleStart += "padding: %dpx %dpx; " % (y, x)
+        if palyr.shapeSizeType == 1:
+            styleStart += "width: %dpx; " % x
+            styleStart += "height: %dpx; " % y
+    if fontBold:
+        styleStart += "font-weight: bold; "
+    if fontItalic:
+        styleStart += "font-style: italic; "
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
     styleEnd = " + '</div>'"
     f = palyr.fieldName
