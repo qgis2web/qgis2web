@@ -49,11 +49,6 @@ def writeOL(iface, layers, groups, popup, visible,
         matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
-        cleanUnusedFields = settings["Data export"]["Delete unused fields"]
-        if not cleanUnusedFields:
-            usedFields = [ALL_ATTRIBUTES] * len(popup)
-        else:
-            usedFields = popup
         exportLayers(iface, layers, folder, precision,
                      optimize, popup, json)
         exportStyles(layers, folder, clustered)

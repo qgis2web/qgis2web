@@ -67,7 +67,7 @@ def writeTmpLayer(layer, popup):
     fields = layer.pendingFields()
     usedFields = []
     for count, field in enumerate(fields):
-        fieldIndex = fields.indexFromName(unicode(field))
+        fieldIndex = fields.indexFromName(unicode(field.name()))
         try:
             editorWidget = layer.editFormConfig().widgetType(fieldIndex)
         except:

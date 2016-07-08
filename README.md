@@ -84,10 +84,6 @@ the output code to achieve what qgis2web cannot.</p>
 
 <h4>Data export</h4>
 <dl>
-    <dt>Delete unused fields</dt>
-        <dd>If "show all attrubutes" is not selected in "Info popup content",
-            remove the undisplayed fields from the GeoJSON - helps to reduce
-            file size</dd>
     <dt>Export folder</dt>
         <dd>The folder where the webmap will be saved</dd> 
     <dt>Mapping library location</dt>

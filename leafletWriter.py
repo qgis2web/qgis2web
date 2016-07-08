@@ -46,7 +46,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     outputIndex = os.path.join(outputProjectFileName, 'index.html')
     cluster_num = 1
 
-    cleanUnusedFields = params["Data export"]["Delete unused fields"]
     mapLibLocation = params["Data export"]["Mapping library location"]
     minify = params["Data export"]["Minify GeoJSON files"]
     precision = params["Data export"]["Precision"]
@@ -62,11 +61,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     highlight = params["Appearance"]["Highlight on hover"]
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
-
-    if not cleanUnusedFields:
-        usedFields = [ALL_ATTRIBUTES] * len(popup)
-    else:
-        usedFields = popup
 
     QgsApplication.initQgis()
 
@@ -148,12 +142,11 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         if i.type() == QgsMapLayer.VectorLayer:
             (new_src,
              legends,
-             wfsLayers) = writeVectorLayer(i, safeLayerName, usedFields,
-                                           highlight, popupsOnHover, popup,
-                                           count, outputProjectFileName,
-                                           wfsLayers, cluster, cluster_num,
-                                           visible, json, legends, new_src,
-                                           canvas)
+             wfsLayers) = writeVectorLayer(i, safeLayerName, highlight,
+                                           popupsOnHover, popup, count,
+                                           outputProjectFileName, wfsLayers,
+                                           cluster, cluster_num, visible, json,
+                                           legends, new_src, canvas)
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
                 new_obj = wmsScript(i, safeLayerName)

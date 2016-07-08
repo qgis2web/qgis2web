@@ -223,11 +223,11 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           out_raster)
 
 
-def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
-                     popup, count, outputProjectFileName, wfsLayers, cluster,
-                     cluster_num, visible, json, legends, new_src, canvas):
+def writeVectorLayer(i, safeLayerName, highlight, popupsOnHover, popup, count,
+                     outputProjectFileName, wfsLayers, cluster, cluster_num,
+                     visible, json, legends, new_src, canvas):
     (new_pop, labeltext,
-     popFuncs) = labelsAndPopups(i, safeLayerName, usedFields, highlight,
+     popFuncs) = labelsAndPopups(i, safeLayerName, highlight,
                                  popupsOnHover, popup, count)
     renderer = i.rendererV2()
     layer_transp = 1 - (float(i.layerTransparency()) / 100)
@@ -314,8 +314,7 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
     return new_src, legends, wfsLayers
 
 
-def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
-                    popup, count):
+def labelsAndPopups(i, safeLayerName, highlight, popupsOnHover, popup, count):
     fields = i.pendingFields()
     field_names = popup[count].keys()
     field_vals = popup[count].values()
