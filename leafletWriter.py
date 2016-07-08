@@ -62,6 +62,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
 
+    usedFields = len(popup)
+
     QgsApplication.initQgis()
 
     dataStore, cssStore = writeFoldersAndFiles(pluginDir,
@@ -142,11 +144,12 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         if i.type() == QgsMapLayer.VectorLayer:
             (new_src,
              legends,
-             wfsLayers) = writeVectorLayer(i, safeLayerName, highlight,
-                                           popupsOnHover, popup, count,
-                                           outputProjectFileName, wfsLayers,
-                                           cluster, cluster_num, visible, json,
-                                           legends, new_src, canvas)
+             wfsLayers) = writeVectorLayer(i, safeLayerName, usedFields,
+                                           highlight, popupsOnHover, popup,
+                                           count, outputProjectFileName,
+                                           wfsLayers, cluster, cluster_num,
+                                           visible, json, legends, new_src,
+                                           canvas)
         elif i.type() == QgsMapLayer.RasterLayer:
             if i.dataProvider().name() == "wms":
                 new_obj = wmsScript(i, safeLayerName)

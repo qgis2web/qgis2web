@@ -223,9 +223,9 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                           out_raster)
 
 
-def writeVectorLayer(i, safeLayerName, highlight, popupsOnHover, popup, count,
-                     outputProjectFileName, wfsLayers, cluster, cluster_num,
-                     visible, json, legends, new_src, canvas):
+def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
+                     popup, count, outputProjectFileName, wfsLayers, cluster,
+                     cluster_num, visible, json, legends, new_src, canvas):
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(i, safeLayerName, highlight,
                                  popupsOnHover, popup, count)
