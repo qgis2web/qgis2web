@@ -25,6 +25,7 @@ install:
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
   - sudo pip install python-coveralls
+
 before_script:
   - echo "Build starting on " `date`
   - export QGIS_PREFIX_PATH=/usr
@@ -39,7 +40,6 @@ script:
 
 after_success:
   - coveralls
-
 
 notifications:
   email:
