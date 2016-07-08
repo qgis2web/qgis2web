@@ -663,9 +663,11 @@ def exportStyles(layers, folder, clustered):
                 bufferColor = palyr.bufferColor.name()
                 bufferWidth = palyr.bufferSize
                 stroke = """stroke: new ol.style.Stroke({
-                color: %s,
+                color: "%s",
                 width: %d
               }),""" % (bufferColor, bufferWidth)
+            else:
+                stroke = ""
             if style != "":
                 style = '''function(feature, resolution){
     %(value)s

@@ -64,9 +64,17 @@ def getUsedFields(layer):
 
 
 def writeTmpLayer(layer, popup):
+    fields = layer.pendingFields()
     usedFields = []
-    for count, field in enumerate(layer.pendingFields()):
-        usedFields.append(count)
+    for count, field in enumerate(fields):
+        fieldIndex = fields.indexFromName(unicode(field))
+        try:
+            editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+        except:
+            editorWidget = layer.editorWidgetV2(fieldIndex)
+        if (editorWidget != QgsVectorLayer.Hidden and
+                editorWidget != 'Hidden'):
+            usedFields.append(count)
     uri = TYPE_MAP[layer.wkbType()]
     crs = layer.crs()
     if crs.isValid():
