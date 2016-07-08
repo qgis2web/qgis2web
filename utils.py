@@ -99,7 +99,6 @@ def writeTmpLayer(layer, popup):
 
 
 def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
-
     canvas = iface.mapCanvas()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
