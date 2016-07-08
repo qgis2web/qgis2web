@@ -62,7 +62,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     popupsOnHover = params["Appearance"]["Show popups on hover"]
     template = params["Appearance"]["Template"]
 
-    usedFields = len(popup)
+    usedFields = [ALL_ATTRIBUTES] * len(popup)
 
     QgsApplication.initQgis()
 
