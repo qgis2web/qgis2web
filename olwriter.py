@@ -649,11 +649,23 @@ def exportStyles(layers, folder, clustered):
                 size = float(layer.customProperty("labeling/fontSize")) * 1.3
             else:
                 size = 10
+            italic = layer.customProperty("labeling/fontItalic")
+            bold = layer.customProperty("labeling/fontWeight")
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
             color = "rgba(%s, %s, %s, 255)" % (r, g, b)
             face = layer.customProperty("labeling/fontFamily")
+            palyr = QgsPalLayerSettings()
+            palyr.readFromLayer(layer)
+            buffer = palyr.bufferDraw
+            if buffer:
+                bufferColor = palyr.bufferColor.name()
+                bufferWidth = palyr.bufferSize
+                stroke = """stroke: new ol.style.Stroke({
+                color: %s,
+                width: %d
+              }),""" % (bufferColor, bufferWidth)
             if style != "":
                 style = '''function(feature, resolution){
     %(value)s
@@ -676,6 +688,7 @@ def exportStyles(layers, folder, clustered):
               fill: new ol.style.Fill({
                 color: "%(color)s"
               }),
+              %(stroke)s
             });
         %(cache)s[key] = new ol.style.Style({"text": text})
     }
@@ -685,7 +698,8 @@ def exportStyles(layers, folder, clustered):
 }''' % {
                     "style": style, "label": labelText,
                     "cache": "styleCache_" + safeName(layer.name()),
-                    "size": size, "face": face, "color": color, "value": value}
+                    "size": size, "face": face, "color": color,
+                    "stroke": stroke, "value": value}
             else:
                 style = "''"
         except Exception, e:

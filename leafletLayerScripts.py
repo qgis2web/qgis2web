@@ -325,7 +325,6 @@ def labelsAndPopups(i, safeLayerName, usedFields, highlight, popupsOnHover,
     f = ''
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(i)
-    palyr.shapeDraw
     bgColor = palyr.shapeFillColor.name()
     borderWidth = palyr.shapeBorderWidth
     borderColor = palyr.shapeBorderColor.name()
