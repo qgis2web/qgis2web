@@ -662,7 +662,8 @@ def exportStyles(layers, folder, clustered):
             if buffer:
                 bufferColor = palyr.bufferColor.name()
                 bufferWidth = palyr.bufferSize
-                stroke = """stroke: new ol.style.Stroke({
+                stroke = """
+              stroke: new ol.style.Stroke({
                 color: "%s",
                 width: %d
               }),""" % (bufferColor, bufferWidth)
@@ -689,8 +690,7 @@ def exportStyles(layers, folder, clustered):
               offsetY: 3,
               fill: new ol.style.Fill({
                 color: "%(color)s"
-              }),
-              %(stroke)s
+              }),%(stroke)s
             });
         %(cache)s[key] = new ol.style.Style({"text": text})
     }
