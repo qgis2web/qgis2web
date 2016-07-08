@@ -737,7 +737,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
-            size = symbol.size()
+            size = symbol.size() * 2
             style = "image: %s" % getCircle(color, borderColor, borderWidth,
                                             size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
