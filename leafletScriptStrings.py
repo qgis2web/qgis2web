@@ -198,8 +198,10 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
                 },
                 mouseover: highlightFeature,
             });"""
-    popup += """{popFuncs}
-        }}""".format(popFuncs=popFuncs)
+    if "<table></table>" not in popFuncs:
+        popup += """{popFuncs}
+        """.format(popFuncs=popFuncs)
+    popup += "}"
     return popup
 
 
