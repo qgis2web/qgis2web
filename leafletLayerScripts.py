@@ -532,31 +532,26 @@ def singlePolygon(i, safeLayerName, symbol, symbolLayer, colorName,
                   layer_transp, symbol_transp, fill_opacity, visible, json,
                   usedFields, wfsLayers, count):
     borderStyle = ""
+    try:
+        capStyle = symbolLayer.penCapStyle()
+        joinStyle = symbolLayer.penJoinStyle()
+    except:
+        capStyle = 16
+        joinStyle = 64
     if (symbolLayer.layerType() == 'SimpleLine' or
             isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
         radius = symbolLayer.width()
         colorName = 'none'
         borderColor = unicode(symbol.color().name())
         border_transp = float(symbol.color().alpha()) / 255
+        lineStyle = symbolLayer.penStyle()
     else:
-        try:
-            capStyle = symbolLayer.penCapStyle()
-            joinStyle = symbolLayer.penJoinStyle()
-        except:
-            capStyle = 16
-            joinStyle = 64
         try:
             radius = symbolLayer.borderWidth()
             border = symbolLayer.borderColor()
             borderColor = unicode(border.name())
-            (borderStyle, capString,
-             joinString) = getLineStyle(symbolLayer.borderStyle(), radius,
-                                        capStyle, joinStyle)
             border_transp = float(border.alpha()) / 255
-            if symbolLayer.borderStyle() == 0:
-                radius = "0"
-            if symbolLayer.brushStyle() == 0:
-                colorName = "none"
+            lineStyle = symbolLayer.borderStyle()
         except:
             radius = 1
             borderColor = "#000000"
@@ -565,6 +560,14 @@ def singlePolygon(i, safeLayerName, symbol, symbolLayer, colorName,
             joinString = ""
             border_transp = 1
             colorName = "#ffffff"
+            lineStyle = ""
+    (borderStyle, capString,
+     joinString) = getLineStyle(lineStyle, radius,
+                                capStyle, joinStyle)
+    if lineStyle == 0:
+        radius = "0"
+    if lineStyle == 0:
+        colorName = "none"
     borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
     polyStyle = singlePolyStyleScript(radius, borderColor, borderOpacity,
                                       colorName, borderStyle, capString,
