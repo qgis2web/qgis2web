@@ -221,7 +221,7 @@ var onSingleClick = function(evt) {
                 }
             }
             popupText = popupText + '</table>';
-        }          
+        }
     });
 
     if (popupText) {
