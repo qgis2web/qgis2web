@@ -21,7 +21,7 @@ install:
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
   - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-testing
   - sudo apt update 
-  - sudo apt-get install libgdal20 gdal-bin python-gdal
+  - sudo apt-get install libgeos-c1v5 libgdal20 gdal-bin python-gdal
   - sudo pip install --upgrade pip
   - sudo pip install coverage
   - sudo pip install nose
