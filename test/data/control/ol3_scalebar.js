@@ -120,6 +120,7 @@ var onPointerMove = function(evt) {
                 }
             }
             popupText = popupText + '</table>';
+        }
     });
 
     if (doHighlight) {
@@ -213,16 +214,13 @@ var onSingleClick = function(evt) {
                     }
                     if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
                         popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
+                    } else {
+                        popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                     }
                     popupText = popupText + '<tr>' + popupField + '</tr>';
                 }
             }
             popupText = popupText + '</table>';
-        } else {
-            var value = feature.get(field);
-            if (value) {
-                popupText = '<strong>' + field + ':</strong> '+ value;
-            }  
         }          
     });
 
