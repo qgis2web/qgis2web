@@ -19,6 +19,9 @@ install:
   - sudo add-apt-repository ${QGIS_REPO}
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt update 
+  - sudo apt upgrade gdal-bin python-gda
   - sudo pip install --upgrade pip
   - sudo pip install coverage
   - sudo pip install nose
