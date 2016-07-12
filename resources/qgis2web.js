@@ -39,7 +39,6 @@ var ALL_FIELDS = 1
  * @param layer {ol.Layer} Layer to find field info about
  */
 function getPopupFields(layerList, layer) {
-    console.log(layer);
     // Determine the index that the layer will have in the popupLayers Array,
     // if the layersList contains more items than popupLayers then we need to
     // adjust the index to take into account the base maps group
@@ -92,7 +91,6 @@ var onPointerMove = function(evt) {
         }
         currentFeature = feature;
         currentLayer = layer;
-        console.log(layer);
         currentFeatureKeys = currentFeature.getKeys();
         var doPopup = false;
         for (k in layer.get('fieldImages')) {
