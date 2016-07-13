@@ -17,6 +17,7 @@ addons:
 
 install:
   - sudo add-apt-repository ${QGIS_REPO}
+  - sudo add-apt-repository http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
   - sudo pip install --upgrade pip
