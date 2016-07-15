@@ -327,9 +327,9 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
 
                 try:
                     processing.runalg("gdalogr:translate", piped_3857, 100,
-                                  True, "", 0, "", extentRepNew, False, 5,
-                                  4, 75, 6, 1, False, 0, False, "",
-                                  out_raster)
+                                      True, "", 0, "", extentRepNew, False, 5,
+                                      4, 75, 6, 1, False, 0, False, "",
+                                      out_raster)
                 except:
                     shutil.copyfile(piped_3857, out_raster)
 

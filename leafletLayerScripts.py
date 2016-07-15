@@ -1,5 +1,6 @@
 import re
 import os
+import shutil
 import tempfile
 from PyQt4.QtCore import QSize, QVariant
 import time
@@ -153,7 +154,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                 "DEST_SRS": "EPSG:3857",
                 "NO_DATA": "",
                 "TR": 0,
-                "METHOD": 0,
+                "METHOD": 2,
                 "RAST_EXT": extentRepNew,
                 "EXT_CRS": "EPSG:3857",
                 "RTYPE": 0,
@@ -179,7 +180,7 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                     "DEST_SRS": "EPSG:3857",
                     "NO_DATA": "",
                     "TR": 0,
-                    "METHOD": 0,
+                    "METHOD": 2,
                     "RAST_EXT": extentRepNew,
                     "RTYPE": 0,
                     "COMPRESS": 4,
@@ -197,30 +198,37 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                 for val in procRtn:
                     pass
             except:
-                warpArgs = {
-                    "INPUT": piped_file,
-                    "SOURCE_SRS": layer.crs().authid(),
-                    "DEST_SRS": "EPSG:3857",
-                    "NO_DATA": "",
-                    "TR": 0,
-                    "METHOD": 0,
-                    "RTYPE": 0,
-                    "COMPRESS": 4,
-                    "JPEGCOMPRESSION": 75,
-                    "ZLEVEL": 6,
-                    "PREDICTOR": 1,
-                    "TILED": False,
-                    "BIGTIFF": 0,
-                    "TFW": False,
-                    "EXTRA": "",
-                    "OUTPUT": piped_3857
-                }
-                procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+                try:
+                    warpArgs = {
+                        "INPUT": piped_file,
+                        "SOURCE_SRS": layer.crs().authid(),
+                        "DEST_SRS": "EPSG:3857",
+                        "NO_DATA": "",
+                        "TR": 0,
+                        "METHOD": 2,
+                        "RTYPE": 0,
+                        "COMPRESS": 4,
+                        "JPEGCOMPRESSION": 75,
+                        "ZLEVEL": 6,
+                        "PREDICTOR": 1,
+                        "TILED": False,
+                        "BIGTIFF": 0,
+                        "TFW": False,
+                        "EXTRA": "",
+                        "OUTPUT": piped_3857
+                    }
+                    procRtn = processing.runalg("gdalogr:warpreproject",
+                                                warpArgs)
+                except:
+                    shutil.copyfile(piped_file, piped_3857)
 
-        processing.runalg("gdalogr:translate", piped_3857, 100,
-                          True, "", 0, "", extentRepNew, False, 5,
-                          4, 75, 6, 1, False, 0, False, "",
-                          out_raster)
+        try:
+            processing.runalg("gdalogr:translate", piped_3857, 100,
+                              True, "", 0, "", extentRepNew, False, 5,
+                              4, 75, 6, 1, False, 0, False, "",
+                              out_raster)
+        except:
+            shutil.copyfile(piped_3857, out_raster)
 
 
 def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
