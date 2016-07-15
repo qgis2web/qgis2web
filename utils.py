@@ -325,10 +325,13 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         except:
                             shutil.copyfile(piped_file, piped_3857)
 
-                processing.runalg("gdalogr:translate", piped_3857, 100,
+                try:
+                    processing.runalg("gdalogr:translate", piped_3857, 100,
                                   True, "", 0, "", extentRepNew, False, 5,
                                   4, 75, 6, 1, False, 0, False, "",
                                   out_raster)
+                except:
+                    shutil.copyfile(piped_3857, out_raster)
 
 
 def is25d(layer, canvas):
