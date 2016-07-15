@@ -323,7 +323,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                             for val in procRtn:
                                 pass
                         except:
-                            piped_3857 = piped_file
+                            shutil.copyfile(piped_file, piped_3857)
 
                 processing.runalg("gdalogr:translate", piped_3857, 100,
                                   True, "", 0, "", extentRepNew, False, 5,
