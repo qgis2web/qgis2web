@@ -219,6 +219,8 @@ def exportRasterLayer(i, safeLayerName, dataPath):
                     }
                     procRtn = processing.runalg("gdalogr:warpreproject",
                                                 warpArgs)
+                    for val in procRtn:
+                        pass
                 except:
                     shutil.copyfile(piped_file, piped_3857)
 
