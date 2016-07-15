@@ -251,7 +251,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         "DEST_SRS": "EPSG:3857",
                         "NO_DATA": "",
                         "TR": 0,
-                        "METHOD": 0,
+                        "METHOD": 2,
                         "RAST_EXT": extentRepNew,
                         "EXT_CRS": "EPSG:3857",
                         "RTYPE": 0,
@@ -278,7 +278,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                             "DEST_SRS": "EPSG:3857",
                             "NO_DATA": "",
                             "TR": 0,
-                            "METHOD": 0,
+                            "METHOD": 2,
                             "RAST_EXT": extentRepNew,
                             "RTYPE": 0,
                             "COMPRESS": 4,
@@ -297,25 +297,33 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         for val in procRtn:
                             pass
                     except:
-                        warpArgs = {
-                            "INPUT": piped_file,
-                            "SOURCE_SRS": layer.crs().authid(),
-                            "DEST_SRS": "EPSG:3857",
-                            "NO_DATA": "",
-                            "TR": 0,
-                            "METHOD": 0,
-                            "RTYPE": 0,
-                            "COMPRESS": 4,
-                            "JPEGCOMPRESSION": 75,
-                            "ZLEVEL": 6,
-                            "PREDICTOR": 1,
-                            "TILED": False,
-                            "BIGTIFF": 0,
-                            "TFW": False,
-                            "EXTRA": "",
-                            "OUTPUT": piped_3857
-                        }
-                        processing.runalg("gdalogr:warpreproject", warpArgs)
+                        try:
+                            warpArgs = {
+                                "INPUT": piped_file,
+                                "SOURCE_SRS": layer.crs().authid(),
+                                "DEST_SRS": "EPSG:3857",
+                                "NO_DATA": "",
+                                "TR": 0,
+                                "METHOD": 2,
+                                "RTYPE": 0,
+                                "COMPRESS": 4,
+                                "JPEGCOMPRESSION": 75,
+                                "ZLEVEL": 6,
+                                "PREDICTOR": 1,
+                                "TILED": False,
+                                "BIGTIFF": 0,
+                                "TFW": False,
+                                "EXTRA": "",
+                                "OUTPUT": piped_3857
+                            }
+                            procRtn = processing.runalg(
+                                            "gdalogr:warpreproject",
+                                            warpArgs)
+                            # force exception on algorithm fail
+                            for val in procRtn:
+                                pass
+                        except:
+                            piped_3857 = piped_file
 
                 processing.runalg("gdalogr:translate", piped_3857, 100,
                                   True, "", 0, "", extentRepNew, False, 5,
