@@ -3,9 +3,9 @@ sudo: required
 dist: trusty
 
 env:
-  - QGIS_REPO=http://qgis.org/ubuntugis-ltr
-  - QGIS_REPO=http://qgis.org/ubuntugis
-  - QGIS_REPO=http://qgis.org/ubuntugis-nightly
+  - QGIS_REPO=http://qgis.org/debian-ltr
+  - QGIS_REPO=http://qgis.org/debian
+  - QGIS_REPO=http://qgis.org/debian-nightly
 
 addons: 
   apt: 
@@ -17,7 +17,6 @@ addons:
 
 install:
   - sudo add-apt-repository ${QGIS_REPO}
-  - sudo add-apt-repository http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
   - sudo pip install --upgrade pip
