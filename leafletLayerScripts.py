@@ -498,7 +498,7 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
     if i.providerType() == 'WFS' and json[count] is False:
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(pointStyleLabel, safeLayerName,
-                                      i.source(), "", cluster[count],
+                                      i, "", cluster[count],
                                       cluster_num, visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -528,7 +528,7 @@ def singleLine(symbol, colorName, fill_opacity, i, json, safeLayerName,
                                       joinString, fill_opacity)
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i.source(), "",
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i, "",
                                               stylestr, visible[count])
         new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
         wfsLayers += wfsScript(scriptTag)
@@ -584,7 +584,7 @@ def singlePolygon(i, safeLayerName, symbol, symbolLayer, colorName,
                                       joinString, fill_opacity)
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i.source(), "",
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i, "",
                                               stylestr, visible[count])
         new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
         wfsLayers += wfsScript(scriptTag)
@@ -647,7 +647,7 @@ def categorizedPoint(outputProjectFileName, i, renderer, safeLayerName,
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedPointWFSscript(safeLayerName, labeltext)
         (new_obj, scriptTag,
-         cluster_num) = buildPointWFS(stylestr, safeLayerName, i.source(),
+         cluster_num) = buildPointWFS(stylestr, safeLayerName, i,
                                       categoryStr, cluster[count], cluster_num,
                                       visible[count])
         wfsLayers += wfsScript(scriptTag)
@@ -686,7 +686,7 @@ def categorizedLine(outputProjectFileName, i, safeLayerName, renderer,
     categoryStr += endCategoryScript()
     stylestr = categorizedNonPointStyleFunctionScript(safeLayerName, popFuncs)
     if i.providerType() == 'WFS' and json[count] is False:
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i.source(),
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i,
                                               categoryStr, stylestr,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
@@ -722,7 +722,7 @@ def categorizedPolygon(outputProjectFileName, i, renderer, safeLayerName,
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedNonPointStyleFunctionScript(safeLayerName,
                                                           popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i.source(),
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i,
                                               categoryStr, stylestr,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
@@ -780,7 +780,7 @@ def graduatedPoint(outputProjectFileName, i, safeLayerName, renderer,
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedPointWFSscript(safeLayerName, labeltext)
         (new_obj, scriptTag,
-         cluster_num) = buildPointWFS(stylestr, safeLayerName, i.source(),
+         cluster_num) = buildPointWFS(stylestr, safeLayerName, i,
                                       categoryStr, cluster[count], cluster_num,
                                       visible[count])
         wfsLayers += wfsScript(scriptTag)
@@ -815,7 +815,7 @@ def graduatedLine(outputProjectFileName, i, safeLayerName, renderer, catLegend,
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedNonPointStyleFunctionScript(safeLayerName,
                                                           popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i.source(),
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i,
                                               categoryStr, stylestr,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
@@ -846,7 +846,7 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
     if i.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedNonPointStyleFunctionScript(safeLayerName,
                                                           popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i.source(),
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, i,
                                               categoryStr, stylestr,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
@@ -856,9 +856,9 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
     return new_obj, catLegend, wfsLayers
 
 
-def buildPointWFS(pointStyleLabel, layerName, layerSource, categoryStr,
+def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
                   cluster_set, cluster_num, visible):
-    scriptTag = getWFSScriptTag(layerSource, layerName)
+    scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = pointStyleLabel + categoryStr + """
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{
@@ -915,8 +915,8 @@ def buildNonPointJSON(categoryStr, safeName, usedFields):
     return new_obj
 
 
-def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, visible):
-    scriptTag = getWFSScriptTag(layerSource, layerName)
+def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible):
+    scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = categoryStr + """
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{{stylestr},
@@ -939,7 +939,20 @@ def buildNonPointWFS(layerName, layerSource, categoryStr, stylestr, visible):
     return new_obj, scriptTag
 
 
-def getWFSScriptTag(layerSource, layerName):
+def getWFSScriptTag(layer, layerName):
+    layerSource = layer.source()
+    if "retrictToRequestBBOX" in layerSource:
+        provider = layer.dataProvider()
+        uri = QgsDataSourceURI(provider.dataSourceUri())
+        wfsURL = uri.param("url")
+        wfsTypename = uri.param("typename")
+        wfsSRS = uri.param("srsname")
+        layerSource = wfsURL
+        layerSource += "?SERVICE=WFS&VERSION=1.0.0&"
+        layerSource += "REQUEST=GetFeature&TYPENAME="
+        layerSource += wfsTypename
+        layerSource += "&SRSNAME="
+        layerSource += wfsSRS
     scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
