@@ -308,6 +308,7 @@ software:</p>
     <li>Function.prototype.bind polyfill, by @mozilla</li>
     <li>Leaflet.draw, by @jacobtoye</li>
     <li>Leaflet.label, by @jacobtoye</li>
+    <li>Leaflet.Locate, by @domoritz</li>
     <li>Leaflet.markercluster, by @danzel</li>
     <li>Leaflet.MeasureControl, by @makinacorpus</li>
     <li>leaflet-hash, by @mlevans</li>
