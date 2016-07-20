@@ -476,9 +476,7 @@ def categorizedLineStylesScript(symbol, opacity):
 
 def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
     categorizedNonPointStyleFunction = """
-        style: doStyle{layerName},
-        onEachFeature: function (feature, layer) {{{popFuncs}
-        }}""".format(layerName=layerName, popFuncs=popFuncs)
+        style: doStyle{layerName}""".format(layerName=layerName)
     return categorizedNonPointStyleFunction
 
 
