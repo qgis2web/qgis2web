@@ -6,12 +6,12 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" href="css/leaflet.css" /><link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css" />
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/label.css" />
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
         <script src="js/OSMBuildings-Leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>
         <script src="js/label.js"></script>
@@ -42,6 +42,7 @@
         })
         var hash = new L.Hash(map);
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        L.control.locate().addTo(map);
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
@@ -70,7 +71,7 @@
         function doStyleairports0() {
             return {
                 radius: 4.0,
-                fillColor: '#279319',
+                fillColor: '#08e037',
                 color: '#000000',
                 weight: 0.0,
                 opacity: 1.0,
@@ -94,15 +95,6 @@
         feature_group.addLayer(json_airports0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
-        map.locate({setView: true, maxZoom: 16});
-        function onLocationFound(e) {
-            var radius = e.accuracy / 2;
-            L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters from this point")
-            .openPopup();
-            L.circle(e.latlng, radius).addTo(map);
-        }
-        map.on('locationfound', onLocationFound);
         stackLayers();
         map.on('overlayadd', restackLayers);
         </script>

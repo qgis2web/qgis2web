@@ -89,9 +89,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
         cssAddress += '4.6.1/css/font-awesome.min.css">'
-        cssAddress+= '<link rel="stylesheet" '
-        cssAddress+= 'href="css/L.Control.Locate.min.css" />'
-        jsAddress+= '<script src="js/L.Control.Locate.min.js"></script>'
+        cssAddress += '<link rel="stylesheet" '
+        cssAddress += 'href="css/L.Control.Locate.min.css" />'
+        jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
     jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" type="text/css" '
