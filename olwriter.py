@@ -78,6 +78,18 @@ def writeOL(iface, layers, groups, popup, visible,
                                     (safeName(layer.name()) + ".js"))
                 else:
                     layerSource = layer.source()
+                    if "retrictToRequestBBOX" in layerSource:
+                        provider = layer.dataProvider()
+                        uri = QgsDataSourceURI(provider.dataSourceUri())
+                        wfsURL = uri.param("url")
+                        wfsTypename = uri.param("typename")
+                        wfsSRS = uri.param("srsname")
+                        layerSource = wfsURL
+                        layerSource += "?SERVICE=WFS&VERSION=1.0.0&"
+                        layerSource += "REQUEST=GetFeature&TYPENAME="
+                        layerSource += wfsTypename
+                        layerSource += "&SRSNAME="
+                        layerSource += wfsSRS
                     if not matchCRS:
                         layerSource = re.sub('SRSNAME\=EPSG\:\d+',
                                              'SRSNAME=EPSG:3857', layerSource)
