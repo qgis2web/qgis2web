@@ -28,12 +28,11 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     if mapLibLocation == "Local":
         shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
-        if locate:
-            os.makedirs(os.path.join(jsStore, "images"))
-            shutil.copyfile(jsDir + 'images/marker-icon.png',
-                            jsStore + 'images/marker-icon.png')
-            shutil.copyfile(jsDir + 'images/marker-shadow.png',
-                            jsStore + 'images/marker-shadow.png')
+    if locate:
+        shutil.copyfile(jsDir + 'L.Control.Locate.min.js',
+                        jsStore + 'L.Control.Locate.min.js')
+        shutil.copyfile(cssDir + 'L.Control.Locate.min.css',
+                        cssStore + 'L.Control.Locate.min.css')
     shutil.copyfile(jsDir + 'Autolinker.min.js',
                     jsStore + 'Autolinker.min.js')
     shutil.copyfile(jsDir + 'OSMBuildings-Leaflet.js',
@@ -71,7 +70,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, canvas, mapLibLocation, qgis2webJS, template):
+                   matchCRS, canvas, mapLibLocation, locate, qgis2webJS,
+                   template):
     if webpage_name == "":
         pass
     else:
@@ -85,6 +85,13 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         cssAddress += 'leaflet.css" />'
         jsAddress = '<script src="http://'
         jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
+    if locate:
+        cssAddress += '<link rel="stylesheet" '
+        cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
+        cssAddress += '4.6.1/css/font-awesome.min.css">'
+        cssAddress+= '<link rel="stylesheet" '
+        cssAddress+= 'href="css/L.Control.Locate.min.css" />'
+        jsAddress+= '<script src="js/L.Control.Locate.min.js"></script>'
     jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" type="text/css" '

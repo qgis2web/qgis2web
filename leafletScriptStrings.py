@@ -81,7 +81,8 @@ def crsScript(crsAuthId, crsProj4):
     return crs
 
 
-def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
+def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
+              locate):
     map = """
         L.ImageOverlay.include({
             getBounds: function () {
@@ -109,6 +110,9 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds):
         map.attributionControl.addAttribution('<a href="""
     map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
     map += "qgis2web</a>');"
+    if locate:
+        map += """
+        L.control.locate().addTo(map);"""
     return map
 
 
@@ -744,21 +748,6 @@ def addressSearchScript():
         });
         osmGeocoder.addTo(map);"""
     return addressSearch
-
-
-def locateScript():
-    locate = """
-        map.locate({setView: true, maxZoom: 16});
-        function onLocationFound(e) {
-            var radius = e.accuracy / 2;
-            L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters from this point")
-            .openPopup();
-            L.circle(e.latlng, radius).addTo(map);
-        }
-        map.on('locationfound', onLocationFound);
-        """
-    return locate
 
 
 def endHTMLscript(wfsLayers):

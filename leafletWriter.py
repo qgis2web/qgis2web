@@ -120,12 +120,12 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                            minZoom, bounds)
+                            minZoom, bounds, locate)
     else:
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                            minZoom, 0)
+                            minZoom, 0, locate)
     middle += featureGroupsScript()
     if (len(basemapList) == 0 or matchCRS):
         basemapText = ""
@@ -173,14 +173,12 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     if params["Appearance"]["Add layers list"]:
         new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
                                  legends)
-    if locate:
-        end = locateScript()
+    if params["Appearance"]["Add scale bar"]:
+        end = scaleBar()
     else:
         end = ''
-    if params["Appearance"]["Add scale bar"]:
-        end += scaleBar()
     end += endHTMLscript(wfsLayers)
     new_src += end
     writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                   matchCRS, canvas, mapLibLocation, new_src, template)
+                   matchCRS, canvas, mapLibLocation, locate, new_src, template)
     return outputIndex
