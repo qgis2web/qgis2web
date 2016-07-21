@@ -1,4 +1,29 @@
 
+geolocateControl = function(opt_options) {
+    var options = opt_options || {};
+    var button = document.createElement('button');
+    button.className += ' fa fa-map-marker';
+    var handleGeolocate = function() {
+        if (geolocation.getTracking()) {
+            map.removeLayer(geolocateOverlay);
+            geolocation.setTracking(false);
+      } else {
+            map.addLayer(geolocateOverlay);
+            geolocation.setTracking(true);
+      }
+    };
+    button.addEventListener('click', handleGeolocate, false);
+    button.addEventListener('touchstart', handleGeolocate, false);
+    var element = document.createElement('div');
+    element.className = 'geolocate ol-unselectable ol-control';
+    element.appendChild(button);
+    ol.control.Control.call(this, {
+        element: element,
+        target: options.target
+    });
+};
+ol.inherits(geolocateControl, ol.control.Control);
+
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
@@ -17,7 +42,7 @@ var expandedAttribution = new ol.control.Attribution({
 
 var map = new ol.Map({
     controls: ol.control.defaults({attribution:false}).extend([
-        expandedAttribution
+        expandedAttribution,new geolocateControl()
     ]),
     target: document.getElementById('map'),
     renderer: 'canvas',
@@ -249,7 +274,6 @@ map.on('singleclick', function(evt) {
   projection: map.getView().getProjection()
 });
 
-geolocation.setTracking(true);
 
 var accuracyFeature = new ol.Feature();
 geolocation.on('change:accuracyGeometry', function() {
@@ -277,7 +301,6 @@ geolocation.on('change:position', function() {
 });
 
 var geolocateOverlay = new ol.layer.Vector({
-  map: map,
   source: new ol.source.Vector({
     features: [accuracyFeature, positionFeature]
   })
