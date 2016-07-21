@@ -1,3 +1,4 @@
+@GEOLOCATEHEAD@
 @MEASURECONTROL@
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');

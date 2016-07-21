@@ -110,6 +110,9 @@ def writeOL(iface, layers, groups, popup, visible,
         if settings["Appearance"]["Measure tool"] != "None":
             controls.append(
                 'new measureControl()')
+        if settings["Appearance"]["Geolocate user"]:
+            controls.append(
+                'new geolocateControl()')
         pageTitle = QgsProject.instance().title()
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = """
@@ -119,6 +122,8 @@ def writeOL(iface, layers, groups, popup, visible,
         }}
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
+        geolocateUser = settings["Appearance"]["Geolocate user"]
+        backgroundColor += geolocateStyle(geolocateUser)
         mapbounds = bounds(iface,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
                            layers,
@@ -159,13 +164,18 @@ def writeOL(iface, layers, groups, popup, visible,
             measure = ""
             measureUnit = ""
             measureStyle = ""
-        geolocate = geolocation(settings["Appearance"]["Geolocate user"])
+        geolocateHead = geolocationHead(geolocateUser)
+        geolocate = geolocation(geolocateUser)
         geocode = settings["Appearance"]["Add address search"]
         geocodingLinks = geocodeLinks(geocode)
         geocodingScript = geocodeScript(geocode)
         extracss = """
         <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
         <link rel="stylesheet" href="./resources/qgis2web.css">"""
+        if settings["Appearance"]["Geolocate user"]:
+            extracss += """
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
+            extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
         ol3layerswitcher = """
         <script src="./resources/ol3-layerswitcher.js"></script>"""
         ol3popup = """<div id="popup" class="ol-popup">
@@ -213,7 +223,8 @@ def writeOL(iface, layers, groups, popup, visible,
             templateOutput = replaceInTemplate(htmlTemplate + ".html", values)
             templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
             f.write(templateOutput)
-        values = {"@BOUNDS@": mapbounds,
+        values = {"@GEOLOCATEHEAD@": geolocateHead,
+                  "@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
                   "@POPUPLAYERS@": popupLayers,
                   "@VIEW@": view,
@@ -888,7 +899,6 @@ def geolocation(geolocate):
   projection: map.getView().getProjection()
 });
 
-geolocation.setTracking(true);
 
 var accuracyFeature = new ol.Feature();
 geolocation.on('change:accuracyGeometry', function() {
@@ -916,11 +926,57 @@ geolocation.on('change:position', function() {
 });
 
 var geolocateOverlay = new ol.layer.Vector({
-  map: map,
   source: new ol.source.Vector({
     features: [accuracyFeature, positionFeature]
   })
 });"""
+    else:
+        return ""
+
+
+def geolocationHead(geolocate):
+    if geolocate:
+        return """
+geolocateControl = function(opt_options) {
+    var options = opt_options || {};
+    var button = document.createElement('button');
+    button.className += ' fa fa-map-marker';
+    var handleGeolocate = function() {
+        if (geolocation.getTracking()) {
+            map.removeLayer(geolocateOverlay);
+            geolocation.setTracking(false);
+      } else {
+            map.addLayer(geolocateOverlay);
+            geolocation.setTracking(true);
+      }
+    };
+    button.addEventListener('click', handleGeolocate, false);
+    button.addEventListener('touchstart', handleGeolocate, false);
+    var element = document.createElement('div');
+    element.className = 'geolocate ol-unselectable ol-control';
+    element.appendChild(button);
+    ol.control.Control.call(this, {
+        element: element,
+        target: options.target
+    });
+};
+ol.inherits(geolocateControl, ol.control.Control);"""
+    else:
+        return ""
+
+
+def geolocateStyle(geolocate):
+    if geolocate:
+        return """
+        <style>
+        .geolocate {
+            top: 65px;
+            left: .5em;
+        }
+        .ol-touch .geolocate {
+            top: 80px;
+        }
+        </style>"""
     else:
         return ""
 
