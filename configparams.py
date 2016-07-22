@@ -78,8 +78,6 @@ baselayers = (
             "OpenMapSurfer Roads",
             "OpenMapSurfer adminb",
             "OpenMapSurfer roadsg",
-            "MapQuest OSM",
-            "MapQuest Aerial",
             "Stamen Terrain",
             "Stamen Watercolor",
             "OpenWeatherMap Clouds",
