@@ -929,7 +929,10 @@ var geolocateOverlay = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: [accuracyFeature, positionFeature]
   })
-});"""
+});
+
+geolocation.setTracking(true);
+"""
     else:
         return ""
 
@@ -937,17 +940,19 @@ var geolocateOverlay = new ol.layer.Vector({
 def geolocationHead(geolocate):
     if geolocate:
         return """
+isTracking = false;
 geolocateControl = function(opt_options) {
     var options = opt_options || {};
     var button = document.createElement('button');
     button.className += ' fa fa-map-marker';
     var handleGeolocate = function() {
-        if (geolocation.getTracking()) {
+        if (isTracking) {
             map.removeLayer(geolocateOverlay);
-            geolocation.setTracking(false);
-      } else {
+            isTracking = false;
+      } else if (geolocation.getTracking()) {
             map.addLayer(geolocateOverlay);
-            geolocation.setTracking(true);
+            map.getView().setCenter(geolocation.getPosition());
+            isTracking = true;
       }
     };
     button.addEventListener('click', handleGeolocate, false);
