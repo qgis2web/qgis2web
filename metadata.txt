@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.8
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=1.12.1
+version=1.13.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/07/20 1.12.1 WFS in 2.16+, WFS duplicate popup code, updated README 
+changelog=2016/07/26 1.13.0 Geolocate on click, MapQuest removed, metadata typo
+    2016/07/20 1.12.1 WFS in 2.16+, WFS duplicate popup code, updated README 
     2016/07/15 1.12.0 OS X test environment (thanks, @jnicho02!), label formatting, hidden fields, remove "Delete unused fields", OL3 CDN to 3.17.1, empty popups, OL3 popup labels on hover, Leaflet simple line style, cubic resampling, raster export fallback
     2016/07/06 1.11.0 Images overflow popups, relax layer name (thanks, @lucacasagrande!), popup labels format, remove Mapquest basemaps, OL to 3.17.1, correct fieldAliases (thanks, @nboisteault!), Leaflet point size, label format, wiki created, README updated
     2016/06/28 1.10.0-FOSS4GUK2016 Popup images (thanks, @GeoSpark!), stylized rasters (thanks, @lucacasagrande!), OL3 field aliases, OL3 measure/highlight (thanks, @walkermatt!), OL3 SVGs, QGIS minimum version to 2.8, test output improved (thanks, @walkermatt!), raster tests, skip raster tests for Travis nightly
