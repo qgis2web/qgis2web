@@ -396,7 +396,7 @@ def nonPointStyleFunctionScript(safeLayerName, lineStyle):
 def categoryScript(layerName, valueAttr):
     category = """
         function doStyle{layerName}(feature) {{
-\t\t\tswitch (feature.properties.{valueAttr}) {{""".format(layerName=layerName,
+\t\t\tswitch (feature.properties['{valueAttr}']) {{""".format(layerName=layerName,
                                                            valueAttr=valueAttr)
     return category
 
@@ -528,8 +528,8 @@ def graduatedStyleScript(layerName):
 
 def rangeStartScript(valueAttr, r):
     rangeStart = """
-        if (feature.properties.{valueAttr} >= {lowerValue} &&
-                feature.properties.{valueAttr} <= {upperValue}) {{
+        if (feature.properties['{valueAttr}'] >= {lowerValue} &&
+                feature.properties['{valueAttr}'] <= {upperValue}) {{
 """.format(valueAttr=valueAttr, lowerValue=r.lowerValue(),
            upperValue=r.upperValue())
     return rangeStart
