@@ -396,8 +396,9 @@ def nonPointStyleFunctionScript(safeLayerName, lineStyle):
 def categoryScript(layerName, valueAttr):
     category = """
         function doStyle{layerName}(feature) {{
-\t\t\tswitch (feature.properties['{valueAttr}']) {{""".format(layerName=layerName,
-                                                           valueAttr=valueAttr)
+\t\t\tswitch (feature.properties['{valueAttr}']) {{""".format(
+                layerName=layerName,
+                valueAttr=valueAttr)
     return category
 
 

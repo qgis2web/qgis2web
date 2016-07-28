@@ -68,8 +68,8 @@
         }
 
         function doStyleairports0(feature) {
-        if (feature.properties.ELEV >= 9.0 &&
-                feature.properties.ELEV <= 321.0) {
+        if (feature.properties['ELEV'] >= 9.0 &&
+                feature.properties['ELEV'] <= 321.0) {
 
             return {
                 radius: 4.0,
@@ -82,8 +82,8 @@
             }
         }
 
-        if (feature.properties.ELEV >= 321.0 &&
-                feature.properties.ELEV <= 633.0) {
+        if (feature.properties['ELEV'] >= 321.0 &&
+                feature.properties['ELEV'] <= 633.0) {
 
             return {
                 radius: 4.0,
@@ -96,8 +96,8 @@
             }
         }
 
-        if (feature.properties.ELEV >= 633.0 &&
-                feature.properties.ELEV <= 945.0) {
+        if (feature.properties['ELEV'] >= 633.0 &&
+                feature.properties['ELEV'] <= 945.0) {
 
             return {
                 radius: 4.0,
@@ -110,8 +110,8 @@
             }
         }
 
-        if (feature.properties.ELEV >= 945.0 &&
-                feature.properties.ELEV <= 1257.0) {
+        if (feature.properties['ELEV'] >= 945.0 &&
+                feature.properties['ELEV'] <= 1257.0) {
 
             return {
                 radius: 4.0,
@@ -124,8 +124,8 @@
             }
         }
 
-        if (feature.properties.ELEV >= 1257.0 &&
-                feature.properties.ELEV <= 1569.0) {
+        if (feature.properties['ELEV'] >= 1257.0 &&
+                feature.properties['ELEV'] <= 1569.0) {
 
             return {
                 radius: 4.0,

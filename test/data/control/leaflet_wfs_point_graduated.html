@@ -70,8 +70,8 @@
             return L.circleMarker(latlng, doStylepoint0(feature))
         }
         function doStylepoint0(feature) {
-        if (feature.properties.ogc_fid >= 3.0 &&
-                feature.properties.ogc_fid <= 184.0) {
+        if (feature.properties.['ogc_fid'] >= 3.0 &&
+                feature.properties.['ogc_fid'] <= 184.0) {
 
             return {
                 radius: 4.0,
@@ -84,8 +84,8 @@
             }
         }
 
-        if (feature.properties.ogc_fid >= 184.0 &&
-                feature.properties.ogc_fid <= 365.0) {
+        if (feature.properties.['ogc_fid'] >= 184.0 &&
+                feature.properties.['ogc_fid'] <= 365.0) {
 
             return {
                 radius: 4.0,
@@ -98,8 +98,8 @@
             }
         }
 
-        if (feature.properties.ogc_fid >= 365.0 &&
-                feature.properties.ogc_fid <= 546.0) {
+        if (feature.properties.['ogc_fid'] >= 365.0 &&
+                feature.properties.['ogc_fid'] <= 546.0) {
 
             return {
                 radius: 4.0,
@@ -112,8 +112,8 @@
             }
         }
 
-        if (feature.properties.ogc_fid >= 546.0 &&
-                feature.properties.ogc_fid <= 727.0) {
+        if (feature.properties.['ogc_fid'] >= 546.0 &&
+                feature.properties.['ogc_fid'] <= 727.0) {
 
             return {
                 radius: 4.0,
@@ -126,8 +126,8 @@
             }
         }
 
-        if (feature.properties.ogc_fid >= 727.0 &&
-                feature.properties.ogc_fid <= 908.0) {
+        if (feature.properties.['ogc_fid'] >= 727.0 &&
+                feature.properties.['ogc_fid'] <= 908.0) {
 
             return {
                 radius: 4.0,

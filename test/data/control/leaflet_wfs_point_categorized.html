@@ -70,7 +70,7 @@
             return L.circleMarker(latlng, doStylepoint0(feature))
         }
         function doStylepoint0(feature) {
-			switch (feature.properties.digitised) {
+			switch (feature.properties.['digitised']) {
                 case '                    ':
                     return {
                     radius: 4.0,

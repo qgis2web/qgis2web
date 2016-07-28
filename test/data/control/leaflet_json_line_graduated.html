@@ -68,8 +68,8 @@
         }
 
         function doStylepipelines0(feature) {
-        if (feature.properties.cat >= 1.0 &&
-                feature.properties.cat <= 8.4) {
+        if (feature.properties['cat'] >= 1.0 &&
+                feature.properties['cat'] <= 8.4) {
 
             return {
                 color: '#f7fbff',
@@ -80,8 +80,8 @@
                 opacity: '1.0',
             }
         }
-        if (feature.properties.cat >= 8.4 &&
-                feature.properties.cat <= 15.8) {
+        if (feature.properties['cat'] >= 8.4 &&
+                feature.properties['cat'] <= 15.8) {
 
             return {
                 color: '#c7dcef',
@@ -92,8 +92,8 @@
                 opacity: '1.0',
             }
         }
-        if (feature.properties.cat >= 15.8 &&
-                feature.properties.cat <= 23.2) {
+        if (feature.properties['cat'] >= 15.8 &&
+                feature.properties['cat'] <= 23.2) {
 
             return {
                 color: '#72b2d7',
@@ -104,8 +104,8 @@
                 opacity: '1.0',
             }
         }
-        if (feature.properties.cat >= 23.2 &&
-                feature.properties.cat <= 30.6) {
+        if (feature.properties['cat'] >= 23.2 &&
+                feature.properties['cat'] <= 30.6) {
 
             return {
                 color: '#2878b8',
@@ -116,8 +116,8 @@
                 opacity: '1.0',
             }
         }
-        if (feature.properties.cat >= 30.6 &&
-                feature.properties.cat <= 38.0) {
+        if (feature.properties['cat'] >= 30.6 &&
+                feature.properties['cat'] <= 38.0) {
 
             return {
                 color: '#08306b',
