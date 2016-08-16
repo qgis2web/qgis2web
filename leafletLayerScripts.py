@@ -366,8 +366,8 @@ def labelsAndPopups(i, safeLayerName, highlight, popupsOnHover, popup, count):
     styleEnd = " + '</div>'"
     f = palyr.fieldName
     label_exp = False
-    labeltext = ".bindLabel((feature.properties." + unicode(f)
-    labeltext += " !== null?String(%sfeature.properties.%s)%s:'')" % (
+    labeltext = ".bindLabel((feature.properties['" + unicode(f)
+    labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (
             styleStart, unicode(f), styleEnd)
     labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
