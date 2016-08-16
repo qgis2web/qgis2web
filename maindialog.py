@@ -465,6 +465,14 @@ class TreeLayerItem(QTreeWidgetItem):
             options = []
             fields = self.layer.pendingFields()
             for f in fields:
+                fieldIndex = fields.indexFromName(unicode(f.name()))
+                try:
+                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                except:
+                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                if (editorWidget == QgsVectorLayer.Hidden or
+                        editorWidget == 'Hidden'):
+                    continue
                 options.append(f.name())
             for option in options:
                 self.attr = QTreeWidgetItem(self)
