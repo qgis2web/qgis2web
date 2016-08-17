@@ -467,7 +467,8 @@ class TreeLayerItem(QTreeWidgetItem):
             for f in fields:
                 fieldIndex = fields.indexFromName(unicode(f.name()))
                 try:
-                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                    formCnf = layer.editFormConfig()
+                    editorWidget = formCnf.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
