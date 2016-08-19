@@ -1170,7 +1170,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Check the 'Add scale bar' checkbox
-        self.dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
+        QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
         self.dialog.paramsTreeOL.itemWidget(
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
@@ -1217,7 +1217,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Check the 'Add scale bar' checkbox
-        self.dialog.items['Appearance'].get('Add scale bar').setCheckState(1, QtCore.Qt.Checked)
+        QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
         self.dialog.ol3.click()
 
         # Open the test file
