@@ -72,16 +72,34 @@ def writeTmpLayer(layer, popup):
             editorWidget = layer.editFormConfig().widgetType(fieldIndex)
         except:
             editorWidget = layer.editorWidgetV2(fieldIndex)
+        addField = False
+        try:
+            if layer.rendererV2().classAttribute() == field.name():
+                addField = True
+        except:
+            pass
+        if layer.customProperty("labeling/fieldName") == field.name():
+            addField = True
         if (editorWidget != QgsVectorLayer.Hidden and
                 editorWidget != 'Hidden'):
+            addField = True
+        if addField:
             usedFields.append(count)
     uri = TYPE_MAP[layer.wkbType()]
     crs = layer.crs()
     if crs.isValid():
         uri += '?crs=' + crs.authid()
     for field in usedFields:
+        fieldIndex = layer.pendingFields().indexFromName(unicode(layer.pendingFields().field(field).name()))
+        try:
+            editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+        except:
+            editorWidget = layer.editorWidgetV2(fieldIndex)
         fieldType = layer.pendingFields().field(field).type()
         fieldName = layer.pendingFields().field(field).name()
+        if (editorWidget == QgsVectorLayer.Hidden or
+                editorWidget == 'Hidden'):
+            fieldName = "q2wHide_" + fieldName
         fieldType = "double" if (fieldType == QVariant.Double or
                                  fieldType == QVariant.Int) else (
                                     "string")

@@ -365,18 +365,29 @@ def labelsAndPopups(i, safeLayerName, highlight, popupsOnHover, popup, count):
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
     styleEnd = " + '</div>'"
     f = palyr.fieldName
+    fieldIndex = i.pendingFields().indexFromName(f)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    print editorWidget
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        f = "q2wHide_" + f
+        print f
     label_exp = False
     labeltext = ".bindLabel((feature.properties['" + unicode(f)
     labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (
             styleStart, unicode(f), styleEnd)
     labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
+    f = palyr.fieldName
     table = ""
     for field in popup[count]:
         if unicode(field) == 'html_exp':
             html_prov = True
             table = 'feature.properties.html_exp'
-        if (unicode(f) != "" and unicode(f) == unicode(field) and
+        if (unicode(f) != "" and
                 f and palyr.enabled):
             label_exp = True
         if not html_prov:
@@ -627,6 +638,14 @@ def categorizedPoint(outputProjectFileName, i, renderer, safeLayerName,
                      visible, json, count, wfsLayers, catLegend):
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
+    fieldIndex = i.pendingFields().indexFromName(valueAttr)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        valueAttr = "q2wHide_" + valueAttr
     categoryStr = categoryScript(safeLayerName, valueAttr)
     for cat in categories:
         if not cat.value():
@@ -671,6 +690,14 @@ def categorizedLine(outputProjectFileName, i, safeLayerName, renderer,
                     visible, count, wfsLayers):
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
+    fieldIndex = i.pendingFields().indexFromName(valueAttr)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        valueAttr = "q2wHide_" + valueAttr
     categoryStr = categoryScript(safeLayerName, valueAttr)
     for cat in categories:
         if not cat.value():
@@ -702,6 +729,14 @@ def categorizedPolygon(outputProjectFileName, i, renderer, safeLayerName,
                        count, popFuncs, wfsLayers):
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
+    fieldIndex = i.pendingFields().indexFromName(valueAttr)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        valueAttr = "q2wHide_" + valueAttr
     categoryStr = categoryScript(safeLayerName, valueAttr)
     for cat in categories:
         if not cat.value():
@@ -765,6 +800,14 @@ def graduatedPoint(outputProjectFileName, i, safeLayerName, renderer,
                    catLegend, layer_transp, json, count, labeltext, usedFields,
                    cluster, cluster_num, visible, wfsLayers, categoryStr):
     valueAttr = renderer.classAttribute()
+    fieldIndex = i.pendingFields().indexFromName(valueAttr)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        valueAttr = "q2wHide_" + valueAttr
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
@@ -803,6 +846,14 @@ def graduatedLine(outputProjectFileName, i, safeLayerName, renderer, catLegend,
                   layer_transp, popFuncs, usedFields, json, visible, count,
                   wfsLayers, categoryStr):
     valueAttr = renderer.classAttribute()
+    fieldIndex = i.pendingFields().indexFromName(valueAttr)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        valueAttr = "q2wHide_" + valueAttr
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
@@ -830,6 +881,14 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
                      catLegend, layer_transp, usedFields, visible, json, count,
                      popFuncs, wfsLayers, categoryStr):
     valueAttr = renderer.classAttribute()
+    fieldIndex = i.pendingFields().indexFromName(valueAttr)
+    try:
+        editorWidget = i.editFormConfig().widgetType(fieldIndex)
+    except:
+        editorWidget = i.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        valueAttr = "q2wHide_" + valueAttr
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
