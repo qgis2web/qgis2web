@@ -36,7 +36,6 @@ paramsOL = {
     "Appearance": {
         "Add layers list": False,
         "Match project CRS": False,
-        "Add scale bar": False,
         "Add address search": False,
         "Measure tool": ("None", "Metric", "Imperial"),
         "Show popups on hover": False,
