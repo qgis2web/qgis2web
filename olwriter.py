@@ -102,7 +102,8 @@ def writeOL(iface, layers, groups, popup, visible,
         popupLayers = "popupLayers = [%s];" % ",".join(
                 ['1' for field in popup])
         controls = ['expandedAttribution']
-        if settings["Appearance"]["Add scale bar"]:
+        project = QgsProject.instance()
+        if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             controls.append("new ol.control.ScaleLine({})")
         if settings["Appearance"]["Add layers list"]:
             controls.append(
@@ -113,7 +114,7 @@ def writeOL(iface, layers, groups, popup, visible,
         if settings["Appearance"]["Geolocate user"]:
             controls.append(
                 'new geolocateControl()')
-        pageTitle = QgsProject.instance().title()
+        pageTitle = project.title()
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = """
         <style>

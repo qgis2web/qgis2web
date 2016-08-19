@@ -173,7 +173,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     if params["Appearance"]["Add layers list"]:
         new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
                                  legends)
-    if params["Appearance"]["Add scale bar"]:
+    if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
         end = scaleBar()
     else:
         end = ''
