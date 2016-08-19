@@ -90,7 +90,8 @@ def writeTmpLayer(layer, popup):
     writer = newlayer.dataProvider()
     outFeat = QgsFeature()
     for feature in layer.getFeatures():
-        outFeat.setGeometry(feature.geometry())
+        if feature.geometry() is not None:
+            outFeat.setGeometry(feature.geometry())
         attrs = [feature[f] for f in usedFields]
         if attrs:
             outFeat.setAttributes(attrs)
