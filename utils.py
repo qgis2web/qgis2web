@@ -90,7 +90,8 @@ def writeTmpLayer(layer, popup):
     if crs.isValid():
         uri += '?crs=' + crs.authid()
     for field in usedFields:
-        fieldIndex = layer.pendingFields().indexFromName(unicode(layer.pendingFields().field(field).name()))
+        fieldIndex = layer.pendingFields().indexFromName(unicode(
+            layer.pendingFields().field(field).name()))
         try:
             editorWidget = layer.editFormConfig().widgetType(fieldIndex)
         except:
