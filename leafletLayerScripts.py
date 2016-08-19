@@ -371,6 +371,7 @@ def labelsAndPopups(i, safeLayerName, highlight, popupsOnHover, popup, count):
             styleStart, unicode(f), styleEnd)
     labeltext += ", {noHide: true, offset: [-0, -16]}"
     labeltext += ")"
+    table = ""
     for field in popup[count]:
         if unicode(field) == 'html_exp':
             html_prov = True
@@ -422,7 +423,7 @@ def labelsAndPopups(i, safeLayerName, highlight, popupsOnHover, popup, count):
             table = tablestart + row + tableend
     if not label_exp:
         labeltext = ""
-    if popup[count] != 0:
+    if popup[count] != 0 and table != "":
         popFuncs = popFuncsScript(table)
     else:
         popFuncs = ""
