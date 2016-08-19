@@ -1220,6 +1220,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
         self.dialog.ol3.click()
 
+        # Reset scale bar setting
+        QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", False)
+
         # Open the test file
         test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
 
