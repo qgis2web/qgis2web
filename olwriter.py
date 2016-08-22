@@ -604,6 +604,14 @@ def exportStyles(layers, folder, clustered):
         if (labelsEnabled):
             labelField = layer.customProperty("labeling/fieldName")
             if labelField != "":
+                fieldIndex = layer.pendingFields().indexFromName(labelField)
+                try:
+                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                except:
+                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                if (editorWidget == QgsVectorLayer.Hidden or
+                        editorWidget == 'Hidden'):
+                    labelField = "q2wHide_" + labelField
                 labelText = ('feature.get("%s")' %
                              labelField.replace('"', '\\"'))
             else:
@@ -638,8 +646,16 @@ def exportStyles(layers, folder, clustered):
                                     stylesFolder,
                                     layer_alpha)))
                 defs += ",\n".join(cats) + "};"
-                value = ('var value = feature.get("%s");' %
-                         renderer.classAttribute())
+                classAttr = renderer.classAttribute()
+                fieldIndex = layer.pendingFields().indexFromName(classAttr)
+                try:
+                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                except:
+                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                if (editorWidget == QgsVectorLayer.Hidden or
+                        editorWidget == 'Hidden'):
+                    classAttr = "q2wHide_" + classAttr
+                value = ('var value = feature.get("%s");' % classAttr)
                 style = ('''var style = categories_%s[value]''' %
                          (safeName(layer.name())))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
@@ -653,8 +669,16 @@ def exportStyles(layers, folder, clustered):
                                                     ran.upperValue(),
                                                     symbolstyle))
                 defs += ",\n".join(ranges) + "];"
-                value = ('var value = feature.get("%s");' %
-                         renderer.classAttribute())
+                classAttr = renderer.classAttribute()
+                fieldIndex = layer.pendingFields().indexFromName(classAttr)
+                try:
+                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                except:
+                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                if (editorWidget == QgsVectorLayer.Hidden or
+                        editorWidget == 'Hidden'):
+                    classAttr = "q2wHide_" + classAttr
+                value = ('var value = feature.get("%s");' % classAttr)
                 style = '''var style = %(v)s[0][2];
     for (i = 0; i < %(v)s.length; i++){
         var range = %(v)s[i];
