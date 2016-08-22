@@ -606,7 +606,8 @@ def exportStyles(layers, folder, clustered):
             if labelField != "":
                 fieldIndex = layer.pendingFields().indexFromName(labelField)
                 try:
-                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                    editFormConfig = layer.editFormConfig()
+                    editorWidget = editFormConfig.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
@@ -649,7 +650,8 @@ def exportStyles(layers, folder, clustered):
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
                 try:
-                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                    editFormConfig = layer.editFormConfig()
+                    editorWidget = editFormConfig.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
@@ -672,7 +674,8 @@ def exportStyles(layers, folder, clustered):
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
                 try:
-                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                    editFormConfig = layer.editFormConfig()
+                    editorWidget = editFormConfig.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
