@@ -481,8 +481,8 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.attrWidget.addItem("no label")
                 self.attrWidget.addItem("inline label")
                 self.attrWidget.addItem("header label")
-                if (layer.customProperty("qgis2web/popup/" + option) != "" and
-                    layer.customProperty("qgis2web/popup/" + option) is not None):
+                custProp = layer.customProperty("qgis2web/popup/" + option)
+                if (custProp != "" and custProp is not None):
                     self.attrWidget.setCurrentIndex(
                         self.attrWidget.findText(
                             layer.customProperty("qgis2web/popup/" + option)))
