@@ -234,16 +234,12 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if projectInstance.readNumEntry("qgis2web",
                                                     param.replace(" ",
                                                                   ""))[0] != 0:
-                        value = projectInstance.readNumEntry("qgis2web",
-                                                             param.replace(" ",
-                                                                           "")
-                                                            )[0]
+                        value = projectInstance.readNumEntry(
+                                "qgis2web", param.replace(" ", ""))[0]
                 elif isinstance(value, tuple):
                     isTuple = True
-                    if projectInstance.readNumEntry("qgis2web",
-                                                    param.replace(" ",
-                                                                  "")
-                                                   )[0] != 0:
+                    if projectInstance.readNumEntry(
+                            "qgis2web", param.replace(" ", ""))[0] != 0:
                         comboSelection = projectInstance.readNumEntry(
                             "qgis2web", param.replace(" ", ""))[0]
                     elif param == "Max zoom level":
@@ -253,10 +249,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 else:
                     if (isinstance(projectInstance.readEntry("qgis2web",
                                    param.replace(" ", ""))[0], basestring) and
-                            projectInstance.readEntry("qgis2web",
-                                                      param.replace(" ",
-                                                                    "")
-                                                     )[0] != ""):
+                            projectInstance.readEntry(
+                                    "qgis2web",
+                                    param.replace(" ", ""))[0] != ""):
                         value = projectInstance.readEntry("qgis2web",
                                                           param.replace(" ",
                                                                         ""))[0]
