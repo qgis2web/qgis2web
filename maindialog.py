@@ -159,12 +159,12 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveSettings(self, paramItem, col):
         global projectInstance
-        projectInstance.removeEntry("qgis2web", paramItem.name)
+        projectInstance.removeEntry("qgis2web", paramItem.name.replace(" ", ""))
         if isinstance(paramItem._value, bool):
-            projectInstance.writeEntry("qgis2web", paramItem.name,
+            projectInstance.writeEntry("qgis2web", paramItem.name.replace(" ", ""),
                                        paramItem.checkState(col))
         else:
-            projectInstance.writeEntry("qgis2web", paramItem.name,
+            projectInstance.writeEntry("qgis2web", paramItem.name.replace(" ", ""),
                                        paramItem.text(col))
         if paramItem.name == "Match project CRS":
             baseLayer = self.basemaps
@@ -225,28 +225,28 @@ class MainDialog(QDialog, Ui_MainDialog):
                 isTuple = False
                 if isinstance(value, bool):
                     value = projectInstance.readBoolEntry("qgis2web",
-                                                          param)[0]
+                                                          param.replace(" ", ""))[0]
                 elif isinstance(value, int):
                     if projectInstance.readNumEntry("qgis2web",
-                                                    param)[0] != 0:
+                                                    param.replace(" ", ""))[0] != 0:
                         value = projectInstance.readNumEntry("qgis2web",
-                                                             param)[0]
+                                                             param.replace(" ", ""))[0]
                 elif isinstance(value, tuple):
                     isTuple = True
                     if projectInstance.readNumEntry("qgis2web",
-                                                    param)[0] != 0:
+                                                    param.replace(" ", ""))[0] != 0:
                         comboSelection = projectInstance.readNumEntry(
-                            "qgis2web", param)[0]
+                            "qgis2web", param.replace(" ", ""))[0]
                     elif param == "Max zoom level":
                         comboSelection = 27
                     else:
                         comboSelection = 0
                 else:
                     if (isinstance(projectInstance.readEntry("qgis2web",
-                                   param)[0], basestring) and
+                                   param.replace(" ", ""))[0], basestring) and
                             projectInstance.readEntry("qgis2web",
-                                                      param)[0] != ""):
-                        value = projectInstance.readEntry("qgis2web", param)[0]
+                                                      param.replace(" ", ""))[0] != ""):
+                        value = projectInstance.readEntry("qgis2web", param.replace(" ", ""))[0]
                 subitem = TreeSettingItem(item, self.paramsTreeOL,
                                           param, value, dlg)
                 if isTuple:
@@ -338,7 +338,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         parameters = defaultdict(dict)
         for group, settings in self.items.iteritems():
             for param, item in settings.iteritems():
-                projectInstance.writeEntry("qgis2web", param, item.setting())
+                projectInstance.writeEntry("qgis2web", param.replace(" ", ""), item.setting())
         basemaps = self.basemaps.selectedItems()
         basemaplist = ",".join(basemap.text() for basemap in basemaps)
         projectInstance.writeEntry("qgis2web", "Basemaps", basemaplist)
