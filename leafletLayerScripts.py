@@ -659,7 +659,10 @@ def categorizedPoint(outputProjectFileName, i, renderer, safeLayerName,
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
         symbolLayer = symbol.symbolLayer(0)
-        border_transp = float(symbolLayer.borderColor().alpha()) / 255
+        try:
+            border_transp = float(symbolLayer.borderColor().alpha()) / 255
+        except:
+            border_transp = 0
         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
         categoryStr += categorizedPointStylesScript(symbol, fill_opacity,
                                                     borderOpacity)

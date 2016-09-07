@@ -322,11 +322,19 @@ def clusterScript(safeLayerName):
 
 def categorizedPointStylesScript(symbol, opacity, borderOpacity):
     symbolLayer = symbol.symbolLayer(0)
-    (dashArray, capString, joinString) = getLineStyle(
-                                             symbolLayer.outlineStyle(),
-                                             symbolLayer.outlineWidth(), 0, 0)
-    if symbolLayer.outlineStyle() == 0:
-        borderOpacity = 0
+    try:
+        (dashArray, capString,
+         joinString) = getLineStyle(symbolLayer.outlineStyle(),
+                                    symbolLayer.outlineWidth(), 0, 0)
+        if symbolLayer.outlineStyle() == 0:
+            borderOpacity = 0
+        borderColor = symbolLayer.borderColor().name()
+    except:
+        dashArray = ""
+        capString = ""
+        joinString = ""
+        borderOpacity = 1
+        borderColor = ""
     styleValues = """
                     radius: {radius},
                     fillColor: '{fillColor}',
@@ -338,7 +346,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                 }};
                 break;""".format(radius=symbol.size() * 2,
                                  fillColor=symbol.color().name(),
-                                 color=symbolLayer.borderColor().name(),
+                                 color=borderColor,
                                  borderWidth=symbolLayer.outlineWidth() * 4,
                                  borderOpacity=borderOpacity,
                                  dashArray=dashArray, opacity=opacity)
