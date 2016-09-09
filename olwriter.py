@@ -215,6 +215,8 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@LEAFLET_ADDRESSJS@": "",
                   "@LEAFLET_MEASUREJS@": "",
                   "@LEAFLET_CRSJS@": "",
+                  "@LEAFLET_LAYERSEARCHCSS@": "",
+                  "@LEAFLET_LAYERSEARCHJS@": "",
                   "@LEAFLET_CLUSTERCSS@": "",
                   "@LEAFLET_CLUSTERJS@": ""}
         with open(os.path.join(folder, "index.html"), "w") as f:

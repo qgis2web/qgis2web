@@ -37,6 +37,7 @@ paramsOL = {
         "Add layers list": False,
         "Match project CRS": False,
         "Add address search": False,
+        "Layer search": ("None", "placeholder"),
         "Measure tool": ("None", "Metric", "Imperial"),
         "Show popups on hover": False,
         "Highlight on hover": False,

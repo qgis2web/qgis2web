@@ -759,11 +759,18 @@ def addressSearchScript():
     return addressSearch
 
 
-def endHTMLscript(wfsLayers):
+def endHTMLscript(wfsLayers, layerSearch):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
         stackLayers();"""
+    if layerSearch != "None":
+        searchVals = layerSearch.split(": ")
+        endHTML += """
+        map.addControl(new L.Control.Search({{
+            layer: feature_group,
+            hideMarkerOnCollapse: true,
+            propertyName: '{field}'}}));""".format(field=searchVals[1])
     endHTML += """
         map.on('overlayadd', restackLayers);
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)

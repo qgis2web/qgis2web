@@ -56,8 +56,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         webview = self.preview.page()
         webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
-        self.populate_layers_and_groups(self)
         self.populateConfigParams(self)
+        self.populate_layers_and_groups(self)
         self.populateBasemaps()
         self.selectMapFormat()
         self.toggleOptions()
@@ -188,19 +188,19 @@ class MainDialog(QDialog, Ui_MainDialog):
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             if layer.type() != QgsMapLayer.PluginLayer:
-                try:
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.rendererV2().dump()
-                    layer_parent = tree_layer.parent()
-                    if layer_parent.parent() is None:
-                        item = TreeLayerItem(self.iface, layer,
-                                             self.layersTree, dlg)
-                        self.layers_item.addChild(item)
-                    else:
-                        if layer_parent not in tree_groups:
-                            tree_groups.append(layer_parent)
-                except:
-                    pass
+#                try:
+                if layer.type() == QgsMapLayer.VectorLayer:
+                    testDump = layer.rendererV2().dump()
+                layer_parent = tree_layer.parent()
+                if layer_parent.parent() is None:
+                    item = TreeLayerItem(self.iface, layer,
+                                         self.layersTree, dlg)
+                    self.layers_item.addChild(item)
+                else:
+                    if layer_parent not in tree_groups:
+                        tree_groups.append(layer_parent)
+#                except:
+#                    pass
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
@@ -268,6 +268,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.expandAll()
         self.paramsTreeOL.resizeColumnToContents(0)
         self.paramsTreeOL.resizeColumnToContents(1)
+        searchCombo = dlg.paramsTreeOL.itemWidget(
+                dlg.paramsTreeOL.findItems("Layer search",
+                                           (Qt.MatchExactly |
+                                            Qt.MatchRecursive))[0], 1)
+        searchCombo.removeItem(1)
 
     def populateBasemaps(self):
         multiSelect = QtGui.QAbstractItemView.ExtendedSelection
@@ -484,7 +489,12 @@ class TreeLayerItem(QTreeWidgetItem):
                         editorWidget == 'Hidden'):
                     continue
                 options.append(f.name())
+            treeParam = dlg.paramsTreeOL.itemWidget(
+                    dlg.paramsTreeOL.findItems("Layer search",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1)
             for option in options:
+                treeParam.addItem(layer.name() + ": " + option)
                 self.attr = QTreeWidgetItem(self)
                 self.attrWidget = QComboBox()
                 self.attrWidget.addItem("no label")

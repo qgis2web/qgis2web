@@ -370,11 +370,9 @@ def labelsAndPopups(i, safeLayerName, highlight, popupsOnHover, popup, count):
         editorWidget = i.editFormConfig().widgetType(fieldIndex)
     except:
         editorWidget = i.editorWidgetV2(fieldIndex)
-    print editorWidget
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         f = "q2wHide_" + f
-        print f
     label_exp = False
     labeltext = ".bindLabel((feature.properties['" + unicode(f)
     labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (

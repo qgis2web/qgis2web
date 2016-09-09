@@ -8,15 +8,16 @@ from utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
-                         measure, matchCRS, canvas, mapLibLocation, locate):
+                         measure, matchCRS, layerSearch, canvas,
+                         mapLibLocation, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
     jsDir = pluginDir + os.sep + 'js' + os.sep
     dataStore = os.path.join(outputProjectFileName, 'data')
     os.makedirs(dataStore)
+    imageDir = pluginDir + os.sep + 'images' + os.sep
     imageStore = os.path.join(outputProjectFileName, 'images')
-    os.makedirs(imageStore)
     legendStore = os.path.join(outputProjectFileName, 'legend')
     os.makedirs(legendStore)
     cssStore = os.path.join(outputProjectFileName, 'css')
@@ -45,6 +46,12 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
                         cssStore + 'MarkerCluster.css')
         shutil.copyfile(cssDir + 'MarkerCluster.Default.css',
                         cssStore + 'MarkerCluster.Default.css')
+    if layerSearch != "None":
+        shutil.copyfile(jsDir + 'leaflet-search.js',
+                        jsStore + 'leaflet-search.js')
+        shutil.copyfile(cssDir + 'leaflet-search.css',
+                        cssStore + 'leaflet-search.css')
+        shutil.copytree(imageDir, imageStore)
     shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
     shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
     if measure != "None":
@@ -70,8 +77,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, canvas, mapLibLocation, locate, qgis2webJS,
-                   template):
+                   matchCRS, layerSearch, canvas, mapLibLocation, locate,
+                   qgis2webJS, template):
     if webpage_name == "":
         pass
     else:
@@ -106,6 +113,13 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         clusterCSS = ""
         clusterJS = ""
+    if layerSearch != "None":
+        layerSearchCSS = '<link rel="stylesheet" '
+        layerSearchCSS += 'href="css/leaflet-search.css" />'
+        layerSearchJS = '<script src="js/leaflet-search.js"></script>'
+    else:
+        layerSearchCSS = ""
+        layerSearchJS = ""
     if address:
         addressCSS = """
         <link rel="stylesheet" href="""
@@ -145,6 +159,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@JSADDRESS@": jsAddress,
               "@LEAFLET_CLUSTERCSS@": clusterCSS,
               "@LEAFLET_CLUSTERJS@": clusterJS,
+              "@LEAFLET_LAYERSEARCHCSS@": layerSearchCSS,
+              "@LEAFLET_LAYERSEARCHJS@": layerSearchJS,
               "@LEAFLET_ADDRESSCSS@": addressCSS,
               "@LEAFLET_MEASURECSS@": measureCSS,
               "@LEAFLET_EXTRAJS@": extraJS,
