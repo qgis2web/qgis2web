@@ -62,9 +62,9 @@ def writeOL(iface, layers, groups, popup, visible,
         <script src="./resources/ol.js"></script>"""
         else:
             cssAddress = """<link rel="stylesheet" href="http://"""
-            cssAddress += """openlayers.org/en/v3.17.1/css/ol.css" />"""
+            cssAddress += """openlayers.org/en/v3.18.2/css/ol.css" />"""
             jsAddress += """
-        <script src="http://openlayers.org/en/v3.17.1/"""
+        <script src="http://openlayers.org/en/v3.18.2/"""
             jsAddress += """build/ol.js"></script>"""
         jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
