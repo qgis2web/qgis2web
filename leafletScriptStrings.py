@@ -769,6 +769,7 @@ def endHTMLscript(wfsLayers, layerSearch):
         endHTML += """
         map.addControl(new L.Control.Search({{
             layer: feature_group,
+            initial: false,
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));""".format(field=searchVals[1])
     endHTML += """
