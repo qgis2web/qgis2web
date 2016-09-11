@@ -118,8 +118,6 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Include list of layers (with legend icons, where possible)</dd>
     <dt>Add measure tool</dt>
         <dd>Include interactive measuring widget</dd>
-    <dt>Add scale bar</dt>
-        <dd>Include dynamic scale bar</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
     <dt>Highlight on hover</dt>
