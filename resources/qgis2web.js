@@ -28,6 +28,7 @@ var map = new ol.Map({
         @VIEW@
     })
 });
+@LAYERSEARCH@
 map.getView().fit(@BOUNDS@, map.getSize());
 
 var NO_POPUP = 0

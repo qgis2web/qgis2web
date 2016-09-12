@@ -66,7 +66,28 @@ def writeOL(iface, layers, groups, popup, visible,
             jsAddress += """
         <script src="http://openlayers.org/en/v3.18.2/"""
             jsAddress += """build/ol.js"></script>"""
-        jsAddress += """
+        layerSearch = settings["Appearance"]["Layer search"]
+        if layerSearch != "None" and layerSearch != "":
+            cssAddress += """
+        <link rel="stylesheet" href="resources/horsey.min.css">
+        <link rel="stylesheet" href="resources/ol3-search-layer.min.css">"""
+            jsAddress += """
+        <script src="resources/horsey.min.js"></script>
+        <script src="resources/ol3-search-layer.min.js"></script>"""
+            searchVals = layerSearch.split(": ")
+            layerSearch = """
+    var searchLayer = new ol.SearchLayer({{
+      layer: lyr_{layer},
+      colName: '{field}',
+      zoom: 10,
+      collapsed: true,
+      map: map
+    }});
+
+    map.addControl(searchLayer);""".format(layer=searchVals[0],
+                                           field=searchVals[1])
+        if osmb != "":
+            jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
         geojsonVars = ""
         wfsVars = ""
@@ -231,6 +252,7 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@CONTROLS@": ",".join(controls),
                   "@POPUPLAYERS@": popupLayers,
                   "@VIEW@": view,
+                  "@LAYERSEARCH@": layerSearch,
                   "@ONHOVER@": onHover,
                   "@DOHIGHLIGHT@": highlight,
                   "@HIGHLIGHTFILL@": highlightFill,
