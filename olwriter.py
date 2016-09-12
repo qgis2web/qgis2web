@@ -72,6 +72,8 @@ def writeOL(iface, layers, groups, popup, visible,
         <link rel="stylesheet" href="resources/horsey.min.css">
         <link rel="stylesheet" href="resources/ol3-search-layer.min.css">"""
             jsAddress += """
+        <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features="""
+            jsAddress += """Element.prototype.classList,URL"></script>
         <script src="resources/horsey.min.js"></script>
         <script src="resources/ol3-search-layer.min.js"></script>"""
             searchVals = layerSearch.split(": ")
