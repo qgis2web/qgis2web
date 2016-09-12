@@ -86,6 +86,8 @@ def writeOL(iface, layers, groups, popup, visible,
 
     map.addControl(searchLayer);""".format(layer=searchVals[0],
                                            field=searchVals[1])
+        else:
+            layerSearch = ""
         if osmb != "":
             jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
