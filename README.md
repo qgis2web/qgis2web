@@ -122,6 +122,8 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Show user's location on map</dd>
     <dt>Highlight on hover</dt>
         <dd>Highlight features on mouseover</dd>
+    <dt>Layer search</dt>
+        <dd>Add option to search for values in layer field values</dd>
     <dt>Match project CRS</dt>
         <dd>Create webmap in same projection as QGIS project, otherwise the
         webmap is projected in EPSG:3857</dd>
