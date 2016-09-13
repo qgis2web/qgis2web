@@ -298,6 +298,7 @@ software:</p>
     <li>@lucacasagrande</li>
     <li>@walkermatt</li>
     <li>@boesiii</li>
+    <li>@ThomasG77</li>
 </ul>
 
 <p>In addition, the following libraries have been used:</p>
@@ -314,5 +315,7 @@ software:</p>
     <li>leaflet-hash, by @mlevans</li>
     <li>Proj4js, by @madair, @calvinmetcalf, and other</li>
     <li>Proj4Leaflet, by @kartena</li>
+    <li>Leaflet.search, by @stefanocudini</li>
+    <li>ol3-search-layer, by @ThomasG77</li>
     <li>OSMBuildings, by @kekscom</li>
 </ul>
