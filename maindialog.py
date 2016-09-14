@@ -228,8 +228,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         global mainDlg
         layerSearch = mainDlg.paramsTreeOL.itemWidget(
                 mainDlg.paramsTreeOL.findItems("Layer search",
-                                           (Qt.MatchExactly |
-                                            Qt.MatchRecursive))[0], 1)
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1)
         layerSearch.clear()
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
@@ -250,7 +250,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     options.append(f.name())
                 for option in options:
                     layerSearch.addItem(layer.name() + ": " + option)
-    
+
     def populateConfigParams(self, dlg):
         global projectInstance
         self.items = defaultdict(dict)
