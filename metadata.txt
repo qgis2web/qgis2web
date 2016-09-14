@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.8
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=1.15.0
+version=1.15.1
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/09/13 1.15.0 Search layer properties (thanks @ThomasG77 and @boesiii!), Leaflet categorized SVG error, update README, update wiki
+changelog=2016/09/14 1.15.1 Only include checked layers in layer search dropdown
+    2016/09/13 1.15.0 Search layer properties (thanks @ThomasG77 and @boesiii!), Leaflet categorized SVG error, update README, update wiki
     2016/08/25 1.14.1 Fixed save settings to project
     2016/08/23 1.14.0 Leaflet handle invalid JS field names, remove hidden fields from popup label UI, scale bar from QGIS, handle features without geometry, allow hidden fields as labels, allow hidden fields for cat/grad layers, save popup label settings
     2016/07/28 1.13.1 Leaflet categorized/graduated with special characters in field name
