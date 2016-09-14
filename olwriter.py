@@ -512,6 +512,8 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
             cluster = False
         if isinstance(renderer, QgsHeatmapRenderer):
             pointLayerType = "Heatmap"
+            hmRadius = renderer.radius()
+            
         else:
             pointLayerType = "Vector"
         if matchCRS:
@@ -572,6 +574,9 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             if pointLayerType == "Vector":
                 layerCode += '''
                 style: style_%(n)s,''' % {"n": layerName}
+            else:
+                layerCode += '''
+                radius: %(hmRadius)d,''' % {"hmRadius": hmRadius}
             layerCode += '''
                 title: "%(name)s"
             });''' % {"name": layer.name()}
