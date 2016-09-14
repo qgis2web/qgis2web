@@ -41,6 +41,7 @@ from leafletWriter import *
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 projectInstance = QgsProject.instance()
+mainDlg = None
 
 
 class MainDialog(QDialog, Ui_MainDialog):
@@ -48,9 +49,11 @@ class MainDialog(QDialog, Ui_MainDialog):
     items = {}
 
     def __init__(self, iface):
+        global mainDlg
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
+        mainDlg = self
         self.resize(QSettings().value("qgis2web/size", QSize(994, 647)))
         self.move(QSettings().value("qgis2web/pos", QPoint(50, 50)))
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -58,10 +61,12 @@ class MainDialog(QDialog, Ui_MainDialog):
         webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
         self.populateConfigParams(self)
         self.populate_layers_and_groups(self)
+        self.populateLayerSearch()
         self.populateBasemaps()
         self.selectMapFormat()
         self.toggleOptions()
         self.previewMap()
+        self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
         self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
@@ -219,6 +224,33 @@ class MainDialog(QDialog, Ui_MainDialog):
             if item.checkState(0) != Qt.Checked:
                 item.setExpanded(False)
 
+    def populateLayerSearch(self):
+        global mainDlg
+        layerSearch = mainDlg.paramsTreeOL.itemWidget(
+                mainDlg.paramsTreeOL.findItems("Layer search",
+                                           (Qt.MatchExactly |
+                                            Qt.MatchRecursive))[0], 1)
+        layerSearch.clear()
+        (layers, groups, popup, visible,
+         json, cluster) = self.getLayersAndGroups()
+        for layer in reversed(layers):
+            if layer.type() == layer.VectorLayer:
+                options = []
+                fields = layer.pendingFields()
+                for f in fields:
+                    fieldIndex = fields.indexFromName(unicode(f.name()))
+                    try:
+                        formCnf = layer.editFormConfig()
+                        editorWidget = formCnf.widgetType(fieldIndex)
+                    except:
+                        editorWidget = layer.editorWidgetV2(fieldIndex)
+                    if (editorWidget == QgsVectorLayer.Hidden or
+                            editorWidget == 'Hidden'):
+                        continue
+                    options.append(f.name())
+                for option in options:
+                    layerSearch.addItem(layer.name() + ": " + option)
+    
     def populateConfigParams(self, dlg):
         global projectInstance
         self.items = defaultdict(dict)
@@ -490,14 +522,7 @@ class TreeLayerItem(QTreeWidgetItem):
                         editorWidget == 'Hidden'):
                     continue
                 options.append(f.name())
-            layerSearch = dlg.paramsTreeOL.itemWidget(
-                    dlg.paramsTreeOL.findItems("Layer search",
-                                               (Qt.MatchExactly |
-                                                Qt.MatchRecursive))[0], 1)
             for option in options:
-                if projectInstance.layerTreeRoot().findLayer(
-                        layer.id()).isVisible():
-                    layerSearch.addItem(layer.name() + ": " + option)
                 self.attr = QTreeWidgetItem(self)
                 self.attrWidget = QComboBox()
                 self.attrWidget.addItem("no label")
