@@ -513,7 +513,6 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
         if isinstance(renderer, QgsHeatmapRenderer):
             pointLayerType = "Heatmap"
             hmRadius = renderer.radius()
-            
         else:
             pointLayerType = "Vector"
         if matchCRS:
