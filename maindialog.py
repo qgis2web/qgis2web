@@ -231,6 +231,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1)
         layerSearch.clear()
+        layerSearch.addItem("None")
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         for layer in reversed(layers):
