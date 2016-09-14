@@ -490,12 +490,14 @@ class TreeLayerItem(QTreeWidgetItem):
                         editorWidget == 'Hidden'):
                     continue
                 options.append(f.name())
-            treeParam = dlg.paramsTreeOL.itemWidget(
+            layerSearch = dlg.paramsTreeOL.itemWidget(
                     dlg.paramsTreeOL.findItems("Layer search",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1)
             for option in options:
-                treeParam.addItem(layer.name() + ": " + option)
+                if projectInstance.layerTreeRoot().findLayer(
+                        layer.id()).isVisible():
+                    layerSearch.addItem(layer.name() + ": " + option)
                 self.attr = QTreeWidgetItem(self)
                 self.attrWidget = QComboBox()
                 self.attrWidget.addItem("no label")
