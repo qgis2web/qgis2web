@@ -513,6 +513,14 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
         if isinstance(renderer, QgsHeatmapRenderer):
             pointLayerType = "Heatmap"
             hmRadius = renderer.radius()
+            colorRamp = renderer.colorRamp()
+            hmStart = colorRamp.color1().name()
+            hmEnd = colorRamp.color2().name()
+            hmRamp = "['" + hmStart + "', "
+            hmStops = colorRamp.stops()
+            for stop in hmStops:
+                hmRamp += "'" + stop.color.name() + "', "
+            hmRamp += "'" + hmEnd + "']"
         else:
             pointLayerType = "Vector"
         if matchCRS:
@@ -575,7 +583,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 style: style_%(n)s,''' % {"n": layerName}
             else:
                 layerCode += '''
-                radius: %(hmRadius)d,''' % {"hmRadius": hmRadius}
+                radius: %(hmRadius)d,
+                gradient: %(hmRamp)s,
+                shadow: 0,''' % {"hmRadius": hmRadius,
+                                            "hmRamp": hmRamp}
             layerCode += '''
                 title: "%(name)s"
             });''' % {"name": layer.name()}
