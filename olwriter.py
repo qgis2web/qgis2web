@@ -510,6 +510,10 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
             cluster = True
         else:
             cluster = False
+        if isinstance(renderer, QgsHeatmapRenderer):
+            pointLayerType = "Heatmap"
+        else:
+            pointLayerType = "Vector"
         if matchCRS:
             mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
             crsConvert = """
@@ -557,17 +561,20 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
   distance: 10,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
-            layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
-                source:''' % {"n": layerName}
+            layerCode += '''var lyr_%(n)s = new ol.layer.%(t)s({
+                source:''' % {"n": layerName, "t": pointLayerType}
             if cluster:
                 layerCode += 'cluster_%(n)s,' % {"n": layerName}
             else:
                 layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
-            layerCode += '''%(min)s %(max)s
-                style: style_%(n)s,
+            layerCode += '''%(min)s %(max)s''' % {"min": minResolution,
+                                                  "max": maxResolution}
+            if pointLayerType == "Vector":
+                layerCode += '''
+                style: style_%(n)s,''' % {"n": layerName}
+            layerCode += '''
                 title: "%(name)s"
-            });''' % {"name": layer.name(), "n": layerName,
-                      "min": minResolution, "max": maxResolution}
+            });''' % {"name": layer.name()}
             return layerCode
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
