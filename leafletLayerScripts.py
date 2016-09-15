@@ -940,16 +940,16 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
     hmWeightMax = i.maximumValue(hmWeightId)
     new_obj = """
         var %(sln)s_hm = geoJson2heat(json_%(sln)s,
-                                      '%(hmWeight)s', %(hmWeightMax)d);
+                                      '%(hmWeight)s');
         var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
-            radius: %(hmRadius)d});
+            radius: %(hmRadius)d, max: %(hmWeightMax)d});
 
-        function geoJson2heat(geojson, weight, maxWeight) {
+        function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
             return [
               feature.geometry.coordinates[1],
               feature.geometry.coordinates[0],
-              feature.properties[weight]/maxWeight
+              feature.properties[weight]
             ];
           });
         }""" % {"sln": safeLayerName, "hmWeight": hmWeight,
