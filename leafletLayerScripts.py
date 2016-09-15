@@ -301,7 +301,13 @@ def writeVectorLayer(i, safeLayerName, usedFields, highlight, popupsOnHover,
     elif isinstance(renderer, Qgs25DRenderer):
         # print safeLayerName + ": 2.5d"
         pass
-
+    elif isinstance(renderer, QgsHeatmapRenderer):
+        (new_obj, legends,
+         wfsLayers) = heatmapLayer(i, safeLayerName, renderer,
+                                   outputProjectFileName, layer_transp,
+                                   labeltext, popFuncs, cluster, cluster_num,
+                                   visible, json, usedFields, count, legends,
+                                   wfsLayers)
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")
     new_src += """
@@ -915,6 +921,25 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
                                     usedFields[count])
     return new_obj, catLegend, wfsLayers
+
+
+def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
+                 layer_transp, labeltext, popFuncs, cluster, cluster_num,
+                 visible, json, usedFields, count, legends, wfsLayers):
+    new_obj = """
+        var %(sln)s_hm = geoJson2heat(json_%(sln)s);
+        var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm);
+
+        function geoJson2heat(geojson) {
+          return geojson.features.map(function(feature) {
+            console.log(feature.geometry.coordinates);
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0]
+            ];
+          });
+        }""" % {"sln": safeLayerName}
+    return new_obj, legends, wfsLayers
 
 
 def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
