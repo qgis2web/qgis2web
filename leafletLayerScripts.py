@@ -926,19 +926,28 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
 def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
                  layer_transp, labeltext, popFuncs, cluster, cluster_num,
                  visible, json, usedFields, count, legends, wfsLayers):
+    hmRadius = renderer.radius()
+    colorRamp = renderer.colorRamp()
+    hmStart = colorRamp.color1().name()
+    hmEnd = colorRamp.color2().name()
+    hmRamp = "['" + hmStart + "', "
+    hmStops = colorRamp.stops()
+    for stop in hmStops:
+        hmRamp += "'" + stop.color.name() + "', "
+    hmRamp += "'" + hmEnd + "']"
+    hmWeight = renderer.weightExpression()
     new_obj = """
         var %(sln)s_hm = geoJson2heat(json_%(sln)s);
-        var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm);
+        var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {radius: %(hmRadius)d});
 
         function geoJson2heat(geojson) {
           return geojson.features.map(function(feature) {
-            console.log(feature.geometry.coordinates);
             return [
               feature.geometry.coordinates[1],
               feature.geometry.coordinates[0]
             ];
           });
-        }""" % {"sln": safeLayerName}
+        }""" % {"sln": safeLayerName, "hmRadius": hmRadius}
     return new_obj, legends, wfsLayers
 
 
