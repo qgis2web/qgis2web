@@ -927,22 +927,26 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
                  layer_transp, labeltext, popFuncs, cluster, cluster_num,
                  visible, json, usedFields, count, legends, wfsLayers):
     hmRadius = renderer.radius()
+    hmWeight = renderer.weightExpression()
+    if hmWeight != None and hmWeight != "":
+        hmWeightId = i.fieldNameIndex(hmWeight)
+        hmWeightMax = i.maximumValue(hmWeightId)
+    else:
+        hmWeight = ""
+        hmWeightMax = 1
     colorRamp = renderer.colorRamp()
     hmStart = colorRamp.color1().name()
     hmEnd = colorRamp.color2().name()
-    hmRamp = "['" + hmStart + "', "
+    hmRamp = "{0: '" + hmStart + "', "
     hmStops = colorRamp.stops()
     for stop in hmStops:
-        hmRamp += "'" + stop.color.name() + "', "
-    hmRamp += "'" + hmEnd + "']"
-    hmWeight = renderer.weightExpression()
-    hmWeightId = i.fieldNameIndex(hmWeight)
-    hmWeightMax = i.maximumValue(hmWeightId)
+        hmRamp += unicode(stop.offset) + ": '" + stop.color.name() + "', "
+    hmRamp += "1: '" + hmEnd + "'}"
     new_obj = """
         var %(sln)s_hm = geoJson2heat(json_%(sln)s,
                                       '%(hmWeight)s');
         var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
-            radius: %(hmRadius)d, max: %(hmWeightMax)d});
+            radius: %(hmRadius)d, max: %(hmWeightMax)d, gradient: %(hmRamp)s});
 
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
@@ -953,7 +957,8 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
             ];
           });
         }""" % {"sln": safeLayerName, "hmWeight": hmWeight,
-                "hmWeightMax": hmWeightMax, "hmRadius": hmRadius}
+                "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
+                "hmRadius": hmRadius}
     return new_obj, legends, wfsLayers
 
 
