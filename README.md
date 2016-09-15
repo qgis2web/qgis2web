@@ -196,7 +196,10 @@ functionality.</p>
 
 <h2>Testing</h2>
 
-<p>All commits and PRs are tested by Travis. The tests are in <code>/test</code>, specifically <code>/test/test_qgis2web_dialog.py</code>. If you want to run these tests locally on Linux, do the following to prepare (assumes Ubuntu or derivative):</p>
+<p>All commits and PRs are tested by Travis. The tests are in <code>/test
+</code>, specifically <code>/test/test_qgis2web_dialog.py</code>. If you want
+to run these tests locally on Linux, do the following to prepare (assumes
+Ubuntu or derivative):</p>
 
 <pre><code># Install the pip Python package manager
 
@@ -215,7 +218,8 @@ cd ~/.qgis2/python/plugins/qgis2web
 
 source scripts/run-env-linux.sh /usr
 
-# Set the QGIS_REPO environent variable to match the QGIS version you are using:
+# Set the QGIS_REPO environent variable to match the QGIS version you are
+# using:
 # http://qgis.org/debian-ltr for long term support version
 # http://qgis.org/debian for current version
 # http://qgis.org/debian-nightly for current master / nightly version
@@ -317,5 +321,6 @@ software:</p>
     <li>Proj4Leaflet, by @kartena</li>
     <li>Leaflet.search, by @stefanocudini</li>
     <li>ol3-search-layer, by @ThomasG77</li>
+    <li>Leaflet.heat, by @mourner</li>
     <li>OSMBuildings, by @kekscom</li>
 </ul>
