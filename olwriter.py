@@ -592,7 +592,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 if hmWeight != "":
                     layerCode += '''
                 weight: function(){'%(hmWeight)s'/%(hmWeightMax)d},''' % {
-                    "hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
+                        "hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
             layerCode += '''
                 title: "%(name)s"
             });''' % {"name": layer.name()}

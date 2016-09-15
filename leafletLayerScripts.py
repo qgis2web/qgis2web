@@ -928,7 +928,7 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
                  visible, json, usedFields, count, legends, wfsLayers):
     hmRadius = renderer.radius()
     hmWeight = renderer.weightExpression()
-    if hmWeight != None and hmWeight != "":
+    if hmWeight is not None and hmWeight != "":
         hmWeightId = i.fieldNameIndex(hmWeight)
         hmWeightMax = i.maximumValue(hmWeightId)
     else:
