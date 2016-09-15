@@ -947,18 +947,9 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
                                       '%(hmWeight)s');
         var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
             radius: %(hmRadius)d, max: %(hmWeightMax)d, gradient: %(hmRamp)s});
-
-        function geoJson2heat(geojson, weight) {
-          return geojson.features.map(function(feature) {
-            return [
-              feature.geometry.coordinates[1],
-              feature.geometry.coordinates[0],
-              feature.properties[weight]
-            ];
-          });
-        }""" % {"sln": safeLayerName, "hmWeight": hmWeight,
-                "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
-                "hmRadius": hmRadius}
+        """ % {"sln": safeLayerName, "hmWeight": hmWeight,
+               "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
+               "hmRadius": hmRadius}
     return new_obj, legends, wfsLayers
 
 

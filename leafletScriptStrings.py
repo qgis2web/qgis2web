@@ -164,7 +164,16 @@ def layerOrderScript(extent, restrictToExtent):
                 layerOrder[index].bringToFront();
             }
         }
-        layerControl = L.control.layers({},{},{collapsed:false});"""
+        layerControl = L.control.layers({},{},{collapsed:false});
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }"""
     return layerOrder
 
 
