@@ -522,6 +522,8 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
                 hmRamp += "'" + stop.color.name() + "', "
             hmRamp += "'" + hmEnd + "']"
             hmWeight = renderer.weightExpression()
+            hmWeightId = layer.fieldNameIndex(hmWeight)
+            hmWeightMax = layer.maximumValue(hmWeightId)
         else:
             pointLayerType = "Vector"
         if matchCRS:
@@ -589,7 +591,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 shadow: 0,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
                 if hmWeight != "":
                     layerCode += '''
-                weight: '%(hmWeight)s',''' % {"hmWeight": hmWeight}
+                weight: function(){'%(hmWeight)s'/%(hmWeightMax)d},''' % {
+                    "hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
             layerCode += '''
                 title: "%(name)s"
             });''' % {"name": layer.name()}
