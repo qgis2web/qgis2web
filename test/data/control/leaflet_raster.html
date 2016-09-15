@@ -62,6 +62,15 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
         var img_test0 = 'data/json_test0.png';
         var img_bounds_test0 = [[54.9705646258,-2.11090194806],[54.979567765,-2.09526212094]];
         var overlay_test0 = new L.imageOverlay(img_test0, img_bounds_test0);

@@ -62,6 +62,15 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
         function pop_polygon0(feature, layer) {
             var popupContent = '<table><tr><td colspan="2">' + (feature.properties['desiguid'] !== null ? Autolinker.link(String(feature.properties['desiguid'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['areaname'] !== null ? Autolinker.link(String(feature.properties['areaname'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['statusdate'] !== null ? Autolinker.link(String(feature.properties['statusdate'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['parish'] !== null ? Autolinker.link(String(feature.properties['parish'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['district'] !== null ? Autolinker.link(String(feature.properties['district'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['source'] !== null ? Autolinker.link(String(feature.properties['source'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['created'] !== null ? Autolinker.link(String(feature.properties['created'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['amended'] !== null ? Autolinker.link(String(feature.properties['amended'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xgcreated'] !== null ? Autolinker.link(String(feature.properties['xgcreated'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xgedited'] !== null ? Autolinker.link(String(feature.properties['xgedited'])) : '') + '</td></tr></table>';
             layer.bindPopup(popupContent);

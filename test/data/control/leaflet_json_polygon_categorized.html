@@ -63,6 +63,15 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
         function pop_lakes0(feature, layer) {
             var popupContent = '<table><tr><td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td></tr></table>';
             layer.bindPopup(popupContent);
