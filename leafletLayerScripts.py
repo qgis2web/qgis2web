@@ -936,18 +936,24 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
         hmRamp += "'" + stop.color.name() + "', "
     hmRamp += "'" + hmEnd + "']"
     hmWeight = renderer.weightExpression()
+    hmWeightId = i.fieldNameIndex(hmWeight)
+    hmWeightMax = i.maximumValue(hmWeightId)
     new_obj = """
-        var %(sln)s_hm = geoJson2heat(json_%(sln)s);
-        var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {radius: %(hmRadius)d});
+        var %(sln)s_hm = geoJson2heat(json_%(sln)s, '%(hmWeight)s', %(hmWeightMax)d);
+        console.log(%(sln)s_hm);
+        var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
+            radius: %(hmRadius)d});
 
-        function geoJson2heat(geojson) {
+        function geoJson2heat(geojson, weight, maxWeight) {
           return geojson.features.map(function(feature) {
             return [
               feature.geometry.coordinates[1],
-              feature.geometry.coordinates[0]
+              feature.geometry.coordinates[0],
+              feature.properties[weight]/maxWeight
             ];
           });
-        }""" % {"sln": safeLayerName, "hmRadius": hmRadius}
+        }""" % {"sln": safeLayerName, "hmWeight": hmWeight,
+                "hmWeightMax": hmWeightMax, "hmRadius": hmRadius}
     return new_obj, legends, wfsLayers
 
 
