@@ -939,8 +939,8 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
     hmWeightId = i.fieldNameIndex(hmWeight)
     hmWeightMax = i.maximumValue(hmWeightId)
     new_obj = """
-        var %(sln)s_hm = geoJson2heat(json_%(sln)s, '%(hmWeight)s', %(hmWeightMax)d);
-        console.log(%(sln)s_hm);
+        var %(sln)s_hm = geoJson2heat(json_%(sln)s,
+                                      '%(hmWeight)s', %(hmWeightMax)d);
         var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
             radius: %(hmRadius)d});
 
