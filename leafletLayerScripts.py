@@ -926,7 +926,7 @@ def graduatedPolygon(outputProjectFileName, i, renderer, safeLayerName,
 def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
                  layer_transp, labeltext, popFuncs, cluster, cluster_num,
                  visible, json, usedFields, count, legends, wfsLayers):
-    hmRadius = renderer.radius()
+    hmRadius = renderer.radius() * 2
     hmWeight = renderer.weightExpression()
     if hmWeight is not None and hmWeight != "":
         hmWeightId = i.fieldNameIndex(hmWeight)
@@ -946,7 +946,10 @@ def heatmapLayer(i, safeLayerName, renderer, outputProjectFileName,
         var %(sln)s_hm = geoJson2heat(json_%(sln)s,
                                       '%(hmWeight)s');
         var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
-            radius: %(hmRadius)d, max: %(hmWeightMax)d, gradient: %(hmRamp)s});
+            radius: %(hmRadius)d,
+            max: %(hmWeightMax)d,
+            minOpacity: 1,
+            gradient: %(hmRamp)s});
         """ % {"sln": safeLayerName, "hmWeight": hmWeight,
                "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
                "hmRadius": hmRadius}
