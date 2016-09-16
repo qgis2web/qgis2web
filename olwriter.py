@@ -586,13 +586,19 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 style: style_%(n)s,''' % {"n": layerName}
             else:
                 layerCode += '''
-                radius: %(hmRadius)d,
+                radius: %(hmRadius)d * 2,
                 gradient: %(hmRamp)s,
-                shadow: 0,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
+                blur: 15,
+                shadow: 250,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
                 if hmWeight != "":
                     layerCode += '''
-                weight: function(){'%(hmWeight)s'/%(hmWeightMax)d},''' % {
-                        "hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
+                weight: function(feature){
+                    var weightField = '%(hmWeight)s';
+                    var featureWeight = feature.get(weightField);
+                    var maxWeight = %(hmWeightMax)d;
+                    var calibratedWeight = featureWeight/maxWeight;
+                    return calibratedWeight;
+                },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
             layerCode += '''
                 title: "%(name)s"
             });''' % {"name": layer.name()}
