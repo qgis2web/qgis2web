@@ -91,13 +91,31 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.verticalLayout_2.insertWidget(1, self.devConsole)
         self.filter = devToggleFilter()
         self.installEventFilter(self.filter)
+        self.vecTileServ.clicked.connect(self.selectedVectorTiles)
+        self.genJSON.clicked.connect(self.selectedJSON)
+        self.genJSON.setChecked(True)
+        self.lineEdit.setEnabled(False)
 
     def changeFormat(self):
+        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+            self.vecTileServ.setEnabled(True)
+        else:
+            self.vecTileServ.setEnabled(False)
         global projectInstance
         projectInstance.writeEntry("qgis2web", "mapFormat",
                                    self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
+
+    def selectedVectorTiles(self):
+        self.previewMap()
+        self.lineEdit.setEnabled(True)
+        self.leaflet.setEnabled(False)
+
+    def selectedJSON(self):
+        self.previewMap()
+        self.lineEdit.setEnabled(False)
+        self.leaflet.setEnabled(True)
 
     def toggleOptions(self):
         for param, value in specificParams.iteritems():
@@ -105,11 +123,13 @@ class MainDialog(QDialog, Ui_MainDialog):
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))[0]
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+                self.vecTileServ.setDisabled(False)
                 if value == "OL3":
                     treeParam.setDisabled(False)
                 else:
                     treeParam.setDisabled(True)
             else:
+                self.vecTileServ.setDisabled(True)
                 if value == "OL3":
                     treeParam.setDisabled(True)
                 else:
@@ -331,12 +351,16 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.leaflet.setChecked(True)
 
     def previewOL3(self):
+        mvtserver = None
         self.preview.settings().clearMemoryCaches()
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
+        if self.vecTileServ.isChecked():
+            mvtserver = self.lineEdit.text()
+
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
-                              cluster, params, utils.tempFolder())
+                              cluster, params, utils.tempFolder(), mvtserver)
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def previewLeaflet(self):
@@ -349,13 +373,17 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.preview.setUrl(QUrl.fromLocalFile(previewFile))
 
     def saveOL(self):
+        mvtserver = None
         params = self.getParameters()
         folder = params["Data export"]["Export folder"]
+        if self.vecTileServ.isChecked():
+            mvtserver = self.lineEdit.text()
+
         if folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
-                                 json, cluster, params, folder)
+                                 json, cluster, params, folder, mvtserver)
             if (not os.environ.get('CI') and
                     not os.environ.get('TRAVIS')):
                 webbrowser.open_new_tab(outputFile)
@@ -440,8 +468,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def closeEvent(self, event):
         self.saveParameters()
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
+        (layers, groups, popup, visible, json,
+         cluster) = self.getLayersAndGroups()
         for layer, pop in zip(layers, popup):
             attrDict = {}
             for attr in pop:

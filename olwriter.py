@@ -34,7 +34,7 @@ from basemaps import basemapOL
 
 
 def writeOL(iface, layers, groups, popup, visible,
-            json, clustered, settings, folder):
+            json, clustered, settings, folder, mvtserver):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
@@ -51,9 +51,10 @@ def writeOL(iface, layers, groups, popup, visible,
         optimize = settings["Data export"]["Minify GeoJSON files"]
         exportLayers(iface, layers, folder, precision,
                      optimize, popup, json)
-        exportStyles(layers, folder, clustered)
+        exportStyles(layers, folder, clustered, mvtserver)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
-                                    settings, json, matchCRS, clustered, iface)
+                                    settings, json, matchCRS, clustered, iface,
+                                    mvtserver)
         jsAddress = '<script src="resources/polyfills.js"></script>'
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = """<link rel="stylesheet" """
@@ -96,11 +97,37 @@ def writeOL(iface, layers, groups, popup, visible,
         geojsonVars = ""
         wfsVars = ""
         styleVars = ""
+        vlString = """
+        new ol.layer.VectorTile({
+        source: new ol.source.VectorTile
+        ({  format: new ol.format.MVT(),
+            tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
+            tilePixelRatio: 16,
+            url: '%s/%s/{z}/{x}/{y}.pbf'
+        }),
+        style: style_%s
+        }),"""
+        ol3popup = """"""
+        ol3layers = """
+        <script src="./layers/layers.js" type="text/javascript"></script>"""
+        ol3qgis2webjs = ""
+        onloadmp = ""
         for layer, encode2json in zip(layers, json):
             if layer.type() == layer.VectorLayer:
                 if layer.providerType() != "WFS" or encode2json:
-                    geojsonVars += ('<script src="layers/%s"></script>' %
-                                    (safeName(layer.name()) + ".js"))
+                    if mvtserver:
+                        onloadmp = """onload = "mapinit()" """
+                    else:
+                        geojsonVars += ('<script src="layers/%s"></script>' %
+                                        (safeName(layer.name()) + ".js"))
+
+                        ol3qgis2webjs = """
+                        <script src="./resources/qgis2web.js"></script>
+                        <script src="./resources/Autolinker.min.js">
+                        </script>"""
+                        if osmb != "":
+                            ol3qgis2webjs += """
+                            <script>{osmb}</script>""".format(osmb=osmb)
                 else:
                     layerSource = layer.source()
                     if "retrictToRequestBBOX" in layerSource:
@@ -124,6 +151,7 @@ def writeOL(iface, layers, groups, popup, visible,
                     wfsVars += ('<script src="%s"></script>' % layerSource)
                 styleVars += ('<script src="styles/%s_style.js"></script>' %
                               (safeName(layer.name())))
+
         popupLayers = "popupLayers = [%s];" % ",".join(
                 ['1' for field in popup])
         controls = ['expandedAttribution']
@@ -204,17 +232,14 @@ def writeOL(iface, layers, groups, popup, visible,
             extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
         ol3layerswitcher = """
         <script src="./resources/ol3-layerswitcher.js"></script>"""
+
         ol3popup = """<div id="popup" class="ol-popup">
                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                 <div id="popup-content"></div>
             </div>"""
-        ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>"""
-        if osmb != "":
-            ol3qgis2webjs += """
-        <script>{osmb}</script>""".format(osmb=osmb)
-        ol3layers = """
-        <script src="./layers/layers.js" type="text/javascript"></script>"""
+        if mvtserver:
+            ol3popup = """"""
+
         mapSize = iface.mapCanvas().size()
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
@@ -234,6 +259,7 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@OL3_LAYERSWITCHER@": ol3layerswitcher,
                   "@OL3_LAYERS@": ol3layers,
                   "@OL3_MEASURESTYLE@": measureStyle,
+                  "@JS_ONLOAD@": onloadmp,
                   "@LEAFLET_ADDRESSCSS@": "",
                   "@LEAFLET_MEASURECSS@": "",
                   "@LEAFLET_EXTRAJS@": "",
@@ -277,7 +303,27 @@ def writeOL(iface, layers, groups, popup, visible,
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
-                         settings, json, matchCRS, clustered, iface):
+                         settings, json, matchCRS, clustered, iface,
+                         mvtserver):
+    mapgen = """function mapinit(){ var map = new ol.Map({layers: [ """
+    vlString = """
+    new ol.layer.VectorTile({
+    source: new ol.source.VectorTile
+    ({  format: new ol.format.MVT(),
+        tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
+        tilePixelRatio: 16,
+        url: '%s/%s/{z}/{x}/{y}.pbf'
+    }),
+    style: style_%s
+    }),"""
+    mapfin = """ ],
+                    target: 'map',
+                    view: new ol.View({
+                    center: [0, 0],
+                    zoom: 2
+                    })
+                });
+                }"""
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
@@ -288,6 +334,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     layers: [%s\n]
 });""" % ','.join(basemaps)
 
+    vlBase = """%s\n""" % ','.join(basemaps)
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
         try:
@@ -399,9 +446,9 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             labelFields = ""
             for field, label in zip(labels.keys(), labels.values()):
                 labelFields += "'%(field)s': '%(label)s', " % (
-                        {"field": field, "label": label})
+                             {"field": field, "label": label})
             labelFields = "{%(labelFields)s});\n" % (
-                    {"labelFields": labelFields})
+                        {"labelFields": labelFields})
             labelFields = "lyr_%(name)s.set('fieldLabels', " % (
                         {"name": safeName(layer.name())}) + labelFields
             fieldLabels += labelFields
@@ -430,16 +477,28 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
-        if basemapList:
-            f.write(baseLayer + "\n")
-        f.write(layerVars + "\n")
-        f.write(groupVars + "\n")
-        f.write(visibility + "\n")
-        f.write(layersListString + "\n")
-        f.write(fieldAliases)
-        f.write(fieldImages)
-        f.write(fieldLabels)
-    return osmb
+
+        if not mvtserver:
+            if basemapList:
+                f.write(baseLayer + "\n")
+            f.write(layerVars + "\n")
+            f.write(groupVars + "\n")
+            f.write(visibility + "\n")
+            f.write(layersListString + "\n")
+            f.write(fieldAliases)
+            f.write(fieldImages)
+            f.write(fieldLabels)
+        else:
+            if basemapList:
+                mapgen += vlBase + "\n"
+            mapgen += ","
+            for layer in layers:
+                mapgen += vlString % (mvtserver,  safeName(layer.name()),
+                                      safeName(layer.name()))
+            mapgen = mapgen[:-1]
+            mapgen += mapfin
+            f.write(mapgen)
+        return osmb
 
 
 def replaceInScript(template, values):
@@ -655,7 +714,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                   "row": provider.ySize()}
 
 
-def exportStyles(layers, folder, clustered):
+def exportStyles(layers, folder, clustered, mvtserver):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
     for layer, cluster in zip(layers, clustered):
@@ -777,39 +836,47 @@ def exportStyles(layers, folder, clustered):
               }),""" % (bufferColor, bufferWidth)
             else:
                 stroke = ""
+
             if style != "":
                 style = '''function(feature, resolution){
-    %(value)s
-    %(style)s;
-    if (%(label)s !== null) {
-        var labelText = String(%(label)s);
-    } else {
-        var labelText = ""
-    }
-    var key = value + "_" + labelText
+                %(value)s
+                %(style)s;
+                if (%(label)s !== null) {
+                    var labelText = String(%(label)s);
+                } else {
+                    var labelText = ""
+                }
+                var key = value + "_" + labelText
 
-    if (!%(cache)s[key]){
-        var text = new ol.style.Text({
-              font: '%(size)spx \\'%(face)s\\', sans-serif',
-              text: labelText,
-              textBaseline: "center",
-              textAlign: "left",
-              offsetX: 5,
-              offsetY: 3,
-              fill: new ol.style.Fill({
-                color: "%(color)s"
-              }),%(stroke)s
-            });
-        %(cache)s[key] = new ol.style.Style({"text": text})
-    }
-    var allStyles = [%(cache)s[key]];
-    allStyles.push.apply(allStyles, style);
-    return allStyles;
-}''' % {
+                if (!%(cache)s[key]){
+                    var text = new ol.style.Text({
+                          font: '%(size)spx \\'%(face)s\\', sans-serif',
+                          text: labelText,
+                          textBaseline: "center",
+                          textAlign: "left",
+                          offsetX: 5,
+                          offsetY: 3,
+                          fill: new ol.style.Fill({
+                            color: "%(color)s"
+                          }),%(stroke)s
+                        });
+                    %(cache)s[key] = new ol.style.Style({"text": text})
+                }
+                var allStyles = [%(cache)s[key]];
+                allStyles.push.apply(allStyles, style);
+                ''' % {
                     "style": style, "label": labelText,
                     "cache": "styleCache_" + safeName(layer.name()),
                     "size": size, "face": face, "color": color,
                     "stroke": stroke, "value": value}
+
+                iter = layer.getFeatures()
+                for feature in iter:
+                    geom = feature.geometry()
+                if (geom.type() != QGis.Point):
+                        style += '''return style;}'''
+                else:
+                    style += '''return allStyles;}'''
             else:
                 style = "''"
         except Exception, e:
