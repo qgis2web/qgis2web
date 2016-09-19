@@ -94,8 +94,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                 new_src += jsonScript(safeLayerName)
                 (scaleDependentLayers,
                  layerLabelFuncs) = scaleDependentLabelScript(i,
-                                                               safeLayerName,
-                                                               layerLabelFuncs)
+                                                              safeLayerName,
+                                                              layerLabelFuncs)
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
