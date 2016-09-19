@@ -20,11 +20,11 @@ def scaleDependentLayerScript(layer, layerName):
     min = layer.minimumScale()
     max = layer.maximumScale()
     scaleDependentLayer = """
-    if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
-        feature_group.addLayer(json_{layerName}JSON);
-    }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
-        feature_group.removeLayer(json_{layerName}JSON);
-    }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
+            if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
+                feature_group.addLayer(json_{layerName}JSON);
+            }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
+                feature_group.removeLayer(json_{layerName}JSON);
+            }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
                  layerName=layerName)
     return scaleDependentLayer
     
@@ -37,15 +37,16 @@ def scaleDependentLabelScript(layer, layerName):
         min = scaleToZoom(pal.scaleMin)
         max = scaleToZoom(pal.scaleMax)
         scaleDependentLabel = """
-            console.log(map.getZoom());
-            if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
-                json_%(layerName)sJSON.eachLayer(function (layer) {
-                    layer.showLabel();
-                });
-            } else {
-                json_%(layerName)sJSON.eachLayer(function (layer) {
-                    layer.hideLabel();
-                });
+            if (map.hasLayer(json_%(layerName)sJSON)) {
+                if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
+                    json_%(layerName)sJSON.eachLayer(function (layer) {
+                        layer.showLabel();
+                    });
+                } else {
+                    json_%(layerName)sJSON.eachLayer(function (layer) {
+                        layer.hideLabel();
+                    });
+                }
             }""" % {"min": min, "max": max, "layerName": layerName}
         return scaleDependentLabel
     else:
@@ -57,7 +58,7 @@ def scaleDependentScript(layers):
         map.on("zoomend", function(e) {"""
     scaleDependent += layers
     scaleDependent += """
-    });"""
+        });"""
     scaleDependent += layers
     return scaleDependent
 
