@@ -76,6 +76,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     wfsLayers = ""
     scaleDependentLayers = ""
     new_src = ""
+    layerLabelFuncs = ""
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
     exp_crs = QgsCoordinateReferenceSystem(4326, crs)
     lyrCount = 0
@@ -91,9 +92,10 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                 exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                                 layerFileName, safeLayerName, minify, canvas)
                 new_src += jsonScript(safeLayerName)
-                scaleDependentLayers += scaleDependentLabelScript(
-                    i,
-                    safeLayerName)
+                (scaleDependentLayers,
+                 layerLabelFuncs) = scaleDependentLabelScript(i,
+                                                               safeLayerName,
+                                                               layerLabelFuncs)
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
@@ -163,6 +165,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                 new_obj += """
         raster_group.addLayer(overlay_""" + safeLayerName + """);"""
             new_src += new_obj
+    new_src += layerLabelFuncs
     new_src += """
         raster_group.addTo(map);
         feature_group.addTo(map);"""

@@ -29,7 +29,7 @@ def scaleDependentLayerScript(layer, layerName):
     return scaleDependentLayer
 
 
-def scaleDependentLabelScript(layer, layerName):
+def scaleDependentLabelScript(layer, layerName, layerLabelFuncs):
     pal = QgsPalLayerSettings()
     pal.readFromLayer(layer)
     sv = pal.scaleVisibility
@@ -48,9 +48,21 @@ def scaleDependentLabelScript(layer, layerName):
                     });
                 }
             }""" % {"min": min, "max": max, "layerName": layerName}
-        return scaleDependentLabel
+        layerLabelFuncs += """
+        json_%(layerName)sJSON.on("load", function() {
+            if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
+                json_%(layerName)sJSON.eachLayer(function (layer) {
+                    layer.showLabel();
+                });
+            } else {
+                json_%(layerName)sJSON.eachLayer(function (layer) {
+                    layer.hideLabel();
+                });
+            }
+        })""" % {"min": min, "max": max, "layerName": layerName}
+        return (scaleDependentLabel, layerLabelFuncs)
     else:
-        return ""
+        return ("", layerLabelFuncs)
 
 
 def scaleDependentScript(layers):
@@ -362,12 +374,14 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
         if symbolLayer.outlineStyle() == 0:
             borderOpacity = 0
         borderColor = symbolLayer.borderColor().name()
+        borderWidth = symbolLayer.outlineWidth() * 4
     except:
         dashArray = ""
         capString = ""
         joinString = ""
         borderOpacity = 1
         borderColor = ""
+        borderWidth = 0
     styleValues = """
                     radius: {radius},
                     fillColor: '{fillColor}',
@@ -380,7 +394,7 @@ def categorizedPointStylesScript(symbol, opacity, borderOpacity):
                 break;""".format(radius=symbol.size() * 2,
                                  fillColor=symbol.color().name(),
                                  color=borderColor,
-                                 borderWidth=symbolLayer.outlineWidth() * 4,
+                                 borderWidth=borderWidth,
                                  borderOpacity=borderOpacity,
                                  dashArray=dashArray, opacity=opacity)
     return styleValues
