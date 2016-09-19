@@ -25,10 +25,10 @@ def scaleDependentLayerScript(layer, layerName):
             }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
                 feature_group.removeLayer(json_{layerName}JSON);
             }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
-                 layerName=layerName)
+                         layerName=layerName)
     return scaleDependentLayer
-    
-    
+
+
 def scaleDependentLabelScript(layer, layerName):
     pal = QgsPalLayerSettings()
     pal.readFromLayer(layer)

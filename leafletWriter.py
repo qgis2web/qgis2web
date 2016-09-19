@@ -91,13 +91,15 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                 exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
                                 layerFileName, safeLayerName, minify, canvas)
                 new_src += jsonScript(safeLayerName)
+                scaleDependentLayers += scaleDependentLabelScript(
+                    i,
+                    safeLayerName)
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
                     exportRasterLayer(i, safeLayerName, dataPath)
         if i.hasScaleBasedVisibility():
             scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
-        scaleDependentLayers += scaleDependentLabelScript(i, safeLayerName)
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
