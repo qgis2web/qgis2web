@@ -97,6 +97,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                     exportRasterLayer(i, safeLayerName, dataPath)
         if i.hasScaleBasedVisibility():
             scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
+        scaleDependentLayers += scaleDependentLabelScript(i, safeLayerName)
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
