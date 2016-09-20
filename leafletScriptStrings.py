@@ -29,7 +29,7 @@ def scaleDependentLayerScript(layer, layerName):
     return scaleDependentLayer
 
 
-def scaleDependentLabelScript(layer, layerName, layerLabelFuncs):
+def scaleDependentLabelScript(layer, layerName):
     pal = QgsPalLayerSettings()
     pal.readFromLayer(layer)
     sv = pal.scaleVisibility
@@ -48,21 +48,9 @@ def scaleDependentLabelScript(layer, layerName, layerLabelFuncs):
                     });
                 }
             }""" % {"min": min, "max": max, "layerName": layerName}
-        layerLabelFuncs += """
-        json_%(layerName)sJSON.on("load", function() {
-            if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
-                json_%(layerName)sJSON.eachLayer(function (layer) {
-                    layer.showLabel();
-                });
-            } else {
-                json_%(layerName)sJSON.eachLayer(function (layer) {
-                    layer.hideLabel();
-                });
-            }
-        })""" % {"min": min, "max": max, "layerName": layerName}
-        return (scaleDependentLabel, layerLabelFuncs)
+        return scaleDependentLabel
     else:
-        return ("", layerLabelFuncs)
+        return ""
 
 
 def scaleDependentScript(layers):
