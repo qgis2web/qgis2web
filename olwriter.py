@@ -770,7 +770,6 @@ def exportStyles(layers, folder, clustered):
             if sv:
                 min = float(palyr.scaleMin)
                 max = float(palyr.scaleMax)
-                print min, max
                 min = 1 / ((1 / min) * 39.37 * 90.7)
                 max = 1 / ((1 / max) * 39.37 * 90.7)
                 labelRes = " && resolution > %(min)d " % {"min": min}
@@ -866,10 +865,11 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             svgWidth = re.sub("px", "", svgWidth)
             svgHeight = svg.attrib["height"]
             svgHeight = re.sub("px", "", svgHeight)
+            rot = sl.angle()
             shutil.copy(sl.path(), path)
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
-                             sl.size(), svgWidth, svgHeight))
+                             sl.size(), svgWidth, svgHeight, rot))
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
             # Check for old version
@@ -939,19 +939,21 @@ def getCircle(color, borderColor, borderWidth, size, props):
              getFillStyle(color, props)))
 
 
-def getIcon(path, size, svgWidth, svgHeight):
+def getIcon(path, size, svgWidth, svgHeight, rot):
     size = math.floor(float(size) * 3.8)
     anchor = size / 2
     scale = unicode(float(size)/float(svgWidth))
+    rotation = unicode(rot * 0.0174533)
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,
                   anchor: [%(a)d, %(a)d],
                   anchorXUnits: "pixels",
                   anchorYUnits: "pixels",
+                  rotation: %(rot)s,
                   src: "%(path)s"
             })''' % {"w": svgWidth, "h": svgHeight,
-                     "scale": scale,
+                     "scale": scale, "rot": rotation,
                      "s": size, "a": anchor,
                      "path": path.replace("\\", "\\\\")}
 
