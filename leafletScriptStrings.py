@@ -806,11 +806,12 @@ def addressSearchScript():
     return addressSearch
 
 
-def endHTMLscript(wfsLayers, layerSearch):
+def endHTMLscript(wfsLayers, layerSearch, labels):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
         stackLayers();"""
+        endHTML += labels
     if layerSearch != "None":
         searchVals = layerSearch.split(": ")
         endHTML += """

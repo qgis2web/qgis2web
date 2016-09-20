@@ -75,6 +75,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
 
     wfsLayers = ""
     scaleDependentLayers = ""
+    labelVisibility = ""
     new_src = ""
     layerLabelFuncs = ""
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
@@ -96,6 +97,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                  layerLabelFuncs) = scaleDependentLabelScript(i,
                                                               safeLayerName,
                                                               layerLabelFuncs)
+                labelVisibility += scaleDependentLayers
 
             elif i.type() == QgsMapLayer.RasterLayer:
                 if i.dataProvider().name() != "wms":
@@ -184,7 +186,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         end = scaleBar()
     else:
         end = ''
-    end += endHTMLscript(wfsLayers, layerSearch)
+    end += endHTMLscript(wfsLayers, layerSearch, labelVisibility)
     new_src += end
     writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
