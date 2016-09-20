@@ -766,6 +766,17 @@ def exportStyles(layers, folder, clustered):
             face = layer.customProperty("labeling/fontFamily")
             palyr = QgsPalLayerSettings()
             palyr.readFromLayer(layer)
+            sv = palyr.scaleVisibility
+            if sv:
+                min = float(palyr.scaleMin)
+                max = float(palyr.scaleMax)
+                print min, max
+                min = 1 / ((1 / min) * 39.37 * 90.7)
+                max = 1 / ((1 / max) * 39.37 * 90.7)
+                labelRes = " && resolution > %(min)d " % {"min": min}
+                labelRes += "&& resolution < %(max)d" % {"max": max}
+            else:
+                labelRes = ""
             buffer = palyr.bufferDraw
             if buffer:
                 bufferColor = palyr.bufferColor.name()
@@ -781,7 +792,7 @@ def exportStyles(layers, folder, clustered):
                 style = '''function(feature, resolution){
     %(value)s
     %(style)s;
-    if (%(label)s !== null) {
+    if (%(label)s !== null%(labelRes)s) {
         var labelText = String(%(label)s);
     } else {
         var labelText = ""
@@ -806,7 +817,7 @@ def exportStyles(layers, folder, clustered):
     allStyles.push.apply(allStyles, style);
     return allStyles;
 }''' % {
-                    "style": style, "label": labelText,
+                    "style": style, "labelRes": labelRes, "label": labelText,
                     "cache": "styleCache_" + safeName(layer.name()),
                     "size": size, "face": face, "color": color,
                     "stroke": stroke, "value": value}
