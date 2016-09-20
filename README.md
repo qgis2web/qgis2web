@@ -234,6 +234,7 @@ export QGIS_REPO=http://qgis.org/debian-ltr
     <li>labels</li>
     <li>rule-based renderer</li>
     <li>SVG markers</li>
+    <li>heatmaps</li>
     <li>polygon border style "No pen"</li>
     <li>polygon fill style "No brush"</li>
     <li>line cap/join styles</li>
