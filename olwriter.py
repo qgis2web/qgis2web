@@ -869,9 +869,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                 if symbol.dataDefinedAngle().useExpression():
                     rot = "0"
                 else:
-                    rot = "function(feature){return feature.get("
+                    rot = "feature.get("
                     rot += symbol.dataDefinedAngle().expressionOrField()
-                    rot += ") * 0.0174533;}"
+                    rot += ") * 0.0174533"
             else:
                 rot = unicode(sl.angle() * 0.0174533)
             shutil.copy(sl.path(), path)
