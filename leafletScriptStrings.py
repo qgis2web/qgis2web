@@ -242,7 +242,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     return popup
 
 
-def svgScript(safeLayerName, symbolLayer, outputFolder, labeltext):
+def svgScript(safeLayerName, symbolLayer, outputFolder, rot, labeltext):
     slPath = symbolLayer.path()
     shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
                                          os.path.basename(slPath)))
@@ -252,16 +252,19 @@ def svgScript(safeLayerName, symbolLayer, outputFolder, labeltext):
             iconSize: [{size}, {size}], // size of the icon
         }});
 
-        function doStyle{safeLayerName}() {{
+        function doStyle{safeLayerName}(feature) {{
             return {{
-                icon: svg{safeLayerName}
+                icon: svg{safeLayerName},
+                rotationAngle: {rot},
+                rotationOrigin: 'center center'
             }}
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.marker(latlng, doStyle{safeLayerName}()){labeltext}
+            return L.marker(latlng, doStyle{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8, labeltext=labeltext)
+                     size=symbolLayer.size() * 3.8, rot=rot,
+                     labeltext=labeltext)
     return svg
 
 

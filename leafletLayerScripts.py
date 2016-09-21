@@ -490,8 +490,17 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
                 outputProjectFileName):
     radius = unicode(symbol.size())
     if isinstance(symbolLayer, QgsSvgMarkerSymbolLayerV2):
+        if symbol.dataDefinedAngle().isActive():
+            if symbol.dataDefinedAngle().useExpression():
+                rot = "0"
+            else:
+                rot = "feature.properties["
+                rot += symbol.dataDefinedAngle().expressionOrField()
+                rot += "]"
+        else:
+            rot = symbolLayer.angle()
         pointStyleLabel = svgScript(safeLayerName, symbolLayer,
-                                    outputProjectFileName, labeltext)
+                                    outputProjectFileName, rot, labeltext)
     else:
         try:
             borderStyle = symbolLayer.outlineStyle()
@@ -518,6 +527,7 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
                                       cluster_num, visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
+        rot = symbol.dataDefinedAngle().expressionOrField()
         new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer,
                                   usedFields[count])
         if cluster[count]:

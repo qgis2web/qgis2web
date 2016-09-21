@@ -41,6 +41,7 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     shutil.copyfile(jsDir + 'leaflet-heat.js',
                     jsStore + 'leaflet-heat.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
+    shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js', jsStore + 'leaflet.rotatedMarker.js')
     if len(cluster_set):
         shutil.copyfile(jsDir + 'leaflet.markercluster.js',
                         jsStore + 'leaflet.markercluster.js')
@@ -103,6 +104,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
     jsAddress += """
         <script src="js/leaflet-heat.js"></script>"""
+    jsAddress += """
+        <script src="js/leaflet.rotatedMarker.js"></script>"""
     jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" type="text/css" '
