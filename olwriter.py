@@ -865,7 +865,15 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             svgWidth = re.sub("px", "", svgWidth)
             svgHeight = svg.attrib["height"]
             svgHeight = re.sub("px", "", svgHeight)
-            rot = sl.angle()
+            if symbol.dataDefinedAngle().isActive():
+                if symbol.dataDefinedAngle().useExpression():
+                    rot = "0"
+                else:
+                    rot = "function(feature){return feature.get("
+                    rot += symbol.dataDefinedAngle().expressionOrField()
+                    rot += ") * 0.0174533;}"
+            else:
+                rot = unicode(sl.angle() * 0.0174533)
             shutil.copy(sl.path(), path)
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
@@ -943,7 +951,6 @@ def getIcon(path, size, svgWidth, svgHeight, rot):
     size = math.floor(float(size) * 3.8)
     anchor = size / 2
     scale = unicode(float(size)/float(svgWidth))
-    rotation = unicode(rot * 0.0174533)
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,
@@ -953,7 +960,7 @@ def getIcon(path, size, svgWidth, svgHeight, rot):
                   rotation: %(rot)s,
                   src: "%(path)s"
             })''' % {"w": svgWidth, "h": svgHeight,
-                     "scale": scale, "rot": rotation,
+                     "scale": scale, "rot": rot,
                      "s": size, "a": anchor,
                      "path": path.replace("\\", "\\\\")}
 
