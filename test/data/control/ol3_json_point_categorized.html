@@ -42,30 +42,40 @@
     </body>
 </html>
 var size = 0;
-var categories_airports = {"Civilian/Public": [ new ol.style.Style({
+function categories_airports(feature, value) {
+                switch(value) {case "Civilian/Public":
+                    return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(222,26,193,1.0)"})})
-    })],
-"Joint Military/Civilian": [ new ol.style.Style({
+    })];
+                break;
+case "Joint Military/Civilian":
+                    return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(112,117,206,1.0)"})})
-    })],
-"Military": [ new ol.style.Style({
+    })];
+                break;
+case "Military":
+                    return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(215,134,93,1.0)"})})
-    })],
-"Other": [ new ol.style.Style({
+    })];
+                break;
+case "Other":
+                    return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(122,222,41,1.0)"})})
-    })],
-"": [ new ol.style.Style({
+    })];
+                break;
+case "":
+                    return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(86,218,185,1.0)"})})
-    })]};
+    })]}};
 var styleCache_airports={}
 var style_airports = function(feature, resolution){
     var value = feature.get("USE");
-    var style = categories_airports[value];
+    var style = categories_airports(feature, value);
     if ("" !== null) {
         var labelText = String("");
     } else {
