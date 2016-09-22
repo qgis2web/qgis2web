@@ -41,7 +41,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     shutil.copyfile(jsDir + 'leaflet-heat.js',
                     jsStore + 'leaflet-heat.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
-    shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js', jsStore + 'leaflet.rotatedMarker.js')
+    shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js',
+                    jsStore + 'leaflet.rotatedMarker.js')
     if len(cluster_set):
         shutil.copyfile(jsDir + 'leaflet.markercluster.js',
                         jsStore + 'leaflet.markercluster.js')
