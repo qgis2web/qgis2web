@@ -700,15 +700,18 @@ def exportStyles(layers, folder, clustered):
                                                                layer_alpha)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                defs += "var categories_%s = {" % safeName(layer.name())
+                defs += """function categories_%s(feature, value) {
+                switch(value) {""" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('"%s": %s' %
+                    cats.append('''case "%s":
+                    return %s;
+                    break;''' %
                                 (cat.value(), getSymbolAsStyle(
                                     cat.symbol(),
                                     stylesFolder,
                                     layer_alpha)))
-                defs += ",\n".join(cats) + "};"
+                defs += "\n".join(cats) + "}};"
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
                 try:
@@ -720,7 +723,7 @@ def exportStyles(layers, folder, clustered):
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr
                 value = ('var value = feature.get("%s");' % classAttr)
-                style = ('''var style = categories_%s[value]''' %
+                style = ('''var style = categories_%s(feature, value)''' %
                          (safeName(layer.name())))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())
