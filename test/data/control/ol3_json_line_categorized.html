@@ -42,19 +42,26 @@
     </body>
 </html>
 var size = 0;
-var categories_pipelines = {"Below Surface/Submerged/Underground": [ new ol.style.Style({
+function categories_pipelines(feature, value) {
+                switch(value) {case "Below Surface/Submerged/Underground":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(161,121,229,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
-    })],
-"On Ground Surface": [ new ol.style.Style({
+    })];
+                    break;
+case "On Ground Surface":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(38,209,101,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
-    })],
-"": [ new ol.style.Style({
+    })];
+                    break;
+case "":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(239,120,50,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
-    })]};
+    })];
+                    break;}};
 var styleCache_pipelines={}
 var style_pipelines = function(feature, resolution){
     var value = feature.get("LOCDESC");
-    var style = categories_pipelines[value];
+    var style = categories_pipelines(feature, value);
     if ("" !== null) {
         var labelText = String("");
     } else {

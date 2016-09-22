@@ -42,58 +42,91 @@
     </body>
 </html>
 var size = 0;
-var categories_lakes = {"Becharof Lake": [ new ol.style.Style({
+function categories_lakes(feature, value) {
+                switch(value) {case "Becharof Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(89,109,204,1.0)"})
     })],
-"Dall Lake": [ new ol.style.Style({
+                    break;
+case: "Dall Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(222,104,137,1.0)"})
     })],
-"Iliamna Lake": [ new ol.style.Style({
+                    break;
+case: "Iliamna Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(72,200,68,1.0)"})
     })],
-"Kenai Lake": [ new ol.style.Style({
+                    break;
+case: "Kenai Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(72,145,209,1.0)"})
     })],
-"Lake Clark": [ new ol.style.Style({
+                    break;
+case: "Lake Clark":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(228,78,230,1.0)"})
     })],
-"Lake George": [ new ol.style.Style({
+                    break;
+case: "Lake George":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(232,205,47,1.0)"})
     })],
-"Lake Minchumina": [ new ol.style.Style({
+                    break;
+case: "Lake Minchumina":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(228,146,137,1.0)"})
     })],
-"Lake Nerka": [ new ol.style.Style({
+                    break;
+case: "Lake Nerka":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(23,240,179,1.0)"})
     })],
-"Lower Ugashik Lake": [ new ol.style.Style({
+                    break;
+case: "Lower Ugashik Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(202,62,153,1.0)"})
     })],
-"Naknek Lake": [ new ol.style.Style({
+                    break;
+case: "Naknek Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(169,63,239,1.0)"})
     })],
-"Nunavakpak Lake": [ new ol.style.Style({
+                    break;
+case: "Nunavakpak Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(76,210,222,1.0)"})
     })],
-"Nuvakuk Lake": [ new ol.style.Style({
+                    break;
+case: "Nuvakuk Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(130,109,207,1.0)"})
     })],
-"Skilak Lake": [ new ol.style.Style({
+                    break;
+case: "Skilak Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(90,207,131,1.0)"})
     })],
-"Teshekpuk Lake": [ new ol.style.Style({
+                    break;
+case: "Teshekpuk Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(192,220,90,1.0)"})
     })],
-"Tustumena Lake": [ new ol.style.Style({
+                    break;
+case: "Tustumena Lake":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(142,211,96,1.0)"})
     })],
-"": [ new ol.style.Style({
+                    break;
+case: "":
+                    return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(203,127,61,1.0)"})
-    })]};
+    })];
+                    break;}};
 var styleCache_lakes={}
 var style_lakes = function(feature, resolution){
     var value = feature.get("NAMES");
-    var style = categories_lakes[value];
+    var style = categories_lakes(feature, value);
     if ("" !== null) {
         var labelText = String("");
     } else {
