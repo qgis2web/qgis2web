@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.8
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=1.17.0
+version=1.18.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2016/09/20 1.17.0 Scale-dependent labels, Leaflet categorized vector field marker error, correct metadata changelog
+changelog=2016/09/23 1.18.0 Point marker rotation
+    2016/09/20 1.17.0 Scale-dependent labels, Leaflet categorized vector field marker error, correct metadata changelog
     2016/09/16 1.16.1 Improved heatmaps
     2016/09/15 1.16.0 Heatmaps
     2016/09/14 1.15.1 Only include checked layers in layer search dropdown
