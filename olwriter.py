@@ -164,13 +164,13 @@ def writeOL(iface, layers, groups, popup, visible,
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
         proj4 = ""
-        projdef = ""
+        proj = ""
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
         if settings["Appearance"]["Match project CRS"]:
             proj4 = """
 <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
             proj4 += "</script>"
-            projdef = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
+            proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
                 epsg=mapSettings.destinationCrs().authid(),
                 defn=mapSettings.destinationCrs().toProj4())
             view += ", projection: '%s'" % (
@@ -228,7 +228,7 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@OL3_GEOJSONVARS@": geojsonVars,
                   "@OL3_WFSVARS@": wfsVars,
                   "@OL3_PROJ4@": proj4,
-                  "@OL3_PROJDEF@": projdef,
+                  "@OL3_PROJDEF@": proj,
                   "@OL3_GEOCODINGLINKS@": geocodingLinks,
                   "@QGIS2WEBJS@": ol3qgis2webjs,
                   "@OL3_LAYERSWITCHER@": ol3layerswitcher,

@@ -80,27 +80,29 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     crs = QgsCoordinateReferenceSystem.EpsgCrsId
     exp_crs = QgsCoordinateReferenceSystem(4326, crs)
     lyrCount = 0
-    for i, jsonEncode, eachPopup in zip(layer_list, json, popup):
-        rawLayerName = i.name()
+    for layer, jsonEncode, eachPopup in zip(layer_list, json, popup):
+        rawLayerName = layer.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
         lyrCount += 1
         dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
-        if i.providerType() != 'WFS' or jsonEncode is True and i:
-            if i.type() == QgsMapLayer.VectorLayer:
-                exportJSONLayer(i, eachPopup, precision, tmpFileName, exp_crs,
-                                layerFileName, safeLayerName, minify, canvas)
+        if layer.providerType() != 'WFS' or jsonEncode is True and layer:
+            if layer.type() == QgsMapLayer.VectorLayer:
+                exportJSONLayer(layer, eachPopup, precision, tmpFileName,
+                                exp_crs, layerFileName, safeLayerName, minify,
+                                canvas)
                 new_src += jsonScript(safeLayerName)
-                scaleDependentLayers = scaleDependentLabelScript(i,
+                scaleDependentLayers = scaleDependentLabelScript(layer,
                                                                  safeLayerName)
                 labelVisibility += scaleDependentLayers
 
-            elif i.type() == QgsMapLayer.RasterLayer:
-                if i.dataProvider().name() != "wms":
-                    exportRasterLayer(i, safeLayerName, dataPath)
-        if i.hasScaleBasedVisibility():
-            scaleDependentLayers += scaleDependentLayerScript(i, safeLayerName)
+            elif layer.type() == QgsMapLayer.RasterLayer:
+                if layer.dataProvider().name() != "wms":
+                    exportRasterLayer(layer, safeLayerName, dataPath)
+        if layer.hasScaleBasedVisibility():
+            scaleDependentLayers += scaleDependentLayerScript(layer,
+                                                              safeLayerName)
     if scaleDependentLayers != "":
         scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
@@ -142,24 +144,24 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     new_src += layerOrder
 
     lyrCount = 0
-    for count, i in enumerate(layer_list):
-        rawLayerName = i.name()
+    for count, layer in enumerate(layer_list):
+        rawLayerName = layer.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
         lyrCount += 1
-        if i.type() == QgsMapLayer.VectorLayer:
+        if layer.type() == QgsMapLayer.VectorLayer:
             (new_src,
              legends,
-             wfsLayers) = writeVectorLayer(i, safeLayerName, usedFields,
+             wfsLayers) = writeVectorLayer(layer, safeLayerName, usedFields,
                                            highlight, popupsOnHover, popup,
                                            count, outputProjectFileName,
                                            wfsLayers, cluster, cluster_num,
                                            visible, json, legends, new_src,
                                            canvas)
-        elif i.type() == QgsMapLayer.RasterLayer:
-            if i.dataProvider().name() == "wms":
-                new_obj = wmsScript(i, safeLayerName)
+        elif layer.type() == QgsMapLayer.RasterLayer:
+            if layer.dataProvider().name() == "wms":
+                new_obj = wmsScript(layer, safeLayerName)
             else:
-                new_obj = rasterScript(i, safeLayerName)
+                new_obj = rasterScript(layer, safeLayerName)
             if visible[count]:
                 new_obj += """
         raster_group.addLayer(overlay_""" + safeLayerName + """);"""
