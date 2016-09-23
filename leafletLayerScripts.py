@@ -279,9 +279,10 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         # print safeLayerName + ": single"
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
-                                  safeLayerName, wfsLayers, layer, layer_transp,
-                                  labeltext, cluster, cluster_num, visible,
-                                  json, usedFields, legends, count, popFuncs)
+                                  safeLayerName, wfsLayers, layer,
+                                  layer_transp, labeltext, cluster,
+                                  cluster_num, visible, json, usedFields,
+                                  legends, count, popFuncs)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         # print safeLayerName + ": categorized"
         (new_obj, legends,
@@ -401,7 +402,8 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
             for field, val in zip(field_names, field_vals):
                 fieldIndex = fields.indexFromName(unicode(field))
                 try:
-                    editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+                    formCfg = layer.editFormConfig()
+                    editorWidget = formCfg.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
