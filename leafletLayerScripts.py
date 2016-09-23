@@ -733,7 +733,7 @@ def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
         categoryStr += categorizedLineStylesScript(symbol, fill_opacity)
     categoryStr += endCategoryScript()
     stylestr = categorizedNonPointStyleFunctionScript(safeLayerName, popFuncs)
-    if i.providerType() == 'WFS' and json[count] is False:
+    if layer.providerType() == 'WFS' and json[count] is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
                                               categoryStr, stylestr,
                                               visible[count])
