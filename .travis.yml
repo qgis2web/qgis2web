@@ -6,7 +6,6 @@ env:
   - QGIS_REPO=http://qgis.org/debian-ltr
   - QGIS_REPO=http://qgis.org/debian
   - QGIS_REPO=http://qgis.org/debian-nightly
-  - QGIS_REPO=http://qgis.org/debian-nightly-experimental
 
 addons: 
   apt: 
