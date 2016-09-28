@@ -345,7 +345,7 @@ def clusterScript(safeLayerName):
     cluster = """
         var cluster_group"""
     cluster += "{safeLayerName}JSON = ".format(safeLayerName=safeLayerName)
-    cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
+    cluster += """L.markerClusterGroup();
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(json_{safeLayerName}JSON);
 """.format(safeLayerName=safeLayerName)
