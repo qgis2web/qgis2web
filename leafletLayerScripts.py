@@ -1008,8 +1008,7 @@ def buildNonPointJSON(categoryStr, safeName, usedFields, zIndex):
             pane: 'pane_{safeName}',
             onEachFeature: pop_{safeName},
             style: doStyle{safeName}
-        }});""".format(safeName=safeName,
-                                                zIndex=zIndex)
+        }});""".format(safeName=safeName, zIndex=zIndex)
     else:
         new_obj = categoryStr + """
         map.createPane('pane_{safeName}');
