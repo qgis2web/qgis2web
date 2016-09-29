@@ -321,11 +321,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         if visible[count]:
             if cluster[count] is False:
                 new_src += """
-        initialOrder[initialOrder.length] = json_""" + safeLayerName + """JSON;
         feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
             else:
                 new_src += """
-        initialOrder[initialOrder.length] = cluster_group""" + safeLayerName
                 new_src += """JSON;
         cluster_group""" + safeLayerName + """JSON.addTo(map);"""
     return new_src, legends, wfsLayers

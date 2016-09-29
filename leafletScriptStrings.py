@@ -166,7 +166,6 @@ def basemapsScript(basemapList, maxZoom):
 
 def layerOrderScript(extent, restrictToExtent):
     layerOrder = """
-        var initialOrder = new Array();
         function setBounds() {"""
     if extent == 'Fit to layers extent':
         layerOrder += """
