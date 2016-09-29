@@ -520,18 +520,18 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
                                                 borderWidth, borderStyle,
                                                 colorName, borderColor,
                                                 borderOpacity, fill_opacity,
-                                                labeltext)
+                                                labeltext, zIndex)
     pointToLayer = pointToLayerScript(safeLayerName)
     if layer.providerType() == 'WFS' and json[count] is False:
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(pointStyleLabel, safeLayerName,
                                       layer, "", cluster[count],
-                                      cluster_num, visible[count], zIndex)
+                                      cluster_num, visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
         rot = symbol.dataDefinedAngle().expressionOrField()
         new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer,
-                                  usedFields[count], zIndex)
+                                  usedFields[count])
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
@@ -967,19 +967,16 @@ def heatmapLayer(layer, safeLayerName, renderer, outputProjectFileName,
 
 
 def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
-                  cluster_set, cluster_num, visible, zIndex):
+                  cluster_set, cluster_num, visible):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = pointStyleLabel + categoryStr + """
-        map.createPane('pane_{layerName}');
-        map.getPane('pane_{layerName}').style.zIndex = {zIndex}
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{
             pane: 'pane_{layerName}',
             pointToLayer: doPointToLayer{layerName},
             onEachFeature: pop_{layerName}
         }});
-        layerControl.addOverlay(json_""".format(layerName=layerName,
-                                                zIndex=zIndex)
+        layerControl.addOverlay(json_""".format(layerName=layerName)
     new_obj += "{layerName}JSON, '{layerName}');".format(layerName=layerName)
     if cluster_set:
         new_obj += """

@@ -271,13 +271,17 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                           colorName, borderColor, borderOpacity, opacity,
-                          labeltext):
+                          labeltext, zIndex):
     radius = float(radius) * 2
+    zIndex = zIndex + 600
     (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
                                                       0, 0)
     pointStyleLabel = """
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex}
         function doStyle{safeLayerName}() {{
             return {{
+                pane: 'pane_{safeLayerName}',
                 radius: {radius},
                 fillColor: '{colorName}',
                 color: '{borderColor}',
@@ -291,7 +295,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName, radius=radius,
+        }}""".format(safeLayerName=safeLayerName, zIndex=zIndex, radius=radius,
                      colorName=colorName, borderColor=borderColor,
                      borderWidth=borderWidth * 4,
                      borderOpacity=borderOpacity if borderStyle != 0 else 0,
@@ -313,29 +317,21 @@ def wfsScript(scriptTag):
     return wfs
 
 
-def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields,
-                    zIndex):
+def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
     jsonPoint = pointStyleLabel
-    zIndex = zIndex + 600
     if usedFields != 0:
         jsonPoint += """
-        map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex}
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             pane: 'pane_{safeLayerName}',
             onEachFeature: pop_{safeLayerName}, {pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
-                           zIndex=zIndex,
                            pointToLayer=pointToLayer)
     else:
         jsonPoint += """
-        map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zLindex}
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             pane: 'pane_{safeLayerName}',
             {pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
-                           zIndex=zIndex,
                            pointToLayer=pointToLayer)
     return jsonPoint
 
