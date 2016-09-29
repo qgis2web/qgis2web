@@ -651,7 +651,7 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
 
 def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
                      layer_transp, labeltext, cluster, cluster_num, usedFields,
-                     visible, json, count, wfsLayers, catLegend):
+                     visible, json, count, wfsLayers, catLegend, zIndex):
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
     fieldIndex = layer.pendingFields().indexFromName(valueAttr)
