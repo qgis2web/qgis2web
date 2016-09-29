@@ -324,7 +324,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
             else:
                 new_src += """
-                new_src += """JSON;
         cluster_group""" + safeLayerName + """JSON.addTo(map);"""
     return new_src, legends, wfsLayers
 
