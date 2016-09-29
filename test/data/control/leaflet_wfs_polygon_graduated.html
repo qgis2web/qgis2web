@@ -46,20 +46,9 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
-        var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }
+        function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
-            }
-        }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
@@ -159,7 +148,7 @@
         layerControl.addOverlay(json_polygon0JSON, 'polygon0');
         function getpolygon0Json(geojson) {
             json_polygon0JSON.addData(geojson);
-            stackLayers();
+            setBounds();
         };
         bounds_group.addLayer(json_polygon0JSON);
         initialOrder[initialOrder.length] = json_polygon0JSON;

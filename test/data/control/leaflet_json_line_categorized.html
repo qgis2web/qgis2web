@@ -47,20 +47,9 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
-        var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }
+        function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
-            }
-        }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
@@ -125,7 +114,7 @@
         feature_group.addLayer(json_pipelines0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
-        stackLayers();
+        setBounds();
         map.on('overlayadd', restackLayers);
         </script>
     </body>
