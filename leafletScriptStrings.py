@@ -802,6 +802,8 @@ def addressSearchScript():
 def endHTMLscript(wfsLayers, layerSearch, labels):
     endHTML = ""
     if wfsLayers == "":
+        endHTML += """
+        setBounds();"""
         endHTML += labels
     if layerSearch != "None":
         searchVals = layerSearch.split(": ")
