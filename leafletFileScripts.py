@@ -92,10 +92,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress = '<script src="js/leaflet.js"></script>'
     else:
         cssAddress = '<link rel="stylesheet" href='
-        cssAddress += '"http://cdn.leafletjs.com/leaflet/v0.7.7/'
-        cssAddress += 'leaflet.css" />'
+        cssAddress += '"http://unpkg.com/leaflet@1.0.0/dist/leaflet.css'
         jsAddress = '<script src="http://'
-        jsAddress += 'cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>'
+        jsAddress += 'unpkg.com/leaflet@1.0.0/dist/leaflet.js"></script>'
     if locate:
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
