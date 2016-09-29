@@ -290,7 +290,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                        outputProjectFileName, layer_transp,
                                        usedFields, count, legends, labeltext,
                                        cluster, cluster_num, popFuncs, visible,
-                                       json, wfsLayers)
+                                       json, wfsLayers, zIndex)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         # print safeLayerName + ": graduated"
         (new_obj, legends,
@@ -298,7 +298,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                      outputProjectFileName, layer_transp,
                                      labeltext, popFuncs, cluster, cluster_num,
                                      visible, json, usedFields, count, legends,
-                                     wfsLayers)
+                                     wfsLayers, zIndex)
     elif isinstance(renderer, Qgs25DRenderer):
         # print safeLayerName + ": 2.5d"
         pass
@@ -622,7 +622,8 @@ def singlePolygon(layer, safeLayerName, symbol, symbolLayer, colorName,
 
 def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
                      layer_transp, usedFields, count, legends, labeltext,
-                     cluster, cluster_num, popFuncs, visible, json, wfsLayers):
+                     cluster, cluster_num, popFuncs, visible, json, wfsLayers,
+                     zIndex):
     catLegend = layer.name() + "<br />"
     if layer.geometryType() == QGis.Point:
         (new_obj, wfsLayers,
@@ -630,19 +631,20 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
                                        safeLayerName, layer_transp, labeltext,
                                        cluster, cluster_num, usedFields,
                                        visible, json, count, wfsLayers,
-                                       catLegend)
+                                       catLegend, zIndex)
     elif layer.geometryType() == QGis.Line:
         (new_obj, wfsLayers,
          catLegend) = categorizedLine(outputProjectFileName, layer,
                                       safeLayerName, renderer, catLegend,
                                       layer_transp, popFuncs, usedFields, json,
-                                      visible, count, wfsLayers)
+                                      visible, count, wfsLayers, zIndex)
     elif layer.geometryType() == QGis.Polygon:
         (new_obj, catLegend,
          wfsLayers) = categorizedPolygon(outputProjectFileName, layer,
                                          renderer, safeLayerName, catLegend,
                                          layer_transp, usedFields, visible,
-                                         json, count, popFuncs, wfsLayers)
+                                         json, count, popFuncs, wfsLayers,
+                                         zIndex)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
 
@@ -686,12 +688,13 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(stylestr, safeLayerName, layer,
                                       categoryStr, cluster[count], cluster_num,
-                                      visible[count])
+                                      visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
                                                            labeltext,
-                                                           usedFields[count])
+                                                           usedFields[count],
+                                                           zIndex)
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
@@ -700,7 +703,7 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
 
 def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
                     catLegend, layer_transp, popFuncs, usedFields, json,
-                    visible, count, wfsLayers):
+                    visible, count, wfsLayers, zIndex):
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
     fieldIndex = layer.pendingFields().indexFromName(valueAttr)
@@ -729,17 +732,17 @@ def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
     if layer.providerType() == 'WFS' and json[count] is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
                                               categoryStr, stylestr,
-                                              visible[count])
+                                              visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+                                    usedFields[count], zIndex)
     return new_obj, wfsLayers, catLegend
 
 
 def categorizedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                        catLegend, layer_transp, usedFields, visible, json,
-                       count, popFuncs, wfsLayers):
+                       count, popFuncs, wfsLayers, zIndex):
     categories = renderer.categories()
     valueAttr = renderer.classAttribute()
     fieldIndex = layer.pendingFields().indexFromName(valueAttr)
@@ -773,17 +776,18 @@ def categorizedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                                                           popFuncs)
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
                                               categoryStr, stylestr,
-                                              visible[count])
+                                              visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+                                    usedFields[count], zIndex)
     return new_obj, catLegend, wfsLayers
 
 
 def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
                    layer_transp, labeltext, popFuncs, cluster, cluster_num,
-                   visible, json, usedFields, count, legends, wfsLayers):
+                   visible, json, usedFields, count, legends, wfsLayers,
+                   zIndex):
     catLegend = layer.name() + "<br />"
     categoryStr = graduatedStyleScript(safeLayerName)
     if layer.geometryType() == QGis.Point:
@@ -792,26 +796,29 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
                                        safeLayerName, renderer, catLegend,
                                        layer_transp, json, count, labeltext,
                                        usedFields, cluster, cluster_num,
-                                       visible, wfsLayers, categoryStr)
+                                       visible, wfsLayers, categoryStr, zIndex)
     elif layer.geometryType() == QGis.Line:
         (new_obj, wfsLayers,
          catLegend) = graduatedLine(outputProjectFileName, layer,
                                     safeLayerName, renderer, catLegend,
                                     layer_transp, popFuncs, usedFields, json,
-                                    visible, count, wfsLayers, categoryStr)
+                                    visible, count, wfsLayers, categoryStr,
+                                    zIndex)
     elif layer.geometryType() == QGis.Polygon:
         (new_obj, catLegend,
          wfsLayers) = graduatedPolygon(outputProjectFileName, layer, renderer,
                                        safeLayerName, catLegend, layer_transp,
                                        usedFields, visible, json, count,
-                                       popFuncs, wfsLayers, categoryStr)
+                                       popFuncs, wfsLayers, categoryStr,
+                                       zIndex)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
 
 
 def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
                    catLegend, layer_transp, json, count, labeltext, usedFields,
-                   cluster, cluster_num, visible, wfsLayers, categoryStr):
+                   cluster, cluster_num, visible, wfsLayers, categoryStr,
+                   zIndex):
     valueAttr = renderer.classAttribute()
     fieldIndex = layer.pendingFields().indexFromName(valueAttr)
     try:
@@ -839,12 +846,13 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(stylestr, safeLayerName, layer,
                                       categoryStr, cluster[count], cluster_num,
-                                      visible[count])
+                                      visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
                                                            labeltext,
-                                                           usedFields[count])
+                                                           usedFields[count],
+                                                           zIndex)
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
@@ -853,7 +861,7 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
 
 def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
                   catLegend, layer_transp, popFuncs, usedFields, json, visible,
-                  count, wfsLayers, categoryStr):
+                  count, wfsLayers, categoryStr, zIndex):
     valueAttr = renderer.classAttribute()
     fieldIndex = layer.pendingFields().indexFromName(valueAttr)
     try:
@@ -878,17 +886,17 @@ def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
                                                           popFuncs)
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
                                               categoryStr, stylestr,
-                                              visible[count])
+                                              visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+                                    usedFields[count], zIndex)
     return new_obj, wfsLayers, catLegend
 
 
 def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                      catLegend, layer_transp, usedFields, visible, json, count,
-                     popFuncs, wfsLayers, categoryStr):
+                     popFuncs, wfsLayers, categoryStr, zIndex):
     valueAttr = renderer.classAttribute()
     fieldIndex = layer.pendingFields().indexFromName(valueAttr)
     try:
@@ -917,11 +925,11 @@ def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                                                           popFuncs)
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
                                               categoryStr, stylestr,
-                                              visible[count])
+                                              visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+                                    usedFields[count], zIndex)
     return new_obj, catLegend, wfsLayers
 
 
