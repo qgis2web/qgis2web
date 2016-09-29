@@ -688,7 +688,7 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(stylestr, safeLayerName, layer,
                                       categoryStr, cluster[count], cluster_num,
-                                      visible[count], zIndex)
+                                      visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
@@ -732,7 +732,7 @@ def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
     if layer.providerType() == 'WFS' and json[count] is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
                                               categoryStr, stylestr,
-                                              visible[count])
+                                              visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(categoryStr, safeLayerName,
