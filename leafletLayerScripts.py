@@ -235,7 +235,7 @@ def exportRasterLayer(layer, safeLayerName, dataPath):
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, count, outputProjectFileName,
                      wfsLayers, cluster, cluster_num, visible, json, legends,
-                     new_src, canvas):
+                     new_src, canvas, zIndex):
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(layer, safeLayerName, highlight,
                                  popupsOnHover, popup, count)
@@ -282,7 +282,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                   safeLayerName, wfsLayers, layer,
                                   layer_transp, labeltext, cluster,
                                   cluster_num, visible, json, usedFields,
-                                  legends, count, popFuncs)
+                                  legends, count, popFuncs, zIndex)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         # print safeLayerName + ": categorized"
         (new_obj, legends,
@@ -451,7 +451,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
 
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
                 layer, layer_transp, labeltext, cluster, cluster_num, visible,
-                json, usedFields, legends, count, popFuncs):
+                json, usedFields, legends, count, popFuncs, zIndex):
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     else:
@@ -473,24 +473,26 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
                                   symbol_transp, safeLayerName, colorName,
                                   fill_opacity, labeltext, layer, cluster,
                                   cluster_num, visible, json, usedFields,
-                                  wfsLayers, count, outputProjectFileName)
+                                  wfsLayers, count, outputProjectFileName,
+                                  zIndex)
     elif layer.geometryType() == QGis.Line:
         new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, layer,
                                         json, safeLayerName, wfsLayers,
-                                        visible, usedFields, count)
+                                        visible, usedFields, count, zIndex)
     elif layer.geometryType() == QGis.Polygon:
         new_obj, wfsLayers = singlePolygon(layer, safeLayerName, symbol,
                                            symbolLayer, colorName,
                                            layer_transp, symbol_transp,
                                            fill_opacity, visible, json,
-                                           usedFields, wfsLayers, count)
+                                           usedFields, wfsLayers, count,
+                                           zIndex)
     return new_obj, legends, wfsLayers
 
 
 def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
                 safeLayerName, colorName, fill_opacity, labeltext, layer,
                 cluster, cluster_num, visible, json, usedFields, wfsLayers,
-                count, outputProjectFileName):
+                count, outputProjectFileName, zIndex):
     radius = unicode(symbol.size())
     if isinstance(symbolLayer, QgsSvgMarkerSymbolLayerV2):
         if symbol.dataDefinedAngle().isActive():
@@ -527,24 +529,20 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(pointStyleLabel, safeLayerName,
                                       layer, "", cluster[count],
-                                      cluster_num, visible[count])
+                                      cluster_num, visible[count], zIndex)
         wfsLayers += wfsScript(scriptTag)
     else:
         rot = symbol.dataDefinedAngle().expressionOrField()
         new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer,
-                                  usedFields[count])
+                                  usedFields[count], zIndex)
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
-        else:
-            new_obj += """
-        layerOrder[layerOrder.length] = json_{layer}JSON;
-""".format(layer=safeLayerName)
     return new_obj, cluster_num, wfsLayers
 
 
 def singleLine(symbol, colorName, fill_opacity, layer, json, safeLayerName,
-               wfsLayers, visible, usedFields, count):
+               wfsLayers, visible, usedFields, count, zIndex):
     radius = symbol.width()
     sl = symbol.symbolLayer(0)
     try:
@@ -558,18 +556,19 @@ def singleLine(symbol, colorName, fill_opacity, layer, json, safeLayerName,
     if layer.providerType() == 'WFS' and json[count] is False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer, "",
-                                              stylestr, visible[count])
+                                              stylestr, visible[count], zIndex)
         new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
-        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
+        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count],
+                                     zIndex)
     return new_obj, wfsLayers
 
 
 def singlePolygon(layer, safeLayerName, symbol, symbolLayer, colorName,
                   layer_transp, symbol_transp, fill_opacity, visible, json,
-                  usedFields, wfsLayers, count):
+                  usedFields, wfsLayers, count, zIndex):
     borderStyle = ""
     try:
         capStyle = symbolLayer.penCapStyle()
@@ -614,12 +613,13 @@ def singlePolygon(layer, safeLayerName, symbol, symbolLayer, colorName,
     if layer.providerType() == 'WFS' and json[count] is False:
         stylestr = nonPointStylePopupsScript(safeLayerName)
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer, "",
-                                              stylestr, visible[count])
+                                              stylestr, visible[count], zIndex)
         new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
-        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
+        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count],
+                                     zIndex)
     return new_obj, wfsLayers
 
 
@@ -698,10 +698,6 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
-        else:
-            new_obj += """
-        layerOrder[layerOrder.length] = json_{layer}JSON;
-""".format(layer=safeLayerName)
     return new_obj, wfsLayers, catLegend
 
 
@@ -855,10 +851,6 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
-        else:
-            new_obj += """
-        layerOrder[layerOrder.length] = json_{layer}JSON;
-""".format(layer=safeLayerName)
     return new_obj, catLegend, wfsLayers, cluster_num
 
 
@@ -970,35 +962,32 @@ def heatmapLayer(layer, safeLayerName, renderer, outputProjectFileName,
 
 
 def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
-                  cluster_set, cluster_num, visible):
+                  cluster_set, cluster_num, visible, zIndex):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = pointStyleLabel + categoryStr + """
+        map.createPane('pane_{layerName}');
+        map.getPane('pane_{layerName}').style.zIndex = {zIndex}
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{
+            pane: 'pane_{layerName}',
             pointToLayer: doPointToLayer{layerName},
             onEachFeature: pop_{layerName}
         }});
-        layerControl.addOverlay(json_""".format(layerName=layerName)
+        layerControl.addOverlay(json_""".format(layerName=layerName,
+                                                zIndex=zIndex)
     new_obj += "{layerName}JSON, '{layerName}');".format(layerName=layerName)
     if cluster_set:
         new_obj += """
         var cluster_group{layerName}JSON = """.format(layerName=layerName)
         new_obj += "new L.MarkerClusterGroup({showCoverageOnHover: false});"
-        new_obj += """
-        layerOrder[layerOrder.length] = cluster_group"""
-        new_obj += "{layerName}JSON;".format(layerName=layerName)
     else:
         new_obj += """
-        feature_group.addLayer(json_{layerName}JSON);
-        layerOrder[layerOrder.length] = json_{layerName}JSON;""".format(
+        feature_group.addLayer(json_{layerName}JSON);""".format(
                 layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
             json_{layerName}""".format(layerName=layerName)
     new_obj += "JSON.addData(geojson);"
-    if visible:
-        new_obj += """
-            stackLayers();"""
     if cluster_set:
         new_obj += """
                 cluster_group{layerName}JSON.add""".format(layerName=layerName)
@@ -1009,34 +998,40 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
     return new_obj, scriptTag, cluster_num
 
 
-def buildNonPointJSON(categoryStr, safeName, usedFields):
+def buildNonPointJSON(categoryStr, safeName, usedFields, zIndex):
+    zIndex = zIndex + 600
     if usedFields != 0:
         new_obj = categoryStr + """
+        map.createPane('pane_{safeName}');
+        map.getPane('pane_{safeName}').style.zIndex = {zIndex}
         var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
+            pane: 'pane_{safeName}',
             onEachFeature: pop_{safeName},
             style: doStyle{safeName}
-        }});
-        layerOrder[layerOrder.length]""".format(safeName=safeName)
-        new_obj += " = json_{safeName}JSON;".format(safeName=safeName)
+        }});""".format(safeName=safeName,
+                                                zIndex=zIndex)
     else:
         new_obj = categoryStr + """
+        map.createPane('pane_{safeName}');
+        map.getPane('pane_{safeName}').style.zIndex = {zIndex}
         var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
+            pane: 'pane_{safeName}',
             style: doStyle{safeName}
-        }});
-        layerOrder[layerOrder.length] = """.format(safeName=safeName)
-        new_obj += "json_{safeName}JSON;".format(safeName=safeName)
+        }});""".format(safeName=safeName, zIndex=zIndex)
     return new_obj
 
 
-def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible):
+def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = categoryStr + """
+        map.createPane('pane_{layerName}');
+        map.getPane('pane_{layerName}').style.zIndex = {zIndex}
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{{stylestr},
+            pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
-        }});""".format(layerName=layerName, stylestr=stylestr)
+        }});""".format(layerName=layerName, stylestr=stylestr, zIndex=zIndex)
     new_obj += """
-        layerOrder[layerOrder.length] = json_{layerName}JSON;
         feature_group.addLayer(json_{layerName}JSON);
         layerControl.addOverlay(json_""".format(layerName=layerName)
     new_obj += "{layerName}JSON, '{layerName}');".format(layerName=layerName)
@@ -1044,9 +1039,6 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible):
         function get{layerName}Json(geojson) {{
             json_{layerName}""".format(layerName=layerName)
     new_obj += "JSON.addData(geojson);"
-    if visible:
-        new_obj += """
-            stackLayers();"""
     new_obj += """
         };"""
     return new_obj, scriptTag

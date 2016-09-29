@@ -167,12 +167,7 @@ def basemapsScript(basemapList, maxZoom):
 def layerOrderScript(extent, restrictToExtent):
     layerOrder = """
         var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }"""
+        function setBounds() {"""
     if extent == 'Fit to layers extent':
         layerOrder += """
             if (bounds_group.getLayers().length) {
@@ -182,11 +177,6 @@ def layerOrderScript(extent, restrictToExtent):
         layerOrder += """
             map.setMaxBounds(map.getBounds());"""
     layerOrder += """
-        }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
-            }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
         function geoJson2heat(geojson, weight) {
@@ -324,19 +314,29 @@ def wfsScript(scriptTag):
     return wfs
 
 
-def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
+def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields,
+                    zIndex):
     jsonPoint = pointStyleLabel
+    zIndex = zIndex + 600
     if usedFields != 0:
         jsonPoint += """
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex}
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+            pane: 'pane_{safeLayerName}',
             onEachFeature: pop_{safeLayerName}, {pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
+                           zIndex=zIndex,
                            pointToLayer=pointToLayer)
     else:
         jsonPoint += """
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zLindex}
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+            pane: 'pane_{safeLayerName}',
             {pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
+                           zIndex=zIndex,
                            pointToLayer=pointToLayer)
     return jsonPoint
 
@@ -349,10 +349,6 @@ def clusterScript(safeLayerName):
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(json_{safeLayerName}JSON);
 """.format(safeLayerName=safeLayerName)
-    layercode = "cluster_group" + safeLayerName + "JSON"
-    cluster += """
-        layerOrder[layerOrder.length] = """ + layercode + """;
-"""
     return cluster
 
 
@@ -711,8 +707,7 @@ def rasterScript(i, safeLayerName):
                                                  bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
-        bounds_group.addLayer(overlay_{safeLayerName});
-        layerOrder[layerOrder.length] = overlay_{safeLayerName};""".format(
+        bounds_group.addLayer(overlay_{safeLayerName});""".format(
                 safeLayerName=safeLayerName)
     return raster
 
@@ -800,8 +795,6 @@ def addressSearchScript():
 def endHTMLscript(wfsLayers, layerSearch, labels):
     endHTML = ""
     if wfsLayers == "":
-        endHTML += """
-        stackLayers();"""
         endHTML += labels
     if layerSearch != "None":
         searchVals = layerSearch.split(": ")
@@ -812,7 +805,6 @@ def endHTMLscript(wfsLayers, layerSearch, labels):
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));""".format(field=searchVals[1])
     endHTML += """
-        map.on('overlayadd', restackLayers);
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
 
