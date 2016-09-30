@@ -1023,6 +1023,7 @@ def buildNonPointJSON(categoryStr, safeName, usedFields, zIndex):
 
 
 def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
+    zIndex = zIndex + 600
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = categoryStr + """
         map.createPane('pane_{layerName}');

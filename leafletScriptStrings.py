@@ -476,6 +476,7 @@ def categorizedPointWFSscript(layerName, labeltext):
 
 
 def categorizedPointJSONscript(safeLayerName, labeltext, usedFields, zIndex):
+    zIndex = zIndex + 600
     if usedFields != 0:
         categorizedPointJSON = """
         map.createPane('pane_{sln}');
