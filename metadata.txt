@@ -137,7 +137,7 @@ tracker=https://github.com/tomchadwin/qgis2web/issues
 repository=https://github.com/tomchadwin/qgis2web
 icon=qgis2web.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
