@@ -323,7 +323,7 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
             pane: 'pane_{safeLayerName}',
-            onEachFeature: pop_{safeLayerName}, {pointToLayer}
+            onEachFeature: pop_{safeLayerName},{pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
                            pointToLayer=pointToLayer)
     else:
