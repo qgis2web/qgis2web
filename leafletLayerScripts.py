@@ -502,7 +502,8 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
         else:
             rot = symbolLayer.angle()
         pointStyleLabel = svgScript(safeLayerName, symbolLayer,
-                                    outputProjectFileName, rot, labeltext)
+                                    outputProjectFileName, rot, labeltext,
+                                    zIndex)
     else:
         try:
             borderStyle = symbolLayer.outlineStyle()
