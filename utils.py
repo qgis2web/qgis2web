@@ -206,7 +206,8 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         f.write(line)
             os.remove(tmpPath)
 
-        elif layer.type() == layer.RasterLayer:
+        elif (layer.type() == layer.RasterLayer and
+                layer.providerType() != "wms"):
 
             name_ts = safeName(layer.name()) + unicode(int(time.time()))
 
