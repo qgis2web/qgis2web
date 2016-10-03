@@ -94,15 +94,11 @@
         var cluster_groupairports0JSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
         cluster_groupairports0JSON.addLayer(json_airports0JSON);
 
-        layerOrder[layerOrder.length] = cluster_groupairports0JSON;
-
         bounds_group.addLayer(json_airports0JSON);
-        initialOrder[initialOrder.length] = cluster_groupairports0JSON;
         cluster_groupairports0JSON.addTo(map);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();
-        map.on('overlayadd', restackLayers);
         </script>
     </body>
 </html>

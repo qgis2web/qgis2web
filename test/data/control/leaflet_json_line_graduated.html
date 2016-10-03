@@ -129,18 +129,18 @@
             }
         }
         }
+        map.createPane('pane_pipelines0');
+        map.getPane('pane_pipelines0').style.zIndex = 601
         var json_pipelines0JSON = new L.geoJson(json_pipelines0, {
+            pane: 'pane_pipelines0',
             onEachFeature: pop_pipelines0,
             style: doStylepipelines0
         });
-        layerOrder[layerOrder.length] = json_pipelines0JSON;
         bounds_group.addLayer(json_pipelines0JSON);
-        initialOrder[initialOrder.length] = json_pipelines0JSON;
         feature_group.addLayer(json_pipelines0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();
-        map.on('overlayadd', restackLayers);
         </script>
     </body>
 </html>

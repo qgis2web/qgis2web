@@ -48,20 +48,9 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
-        var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }
+        function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
-            }
-        }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
@@ -79,8 +68,11 @@
             layer.bindPopup(popupContent);
         }
 
+        map.createPane('pane_airports0');
+        map.getPane('pane_airports0').style.zIndex = 601
         function doStyleairports0() {
             return {
+                pane: 'pane_airports0',
                 radius: 4.0,
                 fillColor: '#279319',
                 color: '#000000',
@@ -96,10 +88,10 @@
             return L.circleMarker(latlng, doStyleairports0())
         }
         var json_airports0JSON = new L.geoJson(json_airports0, {
+            pane: 'pane_airports0',
             onEachFeature: pop_airports0, 
             pointToLayer: doPointToLayerairports0
             });
-
         bounds_group.addLayer(json_airports0JSON);
         feature_group.addLayer(json_airports0JSON);
         raster_group.addTo(map);

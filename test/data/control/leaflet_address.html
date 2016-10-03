@@ -93,10 +93,7 @@
             onEachFeature: pop_airports0,
             pointToLayer: doPointToLayerairports0
             });
-
-
         bounds_group.addLayer(json_airports0JSON);
-
         feature_group.addLayer(json_airports0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
@@ -107,7 +104,6 @@
         });
         osmGeocoder.addTo(map);
         setBounds();
-        map.on('overlayadd', restackLayers);
         </script>
     </body>
 </html>
