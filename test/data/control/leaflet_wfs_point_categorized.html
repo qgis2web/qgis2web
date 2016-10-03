@@ -185,22 +185,19 @@
         }
         var json_point0JSON;
         json_point0JSON = L.geoJson(null, {
+            pane: 'pane_point0',
             pointToLayer: doPointToLayerpoint0,
             onEachFeature: pop_point0
         });
         layerControl.addOverlay(json_point0JSON, 'point0');
         feature_group.addLayer(json_point0JSON);
-        layerOrder[layerOrder.length] = json_point0JSON;
         function getpoint0Json(geojson) {
             json_point0JSON.addData(geojson);
-            setBounds();
         };
         bounds_group.addLayer(json_point0JSON);
-        initialOrder[initialOrder.length] = json_point0JSON;
         feature_group.addLayer(json_point0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
-        map.on('overlayadd', restackLayers);
         </script>
         <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dartmoor:dnpa-tpo-point&SRSNAME=EPSG:4326&BBOX=233720,53549,297567,96689&outputFormat=text%2Fjavascript&format_options=callback%3Agetpoint0Json'></script>
     </body>
