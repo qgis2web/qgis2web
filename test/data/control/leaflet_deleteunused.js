@@ -65,7 +65,7 @@ var json_airports0={
 { "type": "Feature", "properties": { "ID": 60.0 }, "geometry": { "type": "Point", "coordinates": [ -170.220444, 57.167332 ] } },
 { "type": "Feature", "properties": { "ID": 61.0 }, "geometry": { "type": "Point", "coordinates": [ -158.631821, 56.959435 ] } },
 { "type": "Feature", "properties": { "ID": 62.0 }, "geometry": { "type": "Point", "coordinates": [ -169.661392, 56.578609 ] } },
-{ "type": "Feature", "properties": { "ID": 63.0 }, "geometry": { "type": "Point", "coordinates": [ -162.724258, 55.205601 ] } },
+{ "type": "Feature", "properties": { "ID": 63.0 }, "geometry": { "type": "Point", "coordinates": [ -162.724258, 55.205601; ] } },
 { "type": "Feature", "properties": { "ID": 64.0 }, "geometry": { "type": "Point", "coordinates": [ -166.543503, 53.900139 ] } },
 { "type": "Feature", "properties": { "ID": 65.0 }, "geometry": { "type": "Point", "coordinates": [ -168.850006, 52.941666 ] } },
 { "type": "Feature", "properties": { "ID": 66.0 }, "geometry": { "type": "Point", "coordinates": [ -174.206345, 52.220348 ] } },

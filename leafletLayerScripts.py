@@ -1005,7 +1005,7 @@ def buildNonPointJSON(categoryStr, safeName, usedFields, zIndex):
     if usedFields != 0:
         new_obj = categoryStr + """
         map.createPane('pane_{safeName}');
-        map.getPane('pane_{safeName}').style.zIndex = {zIndex}
+        map.getPane('pane_{safeName}').style.zIndex = {zIndex};
         var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
             pane: 'pane_{safeName}',
             onEachFeature: pop_{safeName},
@@ -1027,7 +1027,7 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = categoryStr + """
         map.createPane('pane_{layerName}');
-        map.getPane('pane_{layerName}').style.zIndex = {zIndex}
+        map.getPane('pane_{layerName}').style.zIndex = {zIndex};
         var json_{layerName}JSON;
         json_{layerName}JSON = L.geoJson(null, {{{stylestr},
             pane: 'pane_{layerName}',

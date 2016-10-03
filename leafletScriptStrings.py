@@ -278,7 +278,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                                                       0, 0)
     pointStyleLabel = """
         map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex}
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
         function doStyle{safeLayerName}() {{
             return {{
                 pane: 'pane_{safeLayerName}',
@@ -480,7 +480,7 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields, zIndex):
     if usedFields != 0:
         categorizedPointJSON = """
         map.createPane('pane_{sln}');
-        map.getPane('pane_{sln}').style.zIndex = {zIndex}
+        map.getPane('pane_{sln}').style.zIndex = {zIndex};
         var json_{sln}JSON = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',
             onEachFeature: pop_{sln},
