@@ -379,11 +379,11 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
             editorWidget == 'Hidden'):
         f = "q2wHide_" + f
     label_exp = False
-    labeltext = ".bindLabel((feature.properties['" + unicode(f)
+    labeltext = ".bindTooltip((feature.properties['" + unicode(f)
     labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (
             styleStart, unicode(f), styleEnd)
-    labeltext += ", {noHide: true, offset: [-0, -16]}"
-    labeltext += ")"
+    labeltext += ", {permanent: true, offset: [-0, -16]}"
+    labeltext += ").openTooltip();"
     f = palyr.fieldName
     table = ""
     for field in popup[count]:
