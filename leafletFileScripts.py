@@ -56,8 +56,6 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
         shutil.copyfile(cssDir + 'leaflet-search.css',
                         cssStore + 'leaflet-search.css')
         shutil.copytree(imageDir, imageStore)
-    shutil.copyfile(jsDir + 'label.js', jsStore + 'label.js')
-    shutil.copyfile(cssDir + 'label.css', cssStore + 'label.css')
     if measure != "None":
         shutil.copyfile(jsDir + 'leaflet.draw.js',
                         jsStore + 'leaflet.draw.js')
