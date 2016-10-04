@@ -53,7 +53,6 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        layerControl = L.control.layers({},{},{collapsed:false});
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
             return [
