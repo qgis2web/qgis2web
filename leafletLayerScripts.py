@@ -382,7 +382,8 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
     labeltext = ".bindTooltip((feature.properties['" + unicode(f)
     labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (
             styleStart, unicode(f), styleEnd)
-    labeltext += ", {permanent: true, offset: [-0, -16]}"
+    labeltext += ", {permanent: true, offset: [-0, -16], "
+    labeltext += "className: 'css_%s'}" % safeLayerName
     labeltext += ").openTooltip();"
     f = palyr.fieldName
     table = ""

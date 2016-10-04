@@ -107,8 +107,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" type="text/css" '
-    extracss += """href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/label.css" />"""
+    extracss += """href="css/qgis2web.css">"""
     if len(cluster_set):
         clusterCSS = '<link rel="stylesheet" '
         clusterCSS += """href="css/MarkerCluster.css" />
@@ -147,7 +146,6 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         measureCSS = ""
         measureJS = ""
     extraJS = """<script src="js/leaflet-hash.js"></script>
-        <script src="js/label.js"></script>
         <script src="js/Autolinker.min.js"></script>"""
     if (matchCRS and
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
@@ -221,6 +219,14 @@ th {
 }
 .leaflet-popup-content {
     width:auto !important;
+}
+.leaflet-tooltip {
+    background: none;
+    box-shadow: none;
+    border: none;
+}
+.leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
+    border: 0px;
 }"""
         f_css.write(text)
         f_css.close()
