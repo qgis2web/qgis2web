@@ -976,9 +976,7 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
             pane: 'pane_{layerName}',
             pointToLayer: doPointToLayer{layerName},
             onEachFeature: pop_{layerName}
-        }});
-        layerControl.addOverlay(json_""".format(layerName=layerName)
-    new_obj += "{layerName}JSON, '{layerName}');".format(layerName=layerName)
+        }});""".format(layerName=layerName)
     if cluster_set:
         new_obj += """
         var cluster_group{layerName}JSON = """.format(layerName=layerName)
@@ -1037,10 +1035,8 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
         }});""".format(layerName=layerName, stylestr=stylestr, zIndex=zIndex)
     if visible: 
         new_obj += """
-        feature_group.addLayer(json_{layerName}JSON);"""
-    new_obj += """
-        layerControl.addOverlay(json_""".format(layerName=layerName)
-    new_obj += "{layerName}JSON, '{layerName}');".format(layerName=layerName)
+        feature_group.addLayer(json_{layerName}JSON);""".format(
+            layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
             json_{layerName}""".format(layerName=layerName)

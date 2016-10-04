@@ -177,7 +177,6 @@ def layerOrderScript(extent, restrictToExtent):
             map.setMaxBounds(map.getBounds());"""
     layerOrder += """
         }
-        layerControl = L.control.layers({},{},{collapsed:false});
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
             return [
