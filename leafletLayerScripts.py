@@ -984,7 +984,7 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
     else:
         if visible:
             new_obj += """
-            feature_group.addLayer(json_{layerName}JSON);""".format(
+        feature_group.addLayer(json_{layerName}JSON);""".format(
                     layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
