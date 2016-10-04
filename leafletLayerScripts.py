@@ -1033,7 +1033,7 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName, stylestr=stylestr, zIndex=zIndex)
-    if visible: 
+    if visible:
         new_obj += """
         feature_group.addLayer(json_{layerName}JSON);""".format(
             layerName=layerName)
