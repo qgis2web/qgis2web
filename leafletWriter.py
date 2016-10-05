@@ -156,7 +156,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                                            count, outputProjectFileName,
                                            wfsLayers, cluster, cluster_num,
                                            visible, json, legends, new_src,
-                                           canvas)
+                                           canvas, lyrCount)
         elif layer.type() == QgsMapLayer.RasterLayer:
             if layer.dataProvider().name() == "wms":
                 new_obj = wmsScript(layer, safeLayerName)

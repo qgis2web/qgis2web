@@ -206,7 +206,8 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json):
                         f.write(line)
             os.remove(tmpPath)
 
-        elif layer.type() == layer.RasterLayer:
+        elif (layer.type() == layer.RasterLayer and
+                layer.providerType() != "wms"):
 
             name_ts = safeName(layer.name()) + unicode(int(time.time()))
 
@@ -391,7 +392,7 @@ def is25d(layer, canvas):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChr = '-_0123456789abcdefghijklmnopqrstuvwxyz' \
+    validChr = '_0123456789abcdefghijklmnopqrstuvwxyz' \
                'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return ''.join(c for c in name if c in validChr)
 

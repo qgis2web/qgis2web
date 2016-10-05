@@ -8,7 +8,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css" />
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/label.css" />
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
         <script src="js/leaflet.js"></script>
@@ -16,7 +15,6 @@
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/OSMBuildings-Leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>
-        <script src="js/label.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
         <style>
@@ -47,23 +45,11 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
-        var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }
+        function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
-            }
-        }
-        layerControl = L.control.layers({},{},{collapsed:false});
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
             return [
@@ -150,21 +136,20 @@
         }
 
         }
+        map.createPane('pane_airports0');
+        map.getPane('pane_airports0').style.zIndex = 601;
         var json_airports0JSON = new L.geoJson(json_airports0, {
+            pane: 'pane_airports0',
             onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, doStyleairports0(feature))
             }
         });
-        layerOrder[layerOrder.length] = json_airports0JSON;
-
         bounds_group.addLayer(json_airports0JSON);
-        initialOrder[initialOrder.length] = json_airports0JSON;
         feature_group.addLayer(json_airports0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
-        stackLayers();
-        map.on('overlayadd', restackLayers);
+        setBounds();
         </script>
     </body>
 </html>

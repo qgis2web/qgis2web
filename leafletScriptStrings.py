@@ -166,13 +166,7 @@ def basemapsScript(basemapList, maxZoom):
 
 def layerOrderScript(extent, restrictToExtent):
     layerOrder = """
-        var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }"""
+        function setBounds() {"""
     if extent == 'Fit to layers extent':
         layerOrder += """
             if (bounds_group.getLayers().length) {
@@ -183,12 +177,6 @@ def layerOrderScript(extent, restrictToExtent):
             map.setMaxBounds(map.getBounds());"""
     layerOrder += """
         }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
-            }
-        }
-        layerControl = L.control.layers({},{},{collapsed:false});
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
             return [
@@ -242,8 +230,10 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     return popup
 
 
-def svgScript(safeLayerName, symbolLayer, outputFolder, rot, labeltext):
+def svgScript(safeLayerName, symbolLayer, outputFolder,
+              rot, labeltext, zIndex):
     slPath = symbolLayer.path()
+    zIndex = zIndex + 600
     shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
                                          os.path.basename(slPath)))
     svg = """
@@ -252,8 +242,11 @@ def svgScript(safeLayerName, symbolLayer, outputFolder, rot, labeltext):
             iconSize: [{size}, {size}], // size of the icon
         }});
 
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
         function doStyle{safeLayerName}(feature) {{
             return {{
+                pane: 'pane_{safeLayerName}',
                 icon: svg{safeLayerName},
                 rotationAngle: {rot},
                 rotationOrigin: 'center center'
@@ -263,7 +256,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder, rot, labeltext):
             return L.marker(latlng, doStyle{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8, rot=rot,
+                     size=symbolLayer.size() * 3.8, zIndex=zIndex, rot=rot,
                      labeltext=labeltext)
     return svg
 
@@ -282,13 +275,17 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                           colorName, borderColor, borderOpacity, opacity,
-                          labeltext):
+                          labeltext, zIndex):
     radius = float(radius) * 2
+    zIndex = zIndex + 600
     (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
                                                       0, 0)
     pointStyleLabel = """
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
         function doStyle{safeLayerName}() {{
             return {{
+                pane: 'pane_{safeLayerName}',
                 radius: {radius},
                 fillColor: '{colorName}',
                 color: '{borderColor}',
@@ -302,7 +299,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName, radius=radius,
+        }}""".format(safeLayerName=safeLayerName, zIndex=zIndex, radius=radius,
                      colorName=colorName, borderColor=borderColor,
                      borderWidth=borderWidth * 4,
                      borderOpacity=borderOpacity if borderStyle != 0 else 0,
@@ -329,12 +326,14 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
     if usedFields != 0:
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            onEachFeature: pop_{safeLayerName}, {pointToLayer}
+            pane: 'pane_{safeLayerName}',
+            onEachFeature: pop_{safeLayerName},{pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
                            pointToLayer=pointToLayer)
     else:
         jsonPoint += """
         var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+            pane: 'pane_{safeLayerName}',
             {pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
                            pointToLayer=pointToLayer)
@@ -349,10 +348,6 @@ def clusterScript(safeLayerName):
         cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(json_{safeLayerName}JSON);
 """.format(safeLayerName=safeLayerName)
-    layercode = "cluster_group" + safeLayerName + "JSON"
-    cluster += """
-        layerOrder[layerOrder.length] = """ + layercode + """;
-"""
     return cluster
 
 
@@ -484,21 +479,30 @@ def categorizedPointWFSscript(layerName, labeltext):
     return categorizedPointWFS
 
 
-def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
+def categorizedPointJSONscript(safeLayerName, labeltext, usedFields, zIndex):
+    zIndex = zIndex + 600
     if usedFields != 0:
         categorizedPointJSON = """
+        map.createPane('pane_{sln}');
+        map.getPane('pane_{sln}').style.zIndex = {zIndex};
         var json_{sln}JSON = new L.geoJson(json_{sln}, {{
+            pane: 'pane_{sln}',
             onEachFeature: pop_{sln},
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName)
+                return L.circleMarker(latlng, """.format(sln=safeLayerName,
+                                                         zIndex=zIndex)
         categorizedPointJSON += """doStyle{sln}(feature)){label}
             }}
         }});""".format(sln=safeLayerName, label=labeltext)
     else:
         categorizedPointJSON = """
+        map.createPane('pane_{sln}');
+        map.getPane('pane_{sln}').style.zIndex = {zIndex}
         var json_{sln}JSON = new L.geoJson(json_{sln}, {{
+            pane: 'pane_{sln}',
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName)
+                return L.circleMarker(latlng, """.format(sln=safeLayerName,
+                                                         zIndex=zIndex)
         categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
             }}
         }});""".format(safeLayerName=safeLayerName, labeltext=labeltext)
@@ -711,8 +715,7 @@ def rasterScript(i, safeLayerName):
                                                  bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
-        bounds_group.addLayer(overlay_{safeLayerName});
-        layerOrder[layerOrder.length] = overlay_{safeLayerName};""".format(
+        bounds_group.addLayer(overlay_{safeLayerName});""".format(
                 safeLayerName=safeLayerName)
     return raster
 
@@ -801,7 +804,7 @@ def endHTMLscript(wfsLayers, layerSearch, labels):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
-        stackLayers();"""
+        setBounds();"""
         endHTML += labels
     if layerSearch != "None":
         searchVals = layerSearch.split(": ")
@@ -812,7 +815,6 @@ def endHTMLscript(wfsLayers, layerSearch, labels):
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));""".format(field=searchVals[1])
     endHTML += """
-        map.on('overlayadd', restackLayers);
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
 

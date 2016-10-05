@@ -8,7 +8,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css" />
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/label.css" />
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
         <script src="js/leaflet.js"></script>
@@ -16,7 +15,6 @@
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/OSMBuildings-Leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>
-        <script src="js/label.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
         <style>
@@ -46,23 +44,11 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
-        var initialOrder = new Array();
-        var layerOrder = new Array();
-        function stackLayers() {
-            for (index = 0; index < initialOrder.length; index++) {
-                map.removeLayer(initialOrder[index]);
-                map.addLayer(initialOrder[index]);
-            }
+        function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function restackLayers() {
-            for (index = 0; index < layerOrder.length; index++) {
-                layerOrder[index].bringToFront();
-            }
-        }
-        layerControl = L.control.layers({},{},{collapsed:false});
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
             return [
@@ -77,17 +63,17 @@
             layer.bindPopup(popupContent);
         }
 
+        map.createPane('pane_polygon0');
+        map.getPane('pane_polygon0').style.zIndex = 601;
         var json_polygon0JSON;
         json_polygon0JSON = L.geoJson(null, {
 			style: doStylepolygon0,
+            pane: 'pane_polygon0',
             onEachFeature: pop_polygon0
         });
-        layerOrder[layerOrder.length] = json_polygon0JSON;
         feature_group.addLayer(json_polygon0JSON);
-        layerControl.addOverlay(json_polygon0JSON, 'polygon0');
         function getpolygon0Json(geojson) {
             json_polygon0JSON.addData(geojson);
-            stackLayers();
         };
         function doStylepolygon0(feature) {
             return {
@@ -102,11 +88,9 @@
             };
         }
         bounds_group.addLayer(json_polygon0JSON);
-        initialOrder[initialOrder.length] = json_polygon0JSON;
         feature_group.addLayer(json_polygon0JSON);
         raster_group.addTo(map);
         feature_group.addTo(map);
-        map.on('overlayadd', restackLayers);
         </script>
         <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetpolygon0Json'></script>
     </body>

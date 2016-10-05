@@ -456,14 +456,17 @@ class devToggleFilter(QObject):
     devToggle = pyqtSignal()
 
     def eventFilter(self, obj, event):
-        if event.type() == QEvent.KeyPress:
-            if event.key() == Qt.Key_F12:
-                self.devToggle.emit()
-                if obj.devConsole.height() != 0:
-                    obj.devConsole.setFixedHeight(0)
-                else:
-                    obj.devConsole.setFixedHeight(168)
-                return True
+        try:
+            if event.type() == QEvent.KeyPress:
+                if event.key() == Qt.Key_F12:
+                    self.devToggle.emit()
+                    if obj.devConsole.height() != 0:
+                        obj.devConsole.setFixedHeight(0)
+                    else:
+                        obj.devConsole.setFixedHeight(168)
+                    return True
+        except:
+            pass
         return False
 
 
