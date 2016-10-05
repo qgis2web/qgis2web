@@ -233,6 +233,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 def svgScript(safeLayerName, symbolLayer, outputFolder,
               rot, labeltext, zIndex):
     slPath = symbolLayer.path()
+    zIndex = zIndex + 600
     shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
                                          os.path.basename(slPath)))
     svg = """
