@@ -978,11 +978,6 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
         new_obj += """
         var cluster_{layerName} = """.format(layerName=layerName)
         new_obj += "new L.MarkerClusterGroup({showCoverageOnHover: false});"
-    else:
-        if visible:
-            new_obj += """
-        feature_group.addLayer(layer_{layerName});""".format(
-                    layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
             layer_{layerName}""".format(layerName=layerName)
@@ -1020,14 +1015,11 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible):
         var layer_{layerName} = L.geoJson(null, {{{stylestr},
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
-        }});""".format(layerName=layerName, stylestr=stylestr)
-    if visible:
-        new_obj += """
-        feature_group.addLayer(layer_{layerName});""".format(
-            layerName=layerName)
+        }});"""
     new_obj += """
         function get{layerName}Json(geojson) {{
-            layer_{layerName}""".format(layerName=layerName)
+            layer_{layerName}"""
+    new_obj = new_obj.format(layerName=layerName, stylestr=stylestr)
     new_obj += ".addData(geojson);"
     new_obj += """
         };"""
