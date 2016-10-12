@@ -316,7 +316,6 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
-    print 1111
     jsonPoint = """
         var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
             pane: 'pane_{safeLayerName}',"""
