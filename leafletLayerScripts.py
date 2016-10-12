@@ -278,7 +278,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     #     layer_style = getLayerStyle(layer, safeLayerName)
     elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
-        # print safeLayerName + ": single"
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer,
@@ -286,7 +285,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                   cluster_num, visible, json, usedFields,
                                   legends, count, popFuncs)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        # print safeLayerName + ": categorized"
         (new_obj, legends,
          wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
                                        outputProjectFileName, layer_transp,
@@ -294,7 +292,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                        cluster, cluster_num, popFuncs, visible,
                                        json, wfsLayers)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        # print safeLayerName + ": graduated"
         (new_obj, legends,
          wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
                                      outputProjectFileName, layer_transp,
@@ -302,7 +299,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                      visible, json, usedFields, count, legends,
                                      wfsLayers)
     elif isinstance(renderer, Qgs25DRenderer):
-        # print safeLayerName + ": 2.5d"
         pass
     elif isinstance(renderer, QgsHeatmapRenderer):
         (new_obj, legends,
