@@ -395,7 +395,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
                 f and palyr.enabled):
             label_exp = True
         if not html_prov:
-            tablestart = "'<table>"
+            tablestart = "'<table>\\"
             row = ""
             for field, val in zip(field_names, field_vals):
                 fieldIndex = fields.indexFromName(unicode(field))
@@ -408,13 +408,17 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
                         editorWidget == 'Hidden'):
                     continue
 
-                row += '<tr>'
+                row += """
+                    <tr>\\"""
                 if val == 'inline label':
-                    row += '<th scope="row">'
+                    row += """
+                        <th scope="row">"""
                     row += layer.attributeDisplayName(fieldIndex)
-                    row += '</th><td>'
+                    row += """</th>\\
+                        <td>"""
                 else:
-                    row += '<td colspan="2">'
+                    row += """
+                        <td colspan="2">"""
                 if val == "header label":
                     row += '<strong>'
                     row += layer.attributeDisplayName(fieldIndex)
@@ -434,8 +438,10 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
                     row += "String(feature.properties['" + unicode(field)
                     row += "'])) : '') + '"
 
-                row += "</td></tr>"
-            tableend = "</table>'"
+                row += """</td>\\
+                    </tr>\\"""
+            tableend = """
+                </table>'"""
             table = tablestart + row + tableend
     if not label_exp:
         labeltext = ""
