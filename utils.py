@@ -490,3 +490,18 @@ def exportImages(layer, field, layerFileName):
             shutil.copyfile(source_file_name, photo_file_name)
         except IOError as e:
             pass
+
+
+def handleHiddenField(layer, field):
+    fieldIndex = layer.pendingFields().indexFromName(field)
+    try:
+        editFormConfig = layer.editFormConfig()
+        editorWidget = editFormConfig.widgetType(fieldIndex)
+    except:
+        editorWidget = layer.editorWidgetV2(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        fieldName = "q2wHide_" + field
+    else:
+        fieldName = field
+    return fieldName

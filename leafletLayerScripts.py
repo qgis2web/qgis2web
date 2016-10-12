@@ -9,7 +9,7 @@ from qgis.utils import QGis
 import processing
 from leafletScriptStrings import *
 from utils import (writeTmpLayer, getUsedFields, removeSpaces,
-                   is25d, exportImages)
+                   is25d, exportImages, handleHiddenField)
 
 
 def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
@@ -274,6 +274,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         new_obj = """
         var osmb = new OSMBuildings(map).date(new Date({shadows}));
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
+    # else:
+    #     layer_style = getLayerStyle(layer, safeLayerName)
     elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
         # print safeLayerName + ": single"
@@ -373,15 +375,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
         styleStart += "font-style: italic; "
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
     styleEnd = " + '</div>'"
-    f = palyr.fieldName
-    fieldIndex = layer.pendingFields().indexFromName(f)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        f = "q2wHide_" + f
+    f = handleHiddenField(layer, palyr.fieldName)
     label_exp = False
     labeltext = ".bindTooltip((feature.properties['" + unicode(f)
     labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (
@@ -658,15 +652,7 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
                      layer_transp, labeltext, cluster, cluster_num, usedFields,
                      visible, json, count, wfsLayers, catLegend):
     categories = renderer.categories()
-    valueAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(valueAttr)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        valueAttr = "q2wHide_" + valueAttr
+    valueAttr = handleHiddenField(layer, renderer.classAttribute())
     categoryStr = categoryScript(safeLayerName, valueAttr)
     for cat in categories:
         if not cat.value():
@@ -709,15 +695,7 @@ def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
                     catLegend, layer_transp, popFuncs, usedFields, json,
                     visible, count, wfsLayers):
     categories = renderer.categories()
-    valueAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(valueAttr)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        valueAttr = "q2wHide_" + valueAttr
+    valueAttr = handleHiddenField(layer, renderer.classAttribute())
     categoryStr = categoryScript(safeLayerName, valueAttr)
     for cat in categories:
         if not cat.value():
@@ -748,15 +726,7 @@ def categorizedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                        catLegend, layer_transp, usedFields, visible, json,
                        count, popFuncs, wfsLayers):
     categories = renderer.categories()
-    valueAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(valueAttr)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        valueAttr = "q2wHide_" + valueAttr
+    valueAttr = handleHiddenField(layer, renderer.classAttribute())
     categoryStr = categoryScript(safeLayerName, valueAttr)
     for cat in categories:
         if not cat.value():
@@ -819,15 +789,7 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
 def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
                    catLegend, layer_transp, json, count, labeltext, usedFields,
                    cluster, cluster_num, visible, wfsLayers, categoryStr):
-    valueAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(valueAttr)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        valueAttr = "q2wHide_" + valueAttr
+    valueAttr = handleHiddenField(layer, renderer.classAttribute())
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
@@ -861,15 +823,7 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
 def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
                   catLegend, layer_transp, popFuncs, usedFields, json, visible,
                   count, wfsLayers, categoryStr):
-    valueAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(valueAttr)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        valueAttr = "q2wHide_" + valueAttr
+    valueAttr = handleHiddenField(layer, renderer.classAttribute())
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
@@ -896,15 +850,7 @@ def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
 def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                      catLegend, layer_transp, usedFields, visible, json, count,
                      popFuncs, wfsLayers, categoryStr):
-    valueAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(valueAttr)
-    try:
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        valueAttr = "q2wHide_" + valueAttr
+    valueAttr = handleHiddenField(layer, renderer.classAttribute())
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
@@ -1044,3 +990,50 @@ def getWFSScriptTag(layer, layerName):
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
     return scriptTag
+
+
+def getLayerStyle(layer, sln):
+    renderer = layer.rendererV2()
+    layer_alpha = layer.layerTransparency()
+    style = ""
+    if (isinstance(renderer, QgsSingleSymbolRendererV2) or
+            isinstance(renderer, QgsRuleBasedRendererV2)):
+        if isinstance(renderer, QgsRuleBasedRendererV2):
+            symbol = renderer.rootRule().children()[0].symbol()
+        else:
+            symbol = renderer.symbol()
+        style = """
+        function style_%s(feature) {
+            return %s;
+        }""" % sln, getSymbolAsStyle(symbol, layer_alpha)
+    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        classAttr = handleHiddenField(layer, renderer.classAttribute())
+        style = """
+        function style_%s(feature) {
+            switch(feature.properties['%s']) {""" % sln, classAttr
+        for cat in renderer.categories():
+            style += """
+                case '%s':
+                    return %s;
+                    break;""" % (cat.value(), getSymbolAsStyle(
+                                    cat.symbol(), layer_alpha))
+        style += """
+            }
+        };"""
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        classAttr = handleHiddenField(layer, renderer.classAttribute())
+        style = """
+        function style_%s(feature) {
+            switch(feature.properties['%s']) {""" % sln, classAttr
+        for ran in renderer.ranges():
+            style += """
+            if (feature.properties['%(a)s'] > %(l)f && feature.properties['%(a)s'] < %(u)f ) {
+                return %(s)s;
+                break;""" % {"s": classAttr, "l": ran.lowerValue(),
+                             "u": ran.upperValue(), "s": getSymbolAsStyle(
+                                    cat.symbol(), layer_alpha)}
+        style += """
+            }
+        };"""
+    else:
+        style = ""
