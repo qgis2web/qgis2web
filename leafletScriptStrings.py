@@ -316,21 +316,19 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
-    jsonPoint = pointStyleLabel
+    print 1111
+    jsonPoint = """
+        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
+            pane: 'pane_{safeLayerName}',"""
     if usedFields != 0:
         jsonPoint += """
-        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
-            pane: 'pane_{safeLayerName}',
-            onEachFeature: pop_{safeLayerName},{pointToLayer}
-            }});""".format(safeLayerName=safeLayerName,
-                           pointToLayer=pointToLayer)
-    else:
-        jsonPoint += """
-        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
-            pane: 'pane_{safeLayerName}',
-            {pointToLayer}
-            }});""".format(safeLayerName=safeLayerName,
-                           pointToLayer=pointToLayer)
+            onEachFeature: pop_{safeLayerName},"""
+    jsonPoint += """
+    {pointToLayer}
+            }});"""
+    jsonPoint = jsonPoint.format(safeLayerName=safeLayerName,
+                                 pointToLayer=pointToLayer)
+    jsonPoint = pointStyleLabel + jsonPoint
     return jsonPoint
 
 
@@ -473,26 +471,20 @@ def categorizedPointWFSscript(layerName, labeltext):
     return categorizedPointWFS
 
 
-def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
+def categorizedPointJSONscript(sln, label, usedFields):
+    categorizedPointJSON = """
+        var layer_{sln} = new L.geoJson(json_{sln}, {{
+            pane: 'pane_{sln}',"""
     if usedFields != 0:
-        categorizedPointJSON = """
-        var layer_{sln} = new L.geoJson(json_{sln}, {{
-            pane: 'pane_{sln}',
-            onEachFeature: pop_{sln},
+        categorizedPointJSON += """
+            onEachFeature: pop_{sln},"""
+    categorizedPointJSON += """
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName)
-        categorizedPointJSON += """style_{sln}(feature)){label}
+                return L.circleMarker(latlng, """
+    categorizedPointJSON += """style_{sln}(feature)){label}
             }}
-        }});""".format(sln=safeLayerName, label=labeltext)
-    else:
-        categorizedPointJSON = """
-        var layer_{sln} = new L.geoJson(json_{sln}, {{
-            pane: 'pane_{sln}',
-            pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName)
-        categorizedPointJSON += """style_{safeLayerName}(feature)){labeltext}
-            }}
-        }});""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+        }});"""
+    categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label)
     return categorizedPointJSON
 
 

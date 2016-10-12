@@ -969,8 +969,7 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
                   cluster_set, cluster_num, visible):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = pointStyleLabel + categoryStr + """
-        var layer_{layerName};
-        layer_{layerName} = L.geoJson(null, {{
+        var layer_{layerName} = L.geoJson(null, {{
             pane: 'pane_{layerName}',
             pointToLayer: pointToLayer_{layerName},
             onEachFeature: pop_{layerName}
@@ -1000,26 +999,25 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
 
 def buildNonPointJSON(categoryStr, safeName, usedFields):
     if usedFields != 0:
-        new_obj = categoryStr + """
-        var layer_{safeName} = new L.geoJson(json_{safeName}, {{
-            pane: 'pane_{safeName}',
-            onEachFeature: pop_{safeName},
-            style: style_{safeName}
-        }});""".format(safeName=safeName)
+        onEachFeature = """
+        onEachFeature: pop_{safeName},""".format(safeName=safeName)
     else:
-        new_obj = categoryStr + """
-        var layer_{safeName} = new L.geoJson(json_{safeName}, {{
-            pane: 'pane_{safeName}',
-            style: style_{safeName}
-        }});""".format(safeName=safeName)
+        onEachFeature = ""
+    new_obj = """
+    var layer_{safeName} = new L.geoJson(json_{safeName}, {{
+        pane: 'pane_{safeName}',{onEachFeature}
+        style: style_{safeName}
+    }});"""
+    new_obj = new_obj.format(safeName=safeName, onEachFeature=onEachFeature)
+    new_obj = categoryStr + new_obj
+    
     return new_obj
 
 
 def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = categoryStr + """
-        var layer_{layerName};
-        layer_{layerName} = L.geoJson(null, {{{stylestr},
+        var layer_{layerName} = L.geoJson(null, {{{stylestr},
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName, stylestr=stylestr)
