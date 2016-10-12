@@ -231,9 +231,8 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 
 
 def svgScript(safeLayerName, symbolLayer, outputFolder,
-              rot, labeltext, zIndex):
+              rot, labeltext):
     slPath = symbolLayer.path()
-    zIndex = zIndex + 600
     shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
                                          os.path.basename(slPath)))
     svg = """
@@ -242,8 +241,6 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
             iconSize: [{size}, {size}], // size of the icon
         }});
 
-        map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
         function style_{safeLayerName}(feature) {{
             return {{
                 pane: 'pane_{safeLayerName}',
@@ -256,7 +253,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
             return L.marker(latlng, style_{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8, zIndex=zIndex, rot=rot,
+                     size=symbolLayer.size() * 3.8, rot=rot,
                      labeltext=labeltext)
     return svg
 
@@ -275,14 +272,11 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 
 def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                           colorName, borderColor, borderOpacity, opacity,
-                          labeltext, zIndex):
+                          labeltext):
     radius = float(radius) * 2
-    zIndex = zIndex + 600
     (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
                                                       0, 0)
     pointStyleLabel = """
-        map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
         function style_{safeLayerName}() {{
             return {{
                 pane: 'pane_{safeLayerName}',
@@ -299,7 +293,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
         }}
         function pointToLayer_{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, style_{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName, zIndex=zIndex, radius=radius,
+        }}""".format(safeLayerName=safeLayerName, radius=radius,
                      colorName=colorName, borderColor=borderColor,
                      borderWidth=borderWidth * 4,
                      borderOpacity=borderOpacity if borderStyle != 0 else 0,
@@ -479,30 +473,23 @@ def categorizedPointWFSscript(layerName, labeltext):
     return categorizedPointWFS
 
 
-def categorizedPointJSONscript(safeLayerName, labeltext, usedFields, zIndex):
-    zIndex = zIndex + 600
+def categorizedPointJSONscript(safeLayerName, labeltext, usedFields):
     if usedFields != 0:
         categorizedPointJSON = """
-        map.createPane('pane_{sln}');
-        map.getPane('pane_{sln}').style.zIndex = {zIndex};
         var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',
             onEachFeature: pop_{sln},
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName,
-                                                         zIndex=zIndex)
+                return L.circleMarker(latlng, """.format(sln=safeLayerName)
         categorizedPointJSON += """style_{sln}(feature)){label}
             }}
         }});""".format(sln=safeLayerName, label=labeltext)
     else:
         categorizedPointJSON = """
-        map.createPane('pane_{sln}');
-        map.getPane('pane_{sln}').style.zIndex = {zIndex}
         var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName,
-                                                         zIndex=zIndex)
+                return L.circleMarker(latlng, """.format(sln=safeLayerName)
         categorizedPointJSON += """style_{safeLayerName}(feature)){labeltext}
             }}
         }});""".format(safeLayerName=safeLayerName, labeltext=labeltext)
