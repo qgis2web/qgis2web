@@ -505,3 +505,8 @@ def handleHiddenField(layer, field):
     else:
         fieldName = field
     return fieldName
+
+
+def getRGBAColor(color, alpha):
+    r, g, b, _ = color.split(",")
+    return '"rgba(%s)"' % ",".join([r, g, b, unicode(alpha)])
