@@ -252,7 +252,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
                 rotationOrigin: 'center center'
             }}
         }}
-        function doPointToLayer{safeLayerName}(feature, latlng) {{
+        function pointToLayer_{safeLayerName}(feature, latlng) {{
             return L.marker(latlng, style_{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
@@ -297,7 +297,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
                 fillOpacity: {opacity}
             }}
         }}
-        function doPointToLayer{safeLayerName}(feature, latlng) {{
+        function pointToLayer_{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, style_{safeLayerName}()){labeltext}
         }}""".format(safeLayerName=safeLayerName, zIndex=zIndex, radius=radius,
                      colorName=colorName, borderColor=borderColor,
@@ -311,7 +311,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
 
 def pointToLayerScript(safeLayerName):
     pointToLayer = """
-            pointToLayer: doPointToLayer""" + safeLayerName
+            pointToLayer: pointToLayer_""" + safeLayerName
     return pointToLayer
 
 
@@ -471,7 +471,7 @@ def endCategoryScript():
 
 def categorizedPointWFSscript(layerName, labeltext):
     categorizedPointWFS = """
-        function doPointToLayer{layerName}(feature, latlng) {{
+        function pointToLayer_{layerName}(feature, latlng) {{
             return L.circleMarker(latlng, style_{layerName}""".format(
         layerName=layerName)
     categorizedPointWFS += """(feature)){labeltext}

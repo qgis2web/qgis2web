@@ -975,7 +975,7 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
         var layer_{layerName};
         layer_{layerName} = L.geoJson(null, {{
             pane: 'pane_{layerName}',
-            pointToLayer: doPointToLayer{layerName},
+            pointToLayer: pointToLayer_{layerName},
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName)
     if cluster_set:
