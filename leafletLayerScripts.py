@@ -317,14 +317,14 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         pass
     else:
         new_src += """
-        bounds_group.addLayer(json_""" + safeLayerName + """JSON);"""
+        bounds_group.addLayer(layer_""" + safeLayerName + """);"""
         if visible[count]:
             if cluster[count] is False:
                 new_src += """
-        feature_group.addLayer(json_""" + safeLayerName + """JSON);"""
+        feature_group.addLayer(layer_""" + safeLayerName + """);"""
             else:
                 new_src += """
-        cluster_group""" + safeLayerName + """JSON.addTo(map);"""
+        cluster_""" + safeLayerName + """.addTo(map);"""
     return new_src, legends, wfsLayers
 
 
@@ -957,7 +957,7 @@ def heatmapLayer(layer, safeLayerName, renderer, outputProjectFileName,
     new_obj = """
         var %(sln)s_hm = geoJson2heat(json_%(sln)s,
                                       '%(hmWeight)s');
-        var json_%(sln)sJSON = new L.heatLayer(%(sln)s_hm, {
+        var layer_%(sln)s = new L.heatLayer(%(sln)s_hm, {
             radius: %(hmRadius)d,
             max: %(hmWeightMax)d,
             minOpacity: 1,
@@ -972,29 +972,29 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
                   cluster_set, cluster_num, visible):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = pointStyleLabel + categoryStr + """
-        var json_{layerName}JSON;
-        json_{layerName}JSON = L.geoJson(null, {{
+        var layer_{layerName};
+        layer_{layerName} = L.geoJson(null, {{
             pane: 'pane_{layerName}',
             pointToLayer: doPointToLayer{layerName},
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName)
     if cluster_set:
         new_obj += """
-        var cluster_group{layerName}JSON = """.format(layerName=layerName)
+        var cluster_{layerName} = """.format(layerName=layerName)
         new_obj += "new L.MarkerClusterGroup({showCoverageOnHover: false});"
     else:
         if visible:
             new_obj += """
-        feature_group.addLayer(json_{layerName}JSON);""".format(
+        feature_group.addLayer(layer_{layerName});""".format(
                     layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
-            json_{layerName}""".format(layerName=layerName)
-    new_obj += "JSON.addData(geojson);"
+            layer_{layerName}""".format(layerName=layerName)
+    new_obj += ".addData(geojson);"
     if cluster_set:
         new_obj += """
-                cluster_group{layerName}JSON.add""".format(layerName=layerName)
-        new_obj += "Layer(json_{layerName}JSON);".format(layerName=layerName)
+                cluster_{layerName}.add""".format(layerName=layerName)
+        new_obj += "Layer(layer_{layerName});".format(layerName=layerName)
         cluster_num += 1
     new_obj += """
         };"""
@@ -1007,18 +1007,18 @@ def buildNonPointJSON(categoryStr, safeName, usedFields, zIndex):
         new_obj = categoryStr + """
         map.createPane('pane_{safeName}');
         map.getPane('pane_{safeName}').style.zIndex = {zIndex};
-        var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
+        var layer_{safeName} = new L.geoJson(json_{safeName}, {{
             pane: 'pane_{safeName}',
             onEachFeature: pop_{safeName},
-            style: doStyle{safeName}
+            style: style_{safeName}
         }});""".format(safeName=safeName, zIndex=zIndex)
     else:
         new_obj = categoryStr + """
         map.createPane('pane_{safeName}');
         map.getPane('pane_{safeName}').style.zIndex = {zIndex}
-        var json_{safeName}JSON = new L.geoJson(json_{safeName}, {{
+        var layer_{safeName} = new L.geoJson(json_{safeName}, {{
             pane: 'pane_{safeName}',
-            style: doStyle{safeName}
+            style: style_{safeName}
         }});""".format(safeName=safeName, zIndex=zIndex)
     return new_obj
 
@@ -1029,19 +1029,19 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
     new_obj = categoryStr + """
         map.createPane('pane_{layerName}');
         map.getPane('pane_{layerName}').style.zIndex = {zIndex};
-        var json_{layerName}JSON;
-        json_{layerName}JSON = L.geoJson(null, {{{stylestr},
+        var layer_{layerName};
+        layer_{layerName} = L.geoJson(null, {{{stylestr},
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName, stylestr=stylestr, zIndex=zIndex)
     if visible:
         new_obj += """
-        feature_group.addLayer(json_{layerName}JSON);""".format(
+        feature_group.addLayer(layer_{layerName});""".format(
             layerName=layerName)
     new_obj += """
         function get{layerName}Json(geojson) {{
-            json_{layerName}""".format(layerName=layerName)
-    new_obj += "JSON.addData(geojson);"
+            layer_{layerName}""".format(layerName=layerName)
+    new_obj += ".addData(geojson);"
     new_obj += """
         };"""
     return new_obj, scriptTag

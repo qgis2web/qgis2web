@@ -84,7 +84,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         rawLayerName = layer.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
         lyrCount += 1
-        dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
+        dataPath = os.path.join(dataStore, safeLayerName)
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
         if layer.providerType() != 'WFS' or jsonEncode is True and layer:

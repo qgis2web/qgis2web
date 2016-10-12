@@ -12,7 +12,7 @@ basemapAddresses = basemapLeaflet()
 
 def jsonScript(layer):
     json = """
-        <script src="data/json_{layer}.js\"></script>""".format(layer=layer)
+        <script src="data/{layer}.js\"></script>""".format(layer=layer)
     return json
 
 
@@ -21,9 +21,9 @@ def scaleDependentLayerScript(layer, layerName):
     max = layer.maximumScale()
     scaleDependentLayer = """
             if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
-                feature_group.addLayer(json_{layerName}JSON);
+                feature_group.addLayer(layer_{layerName});
             }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
-                feature_group.removeLayer(json_{layerName}JSON);
+                feature_group.removeLayer(layer_{layerName});
             }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
                          layerName=layerName)
     return scaleDependentLayer
@@ -37,13 +37,13 @@ def scaleDependentLabelScript(layer, layerName):
         min = scaleToZoom(pal.scaleMin)
         max = scaleToZoom(pal.scaleMax)
         scaleDependentLabel = """
-            if (map.hasLayer(json_%(layerName)sJSON)) {
+            if (map.hasLayer(layer_%(layerName)s)) {
                 if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
-                    json_%(layerName)sJSON.eachLayer(function (layer) {
+                    layer_%(layerName)s.eachLayer(function (layer) {
                         layer.showLabel();
                     });
                 } else {
-                    json_%(layerName)sJSON.eachLayer(function (layer) {
+                    layer_%(layerName)s.eachLayer(function (layer) {
                         layer.hideLabel();
                     });
                 }
@@ -207,7 +207,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
                 mouseout: function(e) {"""
         if highlight:
             popup += """
-                    layer.setStyle(doStyle"""
+                    layer.setStyle(style_"""
             popup += """{safeLayerName}(feature));
 """.format(safeLayerName=safeLayerName)
         if popupsOnHover:
@@ -244,7 +244,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
 
         map.createPane('pane_{safeLayerName}');
         map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
-        function doStyle{safeLayerName}(feature) {{
+        function style_{safeLayerName}(feature) {{
             return {{
                 pane: 'pane_{safeLayerName}',
                 icon: svg{safeLayerName},
@@ -253,7 +253,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
             }}
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.marker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+            return L.marker(latlng, style_{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
                      size=symbolLayer.size() * 3.8, zIndex=zIndex, rot=rot,
@@ -283,7 +283,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
     pointStyleLabel = """
         map.createPane('pane_{safeLayerName}');
         map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
-        function doStyle{safeLayerName}() {{
+        function style_{safeLayerName}() {{
             return {{
                 pane: 'pane_{safeLayerName}',
                 radius: {radius},
@@ -298,7 +298,7 @@ def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
             }}
         }}
         function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
+            return L.circleMarker(latlng, style_{safeLayerName}()){labeltext}
         }}""".format(safeLayerName=safeLayerName, zIndex=zIndex, radius=radius,
                      colorName=colorName, borderColor=borderColor,
                      borderWidth=borderWidth * 4,
@@ -325,14 +325,14 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
     jsonPoint = pointStyleLabel
     if usedFields != 0:
         jsonPoint += """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
             pane: 'pane_{safeLayerName}',
             onEachFeature: pop_{safeLayerName},{pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
                            pointToLayer=pointToLayer)
     else:
         jsonPoint += """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
+        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
             pane: 'pane_{safeLayerName}',
             {pointToLayer}
             }});""".format(safeLayerName=safeLayerName,
@@ -342,11 +342,11 @@ def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
 
 def clusterScript(safeLayerName):
     cluster = """
-        var cluster_group"""
-    cluster += "{safeLayerName}JSON = ".format(safeLayerName=safeLayerName)
+        var cluster_"""
+    cluster += "{safeLayerName} = ".format(safeLayerName=safeLayerName)
     cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
-        cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
-    cluster += """.addLayer(json_{safeLayerName}JSON);
+        cluster_{safeLayerName}""".format(safeLayerName=safeLayerName)
+    cluster += """.addLayer(layer_{safeLayerName});
 """.format(safeLayerName=safeLayerName)
     return cluster
 
@@ -423,20 +423,20 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
 
 def nonPointStylePopupsScript(safeLayerName):
     nonPointStylePopups = """
-\t\t\tstyle: doStyle{safeLayerName}""".format(safeLayerName=safeLayerName)
+\t\t\tstyle: style_{safeLayerName}""".format(safeLayerName=safeLayerName)
     return nonPointStylePopups
 
 
 def nonPointStyleFunctionScript(safeLayerName, lineStyle):
     nonPointStyleFunction = """
-        function doStyle{safeLayerName}(feature) {{{lineStyle}
+        function style_{safeLayerName}(feature) {{{lineStyle}
         }}""".format(safeLayerName=safeLayerName, lineStyle=lineStyle)
     return nonPointStyleFunction
 
 
 def categoryScript(layerName, valueAttr):
     category = """
-        function doStyle{layerName}(feature) {{
+        function style_{layerName}(feature) {{
 \t\t\tswitch (feature.properties['{valueAttr}']) {{""".format(
                 layerName=layerName,
                 valueAttr=valueAttr)
@@ -472,7 +472,7 @@ def endCategoryScript():
 def categorizedPointWFSscript(layerName, labeltext):
     categorizedPointWFS = """
         function doPointToLayer{layerName}(feature, latlng) {{
-            return L.circleMarker(latlng, doStyle{layerName}""".format(
+            return L.circleMarker(latlng, style_{layerName}""".format(
         layerName=layerName)
     categorizedPointWFS += """(feature)){labeltext}
         }}""".format(labeltext=labeltext)
@@ -485,25 +485,25 @@ def categorizedPointJSONscript(safeLayerName, labeltext, usedFields, zIndex):
         categorizedPointJSON = """
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};
-        var json_{sln}JSON = new L.geoJson(json_{sln}, {{
+        var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',
             onEachFeature: pop_{sln},
             pointToLayer: function (feature, latlng) {{
                 return L.circleMarker(latlng, """.format(sln=safeLayerName,
                                                          zIndex=zIndex)
-        categorizedPointJSON += """doStyle{sln}(feature)){label}
+        categorizedPointJSON += """style_{sln}(feature)){label}
             }}
         }});""".format(sln=safeLayerName, label=labeltext)
     else:
         categorizedPointJSON = """
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex}
-        var json_{sln}JSON = new L.geoJson(json_{sln}, {{
+        var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',
             pointToLayer: function (feature, latlng) {{
                 return L.circleMarker(latlng, """.format(sln=safeLayerName,
                                                          zIndex=zIndex)
-        categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
+        categorizedPointJSON += """style_{safeLayerName}(feature)){labeltext}
             }}
         }});""".format(safeLayerName=safeLayerName, labeltext=labeltext)
     return categorizedPointJSON
@@ -531,7 +531,7 @@ def categorizedLineStylesScript(symbol, opacity):
 
 def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
     categorizedNonPointStyleFunction = """
-        style: doStyle{layerName}""".format(layerName=layerName)
+        style: style_{layerName}""".format(layerName=layerName)
     return categorizedNonPointStyleFunction
 
 
@@ -573,7 +573,7 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
 
 def graduatedStyleScript(layerName):
     graduatedStyle = """
-        function doStyle{layerName}(feature) {{""".format(layerName=layerName)
+        function style_{layerName}(feature) {{""".format(layerName=layerName)
     return graduatedStyle
 
 
@@ -765,10 +765,10 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
                 if (clustered and
                         i.geometryType() == QGis.Point):
                     new_layer = "'" + legends[safeLayerName] + "'"
-                    new_layer += ": cluster_group""" + safeLayerName + "JSON,"
+                    new_layer += ": cluster_""" + safeLayerName + ","
                 else:
                     new_layer = "'" + legends[safeLayerName] + "':"
-                    new_layer += " json_" + safeLayerName + "JSON,"
+                    new_layer += " layer_" + safeLayerName + ","
                 layersList += new_layer
             elif i.type() == QgsMapLayer.RasterLayer:
                 new_layer = '"' + rawLayerName + '"' + ": overlay_"
