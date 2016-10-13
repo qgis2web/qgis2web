@@ -64,8 +64,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
         color = getRGBAColor(props["color"], alpha)
         borderColor = getRGBAColor(props["outline_color"], alpha)
         borderWidth = props["outline_width"]
+        lineStyle = props["outline_style"]
         size = symbol.size() * 2
-        style = getCircle(color, borderColor, borderWidth, size, props)
+        style = getCircle(color, borderColor, borderWidth,
+                          size, props, lineStyle)
     elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
         path = os.path.join(markerFolder, os.path.basename(sl.path()))
         svg = xml.etree.ElementTree.parse(sl.path()).getroot()
@@ -146,11 +148,11 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
             }""" % (sln, style)
 
 
-def getCircle(color, borderColor, borderWidth, size, props):
+def getCircle(color, borderColor, borderWidth, size, props, lineStyle):
     return ("""
                 radius: %s,%s%s""" %
             (size,
-             getStrokeStyle(borderColor, "", borderWidth, 0, 0),
+             getStrokeStyle(borderColor, lineStyle, borderWidth, 0, 0),
              getFillStyle(color, props)))
 
 
@@ -174,6 +176,8 @@ def getIcon(path, size, svgWidth, svgHeight, rot):
 
 def getStrokeStyle(color, dashed, width, linecap, linejoin):
     width = round(float(width) * 3.8, 0)
+    if width == 0 and dashed != "no":
+        width = 1
     dash = dashed.replace("dash", "10,5")
     dash = dash.replace("dot", "1,5")
     dash = dash.replace("solid", "")
@@ -191,13 +195,14 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
     if linejoin == 64:
         joinString = "bevel"
     strokeString = ("""
+                opacity: 1,
                 color: %s,
                 dashArray: '%s',""" %
                     (color, dash))
     strokeString += ("""
                 lineCap: '%s',
                 lineJoin: '%s',
-                weight: %d,""" %
+                weight: %s,""" %
                      (capString, joinString, width))
     return strokeString
 
@@ -209,4 +214,5 @@ def getFillStyle(color, props):
     except:
         pass
     return """
+                fillOpacity: 1,
                 fillColor: %s,""" % color
