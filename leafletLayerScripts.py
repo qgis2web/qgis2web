@@ -7,6 +7,7 @@ import time
 from qgis.core import *
 from qgis.utils import QGis
 import processing
+from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import *
 from utils import (writeTmpLayer, getUsedFields, removeSpaces,
                    is25d, exportImages, handleHiddenField)
@@ -237,6 +238,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      wfsLayers, cluster, cluster_num, visible, json, legends,
                      new_src, canvas, zIndex):
     zIndex = zIndex + 600
+    markerFolder = os.path.join(outputProjectFileName, "markers")
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(layer, safeLayerName, highlight,
                                  popupsOnHover, popup, count)
@@ -276,30 +278,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
     # else:
     #     layer_style = getLayerStyle(layer, safeLayerName)
-    elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
-            isinstance(renderer, QgsRuleBasedRendererV2)):
-        (new_obj, legends,
-         wfsLayers) = singleLayer(renderer, outputProjectFileName,
-                                  safeLayerName, wfsLayers, layer,
-                                  layer_transp, labeltext, cluster,
-                                  cluster_num, visible, json, usedFields,
-                                  legends, count, popFuncs)
-    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        (new_obj, legends,
-         wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
-                                       outputProjectFileName, layer_transp,
-                                       usedFields, count, legends, labeltext,
-                                       cluster, cluster_num, popFuncs, visible,
-                                       json, wfsLayers)
-    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        (new_obj, legends,
-         wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
-                                     outputProjectFileName, layer_transp,
-                                     labeltext, popFuncs, cluster, cluster_num,
-                                     visible, json, usedFields, count, legends,
-                                     wfsLayers)
-    elif isinstance(renderer, Qgs25DRenderer):
-        pass
     elif isinstance(renderer, QgsHeatmapRenderer):
         (new_obj, legends,
          wfsLayers) = heatmapLayer(layer, safeLayerName, renderer,
@@ -307,6 +285,34 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    labeltext, popFuncs, cluster, cluster_num,
                                    visible, json, usedFields, count, legends,
                                    wfsLayers)
+    elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
+            isinstance(renderer, QgsRuleBasedRendererV2)):
+        layer_style = getLayerStyle(layer, safeLayerName, markerFolder)
+        print layer_style
+        (new_obj, legends,
+         wfsLayers) = singleLayer(renderer, outputProjectFileName,
+                                  safeLayerName, wfsLayers, layer,
+                                  layer_transp, labeltext, cluster,
+                                  cluster_num, visible, json, usedFields,
+                                  legends, count, popFuncs)
+    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        layer_style = getLayerStyle(layer, safeLayerName, markerFolder)
+        print layer_style
+        (new_obj, legends,
+         wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
+                                       outputProjectFileName, layer_transp,
+                                       usedFields, count, legends, labeltext,
+                                       cluster, cluster_num, popFuncs, visible,
+                                       json, wfsLayers)
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        layer_style = getLayerStyle(layer, safeLayerName, markerFolder)
+        print layer_style
+        (new_obj, legends,
+         wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
+                                     outputProjectFileName, layer_transp,
+                                     labeltext, popFuncs, cluster, cluster_num,
+                                     visible, json, usedFields, count, legends,
+                                     wfsLayers)
     new_obj = """
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};{new_obj}""".format(

@@ -1,8 +1,10 @@
-# from qgis.core import *
+from math import floor
+from qgis.core import *
 # from qgis.utils import QGis
+from utils import getRGBAColor, handleHiddenField
 
 
-def getLayerStyle(layer, sln):
+def getLayerStyle(layer, sln, markerFolder):
     renderer = layer.rendererV2()
     layer_alpha = layer.layerTransparency()
     style = ""
@@ -15,18 +17,18 @@ def getLayerStyle(layer, sln):
         style = """
         function style_%s(feature) {
             return %s;
-        }""" % sln, getSymbolAsStyle(symbol, layer_alpha)
+        }""" % (sln, getSymbolAsStyle(symbol, markerFolder, layer_alpha))
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         style = """
         function style_%s(feature) {
-            switch(feature.properties['%s']) {""" % sln, classAttr
+            switch(feature.properties['%s']) {""" % (sln, classAttr)
         for cat in renderer.categories():
             style += """
                 case '%s':
                     return %s;
                     break;""" % (cat.value(), getSymbolAsStyle(
-                                    cat.symbol(), layer_alpha))
+                                    cat.symbol(), markerFolder, layer_alpha))
         style += """
             }
         };"""
@@ -34,22 +36,23 @@ def getLayerStyle(layer, sln):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         style = """
         function style_%s(feature) {
-            switch(feature.properties['%s']) {""" % sln, classAttr
+            switch(feature.properties['%s']) {""" % (sln, classAttr)
         for ran in renderer.ranges():
             style += """
             if (feature.properties['%(a)s'] > %(l)f && feature.properties['%(a)s'] < %(u)f ) {
                 return %(s)s;
-                break;""" % {"s": classAttr, "l": ran.lowerValue(),
+                break;""" % {"a": classAttr, "l": ran.lowerValue(),
                              "u": ran.upperValue(), "s": getSymbolAsStyle(
-                                    cat.symbol(), layer_alpha)}
+                                    ran.symbol(), markerFolder, layer_alpha)}
         style += """
             }
         };"""
     else:
         style = ""
+    return style
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
+def getSymbolAsStyle(symbol, markerFolder, layer_transparency):
     styles = []
     if layer_transparency == 0:
         alpha = symbol.alpha()
@@ -66,7 +69,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             style = "image: %s" % getCircle(color, borderColor, borderWidth,
                                             size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
-            path = os.path.join(stylesFolder, os.path.basename(sl.path()))
+            path = os.path.join(markerFolder, os.path.basename(sl.path()))
             svg = xml.etree.ElementTree.parse(sl.path()).getroot()
             svgWidth = svg.attrib["width"]
             svgWidth = re.sub("px", "", svgWidth)
@@ -155,7 +158,7 @@ def getCircle(color, borderColor, borderWidth, size, props):
 
 
 def getIcon(path, size, svgWidth, svgHeight, rot):
-    size = math.floor(float(size) * 3.8)
+    size = floor(float(size) * 3.8)
     anchor = size / 2
     scale = unicode(float(size)/float(svgWidth))
     return '''new ol.style.Icon({
@@ -175,7 +178,7 @@ def getIcon(path, size, svgWidth, svgHeight, rot):
 def getStrokeStyle(color, dashed, width, linecap, linejoin):
     if dashed == "no":
         return ""
-    width = math.floor(float(width) * 3.8)
+    width = floor(float(width) * 3.8)
     dash = dashed.replace("dash", "10,5")
     dash = dash.replace("dot", "1,5")
     dash = dash.replace("solid", "")
