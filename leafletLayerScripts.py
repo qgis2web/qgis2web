@@ -292,9 +292,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer,
-                                  layer_transp, labeltext, cluster,
+                                  labeltext, cluster,
                                   cluster_num, visible, json, usedFields,
-                                  legends, count, popFuncs)
+                                  legends, count)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         style = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
@@ -452,88 +452,44 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
 
 
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
-                layer, layer_transp, labeltext, cluster, cluster_num, visible,
-                json, usedFields, legends, count, popFuncs):
+                layer, labeltext, cluster, cluster_num, visible,
+                json, usedFields, legends, count):
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     else:
         symbol = renderer.symbol()
-    symbolLayer = symbol.symbolLayer(0)
     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
                                                            QSize(16, 16))
     legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                  safeLayerName + ".png"))
     legends[safeLayerName] = '<img src="legend/' + safeLayerName + '.png" /> '
     legends[safeLayerName] += layer.name()
-    colorName = symbol.color().name()
-    symbol_transp = symbol.alpha()
-    fill_transp = float(symbol.color().alpha()) / 255
-    fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
     if layer.geometryType() == QGis.Point:
         (new_obj, cluster_num,
-         wfsLayers) = singlePoint(symbol, symbolLayer, layer_transp,
-                                  symbol_transp, safeLayerName, colorName,
-                                  fill_opacity, labeltext, layer, cluster,
+         wfsLayers) = singlePoint(safeLayerName, labeltext, layer, cluster,
                                   cluster_num, visible, json, usedFields,
-                                  wfsLayers, count, outputProjectFileName)
+                                  wfsLayers, count)
     elif layer.geometryType() == QGis.Line:
-        new_obj, wfsLayers = singleLine(symbol, colorName, fill_opacity, layer,
-                                        json, safeLayerName, wfsLayers,
-                                        visible, usedFields, count)
+        new_obj, wfsLayers = singleLine(layer, json, safeLayerName, wfsLayers,
+                                        usedFields, count)
     elif layer.geometryType() == QGis.Polygon:
-        new_obj, wfsLayers = singlePolygon(layer, safeLayerName, symbol,
-                                           symbolLayer, colorName,
-                                           layer_transp, symbol_transp,
-                                           fill_opacity, visible, json,
+        new_obj, wfsLayers = singlePolygon(layer, safeLayerName, json,
                                            usedFields, wfsLayers, count)
     return new_obj, legends, wfsLayers
 
 
-def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
-                safeLayerName, colorName, fill_opacity, labeltext, layer,
-                cluster, cluster_num, visible, json, usedFields, wfsLayers,
-                count, outputProjectFileName):
-    radius = unicode(symbol.size())
-    if isinstance(symbolLayer, QgsSvgMarkerSymbolLayerV2):
-        if symbol.dataDefinedAngle().isActive():
-            if symbol.dataDefinedAngle().useExpression():
-                rot = "0"
-            else:
-                rot = "feature.properties["
-                rot += symbol.dataDefinedAngle().expressionOrField()
-                rot += "]"
-        else:
-            rot = symbolLayer.angle()
-        pointStyleLabel = svgScript(safeLayerName, symbolLayer,
-                                    outputProjectFileName, rot, labeltext)
-    else:
-        try:
-            borderStyle = symbolLayer.outlineStyle()
-            border = symbolLayer.borderColor()
-            borderColor = unicode(border.name())
-            border_transp = float(border.alpha()) / 255
-            borderWidth = symbolLayer.outlineWidth()
-        except:
-            borderStyle = ""
-            borderColor = ""
-            border_transp = 0
-            borderWidth = 1
-        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-        pointStyleLabel = pointStyleLabelScript(safeLayerName, radius,
-                                                borderWidth, borderStyle,
-                                                colorName, borderColor,
-                                                borderOpacity, fill_opacity,
-                                                labeltext)
+def singlePoint(safeLayerName, labeltext, layer, cluster, cluster_num, visible,
+                json, usedFields, wfsLayers, count):
+    p2lf = pointToLayerFunction(safeLayerName, labeltext)
     pointToLayer = pointToLayerScript(safeLayerName)
     if layer.providerType() == 'WFS' and json[count] is False:
         (new_obj, scriptTag,
-         cluster_num) = buildPointWFS(pointStyleLabel, safeLayerName,
-                                      layer, "", cluster[count],
-                                      cluster_num, visible[count])
+         cluster_num) = buildPointWFS(p2lf, safeLayerName, layer, "",
+                                      cluster[count], cluster_num,
+                                      visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        rot = symbol.dataDefinedAngle().expressionOrField()
-        new_obj = jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer,
+        new_obj = jsonPointScript(p2lf, safeLayerName, pointToLayer,
                                   usedFields[count])
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
@@ -541,83 +497,21 @@ def singlePoint(symbol, symbolLayer, layer_transp, symbol_transp,
     return new_obj, cluster_num, wfsLayers
 
 
-def singleLine(symbol, colorName, fill_opacity, layer, json, safeLayerName,
-               wfsLayers, visible, usedFields, count):
-    radius = symbol.width()
-    sl = symbol.symbolLayer(0)
-    try:
-        (penStyle, capString,
-         joinString) = getLineStyle(sl.penStyle(), radius, sl.penCapStyle(),
-                                    sl.penJoinStyle())
-    except:
-        penStyle = ""
-    lineStyle = simpleLineStyleScript(radius, colorName, penStyle, capString,
-                                      joinString, fill_opacity)
+def singleLine(layer, json, safeLayerName, wfsLayers, usedFields, count):
     if layer.providerType() == 'WFS' and json[count] is False:
-        stylestr = nonPointStylePopupsScript(safeLayerName)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer, "",
-                                              stylestr, visible[count])
-        new_obj += nonPointStyleFunctionScript(safeLayerName, lineStyle)
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = nonPointStyleFunctionScript(safeLayerName, lineStyle)
-        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
+        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, wfsLayers
 
 
-def singlePolygon(layer, safeLayerName, symbol, symbolLayer, colorName,
-                  layer_transp, symbol_transp, fill_opacity, visible, json,
-                  usedFields, wfsLayers, count):
-    borderStyle = ""
-    try:
-        capStyle = symbolLayer.penCapStyle()
-        joinStyle = symbolLayer.penJoinStyle()
-    except:
-        capStyle = 16
-        joinStyle = 64
-    if (symbolLayer.layerType() == 'SimpleLine' or
-            isinstance(symbolLayer, QgsSimpleLineSymbolLayerV2)):
-        radius = symbolLayer.width()
-        colorName = 'none'
-        borderColor = unicode(symbol.color().name())
-        border_transp = float(symbol.color().alpha()) / 255
-        lineStyle = symbolLayer.penStyle()
-    else:
-        try:
-            radius = symbolLayer.borderWidth()
-            border = symbolLayer.borderColor()
-            borderColor = unicode(border.name())
-            border_transp = float(border.alpha()) / 255
-            lineStyle = symbolLayer.borderStyle()
-        except:
-            radius = 1
-            borderColor = "#000000"
-            borderStyle = ""
-            capString = ""
-            joinString = ""
-            border_transp = 1
-            colorName = "#ffffff"
-            lineStyle = ""
-    (borderStyle, capString,
-     joinString) = getLineStyle(lineStyle, radius,
-                                capStyle, joinStyle)
-    if lineStyle == 0:
-        radius = "0"
-    if lineStyle == 0:
-        colorName = "none"
-    borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-    polyStyle = singlePolyStyleScript(radius, borderColor, borderOpacity,
-                                      colorName, borderStyle, capString,
-                                      joinString, fill_opacity)
+def singlePolygon(layer, safeLayerName, json, usedFields, wfsLayers, count):
     if layer.providerType() == 'WFS' and json[count] is False:
-        stylestr = nonPointStylePopupsScript(safeLayerName)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer, "",
-                                              stylestr, visible[count])
-        new_obj += nonPointStyleFunctionScript(safeLayerName, polyStyle)
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = nonPointStyleFunctionScript(safeLayerName, polyStyle)
-        new_obj += buildNonPointJSON("", safeLayerName, usedFields[count])
+        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, wfsLayers
 
 
@@ -719,8 +613,7 @@ def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, wfsLayers, catLegend
 
 
@@ -755,8 +648,7 @@ def categorizedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, catLegend, wfsLayers
 
 
@@ -846,8 +738,7 @@ def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, wfsLayers, catLegend
 
 
@@ -877,8 +768,7 @@ def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
                                               visible[count])
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(categoryStr, safeLayerName,
-                                    usedFields[count])
+        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, catLegend, wfsLayers
 
 
@@ -942,7 +832,7 @@ def buildPointWFS(pointStyleLabel, layerName, layer, categoryStr,
     return new_obj, scriptTag, cluster_num
 
 
-def buildNonPointJSON(categoryStr, safeName, usedFields):
+def buildNonPointJSON(safeName, usedFields):
     if usedFields != 0:
         onEachFeature = """
         onEachFeature: pop_{safeName},""".format(safeName=safeName)
@@ -954,22 +844,23 @@ def buildNonPointJSON(categoryStr, safeName, usedFields):
         style: style_{safeName}
     }});"""
     new_obj = new_obj.format(safeName=safeName, onEachFeature=onEachFeature)
-    new_obj = categoryStr + new_obj
+    new_obj = new_obj
     
     return new_obj
 
 
-def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible):
+def buildNonPointWFS(layerName, layer):
     scriptTag = getWFSScriptTag(layer, layerName)
-    new_obj = categoryStr + """
-        var layer_{layerName} = L.geoJson(null, {{{stylestr},
+    new_obj = """
+        var layer_{layerName} = L.geoJson(null, {{
+            style: 'style_{layerName}',
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
         }});"""
     new_obj += """
         function get{layerName}Json(geojson) {{
             layer_{layerName}"""
-    new_obj = new_obj.format(layerName=layerName, stylestr=stylestr)
+    new_obj = new_obj.format(layerName=layerName)
     new_obj += ".addData(geojson);"
     new_obj += """
         };"""

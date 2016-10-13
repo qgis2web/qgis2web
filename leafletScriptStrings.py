@@ -275,37 +275,12 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
     return catLegend
 
 
-def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
-                          colorName, borderColor, borderOpacity, opacity,
-                          labeltext):
-    radius = float(radius) * 2
-    (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
-                                                      0, 0)
-    pointStyleLabel = """
-        function style_{safeLayerName}() {{
-            return {{
-                pane: 'pane_{safeLayerName}',
-                radius: {radius},
-                fillColor: '{colorName}',
-                color: '{borderColor}',
-                weight: {borderWidth},
-                opacity: {borderOpacity},
-                dashArray: '{dashArray}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
-                fillOpacity: {opacity}
-            }}
-        }}
+def pointToLayerFunction(safeLayerName, labeltext):
+    pointToLayerFunction = """
         function pointToLayer_{safeLayerName}(feature, latlng) {{
             return L.circleMarker(latlng, style_{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName, radius=radius,
-                     colorName=colorName, borderColor=borderColor,
-                     borderWidth=borderWidth * 4,
-                     borderOpacity=borderOpacity if borderStyle != 0 else 0,
-                     dashArray=dashArray, capString=capString,
-                     joinString=joinString, opacity=opacity,
-                     labeltext=labeltext)
-    return pointStyleLabel
+        }}""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+    return pointToLayerFunction
 
 
 def pointToLayerScript(safeLayerName):
@@ -415,19 +390,6 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
                           capString=capString, joinString=joinString,
                           borderOpacity=borderOpacity, opacity=opacity)
     return polyStyle
-
-
-def nonPointStylePopupsScript(safeLayerName):
-    nonPointStylePopups = """
-\t\t\tstyle: style_{safeLayerName}""".format(safeLayerName=safeLayerName)
-    return nonPointStylePopups
-
-
-def nonPointStyleFunctionScript(safeLayerName, lineStyle):
-    nonPointStyleFunction = """
-        function style_{safeLayerName}(feature) {{{lineStyle}
-        }}""".format(safeLayerName=safeLayerName, lineStyle=lineStyle)
-    return nonPointStyleFunction
 
 
 def categoryScript(layerName, valueAttr):
