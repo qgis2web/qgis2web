@@ -466,9 +466,9 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
     legends[safeLayerName] += layer.name()
     if layer.geometryType() == QGis.Point:
         (new_obj, cluster_num,
-         wfsLayers) = singlePoint(safeLayerName, labeltext, layer, cluster,
-                                  cluster_num, visible, json, usedFields,
-                                  wfsLayers, count)
+         wfsLayers) = singlePoint(safeLayerName, labeltext, layer,
+                                  cluster[count], cluster_num, visible[count],
+                                  json[count], usedFields[count], wfsLayers)
     elif layer.geometryType() == QGis.Line:
         new_obj, wfsLayers = singleLine(layer, json, safeLayerName, wfsLayers,
                                         usedFields, count)
@@ -479,19 +479,19 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
 
 
 def singlePoint(safeLayerName, labeltext, layer, cluster, cluster_num, visible,
-                json, usedFields, wfsLayers, count):
+                json, usedFields, wfsLayers):
     p2lf = pointToLayerFunction(safeLayerName, labeltext)
     pointToLayer = pointToLayerScript(safeLayerName)
-    if layer.providerType() == 'WFS' and json[count] is False:
+    if layer.providerType() == 'WFS' and json is False:
         (new_obj, scriptTag,
          cluster_num) = buildPointWFS(p2lf, safeLayerName, layer, "",
-                                      cluster[count], cluster_num,
-                                      visible[count])
+                                      cluster, cluster_num,
+                                      visible)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = jsonPointScript(p2lf, safeLayerName, pointToLayer,
-                                  usedFields[count])
-        if cluster[count]:
+                                  usedFields)
+        if cluster:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
     return new_obj, cluster_num, wfsLayers
