@@ -244,6 +244,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                  popupsOnHover, popup, count)
     renderer = layer.rendererV2()
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
+    style = ""
 
     if is25d(layer, canvas):
         shadows = ""
@@ -287,8 +288,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    wfsLayers)
     elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
-        layer_style = getLayerStyle(layer, safeLayerName, markerFolder)
-        print layer_style
+        style = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer,
@@ -296,8 +296,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                   cluster_num, visible, json, usedFields,
                                   legends, count, popFuncs)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        layer_style = getLayerStyle(layer, safeLayerName, markerFolder)
-        print layer_style
+        style = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
                                        outputProjectFileName, layer_transp,
@@ -305,18 +304,17 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                        cluster, cluster_num, popFuncs, visible,
                                        json, wfsLayers)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        layer_style = getLayerStyle(layer, safeLayerName, markerFolder)
-        print layer_style
+        style = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
                                      outputProjectFileName, layer_transp,
                                      labeltext, popFuncs, cluster, cluster_num,
                                      visible, json, usedFields, count, legends,
                                      wfsLayers)
-    new_obj = """
+    new_obj = """{style}
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};{new_obj}""".format(
-            sln=safeLayerName, zIndex=zIndex, new_obj=new_obj)
+            style=style, sln=safeLayerName, zIndex=zIndex, new_obj=new_obj)
     if usedFields[count] != 0:
         new_src += new_pop.decode("utf-8")
     new_src += """
@@ -653,6 +651,7 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
 def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
                      layer_transp, labeltext, cluster, cluster_num, usedFields,
                      visible, json, count, wfsLayers, catLegend):
+    catLegend = "<table>" + catLegend
     categories = renderer.categories()
     valueAttr = handleHiddenField(layer, renderer.classAttribute())
     categoryStr = categoryScript(safeLayerName, valueAttr)
@@ -675,6 +674,7 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
         borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
         categoryStr += categorizedPointStylesScript(symbol, fill_opacity,
                                                     borderOpacity)
+    catLegend += "</table>"
     categoryStr += endCategoryScript()
     if layer.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedPointWFSscript(safeLayerName, labeltext)
@@ -791,6 +791,7 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
 def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
                    catLegend, layer_transp, json, count, labeltext, usedFields,
                    cluster, cluster_num, visible, wfsLayers, categoryStr):
+    catLegend = "<table>" + catLegend
     valueAttr = handleHiddenField(layer, renderer.classAttribute())
     for r in renderer.ranges():
         symbol = r.symbol()
@@ -804,6 +805,7 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
         categoryStr += graduatedPointStylesScript(valueAttr, r, symbol,
                                                   fill_opacity, borderOpacity)
+    catLegend += "</table>"
     categoryStr += endGraduatedStyleScript()
     if layer.providerType() == 'WFS' and json[count] is False:
         stylestr = categorizedPointWFSscript(safeLayerName, labeltext)
