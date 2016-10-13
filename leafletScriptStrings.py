@@ -322,41 +322,6 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def categorizedPointStylesScript(symbol, opacity, borderOpacity):
-    symbolLayer = symbol.symbolLayer(0)
-    try:
-        (dashArray, capString,
-         joinString) = getLineStyle(symbolLayer.outlineStyle(),
-                                    symbolLayer.outlineWidth(), 0, 0)
-        if symbolLayer.outlineStyle() == 0:
-            borderOpacity = 0
-        borderColor = symbolLayer.borderColor().name()
-        borderWidth = symbolLayer.outlineWidth() * 4
-    except:
-        dashArray = ""
-        capString = ""
-        joinString = ""
-        borderOpacity = 1
-        borderColor = ""
-        borderWidth = 0
-    styleValues = """
-                    radius: {radius},
-                    fillColor: '{fillColor}',
-                    color: '{color}',
-                    weight: {borderWidth},
-                    opacity: {borderOpacity},
-                    dashArray: '{dashArray}',
-                    fillOpacity: '{opacity}',
-                }};
-                break;""".format(radius=symbol.size() * 2,
-                                 fillColor=symbol.color().name(),
-                                 color=borderColor,
-                                 borderWidth=borderWidth,
-                                 borderOpacity=borderOpacity,
-                                 dashArray=dashArray, opacity=opacity)
-    return styleValues
-
-
 def simpleLineStyleScript(radius, colorName, penStyle, capString, joinString,
                           opacity):
     lineStyle = """
@@ -392,51 +357,6 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
     return polyStyle
 
 
-def categoryScript(layerName, valueAttr):
-    category = """
-        function style_{layerName}(feature) {{
-\t\t\tswitch (feature.properties['{valueAttr}']) {{""".format(
-                layerName=layerName,
-                valueAttr=valueAttr)
-    return category
-
-
-def defaultCategoryScript():
-    defaultCategory = """
-                default:
-                    return {"""
-    return defaultCategory
-
-
-def eachCategoryScript(catValue):
-    if isinstance(catValue, basestring):
-        valQuote = "'"
-    else:
-        valQuote = ""
-    eachCategory = """
-                case """ + valQuote + unicode(catValue).replace("'", "\\'")
-    eachCategory += valQuote + """:
-                    return {"""
-    return eachCategory
-
-
-def endCategoryScript():
-    endCategory = """
-            }
-        }"""
-    return endCategory
-
-
-def categorizedPointWFSscript(layerName, labeltext):
-    categorizedPointWFS = """
-        function pointToLayer_{layerName}(feature, latlng) {{
-            return L.circleMarker(latlng, style_{layerName}""".format(
-        layerName=layerName)
-    categorizedPointWFS += """(feature)){labeltext}
-        }}""".format(labeltext=labeltext)
-    return categorizedPointWFS
-
-
 def categorizedPointJSONscript(sln, label, usedFields):
     categorizedPointJSON = """
         var layer_{sln} = new L.geoJson(json_{sln}, {{
@@ -452,32 +372,6 @@ def categorizedPointJSONscript(sln, label, usedFields):
         }});"""
     categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label)
     return categorizedPointJSON
-
-
-def categorizedLineStylesScript(symbol, opacity):
-    sl = symbol.symbolLayer(0)
-    (dashArray, capString,
-     joinString) = getLineStyle(sl.penStyle(), symbol.width(),
-                                sl.penCapStyle(), sl.penJoinStyle())
-    categorizedLineStyles = """
-                    color: '{color}',
-                    weight: '{weight}',
-                    dashArray: '{dashArray}',
-                    lineCap: '{capString}',
-                    lineJoin: '{joinString}',
-                    opacity: '{opacity}',
-                }};
-                break;
-""".format(color=symbol.color().name(), weight=symbol.width() * 4,
-           dashArray=dashArray, capString=capString, joinString=joinString,
-           opacity=opacity)
-    return categorizedLineStyles
-
-
-def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
-    categorizedNonPointStyleFunction = """
-        style: style_{layerName}""".format(layerName=layerName)
-    return categorizedNonPointStyleFunction
 
 
 def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
