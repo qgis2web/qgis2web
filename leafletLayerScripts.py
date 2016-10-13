@@ -469,12 +469,9 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
          wfsLayers) = singlePoint(safeLayerName, labeltext, layer,
                                   cluster[count], cluster_num, visible[count],
                                   json[count], usedFields[count], wfsLayers)
-    elif layer.geometryType() == QGis.Line:
-        new_obj, wfsLayers = singleLine(layer, json, safeLayerName, wfsLayers,
-                                        usedFields, count)
-    elif layer.geometryType() == QGis.Polygon:
-        new_obj, wfsLayers = singlePolygon(layer, safeLayerName, json,
-                                           usedFields, wfsLayers, count)
+    else:
+        new_obj, wfsLayers = singleNonPoint(layer, safeLayerName, json,
+                                            usedFields, wfsLayers, count)
     return new_obj, legends, wfsLayers
 
 
@@ -497,16 +494,7 @@ def singlePoint(safeLayerName, labeltext, layer, cluster, cluster_num, visible,
     return new_obj, cluster_num, wfsLayers
 
 
-def singleLine(layer, json, safeLayerName, wfsLayers, usedFields, count):
-    if layer.providerType() == 'WFS' and json[count] is False:
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
-        wfsLayers += wfsScript(scriptTag)
-    else:
-        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
-    return new_obj, wfsLayers
-
-
-def singlePolygon(layer, safeLayerName, json, usedFields, wfsLayers, count):
+def singleNonPoint(layer, safeLayerName, json, usedFields, wfsLayers, count):
     if layer.providerType() == 'WFS' and json[count] is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
