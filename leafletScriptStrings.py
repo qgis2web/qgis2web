@@ -275,11 +275,22 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
     return catLegend
 
 
-def pointToLayerFunction(safeLayerName, labeltext):
+def pointToLayerFunction(safeLayerName, labeltext, layer):
+    renderer = layer.rendererV2()
+    print renderer
+    if isinstance(renderer, QgsRuleBasedRendererV2):
+        symbol = renderer.rootRule().children()[0].symbol()
+    else:
+        symbol = renderer.symbol()
+    if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayerV2):
+        markerType = "marker"
+    else:
+        markerType = "circleMarker"
     pointToLayerFunction = """
         function pointToLayer_{safeLayerName}(feature, latlng) {{
-            return L.circleMarker(latlng, style_{safeLayerName}(feature)){labeltext}
-        }}""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+            return L.{markerType}(latlng, style_{safeLayerName}(feature)){labeltext}
+        }}""".format(safeLayerName=safeLayerName, markerType=markerType,
+                     labeltext=labeltext)
     return pointToLayerFunction
 
 
@@ -357,7 +368,17 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
     return polyStyle
 
 
-def pointJSONLayer(sln, label, usedFields):
+def pointJSONLayer(layer, sln, label, usedFields):
+    renderer = layer.rendererV2()
+    print renderer
+    if isinstance(renderer, QgsRuleBasedRendererV2):
+        symbol = renderer.rootRule().children()[0].symbol()
+    else:
+        symbol = renderer.symbol()
+    if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayerV2):
+        markerType = "marker"
+    else:
+        markerType = "circleMarker"
     categorizedPointJSON = """
         var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',"""
@@ -366,11 +387,12 @@ def pointJSONLayer(sln, label, usedFields):
             onEachFeature: pop_{sln},"""
     categorizedPointJSON += """
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """
+                return L.{markerType}(latlng, """
     categorizedPointJSON += """style_{sln}(feature)){label}
             }}
         }});"""
-    categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label)
+    categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label,
+                                                       markerType=markerType)
     return categorizedPointJSON
 
 

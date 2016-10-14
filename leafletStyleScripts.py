@@ -1,4 +1,8 @@
+import os
+import shutil
+import re
 from math import floor
+import xml.etree.ElementTree
 from qgis.core import *
 # from qgis.utils import QGis
 from utils import getRGBAColor, handleHiddenField
@@ -87,9 +91,11 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
         else:
             rot = unicode(sl.angle() * 0.0174533)
         shutil.copy(sl.path(), path)
-        style = ("image: %s" %
-                 getIcon("styles/" + os.path.basename(sl.path()),
-                         sl.size(), svgWidth, svgHeight, rot))
+        style = """
+        rotationAngle: %s,
+        rotationOrigin: 'center center',
+        icon: %s""" % (rot, getIcon("markers/" + os.path.basename(sl.path()),
+                                    svgWidth, svgHeight))
     elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
         # Check for old version
@@ -158,22 +164,12 @@ def getCircle(color, borderColor, borderWidth, size, props, lineStyle):
              getFillStyle(color, props)))
 
 
-def getIcon(path, size, svgWidth, svgHeight, rot):
-    size = floor(float(size) * 3.8)
-    anchor = size / 2
-    scale = unicode(float(size)/float(svgWidth))
-    return '''new ol.style.Icon({
-                  imgSize: [%(w)s, %(h)s],
-                  scale: %(scale)s,
-                  anchor: [%(a)d, %(a)d],
-                  anchorXUnits: "pixels",
-                  anchorYUnits: "pixels",
-                  rotation: %(rot)s,
-                  src: "%(path)s"
-            })''' % {"w": svgWidth, "h": svgHeight,
-                     "scale": scale, "rot": rot,
-                     "s": size, "a": anchor,
-                     "path": path.replace("\\", "\\\\")}
+def getIcon(path, svgWidth, svgHeight):
+    return '''L.icon({
+            iconUrl: '%(path)s',
+            iconSize: [%(w)s, %(h)s]
+        }),''' % {"w": svgWidth, "h": svgHeight,
+                  "path": path.replace("\\", "\\\\")}
 
 
 def getStrokeStyle(color, dashed, width, linecap, linejoin):

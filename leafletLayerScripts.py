@@ -509,12 +509,12 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
 def pointLayer(layer, safeLayerName, labeltext, cluster, usedFields, json,
                wfsLayers):
     if layer.providerType() == 'WFS' and json is False:
-        p2lf = pointToLayerFunction(safeLayerName, labeltext)
+        p2lf = pointToLayerFunction(safeLayerName, labeltext, layer)
         (new_obj,
          scriptTag) = buildPointWFS(p2lf, safeLayerName, layer, cluster)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = pointJSONLayer(safeLayerName, labeltext, usedFields)
+        new_obj = pointJSONLayer(layer, safeLayerName, labeltext, usedFields)
         if cluster:
             new_obj += clusterScript(safeLayerName)
     return new_obj, wfsLayers
