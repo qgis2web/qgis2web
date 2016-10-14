@@ -357,7 +357,7 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
     return polyStyle
 
 
-def categorizedPointJSONscript(sln, label, usedFields):
+def pointJSONLayer(sln, label, usedFields):
     categorizedPointJSON = """
         var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',"""
