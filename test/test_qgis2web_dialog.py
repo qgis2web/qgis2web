@@ -1909,7 +1909,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'data/json_airports0.js')
+        test_output = read_output(self.dialog.preview.url().toString(), 'data/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -2070,7 +2070,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'data/json_airports0.js')
+        test_output = read_output(self.dialog.preview.url().toString(), 'data/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
