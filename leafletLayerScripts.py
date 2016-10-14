@@ -445,8 +445,8 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
 
 
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
-                layer, labeltext, cluster, cluster_num, json,
-                usedFields, legends):
+                layer, labeltext, cluster, cluster_num, json, usedFields,
+                legends):
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     else:
@@ -458,12 +458,12 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
     legends[safeLayerName] = '<img src="legend/' + safeLayerName + '.png" /> '
     legends[safeLayerName] += layer.name()
     if layer.geometryType() == QGis.Point:
-        (new_obj,
-         wfsLayers, cluster_num) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                  cluster_num, usedFields, json, wfsLayers)
+        (new_obj, wfsLayers,
+         cluster_num) = pointLayer(layer, safeLayerName, labeltext, cluster,
+                                   cluster_num, usedFields, json, wfsLayers)
     else:
-        new_obj, wfsLayers = nonPoint(layer, safeLayerName, usedFields, json,
-                                            wfsLayers)
+        new_obj, wfsLayers = nonPointLayer(layer, safeLayerName, usedFields,
+                                           json, wfsLayers)
     return new_obj, legends, wfsLayers
 
 
@@ -481,13 +481,12 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers,
-         cluster_num) = pointLayer(layer, safeLayerName, labeltext,
-                                       cluster, cluster_num, usedFields, json,
-                                       wfsLayers)
+         cluster_num) = pointLayer(layer, safeLayerName, labeltext, cluster,
+                                   cluster_num, usedFields, json, wfsLayers)
     else:
         (new_obj,
-         wfsLayers) = nonPoint(layer, safeLayerName, usedFields,
-                                          json, wfsLayers)
+         wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
+                                    wfsLayers)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
 
@@ -504,13 +503,12 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
     catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
         (new_obj, wfsLayers,
-         cluster_num) = pointLayer(layer, safeLayerName, labeltext, cluster, cluster_num,
-                                       usedFields, json,
-                                       wfsLayers)
+         cluster_num) = pointLayer(layer, safeLayerName, labeltext, cluster,
+                                   cluster_num, usedFields, json, wfsLayers)
     else:
         (new_obj,
-         wfsLayers) = nonPoint(layer, safeLayerName, usedFields, json,
-                                        wfsLayers)
+         wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
+                                    wfsLayers)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
 
@@ -520,8 +518,8 @@ def pointLayer(layer, safeLayerName, labeltext, cluster, cluster_num,
     if layer.providerType() == 'WFS' and json is False:
         p2lf = pointToLayerFunction(safeLayerName, labeltext)
         (new_obj, scriptTag,
-         cluster_num) = buildPointWFS(p2lf, safeLayerName, layer,
-                                      cluster, cluster_num)
+         cluster_num) = buildPointWFS(p2lf, safeLayerName, layer, cluster,
+                                      cluster_num)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = categorizedPointJSONscript(safeLayerName, labeltext,
@@ -532,7 +530,7 @@ def pointLayer(layer, safeLayerName, labeltext, cluster, cluster_num,
     return new_obj, wfsLayers, cluster_num
 
 
-def nonPoint(layer, safeLayerName, usedFields, json, wfsLayers):
+def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers):
     if layer.providerType() == 'WFS' and json is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
