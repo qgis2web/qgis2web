@@ -143,20 +143,19 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     new_src += basemapText
     new_src += layerOrder
 
-    lyrCount = 0
     for count, layer in enumerate(layer_list):
         rawLayerName = layer.name()
-        safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
-        lyrCount += 1
+        safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
         if layer.type() == QgsMapLayer.VectorLayer:
             (new_src,
              legends,
-             wfsLayers) = writeVectorLayer(layer, safeLayerName, usedFields,
-                                           highlight, popupsOnHover, popup,
-                                           count, outputProjectFileName,
-                                           wfsLayers, cluster, cluster_num,
-                                           visible, json, legends, new_src,
-                                           canvas, lyrCount)
+             wfsLayers) = writeVectorLayer(layer, safeLayerName,
+                                           usedFields[count], highlight,
+                                           popupsOnHover, popup[count],
+                                           outputProjectFileName, wfsLayers,
+                                           cluster[count], cluster_num,
+                                           visible[count], json[count],
+                                           legends, new_src, canvas, count + 1)
         elif layer.type() == QgsMapLayer.RasterLayer:
             if layer.dataProvider().name() == "wms":
                 new_obj = wmsScript(layer, safeLayerName)

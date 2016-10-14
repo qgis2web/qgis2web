@@ -234,14 +234,14 @@ def exportRasterLayer(layer, safeLayerName, dataPath):
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
-                     popupsOnHover, popup, count, outputProjectFileName,
-                     wfsLayers, cluster, cluster_num, visible, json, legends,
-                     new_src, canvas, zIndex):
+                     popupsOnHover, popup, outputProjectFileName, wfsLayers,
+                     cluster, cluster_num, visible, json, legends, new_src,
+                     canvas, zIndex):
     zIndex = zIndex + 600
     markerFolder = os.path.join(outputProjectFileName, "markers")
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(layer, safeLayerName, highlight,
-                                 popupsOnHover, popup[count])
+                                 popupsOnHover, popup)
     renderer = layer.rendererV2()
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
     style = ""
@@ -289,28 +289,27 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer, labeltext,
-                                  cluster[count], cluster_num, json[count],
-                                  usedFields[count], legends)
+                                  cluster, cluster_num, json, usedFields,
+                                  legends)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         style = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
-                                       outputProjectFileName,
-                                       usedFields[count], legends, labeltext,
-                                       cluster[count], cluster_num,
-                                       json[count], wfsLayers)
+                                       outputProjectFileName, usedFields,
+                                       legends, labeltext, cluster,
+                                       cluster_num, json, wfsLayers)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         style = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
-                                     outputProjectFileName, labeltext,
-                                     cluster[count], cluster_num, json[count],
-                                     usedFields[count], legends, wfsLayers)
+                                     outputProjectFileName, labeltext, cluster,
+                                     cluster_num, json, usedFields, legends,
+                                     wfsLayers)
     new_obj = """{style}
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};{new_obj}""".format(
             style=style, sln=safeLayerName, zIndex=zIndex, new_obj=new_obj)
-    if usedFields[count] != 0:
+    if usedFields != 0:
         new_src += new_pop.decode("utf-8")
     new_src += """
 """ + new_obj
@@ -319,8 +318,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     else:
         new_src += """
         bounds_group.addLayer(layer_""" + safeLayerName + """);"""
-        if visible[count]:
-            if cluster[count] is False:
+        if visible:
+            if cluster is False:
                 new_src += """
         feature_group.addLayer(layer_""" + safeLayerName + """);"""
             else:
