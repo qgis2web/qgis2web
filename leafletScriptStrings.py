@@ -278,7 +278,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 def pointToLayerFunction(safeLayerName, labeltext):
     pointToLayerFunction = """
         function pointToLayer_{safeLayerName}(feature, latlng) {{
-            return L.circleMarker(latlng, style_{safeLayerName}()){labeltext}
+            return L.circleMarker(latlng, style_{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName, labeltext=labeltext)
     return pointToLayerFunction
 

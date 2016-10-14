@@ -606,7 +606,7 @@ def buildNonPointWFS(layerName, layer):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = """
         var layer_{layerName} = L.geoJson(null, {{
-            style: 'style_{layerName}',
+            style: style_{layerName},
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
         }});"""
