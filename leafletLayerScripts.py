@@ -506,7 +506,7 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
                      layer_transp, usedFields, count, legends, labeltext,
                      cluster, cluster_num, popFuncs, visible, json, wfsLayers):
     catLegend = layer.name() + "<br />"
-    catLegend += "<table>" + catLegend
+    catLegend += "<table>"
     categories = renderer.categories()
     for cat in categories:
         symbol = cat.symbol()
@@ -521,8 +521,8 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
                                        visible, json, count, wfsLayers)
     else:
         (new_obj,
-         wfsLayers) = categorizedNonPoint(outputProjectFileName, layer,
-                                          safeLayerName, renderer, usedFields,
+         wfsLayers) = categorizedNonPoint(layer,
+                                          safeLayerName, usedFields,
                                           json, count, wfsLayers)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
@@ -546,7 +546,7 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
     return new_obj, wfsLayers
 
 
-def categorizedNonPoint(outputProjectFileName, layer, safeLayerName, renderer,
+def categorizedNonPoint(layer, safeLayerName,
                         usedFields, json, count, wfsLayers):
     if layer.providerType() == 'WFS' and json[count] is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
@@ -560,7 +560,7 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
                    layer_transp, labeltext, popFuncs, cluster, cluster_num,
                    visible, json, usedFields, count, legends, wfsLayers):
     catLegend = layer.name() + "<br />"
-    catLegend = "<table>" + catLegend
+    catLegend += "<table>"
     for r in renderer.ranges():
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
@@ -572,9 +572,9 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
                                        labeltext, usedFields, cluster,
                                        cluster_num, wfsLayers)
     else:
-        (new_obj, wfsLayers,
-         catLegend) = graduatedNonPoint(outputProjectFileName, layer,
-                                        safeLayerName, renderer, catLegend,
+        (new_obj,
+         wfsLayers) = graduatedNonPoint(layer,
+                                        safeLayerName,
                                         usedFields, json, count, wfsLayers)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
@@ -597,14 +597,14 @@ def graduatedPoint(layer, safeLayerName, json, count, labeltext, usedFields,
     return new_obj, wfsLayers, cluster_num
 
 
-def graduatedNonPoint(outputProjectFileName, layer, safeLayerName, renderer,
-                      catLegend, usedFields, json, count, wfsLayers):
+def graduatedNonPoint(layer, safeLayerName,
+                      usedFields, json, count, wfsLayers):
     if layer.providerType() == 'WFS' and json[count] is False:
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
-    return new_obj, wfsLayers, catLegend
+    return new_obj, wfsLayers
 
 
 def heatmapLayer(layer, safeLayerName, renderer, outputProjectFileName,
