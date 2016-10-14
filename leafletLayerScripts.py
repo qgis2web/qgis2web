@@ -560,120 +560,51 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
                    layer_transp, labeltext, popFuncs, cluster, cluster_num,
                    visible, json, usedFields, count, legends, wfsLayers):
     catLegend = layer.name() + "<br />"
-    categoryStr = graduatedStyleScript(safeLayerName)
+    catLegend = "<table>" + catLegend
+    for r in renderer.ranges():
+        symbol = r.symbol()
+        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
+                               catLegend)
+    catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
-        (new_obj, catLegend, wfsLayers,
-         cluster_num) = graduatedPoint(outputProjectFileName, layer,
-                                       safeLayerName, renderer, catLegend,
-                                       layer_transp, json, count, labeltext,
-                                       usedFields, cluster, cluster_num,
-                                       visible, wfsLayers, categoryStr)
-    elif layer.geometryType() == QGis.Line:
         (new_obj, wfsLayers,
-         catLegend) = graduatedLine(outputProjectFileName, layer,
-                                    safeLayerName, renderer, catLegend,
-                                    layer_transp, popFuncs, usedFields, json,
-                                    visible, count, wfsLayers, categoryStr)
-    elif layer.geometryType() == QGis.Polygon:
-        (new_obj, catLegend,
-         wfsLayers) = graduatedPolygon(outputProjectFileName, layer, renderer,
-                                       safeLayerName, catLegend, layer_transp,
-                                       usedFields, visible, json, count,
-                                       popFuncs, wfsLayers, categoryStr)
+         cluster_num) = graduatedPoint(layer, safeLayerName, json, count,
+                                       labeltext, usedFields, cluster,
+                                       cluster_num, wfsLayers)
+    else:
+        (new_obj, wfsLayers,
+         catLegend) = graduatedNonPoint(outputProjectFileName, layer,
+                                        safeLayerName, renderer, catLegend,
+                                        usedFields, json, count, wfsLayers)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers
 
 
-def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
-                   catLegend, layer_transp, json, count, labeltext, usedFields,
-                   cluster, cluster_num, visible, wfsLayers, categoryStr):
-    catLegend = "<table>" + catLegend
-    valueAttr = handleHiddenField(layer, renderer.classAttribute())
-    for r in renderer.ranges():
-        symbol = r.symbol()
-        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
-        symbol_transp = symbol.alpha()
-        symbolLayer = symbol.symbolLayer(0)
-        border_transp = float(symbolLayer.borderColor().alpha()) / 255
-        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-        fill_transp = float(symbol.color().alpha()) / 255
-        fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedPointStylesScript(valueAttr, r, symbol,
-                                                  fill_opacity, borderOpacity)
-    catLegend += "</table>"
-    categoryStr += endGraduatedStyleScript()
+def graduatedPoint(layer, safeLayerName, json, count, labeltext, usedFields,
+                   cluster, cluster_num, wfsLayers):
     if layer.providerType() == 'WFS' and json[count] is False:
-        stylestr = categorizedPointWFSscript(safeLayerName, labeltext)
+        p2lf = pointToLayerFunction(safeLayerName, labeltext)
         (new_obj, scriptTag,
-         cluster_num) = buildPointWFS(stylestr, safeLayerName, layer,
-                                      categoryStr, cluster[count], cluster_num,
-                                      visible[count])
+         cluster_num) = buildPointWFS(p2lf, safeLayerName, layer,
+                                      cluster[count], cluster_num)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = categoryStr + categorizedPointJSONscript(safeLayerName,
-                                                           labeltext,
-                                                           usedFields[count])
+        new_obj = categorizedPointJSONscript(safeLayerName, labeltext,
+                                             usedFields[count])
         if cluster[count]:
             new_obj += clusterScript(safeLayerName)
             cluster_num += 1
-    return new_obj, catLegend, wfsLayers, cluster_num
+    return new_obj, wfsLayers, cluster_num
 
 
-def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
-                  catLegend, layer_transp, popFuncs, usedFields, json, visible,
-                  count, wfsLayers, categoryStr):
-    valueAttr = handleHiddenField(layer, renderer.classAttribute())
-    for r in renderer.ranges():
-        symbol = r.symbol()
-        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
-        symbol_transp = symbol.alpha()
-        fill_transp = float(symbol.color().alpha()) / 255
-        fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedLineStylesScript(valueAttr, r, symbol,
-                                                 fill_opacity)
-    categoryStr += endGraduatedStyleScript()
+def graduatedNonPoint(outputProjectFileName, layer, safeLayerName, renderer,
+                      catLegend, usedFields, json, count, wfsLayers):
     if layer.providerType() == 'WFS' and json[count] is False:
-        stylestr = categorizedNonPointStyleFunctionScript(safeLayerName,
-                                                          popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
-                                              categoryStr, stylestr,
-                                              visible[count])
+        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
     else:
         new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
     return new_obj, wfsLayers, catLegend
-
-
-def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
-                     catLegend, layer_transp, usedFields, visible, json, count,
-                     popFuncs, wfsLayers, categoryStr):
-    valueAttr = handleHiddenField(layer, renderer.classAttribute())
-    for r in renderer.ranges():
-        symbol = r.symbol()
-        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
-        symbol_transp = symbol.alpha()
-        symbolLayer = symbol.symbolLayer(0)
-        border_transp = float(symbolLayer.borderColor().alpha()) / 255
-        borderOpacity = unicode(layer_transp * symbol_transp * border_transp)
-        fill_transp = float(symbol.color().alpha()) / 255
-        fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
-        categoryStr += graduatedPolygonStylesScript(valueAttr, r, symbol,
-                                                    fill_opacity,
-                                                    borderOpacity)
-    categoryStr += endGraduatedStyleScript()
-    if layer.providerType() == 'WFS' and json[count] is False:
-        stylestr = categorizedNonPointStyleFunctionScript(safeLayerName,
-                                                          popFuncs)
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer,
-                                              categoryStr, stylestr,
-                                              visible[count])
-        wfsLayers += wfsScript(scriptTag)
-    else:
-        new_obj = buildNonPointJSON(safeLayerName, usedFields[count])
-    return new_obj, catLegend, wfsLayers
 
 
 def heatmapLayer(layer, safeLayerName, renderer, outputProjectFileName,

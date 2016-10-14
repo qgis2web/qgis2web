@@ -410,12 +410,6 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
     return categorizedPolygonStyles
 
 
-def graduatedStyleScript(layerName):
-    graduatedStyle = """
-        function style_{layerName}(feature) {{""".format(layerName=layerName)
-    return graduatedStyle
-
-
 def rangeStartScript(valueAttr, r):
     rangeStart = """
         if (feature.properties['{valueAttr}'] >= {lowerValue} &&
@@ -423,28 +417,6 @@ def rangeStartScript(valueAttr, r):
 """.format(valueAttr=valueAttr, lowerValue=r.lowerValue(),
            upperValue=r.upperValue())
     return rangeStart
-
-
-def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
-    sl = symbol.symbolLayer(0)
-    (dashArray, capString,
-     joinString) = getLineStyle(sl.outlineStyle(), sl.outlineWidth(), 0, 0)
-    graduatedPointStyles = rangeStartScript(valueAttr, r)
-    graduatedPointStyles += """
-            return {{
-                radius: {radius},
-                fillColor: '{fillColor}',
-                color: '{color}',
-                weight: {lineWeight},
-                fillOpacity: '{opacity}',
-                opacity: '{borderOpacity}',
-                dashArray: '{dashArray}'
-            }}
-        }}
-""".format(radius=symbol.size() * 2, fillColor=symbol.color().name(),
-           color=sl.borderColor().name(), lineWeight=sl.outlineWidth() * 4,
-           opacity=opacity, borderOpacity=borderOpacity, dashArray=dashArray)
-    return graduatedPointStyles
 
 
 def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
@@ -508,12 +480,6 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                      joinString=joinString, fillColor=fillColor,
                      borderOpacity=borderOpacity, opacity=opacity)
     return graduatedPolygonStyles
-
-
-def endGraduatedStyleScript():
-    endGraduatedStyle = """
-        }"""
-    return endGraduatedStyle
 
 
 def wmsScript(i, safeLayerName):
