@@ -241,7 +241,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     markerFolder = os.path.join(outputProjectFileName, "markers")
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(layer, safeLayerName, highlight,
-                                 popupsOnHover, popup, count)
+                                 popupsOnHover, popup[count])
     renderer = layer.rendererV2()
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
     style = ""
@@ -281,10 +281,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     #     layer_style = getLayerStyle(layer, safeLayerName)
     elif isinstance(renderer, QgsHeatmapRenderer):
         (new_obj, legends,
-         wfsLayers) = heatmapLayer(layer, safeLayerName, renderer,
-                                   outputProjectFileName, layer_transp,
-                                   labeltext, popFuncs, cluster, cluster_num,
-                                   visible, json, usedFields, count, legends,
+         wfsLayers) = heatmapLayer(layer, safeLayerName, renderer, legends,
                                    wfsLayers)
     elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
@@ -332,11 +329,10 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     return new_src, legends, wfsLayers
 
 
-def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
-                    popup, count):
+def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
     fields = layer.pendingFields()
-    field_names = popup[count].keys()
-    field_vals = popup[count].values()
+    field_names = popup.keys()
+    field_vals = popup.values()
     html_prov = False
     label_exp = ''
     labeltext = ""
@@ -383,7 +379,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
     labeltext += ").openTooltip();"
     f = palyr.fieldName
     table = ""
-    for field in popup[count]:
+    for field in popup:
         if unicode(field) == 'html_exp':
             html_prov = True
             table = 'feature.properties.html_exp'
@@ -441,7 +437,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover,
             table = tablestart + row + tableend
     if not label_exp:
         labeltext = ""
-    if popup[count] != 0 and table != "":
+    if popup != 0 and table != "":
         popFuncs = popFuncsScript(table)
     else:
         popFuncs = ""
@@ -598,9 +594,7 @@ def graduatedNonPoint(layer, safeLayerName, usedFields, json, wfsLayers):
     return new_obj, wfsLayers
 
 
-def heatmapLayer(layer, safeLayerName, renderer, outputProjectFileName,
-                 layer_transp, labeltext, popFuncs, cluster, cluster_num,
-                 visible, json, usedFields, count, legends, wfsLayers):
+def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
     hmRadius = renderer.radius() * 2
     hmWeight = renderer.weightExpression()
     if hmWeight is not None and hmWeight != "":
