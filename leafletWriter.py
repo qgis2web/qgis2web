@@ -44,7 +44,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     outputProjectFileName = os.path.join(outputProjectFileName,
                                          'qgis2web_' + unicode(time.time()))
     outputIndex = os.path.join(outputProjectFileName, 'index.html')
-    cluster_num = 1
 
     mapLibLocation = params["Data export"]["Mapping library location"]
     minify = params["Data export"]["Minify GeoJSON files"]
@@ -153,9 +152,9 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                                            usedFields[count], highlight,
                                            popupsOnHover, popup[count],
                                            outputProjectFileName, wfsLayers,
-                                           cluster[count], cluster_num,
-                                           visible[count], json[count],
-                                           legends, new_src, canvas, count)
+                                           cluster[count], visible[count],
+                                           json[count], legends, new_src,
+                                           canvas, count)
         elif layer.type() == QgsMapLayer.RasterLayer:
             if layer.dataProvider().name() == "wms":
                 new_obj = wmsScript(layer, safeLayerName)
