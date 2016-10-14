@@ -664,7 +664,7 @@ def buildNonPointJSON(safeName, usedFields):
     }});"""
     new_obj = new_obj.format(safeName=safeName, onEachFeature=onEachFeature)
     new_obj = new_obj
-    
+
     return new_obj
 
 

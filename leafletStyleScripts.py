@@ -39,12 +39,14 @@ def getLayerStyle(layer, sln, markerFolder):
         function style_%s(feature) {""" % (sln)
         for ran in renderer.ranges():
             style += """
-            if (feature.properties['%(a)s'] >= %(l)f && feature.properties['%(a)s'] <= %(u)f ) {
+            if (feature.properties['%(a)s'] >= %(l)f """
+            style += """&& feature.properties['%(a)s'] <= %(u)f ) {
                 return %(s)s
-            }""" % {"a": classAttr, "l": ran.lowerValue(),
-                             "u": ran.upperValue(), "s": getSymbolAsStyle(
-                                    ran.symbol(), markerFolder,
-                                    layer_alpha, sln)}
+            }"""
+            style = style % {"a": classAttr, "l": ran.lowerValue(),
+                             "u": ran.upperValue(),
+                             "s": getSymbolAsStyle(ran.symbol(), markerFolder,
+                                                   layer_alpha, sln)}
         style += """
         }"""
     else:
