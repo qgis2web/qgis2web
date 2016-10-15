@@ -373,6 +373,10 @@ def pointJSONLayer(layer, sln, label, usedFields):
     print renderer
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
+    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        symbol = renderer.categories()[0].symbol()
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        symbol = renderer.ranges()[0].symbol
     else:
         symbol = renderer.symbol()
     if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayerV2):
