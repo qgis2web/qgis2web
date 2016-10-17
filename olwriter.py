@@ -194,6 +194,7 @@ def writeOL(iface, layers, groups, popup, visible,
         geolocate = geolocation(geolocateUser)
         geocode = settings["Appearance"]["Add address search"]
         geocodingLinks = geocodeLinks(geocode)
+        geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
         extracss = """
         <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
@@ -230,6 +231,7 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@OL3_PROJ4@": proj4,
                   "@OL3_PROJDEF@": proj,
                   "@OL3_GEOCODINGLINKS@": geocodingLinks,
+                  "@OL3_GEOCODINGJS@": geocodingJS,
                   "@QGIS2WEBJS@": ol3qgis2webjs,
                   "@OL3_LAYERSWITCHER@": ol3layerswitcher,
                   "@OL3_LAYERS@": ol3layers,
@@ -1103,13 +1105,19 @@ def geocodeLinks(geocode):
     if geocode:
         returnVal = """
     <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.min.css" rel="stylesheet">
+        returnVal += """ol3-geocoder.min.css" rel="stylesheet">"""
+        return returnVal
+    else:
+        return ""
+
+def geocodeJS(geocode):
+    if geocode:
+        returnVal = """
     <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
         returnVal += """ol3-geocoder.js"></script>"""
         return returnVal
     else:
         return ""
-
 
 def geocodeScript(geocode):
     if geocode:
