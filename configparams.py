@@ -79,6 +79,7 @@ baselayers = (
             "OpenMapSurfer adminb",
             "OpenMapSurfer roadsg",
             "Stamen Terrain",
+            "Stamen Terrain background",
             "Stamen Watercolor",
             "OpenWeatherMap Clouds",
             "OpenWeatherMap Precipitation",
