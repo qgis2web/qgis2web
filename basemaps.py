@@ -55,6 +55,9 @@ def basemapLeaflet():
         'OpenMapSurfer roadsg': ('http://openmapsurfer.uni-hd.de/tiles/' +
                                  'roadsg/x={x}&y={y}&z={z}'),
         'Stamen Terrain': 'http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png',
+        'Stamen Terrain background': ('http://stamen-tiles-a.a.ssl.' +
+                                      'fastly.net/terrain-background/{z}/{x}' +
+                                      '/{y}.png'),
         'Stamen Watercolor': ('http://a.tile.stamen.com/watercolor/' +
                               '{z}/{x}/{y}.png'),
         'OpenWeatherMap Clouds': ('http://{s}.tile.openweathermap.org/map/' +
@@ -100,6 +103,16 @@ new ol.layer.Tile({{
     'type': 'base',
     source: new ol.source.Stamen({{
         layer: 'terrain'
+    }})
+}})""",
+        "Stamen Terrain background": """
+new ol.layer.Tile({{
+    'title': '{title}',
+    'type': 'base',
+    source: new ol.source.XYZ({{
+        url: \
+'http://stamen-tiles-{{a-c}}.a.ssl.fastly.net/terrain-background/{{z}}/{{x}}/{{y}}.png',
+        attributions: [new ol.Attribution({{html: '{attr}'}})]
     }})
 }})""",
         "OSM": """
@@ -341,6 +354,11 @@ Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
 Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>\
 contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">\
 CC-BY-SA</a>""",
+    'Stamen Terrain background': """\
+Map tiles by <a href="http://stamen.com">Stamen Design</a>, \
+<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; \
+Map data &copy; <a href="http://www.openstreetmap.org/copyright">\
+OpenStreetMap</a>""",
     'Stamen Watercolor': """\
 Map tiles by <a href="http://stamen.com">Stamen Design</a>,\
 <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;\
