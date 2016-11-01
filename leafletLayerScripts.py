@@ -1049,7 +1049,8 @@ def buildNonPointWFS(layerName, layer, categoryStr, stylestr, visible, zIndex):
 
 def getWFSScriptTag(layer, layerName):
     layerSource = layer.source()
-    if "retrictToRequestBBOX" in layerSource:
+    if ("retrictToRequestBBOX" in layerSource or
+            "restrictToRequestBBOX" in layerSource):
         provider = layer.dataProvider()
         uri = QgsDataSourceURI(provider.dataSourceUri())
         wfsURL = uri.param("url")
