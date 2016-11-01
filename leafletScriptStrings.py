@@ -277,7 +277,6 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
 
 def pointToLayerFunction(safeLayerName, labeltext, layer):
     renderer = layer.rendererV2()
-    print renderer
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     else:
@@ -372,7 +371,6 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
 
 def pointJSONLayer(layer, sln, label, usedFields):
     renderer = layer.rendererV2()
-    print renderer
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
