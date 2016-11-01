@@ -288,9 +288,11 @@ def pointToLayerFunction(safeLayerName, labeltext, layer):
         markerType = "circleMarker"
     pointToLayerFunction = """
         function pointToLayer_{safeLayerName}(feature, latlng) {{
-            return L.{markerType}(latlng, style_{safeLayerName}(feature)){labeltext}
-        }}""".format(safeLayerName=safeLayerName, markerType=markerType,
-                     labeltext=labeltext)
+            return L.{markerType}(latlng, style_{safeLayerName}""".format(
+                safeLayerName=safeLayerName,
+                markerType=markerType)
+    pointToLayerFunction += """(feature)){labeltext}
+        }}""".format(labeltext=labeltext)
     return pointToLayerFunction
 
 
