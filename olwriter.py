@@ -103,7 +103,8 @@ def writeOL(iface, layers, groups, popup, visible,
                                     (safeName(layer.name()) + ".js"))
                 else:
                     layerSource = layer.source()
-                    if "retrictToRequestBBOX" in layerSource:
+                    if ("retrictToRequestBBOX" in layerSource or
+                            "restrictToRequestBBOX" in layerSource):
                         provider = layer.dataProvider()
                         uri = QgsDataSourceURI(provider.dataSourceUri())
                         wfsURL = uri.param("url")
