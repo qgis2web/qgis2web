@@ -45,4 +45,4 @@ class Qgis2Web(object):
 
     def run(self):
         dlg = MainDialog(self.iface)
-        dlg.exec_()
+        dlg.show()
