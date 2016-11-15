@@ -31,7 +31,7 @@ try:
     from PyQt4.QtWebKit import *
     webkit_available = True
 except ImportError:
-    webkit_available= False
+    webkit_available = False
 from PyQt4 import QtGui
 import traceback
 import logging
