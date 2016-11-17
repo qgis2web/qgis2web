@@ -36,7 +36,7 @@ before_script:
 script:
   - pep8 --exclude=test ./
   - make pylint
-  - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-coverage --verbose --cover-package=qgis2web --cover-package=maindialog --cover-package=utils --cover-package=configparams --cover-package=olwriter --cover-package=leafletWriter  --cover-package=olScriptStrings --cover-package=basemaps --cover-package=leafletFileScripts --cover-package=leafletLayerScripts --cover-package=leafletScriptStrings
+  - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-coverage --verbose --cover-package=qgis2web --cover-package=maindialog --cover-package=utils --cover-package=configparams --cover-package=olwriter --cover-package=leafletWriter  --cover-package=olScriptStrings --cover-package=basemaps --cover-package=leafletFileScripts --cover-package=leafletLayerScripts --cover-package=leafletScriptStrings --cover-package=leafletStyleScripts
 
 after_success:
   - coveralls
