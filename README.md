@@ -142,7 +142,7 @@ is wasted in bug reporting, please follow these steps:</p>
     <li>Make sure you are using the latest release of qgis2web</li>
     <li>Check the issues on Github to see whether the bug has already been
         reported, and if so, read through all the comments on the issue, and
-        add any additional informaton from your experience of the bug</li>
+        add any additional information from your experience of the bug</li>
     <li>Make sure you can reproduce the bug reliably</li>
     <li>Reduce the complexity of your bug conditions as far as you can,
         especially by reducing the number of layers, ideally to one</li>
