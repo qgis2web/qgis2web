@@ -1,7 +1,7 @@
 <h1>Contributing to qgis2web</h1>
 
 <h2>Development</h2>
-<p>qgis2web is largely developed by me, with significant contribtions from a
+<p>qgis2web is largely developed by me, with significant contributions from a
 few others. Please, please do contribute, as there is so much more to do.</p>
 
 <p>As for the overall direction of the plugin, there is now basically feature
