@@ -1,5 +1,4 @@
-To ensure no time or effort is wasted in bug reporting, please follow these
-steps:
+To ensure no time or effort is wasted in bug reporting, please follow these steps:
 
 1. Make sure you are using the latest release of qgis2web
 2. Check the issues on Github to see whether the bug has already been reported, and if so, read through all the comments on the issue, and add any additional information from your experience of the bug
