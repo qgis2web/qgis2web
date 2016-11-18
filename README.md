@@ -148,6 +148,7 @@ is wasted in bug reporting, please follow these steps:</p>
         especially by reducing the number of layers, ideally to one</li>
     <li>Raise a Github issue, including:
     <ul>
+        <li>only one bug per Github issue</li>
         <li>the qgis2web version (or make it clear you are using Github master
             branch)</li>
         <li>any Python error text/stack trace which occurs</li>
