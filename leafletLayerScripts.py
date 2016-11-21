@@ -830,7 +830,7 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
-    for cnt, r in enumerate(renderer.ranges():)
+    for cnt, r in enumerate(renderer.ranges()):
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
                                catLegend, cnt)
@@ -873,7 +873,7 @@ def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
-    for cnt, r in enumerate(renderer.ranges():)
+    for cnt, r in enumerate(renderer.ranges()):
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
                                catLegend, cnt)
@@ -908,7 +908,7 @@ def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
-    for cnt, r in enumerate(renderer.ranges():)
+    for cnt, r in enumerate(renderer.ranges()):
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
                                catLegend, cnt)
