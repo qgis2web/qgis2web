@@ -468,10 +468,10 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
     categories = renderer.categories()
-    for cat in categories:
+    for cnt, cat in enumerate(categories):
         symbol = cat.symbol()
         catLegend = iconLegend(symbol, cat, outputProjectFileName,
-                               safeLayerName, catLegend)
+                               safeLayerName, catLegend, cnt)
     catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
         (new_obj,
@@ -489,10 +489,10 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
                    labeltext, cluster, json, usedFields, legends, wfsLayers):
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
-    for r in renderer.ranges():
+    for cnt, r in enumerate(renderer.ranges()):
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
+                               catLegend, cnt)
     catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
         (new_obj,
