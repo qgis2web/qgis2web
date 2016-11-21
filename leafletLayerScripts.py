@@ -665,14 +665,14 @@ def categorizedPoint(outputProjectFileName, layer, renderer, safeLayerName,
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
     categoryStr = categoryScript(safeLayerName, valueAttr)
-    for cat in categories:
+    for cnt, cat in enumerate(categories):
         if not cat.value():
             categoryStr += defaultCategoryScript()
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
         catLegend = iconLegend(symbol, cat, outputProjectFileName,
-                               safeLayerName, catLegend)
+                               safeLayerName, catLegend, cnt)
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -717,14 +717,14 @@ def categorizedLine(outputProjectFileName, layer, safeLayerName, renderer,
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
     categoryStr = categoryScript(safeLayerName, valueAttr)
-    for cat in categories:
+    for cnt, cat in enumerate(categories):
         if not cat.value():
             categoryStr += defaultCategoryScript()
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
         catLegend = iconLegend(symbol, cat, outputProjectFileName,
-                               safeLayerName, catLegend)
+                               safeLayerName, catLegend, cnt)
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -756,14 +756,14 @@ def categorizedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
     categoryStr = categoryScript(safeLayerName, valueAttr)
-    for cat in categories:
+    for cnt, cat in enumerate(categories):
         if not cat.value():
             categoryStr += defaultCategoryScript()
         else:
             categoryStr += eachCategoryScript(cat.value())
         symbol = cat.symbol()
         catLegend = iconLegend(symbol, cat, outputProjectFileName,
-                               safeLayerName, catLegend)
+                               safeLayerName, catLegend, cnt)
         symbol_transp = symbol.alpha()
         symbolLayer = symbol.symbolLayer(0)
         border_transp = float(symbolLayer.borderColor().alpha()) / 255
@@ -830,10 +830,10 @@ def graduatedPoint(outputProjectFileName, layer, safeLayerName, renderer,
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
-    for r in renderer.ranges():
+    for cnt, r in enumerate(renderer.ranges():)
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
+                               catLegend, cnt)
         symbol_transp = symbol.alpha()
         symbolLayer = symbol.symbolLayer(0)
         border_transp = float(symbolLayer.borderColor().alpha()) / 255
@@ -873,10 +873,10 @@ def graduatedLine(outputProjectFileName, layer, safeLayerName, renderer,
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
-    for r in renderer.ranges():
+    for cnt, r in enumerate(renderer.ranges():)
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
+                               catLegend, cnt)
         symbol_transp = symbol.alpha()
         fill_transp = float(symbol.color().alpha()) / 255
         fill_opacity = unicode(layer_transp * symbol_transp * fill_transp)
@@ -908,10 +908,10 @@ def graduatedPolygon(outputProjectFileName, layer, renderer, safeLayerName,
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         valueAttr = "q2wHide_" + valueAttr
-    for r in renderer.ranges():
+    for cnt, r in enumerate(renderer.ranges():)
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend)
+                               catLegend, cnt)
         symbol_transp = symbol.alpha()
         symbolLayer = symbol.symbolLayer(0)
         border_transp = float(symbolLayer.borderColor().alpha()) / 255
