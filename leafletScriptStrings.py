@@ -261,11 +261,10 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
     return svg
 
 
-def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend,
-               count):
+def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend):
     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
                                                            QSize(16, 16))
-    safeLabel = re.sub('[\W_]+', '', catr.label()) + unicode(count)
+    safeLabel = re.sub('[\W_]+', '', catr.label())
     legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                  layerName + "_" + safeLabel + ".png"))
     catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
