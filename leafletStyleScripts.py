@@ -9,6 +9,7 @@ from utils import getRGBAColor, handleHiddenField
 
 
 def getLayerStyle(layer, sln, markerFolder):
+    markerType = None
     renderer = layer.rendererV2()
     layer_alpha = layer.layerTransparency()
     style = ""
@@ -18,22 +19,25 @@ def getLayerStyle(layer, sln, markerFolder):
             symbol = renderer.rootRule().children()[0].symbol()
         else:
             symbol = renderer.symbol()
+        (styleCode, markerType) = getSymbolAsStyle(symbol, markerFolder,
+                                                   layer_alpha, sln)
         style = """
         function style_%s() {
             return %s
-        }""" % (sln, getSymbolAsStyle(symbol, markerFolder, layer_alpha, sln))
+        }""" % (sln, styleCode)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         style = """
         function style_%s(feature) {
             switch(feature.properties['%s']) {""" % (sln, classAttr)
         for cat in renderer.categories():
+            (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
+                                                       markerFolder,
+                                                       layer_alpha, sln)
             style += """
                 case '%s':
                     return %s
-                    break;""" % (cat.value(), getSymbolAsStyle(
-                                    cat.symbol(), markerFolder,
-                                    layer_alpha, sln))
+                    break;""" % (cat.value(), styleCode)
         style += """
             }
         }"""
@@ -42,6 +46,9 @@ def getLayerStyle(layer, sln, markerFolder):
         style = """
         function style_%s(feature) {""" % (sln)
         for ran in renderer.ranges():
+            (styleCode, markerType) = getSymbolAsStyle(ran.symbol(),
+                                                       markerFolder,
+                                                       layer_alpha, sln)
             style += """
             if (feature.properties['%(a)s'] >= %(l)f """
             style += """&& feature.properties['%(a)s'] <= %(u)f ) {
@@ -49,16 +56,16 @@ def getLayerStyle(layer, sln, markerFolder):
             }"""
             style = style % {"a": classAttr, "l": ran.lowerValue(),
                              "u": ran.upperValue(),
-                             "s": getSymbolAsStyle(ran.symbol(), markerFolder,
-                                                   layer_alpha, sln)}
+                             "s": styleCode}
         style += """
         }"""
     else:
         style = ""
-    return style
+    return style, markerType
 
 
 def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
+    markerType = None
     styles = []
     if layer_transparency == 0:
         alpha = symbol.alpha()
@@ -74,13 +81,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
         size = symbol.size() * 2
         style = getCircle(color, borderColor, borderWidth,
                           size, props, lineStyle)
+        markerType = "circleMarker"
     elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
         path = os.path.join(markerFolder, os.path.basename(sl.path()))
-        svg = xml.etree.ElementTree.parse(sl.path()).getroot()
-        svgWidth = svg.attrib["width"]
-        svgWidth = re.sub("px", "", svgWidth)
-        svgHeight = svg.attrib["height"]
-        svgHeight = re.sub("px", "", svgHeight)
+        svgSize = sl.size() * 3.8
         if symbol.dataDefinedAngle().isActive():
             if symbol.dataDefinedAngle().useExpression():
                 rot = "0"
@@ -95,7 +99,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
         rotationAngle: %s,
         rotationOrigin: 'center center',
         icon: %s""" % (rot, getIcon("markers/" + os.path.basename(sl.path()),
-                                    svgWidth, svgHeight))
+                                    svgSize))
+        markerType = "marker"
     elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
         # Check for old version
@@ -151,9 +156,9 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
                   getFillStyle(fillColor, props)))
     else:
         style = ""
-    return """{
+    return ("""{
                 pane: 'pane_%s',%s
-            }""" % (sln, style)
+            }""" % (sln, style), markerType)
 
 
 def getCircle(color, borderColor, borderWidth, size, props, lineStyle):
@@ -164,12 +169,11 @@ def getCircle(color, borderColor, borderWidth, size, props, lineStyle):
              getFillStyle(color, props)))
 
 
-def getIcon(path, svgWidth, svgHeight):
+def getIcon(path, svgSize):
     return '''L.icon({
             iconUrl: '%(path)s',
-            iconSize: [%(w)s, %(h)s]
-        }),''' % {"w": svgWidth, "h": svgHeight,
-                  "path": path.replace("\\", "\\\\")}
+            iconSize: [%(s)s, %(s)s]
+        }),''' % {"s": svgSize, "path": path.replace("\\", "\\\\")}
 
 
 def getStrokeStyle(color, dashed, width, linecap, linejoin):

@@ -284,24 +284,26 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    wfsLayers)
     elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
             isinstance(renderer, QgsRuleBasedRendererV2)):
-        style = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer, labeltext,
-                                  cluster, json, usedFields, legends)
+                                  cluster, json, usedFields, legends,
+                                  markerType)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        style = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
                                        outputProjectFileName, usedFields,
                                        legends, labeltext, cluster, json,
-                                       wfsLayers)
+                                       wfsLayers, markerType)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        style = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
                                      outputProjectFileName, labeltext, cluster,
-                                     json, usedFields, legends, wfsLayers)
+                                     json, usedFields, legends, wfsLayers,
+                                     markerType)
     new_obj = """{style}
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};{new_obj}""".format(
@@ -442,7 +444,8 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
 
 
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
-                layer, labeltext, cluster, json, usedFields, legends):
+                layer, labeltext, cluster, json, usedFields, legends,
+                markerType):
     if isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
     else:
@@ -456,7 +459,7 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                 usedFields, json, wfsLayers)
+                                 usedFields, json, wfsLayers, markerType)
     else:
         new_obj, wfsLayers = nonPointLayer(layer, safeLayerName, usedFields,
                                            json, wfsLayers)
@@ -464,7 +467,8 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
 
 
 def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
-                     usedFields, legends, labeltext, cluster, json, wfsLayers):
+                     usedFields, legends, labeltext, cluster, json, wfsLayers,
+                     markerType):
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
     categories = renderer.categories()
@@ -476,7 +480,7 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                 usedFields, json, wfsLayers)
+                                 usedFields, json, wfsLayers, markerType)
     else:
         (new_obj,
          wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
@@ -486,7 +490,8 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
 
 
 def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
-                   labeltext, cluster, json, usedFields, legends, wfsLayers):
+                   labeltext, cluster, json, usedFields, legends, wfsLayers,
+                   markerType):
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
     for cnt, r in enumerate(renderer.ranges()):
@@ -497,7 +502,7 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                 usedFields, json, wfsLayers)
+                                 usedFields, json, wfsLayers, markerType)
     else:
         (new_obj,
          wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
@@ -507,14 +512,15 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
 
 
 def pointLayer(layer, safeLayerName, labeltext, cluster, usedFields, json,
-               wfsLayers):
+               wfsLayers, markerType):
     if layer.providerType() == 'WFS' and json is False:
         p2lf = pointToLayerFunction(safeLayerName, labeltext, layer)
         (new_obj,
          scriptTag) = buildPointWFS(p2lf, safeLayerName, layer, cluster)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = pointJSONLayer(layer, safeLayerName, labeltext, usedFields)
+        new_obj = pointJSONLayer(layer, safeLayerName, labeltext,
+                                 usedFields, markerType)
         if cluster:
             new_obj += clusterScript(safeLayerName)
     return new_obj, wfsLayers
