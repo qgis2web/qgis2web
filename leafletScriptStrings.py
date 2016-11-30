@@ -12,7 +12,7 @@ basemapAddresses = basemapLeaflet()
 
 def jsonScript(layer):
     json = """
-        <script src="data/json_{layer}.js\"></script>""".format(layer=layer)
+        <script src="data/{layer}.js\"></script>""".format(layer=layer)
     return json
 
 
@@ -21,9 +21,9 @@ def scaleDependentLayerScript(layer, layerName):
     max = layer.maximumScale()
     scaleDependentLayer = """
             if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
-                feature_group.addLayer(json_{layerName}JSON);
+                feature_group.addLayer(layer_{layerName});
             }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
-                feature_group.removeLayer(json_{layerName}JSON);
+                feature_group.removeLayer(layer_{layerName});
             }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
                          layerName=layerName)
     return scaleDependentLayer
@@ -37,13 +37,13 @@ def scaleDependentLabelScript(layer, layerName):
         min = scaleToZoom(pal.scaleMin)
         max = scaleToZoom(pal.scaleMax)
         scaleDependentLabel = """
-            if (map.hasLayer(json_%(layerName)sJSON)) {
+            if (map.hasLayer(layer_%(layerName)s)) {
                 if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
-                    json_%(layerName)sJSON.eachLayer(function (layer) {
+                    layer_%(layerName)s.eachLayer(function (layer) {
                         layer.showLabel();
                     });
                 } else {
-                    json_%(layerName)sJSON.eachLayer(function (layer) {
+                    layer_%(layerName)s.eachLayer(function (layer) {
                         layer.hideLabel();
                     });
                 }
@@ -207,7 +207,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
                 mouseout: function(e) {"""
         if highlight:
             popup += """
-                    layer.setStyle(doStyle"""
+                    layer.setStyle(style_"""
             popup += """{safeLayerName}(feature));
 """.format(safeLayerName=safeLayerName)
         if popupsOnHover:
@@ -231,9 +231,8 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 
 
 def svgScript(safeLayerName, symbolLayer, outputFolder,
-              rot, labeltext, zIndex):
+              rot, labeltext):
     slPath = symbolLayer.path()
-    zIndex = zIndex + 600
     shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
                                          os.path.basename(slPath)))
     svg = """
@@ -242,9 +241,7 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
             iconSize: [{size}, {size}], // size of the icon
         }});
 
-        map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
-        function doStyle{safeLayerName}(feature) {{
+        function style_{safeLayerName}(feature) {{
             return {{
                 pane: 'pane_{safeLayerName}',
                 icon: svg{safeLayerName},
@@ -252,66 +249,55 @@ def svgScript(safeLayerName, symbolLayer, outputFolder,
                 rotationOrigin: 'center center'
             }}
         }}
-        function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.marker(latlng, doStyle{safeLayerName}(feature)){labeltext}
+        function pointToLayer_{safeLayerName}(feature, latlng) {{
+            return L.marker(latlng, style_{safeLayerName}(feature)){labeltext}
         }}""".format(safeLayerName=safeLayerName,
                      svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8, zIndex=zIndex, rot=rot,
+                     size=symbolLayer.size() * 3.8, rot=rot,
                      labeltext=labeltext)
     return svg
 
 
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
+    try:
+        iconSize = (symbol.size() * 4) + 5
+    except:
+        iconSize = 16
     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                           QSize(16, 16))
+                                                           QSize(iconSize,
+                                                                 iconSize))
     safeLabel = re.sub('[\W_]+', '', catr.label()) + unicode(cnt)
     legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                  layerName + "_" + safeLabel + ".png"))
-    catLegend += """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="legend/"""
-    catLegend += layerName + "_" + safeLabel + """.png" /> """
-    catLegend += catr.label() + "<br />"
+    catLegend += """<tr><td style="text-align: center;"><img src="legend/"""
+    catLegend += layerName + "_" + safeLabel + """.png" /></td><td>"""
+    catLegend += catr.label() + "</td></tr>"
     return catLegend
 
 
-def pointStyleLabelScript(safeLayerName, radius, borderWidth, borderStyle,
-                          colorName, borderColor, borderOpacity, opacity,
-                          labeltext, zIndex):
-    radius = float(radius) * 2
-    zIndex = zIndex + 600
-    (dashArray, capString, joinString) = getLineStyle(borderStyle, borderWidth,
-                                                      0, 0)
-    pointStyleLabel = """
-        map.createPane('pane_{safeLayerName}');
-        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
-        function doStyle{safeLayerName}() {{
-            return {{
-                pane: 'pane_{safeLayerName}',
-                radius: {radius},
-                fillColor: '{colorName}',
-                color: '{borderColor}',
-                weight: {borderWidth},
-                opacity: {borderOpacity},
-                dashArray: '{dashArray}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
-                fillOpacity: {opacity}
-            }}
-        }}
-        function doPointToLayer{safeLayerName}(feature, latlng) {{
-            return L.circleMarker(latlng, doStyle{safeLayerName}()){labeltext}
-        }}""".format(safeLayerName=safeLayerName, zIndex=zIndex, radius=radius,
-                     colorName=colorName, borderColor=borderColor,
-                     borderWidth=borderWidth * 4,
-                     borderOpacity=borderOpacity if borderStyle != 0 else 0,
-                     dashArray=dashArray, capString=capString,
-                     joinString=joinString, opacity=opacity,
-                     labeltext=labeltext)
-    return pointStyleLabel
+def pointToLayerFunction(safeLayerName, labeltext, layer):
+    renderer = layer.rendererV2()
+    if isinstance(renderer, QgsRuleBasedRendererV2):
+        symbol = renderer.rootRule().children()[0].symbol()
+    else:
+        symbol = renderer.symbol()
+    if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayerV2):
+        markerType = "marker"
+    else:
+        markerType = "circleMarker"
+    pointToLayerFunction = """
+        function pointToLayer_{safeLayerName}(feature, latlng) {{
+            return L.{markerType}(latlng, style_{safeLayerName}""".format(
+                safeLayerName=safeLayerName,
+                markerType=markerType)
+    pointToLayerFunction += """(feature)){labeltext}
+        }}""".format(labeltext=labeltext)
+    return pointToLayerFunction
 
 
 def pointToLayerScript(safeLayerName):
     pointToLayer = """
-            pointToLayer: doPointToLayer""" + safeLayerName
+            pointToLayer: pointToLayer_""" + safeLayerName
     return pointToLayer
 
 
@@ -322,68 +308,30 @@ def wfsScript(scriptTag):
 
 
 def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
-    jsonPoint = pointStyleLabel
+    jsonPoint = """
+        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
+            pane: 'pane_{safeLayerName}',"""
     if usedFields != 0:
         jsonPoint += """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            pane: 'pane_{safeLayerName}',
-            onEachFeature: pop_{safeLayerName},{pointToLayer}
-            }});""".format(safeLayerName=safeLayerName,
-                           pointToLayer=pointToLayer)
-    else:
-        jsonPoint += """
-        var json_{safeLayerName}JSON = new L.geoJson(json_{safeLayerName}, {{
-            pane: 'pane_{safeLayerName}',
-            {pointToLayer}
-            }});""".format(safeLayerName=safeLayerName,
-                           pointToLayer=pointToLayer)
+            onEachFeature: pop_{safeLayerName},"""
+    jsonPoint += """
+    {pointToLayer}
+            }});"""
+    jsonPoint = jsonPoint.format(safeLayerName=safeLayerName,
+                                 pointToLayer=pointToLayer)
+    jsonPoint = pointStyleLabel + jsonPoint
     return jsonPoint
 
 
 def clusterScript(safeLayerName):
     cluster = """
-        var cluster_group"""
-    cluster += "{safeLayerName}JSON = ".format(safeLayerName=safeLayerName)
+        var cluster_"""
+    cluster += "{safeLayerName} = ".format(safeLayerName=safeLayerName)
     cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
-        cluster_group{safeLayerName}JSON""".format(safeLayerName=safeLayerName)
-    cluster += """.addLayer(json_{safeLayerName}JSON);
+        cluster_{safeLayerName}""".format(safeLayerName=safeLayerName)
+    cluster += """.addLayer(layer_{safeLayerName});
 """.format(safeLayerName=safeLayerName)
     return cluster
-
-
-def categorizedPointStylesScript(symbol, opacity, borderOpacity):
-    symbolLayer = symbol.symbolLayer(0)
-    try:
-        (dashArray, capString,
-         joinString) = getLineStyle(symbolLayer.outlineStyle(),
-                                    symbolLayer.outlineWidth(), 0, 0)
-        if symbolLayer.outlineStyle() == 0:
-            borderOpacity = 0
-        borderColor = symbolLayer.borderColor().name()
-        borderWidth = symbolLayer.outlineWidth() * 4
-    except:
-        dashArray = ""
-        capString = ""
-        joinString = ""
-        borderOpacity = 1
-        borderColor = ""
-        borderWidth = 0
-    styleValues = """
-                    radius: {radius},
-                    fillColor: '{fillColor}',
-                    color: '{color}',
-                    weight: {borderWidth},
-                    opacity: {borderOpacity},
-                    dashArray: '{dashArray}',
-                    fillOpacity: '{opacity}',
-                }};
-                break;""".format(radius=symbol.size() * 2,
-                                 fillColor=symbol.color().name(),
-                                 color=borderColor,
-                                 borderWidth=borderWidth,
-                                 borderOpacity=borderOpacity,
-                                 dashArray=dashArray, opacity=opacity)
-    return styleValues
 
 
 def simpleLineStyleScript(radius, colorName, penStyle, capString, joinString,
@@ -421,118 +369,22 @@ def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
     return polyStyle
 
 
-def nonPointStylePopupsScript(safeLayerName):
-    nonPointStylePopups = """
-\t\t\tstyle: doStyle{safeLayerName}""".format(safeLayerName=safeLayerName)
-    return nonPointStylePopups
-
-
-def nonPointStyleFunctionScript(safeLayerName, lineStyle):
-    nonPointStyleFunction = """
-        function doStyle{safeLayerName}(feature) {{{lineStyle}
-        }}""".format(safeLayerName=safeLayerName, lineStyle=lineStyle)
-    return nonPointStyleFunction
-
-
-def categoryScript(layerName, valueAttr):
-    category = """
-        function doStyle{layerName}(feature) {{
-\t\t\tswitch (feature.properties['{valueAttr}']) {{""".format(
-                layerName=layerName,
-                valueAttr=valueAttr)
-    return category
-
-
-def defaultCategoryScript():
-    defaultCategory = """
-                default:
-                    return {"""
-    return defaultCategory
-
-
-def eachCategoryScript(catValue):
-    if isinstance(catValue, basestring):
-        valQuote = "'"
-    else:
-        valQuote = ""
-    eachCategory = """
-                case """ + valQuote + unicode(catValue).replace("'", "\\'")
-    eachCategory += valQuote + """:
-                    return {"""
-    return eachCategory
-
-
-def endCategoryScript():
-    endCategory = """
-            }
-        }"""
-    return endCategory
-
-
-def categorizedPointWFSscript(layerName, labeltext):
-    categorizedPointWFS = """
-        function doPointToLayer{layerName}(feature, latlng) {{
-            return L.circleMarker(latlng, doStyle{layerName}""".format(
-        layerName=layerName)
-    categorizedPointWFS += """(feature)){labeltext}
-        }}""".format(labeltext=labeltext)
-    return categorizedPointWFS
-
-
-def categorizedPointJSONscript(safeLayerName, labeltext, usedFields, zIndex):
-    zIndex = zIndex + 600
+def pointJSONLayer(layer, sln, label, usedFields, markerType):
+    categorizedPointJSON = """
+        var layer_{sln} = new L.geoJson(json_{sln}, {{
+            pane: 'pane_{sln}',"""
     if usedFields != 0:
-        categorizedPointJSON = """
-        map.createPane('pane_{sln}');
-        map.getPane('pane_{sln}').style.zIndex = {zIndex};
-        var json_{sln}JSON = new L.geoJson(json_{sln}, {{
-            pane: 'pane_{sln}',
-            onEachFeature: pop_{sln},
+        categorizedPointJSON += """
+            onEachFeature: pop_{sln},"""
+    categorizedPointJSON += """
             pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName,
-                                                         zIndex=zIndex)
-        categorizedPointJSON += """doStyle{sln}(feature)){label}
+                return L.{markerType}(latlng, """
+    categorizedPointJSON += """style_{sln}(feature)){label}
             }}
-        }});""".format(sln=safeLayerName, label=labeltext)
-    else:
-        categorizedPointJSON = """
-        map.createPane('pane_{sln}');
-        map.getPane('pane_{sln}').style.zIndex = {zIndex}
-        var json_{sln}JSON = new L.geoJson(json_{sln}, {{
-            pane: 'pane_{sln}',
-            pointToLayer: function (feature, latlng) {{
-                return L.circleMarker(latlng, """.format(sln=safeLayerName,
-                                                         zIndex=zIndex)
-        categorizedPointJSON += """doStyle{safeLayerName}(feature)){labeltext}
-            }}
-        }});""".format(safeLayerName=safeLayerName, labeltext=labeltext)
+        }});"""
+    categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label,
+                                                       markerType=markerType)
     return categorizedPointJSON
-
-
-def categorizedLineStylesScript(symbol, opacity):
-    sl = symbol.symbolLayer(0)
-    (dashArray, capString,
-     joinString) = getLineStyle(sl.penStyle(), symbol.width(),
-                                sl.penCapStyle(), sl.penJoinStyle())
-    categorizedLineStyles = """
-                    color: '{color}',
-                    weight: '{weight}',
-                    dashArray: '{dashArray}',
-                    lineCap: '{capString}',
-                    lineJoin: '{joinString}',
-                    opacity: '{opacity}',
-                }};
-                break;
-""".format(color=symbol.color().name(), weight=symbol.width() * 4,
-           dashArray=dashArray, capString=capString, joinString=joinString,
-           opacity=opacity)
-    return categorizedLineStyles
-
-
-def categorizedNonPointStyleFunctionScript(layerName, popFuncs):
-    categorizedNonPointStyleFunction = """
-        style: doStyle{layerName}""".format(layerName=layerName)
-    return categorizedNonPointStyleFunction
 
 
 def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
@@ -571,12 +423,6 @@ def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
     return categorizedPolygonStyles
 
 
-def graduatedStyleScript(layerName):
-    graduatedStyle = """
-        function doStyle{layerName}(feature) {{""".format(layerName=layerName)
-    return graduatedStyle
-
-
 def rangeStartScript(valueAttr, r):
     rangeStart = """
         if (feature.properties['{valueAttr}'] >= {lowerValue} &&
@@ -584,28 +430,6 @@ def rangeStartScript(valueAttr, r):
 """.format(valueAttr=valueAttr, lowerValue=r.lowerValue(),
            upperValue=r.upperValue())
     return rangeStart
-
-
-def graduatedPointStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
-    sl = symbol.symbolLayer(0)
-    (dashArray, capString,
-     joinString) = getLineStyle(sl.outlineStyle(), sl.outlineWidth(), 0, 0)
-    graduatedPointStyles = rangeStartScript(valueAttr, r)
-    graduatedPointStyles += """
-            return {{
-                radius: {radius},
-                fillColor: '{fillColor}',
-                color: '{color}',
-                weight: {lineWeight},
-                fillOpacity: '{opacity}',
-                opacity: '{borderOpacity}',
-                dashArray: '{dashArray}'
-            }}
-        }}
-""".format(radius=symbol.size() * 2, fillColor=symbol.color().name(),
-           color=sl.borderColor().name(), lineWeight=sl.outlineWidth() * 4,
-           opacity=opacity, borderOpacity=borderOpacity, dashArray=dashArray)
-    return graduatedPointStyles
 
 
 def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
@@ -669,12 +493,6 @@ def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
                      joinString=joinString, fillColor=fillColor,
                      borderOpacity=borderOpacity, opacity=opacity)
     return graduatedPolygonStyles
-
-
-def endGraduatedStyleScript():
-    endGraduatedStyle = """
-        }"""
-    return endGraduatedStyle
 
 
 def wmsScript(i, safeLayerName):
@@ -765,10 +583,10 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
                 if (clustered and
                         i.geometryType() == QGis.Point):
                     new_layer = "'" + legends[safeLayerName] + "'"
-                    new_layer += ": cluster_group""" + safeLayerName + "JSON,"
+                    new_layer += ": cluster_""" + safeLayerName + ","
                 else:
                     new_layer = "'" + legends[safeLayerName] + "':"
-                    new_layer += " json_" + safeLayerName + "JSON,"
+                    new_layer += " layer_" + safeLayerName + ","
                 layersList += new_layer
             elif i.type() == QgsMapLayer.RasterLayer:
                 new_layer = '"' + rawLayerName + '"' + ": overlay_"

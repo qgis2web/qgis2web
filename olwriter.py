@@ -24,12 +24,12 @@ import shutil
 import traceback
 import xml.etree.ElementTree
 from qgis.core import *
-from utils import exportLayers, safeName, replaceInTemplate, is25d
+from utils import (exportLayers, safeName, replaceInTemplate,
+                   is25d, getRGBAColor, ALL_ATTRIBUTES)
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from olScriptStrings import *
-from utils import ALL_ATTRIBUTES
 from basemaps import basemapOL
 
 
@@ -839,11 +839,6 @@ var styleCache_%(name)s={}
 var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": safeName(layer.name()),
                      "style": style})
-
-
-def getRGBAColor(color, alpha):
-    r, g, b, _ = color.split(",")
-    return '"rgba(%s)"' % ",".join([r, g, b, unicode(alpha)])
 
 
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):

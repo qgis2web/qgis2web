@@ -44,7 +44,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     outputProjectFileName = os.path.join(outputProjectFileName,
                                          'qgis2web_' + unicode(time.time()))
     outputIndex = os.path.join(outputProjectFileName, 'index.html')
-    cluster_num = 1
 
     mapLibLocation = params["Data export"]["Mapping library location"]
     minify = params["Data export"]["Minify GeoJSON files"]
@@ -84,7 +83,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         rawLayerName = layer.name()
         safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
         lyrCount += 1
-        dataPath = os.path.join(dataStore, 'json_' + safeLayerName)
+        dataPath = os.path.join(dataStore, safeLayerName)
         tmpFileName = dataPath + '.json'
         layerFileName = dataPath + '.js'
         if layer.providerType() != 'WFS' or jsonEncode is True and layer:
@@ -143,20 +142,19 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     new_src += basemapText
     new_src += layerOrder
 
-    lyrCount = 0
     for count, layer in enumerate(layer_list):
         rawLayerName = layer.name()
-        safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
-        lyrCount += 1
+        safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
         if layer.type() == QgsMapLayer.VectorLayer:
             (new_src,
              legends,
-             wfsLayers) = writeVectorLayer(layer, safeLayerName, usedFields,
-                                           highlight, popupsOnHover, popup,
-                                           count, outputProjectFileName,
-                                           wfsLayers, cluster, cluster_num,
-                                           visible, json, legends, new_src,
-                                           canvas, lyrCount)
+             wfsLayers) = writeVectorLayer(layer, safeLayerName,
+                                           usedFields[count], highlight,
+                                           popupsOnHover, popup[count],
+                                           outputProjectFileName, wfsLayers,
+                                           cluster[count], visible[count],
+                                           json[count], legends, new_src,
+                                           canvas, count)
         elif layer.type() == QgsMapLayer.RasterLayer:
             if layer.dataProvider().name() == "wms":
                 new_obj = wmsScript(layer, safeLayerName)
