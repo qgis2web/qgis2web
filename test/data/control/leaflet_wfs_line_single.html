@@ -67,7 +67,7 @@
         map.getPane('pane_line0').style.zIndex = 601;
         var json_line0JSON;
         json_line0JSON = L.geoJson(null, {
-			style: doStyleline0,
+			style: style_line0,
             pane: 'pane_line0',
             onEachFeature: pop_line0
         });
@@ -75,7 +75,7 @@
         function getline0Json(geojson) {
             json_line0JSON.addData(geojson);
         };
-        function doStyleline0(feature) {
+        function style_line0(feature) {
             return {
                 weight: 1.04,
                 color: '#1acd3e',

@@ -64,7 +64,7 @@
             layer.bindPopup(popupContent);
         }
 
-        function doStylelakes0(feature) {
+        function style_lakes0(feature) {
 			switch (feature.properties['NAMES']) {
                 case 'Becharof Lake':
                     return {
@@ -281,7 +281,7 @@
         var json_lakes0JSON = new L.geoJson(json_lakes0, {
             pane: 'pane_lakes0',
             onEachFeature: pop_lakes0,
-            style: doStylelakes0
+            style: style_lakes0
         });
         bounds_group.addLayer(json_lakes0JSON);
         feature_group.addLayer(json_lakes0JSON);

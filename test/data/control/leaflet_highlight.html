@@ -77,7 +77,7 @@
         function pop_airports0(feature, layer) {
             layer.on({
                 mouseout: function(e) {
-                    layer.setStyle(doStyleairports0(feature));
+                    layer.setStyle(style_airports0(feature));
 
                 },
                 mouseover: highlightFeature,
@@ -88,7 +88,7 @@
 
         map.createPane('pane_airports0');
         map.getPane('pane_airports0').style.zIndex = 601;
-        function doStyleairports0() {
+        function style_airports0() {
             return {
                 pane: 'pane_airports0',
                 radius: 4.0,
@@ -103,7 +103,7 @@
             }
         }
         function doPointToLayerairports0(feature, latlng) {
-            return L.circleMarker(latlng, doStyleairports0())
+            return L.circleMarker(latlng, style_airports0())
         }
         var json_airports0JSON = new L.geoJson(json_airports0, {
             pane: 'pane_airports0',

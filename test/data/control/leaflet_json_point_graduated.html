@@ -64,7 +64,7 @@
             layer.bindPopup(popupContent);
         }
 
-        function doStyleairports0(feature) {
+        function style_airports0(feature) {
         if (feature.properties['ELEV'] >= 9.0 &&
                 feature.properties['ELEV'] <= 321.0) {
 
@@ -142,7 +142,7 @@
             pane: 'pane_airports0',
             onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, doStyleairports0(feature))
+                return L.circleMarker(latlng, style_airports0(feature))
             }
         });
         bounds_group.addLayer(json_airports0JSON);

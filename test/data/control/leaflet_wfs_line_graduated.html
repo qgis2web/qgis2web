@@ -63,7 +63,7 @@
             layer.bindPopup(popupContent);
         }
 
-        function doStyleline0(feature) {
+        function style_line0(feature) {
         if (feature.properties['linear_length_km'] >= 0.024067 &&
                 feature.properties['linear_length_km'] <= 0.873846) {
 
@@ -129,7 +129,7 @@
         map.getPane('pane_line0').style.zIndex = 601;
         var json_line0JSON;
         json_line0JSON = L.geoJson(null, {
-        style: doStyleline0,
+        style: style_line0,
             pane: 'pane_line0',
             onEachFeature: pop_line0
         });

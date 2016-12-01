@@ -64,7 +64,7 @@
             layer.bindPopup(popupContent);
         }
 
-        function doStylepipelines0(feature) {
+        function style_pipelines0(feature) {
 			switch (feature.properties['LOCDESC']) {
                 case 'Below Surface/Submerged/Underground':
                     return {
@@ -106,7 +106,7 @@
         var json_pipelines0JSON = new L.geoJson(json_pipelines0, {
             pane: 'pane_pipelines0',
             onEachFeature: pop_pipelines0,
-            style: doStylepipelines0
+            style: style_pipelines0
         });
         bounds_group.addLayer(json_pipelines0JSON);
         feature_group.addLayer(json_pipelines0JSON);

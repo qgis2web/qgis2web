@@ -65,7 +65,7 @@
 
         map.createPane('pane_point0');
         map.getPane('pane_point0').style.zIndex = 601;
-        function doStylepoint0() {
+        function style_point0() {
             return {
                 pane: 'pane_point0',
                 radius: 4.0,
@@ -80,7 +80,7 @@
             }
         }
         function doPointToLayerpoint0(feature, latlng) {
-            return L.circleMarker(latlng, doStylepoint0())
+            return L.circleMarker(latlng, style_point0())
         }
         var json_point0JSON;
         json_point0JSON = L.geoJson(null, {
