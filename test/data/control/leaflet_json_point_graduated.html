@@ -60,93 +60,109 @@
           });
         }
         function pop_airports0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
         function style_airports0(feature) {
-        if (feature.properties['ELEV'] >= 9.0 &&
-                feature.properties['ELEV'] <= 321.0) {
-
-            return {
+            if (feature.properties['ELEV'] >= 9.000000 && feature.properties['ELEV'] <= 321.000000 ) {
+                return {
+                pane: 'pane_airports0',
                 radius: 4.0,
-                fillColor: '#f7fbff',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
-                opacity: '1.0',
-                dashArray: ''
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,251,255,1.0)',
             }
-        }
-
-        if (feature.properties['ELEV'] >= 321.0 &&
-                feature.properties['ELEV'] <= 633.0) {
-
-            return {
+            }
+            if (feature.properties['ELEV'] >= 321.000000 && feature.properties['ELEV'] <= 633.000000 ) {
+                return {
+                pane: 'pane_airports0',
                 radius: 4.0,
-                fillColor: '#c7dcef',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
-                opacity: '1.0',
-                dashArray: ''
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(199,220,239,1.0)',
             }
-        }
-
-        if (feature.properties['ELEV'] >= 633.0 &&
-                feature.properties['ELEV'] <= 945.0) {
-
-            return {
+            }
+            if (feature.properties['ELEV'] >= 633.000000 && feature.properties['ELEV'] <= 945.000000 ) {
+                return {
+                pane: 'pane_airports0',
                 radius: 4.0,
-                fillColor: '#72b2d7',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
-                opacity: '1.0',
-                dashArray: ''
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,178,215,1.0)',
             }
-        }
-
-        if (feature.properties['ELEV'] >= 945.0 &&
-                feature.properties['ELEV'] <= 1257.0) {
-
-            return {
+            }
+            if (feature.properties['ELEV'] >= 945.000000 && feature.properties['ELEV'] <= 1257.000000 ) {
+                return {
+                pane: 'pane_airports0',
                 radius: 4.0,
-                fillColor: '#2878b8',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
-                opacity: '1.0',
-                dashArray: ''
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(40,120,184,1.0)',
             }
-        }
-
-        if (feature.properties['ELEV'] >= 1257.0 &&
-                feature.properties['ELEV'] <= 1569.0) {
-
-            return {
+            }
+            if (feature.properties['ELEV'] >= 1257.000000 && feature.properties['ELEV'] <= 1569.000000 ) {
+                return {
+                pane: 'pane_airports0',
                 radius: 4.0,
-                fillColor: '#08306b',
-                color: '#000000',
-                weight: 0.0,
-                fillOpacity: '1.0',
-                opacity: '1.0',
-                dashArray: ''
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(8,48,107,1.0)',
             }
-        }
-
+            }
         }
         map.createPane('pane_airports0');
-        map.getPane('pane_airports0').style.zIndex = 601;
-        var json_airports0JSON = new L.geoJson(json_airports0, {
+        map.getPane('pane_airports0').style.zIndex = 600;
+        var layer_airports0 = new L.geoJson(json_airports0, {
             pane: 'pane_airports0',
             onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, style_airports0(feature))
             }
         });
-        bounds_group.addLayer(json_airports0JSON);
-        feature_group.addLayer(json_airports0JSON);
+        bounds_group.addLayer(layer_airports0);
+        feature_group.addLayer(layer_airports0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();

@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_lakes0.js"></script>
+        <script src="data/lakes0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,231 +60,250 @@
           });
         }
         function pop_lakes0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
         function style_lakes0(feature) {
-			switch (feature.properties['NAMES']) {
+            switch(feature.properties['NAMES']) {
                 case 'Becharof Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#596dcc',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(89,109,204,1.0)',
+            }
+                    break;
                 case 'Dall Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#de6889',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(222,104,137,1.0)',
+            }
+                    break;
                 case 'Iliamna Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#48c844',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(72,200,68,1.0)',
+            }
+                    break;
                 case 'Kenai Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#4891d1',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(72,145,209,1.0)',
+            }
+                    break;
                 case 'Lake Clark':
                     return {
-                    weight: '1.04',
-                    fillColor: '#e44ee6',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(228,78,230,1.0)',
+            }
+                    break;
                 case 'Lake George':
                     return {
-                    weight: '1.04',
-                    fillColor: '#e8cd2f',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(232,205,47,1.0)',
+            }
+                    break;
                 case 'Lake Minchumina':
                     return {
-                    weight: '1.04',
-                    fillColor: '#e49289',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(228,146,137,1.0)',
+            }
+                    break;
                 case 'Lake Nerka':
                     return {
-                    weight: '1.04',
-                    fillColor: '#17f0b3',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(23,240,179,1.0)',
+            }
+                    break;
                 case 'Lower Ugashik Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#ca3e99',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(202,62,153,1.0)',
+            }
+                    break;
                 case 'Naknek Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#a93fef',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(169,63,239,1.0)',
+            }
+                    break;
                 case 'Nunavakpak Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#4cd2de',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(76,210,222,1.0)',
+            }
+                    break;
                 case 'Nuvakuk Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#826dcf',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(130,109,207,1.0)',
+            }
+                    break;
                 case 'Skilak Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#5acf83',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(90,207,131,1.0)',
+            }
+                    break;
                 case 'Teshekpuk Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#c0dc5a',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(192,220,90,1.0)',
+            }
+                    break;
                 case 'Tustumena Lake':
                     return {
-                    weight: '1.04',
-                    fillColor: '#8ed360',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
-                default:
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(142,211,96,1.0)',
+            }
+                    break;
+                case '':
                     return {
-                    weight: '1.04',
-                    fillColor: '#cb7f3d',
-                    color: '#000000',
-                    dashArray: '',
-                    lineCap: 'butt',
-                    lineJoin: 'miter',
-                    opacity: '1.0',
-                    fillOpacity: '1.0',
-                };
-                break;
-
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(203,127,61,1.0)',
+            }
+                    break;
             }
         }
         map.createPane('pane_lakes0');
-        map.getPane('pane_lakes0').style.zIndex = 601;
-        var json_lakes0JSON = new L.geoJson(json_lakes0, {
-            pane: 'pane_lakes0',
-            onEachFeature: pop_lakes0,
-            style: style_lakes0
-        });
-        bounds_group.addLayer(json_lakes0JSON);
-        feature_group.addLayer(json_lakes0JSON);
+        map.getPane('pane_lakes0').style.zIndex = 600;
+    var layer_lakes0 = new L.geoJson(json_lakes0, {
+        pane: 'pane_lakes0',
+        onEachFeature: pop_lakes0,
+        style: style_lakes0
+    });
+        bounds_group.addLayer(layer_lakes0);
+        feature_group.addLayer(layer_lakes0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();

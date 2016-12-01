@@ -60,80 +60,111 @@
           });
         }
         function pop_airports0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
         function style_airports0(feature) {
-			switch (feature.properties['USE']) {
+            switch(feature.properties['USE']) {
                 case 'Civilian/Public':
                     return {
-                    radius: 4.0,
-                    fillColor: '#de1ac1',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
+                pane: 'pane_airports0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,26,193,1.0)',
+            }
+                    break;
                 case 'Joint Military/Civilian':
                     return {
-                    radius: 4.0,
-                    fillColor: '#7075ce',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
+                pane: 'pane_airports0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(112,117,206,1.0)',
+            }
+                    break;
                 case 'Military':
                     return {
-                    radius: 4.0,
-                    fillColor: '#d7865d',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
+                pane: 'pane_airports0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,134,93,1.0)',
+            }
+                    break;
                 case 'Other':
                     return {
-                    radius: 4.0,
-                    fillColor: '#7ade29',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                default:
+                pane: 'pane_airports0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,222,41,1.0)',
+            }
+                    break;
+                case '':
                     return {
-                    radius: 4.0,
-                    fillColor: '#56dab9',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
+                pane: 'pane_airports0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(86,218,185,1.0)',
+            }
+                    break;
             }
         }
         map.createPane('pane_airports0');
-        map.getPane('pane_airports0').style.zIndex = 601;
-        var json_airports0JSON = new L.geoJson(json_airports0, {
+        map.getPane('pane_airports0').style.zIndex = 600;
+        var layer_airports0 = new L.geoJson(json_airports0, {
             pane: 'pane_airports0',
             onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, style_airports0(feature))
             }
         });
-        bounds_group.addLayer(json_airports0JSON);
-        feature_group.addLayer(json_airports0JSON);
+        bounds_group.addLayer(layer_airports0);
+        feature_group.addLayer(layer_airports0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();

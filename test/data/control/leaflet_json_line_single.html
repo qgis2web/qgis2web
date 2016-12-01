@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_pipelines0.js"></script>
+        <script src="data/pipelines0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,29 +60,43 @@
           });
         }
         function pop_pipelines0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['LOCDESC'] !== null ? Autolinker.link(String(feature.properties['LOCDESC'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['F_CODE'] !== null ? Autolinker.link(String(feature.properties['F_CODE'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['F_CODEDESC'] !== null ? Autolinker.link(String(feature.properties['F_CODEDESC'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LOCDESC'] !== null ? Autolinker.link(String(feature.properties['LOCDESC'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['F_CODE'] !== null ? Autolinker.link(String(feature.properties['F_CODE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['F_CODEDESC'] !== null ? Autolinker.link(String(feature.properties['F_CODEDESC'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
-        function style_pipelines0(feature) {
+        function style_pipelines0() {
             return {
-                weight: 1.04,
-                color: '#f24248',
+                pane: 'pane_pipelines0',
+                opacity: 1,
+                color: 'rgba(242,66,72,1.0)',
                 dashArray: '',
                 lineCap: 'square',
                 lineJoin: 'bevel',
-                opacity: 1.0
-            };
+                weight: 1.0,
+            }
         }
         map.createPane('pane_pipelines0');
-        map.getPane('pane_pipelines0').style.zIndex = 601;
-        var json_pipelines0JSON = new L.geoJson(json_pipelines0, {
-            pane: 'pane_pipelines0',
-            onEachFeature: pop_pipelines0,
-            style: style_pipelines0
-        });
-        bounds_group.addLayer(json_pipelines0JSON);
-        feature_group.addLayer(json_pipelines0JSON);
+        map.getPane('pane_pipelines0').style.zIndex = 600;
+    var layer_pipelines0 = new L.geoJson(json_pipelines0, {
+        pane: 'pane_pipelines0',
+        onEachFeature: pop_pipelines0,
+        style: style_pipelines0
+    });
+        bounds_group.addLayer(layer_pipelines0);
+        feature_group.addLayer(layer_pipelines0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();

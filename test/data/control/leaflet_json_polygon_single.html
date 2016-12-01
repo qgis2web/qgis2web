@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_lakes0.js"></script>
+        <script src="data/lakes0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,31 +60,51 @@
           });
         }
         function pop_lakes0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
-        function style_lakes0(feature) {
+        function style_lakes0() {
             return {
-                weight: 1.04,
-                color: '#000000',
-                fillColor: '#38ccce',
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                opacity: 1.0,
-                fillOpacity: 1.0
-            };
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(56,204,206,1.0)',
+            }
         }
         map.createPane('pane_lakes0');
-        map.getPane('pane_lakes0').style.zIndex = 601;
-        var json_lakes0JSON = new L.geoJson(json_lakes0, {
-            pane: 'pane_lakes0',
-            onEachFeature: pop_lakes0,
-            style: style_lakes0
-        });
-        bounds_group.addLayer(json_lakes0JSON);
-        feature_group.addLayer(json_lakes0JSON);
+        map.getPane('pane_lakes0').style.zIndex = 600;
+    var layer_lakes0 = new L.geoJson(json_lakes0, {
+        pane: 'pane_lakes0',
+        onEachFeature: pop_lakes0,
+        style: style_lakes0
+    });
+        bounds_group.addLayer(layer_lakes0);
+        feature_group.addLayer(layer_lakes0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();

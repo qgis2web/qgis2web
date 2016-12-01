@@ -30,7 +30,7 @@
     <body>
         <div id="map">
         </div>
-        <script src="data/json_lakes0.js"></script>
+        <script src="data/lakes0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,91 +60,105 @@
           });
         }
         function pop_lakes0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
         function style_lakes0(feature) {
-        if (feature.properties['AREA_MI'] >= 20.057 &&
-                feature.properties['AREA_MI'] <= 219.6906) {
-
-            return {
-                color: '#000000',
-                weight: '1.04',
+            if (feature.properties['AREA_MI'] >= 20.057000 && feature.properties['AREA_MI'] <= 219.690600 ) {
+                return {
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                fillColor: '#f7fbff',
-                opacity: '1.0',
-                fillOpacity: '1.0',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(247,251,255,1.0)',
             }
-        }
-        if (feature.properties['AREA_MI'] >= 219.6906 &&
-                feature.properties['AREA_MI'] <= 419.3242) {
-
-            return {
-                color: '#000000',
-                weight: '1.04',
+            }
+            if (feature.properties['AREA_MI'] >= 219.690600 && feature.properties['AREA_MI'] <= 419.324200 ) {
+                return {
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                fillColor: '#c7dcef',
-                opacity: '1.0',
-                fillOpacity: '1.0',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(199,220,239,1.0)',
             }
-        }
-        if (feature.properties['AREA_MI'] >= 419.3242 &&
-                feature.properties['AREA_MI'] <= 618.9578) {
-
-            return {
-                color: '#000000',
-                weight: '1.04',
+            }
+            if (feature.properties['AREA_MI'] >= 419.324200 && feature.properties['AREA_MI'] <= 618.957800 ) {
+                return {
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                fillColor: '#72b2d7',
-                opacity: '1.0',
-                fillOpacity: '1.0',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(114,178,215,1.0)',
             }
-        }
-        if (feature.properties['AREA_MI'] >= 618.9578 &&
-                feature.properties['AREA_MI'] <= 818.5914) {
-
-            return {
-                color: '#000000',
-                weight: '1.04',
+            }
+            if (feature.properties['AREA_MI'] >= 618.957800 && feature.properties['AREA_MI'] <= 818.591400 ) {
+                return {
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                fillColor: '#2878b8',
-                opacity: '1.0',
-                fillOpacity: '1.0',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(40,120,184,1.0)',
             }
-        }
-        if (feature.properties['AREA_MI'] >= 818.5914 &&
-                feature.properties['AREA_MI'] <= 1018.225) {
-
-            return {
-                color: '#000000',
-                weight: '1.04',
+            }
+            if (feature.properties['AREA_MI'] >= 818.591400 && feature.properties['AREA_MI'] <= 1018.225000 ) {
+                return {
+                pane: 'pane_lakes0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                fillColor: '#08306b',
-                opacity: '1.0',
-                fillOpacity: '1.0',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(8,48,107,1.0)',
             }
-        }
+            }
         }
         map.createPane('pane_lakes0');
-        map.getPane('pane_lakes0').style.zIndex = 601;
-        var json_lakes0JSON = new L.geoJson(json_lakes0, {
-            pane: 'pane_lakes0',
-            onEachFeature: pop_lakes0,
-            style: style_lakes0
-        });
-        bounds_group.addLayer(json_lakes0JSON);
-        feature_group.addLayer(json_lakes0JSON);
+        map.getPane('pane_lakes0').style.zIndex = 600;
+    var layer_lakes0 = new L.geoJson(json_lakes0, {
+        pane: 'pane_lakes0',
+        onEachFeature: pop_lakes0,
+        style: style_lakes0
+    });
+        bounds_group.addLayer(layer_lakes0);
+        feature_group.addLayer(layer_lakes0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();
