@@ -181,6 +181,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_PROJ4@": "",
               "@OL3_PROJDEF@": "",
               "@OL3_GEOCODINGLINKS@": "",
+              "@OL3_GEOCODINGJS@": "",
               "@OL3_LAYERSWITCHER@": "",
               "@OL3_LAYERS@": "",
               "@OL3_MEASURESTYLE@": ""}
