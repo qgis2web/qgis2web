@@ -584,9 +584,10 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set):
     new_obj += ".addData(geojson);"
     if cluster_set:
         new_obj += """
-                cluster_{layerName}.add""".format(layerName=layerName)
+            cluster_{layerName}.add""".format(layerName=layerName)
         new_obj += "Layer(layer_{layerName});".format(layerName=layerName)
     new_obj += """
+            setBounds();
         };"""
     return new_obj, scriptTag
 
