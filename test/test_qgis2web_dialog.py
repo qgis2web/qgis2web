@@ -119,7 +119,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         # Open the test file
@@ -321,7 +321,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         test_file = open(self.dialog.preview.url().toString().replace("file://",""))
@@ -518,7 +518,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         test_file = open(
