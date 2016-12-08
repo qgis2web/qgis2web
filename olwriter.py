@@ -1106,6 +1106,7 @@ def geocodeLinks(geocode):
     else:
         return ""
 
+
 def geocodeJS(geocode):
     if geocode:
         returnVal = """
@@ -1114,6 +1115,7 @@ def geocodeJS(geocode):
         return returnVal
     else:
         return ""
+
 
 def geocodeScript(geocode):
     if geocode:
