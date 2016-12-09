@@ -43,19 +43,19 @@
 </html>
 var size = 0;
 var ranges_lakes = [[20.057000, 219.690600, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(247,251,255,1.0)"})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(247,251,255,1.0)"})
     })]],
 [219.690600, 419.324200, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(199,220,239,1.0)"})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(199,220,239,1.0)"})
     })]],
 [419.324200, 618.957800, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(114,178,215,1.0)"})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(114,178,215,1.0)"})
     })]],
 [618.957800, 818.591400, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(40,120,184,1.0)"})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(40,120,184,1.0)"})
     })]],
 [818.591400, 1018.225000, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(8,48,107,1.0)"})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: "rgba(8,48,107,1.0)"})
     })]]];
 var styleCache_lakes={}
 var style_lakes = function(feature, resolution){
@@ -83,7 +83,7 @@ var style_lakes = function(feature, resolution){
               offsetX: 5,
               offsetY: 3,
               fill: new ol.style.Fill({
-                color: "rgba(0, 0, 0, 255)"
+                color: 'rgba(0, 0, 0, 255)'
               }),
             });
         styleCache_lakes[key] = new ol.style.Style({"text": text})
