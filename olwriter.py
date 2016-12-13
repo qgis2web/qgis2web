@@ -813,7 +813,7 @@ def exportStyles(layers, folder, clustered):
               offsetX: 5,
               offsetY: 3,
               fill: new ol.style.Fill({
-                color: "%(color)s"
+                color: '%(color)s'
               }),%(stroke)s
             });
         %(cache)s[key] = new ol.style.Style({"text": text})
