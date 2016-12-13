@@ -62,9 +62,9 @@ def writeOL(iface, layers, groups, popup, visible,
         <script src="./resources/ol.js"></script>"""
         else:
             cssAddress = """<link rel="stylesheet" href="http://"""
-            cssAddress += """openlayers.org/en/v3.18.2/css/ol.css" />"""
+            cssAddress += """openlayers.org/en/v3.20.0/css/ol.css" />"""
             jsAddress += """
-        <script src="http://openlayers.org/en/v3.18.2/"""
+        <script src="http://openlayers.org/en/v3.20.0/"""
             jsAddress += """build/ol.js"></script>"""
         layerSearch = settings["Appearance"]["Layer search"]
         if layerSearch != "None" and layerSearch != "":
