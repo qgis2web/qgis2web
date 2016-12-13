@@ -45,17 +45,17 @@ var size = 0;
 function categories_pipelines(feature, value) {
                 switch(value) {case "Below Surface/Submerged/Underground":
                     return [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(161,121,229,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        stroke: new ol.style.Stroke({color: 'rgba(161,121,229,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
     })];
                     break;
 case "On Ground Surface":
                     return [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(38,209,101,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        stroke: new ol.style.Stroke({color: 'rgba(38,209,101,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
     })];
                     break;
 case "":
                     return [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: "rgba(239,120,50,1.0)", lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        stroke: new ol.style.Stroke({color: 'rgba(239,120,50,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
     })];
                     break;}};
 var styleCache_pipelines={}
