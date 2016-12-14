@@ -513,7 +513,7 @@ def wmsScript(i, safeLayerName):
 
 
 def rasterScript(i, safeLayerName):
-    out_raster = 'data/' + 'json_' + safeLayerName + '.png'
+    out_raster = 'data/' + safeLayerName + '.png'
     pt2 = i.extent()
     crsSrc = i.crs()
     crsDest = QgsCoordinateReferenceSystem(4326)
