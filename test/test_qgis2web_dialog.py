@@ -1290,7 +1290,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
 
         # Set the 'Measure tool' combo
         self.dialog.paramsTreeOL.itemWidget(
@@ -1385,7 +1385,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
 
         # Check the 'Add address search' checkbox
         self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
@@ -1641,7 +1641,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
 
                 # Check the 'Match project CRS' checkbox
         self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
@@ -1821,7 +1821,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         # Open the test file
@@ -1988,7 +1988,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test65_OL3_cdn(self):
-        """Leaflet CDN"""
+        """OL3 CDN"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
@@ -2014,7 +2014,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
 
         # Set 'Mapping library location' combo to 'CDN'
         self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
@@ -2167,7 +2167,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2245,7 +2245,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2323,7 +2323,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2476,7 +2476,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
 
         self.dialog.leaflet.click()
 

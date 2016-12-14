@@ -10,13 +10,6 @@
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-        <script src="js/leaflet.js"></script>
-        <script src="js/leaflet-heat.js"></script>
-        <script src="js/leaflet.rotatedMarker.js"></script>
-        <script src="js/OSMBuildings-Leaflet.js"></script>
-        <script src="js/leaflet-hash.js"></script>
-        <script src="js/Autolinker.min.js"></script>
-        <script src="js/leaflet.markercluster.js"></script>
         <style>
         html, body, #map {
             width: 100%;
@@ -30,6 +23,13 @@
     <body>
         <div id="map">
         </div>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-heat.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
         <script src="data/airports0.js"></script>
         <script>
         L.ImageOverlay.include({
@@ -61,36 +61,51 @@
           });
         }
         function pop_airports0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fk_region'] !== null ? Autolinker.link(String(feature.properties['fk_region'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ELEV'] !== null ? Autolinker.link(String(feature.properties['ELEV'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
-        map.createPane('pane_airports0');
-        map.getPane('pane_airports0').style.zIndex = 601;
         function style_airports0() {
             return {
                 pane: 'pane_airports0',
                 radius: 4.0,
-                fillColor: '#279319',
-                color: '#000000',
-                weight: 0.0,
-                opacity: 1.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                fillOpacity: 1.0
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(39,147,25,1.0)',
             }
         }
-        function doPointToLayerairports0(feature, latlng) {
-            return L.circleMarker(latlng, style_airports0())
-        }
-        var json_airports0JSON = new L.geoJson(json_airports0, {
+        map.createPane('pane_airports0');
+        map.getPane('pane_airports0').style.zIndex = 600;
+        var layer_airports0 = new L.geoJson(json_airports0, {
             pane: 'pane_airports0',
             onEachFeature: pop_airports0,
-            pointToLayer: doPointToLayerairports0
-            });
-        bounds_group.addLayer(json_airports0JSON);
-        feature_group.addLayer(json_airports0JSON);
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, style_airports0(feature))
+            }
+        });
+        bounds_group.addLayer(layer_airports0);
+        feature_group.addLayer(layer_airports0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         setBounds();

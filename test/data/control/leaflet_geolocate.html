@@ -39,7 +39,7 @@
         });
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[46.0030309505,-172.413612494],[69.7609790579,-114.007765919]]);
+        })
         var hash = new L.Hash(map);
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
         L.control.locate().addTo(map);
@@ -47,6 +47,9 @@
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {
