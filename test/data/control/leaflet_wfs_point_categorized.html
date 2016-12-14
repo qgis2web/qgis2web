@@ -58,143 +58,176 @@
             ];
           });
         }
-        function pop_point0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['ref'] !== null ? Autolinker.link(String(feature.properties['ref'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['tpo_name'] !== null ? Autolinker.link(String(feature.properties['tpo_name'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['digitised'] !== null ? Autolinker.link(String(feature.properties['digitised'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['objtype'] !== null ? Autolinker.link(String(feature.properties['objtype'])) : '') + '</td></tr></table>';
+        function pop_DartmoorTPOPoints0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ref'] !== null ? Autolinker.link(String(feature.properties['ref'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tpo_name'] !== null ? Autolinker.link(String(feature.properties['tpo_name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['digitised'] !== null ? Autolinker.link(String(feature.properties['digitised'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['objtype'] !== null ? Autolinker.link(String(feature.properties['objtype'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
-        function doPointToLayerpoint0(feature, latlng) {
-            return L.circleMarker(latlng, style_point0(feature))
-        }
-        function style_point0(feature) {
-			switch (feature.properties['digitised']) {
-                case '                    ':
+        function style_DartmoorTPOPoints0(feature) {
+            switch(feature.properties['digitised']) {
+                case '':
                     return {
-                    radius: 4.0,
-                    fillColor: '#3395da',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS Land Line 2000   ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,112,168,1.0)',
+            }
+                    break;
+                case 'OS Land Line 2000':
                     return {
-                    radius: 4.0,
-                    fillColor: '#d1d361',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS Landline 1997    ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(104,215,116,1.0)',
+            }
+                    break;
+                case 'OS Landline 1997':
                     return {
-                    radius: 4.0,
-                    fillColor: '#c821a4',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS Landline 1998    ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,66,46,1.0)',
+            }
+                    break;
+                case 'OS Landline 1998':
                     return {
-                    radius: 4.0,
-                    fillColor: '#961de0',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS LandLine 1998    ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(14,129,216,1.0)',
+            }
+                    break;
+                case 'OS LandLine 1998':
                     return {
-                    radius: 4.0,
-                    fillColor: '#db8242',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS Landline 2002    ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(194,121,214,1.0)',
+            }
+                    break;
+                case 'OS Landline 2002':
                     return {
-                    radius: 4.0,
-                    fillColor: '#98e369',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS Landline 2004    ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(49,223,183,1.0)',
+            }
+                    break;
+                case 'OS Landline 2004':
                     return {
-                    radius: 4.0,
-                    fillColor: '#26e7c1',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS MasterMap 2005   ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(87,71,230,1.0)',
+            }
+                    break;
+                case 'OS MasterMap 2005':
                     return {
-                    radius: 4.0,
-                    fillColor: '#cb2745',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                case 'OS MasterMap 2006   ':
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,186,21,1.0)',
+            }
+                    break;
+                case 'OS MasterMap 2006':
                     return {
-                    radius: 4.0,
-                    fillColor: '#7473da',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
-                default:
-                    return {
-                    radius: 4.0,
-                    fillColor: '#37ce56',
-                    color: '#000000',
-                    weight: 0.0,
-                    opacity: 1.0,
-                    dashArray: '',
-                    fillOpacity: '1.0',
-                };
-                break;
+                pane: 'pane_DartmoorTPOPoints0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(172,213,117,1.0)',
+            }
+                    break;
             }
         }
-        var json_point0JSON;
-        json_point0JSON = L.geoJson(null, {
-            pane: 'pane_point0',
-            pointToLayer: doPointToLayerpoint0,
-            onEachFeature: pop_point0
+        map.createPane('pane_DartmoorTPOPoints0');
+        map.getPane('pane_DartmoorTPOPoints0').style.zIndex = 600;
+        function pointToLayer_DartmoorTPOPoints0(feature, latlng) {
+            return L.circleMarker(latlng, style_DartmoorTPOPoints0(feature))
+        }
+        var layer_DartmoorTPOPoints0 = L.geoJson(null, {
+            pane: 'pane_DartmoorTPOPoints0',
+            pointToLayer: pointToLayer_DartmoorTPOPoints0,
+            onEachFeature: pop_DartmoorTPOPoints0
         });
-        feature_group.addLayer(json_point0JSON);
-        function getpoint0Json(geojson) {
-            json_point0JSON.addData(geojson);
+        function getDartmoorTPOPoints0Json(geojson) {
+            layer_DartmoorTPOPoints0.addData(geojson);
+            setBounds();
         };
-        bounds_group.addLayer(json_point0JSON);
-        feature_group.addLayer(json_point0JSON);
+        bounds_group.addLayer(layer_DartmoorTPOPoints0);
+        feature_group.addLayer(layer_DartmoorTPOPoints0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         </script>
-        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:4326&BBOX=233720,53549,297567,96689&outputFormat=text%2Fjavascript&format_options=callback%3Agetpoint0Json'></script>
+        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetDartmoorTPOPoints0Json'></script>
     </body>
 </html>

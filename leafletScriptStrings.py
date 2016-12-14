@@ -275,12 +275,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     return catLegend
 
 
-def pointToLayerFunction(safeLayerName, labeltext, layer):
-    renderer = layer.rendererV2()
-    if isinstance(renderer, QgsRuleBasedRendererV2):
-        symbol = renderer.rootRule().children()[0].symbol()
-    else:
-        symbol = renderer.symbol()
+def pointToLayerFunction(safeLayerName, labeltext, symbol):
     if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayerV2):
         markerType = "marker"
     else:

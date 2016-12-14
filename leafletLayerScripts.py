@@ -459,7 +459,8 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                 usedFields, json, wfsLayers, markerType)
+                                 usedFields, json, wfsLayers, markerType,
+                                 renderer.symbol())
     else:
         new_obj, wfsLayers = nonPointLayer(layer, safeLayerName, usedFields,
                                            json, wfsLayers)
@@ -480,7 +481,8 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                 usedFields, json, wfsLayers, markerType)
+                                 usedFields, json, wfsLayers, markerType,
+                                 symbol)
     else:
         (new_obj,
          wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
@@ -502,7 +504,8 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
-                                 usedFields, json, wfsLayers, markerType)
+                                 usedFields, json, wfsLayers, markerType,
+                                 symbol)
     else:
         (new_obj,
          wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
@@ -512,9 +515,9 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
 
 
 def pointLayer(layer, safeLayerName, labeltext, cluster, usedFields, json,
-               wfsLayers, markerType):
+               wfsLayers, markerType, symbol):
     if layer.providerType() == 'WFS' and json is False:
-        p2lf = pointToLayerFunction(safeLayerName, labeltext, layer)
+        p2lf = pointToLayerFunction(safeLayerName, labeltext, symbol)
         (new_obj,
          scriptTag) = buildPointWFS(p2lf, safeLayerName, layer, cluster)
         wfsLayers += wfsScript(scriptTag)
