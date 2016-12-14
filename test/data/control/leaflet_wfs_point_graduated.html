@@ -58,7 +58,7 @@
             ];
           });
         }
-        function pop_DartmoorTPOPoints0(feature, layer) {
+        function pop_point0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['ref'] !== null ? Autolinker.link(String(feature.properties['ref'])) : '') + '</td>\
@@ -79,10 +79,10 @@
             layer.bindPopup(popupContent);
         }
 
-        function style_DartmoorTPOPoints0(feature) {
+        function style_point0(feature) {
             if (feature.properties['objtype'] >= 5.000000 && feature.properties['objtype'] <= 5.000000 ) {
                 return {
-                pane: 'pane_DartmoorTPOPoints0',
+                pane: 'pane_point0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -96,7 +96,7 @@
             }
             if (feature.properties['objtype'] >= 5.000000 && feature.properties['objtype'] <= 5.000000 ) {
                 return {
-                pane: 'pane_DartmoorTPOPoints0',
+                pane: 'pane_point0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -110,7 +110,7 @@
             }
             if (feature.properties['objtype'] >= 5.000000 && feature.properties['objtype'] <= 5.000000 ) {
                 return {
-                pane: 'pane_DartmoorTPOPoints0',
+                pane: 'pane_point0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -124,7 +124,7 @@
             }
             if (feature.properties['objtype'] >= 5.000000 && feature.properties['objtype'] <= 5.000000 ) {
                 return {
-                pane: 'pane_DartmoorTPOPoints0',
+                pane: 'pane_point0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -138,7 +138,7 @@
             }
             if (feature.properties['objtype'] >= 5.000000 && feature.properties['objtype'] <= 5.000000 ) {
                 return {
-                pane: 'pane_DartmoorTPOPoints0',
+                pane: 'pane_point0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -151,25 +151,25 @@
             }
             }
         }
-        map.createPane('pane_DartmoorTPOPoints0');
-        map.getPane('pane_DartmoorTPOPoints0').style.zIndex = 600;
-        function pointToLayer_DartmoorTPOPoints0(feature, latlng) {
-            return L.circleMarker(latlng, style_DartmoorTPOPoints0(feature))
+        map.createPane('pane_point0');
+        map.getPane('pane_point0').style.zIndex = 600;
+        function pointToLayer_point0(feature, latlng) {
+            return L.circleMarker(latlng, style_point0(feature))
         }
-        var layer_DartmoorTPOPoints0 = L.geoJson(null, {
-            pane: 'pane_DartmoorTPOPoints0',
-            pointToLayer: pointToLayer_DartmoorTPOPoints0,
-            onEachFeature: pop_DartmoorTPOPoints0
+        var layer_point0 = L.geoJson(null, {
+            pane: 'pane_point0',
+            pointToLayer: pointToLayer_point0,
+            onEachFeature: pop_point0
         });
-        function getDartmoorTPOPoints0Json(geojson) {
-            layer_DartmoorTPOPoints0.addData(geojson);
+        function getpoint0Json(geojson) {
+            layer_point0.addData(geojson);
             setBounds();
         };
-        bounds_group.addLayer(layer_DartmoorTPOPoints0);
-        feature_group.addLayer(layer_DartmoorTPOPoints0);
+        bounds_group.addLayer(layer_point0);
+        feature_group.addLayer(layer_point0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         </script>
-        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetDartmoorTPOPoints0Json'></script>
+        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetpoint0Json'></script>
     </body>
 </html>
