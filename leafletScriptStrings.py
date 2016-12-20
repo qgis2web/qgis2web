@@ -325,8 +325,8 @@ def pointJSONLayer(layer, sln, label, usedFields, markerType):
     return categorizedPointJSON
 
 
-def wmsScript(i, safeLayerName):
-    d = parse_qs(i.source())
+def wmsScript(layer, safeLayerName):
+    d = parse_qs(layer.source())
     wms_url = d['url'][0]
     wms_layer = d['layers'][0]
     wms_format = d['format'][0]
