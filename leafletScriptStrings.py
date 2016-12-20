@@ -290,32 +290,10 @@ def pointToLayerFunction(safeLayerName, labeltext, symbol):
     return pointToLayerFunction
 
 
-def pointToLayerScript(safeLayerName):
-    pointToLayer = """
-            pointToLayer: pointToLayer_""" + safeLayerName
-    return pointToLayer
-
-
 def wfsScript(scriptTag):
     wfs = """
         <script src='{scriptTag}'></script>""".format(scriptTag=scriptTag)
     return wfs
-
-
-def jsonPointScript(pointStyleLabel, safeLayerName, pointToLayer, usedFields):
-    jsonPoint = """
-        var layer_{safeLayerName} = new L.geoJson(json_{safeLayerName}, {{
-            pane: 'pane_{safeLayerName}',"""
-    if usedFields != 0:
-        jsonPoint += """
-            onEachFeature: pop_{safeLayerName},"""
-    jsonPoint += """
-    {pointToLayer}
-            }});"""
-    jsonPoint = jsonPoint.format(safeLayerName=safeLayerName,
-                                 pointToLayer=pointToLayer)
-    jsonPoint = pointStyleLabel + jsonPoint
-    return jsonPoint
 
 
 def clusterScript(safeLayerName):
@@ -327,41 +305,6 @@ def clusterScript(safeLayerName):
     cluster += """.addLayer(layer_{safeLayerName});
 """.format(safeLayerName=safeLayerName)
     return cluster
-
-
-def simpleLineStyleScript(radius, colorName, penStyle, capString, joinString,
-                          opacity):
-    lineStyle = """
-            return {{
-                weight: {radius},
-                color: '{colorName}',
-                dashArray: '{penStyle}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
-                opacity: {opacity}
-            }};""".format(radius=radius * 4, colorName=colorName,
-                          penStyle=penStyle, capString=capString,
-                          joinString=joinString, opacity=opacity)
-    return lineStyle
-
-
-def singlePolyStyleScript(radius, colorName, borderOpacity, fillColor,
-                          penStyle, capString, joinString, opacity):
-    polyStyle = """
-            return {{
-                weight: {radius},
-                color: '{colorName}',
-                fillColor: '{fillColor}',
-                dashArray: '{penStyle}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
-                opacity: {borderOpacity},
-                fillOpacity: {opacity}
-            }};""".format(radius=radius * 4, colorName=colorName,
-                          fillColor=fillColor, penStyle=penStyle,
-                          capString=capString, joinString=joinString,
-                          borderOpacity=borderOpacity, opacity=opacity)
-    return polyStyle
 
 
 def pointJSONLayer(layer, sln, label, usedFields, markerType):
@@ -380,114 +323,6 @@ def pointJSONLayer(layer, sln, label, usedFields, markerType):
     categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label,
                                                        markerType=markerType)
     return categorizedPointJSON
-
-
-def categorizedPolygonStylesScript(symbol, opacity, borderOpacity):
-    sl = symbol.symbolLayer(0)
-    try:
-        capStyle = sl.penCapStyle()
-        joinStyle = sl.penJoinStyle()
-    except:
-        capStyle = 0
-        joinStyle = 0
-    (dashArray, capString,
-     joinString) = getLineStyle(sl.borderStyle(), sl.borderWidth(), capStyle,
-                                joinStyle)
-    if sl.brushStyle() == 0:
-        fillColor = "none"
-    else:
-        fillColor = symbol.color().name()
-    if sl.borderStyle() == 0:
-        color = "none"
-    else:
-        color = sl.borderColor().name()
-    categorizedPolygonStyles = """
-                    weight: '{weight}',
-                    fillColor: '{fillColor}',
-                    color: '{color}',
-                    dashArray: '{dashArray}',
-                    lineCap: '{capString}',
-                    lineJoin: '{joinString}',
-                    opacity: '{borderOpacity}',
-                    fillOpacity: '{opacity}',
-                }};
-                break;
-""".format(weight=sl.borderWidth() * 4, fillColor=fillColor, color=color,
-           dashArray=dashArray, capString=capString, joinString=joinString,
-           borderOpacity=borderOpacity, opacity=opacity)
-    return categorizedPolygonStyles
-
-
-def rangeStartScript(valueAttr, r):
-    rangeStart = """
-        if (feature.properties['{valueAttr}'] >= {lowerValue} &&
-                feature.properties['{valueAttr}'] <= {upperValue}) {{
-""".format(valueAttr=valueAttr, lowerValue=r.lowerValue(),
-           upperValue=r.upperValue())
-    return rangeStart
-
-
-def graduatedLineStylesScript(valueAttr, r, symbol, opacity):
-    sl = symbol.symbolLayer(0)
-    (dashArray, capString,
-     joinString) = getLineStyle(sl.penStyle(), symbol.width(),
-                                sl.penCapStyle(), sl.penJoinStyle())
-    graduatedLineStyles = rangeStartScript(valueAttr, r)
-    graduatedLineStyles += """
-            return {{
-                color: '{color}',
-                weight: '{weight}',
-                dashArray: '{dashArray}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
-                opacity: '{opacity}',
-            }}
-        }}""".format(color=sl.color().name(),
-                     weight=symbol.width() * 4, dashArray=dashArray,
-                     capString=capString, joinString=joinString,
-                     opacity=opacity)
-    return graduatedLineStyles
-
-
-def graduatedPolygonStylesScript(valueAttr, r, symbol, opacity, borderOpacity):
-    sl = symbol.symbolLayer(0)
-    if sl.borderStyle() == 0:
-        weight = "0"
-        dashArray = "0"
-        capString = ""
-        joinString = ""
-    else:
-        try:
-            capStyle = sl.penCapStyle()
-            joinStyle = sl.penJoinStyle()
-        except:
-            capStyle = 0
-            joinStyle = 0
-        weight = sl.borderWidth() * 4
-        (dashArray, capString,
-         joinString) = getLineStyle(sl.borderStyle(), sl.borderWidth(),
-                                    capStyle, joinStyle)
-    if sl.brushStyle() == 0:
-        fillColor = "0"
-    else:
-        fillColor = symbol.color().name()
-    graduatedPolygonStyles = rangeStartScript(valueAttr, r)
-    graduatedPolygonStyles += """
-            return {{
-                color: '{color}',
-                weight: '{weight}',
-                dashArray: '{dashArray}',
-                lineCap: '{capString}',
-                lineJoin: '{joinString}',
-                fillColor: '{fillColor}',
-                opacity: '{borderOpacity}',
-                fillOpacity: '{opacity}',
-            }}
-        }}""".format(color=sl.borderColor().name(), weight=weight,
-                     dashArray=dashArray, capString=capString,
-                     joinString=joinString, fillColor=fillColor,
-                     borderOpacity=borderOpacity, opacity=opacity)
-    return graduatedPolygonStyles
 
 
 def wmsScript(i, safeLayerName):
