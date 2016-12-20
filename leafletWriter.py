@@ -108,7 +108,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     crsSrc = mapSettings.destinationCrs()
     crsAuthId = crsSrc.authid()
     crsProj4 = crsSrc.toProj4()
-    middle = openScript()
+    middle = """
+        <script>"""
     if highlight or popupsOnHover:
         selectionColor = mapSettings.selectionColor().name()
         middle += highlightScript(highlight, popupsOnHover, selectionColor)
@@ -137,10 +138,10 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         basemapText = ""
     else:
         basemapText = basemapsScript(basemapList, maxZoom)
-    layerOrder = layerOrderScript(extent, restrictToExtent)
+    extentCode = extentScript(extent, restrictToExtent)
     new_src += middle
     new_src += basemapText
-    new_src += layerOrder
+    new_src += extentCode
 
     for count, layer in enumerate(layer_list):
         rawLayerName = layer.name()

@@ -63,12 +63,6 @@ def scaleDependentScript(layers):
     return scaleDependent
 
 
-def openScript():
-    openScript = """
-        <script>"""
-    return openScript
-
-
 def highlightScript(highlight, popupsOnHover, highlightFill):
     highlightScript = """
         var highlightLayer;
@@ -164,7 +158,7 @@ def basemapsScript(basemapList, maxZoom):
     return basemaps
 
 
-def layerOrderScript(extent, restrictToExtent):
+def extentScript(extent, restrictToExtent):
     layerOrder = """
         function setBounds() {"""
     if extent == 'Fit to layers extent':
