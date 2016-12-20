@@ -465,39 +465,3 @@ def endHTMLscript(wfsLayers, layerSearch, labels):
     endHTML += """
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
-
-
-def getLineStyle(penType, lineWidth, penCap, penJoin):
-    if lineWidth > 1:
-        dash = lineWidth * 10
-        dot = lineWidth * 1
-        gap = lineWidth * 5
-    else:
-        dash = 10
-        dot = 1
-        gap = 5
-    if penType > 1:
-        if penType == 2:
-            penStyle = [dash, gap]
-        elif penType == 3:
-            penStyle = [dot, gap]
-        elif penType == 4:
-            penStyle = [dash, gap, dot, gap]
-        elif penType == 5:
-            penStyle = [dash, gap, dot, gap, dot, gap]
-        else:
-            penStyle = ""
-        penStyle = ','.join(map(str, penStyle))
-    else:
-        penStyle = ""
-    capString = "square"
-    if penCap == 0:
-        capString = "butt"
-    if penCap == 32:
-        capString = "round"
-    joinString = "bevel"
-    if penJoin == 0:
-        joinString = "miter"
-    if penJoin == 128:
-        joinString = "round"
-    return penStyle, capString, joinString
