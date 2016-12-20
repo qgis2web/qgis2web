@@ -342,10 +342,10 @@ def wmsScript(i, safeLayerName):
     return wms
 
 
-def rasterScript(i, safeLayerName):
+def rasterScript(layer, safeLayerName):
     out_raster = 'data/' + safeLayerName + '.png'
-    pt2 = i.extent()
-    crsSrc = i.crs()
+    pt2 = layer.extent()
+    crsSrc = layer.crs()
     crsDest = QgsCoordinateReferenceSystem(4326)
     xform = QgsCoordinateTransform(crsSrc, crsDest)
     pt3 = xform.transform(pt2)
