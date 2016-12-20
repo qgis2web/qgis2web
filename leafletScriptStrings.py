@@ -230,34 +230,6 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     return popup
 
 
-def svgScript(safeLayerName, symbolLayer, outputFolder,
-              rot, labeltext):
-    slPath = symbolLayer.path()
-    shutil.copyfile(slPath, os.path.join(outputFolder, "markers",
-                                         os.path.basename(slPath)))
-    svg = """
-        var svg{safeLayerName} = L.icon({{
-            iconUrl: 'markers/{svgPath}',
-            iconSize: [{size}, {size}], // size of the icon
-        }});
-
-        function style_{safeLayerName}(feature) {{
-            return {{
-                pane: 'pane_{safeLayerName}',
-                icon: svg{safeLayerName},
-                rotationAngle: {rot},
-                rotationOrigin: 'center center'
-            }}
-        }}
-        function pointToLayer_{safeLayerName}(feature, latlng) {{
-            return L.marker(latlng, style_{safeLayerName}(feature)){labeltext}
-        }}""".format(safeLayerName=safeLayerName,
-                     svgPath=os.path.basename(symbolLayer.path()),
-                     size=symbolLayer.size() * 3.8, rot=rot,
-                     labeltext=labeltext)
-    return svg
-
-
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     try:
         iconSize = (symbol.size() * 4) + 5
@@ -307,7 +279,7 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def pointJSONLayer(layer, sln, label, usedFields, markerType):
+def pointJSONLayer(sln, label, usedFields, markerType):
     categorizedPointJSON = """
         var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',"""

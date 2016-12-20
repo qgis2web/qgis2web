@@ -522,7 +522,7 @@ def pointLayer(layer, safeLayerName, labeltext, cluster, usedFields, json,
          scriptTag) = buildPointWFS(p2lf, safeLayerName, layer, cluster)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = pointJSONLayer(layer, safeLayerName, labeltext,
+        new_obj = pointJSONLayer(safeLayerName, labeltext,
                                  usedFields, markerType)
         if cluster:
             new_obj += clusterScript(safeLayerName)
