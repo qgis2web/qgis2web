@@ -30,7 +30,7 @@
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
-        <script src="data/json_lakes0.js"></script>
+        <script src="data/lakes0.js"></script>
         <script>
         L.ImageOverlay.include({
             getBounds: function () {
@@ -60,10 +60,37 @@
           });
         }
         function pop_lakes0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">cat</th>\
+                        <td>' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NAMES</th>\
+                        <td>' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AREA_MI</th>\
+                        <td>' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">xlabel</th>\
+                        <td>' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ylabel</th>\
+                        <td>' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">rotation</th>\
+                        <td>' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
+        map.createPane('pane_lakes0');
+        map.getPane('pane_lakes0').style.zIndex = 600;
         var osmb = new OSMBuildings(map).date(new Date());
         osmb.set(json_lakes0);
         raster_group.addTo(map);
