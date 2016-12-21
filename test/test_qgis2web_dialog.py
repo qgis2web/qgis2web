@@ -261,10 +261,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test14_Leaflet_wfs_poly_single(self):
         """Leaflet WFS polygon single"""
-        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
-                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
-                     ':27700')
+        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'polygon_single.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_polygon_single.html')
@@ -459,10 +458,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test20_Leaflet_wfs_poly_categorized(self):
         """Leaflet WFS polygon categorized"""
-        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
-                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
-                     ':27700')
+        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'wfs_polygon_categorized.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_polygon_categorized.html')
@@ -661,10 +659,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test26_Leaflet_wfs_poly_graduated(self):
         """Leaflet WFS polygon graduated"""
-        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
-                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG'
-                     ':27700')
+        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'wfs_polygon_graduated.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_polygon_graduated.html')
