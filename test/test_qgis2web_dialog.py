@@ -219,7 +219,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                1).setCurrentIndex(0)
         self.dialog.leaflet.click()
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
@@ -392,10 +392,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test18_Leaflet_wfs_line_categorized(self):
         """Leaflet WFS line categorized"""
-        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
-                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
-                     ':27700')
+        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'wfs_line_categorized.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_line_categorized.html')
@@ -594,10 +593,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test24_Leaflet_wfs_line_graduated(self):
         """Leaflet WFS line graduated"""
-        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
-                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
-                     ':27700')
+        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'wfs_line_graduated.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_line_graduated.html')
