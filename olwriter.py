@@ -395,7 +395,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     fieldImages = ""
     fieldLabels = ""
     for layer, labels in zip(layers, popup):
-        if layer.type() == layer.VectorLayer:
+        if layer.type() == layer.VectorLayer and not is25d(layer, canvas):
             fieldList = layer.pendingFields()
             aliasFields = ""
             imageFields = ""
