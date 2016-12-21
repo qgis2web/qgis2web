@@ -58,38 +58,68 @@
             ];
           });
         }
-        function pop_line0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['route_code'] !== null ? Autolinker.link(String(feature.properties['route_code'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['linear_length_km'] !== null ? Autolinker.link(String(feature.properties['linear_length_km'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['date_inspected'] !== null ? Autolinker.link(String(feature.properties['date_inspected'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['star_rating'] !== null ? Autolinker.link(String(feature.properties['star_rating'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['works_required'] !== null ? Autolinker.link(String(feature.properties['works_required'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['barriers'] !== null ? Autolinker.link(String(feature.properties['barriers'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['surface_type'] !== null ? Autolinker.link(String(feature.properties['surface_type'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['width'] !== null ? Autolinker.link(String(feature.properties['width'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['gradient'] !== null ? Autolinker.link(String(feature.properties['gradient'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['cross_slope'] !== null ? Autolinker.link(String(feature.properties['cross_slope'])) : '') + '</td></tr></table>';
+        function pop_centreline0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['objecttype'] !== null ? Autolinker.link(String(feature.properties['objecttype'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['navigable'] !== null ? Autolinker.link(String(feature.properties['navigable'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['responsibleparty'] !== null ? Autolinker.link(String(feature.properties['responsibleparty'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['broad'] !== null ? Autolinker.link(String(feature.properties['broad'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['from_'] !== null ? Autolinker.link(String(feature.properties['from_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['to_'] !== null ? Autolinker.link(String(feature.properties['to_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['reachid'] !== null ? Autolinker.link(String(feature.properties['reachid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['globalid'] !== null ? Autolinker.link(String(feature.properties['globalid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['route'] !== null ? Autolinker.link(String(feature.properties['route'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['shape_stlength__'] !== null ? Autolinker.link(String(feature.properties['shape_stlength__'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
-        map.createPane('pane_line0');
-        map.getPane('pane_line0').style.zIndex = 601;
-        var json_line0JSON;
-        json_line0JSON = L.geoJson(null, {
-			style: style_line0,
-            pane: 'pane_line0',
-            onEachFeature: pop_line0
-        });
-        feature_group.addLayer(json_line0JSON);
-        function getline0Json(geojson) {
-            json_line0JSON.addData(geojson);
-        };
-        function style_line0(feature) {
+        function style_centreline0() {
             return {
-                weight: 1.04,
-                color: '#1acd3e',
+                pane: 'pane_centreline0',
+                opacity: 1,
+                color: 'rgba(26,205,62,1.0)',
                 dashArray: '',
                 lineCap: 'square',
                 lineJoin: 'bevel',
-                opacity: 1.0
-            };
+                weight: 1.0,
+            }
         }
-        bounds_group.addLayer(json_line0JSON);
-        feature_group.addLayer(json_line0JSON);
+        map.createPane('pane_centreline0');
+        map.getPane('pane_centreline0').style.zIndex = 600;
+        var layer_centreline0 = L.geoJson(null, {
+            style: style_centreline0,
+            pane: 'pane_centreline0',
+            onEachFeature: pop_centreline0
+        });
+        function getcentreline0Json(geojson) {
+            layer_centreline0.addData(geojson);
+        };
+        bounds_group.addLayer(layer_centreline0);
+        feature_group.addLayer(layer_centreline0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetline0Json'></script>
+        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=broads_inspire:centreline&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetcentreline0Json'></script>
     </body>
 </html>

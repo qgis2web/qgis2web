@@ -197,10 +197,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test12_Leaflet_wfs_line_single(self):
         """Leaflet WFS line single"""
-        layer_url = ('http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE'
-                     '=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=yorkshire_dales:ydnpa_route_accessibility&SRSNAME=EPSG'
-                     ':27700')
+        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'line_single.qml')
         layer = load_wfs_layer(layer_url, 'line')
         layer.loadNamedStyle(layer_style)
@@ -220,7 +219,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+                1).setCurrentIndex(1)
         self.dialog.leaflet.click()
         test_file = open(
                 self.dialog.preview.url().toString().replace('file://', ''))
