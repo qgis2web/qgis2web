@@ -59,39 +59,51 @@
           });
         }
         function pop_polygon0(feature, layer) {
-            var popupContent = '<table><tr><td colspan="2">' + (feature.properties['desiguid'] !== null ? Autolinker.link(String(feature.properties['desiguid'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['areaname'] !== null ? Autolinker.link(String(feature.properties['areaname'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['statusdate'] !== null ? Autolinker.link(String(feature.properties['statusdate'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['parish'] !== null ? Autolinker.link(String(feature.properties['parish'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['district'] !== null ? Autolinker.link(String(feature.properties['district'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['source'] !== null ? Autolinker.link(String(feature.properties['source'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['created'] !== null ? Autolinker.link(String(feature.properties['created'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['amended'] !== null ? Autolinker.link(String(feature.properties['amended'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xgcreated'] !== null ? Autolinker.link(String(feature.properties['xgcreated'])) : '') + '</td></tr><tr><td colspan="2">' + (feature.properties['xgedited'] !== null ? Autolinker.link(String(feature.properties['xgedited'])) : '') + '</td></tr></table>';
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['details'] !== null ? Autolinker.link(String(feature.properties['details'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['date'] !== null ? Autolinker.link(String(feature.properties['date'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['web_page'] !== null ? Autolinker.link(String(feature.properties['web_page'])) : '') + '</td>\
+                    </tr>\
+                </table>';
             layer.bindPopup(popupContent);
         }
 
+        function style_polygon0() {
+            return {
+                pane: 'pane_polygon0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(193,125,222,1.0)',
+            }
+        }
         map.createPane('pane_polygon0');
-        map.getPane('pane_polygon0').style.zIndex = 601;
-        var json_polygon0JSON;
-        json_polygon0JSON = L.geoJson(null, {
-			style: doStylepolygon0,
+        map.getPane('pane_polygon0').style.zIndex = 600;
+        var layer_polygon0 = L.geoJson(null, {
+            style: style_polygon0,
             pane: 'pane_polygon0',
             onEachFeature: pop_polygon0
         });
-        feature_group.addLayer(json_polygon0JSON);
         function getpolygon0Json(geojson) {
-            json_polygon0JSON.addData(geojson);
+            layer_polygon0.addData(geojson);
         };
-        function doStylepolygon0(feature) {
-            return {
-                weight: 1.04,
-                color: '#000000',
-                fillColor: '#c17dde',
-                dashArray: '',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                opacity: 1.0,
-                fillOpacity: 1.0
-            };
-        }
-        bounds_group.addLayer(json_polygon0JSON);
-        feature_group.addLayer(json_polygon0JSON);
+        bounds_group.addLayer(layer_polygon0);
+        feature_group.addLayer(layer_polygon0);
         raster_group.addTo(map);
         feature_group.addTo(map);
         </script>
-        <script src='http://maps.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=yorkshire_dales:ydnpa_conservationareas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetpolygon0Json'></script>
+        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:con_areas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetpolygon0Json'></script>
     </body>
 </html>
