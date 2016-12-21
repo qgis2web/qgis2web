@@ -398,7 +398,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_style = test_data_path('style', 'wfs_line_categorized.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_line_categorized.html')
-        layer = load_wfs_layer(layer_url, 'line')
+        layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
         registry = QgsMapLayerRegistry.instance()
@@ -599,7 +599,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_style = test_data_path('style', 'wfs_line_graduated.qml')
         control_path = test_data_path(
                 'control', 'leaflet_wfs_line_graduated.html')
-        layer = load_wfs_layer(layer_url, 'line')
+        layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
         registry = QgsMapLayerRegistry.instance()
