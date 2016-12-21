@@ -201,7 +201,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'line_single.qml')
-        layer = load_wfs_layer(layer_url, 'line')
+        layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
         registry = QgsMapLayerRegistry.instance()
