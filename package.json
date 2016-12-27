@@ -1,0 +1,9 @@
+{
+  "name": "qgis2web ",
+  "description": "QGIS plugin to export your workspace as Leaflet or OpenLayers 3",
+  "author": "Tom Chadwin <tom.chadwin@nnpa.org.uk>",
+  "dependencies": {
+    "leaflet": "1.0.0",
+  },
+  "engine": "node >= 0.4.1"
+}
