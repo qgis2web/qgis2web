@@ -95,6 +95,7 @@
         }
         map.createPane('pane_point0');
         map.getPane('pane_point0').style.zIndex = 600;
+        map.getPane('pane_point0').style['mix-blend-mode'] = 'normal';
         function pointToLayer_point0(feature, latlng) {
             return L.circleMarker(latlng, style_point0(feature))
         }

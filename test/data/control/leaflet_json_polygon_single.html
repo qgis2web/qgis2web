@@ -98,6 +98,7 @@
         }
         map.createPane('pane_lakes0');
         map.getPane('pane_lakes0').style.zIndex = 600;
+        map.getPane('pane_lakes0').style['mix-blend-mode'] = 'normal';
     var layer_lakes0 = new L.geoJson(json_lakes0, {
         pane: 'pane_lakes0',
         onEachFeature: pop_lakes0,

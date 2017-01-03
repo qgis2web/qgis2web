@@ -156,6 +156,7 @@
         }
         map.createPane('pane_centreline0');
         map.getPane('pane_centreline0').style.zIndex = 600;
+        map.getPane('pane_centreline0').style['mix-blend-mode'] = 'normal';
         var layer_centreline0 = L.geoJson(null, {
             style: style_centreline0,
             pane: 'pane_centreline0',
