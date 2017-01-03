@@ -394,6 +394,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     fieldAliases = ""
     fieldImages = ""
     fieldLabels = ""
+    blend_mode = ""
     for layer, labels in zip(layers, popup):
         if layer.type() == layer.VectorLayer and not is25d(layer, canvas):
             fieldList = layer.pendingFields()
