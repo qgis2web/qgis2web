@@ -20,6 +20,7 @@ import time
 import re
 import shutil
 from PyQt4.QtCore import QDir, QVariant
+from PyQt4.QtGui import QPainter
 from qgis.core import *
 from qgis.utils import QGis
 import processing
@@ -40,6 +41,20 @@ TYPE_MAP = {
     QGis.WKBMultiLineString25D: 'MultiLineString',
     QGis.WKBMultiPolygon: 'MultiPolygon',
     QGis.WKBMultiPolygon25D: 'MultiPolygon'}
+    
+BLEND_MODES = {
+    QPainter.CompositionMode_SourceOver: 'normal',
+    QPainter.CompositionMode_Multiply: 'multiply',
+    QPainter.CompositionMode_Screen: 'screen',
+    QPainter.CompositionMode_Overlay: 'overlay',
+    QPainter.CompositionMode_Darken: 'darken',
+    QPainter.CompositionMode_Lighten: 'lighten',
+    QPainter.CompositionMode_ColorDodge: 'color-dodge',
+    QPainter.CompositionMode_ColorBurn: 'color-burn',
+    QPainter.CompositionMode_HardLight: 'hard-light',
+    QPainter.CompositionMode_SoftLight: 'soft-light',
+    QPainter.CompositionMode_Difference: 'difference',
+    QPainter.CompositionMode_Exclusion: 'exclusion'}
 
 
 def tempFolder():

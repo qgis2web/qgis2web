@@ -10,7 +10,7 @@ import processing
 from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import *
 from utils import (writeTmpLayer, getUsedFields, removeSpaces,
-                   is25d, exportImages, handleHiddenField)
+                   is25d, exportImages, handleHiddenField, BLEND_MODES)
 
 
 def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
@@ -248,8 +248,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     if is25d(layer, canvas):
         shadows = ""
         renderer = layer.rendererV2()
-        renderContext = QgsRenderContext.fromMapSettings(
-                canvas.mapSettings())
+        renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
         fields = layer.pendingFields()
         renderer.startRender(renderContext, fields)
         for feat in layer.getFeatures():
@@ -304,10 +303,14 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                      outputProjectFileName, labeltext, cluster,
                                      json, usedFields, legends, wfsLayers,
                                      markerType)
+    blend = BLEND_MODES[layer.blendMode()]
     new_obj = """{style}
         map.createPane('pane_{sln}');
-        map.getPane('pane_{sln}').style.zIndex = {zIndex};{new_obj}""".format(
-            style=style, sln=safeLayerName, zIndex=zIndex, new_obj=new_obj)
+        map.getPane('pane_{sln}').style.zIndex = {zIndex};
+        map.getPane('pane_{sln}').style['mix-blend-mode'] = '{blend}';
+        {new_obj}""".format(
+            style=style, sln=safeLayerName, zIndex=zIndex,
+            blend=blend, new_obj=new_obj)
     if usedFields != 0:
         new_src += new_pop.decode("utf-8")
     new_src += """
