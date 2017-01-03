@@ -25,7 +25,7 @@ import traceback
 import xml.etree.ElementTree
 from qgis.core import *
 from utils import (exportLayers, safeName, replaceInTemplate,
-                   is25d, getRGBAColor, ALL_ATTRIBUTES)
+                   is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -430,6 +430,11 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             imageFields = "lyr_%(name)s.set('fieldImages', " % (
                         {"name": safeName(layer.name())}) + imageFields
             fieldImages += imageFields
+            blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
+    evt.context.globalCompositeOperation = '%(blend)s';
+});""" % (
+                        {"name": safeName(layer.name()),
+                         "blend": BLEND_MODES[layer.blendMode()]})
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
@@ -442,6 +447,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
         f.write(fieldAliases)
         f.write(fieldImages)
         f.write(fieldLabels)
+        f.write(blend_mode)
     return osmb
 
 
