@@ -56,7 +56,7 @@ BLEND_MODES = {
     QPainter.CompositionMode_Difference: 'difference',
     QPainter.CompositionMode_Exclusion: 'exclusion'}
 
-PLACEMENT = ['', 'topleft', 'topright', 'bottomleft', 'bottomright']
+PLACEMENT = ['bottomleft', 'topleft', 'topright', 'bottomleft', 'bottomright']
 
 
 def tempFolder():
