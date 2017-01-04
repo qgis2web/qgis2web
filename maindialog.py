@@ -92,10 +92,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
         lines = open(readme, 'r').readlines()
-        lines[0] = "This is the new first line \n"
         with open(helpText, 'w') as helpFile:
             for ct, line in enumerate(lines):
-                if ct == 0 or ct > 3:
+                if ct > 3:
                     helpFile.write(line)
             helpFile.close()
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
