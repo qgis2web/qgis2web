@@ -56,6 +56,8 @@ BLEND_MODES = {
     QPainter.CompositionMode_Difference: 'difference',
     QPainter.CompositionMode_Exclusion: 'exclusion'}
 
+PLACEMENT = ['', 'topleft', 'topright', 'bottomleft', 'bottomright']
+
 
 def tempFolder():
     tempDir = os.path.join(unicode(QDir.tempPath()), 'qgis2web')

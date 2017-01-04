@@ -30,7 +30,7 @@ from basemaps import basemapLeaflet
 from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *
-from utils import ALL_ATTRIBUTES, removeSpaces
+from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 
 
 def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
@@ -180,7 +180,10 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
                                  legends)
     if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-        end = scaleBar()
+        placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
+        placement = PLACEMENT[placement]
+        print placement
+        end = scaleBar(placement)
     else:
         end = ''
     end += endHTMLscript(wfsLayers, layerSearch, labelVisibility)
