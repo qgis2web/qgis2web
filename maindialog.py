@@ -94,7 +94,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         lines = open(readme, 'r').readlines()
         with open(helpText, 'w') as helpFile:
             for ct, line in enumerate(lines):
-                if ct > 3:
+                if ct > 4:
                     helpFile.write(line)
             helpFile.close()
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
