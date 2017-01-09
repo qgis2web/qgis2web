@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/tomchadwin/qgis2web.svg?branch=master)](https://travis-ci.org/tomchadwin/qgis2web)
 [![Coverage Status](https://coveralls.io/repos/github/tomchadwin/qgis2web/badge.svg?branch=master)](https://coveralls.io/github/tomchadwin/qgis2web?branch=master)
 [![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="27GAYFKF4U5EE"><input type="image" src="https://img.shields.io/badge/donate%20to-QGIS-green.svg" border="0" name="submit" alt="Donate via PayPal.com"><input type="hidden" name="lc" value="us"></form>
+<a href="http://qgis.org/en/site/getinvolved/donations.html"><input type="image" src="https://img.shields.io/badge/donate%20to-QGIS-green.svg" border="0" name="submit" alt="Donate via PayPal.com"></a>
 <h1>qgis2web</h1>
 <p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap. No
 server-side software required.</p>
