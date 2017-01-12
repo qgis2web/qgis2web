@@ -84,10 +84,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.toggleOptions()
         if webkit_available:
             if self.previewOnStartup.checkState() == Qt.Checked:
-                print "checked"
                 self.previewMap()
-            else:
-                print "unchecked"
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
             self.buttonPreview.setDisabled(True)
