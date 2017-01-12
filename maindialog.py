@@ -58,8 +58,13 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.iface = iface
         mainDlg = self
-        self.resize(QSettings().value("qgis2web/size", QSize(994, 647)))
-        self.move(QSettings().value("qgis2web/pos", QPoint(50, 50)))
+        stgs = QSettings()
+        self.resize(stgs.value("qgis2web/size", QSize(994, 647)))
+        self.move(stgs.value("qgis2web/pos", QPoint(50, 50)))
+        if stgs.value("qgis2web/previewOnStartup", Qt.Checked) == Qt.Checked:
+            self.previewOnStartup.setCheckState(Qt.Checked)
+        else:
+            self.previewOnStartup.setCheckState(Qt.Unchecked)
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         if webkit_available:
             widget = QWebView()
@@ -78,7 +83,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.selectMapFormat()
         self.toggleOptions()
         if webkit_available:
-            self.previewMap()
+            if self.previewOnStartup.checkState() == Qt.Checked:
+                print "checked"
+                self.previewMap()
+            else:
+                print "unchecked"
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
             self.buttonPreview.setDisabled(True)
@@ -467,6 +476,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 layer.setCustomProperty("qgis2web/popup/" + attr, pop[attr])
         QSettings().setValue("qgis2web/size", self.size())
         QSettings().setValue("qgis2web/pos", self.pos())
+        QSettings().setValue("qgis2web/previewOnStartup",
+                             self.previewOnStartup.checkState())
         event.accept()
 
 

@@ -18,7 +18,7 @@
     <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
-   <item>
+   <item alignment="Qt::AlignTop">
     <widget class="QTabWidget" name="tabWidget">
      <property name="autoFillBackground">
       <bool>true</bool>
@@ -218,7 +218,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="verticalLayoutWidget_2">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="right_layout">
            <item>
             <widget class="QWebView" name="preview">
              <property name="sizePolicy">
@@ -239,6 +239,23 @@
            </item>
           </layout>
          </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Settings</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item alignment="Qt::AlignTop">
+        <widget class="QCheckBox" name="previewOnStartup">
+         <property name="text">
+          <string>Preview on startup</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
