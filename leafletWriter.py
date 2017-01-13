@@ -90,7 +90,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
             if layer.type() == QgsMapLayer.VectorLayer:
                 exportJSONLayer(layer, eachPopup, precision, tmpFileName,
                                 exp_crs, layerFileName, safeLayerName, minify,
-                                canvas)
+                                canvas, restrictToExtent, iface)
                 new_src += jsonScript(safeLayerName)
                 scaleDependentLayers = scaleDependentLabelScript(layer,
                                                                  safeLayerName)
@@ -129,6 +129,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
                             minZoom, bounds, locate)
     else:
+        bounds = ""
         if matchCRS and crsAuthId != 'EPSG:4326':
             middle += crsScript(crsAuthId, crsProj4)
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,

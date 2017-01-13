@@ -14,8 +14,9 @@ from utils import (writeTmpLayer, getUsedFields, removeSpaces,
 
 
 def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
-                    layerFileName, safeLayerName, minify, canvas):
-    cleanedLayer = writeTmpLayer(layer, eachPopup)
+                    layerFileName, safeLayerName, minify, canvas,
+                    restrictToExtent, iface):
+    cleanedLayer = writeTmpLayer(layer, eachPopup, restrictToExtent, iface)
     if is25d(layer, canvas):
         provider = cleanedLayer.dataProvider()
         provider.addAttributes([QgsField("height", QVariant.Double),

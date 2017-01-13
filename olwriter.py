@@ -40,6 +40,7 @@ def writeOL(iface, layers, groups, popup, visible,
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
+    restrictToExtent = settings["Scale/Zoom"]["Restrict to extent"]
     try:
         dst = os.path.join(folder, "resources")
         if not os.path.exists(dst):
@@ -50,7 +51,7 @@ def writeOL(iface, layers, groups, popup, visible,
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
         exportLayers(iface, layers, folder, precision,
-                     optimize, popup, json)
+                     optimize, popup, json, restrictToExtent)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered, iface)
@@ -155,8 +156,7 @@ def writeOL(iface, layers, groups, popup, visible,
                            settings["Scale/Zoom"]["Extent"] == "Canvas extent",
                            layers,
                            settings["Appearance"]["Match project CRS"])
-        mapextent = "extent: %s," % mapbounds if (
-            settings["Scale/Zoom"]["Restrict to extent"]) else ""
+        mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
         popupsOnHover = settings["Appearance"]["Show popups on hover"]
