@@ -381,8 +381,12 @@ def exportLayers(iface, layers, folder, precision, optimize,
 
 
 def is25d(layer, canvas):
+    if layer.geometryType() != QGis.Polygon:
+        return False
     try:
         renderer = layer.rendererV2()
+        if isinstance(renderer, Qgs25DRenderer):
+            return True
         symbols = []
         if isinstance(renderer, QgsCategorizedSymbolRendererV2):
             categories = renderer.categories()
