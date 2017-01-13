@@ -18,7 +18,7 @@ def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
                     restrictToExtent, iface, extent):
     cleanedLayer = writeTmpLayer(layer, eachPopup, restrictToExtent,
                                  iface, extent)
-    if is25d(layer, canvas):
+    if is25d(layer, canvas, restrictToExtent, extent):
         provider = cleanedLayer.dataProvider()
         provider.addAttributes([QgsField("height", QVariant.Double),
                                 QgsField("wallColor", QVariant.String),
@@ -237,7 +237,8 @@ def exportRasterLayer(layer, safeLayerName, dataPath):
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
-                     cluster, visible, json, legends, new_src, canvas, zIndex):
+                     cluster, visible, json, legends, new_src, canvas, zIndex,
+                     restrictToExtent, extent):
     zIndex = zIndex + 600
     markerFolder = os.path.join(outputProjectFileName, "markers")
     (new_pop, labeltext,
@@ -247,7 +248,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
     style = ""
 
-    if is25d(layer, canvas):
+    if is25d(layer, canvas, restrictToExtent, extent):
         shadows = ""
         renderer = layer.rendererV2()
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
@@ -317,7 +318,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         new_src += new_pop.decode("utf-8")
     new_src += """
 """ + new_obj
-    if is25d(layer, canvas):
+    if is25d(layer, canvas, restrictToExtent, extent):
         pass
     else:
         new_src += """
