@@ -381,7 +381,6 @@ def exportLayers(iface, layers, folder, precision, optimize,
 
 
 def is25d(layer, canvas, restrictToExtent, extent):
-    print 1
     if layer.geometryType() != QGis.Polygon:
         return False
     try:
@@ -412,7 +411,6 @@ def is25d(layer, canvas, restrictToExtent, extent):
                 symbol = renderer.symbolForFeature2(feature, renderContext)
                 symbols.append(symbol)
             renderer.stopRender(renderContext)
-        print 2
         for sym in symbols:
             sl1 = sym.symbolLayer(1)
             sl2 = sym.symbolLayer(2)
