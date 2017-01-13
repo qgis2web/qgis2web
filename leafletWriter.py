@@ -90,7 +90,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
             if layer.type() == QgsMapLayer.VectorLayer:
                 exportJSONLayer(layer, eachPopup, precision, tmpFileName,
                                 exp_crs, layerFileName, safeLayerName, minify,
-                                canvas, restrictToExtent, iface)
+                                canvas, restrictToExtent, iface, extent)
                 new_src += jsonScript(safeLayerName)
                 scaleDependentLayers = scaleDependentLabelScript(layer,
                                                                  safeLayerName)

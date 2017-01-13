@@ -50,8 +50,9 @@ def writeOL(iface, layers, groups, popup, visible,
         matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
+        extent = settings["Scale/Zoom"]["Extent"]
         exportLayers(iface, layers, folder, precision,
-                     optimize, popup, json, restrictToExtent)
+                     optimize, popup, json, restrictToExtent, extent)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered, iface)
@@ -153,7 +154,7 @@ def writeOL(iface, layers, groups, popup, visible,
         geolocateUser = settings["Appearance"]["Geolocate user"]
         backgroundColor += geolocateStyle(geolocateUser)
         mapbounds = bounds(iface,
-                           settings["Scale/Zoom"]["Extent"] == "Canvas extent",
+                           extent == "Canvas extent",
                            layers,
                            settings["Appearance"]["Match project CRS"])
         mapextent = "extent: %s," % mapbounds if restrictToExtent else ""

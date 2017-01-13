@@ -80,7 +80,7 @@ def getUsedFields(layer):
     return fields
 
 
-def writeTmpLayer(layer, popup, restrictToExtent, iface):
+def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
     fields = layer.pendingFields()
     usedFields = []
     for count, field in enumerate(fields):
@@ -125,7 +125,7 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface):
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()
     outFeat = QgsFeature()
-    if restrictToExtent:
+    if restrictToExtent and extent == "Canvas extent":
         request = QgsFeatureRequest(iface.mapCanvas().extent()) 
         request.setFlags(QgsFeatureRequest.ExactIntersect)
         features = layer.getFeatures(request)
@@ -142,7 +142,7 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface):
 
 
 def exportLayers(iface, layers, folder, precision, optimize,
-                 popupField, json, restrictToExtent):
+                 popupField, json, restrictToExtent, extent):
     canvas = iface.mapCanvas()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
@@ -150,7 +150,8 @@ def exportLayers(iface, layers, folder, precision, optimize,
     for layer, encode2json, popup in zip(layers, json, popupField):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
-            cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface)
+            cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
+                                       iface, extent)
             fields = layer.pendingFields()
             for field in fields:
                 exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
