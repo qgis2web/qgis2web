@@ -514,10 +514,16 @@ def bounds(iface, useCanvas, layers, matchCRS):
 def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
                       restrictToExtent, extent):
     if layer.hasScaleBasedVisibility():
-        minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
-        maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
-        minResolution = "\nminResolution:%s,\n" % unicode(minRes)
-        maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
+        if layer.minimumScale() != 0:
+            minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
+            minResolution = "\nminResolution:%s,\n" % unicode(minRes)
+        else:
+            minResolution = ""
+        if layer.maximumScale() != 0:
+            maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
+            maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
+        else:
+            maxResolution = ""
     else:
         minResolution = ""
         maxResolution = ""
