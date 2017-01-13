@@ -155,7 +155,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
             fields = layer.pendingFields()
             for field in fields:
                 exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
-            if is25d(layer, canvas):
+            if is25d(layer, canvas, restrictToExtent, extent):
                 provider = cleanLayer.dataProvider()
                 provider.addAttributes([QgsField("height", QVariant.Double),
                                         QgsField("wallColor", QVariant.String),
@@ -380,7 +380,8 @@ def exportLayers(iface, layers, folder, precision, optimize,
                     shutil.copyfile(piped_3857, out_raster)
 
 
-def is25d(layer, canvas):
+def is25d(layer, canvas, restrictToExtent, extent):
+    print 1
     if layer.geometryType() != QGis.Polygon:
         return False
     try:
@@ -400,13 +401,18 @@ def is25d(layer, canvas):
             renderContext = QgsRenderContext.fromMapSettings(
                     canvas.mapSettings())
             fields = layer.pendingFields()
-            features = layer.getFeatures()
+            if restrictToExtent and extent == "Canvas extent":
+                request = QgsFeatureRequest(iface.mapCanvas().extent()) 
+                request.setFlags(QgsFeatureRequest.ExactIntersect)
+                features = layer.getFeatures(request)
+            else:
+                features = layer.getFeatures()
             renderer.startRender(renderContext, fields)
             for feature in features:
                 symbol = renderer.symbolForFeature2(feature, renderContext)
                 symbols.append(symbol)
             renderer.stopRender(renderContext)
-
+        print 2
         for sym in symbols:
             sl1 = sym.symbolLayer(1)
             sl2 = sym.symbolLayer(2)

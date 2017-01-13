@@ -55,7 +55,8 @@ def writeOL(iface, layers, groups, popup, visible,
                      optimize, popup, json, restrictToExtent, extent)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
-                                    settings, json, matchCRS, clustered, iface)
+                                    settings, json, matchCRS, clustered, iface,
+                                    restrictToExtent, extent)
         jsAddress = '<script src="resources/polyfills.js"></script>'
         if settings["Data export"]["Mapping library location"] == "Local":
             cssAddress = """<link rel="stylesheet" """
@@ -281,7 +282,8 @@ def writeOL(iface, layers, groups, popup, visible,
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
-                         settings, json, matchCRS, clustered, iface):
+                         settings, json, matchCRS, clustered, iface,
+                         restrictToExtent, extent):
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
@@ -295,16 +297,20 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     layerVars = ""
     for layer, encode2json, cluster in zip(layers, json, clustered):
         try:
-            if is25d(layer, canvas):
+            if is25d(layer, canvas, restrictToExtent, extent):
                 pass
             else:
                 layerVars += "\n".join([layerToJavascript(iface, layer,
                                                           encode2json,
-                                                          matchCRS, cluster)])
+                                                          matchCRS, cluster,
+                                                          restrictToExtent,
+                                                          extent)])
         except:
             layerVars += "\n".join([layerToJavascript(iface, layer,
                                                       encode2json, matchCRS,
-                                                      cluster)])
+                                                      cluster,
+                                                      restrictToExtent,
+                                                      extent)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -323,7 +329,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for layer in layers:
         try:
             renderer = layer.rendererV2()
-            if is25d(layer, canvas):
+            if is25d(layer, canvas, restrictToExtent, extent):
                 shadows = ""
                 renderer = layer.rendererV2()
                 renderContext = QgsRenderContext.fromMapSettings(
@@ -368,7 +374,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     no_group_list = []
     for layer in layers:
         try:
-            if is25d(layer, canvas):
+            if is25d(layer, canvas, restrictToExtent, extent):
                 pass
             else:
                 if layer.id() in groupedLayers:
@@ -397,7 +403,9 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     fieldLabels = ""
     blend_mode = ""
     for layer, labels in zip(layers, popup):
-        if layer.type() == layer.VectorLayer and not is25d(layer, canvas):
+        if layer.type() == layer.VectorLayer and not is25d(layer, canvas,
+                                                           restrictToExtent,
+                                                           extent):
             fieldList = layer.pendingFields()
             aliasFields = ""
             imageFields = ""
@@ -503,7 +511,8 @@ def bounds(iface, useCanvas, layers, matchCRS):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
+def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
+                      restrictToExtent, extent):
     if layer.hasScaleBasedVisibility():
         minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
         maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
@@ -514,7 +523,9 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster):
         maxResolution = ""
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer and not is25d(layer,
-                                                       iface.mapCanvas()):
+                                                       iface.mapCanvas(),
+                                                       restrictToExtent,
+                                                       extent):
         renderer = layer.rendererV2()
         if cluster and (isinstance(renderer, QgsSingleSymbolRendererV2) or
                         isinstance(renderer, QgsRuleBasedRendererV2)):
