@@ -71,7 +71,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.preview = widget
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
-            self.preview.settings().setAttribute(		
+            self.preview.settings().setAttribute(
                 QWebSettings.DeveloperExtrasEnabled, True)
         else:
             widget = QTextBrowser()
