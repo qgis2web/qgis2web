@@ -562,41 +562,39 @@ def walkExpression(node):
         jsExp = "Condition"
     return jsExp
 
+ops = [
+    "||", "&&",
+    "==", "!=", "<=", ">=", "<", ">", "~",
+    "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
+    "+", "-", "*", "/", "//", "%", "^",
+    "||"
+]
 
+    
 def handle_binary(node):
     op = node.op()
-    ops = [
-        "or", "and",
-        "==", "!=", "<=", ">=", "<", ">", "~",
-        "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
-        "+", "-", "*", "/", "//", "%", "^",
-        "||"
-    ]
     left = node.opLeft()
     right = node.opRight()
     retLeft = walkExpression(left)
     retOp = ops[op]
     retRight = walkExpression(right)
-    return retLeft + retOp + retRight
+    return retLeft + " " + retOp + " " + retRight
 
 
 def handle_unary(node):
     op = node.op()
-    ops = [
-        "or", "and",
-        "==", "!=", "<=", ">=", "<", ">", "~",
-        "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
-        "+", "-", "*", "/", "//", "%", "^",
-        "||"
-    ]
     left = node.opLeft()
     retLeft = walkExpression(left)
     retOp = ops[op]
-    return retLeft + retOp
+    return retLeft + " " + retOp + " "
 
 
 def handle_literal(node):
-    return "'" + node.value() + "'"
+    val = node.value()
+    quote = ""
+    if isinstance(val, basestring):
+        quote = "'"
+    return quote + unicode(val) + quote + " "
 
 
 def handle_function(node):
@@ -611,4 +609,4 @@ def handle_function(node):
 
 
 def handle_columnRef(node):
-    return "feature.properties['%s']" % node.name()
+    return "feature.properties['%s'] " % node.name()
