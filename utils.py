@@ -570,7 +570,7 @@ ops = [
     "||"
 ]
 
-    
+
 def handle_binary(node):
     op = node.op()
     left = node.opLeft()
