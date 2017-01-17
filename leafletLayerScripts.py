@@ -458,10 +458,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
                 layer, labeltext, cluster, json, usedFields, legends,
                 markerType):
-    if isinstance(renderer, QgsRuleBasedRendererV2):
-        symbol = renderer.rootRule().children()[0].symbol()
-    else:
-        symbol = renderer.symbol()
+    symbol = renderer.symbol()
     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
                                                            QSize(16, 16))
     legendIcon.save(os.path.join(outputProjectFileName, "legend",

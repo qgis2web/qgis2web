@@ -533,8 +533,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
                                                        restrictToExtent,
                                                        extent):
         renderer = layer.rendererV2()
-        if cluster and (isinstance(renderer, QgsSingleSymbolRendererV2) or
-                        isinstance(renderer, QgsRuleBasedRendererV2)):
+        if (cluster and isinstance(renderer, QgsSingleSymbolRendererV2)):
             cluster = True
         else:
             cluster = False
@@ -713,12 +712,8 @@ def exportStyles(layers, folder, clustered):
         try:
             renderer = layer.rendererV2()
             layer_alpha = layer.layerTransparency()
-            if (isinstance(renderer, QgsSingleSymbolRendererV2) or
-                    isinstance(renderer, QgsRuleBasedRendererV2)):
-                if isinstance(renderer, QgsRuleBasedRendererV2):
-                    symbol = renderer.rootRule().children()[0].symbol()
-                else:
-                    symbol = renderer.symbol()
+            if isinstance(renderer, QgsSingleSymbolRendererV2):
+                symbol = renderer.symbol()
                 if cluster:
                     style = "var size = feature.get('features').length;\n"
                 else:
@@ -782,6 +777,8 @@ def exportStyles(layers, folder, clustered):
             style =  range[2];
         }
     }''' % {"v": varName}
+            elif isinstance(renderer, QgsRuleBasedRendererV2):
+                style = ""
             else:
                 style = ""
             if layer.customProperty("labeling/fontSize"):

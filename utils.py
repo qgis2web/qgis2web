@@ -567,7 +567,7 @@ ops = [
     "==", "!=", "<=", ">=", "<", ">", "~",
     "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
     "+", "-", "*", "/", "//", "%", "^",
-    "||"
+    "+"
 ]
 
 
@@ -578,7 +578,7 @@ def handle_binary(node):
     retLeft = walkExpression(left)
     retOp = ops[op]
     retRight = walkExpression(right)
-    return retLeft + " " + retOp + " " + retRight
+    return "(" + retLeft + " " + retOp + " " + retRight + ")"
 
 
 def handle_unary(node):
