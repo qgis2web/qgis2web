@@ -562,6 +562,7 @@ def walkExpression(node):
         jsExp = "Condition"
     return jsExp
 
+
 def handle_binary(node):
     op = node.op()
     ops = [

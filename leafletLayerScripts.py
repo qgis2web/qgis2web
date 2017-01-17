@@ -309,9 +309,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = ruleBasedLayer(layer, renderer, safeLayerName,
-                                       outputProjectFileName, usedFields,
-                                       legends, labeltext, cluster, json,
-                                       wfsLayers, markerType)
+                                     outputProjectFileName, usedFields,
+                                     legends, labeltext, cluster, json,
+                                     wfsLayers, markerType)
     blend = BLEND_MODES[layer.blendMode()]
     new_obj = """{style}
         map.createPane('pane_{sln}');
