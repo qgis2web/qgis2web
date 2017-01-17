@@ -9,8 +9,8 @@ from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import *
-from utils import (writeTmpLayer, getUsedFields, removeSpaces,
-                   is25d, exportImages, handleHiddenField, BLEND_MODES)
+from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
+                   is25d, handleHiddenField, BLEND_MODES)
 
 
 def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
@@ -284,8 +284,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         (new_obj, legends,
          wfsLayers) = heatmapLayer(layer, safeLayerName, renderer, legends,
                                    wfsLayers)
-    elif (isinstance(renderer, QgsSingleSymbolRendererV2) or
-            isinstance(renderer, QgsRuleBasedRendererV2)):
+    elif isinstance(renderer, QgsSingleSymbolRendererV2):
         (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
@@ -306,6 +305,13 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                      outputProjectFileName, labeltext, cluster,
                                      json, usedFields, legends, wfsLayers,
                                      markerType)
+    elif isinstance(renderer, QgsRuleBasedRendererV2):
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
+        (new_obj, legends,
+         wfsLayers) = ruleBasedLayer(layer, renderer, safeLayerName,
+                                       outputProjectFileName, usedFields,
+                                       legends, labeltext, cluster, json,
+                                       wfsLayers, markerType)
     blend = BLEND_MODES[layer.blendMode()]
     new_obj = """{style}
         map.createPane('pane_{sln}');
@@ -503,6 +509,31 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
     for cnt, r in enumerate(renderer.ranges()):
+        symbol = r.symbol()
+        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
+                               catLegend, cnt)
+    catLegend += "</table>"
+    if layer.geometryType() == QGis.Point:
+        (new_obj,
+         wfsLayers) = pointLayer(layer, safeLayerName, labeltext, cluster,
+                                 usedFields, json, wfsLayers, markerType,
+                                 symbol)
+    else:
+        (new_obj,
+         wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
+                                    wfsLayers)
+    legends[safeLayerName] = catLegend
+    return new_obj, legends, wfsLayers
+
+
+def ruleBasedLayer(layer, renderer, safeLayerName, outputProjectFileName,
+                   usedFields, legends, labeltext, cluster, json, wfsLayers,
+                   markerType):
+    catLegend = layer.name() + "<br />"
+    catLegend += "<table>"
+    root_rule = renderer.rootRule()
+    rules = root_rule.children()
+    for cnt, r in enumerate(rules):
         symbol = r.symbol()
         catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
                                catLegend, cnt)

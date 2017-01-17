@@ -543,3 +543,71 @@ def handleHiddenField(layer, field):
 def getRGBAColor(color, alpha):
     r, g, b, _ = color.split(",")
     return "'rgba(%s)'" % ",".join([r, g, b, unicode(alpha)])
+
+
+def walkExpression(node):
+    if node.nodeType() == QgsExpression.ntBinaryOperator:
+        jsExp = handle_binary(node)
+    elif node.nodeType() == QgsExpression.ntUnaryOperator:
+        jsExp = handle_unary(node)
+    elif node.nodeType() == QgsExpression.ntInOperator:
+        jsExp = "In"
+    elif node.nodeType() == QgsExpression.ntFunction:
+        jsExp = handle_function(node)
+    elif node.nodeType() == QgsExpression.ntLiteral:
+        jsExp = handle_literal(node)
+    elif node.nodeType() == QgsExpression.ntColumnRef:
+        jsExp = handle_columnRef(node)
+    elif node.nodeType() == QgsExpression.ntCondition:
+        jsExp = "Condition"
+    return jsExp
+
+def handle_binary(node):
+    op = node.op()
+    ops = [
+        "or", "and",
+        "==", "!=", "<=", ">=", "<", ">", "~",
+        "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
+        "+", "-", "*", "/", "//", "%", "^",
+        "||"
+    ]
+    left = node.opLeft()
+    right = node.opRight()
+    retLeft = walkExpression(left)
+    retOp = ops[op]
+    retRight = walkExpression(right)
+    return retLeft + retOp + retRight
+
+
+def handle_unary(node):
+    op = node.op()
+    ops = [
+        "or", "and",
+        "==", "!=", "<=", ">=", "<", ">", "~",
+        "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
+        "+", "-", "*", "/", "//", "%", "^",
+        "||"
+    ]
+    left = node.opLeft()
+    retLeft = walkExpression(left)
+    retOp = ops[op]
+    return retLeft + retOp
+
+
+def handle_literal(node):
+    return "'" + node.value() + "'"
+
+
+def handle_function(node):
+    fnIndex = node.fnIndex()
+    func = QgsExpression.Functions()[fnIndex]
+    args = node.args().list()
+    print(func.name())
+    retVal = ""
+    for arg in args:
+        retVal += walkExpression(arg)
+    return retVal
+
+
+def handle_columnRef(node):
+    return "feature.properties['%s']" % node.name()

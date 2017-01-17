@@ -5,7 +5,7 @@ from math import floor
 import xml.etree.ElementTree
 from qgis.core import *
 # from qgis.utils import QGis
-from utils import getRGBAColor, handleHiddenField
+from utils import getRGBAColor, handleHiddenField, walkExpression
 
 
 def getLayerStyle(layer, sln, markerFolder):
@@ -13,12 +13,8 @@ def getLayerStyle(layer, sln, markerFolder):
     renderer = layer.rendererV2()
     layer_alpha = layer.layerTransparency()
     style = ""
-    if (isinstance(renderer, QgsSingleSymbolRendererV2) or
-            isinstance(renderer, QgsRuleBasedRendererV2)):
-        if isinstance(renderer, QgsRuleBasedRendererV2):
-            symbol = renderer.rootRule().children()[0].symbol()
-        else:
-            symbol = renderer.symbol()
+    if isinstance(renderer, QgsSingleSymbolRendererV2):
+        symbol = renderer.symbol()
         (styleCode, markerType) = getSymbolAsStyle(symbol, markerFolder,
                                                    layer_alpha, sln)
         style = """
@@ -57,6 +53,35 @@ def getLayerStyle(layer, sln, markerFolder):
             style = style % {"a": classAttr, "l": ran.lowerValue(),
                              "u": ran.upperValue(),
                              "s": styleCode}
+        style += """
+        }"""
+    elif isinstance(renderer, QgsRuleBasedRendererV2):
+        style = """
+        function style_%s(feature) {""" % (sln)
+        root_rule = renderer.rootRule()
+        rules = root_rule.children()
+        elseif = "if ("
+        for rule in rules:
+            (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
+                                                       markerFolder,
+                                                       layer_alpha, sln)
+            # style += """
+            # if (feature.properties['%(a)s'] >= %(l)f """
+            # style += """&& feature.properties['%(a)s'] <= %(u)f ) {
+            #     return %(s)s
+            # }"""
+            # style = style % {"a": classAttr, "l": ran.lowerValue(),
+            #                  "u": ran.upperValue(),
+            #                  "s": styleCode}
+            if not rule.isElse():
+                style += elseif
+                style += walkExpression(rule.filter().rootNode())
+                style += ") {return %s}" % styleCode
+            else:
+                style += " else {"
+                style += "return " + styleCode
+                style += "}"
+            elseif = " else if ("
         style += """
         }"""
     else:
