@@ -65,14 +65,6 @@ def getLayerStyle(layer, sln, markerFolder):
             (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
-            # style += """
-            # if (feature.properties['%(a)s'] >= %(l)f """
-            # style += """&& feature.properties['%(a)s'] <= %(u)f ) {
-            #     return %(s)s
-            # }"""
-            # style = style % {"a": classAttr, "l": ran.lowerValue(),
-            #                  "u": ran.upperValue(),
-            #                  "s": styleCode}
             if not rule.isElse():
                 style += elseif
                 style += walkExpression(rule.filter().rootNode())
