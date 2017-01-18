@@ -604,7 +604,7 @@ def handle_unary(node, mapLib):
     operand = node.operand()
     retOp = unary_ops[op]
     retOperand = walkExpression(operand, mapLib)
-    return "%s %s " retOp, retOperand
+    return "%s %s " % retOp, retOperand
 
 
 def handle_in(node, mapLib):
