@@ -193,8 +193,10 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         end = ''
     end += endHTMLscript(wfsLayers, layerSearch, labelVisibility)
     new_src += end
-    writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                   matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                   new_src, template)
-    QApplication.restoreOverrideCursor()
+    try:
+        writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
+                       matchCRS, layerSearch, canvas, mapLibLocation, locate,
+                       new_src, template)
+    finally:
+        QApplication.restoreOverrideCursor()
     return outputIndex
