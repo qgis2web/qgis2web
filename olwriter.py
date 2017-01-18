@@ -24,7 +24,7 @@ import shutil
 import traceback
 import xml.etree.ElementTree
 from qgis.core import *
-from utils import (exportLayers, safeName, replaceInTemplate,
+from utils import (exportLayers, safeName, replaceInTemplate, walkExpression,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
 from qgis.utils import iface
 from PyQt4.QtCore import *
@@ -778,7 +778,29 @@ def exportStyles(layers, folder, clustered):
         }
     }''' % {"v": varName}
             elif isinstance(renderer, QgsRuleBasedRendererV2):
-                style = ""
+                defs += """function rules_%s(feature, value) {""" % (
+                    safeName(layer.name()))
+                elseif = "if ("
+                elseClause = ""
+                for rule in renderer.rootRule().children():
+                    symbol = rule.symbol()
+                    styleCode = getSymbolAsStyle(symbol, stylesFolder,
+                                                 layer_alpha)
+                    if not rule.isElse():
+                        defs += elseif
+                        defs += walkExpression(rule.filter().rootNode(),
+                                               "OL3")
+                        defs += ") {return %s}" % styleCode
+                        elseif = " else if ("
+                    else:
+                        elseClause += " else {"
+                        elseClause += "return " + styleCode
+                        elseClause += "}"
+                defs += elseClause
+                defs += "};"
+                value = ("var value = '';")
+                style = ('''var style = rules_%s(feature, value)''' %
+                         (safeName(layer.name())))
             else:
                 style = ""
             if layer.customProperty("labeling/fontSize"):

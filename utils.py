@@ -545,19 +545,19 @@ def getRGBAColor(color, alpha):
     return "'rgba(%s)'" % ",".join([r, g, b, unicode(alpha)])
 
 
-def walkExpression(node):
+def walkExpression(node, mapLib):
     if node.nodeType() == QgsExpression.ntBinaryOperator:
-        jsExp = handle_binary(node)
+        jsExp = handle_binary(node, mapLib)
     elif node.nodeType() == QgsExpression.ntUnaryOperator:
-        jsExp = handle_unary(node)
+        jsExp = handle_unary(node, mapLib)
     elif node.nodeType() == QgsExpression.ntInOperator:
         jsExp = "In"
     elif node.nodeType() == QgsExpression.ntFunction:
-        jsExp = handle_function(node)
+        jsExp = handle_function(node, mapLib)
     elif node.nodeType() == QgsExpression.ntLiteral:
         jsExp = handle_literal(node)
     elif node.nodeType() == QgsExpression.ntColumnRef:
-        jsExp = handle_columnRef(node)
+        jsExp = handle_columnRef(node, mapLib)
     elif node.nodeType() == QgsExpression.ntCondition:
         jsExp = "Condition"
     return jsExp
@@ -573,21 +573,21 @@ binary_ops = [
 unary_ops = ["!", "-"]
 
 
-def handle_binary(node):
+def handle_binary(node, mapLib):
     op = node.op()
     left = node.opLeft()
     right = node.opRight()
-    retLeft = walkExpression(left)
+    retLeft = walkExpression(left, mapLib)
     retOp = binary_ops[op]
-    retRight = walkExpression(right)
+    retRight = walkExpression(right, mapLib)
     return "(" + retLeft + " " + retOp + " " + retRight + ")"
 
 
-def handle_unary(node):
+def handle_unary(node, mapLib):
     op = node.op()
     operand = node.operand()
     retOp = unary_ops[op]
-    retOperand = walkExpression(operand)
+    retOperand = walkExpression(operand, mapLib)
     return retOp + " " + retOperand + " "
 
 
@@ -599,16 +599,19 @@ def handle_literal(node):
     return quote + unicode(val) + quote + " "
 
 
-def handle_function(node):
+def handle_function(node, mapLib):
     fnIndex = node.fnIndex()
     func = QgsExpression.Functions()[fnIndex]
     args = node.args().list()
     print(func.name())
     retVal = ""
     for arg in args:
-        retVal += walkExpression(arg)
+        retVal += walkExpression(arg, mapLib)
     return retVal
 
 
-def handle_columnRef(node):
-    return "feature.properties['%s'] " % node.name()
+def handle_columnRef(node, mapLib):
+    if mapLib == "Leaflet":
+        return "feature.properties['%s'] " % node.name()
+    else:
+        return "feature.get('%s') " % node.name()

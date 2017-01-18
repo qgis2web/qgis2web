@@ -68,7 +68,7 @@ def getLayerStyle(layer, sln, markerFolder):
                                                        layer_alpha, sln)
             if not rule.isElse():
                 style += elseif
-                style += walkExpression(rule.filter().rootNode())
+                style += walkExpression(rule.filter().rootNode(), "Leaflet")
                 style += ") {return %s}" % styleCode
                 elseif = " else if ("
             else:
