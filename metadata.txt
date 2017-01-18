@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/01/18 2.1.0 Leaflet scalebar placement, new settings tab, only export viewport features with 'Restrict to extent', increase is25d() performance, handle min/maxScale=0, fix preview, fix dev tools, rule-based renderer, update README, "donate to QGIS button" on Github
+changelog=2017/01/18 2.1.0 Leaflet scalebar placement, new settings tab, disable preview on startup option, only export viewport features with 'Restrict to extent', increase is25d() performance, handle min/maxScale=0, fix preview, fix dev tools, rule-based renderer, update README, "donate to QGIS button" on Github
     2017/01/04 2.0.0 Layer blending modes, help tab error
     2016/12/22 2.0.0-beta1 Leaflet refactor, new test WFS layers, Leaflet unicode category legend icons, Leaflet legend icon sizes, Leaflet categorized/graduated SVGs, W3C compliance (thanks, @garprogram!), add Stamen terrain background basemap, handle QGIS WFS typo fix, update Proj4 for Leaflet1.0, disable preview if QtWebkit unavailable (thanks, @mbernasocchi!), Leaflet style into own file, add ISSUE_TEMPLATE, correct README, correct CONTRIBUTING, upgrade to Leaflet 1.0.2, upgrade to OL 3.20.1, delete unused files
     2016/10/05 1.19.0 Leaflet SVG zIndex, OL3 WMS, Leaflet WFS visibility, remove redundant Leaflet layer control, OL3 safeName(), reset default Leaflet tooltip style, crash on plugin reload
