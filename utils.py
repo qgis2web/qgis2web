@@ -25,6 +25,7 @@ from qgis.core import *
 from qgis.utils import QGis
 import processing
 import tempfile
+import json
 
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
@@ -551,7 +552,7 @@ def walkExpression(node, mapLib):
     elif node.nodeType() == QgsExpression.ntUnaryOperator:
         jsExp = handle_unary(node, mapLib)
     elif node.nodeType() == QgsExpression.ntInOperator:
-        jsExp = "In"
+        jsExp = handle_in(node, mapLib)
     elif node.nodeType() == QgsExpression.ntFunction:
         jsExp = handle_function(node, mapLib)
     elif node.nodeType() == QgsExpression.ntLiteral:
@@ -589,6 +590,14 @@ def handle_unary(node, mapLib):
     retOp = unary_ops[op]
     retOperand = walkExpression(operand, mapLib)
     return retOp + " " + retOperand + " "
+
+
+def handle_in(node, mapLib):
+    operand = node.node()
+    retOperand = walkExpression(operand, mapLib)
+    list = node.list().dump()
+    retList = json.dumps(list)
+    return retList + ".indexOf(" + retOperand + ") > -1 "
 
 
 def handle_literal(node):
