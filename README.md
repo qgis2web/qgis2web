@@ -51,7 +51,6 @@ only possible in <em>either</em> OpenLayers 3 <em>or</em> Leaflet. qgis2web
 tries its best to produce a publish-ready map, but you can always manually edit
 the output code to achieve what qgis2web cannot.</p>
 <ul>
-    <li>no rule-based rendering</li>
     <li>SVG point markers sometimes do not appear in the preview
         pane, but work when the map is exported</li>
     <li>OpenLayers 3 address search does not appear in the preview
@@ -59,7 +58,6 @@ the output code to achieve what qgis2web cannot.</p>
     <li>Leaflet maps only use each symbol's first symbol layer</li>
     <li>in OL3 maps, only single rendered points cluster, not categorized
         or graduated</li>
-    <li>rasters are exported unstyled</li>
     <li>line style (dashed/dotted) does not appear in OL3 preview, but works in
         export</li>
     <li>Leaflet cannot label lines and polygons, only points</li>
