@@ -560,13 +560,13 @@ def walkExpression(node, mapLib):
     elif node.nodeType() == QgsExpression.ntColumnRef:
         jsExp = handle_columnRef(node, mapLib)
     elif node.nodeType() == QgsExpression.ntCondition:
-        jsExp = "Condition"
+        jsExp = ""
     return jsExp
 
 binary_ops = [
     "||", "&&",
     "==", "!=", "<=", ">=", "<", ">", "~",
-    "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
+    "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "===", "!==",
     "+", "-", "*", "/", "//", "%", "^",
     "+"
 ]
@@ -595,6 +595,10 @@ def handle_binary(node, mapLib):
         return "(%s.toLowerCase().indexOf(%s.toLowerCase()) == -1)" % (
             retLeft[:-1],
             re.sub("[_%]", "", retRight))
+    elif retOp == "~":
+        return "/%s/.test(%s)" % (retRight[1:-2], retLeft[:-1])
+    elif retOp == "//":
+        return "(Math.floor(%s %s %s))" % retLeft, retOp, retRight
     else:
         return "(%s %s %s)" % retLeft, retOp, retRight
 
@@ -620,7 +624,7 @@ def handle_literal(node):
     quote = ""
     if isinstance(val, basestring):
         quote = "'"
-    return "%s%s%s " % quote, unicode(val), quote
+    return "%s%s%s " % (quote, unicode(val), quote)
 
 
 def handle_function(node, mapLib):
