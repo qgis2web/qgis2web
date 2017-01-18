@@ -581,7 +581,11 @@ def handle_binary(node, mapLib):
     retLeft = walkExpression(left, mapLib)
     retOp = binary_ops[op]
     retRight = walkExpression(right, mapLib)
-    return "(" + retLeft + " " + retOp + " " + retRight + ")"
+    if retOp == "LIKE":
+        return "(%s.indexOf(%s) > -1)" % (retLeft[:-1],
+                                          re.sub("[_%]", "", retRight))
+    else:
+        return "(" + retLeft + " " + retOp + " " + retRight + ")"
 
 
 def handle_unary(node, mapLib):
