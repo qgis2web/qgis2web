@@ -586,7 +586,7 @@ def handle_binary(node, mapLib):
                                           re.sub("[_%]", "", retRight))
     elif retOp == "NOT LIKE":
         return "(%s.indexOf(%s) == -1)" % (retLeft[:-1],
-                                          re.sub("[_%]", "", retRight))
+                                           re.sub("[_%]", "", retRight))
     elif retOp == "ILIKE":
         return "(%s.toLowerCase().indexOf(%s.toLowerCase()) > -1)" % (
             retLeft[:-1],
@@ -604,7 +604,7 @@ def handle_unary(node, mapLib):
     operand = node.operand()
     retOp = unary_ops[op]
     retOperand = walkExpression(operand, mapLib)
-    return retOp + " " + retOperand + " "
+    return "%s %s " retOp, retOperand
 
 
 def handle_in(node, mapLib):
@@ -612,7 +612,7 @@ def handle_in(node, mapLib):
     retOperand = walkExpression(operand, mapLib)
     list = node.list().dump()
     retList = json.dumps(list)
-    return retList + ".indexOf(" + retOperand + ") > -1 "
+    return "%s.indexOf(%s) > -1 " % retList, retOperand
 
 
 def handle_literal(node):
@@ -620,7 +620,7 @@ def handle_literal(node):
     quote = ""
     if isinstance(val, basestring):
         quote = "'"
-    return quote + unicode(val) + quote + " "
+    return "%s%s%s " % quote, unicode(val), quote
 
 
 def handle_function(node, mapLib):
