@@ -562,7 +562,7 @@ def walkExpression(node):
         jsExp = "Condition"
     return jsExp
 
-ops = [
+binary_ops = [
     "||", "&&",
     "==", "!=", "<=", ">=", "<", ">", "~",
     "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
@@ -570,23 +570,25 @@ ops = [
     "+"
 ]
 
+unary_ops = ["!", "-"]
+
 
 def handle_binary(node):
     op = node.op()
     left = node.opLeft()
     right = node.opRight()
     retLeft = walkExpression(left)
-    retOp = ops[op]
+    retOp = binary_ops[op]
     retRight = walkExpression(right)
     return "(" + retLeft + " " + retOp + " " + retRight + ")"
 
 
 def handle_unary(node):
     op = node.op()
-    left = node.opLeft()
-    retLeft = walkExpression(left)
-    retOp = ops[op]
-    return retLeft + " " + retOp + " "
+    operand = node.operand()
+    retOp = unary_ops[op]
+    retOperand = walkExpression(operand)
+    return retOp + " " + retOperand + " "
 
 
 def handle_literal(node):

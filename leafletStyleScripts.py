@@ -61,6 +61,7 @@ def getLayerStyle(layer, sln, markerFolder):
         root_rule = renderer.rootRule()
         rules = root_rule.children()
         elseif = "if ("
+        elseClause = ""
         for rule in rules:
             (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
                                                        markerFolder,
@@ -69,11 +70,12 @@ def getLayerStyle(layer, sln, markerFolder):
                 style += elseif
                 style += walkExpression(rule.filter().rootNode())
                 style += ") {return %s}" % styleCode
+                elseif = " else if ("
             else:
-                style += " else {"
-                style += "return " + styleCode
-                style += "}"
-            elseif = " else if ("
+                elseClause += " else {"
+                elseClause += "return " + styleCode
+                elseClause += "}"
+        style += elseClause
         style += """
         }"""
     else:
