@@ -584,8 +584,19 @@ def handle_binary(node, mapLib):
     if retOp == "LIKE":
         return "(%s.indexOf(%s) > -1)" % (retLeft[:-1],
                                           re.sub("[_%]", "", retRight))
+    elif retOp == "NOT LIKE":
+        return "(%s.indexOf(%s) == -1)" % (retLeft[:-1],
+                                          re.sub("[_%]", "", retRight))
+    elif retOp == "ILIKE":
+        return "(%s.toLowerCase().indexOf(%s.toLowerCase()) > -1)" % (
+            retLeft[:-1],
+            re.sub("[_%]", "", retRight))
+    elif retOp == "NOT ILIKE":
+        return "(%s.toLowerCase().indexOf(%s.toLowerCase()) == -1)" % (
+            retLeft[:-1],
+            re.sub("[_%]", "", retRight))
     else:
-        return "(" + retLeft + " " + retOp + " " + retRight + ")"
+        return "(%s %s %s)" % retLeft, retOp, retRight
 
 
 def handle_unary(node, mapLib):
@@ -616,7 +627,7 @@ def handle_function(node, mapLib):
     fnIndex = node.fnIndex()
     func = QgsExpression.Functions()[fnIndex]
     args = node.args().list()
-    print(func.name())
+    retVal += (func.name())
     retVal = ""
     for arg in args:
         retVal += walkExpression(arg, mapLib)
