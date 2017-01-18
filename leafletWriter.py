@@ -23,6 +23,8 @@
 
 from qgis.core import *
 import qgis.utils
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QApplication, QCursor
 import os
 import time
 import re
@@ -35,6 +37,7 @@ from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 
 def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                  json, params, popup):
+    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     legends = {}
     canvas = iface.mapCanvas()
     project = QgsProject.instance()
@@ -193,4 +196,5 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
                    new_src, template)
+    QApplication.restoreOverrideCursor()
     return outputIndex
