@@ -631,11 +631,11 @@ def handle_function(node, mapLib):
     fnIndex = node.fnIndex()
     func = QgsExpression.Functions()[fnIndex]
     args = node.args().list()
-    retVal += (func.name())
-    retVal = ""
+    retFunc = (func.name())
+    retArgs = ""
     for arg in args:
-        retVal += walkExpression(arg, mapLib)
-    return retVal
+        retArgs += walkExpression(arg, mapLib)
+    return "%s(%s)" % retFunc, retArgs
 
 
 def handle_columnRef(node, mapLib):
