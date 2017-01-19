@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.8
 description=Export to an OpenLayers 3/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers3 or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=2.1.0
+version=2.2.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/01/18 2.1.0 Leaflet scalebar placement, new settings tab, disable preview on startup option, only export viewport features with 'Restrict to extent', increase is25d() performance, handle min/maxScale=0, fix preview, fix dev tools, rule-based renderer, update README, "donate to QGIS button" on Github
+changelog=2017/01/19 2.2.0 Leaflet busy cursor, add IN, LIKE, NOT LIKE, ILIKE, NOT ILIKE, IS, IS NOT, ~ operators to expressions, hide non-matches in Leaflet rule-based renders
+    2017/01/18 2.1.0 Leaflet scalebar placement, new settings tab, disable preview on startup option, only export viewport features with 'Restrict to extent', increase is25d() performance, handle min/maxScale=0, fix preview, fix dev tools, rule-based renderer, update README, "donate to QGIS button" on Github
     2017/01/04 2.0.0 Layer blending modes, help tab error
     2016/12/22 2.0.0-beta1 Leaflet refactor, new test WFS layers, Leaflet unicode category legend icons, Leaflet legend icon sizes, Leaflet categorized/graduated SVGs, W3C compliance (thanks, @garprogram!), add Stamen terrain background basemap, handle QGIS WFS typo fix, update Proj4 for Leaflet1.0, disable preview if QtWebkit unavailable (thanks, @mbernasocchi!), Leaflet style into own file, add ISSUE_TEMPLATE, correct README, correct CONTRIBUTING, upgrade to Leaflet 1.0.2, upgrade to OL 3.20.1, delete unused files
     2016/10/05 1.19.0 Leaflet SVG zIndex, OL3 WMS, Leaflet WFS visibility, remove redundant Leaflet layer control, OL3 safeName(), reset default Leaflet tooltip style, crash on plugin reload
