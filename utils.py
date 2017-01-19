@@ -598,9 +598,9 @@ def handle_binary(node, mapLib):
     elif retOp == "~":
         return "/%s/.test(%s)" % (retRight[1:-2], retLeft[:-1])
     elif retOp == "//":
-        return "(Math.floor(%s %s %s))" % retLeft, retOp, retRight
+        return "(Math.floor(%s %s %s))" % (retLeft, retOp, retRight)
     else:
-        return "(%s %s %s)" % retLeft, retOp, retRight
+        return "(%s %s %s)" % (retLeft, retOp, retRight)
 
 
 def handle_unary(node, mapLib):
@@ -608,7 +608,7 @@ def handle_unary(node, mapLib):
     operand = node.operand()
     retOp = unary_ops[op]
     retOperand = walkExpression(operand, mapLib)
-    return "%s %s " % retOp, retOperand
+    return "%s %s " % (retOp, retOperand)
 
 
 def handle_in(node, mapLib):
@@ -616,7 +616,7 @@ def handle_in(node, mapLib):
     retOperand = walkExpression(operand, mapLib)
     list = node.list().dump()
     retList = json.dumps(list)
-    return "%s.indexOf(%s) > -1 " % retList, retOperand
+    return "%s.indexOf(%s) > -1 " % (retList, retOperand)
 
 
 def handle_literal(node):
@@ -635,7 +635,7 @@ def handle_function(node, mapLib):
     retArgs = ""
     for arg in args:
         retArgs += walkExpression(arg, mapLib)
-    return "%s(%s)" % retFunc, retArgs
+    return "%s(%s)" % (retFunc, retArgs)
 
 
 def handle_columnRef(node, mapLib):
