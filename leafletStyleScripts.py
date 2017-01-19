@@ -75,7 +75,10 @@ def getLayerStyle(layer, sln, markerFolder):
                 elseClause += " else {"
                 elseClause += "return " + styleCode
                 elseClause += "}"
-        style += elseClause
+        if elseClause != "":
+            style += elseClause
+        else:
+            style += "else {return {fill: false, stroke: false}}"
         style += """
         }"""
     else:
