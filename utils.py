@@ -26,6 +26,7 @@ from qgis.utils import QGis
 import processing
 import tempfile
 import json
+import traceback
 
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
@@ -560,7 +561,7 @@ def walkExpression(node, mapLib):
     elif node.nodeType() == QgsExpression.ntColumnRef:
         jsExp = handle_columnRef(node, mapLib)
     elif node.nodeType() == QgsExpression.ntCondition:
-        jsExp = ""
+        jsExp = handle_condition(node, mapLib)
     return jsExp
 
 binary_ops = [
@@ -643,3 +644,19 @@ def handle_columnRef(node, mapLib):
         return "feature.properties['%s'] " % node.name()
     else:
         return "feature.get('%s') " % node.name()
+
+
+def handle_condition(node, mapLib):
+    nodeTxt = node.dump()
+    whenStart = nodeTxt.find("WHEN ")
+    thenStart = nodeTxt.find("THEN ", whenStart)
+    elseStart = nodeTxt.find("ELSE ", thenStart)
+    endStart = nodeTxt.find("END", elseStart)
+    whenTxt = nodeTxt[whenStart + 5:thenStart - 1]
+    thenTxt = nodeTxt[thenStart + 5:elseStart - 1]
+    elseTxt = ""
+    if elseStart != -1:
+        elseTxt = nodeTxt[elseStart + 5:endStart - 1]
+        elseTxt = " else {%s}" % elseTxt
+    retStr = "if (%s) {%s}%s" % (whenTxt, thenTxt, elseTxt)
+    return retStr
