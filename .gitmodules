@@ -1,0 +1,3 @@
+[submodule "qgs2js"]
+	path = qgs2js
+	url = https://github.com/NathanW2/qgs2js
