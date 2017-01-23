@@ -188,6 +188,7 @@ software:</p>
     <li>@walkermatt</li>
     <li>@boesiii</li>
     <li>@ThomasG77</li>
+    <li>@NathanW2</li>
 </ul>
 
 <p>In addition, the following libraries have been used:</p>
