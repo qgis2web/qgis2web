@@ -4,7 +4,7 @@ import re
 from math import floor
 import xml.etree.ElementTree
 from qgis.core import *
-# from qgis.utils import QGis
+from .qgs2js import exp2js
 from utils import getRGBAColor, handleHiddenField, walkExpression
 
 
@@ -56,31 +56,41 @@ def getLayerStyle(layer, sln, markerFolder):
         style += """
         }"""
     elif isinstance(renderer, QgsRuleBasedRendererV2):
-        style = """
-        function style_%s(feature) {""" % (sln)
+        template = """      function style_%s(feature) {
+        var context = {
+            feature: feature,
+            variables: {}
+        };
+        // Functions
+        %s
+        // Start of if blocks and style check logic
+        %s
+        else {
+            return %s
+        }
+    };
+        """
+        elsejs = "{fill: false, stroke: false}"
+        js = ""
+        expressionfunctions = []
         root_rule = renderer.rootRule()
         rules = root_rule.children()
-        elseif = "if ("
-        elseClause = ""
-        for rule in rules:
+        for count, rule in enumerate(rules, start=1):
             (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
-            if not rule.isElse():
-                style += elseif
-                style += walkExpression(rule.filter().rootNode(), "Leaflet")
-                style += ") {return %s}" % styleCode
-                elseif = " else if ("
-            else:
-                elseClause += " else {"
-                elseClause += "return " + styleCode
-                elseClause += "}"
-        if elseClause != "":
-            style += elseClause
-        else:
-            style += "else {return {fill: false, stroke: false}}"
-        style += """
-        }"""
+            name = "".join((sln, unicode(count)))
+            functionjs, name, _ = exp2js.compile(rule.filter(), name,
+                                                 "Leaflet")
+            ifelse = "if" if count == 1 else "else if"
+            js += """
+            %s (%s(context)) {
+              return %s;
+            }
+            """ % (ifelse, name, styleCode)
+            expressionfunctions.append(functionjs)
+            js = js.strip()
+        style = template % (sln, "\n\n".join(expressionfunctions), js, elsejs)
     else:
         style = ""
     return style, markerType
