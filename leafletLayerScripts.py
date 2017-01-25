@@ -286,28 +286,32 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
          wfsLayers) = heatmapLayer(layer, safeLayerName, renderer, legends,
                                    wfsLayers)
     elif isinstance(renderer, QgsSingleSymbolRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                            outputProjectFileName)
         (new_obj, legends,
          wfsLayers) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer, labeltext,
                                   cluster, json, usedFields, legends,
                                   markerType)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                            outputProjectFileName)
         (new_obj, legends,
          wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
                                        outputProjectFileName, usedFields,
                                        legends, labeltext, cluster, json,
                                        wfsLayers, markerType)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                            outputProjectFileName)
         (new_obj, legends,
          wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
                                      outputProjectFileName, labeltext, cluster,
                                      json, usedFields, legends, wfsLayers,
                                      markerType)
     elif isinstance(renderer, QgsRuleBasedRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder)
+        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                            outputProjectFileName)
         (new_obj, legends,
          wfsLayers) = ruleBasedLayer(layer, renderer, safeLayerName,
                                      outputProjectFileName, usedFields,
@@ -381,11 +385,12 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
         styleStart += "font-style: italic; "
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
     styleEnd = " + '</div>'"
-    if palyr.isExpression:
+    if palyr.isExpression and palyr.enabled:
+        exprFilename = outputProjectFileName + "/js/qgis2web_expressions.js"
         name = exp2js.compile_to_file(palyr.getLabelExpression(),
                                       "label_%s" % safeLayerName,
                                       "Leaflet",
-                                      outputProjectFileName + "/js/qgis2web_expressions.js")
+                                      exprFilename)
         js = "%s(context)" % (name)
         js = js.strip()
         f = js

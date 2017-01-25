@@ -8,7 +8,7 @@ from .qgs2js import exp2js
 from utils import getRGBAColor, handleHiddenField, walkExpression
 
 
-def getLayerStyle(layer, sln, markerFolder):
+def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
     markerType = None
     renderer = layer.rendererV2()
     layer_alpha = layer.layerTransparency()
@@ -62,8 +62,6 @@ def getLayerStyle(layer, sln, markerFolder):
                 feature: feature,
                 variables: {}
             };
-            // Functions
-            %s
             // Start of if blocks and style check logic
             %s
             else {
@@ -73,25 +71,28 @@ def getLayerStyle(layer, sln, markerFolder):
         """
         elsejs = "{fill: false, stroke: false}"
         js = ""
-        expressionfunctions = []
         root_rule = renderer.rootRule()
         rules = root_rule.children()
-        for count, rule in enumerate(rules, start=1):
+        expFile = outputProjectFilename + "/js/qgis2web_expressions.js"
+        ifelse = "if"
+        for count, rule in enumerate(rules):
             (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
             name = "".join((sln, "rule", unicode(count)))
-            functionjs, name, _ = exp2js.compile(rule.filter(), name,
-                                                 "Leaflet")
-            ifelse = "if" if count == 1 else "else if"
+            exp = rule.filterExpression()
+            if rule.isElse():
+                elsejs = styleCode
+                continue
+            name = exp2js.compile_to_file(exp, name, "Leaflet", expFile)
             js += """
             %s (%s(context)) {
               return %s;
             }
             """ % (ifelse, name, styleCode)
-            expressionfunctions.append(functionjs)
             js = js.strip()
-        style = template % (sln, "\n\n".join(expressionfunctions), js, elsejs)
+            ifelse = "else if"
+        style = template % (sln, js, elsejs)
     else:
         style = ""
     return style, markerType
