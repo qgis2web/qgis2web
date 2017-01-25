@@ -26,6 +26,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     cssDir = pluginDir + os.sep + 'css' + os.sep
     markerStore = os.path.join(outputProjectFileName, 'markers')
     os.makedirs(markerStore)
+    shutil.copyfile(jsDir + 'qgis2web_expressions.js',
+                    jsStore + 'qgis2web_expressions.js')
     if mapLibLocation == "Local":
         shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')

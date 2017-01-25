@@ -9,6 +9,7 @@ from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import *
+from .qgs2js import exp2js
 from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, BLEND_MODES)
 
@@ -243,7 +244,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     markerFolder = os.path.join(outputProjectFileName, "markers")
     (new_pop, labeltext,
      popFuncs) = labelsAndPopups(layer, safeLayerName, highlight,
-                                 popupsOnHover, popup)
+                                 popupsOnHover, popup, outputProjectFileName)
     renderer = layer.rendererV2()
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
     style = ""
@@ -339,7 +340,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     return new_src, legends, wfsLayers
 
 
-def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
+def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
+                    outputProjectFileName):
     fields = layer.pendingFields()
     field_names = popup.keys()
     field_vals = popup.values()
@@ -379,10 +381,19 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
         styleStart += "font-style: italic; "
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
     styleEnd = " + '</div>'"
-    f = handleHiddenField(layer, palyr.fieldName)
+    if palyr.isExpression:
+        name = exp2js.compile_to_file(palyr.getLabelExpression(),
+                                      "label_%s" % safeLayerName,
+                                      "Leaflet",
+                                      outputProjectFileName + "/js/qgis2web_expressions.js")
+        js = "%s(context)" % (name)
+        js = js.strip()
+        f = js
+    else:
+        f = handleHiddenField(layer, palyr.fieldName)
     label_exp = False
-    labeltext = ".bindTooltip((feature.properties['" + unicode(f)
-    labeltext += "'] !== null?String(%sfeature.properties['%s'])%s:'')" % (
+    labeltext = ".bindTooltip((" + unicode(f)
+    labeltext += " !== null?String(%s%s)%s:'')" % (
             styleStart, unicode(f), styleEnd)
     labeltext += ", {permanent: true, offset: [-0, -16], "
     labeltext += "className: 'css_%s'}" % safeLayerName

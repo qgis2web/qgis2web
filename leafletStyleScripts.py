@@ -56,19 +56,20 @@ def getLayerStyle(layer, sln, markerFolder):
         style += """
         }"""
     elif isinstance(renderer, QgsRuleBasedRendererV2):
-        template = """      function style_%s(feature) {
-        var context = {
-            feature: feature,
-            variables: {}
-        };
-        // Functions
-        %s
-        // Start of if blocks and style check logic
-        %s
-        else {
-            return %s
+        template = """
+        function style_%s(feature) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            // Functions
+            %s
+            // Start of if blocks and style check logic
+            %s
+            else {
+                return %s;
+            }
         }
-    };
         """
         elsejs = "{fill: false, stroke: false}"
         js = ""
@@ -79,7 +80,7 @@ def getLayerStyle(layer, sln, markerFolder):
             (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
-            name = "".join((sln, unicode(count)))
+            name = "".join((sln, "rule", unicode(count)))
             functionjs, name, _ = exp2js.compile(rule.filter(), name,
                                                  "Leaflet")
             ifelse = "if" if count == 1 else "else if"

@@ -248,6 +248,10 @@ def pointToLayerFunction(safeLayerName, labeltext, symbol):
         markerType = "circleMarker"
     pointToLayerFunction = """
         function pointToLayer_{safeLayerName}(feature, latlng) {{
+            var context = {{
+                feature: feature,
+                variables: {{}}
+            }};
             return L.{markerType}(latlng, style_{safeLayerName}""".format(
                 safeLayerName=safeLayerName,
                 markerType=markerType)
@@ -282,6 +286,10 @@ def pointJSONLayer(sln, label, usedFields, markerType):
             onEachFeature: pop_{sln},"""
     categorizedPointJSON += """
             pointToLayer: function (feature, latlng) {{
+                var context = {{
+                    feature: feature,
+                    variables: {{}}
+                }};
                 return L.{markerType}(latlng, """
     categorizedPointJSON += """style_{sln}(feature)){label}
             }}
