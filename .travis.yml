@@ -25,7 +25,7 @@ install:
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
   - sudo pip install python-coveralls
-  - git submodule add https://github.com/NathanW2/qgs2js qgs2js
+
 before_script:
   - echo "Build starting on " `date`
   - export QGIS_PREFIX_PATH=/usr
