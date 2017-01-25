@@ -386,7 +386,8 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
     styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
     styleEnd = " + '</div>'"
     if palyr.isExpression and palyr.enabled:
-        exprFilename = outputProjectFileName + "/js/qgis2web_expressions.js"
+        exprFilename = os.path.join(outputProjectFileName, "js",
+                                    "qgis2web_expressions.js")
         name = exp2js.compile_to_file(palyr.getLabelExpression(),
                                       "label_%s" % safeLayerName,
                                       "Leaflet",

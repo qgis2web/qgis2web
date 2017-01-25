@@ -699,9 +699,11 @@ def exportStyles(layers, folder, clustered):
             if labelField != "":
                 if unicode(layer.customProperty(
                         "labeling/isExpression")).lower() == "true":
-                    exprFilename = folder + "/resources/qgis2web_expressions.js"
+                    exprFilename = os.path.join(folder, "resources",
+                                                "qgis2web_expressions.js")
                     sln = safeName(layer.name())
-                    name = exp2js.compile_to_file(layer.customProperty("labeling/fieldName"),
+                    fieldName = layer.customProperty("labeling/fieldName")
+                    name = exp2js.compile_to_file(fieldName,
                                                   "label_%s" % sln,
                                                   "OpenLayers3",
                                                   exprFilename)

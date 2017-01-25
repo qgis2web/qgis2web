@@ -73,7 +73,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
         js = ""
         root_rule = renderer.rootRule()
         rules = root_rule.children()
-        expFile = outputProjectFilename + "/js/qgis2web_expressions.js"
+        expFile = os.path.join(outputProjectFilename, "js",
+                               "qgis2web_expressions.js")
         ifelse = "if"
         for count, rule in enumerate(rules):
             (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
