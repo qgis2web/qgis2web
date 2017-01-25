@@ -22,14 +22,20 @@ from utils import tempFolder
 
 
 def getTemplates():
-    fl = os.path.join(QgsApplication.qgisSettingsDirPath(),
-                      "qgis2web",
-                      "templates")
-    if not os.path.exists(fl):
-        shutil.copytree(os.path.join(os.path.dirname(__file__),
-                                     "templates"),
-                        fl)
-    return tuple(f[:f.find(".")] for f in reversed(os.listdir(fl))
+    src = os.path.join(os.path.dirname(__file__), "templates")
+    dst = os.path.join(QgsApplication.qgisSettingsDirPath(), "qgis2web",
+                       "templates")
+    if not os.path.exists(dst):
+        shutil.copytree(src, dst)
+    else:
+        for fname in os.listdir(src):
+            with open(os.path.join(src, fname)) as s:
+                srcCode = s.read()
+            with open(os.path.join(dst, os.path.basename(fname)), 'w') as d:
+                d.seek(0)
+                d.write(srcCode)
+                d.truncate()
+    return tuple(f[:f.find(".")] for f in reversed(os.listdir(dst))
                  if f.endswith("html"))
 
 paramsOL = {
