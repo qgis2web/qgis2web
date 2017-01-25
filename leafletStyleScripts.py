@@ -4,7 +4,7 @@ import re
 from math import floor
 import xml.etree.ElementTree
 from qgis.core import *
-from qgs2js import exp2js
+from qgis2web.qgs2js import exp2js
 from utils import getRGBAColor, handleHiddenField, walkExpression
 
 
