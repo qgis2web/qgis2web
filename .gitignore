@@ -226,10 +226,3 @@ helpFile.md
 ## IntelliJ/Idea
 #############
 .idea/
-
-
-#############
-## Submodules
-#############
-qgs2js/
-.qgs2js
