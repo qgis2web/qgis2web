@@ -156,6 +156,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/proj4leaflet.js"></script>"""
     else:
         crsJS = ""
+    exp_js = """
+        <script src="js/qgis2web_expressions.js"></script>"""
 
     canvasSize = canvas.size()
     values = {"@PAGETITLE@": webpage_name,
@@ -175,6 +177,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@QGIS2WEBJS@": qgis2webJS,
               "@MAP_WIDTH@": unicode(canvasSize.width()) + "px",
               "@MAP_HEIGHT@": unicode(canvasSize.height()) + "px",
+              "@EXP_JS@": exp_js,
               "@OL3_BACKGROUNDCOLOR@": "",
               "@OL3_STYLEVARS@": "",
               "@OL3_POPUP@": "",

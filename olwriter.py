@@ -26,6 +26,7 @@ import xml.etree.ElementTree
 from qgis.core import *
 from utils import (exportLayers, safeName, replaceInTemplate, walkExpression,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
+from .qgs2js import exp2js
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -220,6 +221,8 @@ def writeOL(iface, layers, groups, popup, visible,
         ol3layers = """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
         mapSize = iface.mapCanvas().size()
+        exp_js = """
+        <script src="resources/qgis2web_expressions.js"></script>"""
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
@@ -239,6 +242,7 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@OL3_LAYERSWITCHER@": ol3layerswitcher,
                   "@OL3_LAYERS@": ol3layers,
                   "@OL3_MEASURESTYLE@": measureStyle,
+                  "@EXP_JS@": exp_js,
                   "@LEAFLET_ADDRESSCSS@": "",
                   "@LEAFLET_MEASURECSS@": "",
                   "@LEAFLET_EXTRAJS@": "",
@@ -693,17 +697,30 @@ def exportStyles(layers, folder, clustered):
         if (labelsEnabled):
             labelField = layer.customProperty("labeling/fieldName")
             if labelField != "":
-                fieldIndex = layer.pendingFields().indexFromName(labelField)
-                try:
-                    editFormConfig = layer.editFormConfig()
-                    editorWidget = editFormConfig.widgetType(fieldIndex)
-                except:
-                    editorWidget = layer.editorWidgetV2(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
-                    labelField = "q2wHide_" + labelField
-                labelText = ('feature.get("%s")' %
-                             labelField.replace('"', '\\"'))
+                if unicode(layer.customProperty(
+                        "labeling/isExpression")).lower() == "true":
+                    exprFilename = folder + "/resources/qgis2web_expressions.js"
+                    sln = safeName(layer.name())
+                    name = exp2js.compile_to_file(layer.customProperty("labeling/fieldName"),
+                                                  "label_%s" % sln,
+                                                  "OpenLayers3",
+                                                  exprFilename)
+                    js = "%s(context)" % (name)
+                    js = js.strip()
+                    labelText = js
+                else:
+                    fieldIndex = layer.pendingFields().indexFromName(
+                        labelField)
+                    try:
+                        editFormConfig = layer.editFormConfig()
+                        editorWidget = editFormConfig.widgetType(fieldIndex)
+                    except:
+                        editorWidget = layer.editorWidgetV2(fieldIndex)
+                    if (editorWidget == QgsVectorLayer.Hidden or
+                            editorWidget == 'Hidden'):
+                        labelField = "q2wHide_" + labelField
+                    labelText = ('feature.get("%s")' %
+                                 labelField.replace('"', '\\"'))
             else:
                 labelText = '""'
         else:
@@ -839,6 +856,10 @@ def exportStyles(layers, folder, clustered):
                 stroke = ""
             if style != "":
                 style = '''function(feature, resolution){
+    var context = {
+        feature: feature,
+        variables: {}
+    };
     %(value)s
     %(style)s;
     if (%(label)s !== null%(labelRes)s) {
