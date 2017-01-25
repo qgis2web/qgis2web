@@ -24,8 +24,8 @@ install:
   - sudo pip install nose
   - sudo pip install --upgrade pep8
   - sudo pip install --upgrade pylint
-  - sudo pip install python-coveralls
-
+  - sudo pip install python-
+  - git submodule add https://github.com/NathanW2/qgs2js qgs2js
 before_script:
   - echo "Build starting on " `date`
   - export QGIS_PREFIX_PATH=/usr
