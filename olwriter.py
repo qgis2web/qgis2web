@@ -26,7 +26,7 @@ import xml.etree.ElementTree
 from qgis.core import *
 from utils import (exportLayers, safeName, replaceInTemplate, walkExpression,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
-from .qgs2js import exp2js
+from qgs2js import exp2js
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
