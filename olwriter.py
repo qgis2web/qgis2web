@@ -802,7 +802,7 @@ def exportStyles(layers, folder, clustered):
             var context = {
                 feature: feature,
                 variables: {}
-            };      
+            };
             // Start of if blocks and style check logic
             %s
             else {
