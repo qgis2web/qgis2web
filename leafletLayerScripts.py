@@ -9,7 +9,7 @@ from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import *
-from qgis2web.qgs2js import exp2js
+from .qgs2js import exp2js
 from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, BLEND_MODES)
 

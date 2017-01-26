@@ -24,9 +24,9 @@ import shutil
 import traceback
 import xml.etree.ElementTree
 from qgis.core import *
-from utils import (exportLayers, safeName, replaceInTemplate, walkExpression,
+from utils import (exportLayers, safeName, replaceInTemplate,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
-import qgis2web.qgs2js.exp2js
+from .qgs2js import exp2js
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -797,29 +797,48 @@ def exportStyles(layers, folder, clustered):
         }
     }''' % {"v": varName}
             elif isinstance(renderer, QgsRuleBasedRendererV2):
-                defs += """function rules_%s(feature, value) {""" % (
-                    safeName(layer.name()))
-                elseif = "if ("
-                elseClause = ""
-                for rule in renderer.rootRule().children():
+                template = """
+        function rules_%s(feature, value) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };        
+            // Start of if blocks and style check logic
+            %s
+            else {
+                return %s;
+            }
+        }
+        var style = rules_%s(feature, value);
+        """
+                sln = safeName(layer.name())
+                elsejs = "[]"
+                js = ""
+                root_rule = renderer.rootRule()
+                rules = root_rule.children()
+                expFile = os.path.join(folder, "resources",
+                                       "qgis2web_expressions.js")
+                ifelse = "if"
+                for count, rule in enumerate(rules):
                     symbol = rule.symbol()
                     styleCode = getSymbolAsStyle(symbol, stylesFolder,
                                                  layer_alpha)
-                    if not rule.isElse():
-                        defs += elseif
-                        defs += walkExpression(rule.filter().rootNode(),
-                                               "OL3")
-                        defs += ") {return %s}" % styleCode
-                        elseif = " else if ("
-                    else:
-                        elseClause += " else {"
-                        elseClause += "return " + styleCode
-                        elseClause += "}"
-                defs += elseClause
-                defs += "};"
+                    name = "".join((sln, "rule", unicode(count)))
+                    exp = rule.filterExpression()
+                    if rule.isElse():
+                        elsejs = styleCode
+                        continue
+                    name = exp2js.compile_to_file(exp, name, "OpenLayers3",
+                                                  expFile)
+                    js += """
+                    %s (%s(context)) {
+                      return %s;
+                    }
+                    """ % (ifelse, name, styleCode)
+                    js = js.strip()
+                    ifelse = "else if"
                 value = ("var value = '';")
-                style = ('''var style = rules_%s(feature, value)''' %
-                         (safeName(layer.name())))
+                style = template % (sln, js, elsejs, sln)
             else:
                 style = ""
             if layer.customProperty("labeling/fontSize"):
