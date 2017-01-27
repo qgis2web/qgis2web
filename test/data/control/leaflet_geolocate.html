@@ -102,6 +102,10 @@
             pane: 'pane_airports0',
             onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
                 return L.circleMarker(latlng, style_airports0(feature))
             }
         });
