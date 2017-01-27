@@ -389,9 +389,8 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
         exprFilename = os.path.join(outputProjectFileName, "js",
                                     "qgis2web_expressions.js")
         name = compile_to_file(palyr.getLabelExpression(),
-                                      "label_%s" % safeLayerName,
-                                      "Leaflet",
-                                      exprFilename)
+                               "label_%s" % safeLayerName, "Leaflet",
+                               exprFilename)
         js = "%s(context)" % (name)
         js = js.strip()
         f = js

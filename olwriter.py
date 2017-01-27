@@ -703,10 +703,8 @@ def exportStyles(layers, folder, clustered):
                                                 "qgis2web_expressions.js")
                     sln = safeName(layer.name())
                     fieldName = layer.customProperty("labeling/fieldName")
-                    name = compile_to_file(fieldName,
-                                                  "label_%s" % sln,
-                                                  "OpenLayers3",
-                                                  exprFilename)
+                    name = compile_to_file(fieldName, "label_%s" % sln,
+                                           "OpenLayers3", exprFilename)
                     js = "%s(context)" % (name)
                     js = js.strip()
                     labelText = js
@@ -828,8 +826,7 @@ def exportStyles(layers, folder, clustered):
                     if rule.isElse():
                         elsejs = styleCode
                         continue
-                    name = compile_to_file(exp, name, "OpenLayers3",
-                                                  expFile)
+                    name = compile_to_file(exp, name, "OpenLayers3", expFile)
                     js += """
                     %s (%s(context)) {
                       return %s;
