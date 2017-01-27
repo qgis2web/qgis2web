@@ -31,6 +31,7 @@
                 <div id="popup-content"></div>
             </div>
         </div>
+        <script src="resources/qgis2web_expressions.js"></script>
         <script src="resources/polyfills.js"></script>
         <script src="./resources/ol.js"></script>
         <script src="./resources/ol3-layerswitcher.js"></script>
@@ -45,6 +46,10 @@ var size = 0;
 
 var styleCache_pipelines={}
 var style_pipelines = function(feature, resolution){
+    var context = {
+        feature: feature,
+        variables: {}
+    };
     var value = ""
     var size = 0;
     var style = [ new ol.style.Style({

@@ -31,6 +31,7 @@
                 <div id="popup-content"></div>
             </div>
         </div>
+        <script src="resources/qgis2web_expressions.js"></script>
         <script src="resources/polyfills.js"></script>
         <script src="./resources/ol.js"></script>
         <script src="./resources/ol3-layerswitcher.js"></script>
@@ -64,6 +65,10 @@ var ranges_airports = [[9.000000, 321.000000, [ new ol.style.Style({
     })]]];
 var styleCache_airports={}
 var style_airports = function(feature, resolution){
+    var context = {
+        feature: feature,
+        variables: {}
+    };
     var value = feature.get("ELEV");
     var style = ranges_airports[0][2];
     for (i = 0; i < ranges_airports.length; i++){
