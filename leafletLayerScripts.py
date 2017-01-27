@@ -9,7 +9,7 @@ from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import *
-from .qgs2js import exp2js
+from exp2js import compile_to_file
 from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, BLEND_MODES)
 
@@ -388,7 +388,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
     if palyr.isExpression and palyr.enabled:
         exprFilename = os.path.join(outputProjectFileName, "js",
                                     "qgis2web_expressions.js")
-        name = exp2js.compile_to_file(palyr.getLabelExpression(),
+        name = compile_to_file(palyr.getLabelExpression(),
                                       "label_%s" % safeLayerName,
                                       "Leaflet",
                                       exprFilename)

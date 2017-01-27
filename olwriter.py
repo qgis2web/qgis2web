@@ -26,7 +26,7 @@ import xml.etree.ElementTree
 from qgis.core import *
 from utils import (exportLayers, safeName, replaceInTemplate,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
-from .qgs2js import exp2js
+from exp2js import compile_to_file
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -703,7 +703,7 @@ def exportStyles(layers, folder, clustered):
                                                 "qgis2web_expressions.js")
                     sln = safeName(layer.name())
                     fieldName = layer.customProperty("labeling/fieldName")
-                    name = exp2js.compile_to_file(fieldName,
+                    name = compile_to_file(fieldName,
                                                   "label_%s" % sln,
                                                   "OpenLayers3",
                                                   exprFilename)
@@ -828,7 +828,7 @@ def exportStyles(layers, folder, clustered):
                     if rule.isElse():
                         elsejs = styleCode
                         continue
-                    name = exp2js.compile_to_file(exp, name, "OpenLayers3",
+                    name = compile_to_file(exp, name, "OpenLayers3",
                                                   expFile)
                     js += """
                     %s (%s(context)) {

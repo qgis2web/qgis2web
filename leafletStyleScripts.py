@@ -4,7 +4,7 @@ import re
 from math import floor
 import xml.etree.ElementTree
 from qgis.core import *
-from .qgs2js import exp2js
+from exp2js import compile_to_file
 from utils import getRGBAColor, handleHiddenField
 
 
@@ -85,7 +85,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             if rule.isElse():
                 elsejs = styleCode
                 continue
-            name = exp2js.compile_to_file(exp, name, "Leaflet", expFile)
+            name = compile_to_file(exp, name, "Leaflet", expFile)
             js += """
             %s (%s(context)) {
               return %s;
