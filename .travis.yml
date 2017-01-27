@@ -16,8 +16,8 @@ addons:
   - sudo apt-get -qq -y update
 
 install:
-  - ls tomchadwin/qgis2web
-  - ls tomchadwin/qgis2web/qgs2js
+  - ls ./qgis2web
+  - ls ./qgis2web/qgs2js
   - sudo add-apt-repository ${QGIS_REPO}
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
