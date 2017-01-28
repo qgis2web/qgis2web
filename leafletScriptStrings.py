@@ -309,6 +309,7 @@ def wmsScript(layer, safeLayerName):
         var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
             layers: '{wms_layer}',
             format: '{wms_format}',
+            uppercase: true,
             transparent: true,
             continuousWorld : true,
         }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
