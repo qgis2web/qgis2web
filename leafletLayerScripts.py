@@ -279,8 +279,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         new_obj = """
         var osmb = new OSMBuildings(map).date(new Date({shadows}));
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
-    # else:
-    #     layer_style = getLayerStyle(layer, safeLayerName)
     elif isinstance(renderer, QgsHeatmapRenderer):
         (new_obj, legends,
          wfsLayers) = heatmapLayer(layer, safeLayerName, renderer, legends,
