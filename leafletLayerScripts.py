@@ -318,7 +318,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                      legends, labeltext, cluster, json,
                                      wfsLayers, markerType)
     blend = BLEND_MODES[layer.blendMode()]
-    new_obj = """{style}
+    new_obj = u"""{style}
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};
         map.getPane('pane_{sln}').style['mix-blend-mode'] = '{blend}';
