@@ -755,13 +755,16 @@ def exportStyles(layers, folder, clustered):
                 switch(value) {""" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('''case "%s":
+                    if cat.value() != "":
+                        categoryStr = "case '%s':" % cat.value()
+                    else:
+                        categoryStr = "default:"
+                    categoryStr += '''
                     return %s;
-                    break;''' %
-                                (cat.value(), getSymbolAsStyle(
-                                    cat.symbol(),
-                                    stylesFolder,
-                                    layer_alpha)))
+                    break;''' % (getSymbolAsStyle(cat.symbol(),
+                                                  stylesFolder,
+                                                  layer_alpha))
+                    cats.append(categoryStr)
                 defs += "\n".join(cats) + "}};"
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
