@@ -360,7 +360,7 @@ def titleSubScript(webmap_head):
 
 
 def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
-    if len(basemapList) == 0 or matchCRS:
+    if len(basemapList) < 2 or matchCRS:
         controlStart = """
         var baseMaps = {};"""
     else:
