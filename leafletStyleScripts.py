@@ -30,10 +30,15 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
+            if cat.value() != "":
+                style += """
+                case '%s':""" % cat.value()
+            else:
+                style += """
+                default:"""
             style += """
-                case '%s':
                     return %s
-                    break;""" % (cat.value(), styleCode)
+                    break;""" % styleCode
         style += """
             }
         }"""
