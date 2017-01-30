@@ -197,6 +197,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
                        matchCRS, layerSearch, canvas, mapLibLocation, locate,
                        new_src, template)
+    except:
+        pass
     finally:
         QApplication.restoreOverrideCursor()
     return outputIndex
