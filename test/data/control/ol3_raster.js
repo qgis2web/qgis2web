@@ -1,10 +1,10 @@
-var lyr_test = new ol.layer.Image({
+var lyr_test0 = new ol.layer.Image({
                             opacity: 1,
                             title: "test",
                             
                             
                             source: new ol.source.ImageStatic({
-                               url: "./layers/test.png",
+                               url: "./layers/test0.png",
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
                                 //imageSize: [1000, 1003],
@@ -12,5 +12,5 @@ var lyr_test = new ol.layer.Image({
                             })
                         });
 
-lyr_test.setVisible(true);
-var layersList = [lyr_test];
+lyr_test0.setVisible(true);
+var layersList = [lyr_test0];

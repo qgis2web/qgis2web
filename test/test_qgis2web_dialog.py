@@ -726,7 +726,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/airports_style.js'))
+                        'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -766,7 +766,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/pipelines_style.js'))
+                        'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -805,7 +805,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/lakes_style.js'))
+                        'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -845,7 +845,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/airports_style.js'))
+                        'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -884,7 +884,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/pipelines_style.js'))
+                        'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -923,7 +923,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/lakes_style.js'))
+                        'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -962,7 +962,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/airports_style.js'))
+                        'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1001,7 +1001,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/pipelines_style.js'))
+                        'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1040,7 +1040,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         test_style_file = open(
                 self.dialog.preview.url().toString().replace(
                         'file://', '').replace(
-                        'index.html', 'styles/lakes_style.js'))
+                        'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1935,7 +1935,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports.js')
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -2099,7 +2099,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports.js')
+        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
