@@ -278,25 +278,24 @@ def clusterScript(safeLayerName):
 
 
 def pointJSONLayer(sln, label, usedFields, markerType):
-    categorizedPointJSON = """
+    pointJSON = """
         var layer_{sln} = new L.geoJson(json_{sln}, {{
             pane: 'pane_{sln}',"""
     if usedFields != 0:
-        categorizedPointJSON += """
+        pointJSON += """
             onEachFeature: pop_{sln},"""
-    categorizedPointJSON += """
+    pointJSON += """
             pointToLayer: function (feature, latlng) {{
                 var context = {{
                     feature: feature,
                     variables: {{}}
                 }};
                 return L.{markerType}(latlng, """
-    categorizedPointJSON += """style_{sln}(feature)){label}
+    pointJSON += """style_{sln}(feature)){label}
             }}
         }});"""
-    categorizedPointJSON = categorizedPointJSON.format(sln=sln, label=label,
-                                                       markerType=markerType)
-    return categorizedPointJSON
+    pointJSON = pointJSON.format(sln=sln, label=label, markerType=markerType)
+    return pointJSON
 
 
 def wmsScript(layer, safeLayerName):

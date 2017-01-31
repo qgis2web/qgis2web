@@ -100,11 +100,12 @@ def writeOL(iface, layers, groups, popup, visible,
         geojsonVars = ""
         wfsVars = ""
         styleVars = ""
-        for layer, encode2json in zip(layers, json):
+        for count, (layer, encode2json) in enumerate(zip(layers, json)):
+            sln = safeName(layer.name()) + unicode(count)
             if layer.type() == layer.VectorLayer:
                 if layer.providerType() != "WFS" or encode2json:
                     geojsonVars += ('<script src="layers/%s"></script>' %
-                                    (safeName(layer.name()) + ".js"))
+                                    (sln + ".js"))
                 else:
                     layerSource = layer.source()
                     if ("retrictToRequestBBOX" in layerSource or
@@ -125,10 +126,10 @@ def writeOL(iface, layers, groups, popup, visible,
                                              'SRSNAME=EPSG:3857', layerSource)
                     layerSource += "&outputFormat=text%2Fjavascript&"
                     layerSource += "format_options=callback%3A"
-                    layerSource += "get" + safeName(layer.name()) + "Json"
+                    layerSource += "get" + sln + "Json"
                     wfsVars += ('<script src="%s"></script>' % layerSource)
                 styleVars += ('<script src="styles/%s_style.js"></script>' %
-                              (safeName(layer.name())))
+                              (sln))
         popupLayers = "popupLayers = [%s];" % ",".join(
                 ['1' for field in popup])
         controls = ['expandedAttribution']
@@ -302,7 +303,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 });""" % (baseGroup, ','.join(basemaps))
 
     layerVars = ""
-    for layer, encode2json, cluster in zip(layers, json, clustered):
+    for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
+                                                              clustered)):
         try:
             if is25d(layer, canvas, restrictToExtent, extent):
                 pass
@@ -311,13 +313,13 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                                           encode2json,
                                                           matchCRS, cluster,
                                                           restrictToExtent,
-                                                          extent)])
+                                                          extent, count)])
         except:
             layerVars += "\n".join([layerToJavascript(iface, layer,
                                                       encode2json, matchCRS,
                                                       cluster,
                                                       restrictToExtent,
-                                                      extent)])
+                                                      extent, count)])
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
@@ -333,7 +335,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     mapLayers = ["baseLayer"]
     usedGroups = []
     osmb = ""
-    for layer in layers:
+    for count, layer in enumerate(layers):
         try:
             renderer = layer.rendererV2()
             if is25d(layer, canvas, restrictToExtent, extent):
@@ -369,9 +371,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             else:
-                mapLayers.append("lyr_" + safeName(layer.name()))
+                mapLayers.append("lyr_" + safeName(layer.name()) +
+                                 unicode(count))
         except:
-            mapLayers.append("lyr_" + safeName(layer.name()))
+            mapLayers.append("lyr_" + safeName(layer.name()) + unicode(count))
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
@@ -379,7 +382,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
 
     group_list = ["baseLayer"] if len(basemapList) else []
     no_group_list = []
-    for layer in layers:
+    for count, layer in enumerate(layers):
         try:
             if is25d(layer, canvas, restrictToExtent, extent):
                 pass
@@ -390,7 +393,8 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
                         group_list.append("group_" + safeName(groupName))
                         usedGroups.append(groupName)
                 else:
-                    no_group_list.append("lyr_" + safeName(layer.name()))
+                    no_group_list.append("lyr_" + safeName(layer.name()) +
+                                         unicode(count))
         except:
             if layer.id() in groupedLayers:
                 groupName = groupedLayers[layer.id()]
@@ -398,7 +402,8 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
                     group_list.append("group_" + safeName(groupName))
                     usedGroups.append(groupName)
             else:
-                no_group_list.append("lyr_" + safeName(layer.name()))
+                no_group_list.append("lyr_" + safeName(layer.name()) +
+                                     unicode(count))
 
     layersList = []
     for layer in (group_list + no_group_list):
@@ -409,7 +414,8 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
     fieldImages = ""
     fieldLabels = ""
     blend_mode = ""
-    for layer, labels in zip(layers, popup):
+    for count, (layer, labels) in enumerate(zip(layers, popup)):
+        sln = safeName(layer.name()) + unicode(count)
         if layer.type() == layer.VectorLayer and not is25d(layer, canvas,
                                                            restrictToExtent,
                                                            extent):
@@ -423,7 +429,7 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             labelFields = "{%(labelFields)s});\n" % (
                     {"labelFields": labelFields})
             labelFields = "lyr_%(name)s.set('fieldLabels', " % (
-                        {"name": safeName(layer.name())}) + labelFields
+                        {"name": sln}) + labelFields
             fieldLabels += labelFields
             for f in fieldList:
                 fieldIndex = fieldList.indexFromName(unicode(f.name()))
@@ -440,17 +446,17 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             aliasFields = "{%(aliasFields)s});\n" % (
                         {"aliasFields": aliasFields})
             aliasFields = "lyr_%(name)s.set('fieldAliases', " % (
-                        {"name": safeName(layer.name())}) + aliasFields
+                        {"name": sln}) + aliasFields
             fieldAliases += aliasFields
             imageFields = "{%(imageFields)s});\n" % (
                         {"imageFields": imageFields})
             imageFields = "lyr_%(name)s.set('fieldImages', " % (
-                        {"name": safeName(layer.name())}) + imageFields
+                        {"name": sln}) + imageFields
             fieldImages += imageFields
             blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = '%(blend)s';
 });""" % (
-                        {"name": safeName(layer.name()),
+                        {"name": sln,
                          "blend": BLEND_MODES[layer.blendMode()]})
 
     path = os.path.join(folder, "layers", "layers.js")
@@ -519,7 +525,7 @@ def bounds(iface, useCanvas, layers, matchCRS):
 
 
 def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
-                      restrictToExtent, extent):
+                      restrictToExtent, extent, count):
     if layer.hasScaleBasedVisibility():
         if layer.minimumScale() != 0:
             minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
@@ -534,7 +540,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
     else:
         minResolution = ""
         maxResolution = ""
-    layerName = safeName(layer.name())
+    layerName = safeName(layer.name()) + unicode(count)
     if layer.type() == layer.VectorLayer and not is25d(layer,
                                                        iface.mapCanvas(),
                                                        restrictToExtent,
@@ -703,7 +709,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
 def exportStyles(layers, folder, clustered):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
-    for layer, cluster in zip(layers, clustered):
+    for count, (layer, cluster) in enumerate(zip(layers, clustered)):
+        sln = safeName(layer.name()) + unicode(count)
         if layer.type() != layer.VectorLayer:
             continue
         labelsEnabled = unicode(
@@ -715,7 +722,6 @@ def exportStyles(layers, folder, clustered):
                         "labeling/isExpression")).lower() == "true":
                     exprFilename = os.path.join(folder, "resources",
                                                 "qgis2web_expressions.js")
-                    sln = safeName(layer.name())
                     fieldName = layer.customProperty("labeling/fieldName")
                     name = compile_to_file(fieldName, "label_%s" % sln,
                                            "OpenLayers3", exprFilename)
@@ -755,7 +761,7 @@ def exportStyles(layers, folder, clustered):
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += """function categories_%s(feature, value) {
-                switch(value) {""" % safeName(layer.name())
+                switch(value) {""" % sln
                 cats = []
                 for cat in renderer.categories():
                     if cat.value() != "":
@@ -781,9 +787,9 @@ def exportStyles(layers, folder, clustered):
                     classAttr = "q2wHide_" + classAttr
                 value = ('var value = feature.get("%s");' % classAttr)
                 style = ('''var style = categories_%s(feature, value)''' %
-                         (safeName(layer.name())))
+                         (sln))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                varName = "ranges_" + safeName(layer.name())
+                varName = "ranges_" + sln
                 defs += "var %s = [" % varName
                 ranges = []
                 for ran in renderer.ranges():
@@ -826,7 +832,6 @@ def exportStyles(layers, folder, clustered):
         }
         var style = rules_%s(feature, value);
         """
-                sln = safeName(layer.name())
                 elsejs = "[]"
                 js = ""
                 root_rule = renderer.rootRule()
@@ -923,7 +928,7 @@ def exportStyles(layers, folder, clustered):
     return allStyles;
 }''' % {
                     "style": style, "labelRes": labelRes, "label": labelText,
-                    "cache": "styleCache_" + safeName(layer.name()),
+                    "cache": "styleCache_" + sln,
                     "size": size, "face": face, "color": color,
                     "stroke": stroke, "value": value}
             else:
@@ -933,14 +938,13 @@ def exportStyles(layers, folder, clustered):
             /* """ + traceback.format_exc() + " */}"
             print traceback.format_exc()
 
-        path = os.path.join(stylesFolder, safeName(layer.name()) + "_style.js")
+        path = os.path.join(stylesFolder, sln + "_style.js")
 
         with codecs.open(path, "w", "utf-8") as f:
             f.write('''%(defs)s
 var styleCache_%(name)s={}
 var style_%(name)s = %(style)s;''' %
-                    {"defs": defs, "name": safeName(layer.name()),
-                     "style": style})
+                    {"defs": defs, "name": sln, "style": style})
 
 
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):

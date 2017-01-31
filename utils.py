@@ -149,7 +149,9 @@ def exportLayers(iface, layers, folder, precision, optimize,
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
-    for layer, encode2json, popup in zip(layers, json, popupField):
+    for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
+                                                            popupField)):
+        sln = safeName(cleanLayer.name()) + unicode(count)
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
             cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
@@ -210,10 +212,8 @@ def exportLayers(iface, layers, folder, precision, optimize,
                 cleanLayer.commitChanges()
                 renderer.stopRender(renderContext)
 
-            tmpPath = os.path.join(layersFolder,
-                                   safeName(cleanLayer.name()) + ".json")
-            path = os.path.join(layersFolder,
-                                safeName(cleanLayer.name()) + ".js")
+            tmpPath = os.path.join(layersFolder, sln + ".json")
+            path = os.path.join(layersFolder, sln + ".js")
             if precision != "maintain":
                 options = "COORDINATE_PRECISION=" + unicode(precision)
             else:
@@ -223,8 +223,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
                                                     'GeoJson', 0,
                                                     layerOptions=[options])
             with open(path, "w") as f:
-                f.write("var %s = " % ("geojson_" +
-                                       safeName(cleanLayer.name())))
+                f.write("var %s = " % ("geojson_" + sln))
                 with open(tmpPath, "r") as f2:
                     for line in f2:
                         if optimize:
@@ -236,7 +235,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
 
-            name_ts = safeName(layer.name()) + unicode(int(time.time()))
+            name_ts = (sln + unicode(int(time.time())))
 
             # We need to create a new file to export style
             piped_file = os.path.join(
