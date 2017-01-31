@@ -151,7 +151,6 @@ def exportLayers(iface, layers, folder, precision, optimize,
     QDir().mkpath(layersFolder)
     for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
                                                             popupField)):
-        sln = safeName(cleanLayer.name()) + unicode(count)
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
             cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
@@ -212,6 +211,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
                 cleanLayer.commitChanges()
                 renderer.stopRender(renderContext)
 
+            sln = safeName(cleanLayer.name()) + unicode(count)
             tmpPath = os.path.join(layersFolder, sln + ".json")
             path = os.path.join(layersFolder, sln + ".js")
             if precision != "maintain":
@@ -235,7 +235,8 @@ def exportLayers(iface, layers, folder, precision, optimize,
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
 
-            name_ts = (sln + unicode(int(time.time())))
+            name_ts = (safeName(layer.name()) + unicode(count) +
+                       unicode(int(time.time())))
 
             # We need to create a new file to export style
             piped_file = os.path.join(
