@@ -649,7 +649,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
             url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
             metadata = layer.metadata()
-            vMetadata = "<tr><td>WMS Version</td><td>(.+?)</td>"
+            vMetadata = "<tr><td>%s</td><td>(.+?)</td>" % (
+                QCoreApplication.translate("", "WMS Version"))
             result = re.search(vMetadata, metadata)
             if result:
                 version = result.group(1)
