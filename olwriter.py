@@ -72,6 +72,7 @@ def writeOL(iface, layers, groups, popup, visible,
             jsAddress += """build/ol.js"></script>"""
         layerSearch = settings["Appearance"]["Layer search"]
         if layerSearch != "None" and layerSearch != "":
+            searchLayer = settings["Appearance"]["Search layer"]
             cssAddress += """
         <link rel="stylesheet" href="resources/horsey.min.css">
         <link rel="stylesheet" href="resources/ol3-search-layer.min.css">"""
@@ -90,7 +91,7 @@ def writeOL(iface, layers, groups, popup, visible,
       map: map
     }});
 
-    map.addControl(searchLayer);""".format(layer=searchVals[0],
+    map.addControl(searchLayer);""".format(layer=searchLayer,
                                            field=searchVals[1])
         else:
             layerSearch = ""

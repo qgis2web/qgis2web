@@ -260,7 +260,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         layerSearch.addItem("None")
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
-        for layer in reversed(layers):
+        for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 options = []
                 fields = layer.pendingFields()
@@ -276,7 +276,11 @@ class MainDialog(QDialog, Ui_MainDialog):
                         continue
                     options.append(f.name())
                 for option in options:
-                    layerSearch.addItem(layer.name() + ": " + option)
+                    displayStr = layer.name() + ": " + option
+                    layerSearch.insertItem(0, displayStr)
+                    sln = utils.safeName(layer.name())
+                    layerSearch.setItemData(layerSearch.findText(displayStr),
+                                            sln + unicode(count))
 
     def populateConfigParams(self, dlg):
         global projectInstance
@@ -401,6 +405,13 @@ class MainDialog(QDialog, Ui_MainDialog):
         for group, settings in self.items.iteritems():
             for param, item in settings.iteritems():
                 parameters[group][param] = item.value()
+                if param == "Layer search":
+                    searchWidget = self.paramsTreeOL.itemWidget(
+                        self.paramsTreeOL.findItems(param,
+                        (Qt.MatchExactly |
+                         Qt.MatchRecursive))[0], 1)
+                    parameters["Appearance"]["Search layer"] = (
+                        searchWidget.itemData(searchWidget.currentIndex()))
         basemaps = self.basemaps.selectedItems()
         parameters["Appearance"]["Base layer"] = basemaps
         return parameters
