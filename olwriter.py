@@ -656,7 +656,12 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             if result:
                 version = result.group(1)
             else:
-                version = ""
+                vMetadata = "</td><td>(.+?)</td>"
+                result = re.search(vMetadata, metadata)
+                if result:
+                    version = result.group(1)
+                else:
+                    version = ""
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
