@@ -393,7 +393,7 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
         js = js.strip()
         f = js
     else:
-        f = "feature.properties['%s']" % handleHiddenField(layer, 
+        f = "feature.properties['%s']" % handleHiddenField(layer,
                                                            palyr.fieldName)
     label_exp = False
     labeltext = ".bindTooltip((" + unicode(f)

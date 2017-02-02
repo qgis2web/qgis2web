@@ -407,9 +407,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 parameters[group][param] = item.value()
                 if param == "Layer search":
                     searchWidget = self.paramsTreeOL.itemWidget(
-                        self.paramsTreeOL.findItems(param,
-                                (Qt.MatchExactly |
-                                 Qt.MatchRecursive))[0], 1)
+                        self.paramsTreeOL.findItems(param, (
+                                Qt.MatchExactly |
+                                Qt.MatchRecursive))[0], 1)
                     parameters["Appearance"]["Search layer"] = (
                         searchWidget.itemData(searchWidget.currentIndex()))
         basemaps = self.basemaps.selectedItems()
