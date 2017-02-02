@@ -70,7 +70,7 @@ def writeOL(iface, layers, groups, popup, visible,
             jsAddress += """
         <script src="http://openlayers.org/en/v3.20.1/"""
             jsAddress += """build/ol.js"></script>"""
-        layerSearch = settings["Appearance"]["Layer search"]
+        layerSearch = unicode(settings["Appearance"]["Layer search"])
         if layerSearch != "None" and layerSearch != "":
             searchLayer = settings["Appearance"]["Search layer"]
             cssAddress += """
