@@ -422,7 +422,7 @@ def addressSearchScript():
     return addressSearch
 
 
-def endHTMLscript(wfsLayers, layerSearch, labels):
+def endHTMLscript(wfsLayers, layerSearch, labels, searchLayer):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
@@ -432,10 +432,11 @@ def endHTMLscript(wfsLayers, layerSearch, labels):
         searchVals = layerSearch.split(": ")
         endHTML += """
         map.addControl(new L.Control.Search({{
-            layer: feature_group,
+            layer: {searchLayer},
             initial: false,
             hideMarkerOnCollapse: true,
-            propertyName: '{field}'}}));""".format(field=searchVals[1])
+            propertyName: '{field}'}}));""".format(searchLayer=searchLayer,
+                                                   field=searchVals[1])
     endHTML += """
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML

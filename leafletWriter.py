@@ -191,7 +191,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
         end = scaleBar(placement)
     else:
         end = ''
-    end += endHTMLscript(wfsLayers, layerSearch, labelVisibility)
+    searchLayer = params["Appearance"]["Search layer"]
+    end += endHTMLscript(wfsLayers, layerSearch, labelVisibility, searchLayer)
     new_src += end
     try:
         writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
