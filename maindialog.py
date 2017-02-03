@@ -274,9 +274,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                     if (editorWidget == QgsVectorLayer.Hidden or
                             editorWidget == 'Hidden'):
                         continue
-                    options.append(f.name())
+                    options.append(unicode(f.name()))
                 for option in options:
-                    displayStr = layer.name() + ": " + option
+                    displayStr = unicode(layer.name() + ": " + option)
                     layerSearch.insertItem(0, displayStr)
                     sln = utils.safeName(layer.name())
                     layerSearch.setItemData(layerSearch.findText(displayStr),
@@ -479,11 +479,12 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.saveParameters()
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
-        for layer, pop in zip(layers, popup):
+        for layer, pop, vis in zip(layers, popup, visible):
             attrDict = {}
             for attr in pop:
                 attrDict['attr'] = pop[attr]
                 layer.setCustomProperty("qgis2web/popup/" + attr, pop[attr])
+                layer.setCustomProperty("qgis2web/Visible", vis)
         QSettings().setValue("qgis2web/size", self.size())
         QSettings().setValue("qgis2web/pos", self.pos())
         QSettings().setValue("qgis2web/previewOnStartup",
@@ -582,12 +583,13 @@ class TreeLayerItem(QTreeWidgetItem):
             self.addChild(self.popupItem)
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
-        if layer.customProperty("qgis2web/Visible") == 0:
-            self.visibleCheck.setChecked(False)
-        else:
+        print layer.name(), layer.customProperty("qgis2web/Visible")
+        if (layer.customProperty("qgis2web/Visible") and
+                layer.customProperty("qgis2web/Visible") != "false"):
             self.visibleCheck.setChecked(True)
+        else:
+            self.visibleCheck.setChecked(False)
         self.visibleItem.setText(0, "Visible")
-        self.visibleCheck.stateChanged.connect(self.changeVisible)
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
         if layer.type() == layer.VectorLayer:
@@ -640,9 +642,6 @@ class TreeLayerItem(QTreeWidgetItem):
             return self.clusterCheck.isChecked()
         except:
             return False
-
-    def changeVisible(self, isVisible):
-        self.layer.setCustomProperty("qgis2web/Visible", isVisible)
 
     def changeJSON(self, isJSON):
         self.layer.setCustomProperty("qgis2web/Encode to JSON", isJSON)
