@@ -187,7 +187,6 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
         placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
         placement = PLACEMENT[placement]
-        print placement
         end = scaleBar(placement)
     else:
         end = ''

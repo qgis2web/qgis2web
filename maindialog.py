@@ -583,12 +583,11 @@ class TreeLayerItem(QTreeWidgetItem):
             self.addChild(self.popupItem)
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
-        print layer.name(), layer.customProperty("qgis2web/Visible")
-        if (layer.customProperty("qgis2web/Visible") and
-                layer.customProperty("qgis2web/Visible") != "false"):
-            self.visibleCheck.setChecked(True)
-        else:
+        vis = layer.customProperty("qgis2web/Visible", True)
+        if (vis == 0 or unicode(vis).lower() == "false"):
             self.visibleCheck.setChecked(False)
+        else:
+            self.visibleCheck.setChecked(True)
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
@@ -648,9 +647,6 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def changeCluster(self, isCluster):
         self.layer.setCustomProperty("qgis2web/Cluster", isCluster)
-
-    def changeLabel(self, isLabel):
-        self.layer.setCustomProperty("qgis2web/Label", isLabel)
 
 
 class TreeSettingItem(QTreeWidgetItem):
