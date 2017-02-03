@@ -82,7 +82,7 @@ def writeOL(iface, layers, groups, popup, visible,
         <script src="resources/horsey.min.js"></script>
         <script src="resources/ol3-search-layer.min.js"></script>"""
             searchVals = layerSearch.split(": ")
-            layerSearch = """
+            layerSearch = u"""
     var searchLayer = new ol.SearchLayer({{
       layer: lyr_{layer},
       colName: '{field}',
@@ -278,7 +278,8 @@ def writeOL(iface, layers, groups, popup, visible,
                   "@MEASURE@": measure,
                   "@MEASUREUNIT@": measureUnit}
         with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
-            f.write(replaceInScript("qgis2web.js", values))
+            out = replaceInScript("qgis2web.js", values)
+            f.write(out.encode("utf-8"))
     except Exception as e:
         print "FAIL"
         print traceback.format_exc()
