@@ -2527,7 +2527,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
         # test for exported raster file
-        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'layers/test.png'))
+        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'layers/test0.png'))
 
     def test99_export_folder(self):
         """Export folder"""
