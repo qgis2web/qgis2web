@@ -278,7 +278,9 @@ def exportLayers(iface, layers, folder, precision, optimize,
             piped_3857 = os.path.join(tempfile.gettempdir(),
                                       name_ts + '_piped_3857.tif')
             # Export layer as PNG
-            out_raster = os.path.join(layersFolder, layer.name() + ".png")
+            out_raster = os.path.join(layersFolder,
+                                      safeName(layer.name()) +
+                                      unicode(count) + ".png")
 
             qgis_version = QGis.QGIS_VERSION
 
