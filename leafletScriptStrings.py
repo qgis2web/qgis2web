@@ -299,20 +299,29 @@ def pointJSONLayer(sln, label, usedFields, markerType):
 
 
 def wmsScript(layer, safeLayerName):
+    print layer.source()
     d = parse_qs(layer.source())
-    wms_url = d['url'][0]
-    wms_layer = d['layers'][0]
-    wms_format = d['format'][0]
-    wms_crs = d['crs'][0]
-    wms = """
-        var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
-            layers: '{wms_layer}',
-            format: '{wms_format}',
-            uppercase: true,
-            transparent: true,
-            continuousWorld : true,
-        }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
-                       wms_layer=wms_layer, wms_format=wms_format)
+    print d['type']
+    if d['type'][0] == "xyz":
+        wms = """
+        var overlay_{safeLayerName} = L.tileLayer('{url}', {{
+        }});
+        overlay_{safeLayerName}.addTo(map);""".format(
+            safeLayerName=safeLayerName, url=d['url'][0])
+    else:
+        wms_url = d['url'][0]
+        wms_layer = d['layers'][0]
+        wms_format = d['format'][0]
+        wms_crs = d['crs'][0]
+        wms = """
+            var overlay_{safeLayerName} = L.tileLayer.wms('{wms_url}', {{
+                layers: '{wms_layer}',
+                format: '{wms_format}',
+                uppercase: true,
+                transparent: true,
+                continuousWorld : true,
+            }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
+                           wms_layer=wms_layer, wms_format=wms_format)
     return wms
 
 
