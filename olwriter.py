@@ -23,6 +23,7 @@ import time
 import shutil
 import traceback
 import xml.etree.ElementTree
+from urlparse import parse_qs
 from qgis.core import *
 from utils import (exportLayers, safeName, replaceInTemplate,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
@@ -648,32 +649,44 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
-            layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-            url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
-            metadata = layer.metadata()
-            needle = "<tr><td>%s</td><td>(.+?)</td>" % (
-                QCoreApplication.translate("QgsWmsProvider", "WMS Version"))
-            result = re.search(needle, metadata)
-            if result:
-                version = result.group(1)
+            d = parse_qs(source)
+            if d["type"][0] == "xyz":
+                return """
+        var lyr_%s = new ol.layer.Tile({
+            'title': '%s',
+            'type': 'base',
+            source: new ol.source.XYZ({
+                url: '%s'
+            })
+        });""" % (layerName, layerName, d["url"][0])
             else:
-                version = ""
-            return '''var lyr_%(n)s = new ol.layer.Tile({
-                        source: new ol.source.TileWMS(({
-                          url: "%(url)s",
-                          params: {
-                            "LAYERS": "%(layers)s",
-                            "TILED": "true",
-                            "VERSION": "%(version)s"},
-                        })),
-                        title: "%(name)s",
-                        %(minRes)s
-                        %(maxRes)s
-                      });''' % {"layers": layers, "url": url,
-                                "n": layerName, "name": layer.name(),
-                                "version": version,
-                                "minRes": minResolution,
-                                "maxRes": maxResolution}
+                layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+                url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+                metadata = layer.metadata()
+                needle = "<tr><td>%s</td><td>(.+?)</td>" % (
+                    QCoreApplication.translate("QgsWmsProvider",
+                                               "WMS Version"))
+                result = re.search(needle, metadata)
+                if result:
+                    version = result.group(1)
+                else:
+                    version = ""
+                return '''var lyr_%(n)s = new ol.layer.Tile({
+                            source: new ol.source.TileWMS(({
+                              url: "%(url)s",
+                              params: {
+                                "LAYERS": "%(layers)s",
+                                "TILED": "true",
+                                "VERSION": "%(version)s"},
+                            })),
+                            title: "%(name)s",
+                            %(minRes)s
+                            %(maxRes)s
+                          });''' % {"layers": layers, "url": url,
+                                    "n": layerName, "name": layer.name(),
+                                    "version": version,
+                                    "minRes": minResolution,
+                                    "maxRes": maxResolution}
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
 

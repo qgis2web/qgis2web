@@ -299,9 +299,7 @@ def pointJSONLayer(sln, label, usedFields, markerType):
 
 
 def wmsScript(layer, safeLayerName):
-    print layer.source()
     d = parse_qs(layer.source())
-    print d['type']
     if d['type'][0] == "xyz":
         wms = """
         var overlay_{safeLayerName} = L.tileLayer('{url}', {{
