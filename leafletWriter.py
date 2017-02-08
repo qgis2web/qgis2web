@@ -44,8 +44,9 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     mapSettings = canvas.mapSettings()
     title = project.title()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
+    stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     outputProjectFileName = os.path.join(outputProjectFileName,
-                                         'qgis2web_' + unicode(time.time()))
+                                         'qgis2web_' + unicode(stamp))
     outputIndex = os.path.join(outputProjectFileName, 'index.html')
 
     mapLibLocation = params["Data export"]["Mapping library location"]
