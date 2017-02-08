@@ -19,7 +19,7 @@ import codecs
 import os
 import re
 import math
-import time
+from datetime import datetime
 import shutil
 import traceback
 import xml.etree.ElementTree
@@ -38,7 +38,7 @@ from basemaps import basemapOL
 def writeOL(iface, layers, groups, popup, visible,
             json, clustered, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
+    stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)

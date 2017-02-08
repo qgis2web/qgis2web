@@ -26,7 +26,7 @@ import qgis.utils
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QApplication, QCursor
 import os
-import time
+from datetime import datetime
 import re
 from basemaps import basemapLeaflet
 from leafletFileScripts import *
@@ -44,7 +44,7 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
     mapSettings = canvas.mapSettings()
     title = project.title()
     pluginDir = os.path.dirname(os.path.realpath(__file__))
-    stamp = time.strftime("%Y_%m_%d-%H_%M_%S")
+    stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
     outputProjectFileName = os.path.join(outputProjectFileName,
                                          'qgis2web_' + unicode(stamp))
     outputIndex = os.path.join(outputProjectFileName, 'index.html')
