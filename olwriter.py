@@ -282,7 +282,6 @@ def writeOL(iface, layers, groups, popup, visible,
             out = replaceInScript("qgis2web.js", values)
             f.write(out.encode("utf-8"))
     except Exception as e:
-        print "FAIL"
         print traceback.format_exc()
     finally:
         QApplication.restoreOverrideCursor()
@@ -544,6 +543,9 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
         minResolution = ""
         maxResolution = ""
     layerName = safeName(layer.name()) + unicode(count)
+    attrText = layer.attribution()
+    attrUrl = layer.attributionUrl()
+    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     if layer.type() == layer.VectorLayer and not is25d(layer,
                                                        iface.mapCanvas(),
                                                        restrictToExtent,
@@ -580,8 +582,9 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
         if layer.providerType() == "WFS" and not encode2json:
             layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
     format: format_%(n)s
-});''' % {"n": layerName}
+});''' % {"n": layerName, "layerAttr": layerAttr}
             if cluster:
                 layerCode += '''cluster_%(n)s = new ol.source.Cluster({
   distance: 10,
@@ -608,9 +611,12 @@ function get%(n)sJson(geojson) {
         else:
             layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s, %(crs)s);
-var jsonSource_%(n)s = new ol.source.Vector();
+var jsonSource_%(n)s = new ol.source.Vector({
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+});
 jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
-                                                    "crs": crsConvert}
+                                                    "crs": crsConvert,
+                                                    "layerAttr": layerAttr}
             if cluster:
                 layerCode += '''cluster_%(n)s = new ol.source.Cluster({
   distance: 10,
@@ -660,10 +666,11 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             %s
             %s
             source: new ol.source.XYZ({
+    attributions: [new ol.Attribution({html: '%s'})],
                 url: '%s'
             })
         });""" % (layerName, layerName, opacity, minResolution, maxResolution,
-                  d["url"][0])
+                  layerAttr, d["url"][0])
             else:
                 layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
                 url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
@@ -679,6 +686,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 return '''var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
                               url: "%(url)s",
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
                               params: {
                                 "LAYERS": "%(layers)s",
                                 "TILED": "true",
@@ -689,6 +697,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                             %(minRes)s
                             %(maxRes)s
                           });''' % {"layers": layers, "url": url,
+                                    "layerAttr": layerAttr,
                                     "n": layerName, "name": layer.name(),
                                     "version": version, "opacity": opacity,
                                     "minRes": minResolution,
@@ -714,6 +723,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                             %(maxRes)s
                             source: new ol.source.ImageStatic({
                                url: "./layers/%(n)s.png",
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
                                 //imageSize: [%(col)d, %(row)d],
@@ -725,6 +735,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                   "name": layer.name(),
                                   "minRes": minResolution,
                                   "maxRes": maxResolution,
+                                  "layerAttr": layerAttr,
                                   "row": provider.ySize()}
 
 

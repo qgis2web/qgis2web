@@ -277,9 +277,10 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def pointJSONLayer(sln, label, usedFields, markerType):
+def pointJSONLayer(sln, label, usedFields, markerType, layerAttr):
     pointJSON = """
         var layer_{sln} = new L.geoJson(json_{sln}, {{
+            attribution: '{attr}',
             pane: 'pane_{sln}',"""
     if usedFields != 0:
         pointJSON += """
@@ -294,7 +295,8 @@ def pointJSONLayer(sln, label, usedFields, markerType):
     pointJSON += """style_{sln}(feature)){label}
             }}
         }});"""
-    pointJSON = pointJSON.format(sln=sln, label=label, markerType=markerType)
+    pointJSON = pointJSON.format(sln=sln, label=label, markerType=markerType,
+                                 attr=layerAttr)
     return pointJSON
 
 

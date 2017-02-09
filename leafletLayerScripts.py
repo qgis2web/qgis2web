@@ -571,8 +571,11 @@ def pointLayer(layer, safeLayerName, labeltext, cluster, usedFields, json,
          scriptTag) = buildPointWFS(p2lf, safeLayerName, layer, cluster)
         wfsLayers += wfsScript(scriptTag)
     else:
+        attrText = layer.attribution()
+        attrUrl = layer.attributionUrl()
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
         new_obj = pointJSONLayer(safeLayerName, labeltext,
-                                 usedFields, markerType)
+                                 usedFields, markerType, layerAttr)
         if cluster:
             new_obj += clusterScript(safeLayerName)
     return new_obj, wfsLayers
@@ -588,6 +591,9 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers):
 
 
 def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
+    attrText = layer.attribution()
+    attrUrl = layer.attributionUrl()
+    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     hmRadius = renderer.radius() * 2
     hmWeight = renderer.weightExpression()
     if hmWeight is not None and hmWeight != "":
@@ -608,24 +614,29 @@ def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
         var %(sln)s_hm = geoJson2heat(json_%(sln)s,
                                       '%(hmWeight)s');
         var layer_%(sln)s = new L.heatLayer(%(sln)s_hm, {
+            attribution: '%(attr)s',
             radius: %(hmRadius)d,
             max: %(hmWeightMax)d,
             minOpacity: 1,
             gradient: %(hmRamp)s});
-        """ % {"sln": safeLayerName, "hmWeight": hmWeight,
+        """ % {"sln": safeLayerName, "hmWeight": hmWeight, "attr": layerAttr,
                "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
                "hmRadius": hmRadius}
     return new_obj, legends, wfsLayers
 
 
 def buildPointWFS(p2lf, layerName, layer, cluster_set):
+    attrText = layer.attribution()
+    attrUrl = layer.attributionUrl()
+    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = p2lf + """
         var layer_{layerName} = L.geoJson(null, {{
+            attribution: '{layeAttr}',
             pane: 'pane_{layerName}',
             pointToLayer: pointToLayer_{layerName},
             onEachFeature: pop_{layerName}
-        }});""".format(layerName=layerName)
+        }});""".format(layerName=layerName, layerAttr=layerAttr)
     if cluster_set:
         new_obj += """
         var cluster_{layerName} = """.format(layerName=layerName)
@@ -645,6 +656,9 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set):
 
 
 def buildNonPointJSON(safeName, usedFields):
+    attrText = layer.attribution()
+    attrUrl = layer.attributionUrl()
+    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     if usedFields != 0:
         onEachFeature = """
         onEachFeature: pop_{safeName},""".format(safeName=safeName)
@@ -652,19 +666,25 @@ def buildNonPointJSON(safeName, usedFields):
         onEachFeature = ""
     new_obj = """
     var layer_{safeName} = new L.geoJson(json_{safeName}, {{
+        attribution: '{attr}',
         pane: 'pane_{safeName}',{onEachFeature}
         style: style_{safeName}
     }});"""
-    new_obj = new_obj.format(safeName=safeName, onEachFeature=onEachFeature)
+    new_obj = new_obj.format(safeName=safeName, attr=layerAttr,
+                             onEachFeature=onEachFeature)
     new_obj = new_obj
 
     return new_obj
 
 
 def buildNonPointWFS(layerName, layer):
+    attrText = layer.attribution()
+    attrUrl = layer.attributionUrl()
+    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = """
         var layer_{layerName} = L.geoJson(null, {{
+            attribution: '{attr}',
             style: style_{layerName},
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
@@ -672,7 +692,7 @@ def buildNonPointWFS(layerName, layer):
     new_obj += """
         function get{layerName}Json(geojson) {{
             layer_{layerName}"""
-    new_obj = new_obj.format(layerName=layerName)
+    new_obj = new_obj.format(layerName=layerName, attr=layerAttr)
     new_obj += ".addData(geojson);"
     new_obj += """
         };"""
