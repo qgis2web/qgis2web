@@ -586,7 +586,10 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers):
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer)
         wfsLayers += wfsScript(scriptTag)
     else:
-        new_obj = buildNonPointJSON(safeLayerName, usedFields)
+        attrText = layer.attribution()
+        attrUrl = layer.attributionUrl()
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+        new_obj = buildNonPointJSON(safeLayerName, usedFields, layerAttr)
     return new_obj, wfsLayers
 
 
@@ -632,7 +635,7 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set):
     scriptTag = getWFSScriptTag(layer, layerName)
     new_obj = p2lf + """
         var layer_{layerName} = L.geoJson(null, {{
-            attribution: '{layeAttr}',
+            attribution: '{layerAttr}',
             pane: 'pane_{layerName}',
             pointToLayer: pointToLayer_{layerName},
             onEachFeature: pop_{layerName}
@@ -655,10 +658,7 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set):
     return new_obj, scriptTag
 
 
-def buildNonPointJSON(safeName, usedFields):
-    attrText = layer.attribution()
-    attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+def buildNonPointJSON(safeName, usedFields, layerAttr):
     if usedFields != 0:
         onEachFeature = """
         onEachFeature: pop_{safeName},""".format(safeName=safeName)
