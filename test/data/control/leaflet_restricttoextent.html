@@ -100,6 +100,7 @@
         map.getPane('pane_airports0').style.zIndex = 600;
         map.getPane('pane_airports0').style['mix-blend-mode'] = 'normal';
         var layer_airports0 = new L.geoJson(json_airports0, {
+            attribution: '<a href=""></a>',
             pane: 'pane_airports0',
             onEachFeature: pop_airports0,
             pointToLayer: function (feature, latlng) {
