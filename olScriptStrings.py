@@ -274,7 +274,6 @@ var formatLength = function(line) {
 
 addInteraction();
 """
-    print "meaure unit feet"
     return measureUnitFeet
 
 
@@ -305,7 +304,8 @@ addInteraction();
     return measureUnitMetric
 
 
-def measureStyleScript():
+def measureStyleScript(controlCount):
+    pos = 65 + (controlCount * 35)
     measureStyle = """
 <style>
 .tooltip {
@@ -335,17 +335,17 @@ def measureStyleScript():
   position: absolute;
   bottom: -6px;
   margin-left: -7px;
-  left: 50%;
+  left: 50%%;
 }
 .tooltip-static:before {
   border-top-color: #ffcc33;
 }
 .measure-control {
-  top: 65px;
+  top: %(pos)dpx;
   left: .5em;
 }
 .ol-touch .measure-control {
   top: 80px;
 }
-</style>"""
+</style>""" % {"pos": pos}
     return measureStyle

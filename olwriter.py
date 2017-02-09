@@ -38,6 +38,7 @@ from basemaps import basemapOL
 def writeOL(iface, layers, groups, popup, visible,
             json, clustered, settings, folder):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+    controlCount = 0
     stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
     folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
     imagesFolder = os.path.join(folder, "images")
@@ -94,6 +95,7 @@ def writeOL(iface, layers, groups, popup, visible,
 
     map.addControl(searchLayer);""".format(layer=searchLayer,
                                            field=searchVals[1])
+            controlCount = controlCount + 1
         else:
             layerSearch = ""
         if osmb != "":
@@ -157,7 +159,9 @@ def writeOL(iface, layers, groups, popup, visible,
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
         geolocateUser = settings["Appearance"]["Geolocate user"]
-        backgroundColor += geolocateStyle(geolocateUser)
+        (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
+                                                       controlCount)
+        backgroundColor += geolocateCode
         mapbounds = bounds(iface,
                            extent == "Canvas extent",
                            layers,
@@ -190,7 +194,8 @@ def writeOL(iface, layers, groups, popup, visible,
                 measureUnit = measureUnitFeetScript()
             else:
                 measureUnit = measureUnitMetricScript()
-            measureStyle = measureStyleScript()
+            measureStyle = measureStyleScript(controlCount)
+            controlCount = controlCount + 1
         else:
             measureControl = ""
             measuring = ""
@@ -206,6 +211,18 @@ def writeOL(iface, layers, groups, popup, visible,
         extracss = """
         <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
         <link rel="stylesheet" href="./resources/qgis2web.css">"""
+        if geocode:
+            geocodePos = 65 + (controlCount * 35)
+            extracss += """
+        <style>
+        .ol-geocoder.gcd-gl-container {
+            top: %dpx!important;
+        }
+        .ol-geocoder .gcd-gl-btn {
+            width: 21px!important;
+            height: 21px!important;
+        }
+        </style>""" % geocodePos
         if settings["Appearance"]["Geolocate user"]:
             extracss += """
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
@@ -1218,20 +1235,23 @@ ol.inherits(geolocateControl, ol.control.Control);"""
         return ""
 
 
-def geolocateStyle(geolocate):
+def geolocateStyle(geolocate, controlCount):
     if geolocate:
-        return """
+        ctrlPos = 65 + (controlCount * 35)
+        print ctrlPos
+        controlCount = controlCount + 1
+        return ("""
         <style>
         .geolocate {
-            top: 65px;
+            top: %dpx;
             left: .5em;
         }
         .ol-touch .geolocate {
             top: 80px;
         }
-        </style>"""
+        </style>""" % ctrlPos, controlCount)
     else:
-        return ""
+        return ("", controlCount)
 
 
 def geocodeLinks(geocode):
