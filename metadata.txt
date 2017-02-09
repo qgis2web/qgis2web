@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/02/09 2.5.0 Harmonize Leaflet/OL3 output subfolder name, fix WMS, WMS/XYZ transparency, OL3 XYZ sacel-dependent visibility
+changelog=2017/02/09 2.5.0 Harmonize Leaflet/OL3 output subfolder name, fix WMS, WMS/XYZ transparency, OL3 XYZ scale-dependent visibility
     2017/02/08 2.4.0 Fix default categories, remove single basemap from layers list, OL3 i18n, fix layer search, fix Leaflet labels, fix OL3 raster, XYZ tileserver layer support
     2017/01/30 2.3.1 Pass WMS version in OL3, Leaflet WMS uppercase, Leaflet categorize on unicode field, remove commented code
     2017/01/27 2.3.0 Expression handling by qgs2js (thanks, @NathanW2!), fix traceback error, update Leaflet-search, upgrade to Leaflet 1.0.3, expressions in labels, template overwrite, template warning, Proj4 and Proj4Leaflet updated
