@@ -300,12 +300,14 @@ def pointJSONLayer(sln, label, usedFields, markerType):
 
 def wmsScript(layer, safeLayerName):
     d = parse_qs(layer.source())
-    if d['type'][0] == "xyz":
+    opacity = layer.renderer().opacity()
+    if 'type' in d and d['type'][0] == "xyz":
         wms = """
         var overlay_{safeLayerName} = L.tileLayer('{url}', {{
+            opacity: {opacity}
         }});
         overlay_{safeLayerName}.addTo(map);""".format(
-            safeLayerName=safeLayerName, url=d['url'][0])
+            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
     else:
         wms_url = d['url'][0]
         wms_layer = d['layers'][0]
@@ -318,8 +320,10 @@ def wmsScript(layer, safeLayerName):
                 uppercase: true,
                 transparent: true,
                 continuousWorld : true,
+                opacity: {opacity}
             }});""".format(safeLayerName=safeLayerName, wms_url=wms_url,
-                           wms_layer=wms_layer, wms_format=wms_format)
+                           wms_layer=wms_layer, wms_format=wms_format,
+                           opacity=opacity)
     return wms
 
 

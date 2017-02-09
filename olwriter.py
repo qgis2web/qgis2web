@@ -649,16 +649,18 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
+            opacity = layer.renderer().opacity()
             d = parse_qs(source)
-            if d["type"][0] == "xyz":
+            if "type" in d and d["type"][0] == "xyz":
                 return """
         var lyr_%s = new ol.layer.Tile({
             'title': '%s',
             'type': 'base',
+            'opacity': %f,
             source: new ol.source.XYZ({
                 url: '%s'
             })
-        });""" % (layerName, layerName, d["url"][0])
+        });""" % (layerName, layerName, opacity, d["url"][0])
             else:
                 layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
                 url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
@@ -680,11 +682,12 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                 "VERSION": "%(version)s"},
                             })),
                             title: "%(name)s",
+                            opacity: %(opacity)f,
                             %(minRes)s
                             %(maxRes)s
                           });''' % {"layers": layers, "url": url,
                                     "n": layerName, "name": layer.name(),
-                                    "version": version,
+                                    "version": version, "opacity": opacity,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
         elif layer.providerType().lower() == "gdal":
