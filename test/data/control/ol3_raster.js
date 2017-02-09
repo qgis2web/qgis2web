@@ -5,6 +5,7 @@ var lyr_test0 = new ol.layer.Image({
                             
                             source: new ol.source.ImageStatic({
                                url: "./layers/test0.png",
+    attributions: [new ol.Attribution({html: '<a href=""></a>'})],
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
                                 //imageSize: [1000, 1003],
