@@ -657,10 +657,13 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             'title': '%s',
             'type': 'base',
             'opacity': %f,
+            %s
+            %s
             source: new ol.source.XYZ({
                 url: '%s'
             })
-        });""" % (layerName, layerName, opacity, d["url"][0])
+        });""" % (layerName, layerName, opacity, minResolution, maxResolution,
+                  d["url"][0])
             else:
                 layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
                 url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
