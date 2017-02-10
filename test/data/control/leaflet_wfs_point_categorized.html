@@ -42,9 +42,7 @@
         })
         var hash = new L.Hash(map);
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
-        var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
-        var raster_group = new L.LayerGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
@@ -231,9 +229,7 @@
             setBounds();
         };
         bounds_group.addLayer(layer_point0);
-        feature_group.addLayer(layer_point0);
-        raster_group.addTo(map);
-        feature_group.addTo(map);
+        map.addLayer(layer_point0);
         </script>
         <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:4326&BBOX=233720,53549,297567,96689&outputFormat=text%2Fjavascript&format_options=callback%3Agetpoint0Json'></script>
     </body>

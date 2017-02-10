@@ -43,9 +43,7 @@
         })
         var hash = new L.Hash(map);
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
-        var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
-        var raster_group = new L.LayerGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
@@ -112,9 +110,7 @@
             }
         });
         bounds_group.addLayer(layer_airports0);
-        feature_group.addLayer(layer_airports0);
-        raster_group.addTo(map);
-        feature_group.addTo(map);
+        map.addLayer(layer_airports0);
         setBounds();
         </script>
     </body>
