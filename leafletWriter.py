@@ -169,11 +169,8 @@ def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
                 new_obj = rasterScript(layer, safeLayerName)
             if visible[count]:
                 new_obj += """
-        raster_group.addLayer(overlay_""" + safeLayerName + """);"""
+        map.addLayer(overlay_""" + safeLayerName + """);"""
             new_src += new_obj
-    new_src += """
-        raster_group.addTo(map);
-        feature_group.addTo(map);"""
     new_src += scaleDependentLayers
     if title != "":
         titleStart = unicode(titleSubScript(title).decode("utf-8"))

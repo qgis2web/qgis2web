@@ -335,7 +335,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         if visible:
             if cluster is False:
                 new_src += """
-        feature_group.addLayer(layer_""" + safeLayerName + """);"""
+        map.addLayer(layer_""" + safeLayerName + """);"""
             else:
                 new_src += """
         cluster_""" + safeLayerName + """.addTo(map);"""

@@ -21,9 +21,9 @@ def scaleDependentLayerScript(layer, layerName):
     max = layer.maximumScale()
     scaleDependentLayer = """
             if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
-                feature_group.addLayer(layer_{layerName});
+                map.addLayer(layer_{layerName});
             }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
-                feature_group.removeLayer(layer_{layerName});
+                map.removeLayer(layer_{layerName});
             }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
                          layerName=layerName)
     return scaleDependentLayer
@@ -136,9 +136,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
 
 def featureGroupsScript():
     featureGroups = """
-        var feature_group = new L.featureGroup([]);
-        var bounds_group = new L.featureGroup([]);
-        var raster_group = new L.LayerGroup([]);"""
+        var bounds_group = new L.featureGroup([]);"""
     return featureGroups
 
 
