@@ -46,19 +46,14 @@ from leafletWriter import *
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-mainDlg = None
-
-
 class MainDialog(QDialog, Ui_MainDialog):
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
     def __init__(self, iface):
-        global mainDlg
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        mainDlg = self
         stgs = QSettings()
 
         self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry", QByteArray(), type=QByteArray))
@@ -250,9 +245,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 item.setExpanded(False)
 
     def populateLayerSearch(self):
-        global mainDlg
-        layerSearch = mainDlg.paramsTreeOL.itemWidget(
-                mainDlg.paramsTreeOL.findItems("Layer search",
+        layerSearch = self.paramsTreeOL.itemWidget(
+                self.paramsTreeOL.findItems("Layer search",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1)
         layerSearch.clear()

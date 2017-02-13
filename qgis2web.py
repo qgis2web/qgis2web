@@ -29,6 +29,7 @@ class Qgis2Web(object):
     """Class abstraction for managing Qgis2Web plugin in QGIS."""
     def __init__(self, iface):
         self.iface = iface
+        self.dlg = None
 
     def initGui(self):
         self.action = QAction(
@@ -44,5 +45,8 @@ class Qgis2Web(object):
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
-        dlg = MainDialog(self.iface)
-        dlg.show()
+        if not self.dlg:
+           self.dlg = MainDialog(self.iface)
+        self.dlg.show()
+        # bring to front
+        self.dlg.raise_()
