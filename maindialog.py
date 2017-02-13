@@ -26,6 +26,8 @@ import webbrowser
 import qgis  # pylint: disable=unused-import
 # noinspection PyUnresolvedReferences
 from PyQt4.QtCore import *
+from PyQt4.QtCore import (QSettings,
+                          QByteArray)
 from PyQt4.QtGui import *
 try:
     from PyQt4.QtWebKit import *
@@ -59,8 +61,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.iface = iface
         mainDlg = self
         stgs = QSettings()
-        self.resize(stgs.value("qgis2web/size", QSize(994, 647)))
-        self.move(stgs.value("qgis2web/pos", QPoint(50, 50)))
+
+        self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry", QByteArray(), type=QByteArray))
+
         if stgs.value("qgis2web/previewOnStartup", Qt.Checked) == Qt.Checked:
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:
@@ -485,8 +488,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                 attrDict['attr'] = pop[attr]
                 layer.setCustomProperty("qgis2web/popup/" + attr, pop[attr])
                 layer.setCustomProperty("qgis2web/Visible", vis)
-        QSettings().setValue("qgis2web/size", self.size())
-        QSettings().setValue("qgis2web/pos", self.pos())
+
+        QSettings().setValue(
+            "qgis2web/MainDialogGeometry", self.saveGeometry())
+
         QSettings().setValue("qgis2web/previewOnStartup",
                              self.previewOnStartup.checkState())
         event.accept()
