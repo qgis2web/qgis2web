@@ -46,7 +46,7 @@ class Qgis2Web(object):
 
     def run(self):
         if not self.dlg:
-           self.dlg = MainDialog(self.iface)
+            self.dlg = MainDialog(self.iface)
         self.dlg.show()
         # bring to front
         self.dlg.raise_()

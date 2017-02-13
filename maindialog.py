@@ -46,6 +46,7 @@ from leafletWriter import *
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 class MainDialog(QDialog, Ui_MainDialog):
     """The main dialog of QGIS2Web plugin."""
     items = {}
@@ -56,7 +57,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.iface = iface
         stgs = QSettings()
 
-        self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry", QByteArray(), type=QByteArray))
+        self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry",
+                                        QByteArray(), type=QByteArray))
 
         if stgs.value("qgis2web/previewOnStartup", Qt.Checked) == Qt.Checked:
             self.previewOnStartup.setCheckState(Qt.Checked)
@@ -115,7 +117,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def changeFormat(self):
         QgsProject.instance().writeEntry("qgis2web", "mapFormat",
-                                   self.mapFormat.checkedButton().text())
+                                         self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
 
@@ -186,15 +188,15 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveSettings(self, paramItem, col):
         QgsProject.instance().removeEntry("qgis2web",
-                                    paramItem.name.replace(" ", ""))
+                                          paramItem.name.replace(" ", ""))
         if isinstance(paramItem._value, bool):
-            QgsProject.instance().writeEntry("qgis2web", paramItem.name.replace(" ",
-                                                                          ""),
-                                       paramItem.checkState(col))
+            QgsProject.instance().writeEntry("qgis2web",
+                                             paramItem.name.replace(" ", ""),
+                                             paramItem.checkState(col))
         else:
-            QgsProject.instance().writeEntry("qgis2web", paramItem.name.replace(" ",
-                                                                          ""),
-                                       paramItem.text(col))
+            QgsProject.instance().writeEntry("qgis2web",
+                                             paramItem.name.replace(" ", ""),
+                                             paramItem.text(col))
         if paramItem.name == "Match project CRS":
             baseLayer = self.basemaps
             if paramItem.checkState(col):
@@ -247,8 +249,8 @@ class MainDialog(QDialog, Ui_MainDialog):
     def populateLayerSearch(self):
         layerSearch = self.paramsTreeOL.itemWidget(
                 self.paramsTreeOL.findItems("Layer search",
-                                               (Qt.MatchExactly |
-                                                Qt.MatchRecursive))[0], 1)
+                                            (Qt.MatchExactly |
+                                             Qt.MatchRecursive))[0], 1)
         layerSearch.clear()
         layerSearch.addItem("None")
         (layers, groups, popup, visible,
@@ -277,40 +279,37 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populateConfigParams(self, dlg):
         self.items = defaultdict(dict)
+        project = QgsProject.instance()
         for group, settings in paramsOL.iteritems():
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
                 isTuple = False
                 if isinstance(value, bool):
-                    value = QgsProject.instance().readBoolEntry("qgis2web",
-                                                          param.replace(" ",
-                                                                        ""))[0]
+                    value = project.readBoolEntry("qgis2web",
+                                                  param.replace(" ", ""))[0]
                 elif isinstance(value, int):
-                    if QgsProject.instance().readNumEntry("qgis2web",
-                                                    param.replace(" ",
-                                                                  ""))[0] != 0:
-                        value = QgsProject.instance().readNumEntry(
-                                "qgis2web", param.replace(" ", ""))[0]
+                    if project.readNumEntry(
+                        "qgis2web", param.replace(" ", ""))[0] != 0:
+                        value = project.readNumEntry("qgis2web",
+                                                     param.replace(" ", ""))[0]
                 elif isinstance(value, tuple):
                     isTuple = True
-                    if QgsProject.instance().readNumEntry(
-                            "qgis2web", param.replace(" ", ""))[0] != 0:
-                        comboSelection = QgsProject.instance().readNumEntry(
+                    if project.readNumEntry("qgis2web",
+                                            param.replace(" ", ""))[0] != 0:
+                        comboSelection = project.readNumEntry(
                             "qgis2web", param.replace(" ", ""))[0]
                     elif param == "Max zoom level":
                         comboSelection = 27
                     else:
                         comboSelection = 0
                 else:
-                    if (isinstance(QgsProject.instance().readEntry("qgis2web",
+                    if (isinstance(project.readEntry("qgis2web",
                                    param.replace(" ", ""))[0], basestring) and
-                                QgsProject.instance().readEntry(
-                                    "qgis2web",
-                                    param.replace(" ", ""))[0] != ""):
-                        value = QgsProject.instance().readEntry("qgis2web",
-                                                          param.replace(" ",
-                                                                        ""))[0]
+                        project.readEntry("qgis2web",
+                                          param.replace(" ", ""))[0] != ""):
+                        value = project.readEntry(
+                            "qgis2web", param.replace(" ", ""))[0]
                 subitem = TreeSettingItem(item, self.paramsTreeOL,
                                           param, value, dlg)
                 if isTuple:
@@ -347,7 +346,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 pass
 
     def selectMapFormat(self):
-        if QgsProject.instance().readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
+        if QgsProject.instance().readEntry("qgis2web",
+                                           "mapFormat")[0] == "Leaflet":
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
 
@@ -412,8 +412,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         parameters = defaultdict(dict)
         for group, settings in self.items.iteritems():
             for param, item in settings.iteritems():
-                QgsProject.instance().writeEntry("qgis2web", param.replace(" ", ""),
-                                           item.setting())
+                QgsProject.instance().writeEntry("qgis2web",
+                                                 param.replace(" ", ""),
+                                                 item.setting())
         basemaps = self.basemaps.selectedItems()
         basemaplist = ",".join(basemap.text() for basemap in basemaps)
         QgsProject.instance().writeEntry("qgis2web", "Basemaps", basemaplist)
@@ -537,7 +538,8 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer = layer
         self.setText(0, layer.name())
         self.setIcon(0, self.layerIcon)
-        if QgsProject.instance().layerTreeRoot().findLayer(layer.id()).isVisible():
+        project = QgsProject.instance()
+        if project.layerTreeRoot().findLayer(layer.id()).isVisible():
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
