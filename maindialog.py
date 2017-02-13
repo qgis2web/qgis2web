@@ -46,7 +46,6 @@ from leafletWriter import *
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-projectInstance = QgsProject.instance()
 mainDlg = None
 
 
@@ -120,8 +119,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setModal(False)
 
     def changeFormat(self):
-        global projectInstance
-        projectInstance.writeEntry("qgis2web", "mapFormat",
+        QgsProject.instance().writeEntry("qgis2web", "mapFormat",
                                    self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
@@ -192,15 +190,14 @@ class MainDialog(QDialog, Ui_MainDialog):
                 paramItem.setText(1, folder)
 
     def saveSettings(self, paramItem, col):
-        global projectInstance
-        projectInstance.removeEntry("qgis2web",
+        QgsProject.instance().removeEntry("qgis2web",
                                     paramItem.name.replace(" ", ""))
         if isinstance(paramItem._value, bool):
-            projectInstance.writeEntry("qgis2web", paramItem.name.replace(" ",
+            QgsProject.instance().writeEntry("qgis2web", paramItem.name.replace(" ",
                                                                           ""),
                                        paramItem.checkState(col))
         else:
-            projectInstance.writeEntry("qgis2web", paramItem.name.replace(" ",
+            QgsProject.instance().writeEntry("qgis2web", paramItem.name.replace(" ",
                                                                           ""),
                                        paramItem.text(col))
         if paramItem.name == "Match project CRS":
@@ -212,8 +209,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
-        global projectInstance
-        root_node = projectInstance.layerTreeRoot()
+        root_node = QgsProject.instance().layerTreeRoot()
         tree_groups = []
         tree_layers = root_node.findLayers()
         self.layers_item = QTreeWidgetItem()
@@ -286,7 +282,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                                             sln + unicode(count))
 
     def populateConfigParams(self, dlg):
-        global projectInstance
         self.items = defaultdict(dict)
         for group, settings in paramsOL.iteritems():
             item = QTreeWidgetItem()
@@ -294,32 +289,32 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, value in settings.iteritems():
                 isTuple = False
                 if isinstance(value, bool):
-                    value = projectInstance.readBoolEntry("qgis2web",
+                    value = QgsProject.instance().readBoolEntry("qgis2web",
                                                           param.replace(" ",
                                                                         ""))[0]
                 elif isinstance(value, int):
-                    if projectInstance.readNumEntry("qgis2web",
+                    if QgsProject.instance().readNumEntry("qgis2web",
                                                     param.replace(" ",
                                                                   ""))[0] != 0:
-                        value = projectInstance.readNumEntry(
+                        value = QgsProject.instance().readNumEntry(
                                 "qgis2web", param.replace(" ", ""))[0]
                 elif isinstance(value, tuple):
                     isTuple = True
-                    if projectInstance.readNumEntry(
+                    if QgsProject.instance().readNumEntry(
                             "qgis2web", param.replace(" ", ""))[0] != 0:
-                        comboSelection = projectInstance.readNumEntry(
+                        comboSelection = QgsProject.instance().readNumEntry(
                             "qgis2web", param.replace(" ", ""))[0]
                     elif param == "Max zoom level":
                         comboSelection = 27
                     else:
                         comboSelection = 0
                 else:
-                    if (isinstance(projectInstance.readEntry("qgis2web",
+                    if (isinstance(QgsProject.instance().readEntry("qgis2web",
                                    param.replace(" ", ""))[0], basestring) and
-                            projectInstance.readEntry(
+                                QgsProject.instance().readEntry(
                                     "qgis2web",
                                     param.replace(" ", ""))[0] != ""):
-                        value = projectInstance.readEntry("qgis2web",
+                        value = QgsProject.instance().readEntry("qgis2web",
                                                           param.replace(" ",
                                                                         ""))[0]
                 subitem = TreeSettingItem(item, self.paramsTreeOL,
@@ -349,7 +344,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             for key in baselayers[i]:
                 attrFields.append(key)
         self.basemaps.addItems(attrFields)
-        basemaps = projectInstance.readEntry("qgis2web", "Basemaps")[0]
+        basemaps = QgsProject.instance().readEntry("qgis2web", "Basemaps")[0]
         for basemap in basemaps.split(","):
             try:
                 self.basemaps.findItems(basemap,
@@ -358,8 +353,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 pass
 
     def selectMapFormat(self):
-        global projectInstance
-        if projectInstance.readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
+        if QgsProject.instance().readEntry("qgis2web", "mapFormat")[0] == "Leaflet":
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
 
@@ -420,16 +414,15 @@ class MainDialog(QDialog, Ui_MainDialog):
         return parameters
 
     def saveParameters(self):
-        global projectInstance
-        projectInstance.removeEntry("qgis2web", "/")
+        QgsProject.instance().removeEntry("qgis2web", "/")
         parameters = defaultdict(dict)
         for group, settings in self.items.iteritems():
             for param, item in settings.iteritems():
-                projectInstance.writeEntry("qgis2web", param.replace(" ", ""),
+                QgsProject.instance().writeEntry("qgis2web", param.replace(" ", ""),
                                            item.setting())
         basemaps = self.basemaps.selectedItems()
         basemaplist = ",".join(basemap.text() for basemap in basemaps)
-        projectInstance.writeEntry("qgis2web", "Basemaps", basemaplist)
+        QgsProject.instance().writeEntry("qgis2web", "Basemaps", basemaplist)
         return parameters
 
     def getLayersAndGroups(self):
@@ -545,13 +538,12 @@ class TreeLayerItem(QTreeWidgetItem):
                                    "layer.png"))
 
     def __init__(self, iface, layer, tree, dlg):
-        global projectInstance
         QTreeWidgetItem.__init__(self)
         self.iface = iface
         self.layer = layer
         self.setText(0, layer.name())
         self.setIcon(0, self.layerIcon)
-        if projectInstance.layerTreeRoot().findLayer(layer.id()).isVisible():
+        if QgsProject.instance().layerTreeRoot().findLayer(layer.id()).isVisible():
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
