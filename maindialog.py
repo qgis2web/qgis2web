@@ -290,7 +290,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                                                   param.replace(" ", ""))[0]
                 elif isinstance(value, int):
                     if project.readNumEntry(
-                        "qgis2web", param.replace(" ", ""))[0] != 0:
+                            "qgis2web", param.replace(" ", ""))[0] != 0:
                         value = project.readNumEntry("qgis2web",
                                                      param.replace(" ", ""))[0]
                 elif isinstance(value, tuple):
