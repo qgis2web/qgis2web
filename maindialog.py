@@ -282,43 +282,15 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populateConfigParams(self, dlg):
         self.items = defaultdict(dict)
-        project = QgsProject.instance()
+        tree = dlg.paramsTreeOL
         for group, settings in getParams().iteritems():
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
-                isTuple = False
-                if isinstance(value, bool):
-                    value = project.readBoolEntry("qgis2web",
-                                                  param.replace(" ", ""))[0]
-                elif isinstance(value, int):
-                    if project.readNumEntry(
-                            "qgis2web", param.replace(" ", ""))[0] != 0:
-                        value = project.readNumEntry("qgis2web",
-                                                     param.replace(" ", ""))[0]
-                elif isinstance(value, tuple):
-                    isTuple = True
-                    if project.readNumEntry("qgis2web",
-                                            param.replace(" ", ""))[0] != 0:
-                        comboSelection = project.readNumEntry(
-                            "qgis2web", param.replace(" ", ""))[0]
-                    elif param == "Max zoom level":
-                        comboSelection = 27
-                    else:
-                        comboSelection = 0
-                else:
-                    if (isinstance(project.readEntry("qgis2web",
-                                   param.replace(" ", ""))[0], basestring) and
-                        project.readEntry("qgis2web",
-                                          param.replace(" ", ""))[0] != ""):
-                        value = project.readEntry(
-                            "qgis2web", param.replace(" ", ""))[0]
-                subitem = TreeSettingItem(item, self.paramsTreeOL,
-                                          param, value, dlg)
-                if isTuple:
-                    dlg.paramsTreeOL.itemWidget(subitem,
-                                                1).setCurrentIndex(
-                                                    comboSelection)
+                subitem = self.create_option_item(tree_widget=tree,
+                                                  parent_item=item,
+                                                  parameter=param,
+                                                  value=value)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -331,6 +303,42 @@ class MainDialog(QDialog, Ui_MainDialog):
                                            (Qt.MatchExactly |
                                             Qt.MatchRecursive))[0], 1)
         searchCombo.removeItem(1)
+
+    def create_option_item(self, tree_widget, parent_item, parameter, value):
+        isTuple = False
+        project = QgsProject.instance()
+        if isinstance(value, bool):
+            value = project.readBoolEntry("qgis2web",
+                                          parameter.replace(" ", ""))[0]
+        elif isinstance(value, int):
+            if project.readNumEntry(
+                    "qgis2web", parameter.replace(" ", ""))[0] != 0:
+                value = project.readNumEntry("qgis2web",
+                                             parameter.replace(" ", ""))[0]
+        elif isinstance(value, tuple):
+            isTuple = True
+            if project.readNumEntry("qgis2web",
+                                    parameter.replace(" ", ""))[0] != 0:
+                comboSelection = project.readNumEntry(
+                    "qgis2web", parameter.replace(" ", ""))[0]
+            elif parameter == "Max zoom level":
+                comboSelection = 27
+            else:
+                comboSelection = 0
+        else:
+            if (isinstance(project.readEntry("qgis2web",
+                                             parameter.replace(" ", ""))[0], basestring) and
+                        project.readEntry("qgis2web",
+                                          parameter.replace(" ", ""))[0] != ""):
+                value = project.readEntry(
+                    "qgis2web", parameter.replace(" ", ""))[0]
+        subitem = TreeSettingItem(parent_item, self.paramsTreeOL,
+                                  parameter, value)
+        if isTuple:
+            tree_widget.itemWidget(subitem,
+                                        1).setCurrentIndex(
+                comboSelection)
+        return subitem
 
     def populateBasemaps(self):
         multiSelect = QtGui.QAbstractItemView.ExtendedSelection
@@ -654,7 +662,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
 class TreeSettingItem(QTreeWidgetItem):
 
-    def __init__(self, parent, tree, name, value, dlg):
+    def __init__(self, parent, tree, name, value):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
         self.tree = tree
