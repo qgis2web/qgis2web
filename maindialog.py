@@ -29,6 +29,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtCore import (QSettings,
                           QByteArray)
 from PyQt4.QtGui import *
+from PyQt4.QtGui import (QHBoxLayout)
 try:
     from PyQt4.QtWebKit import *
     webkit_available = True
@@ -662,13 +663,16 @@ class TreeLayerItem(QTreeWidgetItem):
 
 class TreeSettingItem(QTreeWidgetItem):
 
-    def __init__(self, parent, tree, name, value):
+    def __init__(self, parent, tree, name, value, action=None):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
         self.tree = tree
         self.name = name
         self._value = value
+        self.combo = None
         self.setText(0, name)
+        widget = None
+
         if isinstance(value, bool):
             if value:
                 self.setCheckState(1, Qt.Checked)
@@ -679,10 +683,25 @@ class TreeSettingItem(QTreeWidgetItem):
             self.combo.setSizeAdjustPolicy(0)
             for option in value:
                 self.combo.addItem(option)
-            self.tree.setItemWidget(self, 1, self.combo)
-            index = self.combo.currentIndex()
+            widget = self.combo
         else:
             self.setText(1, unicode(value))
+
+        if action:
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            if widget:
+                layout.addWidget(widget)
+            button = QToolButton()
+            button.setDefaultAction(action)
+            button.setText(action.text())
+            layout.addWidget(button)
+            layout.addStretch(1)
+            widget=QWidget()
+            widget.setLayout(layout)
+
+        if widget:
+            self.tree.setItemWidget(self, 1, widget)
 
     def value(self):
         if isinstance(self._value, bool):
