@@ -44,6 +44,8 @@ import utils
 from configparams import getParams, baselayers, specificParams, specificOptions
 from olwriter import writeOL
 from leafletWriter import *
+from exporter import (EXPORTER_REGISTRY,
+                      FolderExporter)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -58,6 +60,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.iface = iface
 
         self.previewUrl = None
+        self.layer_search_combo = None
+        self.exporter_combo = None
 
         stgs = QSettings()
 
@@ -86,6 +90,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populate_layers_and_groups(self)
         self.populateLayerSearch()
         self.populateBasemaps()
+
+        self.exporter = EXPORTER_REGISTRY.createFromProject()
+        self.exporter_combo.setCurrentIndex(self.exporter_combo.findText(self.exporter.name()))
+        self.exporter_combo.currentIndexChanged.connect(self.exporterTypeChanged)
+
         self.selectMapFormat()
         self.toggleOptions()
         if webkit_available:
@@ -95,7 +104,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         else:
             self.buttonPreview.setDisabled(True)
         self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
-        self.paramsTreeOL.itemClicked.connect(self.changeSetting)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
@@ -125,6 +133,13 @@ class MainDialog(QDialog, Ui_MainDialog):
                                          self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
+
+    def exporterTypeChanged(self):
+        new_exporter_name = self.exporter_combo.currentText()
+        try:
+            self.exporter = [e for e in EXPORTER_REGISTRY.getExporters() if e.name() == new_exporter_name][0]()
+        except:
+            pass
 
     def toggleOptions(self):
         for param, value in specificParams.iteritems():
@@ -180,15 +195,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             MainDialog.saveOL(self)
         else:
             MainDialog.saveLeaf(self)
-
-    def changeSetting(self, paramItem, col):
-        if hasattr(paramItem, "name") and paramItem.name == "Export folder":
-            folder = QFileDialog.getExistingDirectory(self,
-                                                      "Choose export folder",
-                                                      paramItem.text(col),
-                                                      QFileDialog.ShowDirsOnly)
-            if folder != "":
-                paramItem.setText(1, folder)
 
     def saveSettings(self, paramItem, col):
         QgsProject.instance().removeEntry("qgis2web",
@@ -251,12 +257,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 item.setExpanded(False)
 
     def populateLayerSearch(self):
-        layerSearch = self.paramsTreeOL.itemWidget(
-                self.paramsTreeOL.findItems("Layer search",
-                                            (Qt.MatchExactly |
-                                             Qt.MatchRecursive))[0], 1)
-        layerSearch.clear()
-        layerSearch.addItem("None")
+        self.layer_search_combo.clear()
+        self.layer_search_combo.addItem("None")
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
@@ -276,15 +278,23 @@ class MainDialog(QDialog, Ui_MainDialog):
                     options.append(unicode(f.name()))
                 for option in options:
                     displayStr = unicode(layer.name() + ": " + option)
-                    layerSearch.insertItem(0, displayStr)
+                    self.layer_search_combo.insertItem(0, displayStr)
                     sln = utils.safeName(layer.name())
-                    layerSearch.setItemData(layerSearch.findText(displayStr),
+                    self.layer_search_combo.setItemData(self.layer_search_combo.findText(displayStr),
                                             sln + unicode(count))
+
+    def configureExporter(self):
+        self.exporter.configure()
 
     def populateConfigParams(self, dlg):
         self.items = defaultdict(dict)
         tree = dlg.paramsTreeOL
-        for group, settings in getParams().iteritems():
+
+        configure_export_action = QAction('...',self)
+        configure_export_action.triggered.connect(self.configureExporter)
+
+        params = getParams(configure_exporter_action=configure_export_action)
+        for group, settings in params.iteritems():
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
@@ -299,15 +309,15 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.expandAll()
         self.paramsTreeOL.resizeColumnToContents(0)
         self.paramsTreeOL.resizeColumnToContents(1)
-        searchCombo = dlg.paramsTreeOL.itemWidget(
-                dlg.paramsTreeOL.findItems("Layer search",
-                                           (Qt.MatchExactly |
-                                            Qt.MatchRecursive))[0], 1)
-        searchCombo.removeItem(1)
+        self.layer_search_combo.removeItem(1)
 
     def create_option_item(self, tree_widget, parent_item, parameter, value):
-        isTuple = False
         project = QgsProject.instance()
+        action = None
+        if isinstance(value, dict):
+            action = value['action']
+            value = value['option']
+
         if isinstance(value, bool):
             value = project.readBoolEntry("qgis2web",
                                           parameter.replace(" ", ""))[0]
@@ -317,7 +327,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 value = project.readNumEntry("qgis2web",
                                              parameter.replace(" ", ""))[0]
         elif isinstance(value, tuple):
-            isTuple = True
             if project.readNumEntry("qgis2web",
                                     parameter.replace(" ", ""))[0] != 0:
                 comboSelection = project.readNumEntry(
@@ -333,12 +342,16 @@ class MainDialog(QDialog, Ui_MainDialog):
                                           parameter.replace(" ", ""))[0] != ""):
                 value = project.readEntry(
                     "qgis2web", parameter.replace(" ", ""))[0]
-        subitem = TreeSettingItem(parent_item, self.paramsTreeOL,
-                                  parameter, value)
-        if isTuple:
-            tree_widget.itemWidget(subitem,
-                                        1).setCurrentIndex(
-                comboSelection)
+        subitem = TreeSettingItem(parent_item, tree_widget,
+                                  parameter, value, action)
+        if parameter == 'Layer search':
+            self.layer_search_combo = subitem.combo
+        elif parameter == 'Exporter':
+            self.exporter_combo = subitem.combo
+
+        if subitem.combo:
+            subitem.combo.setCurrentIndex(comboSelection)
+
         return subitem
 
     def populateBasemaps(self):
@@ -390,25 +403,27 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveOL(self):
         params = self.getParameters()
-        folder = params["Data export"]["Export folder"]
-        if folder:
+        write_folder = self.exporter.exportDirectory()
+        if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
             outputFile = writeOL(self.iface, layers, groups, popup, visible,
-                                 json, cluster, params, folder)
+                                 json, cluster, params, write_folder)
+            self.exporter.postProcess(outputFile)
             if (not os.environ.get('CI') and
                     not os.environ.get('TRAVIS')):
-                webbrowser.open_new_tab(outputFile)
+                webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def saveLeaf(self):
         params = self.getParameters()
-        folder = params["Data export"]["Export folder"]
-        if folder:
+        write_folder = self.exporter.exportDirectory()
+        if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
-            outputFile = writeLeaflet(self.iface, folder, layers, visible,
+            outputFile = writeLeaflet(self.iface, write_folder, layers, visible,
                                       cluster, json, params, popup)
-            webbrowser.open_new_tab(outputFile)
+            self.exporter.postProcess(outputFile)
+            webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def getParameters(self):
         parameters = defaultdict(dict)
@@ -416,12 +431,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, item in settings.iteritems():
                 parameters[group][param] = item.value()
                 if param == "Layer search":
-                    searchWidget = self.paramsTreeOL.itemWidget(
-                        self.paramsTreeOL.findItems(param, (
-                                Qt.MatchExactly |
-                                Qt.MatchRecursive))[0], 1)
                     parameters["Appearance"]["Search layer"] = (
-                        searchWidget.itemData(searchWidget.currentIndex()))
+                        self.layer_search_combo.itemData(self.layer_search_combo.currentIndex()))
         basemaps = self.basemaps.selectedItems()
         parameters["Appearance"]["Base layer"] = basemaps
         return parameters
@@ -434,6 +445,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 QgsProject.instance().writeEntry("qgis2web",
                                                  param.replace(" ", ""),
                                                  item.setting())
+        EXPORTER_REGISTRY.writeToProject(self.exporter)
         basemaps = self.basemaps.selectedItems()
         basemaplist = ",".join(basemap.text() for basemap in basemaps)
         QgsProject.instance().writeEntry("qgis2web", "Basemaps", basemaplist)

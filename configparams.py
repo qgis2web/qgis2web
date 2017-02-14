@@ -19,7 +19,7 @@ from qgis.core import QgsApplication
 import os
 import shutil
 from utils import tempFolder
-
+from exporter import EXPORTER_REGISTRY
 
 def getTemplates():
     src = os.path.join(os.path.dirname(__file__), "templates")
@@ -38,7 +38,7 @@ def getTemplates():
     return tuple(f[:f.find(".")] for f in reversed(os.listdir(dst))
                  if f.endswith("html"))
 
-def getParams():
+def getParams(configure_exporter_action):
     return {
         "Appearance": {
             "Add layers list": False,
@@ -52,8 +52,8 @@ def getParams():
             "Template": getTemplates()
         },
         "Data export": {
-            "Exporter": EXPORTER_REGISTRY.get_options(),
-            "Export folder": tempFolder(),
+            "Exporter": { 'option' : EXPORTER_REGISTRY.getOptions(),
+                          'action' : configure_exporter_action},
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
                           "9", "10", "11", "12", "13", "14", "15"),
             "Minify GeoJSON files": True,
