@@ -40,7 +40,7 @@ import logging
 
 from ui_maindialog import Ui_MainDialog
 import utils
-from configparams import paramsOL, baselayers, specificParams, specificOptions
+from configparams import getParams, baselayers, specificParams, specificOptions
 from olwriter import writeOL
 from leafletWriter import *
 
@@ -283,7 +283,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def populateConfigParams(self, dlg):
         self.items = defaultdict(dict)
         project = QgsProject.instance()
-        for group, settings in paramsOL.iteritems():
+        for group, settings in getParams().iteritems():
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
