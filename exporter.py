@@ -25,12 +25,13 @@ translator = QObject()
 
 
 class Exporter(QObject):
+
     """
     Generic base class for web map exporters
     """
 
     def __init__(self):
-        pass
+        super(QObject, self).__init__()
 
     @classmethod
     def type(cls):
@@ -54,16 +55,18 @@ class Exporter(QObject):
 
     def exportDirectory(self):
         """
-        :return: Directory to create output HTML and associated files in. For some
-        exporters this will indicate the final destination of the output, for others
-        this will be a temporary folder which is later copied to a final destination.
+        :return: Directory to create output HTML and associated
+        files in. For some exporters this will indicate the final
+        destination of the output, for others this will be a temporary
+        folder which is later copied to a final destination.
         """
         return ''
 
     def postProcess(self, export_file):
         """
-        Called after HTML output is created and written to the exportDirectory(). Can
-        be used to perform steps such as uploading the exported files to a remote
+        Called after HTML output is created and written
+        to the exportDirectory(). Can be used to perform
+        steps such as uploading the exported files to a remote
         location.
         :param export_file: index file created for web map
         """
@@ -71,8 +74,8 @@ class Exporter(QObject):
 
     def destinationUrl(self):
         """
-        :return: URL corresponding to final location for exported web map. This URL
-        should be accessible in a web browser.
+        :return: URL corresponding to final location for exported
+        web map. This URL should be accessible in a web browser.
         """
         return ''
 
@@ -90,6 +93,7 @@ class Exporter(QObject):
 
 
 class FolderExporter(Exporter):
+
     """
     Exporter for writing web map to a folder
     """
@@ -108,10 +112,11 @@ class FolderExporter(Exporter):
         return QObject.tr(translator, 'Export to folder')
 
     def configure(self, parent_widget=None):
-        new_folder = QFileDialog.getExistingDirectory(parent_widget,
-                                                      self.tr("Choose export folder"),
-                                                      self.folder,
-                                                      QFileDialog.ShowDirsOnly)
+        new_folder = \
+            QFileDialog.getExistingDirectory(parent_widget,
+                                             self.tr("Choose export folder"),
+                                             self.folder,
+                                             QFileDialog.ShowDirsOnly)
         if new_folder:
             self.folder = new_folder
 
@@ -137,6 +142,7 @@ class FolderExporter(Exporter):
 
 
 class FtpExporter(Exporter):
+
     """
     Exporter for writing web map to an FTP site
     """
@@ -156,7 +162,8 @@ class FtpExporter(Exporter):
 
     def configure(self, parent_widget=None):
         new_folder = QFileDialog.getExistingDirectory(parent_widget,
-                                                      self.tr("Choose FTP folder"),
+                                                      self.tr(
+                                                          "Choose FTP folder"),
                                                       self.folder,
                                                       QFileDialog.ShowDirsOnly)
         if new_folder:
@@ -184,10 +191,11 @@ class FtpExporter(Exporter):
 
 
 class ExporterRegistry(QObject):
+
     """
-    Registry for managing the available exporter options. This is not usually
-    created directly but instead accessed through to canonical EXPORTER_REGISTRY
-    instance.
+    Registry for managing the available exporter options.
+    This is not usually created directly but instead accessed
+    through to canonical EXPORTER_REGISTRY instance.
     """
 
     def __init__(self, parent=None):

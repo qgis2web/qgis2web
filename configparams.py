@@ -21,6 +21,7 @@ import shutil
 from utils import tempFolder
 from exporter import EXPORTER_REGISTRY
 
+
 def getTemplates():
     src = os.path.join(os.path.dirname(__file__), "templates")
     dst = os.path.join(QgsApplication.qgisSettingsDirPath(), "qgis2web",
@@ -38,6 +39,7 @@ def getTemplates():
     return tuple(f[:f.find(".")] for f in reversed(os.listdir(dst))
                  if f.endswith("html"))
 
+
 def getParams(configure_exporter_action):
     return {
         "Appearance": {
@@ -52,8 +54,8 @@ def getParams(configure_exporter_action):
             "Template": getTemplates()
         },
         "Data export": {
-            "Exporter": { 'option' : EXPORTER_REGISTRY.getOptions(),
-                          'action' : configure_exporter_action},
+            "Exporter": {'option': EXPORTER_REGISTRY.getOptions(),
+                         'action': configure_exporter_action},
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
                           "9", "10", "11", "12", "13", "14", "15"),
             "Minify GeoJSON files": True,

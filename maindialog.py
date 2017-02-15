@@ -41,16 +41,19 @@ import logging
 
 from ui_maindialog import Ui_MainDialog
 import utils
-from configparams import getParams, baselayers, specificParams, specificOptions
+from configparams import (getParams,
+                          baselayers,
+                          specificParams,
+                          specificOptions)
 from olwriter import writeOL
 from leafletWriter import *
-from exporter import (EXPORTER_REGISTRY,
-                      FolderExporter)
+from exporter import (EXPORTER_REGISTRY)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class MainDialog(QDialog, Ui_MainDialog):
+
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
@@ -92,8 +95,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateBasemaps()
 
         self.exporter = EXPORTER_REGISTRY.createFromProject()
-        self.exporter_combo.setCurrentIndex(self.exporter_combo.findText(self.exporter.name()))
-        self.exporter_combo.currentIndexChanged.connect(self.exporterTypeChanged)
+        self.exporter_combo.setCurrentIndex(
+            self.exporter_combo.findText(self.exporter.name()))
+        self.exporter_combo.currentIndexChanged.connect(
+            self.exporterTypeChanged)
 
         self.selectMapFormat()
         self.toggleOptions()
@@ -137,7 +142,9 @@ class MainDialog(QDialog, Ui_MainDialog):
     def exporterTypeChanged(self):
         new_exporter_name = self.exporter_combo.currentText()
         try:
-            self.exporter = [e for e in EXPORTER_REGISTRY.getExporters() if e.name() == new_exporter_name][0]()
+            self.exporter = [
+                e for e in EXPORTER_REGISTRY.getExporters()
+                if e.name() == new_exporter_name][0]()
         except:
             pass
 
@@ -280,8 +287,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                     displayStr = unicode(layer.name() + ": " + option)
                     self.layer_search_combo.insertItem(0, displayStr)
                     sln = utils.safeName(layer.name())
-                    self.layer_search_combo.setItemData(self.layer_search_combo.findText(displayStr),
-                                            sln + unicode(count))
+                    self.layer_search_combo.setItemData(
+                        self.layer_search_combo.findText(displayStr),
+                        sln + unicode(count))
 
     def configureExporter(self):
         self.exporter.configure()
@@ -290,7 +298,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.items = defaultdict(dict)
         tree = dlg.paramsTreeOL
 
-        configure_export_action = QAction('...',self)
+        configure_export_action = QAction('...', self)
         configure_export_action.triggered.connect(self.configureExporter)
 
         params = getParams(configure_exporter_action=configure_export_action)
@@ -337,9 +345,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                 comboSelection = 0
         else:
             if (isinstance(project.readEntry("qgis2web",
-                                             parameter.replace(" ", ""))[0], basestring) and
-                        project.readEntry("qgis2web",
-                                          parameter.replace(" ", ""))[0] != ""):
+                                             parameter.replace(" ", ""))[0],
+                           basestring) and
+               project.readEntry("qgis2web",
+               parameter.replace(" ", ""))[0] != ""):
                 value = project.readEntry(
                     "qgis2web", parameter.replace(" ", ""))[0]
         subitem = TreeSettingItem(parent_item, tree_widget,
@@ -420,8 +429,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
-            outputFile = writeLeaflet(self.iface, write_folder, layers, visible,
-                                      cluster, json, params, popup)
+            outputFile = writeLeaflet(
+                self.iface, write_folder, layers, visible,
+                cluster, json, params, popup)
             self.exporter.postProcess(outputFile)
             webbrowser.open_new_tab(self.exporter.destinationUrl())
 
@@ -432,7 +442,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 parameters[group][param] = item.value()
                 if param == "Layer search":
                     parameters["Appearance"]["Search layer"] = (
-                        self.layer_search_combo.itemData(self.layer_search_combo.currentIndex()))
+                        self.layer_search_combo.itemData(
+                            self.layer_search_combo.currentIndex()))
         basemaps = self.basemaps.selectedItems()
         parameters["Appearance"]["Base layer"] = basemaps
         return parameters
@@ -709,7 +720,7 @@ class TreeSettingItem(QTreeWidgetItem):
             button.setText(action.text())
             layout.addWidget(button)
             layout.addStretch(1)
-            widget=QWidget()
+            widget = QWidget()
             widget.setLayout(layout)
 
         if widget:
