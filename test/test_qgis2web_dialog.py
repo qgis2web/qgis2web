@@ -23,13 +23,26 @@ from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import *
+from osgeo import gdal
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
-from maindialog import MainDialog
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
+from test_qgis2web_exporters import qgis2web_exporterTest
+from maindialog import MainDialog
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return maj * 1000000 + min * 10000 + rev * 100
+
+
+def isLtrRepo():
+    """
+    Returns true if using the LTR repository
+    """
+    return 'QGIS_REPO' in os.environ and os.environ["QGIS_REPO"] == "http://qgis.org/debian-ltr"
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test most common plugin actions"""
@@ -37,9 +50,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def setUp(self):
         """Runs before each test"""
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Template",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
     def tearDown(self):
         """Runs after each test"""
@@ -48,6 +59,19 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog = None
+
+    def setTemplate(self, template_name):
+        """
+        Set template to match desired control output
+        """
+        combo = self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Template',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1)
+
+        index = combo.findText(template_name)
+        combo.setCurrentIndex(index)
 
     def test01_preview_default(self):
         """Preview default - no data (OL3)"""
@@ -97,8 +121,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Leaflet JSON point single"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
+
         layer = load_layer(layer_path)
+
         layer.loadNamedStyle(style_path)
+
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
@@ -115,16 +142,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -150,15 +173,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -182,15 +201,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -215,14 +230,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -246,15 +257,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -281,15 +288,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -315,14 +318,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace("file://",""))
+        test_file = open(self.dialog.previewUrl.toString().replace("file://",""))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -346,13 +345,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
-        test_file = open(self.dialog.preview.url().toString().replace("file://",""))
+        test_file = open(self.dialog.previewUrl.toString().replace("file://",""))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -377,14 +372,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -410,15 +401,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -443,15 +430,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -478,14 +461,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -510,15 +489,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -543,15 +518,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -576,14 +547,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://",""))
         test_output = test_file.read()
 
@@ -611,14 +578,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://", ""))
         test_output = test_file.read()
 
@@ -644,14 +607,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://", ""))
         test_output = test_file.read()
 
@@ -679,14 +638,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://", ""))
         test_output = test_file.read()
 
@@ -712,19 +667,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
@@ -752,19 +703,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
@@ -791,19 +738,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
@@ -831,19 +774,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 self.dialog.paramsTreeOL.findItems(
                         "Extent", (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
@@ -870,19 +809,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
@@ -909,19 +844,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
@@ -948,19 +879,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
@@ -987,19 +914,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
@@ -1026,19 +949,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
                                                 (Qt.MatchExactly |
                                                  Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
@@ -1063,14 +982,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Check the 'Add layers list' checkbox
         dialog.items['Appearance'].get('Add layers list').setCheckState(1, QtCore.Qt.Checked)
 
-        # Click the 'Update preview' button to ensure the preview URL is
-        # updated
-        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+        # Update preview
+        dialog.previewMap()
 
-        test_qgis2web_output = read_output(dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_qgis2web_output = read_output(dialog.previewUrl.toString(), 'resources/qgis2web.js')
         assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert 'title: "airports"' in test_layers_output
 
     def test37_OL3_base_layers_have_type_base(self):
@@ -1090,11 +1008,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Select a base map
         dialog.basemaps.item(0).setSelected(True)
 
-        # Click the 'Update preview' button to ensure the preview URL is
-        # updated
-        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+        # update preview
+        dialog.previewMap()
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert "'type': 'base'" in test_layers_output
 
     def test39_OL3_base_group_only_included_when_base_map_selected(self):
@@ -1115,21 +1032,19 @@ class qgis2web_classDialogTest(unittest.TestCase):
         for i in range(dialog.basemaps.count()):
             dialog.basemaps.item(i).setSelected(False)
 
-        # Click the 'Update preview' button to ensure the preview URL is
-        # updated
-        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+        # update preview
+        dialog.previewMap()
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert "new ol.layer.Group" not in test_layers_output
 
         # Select a base map
         dialog.basemaps.item(0).setSelected(True)
 
-        # Click the 'Update preview' button to ensure the preview URL is
-        # updated
-        QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
+        # update preview
+        dialog.previewMap()
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert "new ol.layer.Group" in test_layers_output
 
 
@@ -1159,16 +1074,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Add scale bar' checkbox
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1198,11 +1109,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Add scale bar' checkbox
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
@@ -1212,7 +1119,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", False)
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1247,16 +1154,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Measure tool',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1280,11 +1183,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
 
         # Set the 'Measure tool' combo
         self.dialog.paramsTreeOL.itemWidget(
@@ -1301,7 +1200,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'index.html')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1312,7 +1211,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1343,16 +1242,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Add address search' checkbox
         self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1375,11 +1270,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
 
         # Check the 'Add address search' checkbox
         self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
@@ -1392,7 +1283,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'index.html')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1403,7 +1294,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1434,16 +1325,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Geolocate user' checkbox
         self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1466,11 +1353,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Geolocate user' checkbox
         self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
@@ -1483,7 +1366,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1514,16 +1397,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Highlight on hover' checkbox
         self.dialog.items['Appearance'].get('Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1546,11 +1425,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Highlight on hover' checkbox
         self.dialog.items['Appearance'].get('Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
@@ -1563,7 +1438,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1596,16 +1471,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Match project CRS' checkbox
         self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1631,11 +1502,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
 
                 # Check the 'Match project CRS' checkbox
         self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
@@ -1648,7 +1515,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1660,7 +1527,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1691,16 +1558,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Add layers list' checkbox
         self.dialog.items['Appearance'].get('Add layers list').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1732,16 +1595,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Visible' checkbox
         self.dialog.layers_item.child(0).visibleCheck.setChecked(False)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1764,11 +1623,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Visible' checkbox
         self.dialog.layers_item.child(0).visibleCheck.setChecked(False)
@@ -1780,7 +1635,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1811,16 +1666,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Cluster' checkbox
         self.dialog.layers_item.child(0).clusterCheck.setChecked(True)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1843,11 +1694,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Cluster' checkbox
         self.dialog.layers_item.child(0).clusterCheck.setChecked(True)
@@ -1859,11 +1706,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test62_leaflet_precision(self):
         """Leaflet precision"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -1884,11 +1732,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Set 'Precision' combo to '3'
         self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(3)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -1897,11 +1741,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'data/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'data/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test63_ol3_precision(self):
         """OL3 precision"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -1919,11 +1764,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Set 'Precision' combo to '2'
         self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(2)
@@ -1935,7 +1776,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1963,11 +1804,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
 
         # Set 'Mapping library location' combo to 'CDN'
         self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
@@ -1975,7 +1812,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -2004,11 +1841,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
 
         # Set 'Mapping library location' combo to 'CDN'
         self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
@@ -2016,12 +1849,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test67_leaflet_minify(self):
         """Leaflet minify"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -2045,11 +1879,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Set 'Precision' combo to '6'
         self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2058,11 +1888,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'data/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'data/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test68_ol3_minify(self):
         """OL3 minify"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -2080,11 +1911,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Minify GeoJSON files' checkbox
         self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
@@ -2099,7 +1926,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
@@ -2122,16 +1949,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(0)
 
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
         self.dialog.leaflet.click()
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2157,11 +1980,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Set 'Max zoom' combo to '20'
         self.dialog.items['Scale/Zoom'].get('Max zoom level').combo.setCurrentIndex(19)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2171,7 +1990,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2194,11 +2013,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Set 'Max zoom level' combo to '20'
         self.dialog.items['Scale/Zoom'].get('Max zoom level').combo.setCurrentIndex(19)
@@ -2210,7 +2025,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -2235,11 +2050,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Set 'Min zoom' combo to '6'
         self.dialog.items['Scale/Zoom'].get('Min zoom level').combo.setCurrentIndex(5)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2249,7 +2060,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2272,11 +2083,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Set 'Min zoom level' combo to '6'
         self.dialog.items['Scale/Zoom'].get('Min zoom level').combo.setCurrentIndex(5)
@@ -2288,7 +2095,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -2313,11 +2120,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Check the 'Restrict to extent' checkbox
         self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         control_file = open(
@@ -2327,7 +2130,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2350,11 +2153,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Check the 'Restrict to extent' checkbox
         self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
@@ -2362,92 +2161,80 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Test for expected output
         assert "extent: [" in test_output
 
+    @unittest.skipIf(isLtrRepo(), 'Not supported using LTR repo')
     def test76_Leaflet_25d(self):
         """Leaflet 2.5d"""
-        if os.environ["QGIS_REPO"] != "http://qgis.org/debian-ltr":
-            layer_path = test_data_path('layer', 'lakes.shp')
-            style_path = test_data_path('style', '25d.qml')
-            layer = load_layer(layer_path)
-            layer.loadNamedStyle(style_path)
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
-            registry = QgsMapLayerRegistry.instance()
-            registry.addMapLayer(layer)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
 
-            # Export to web map
-            self.dialog = MainDialog(IFACE)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Extent',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(1)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Template',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(0)
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
 
-            self.dialog.leaflet.click()
+        self.dialog.leaflet.click()
 
-            control_file = open(
-                    test_data_path(
-                            'control', 'leaflet_25d.html'), 'r')
-            control_output = control_file.read()
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_25d.html'), 'r')
+        control_output = control_file.read()
 
-            # Open the test file
-            test_file = open(
-                    self.dialog.preview.url().toString().replace('file://', ''))
-            test_output = test_file.read()
+        # Open the test file
+        test_file = open(
+                self.dialog.previewUrl.toString().replace('file://', ''))
+        test_output = test_file.read()
 
-            # Test for expected output
-            self.assertEqual(test_output, control_output, diff(control_output, test_output))
-        else:
-            print "skip"
+        # Test for expected output
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(isLtrRepo(), 'Not supported using LTR repo')
     def test77_OL3_25d(self):
         """OL3 2.5d"""
-        if os.environ["QGIS_REPO"] != "http://qgis.org/debian-ltr":
-            layer_path = test_data_path('layer', 'lakes.shp')
-            style_path = test_data_path('style', '25d.qml')
-            layer = load_layer(layer_path)
-            layer.loadNamedStyle(style_path)
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
-            registry = QgsMapLayerRegistry.instance()
-            registry.addMapLayer(layer)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
 
-            # Export to web map
-            self.dialog = MainDialog(IFACE)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Extent',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(1)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Template',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(0)
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
 
-            self.dialog.ol3.click()
+        self.dialog.ol3.click()
 
-            control_file = open(
-                    test_data_path(
-                            'control', 'ol3_25d.html'), 'r')
-            control_output = control_file.read()
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_25d.html'), 'r')
+        control_output = control_file.read()
 
-            # Open the test file
-            test_file = open(
-                    self.dialog.preview.url().toString().replace('file://', ''))
-            test_output = test_file.read()
+        # Open the test file
+        test_file = open(
+                self.dialog.previewUrl.toString().replace('file://', ''))
+        test_output = test_file.read()
 
-            # Test for expected output
-            self.assertEqual(test_output, control_output, diff(control_output, test_output))
-        else:
-            print "skip"
+        # Test for expected output
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test78_Leaflet_raster(self):
         """Leaflet raster"""
@@ -2466,11 +2253,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+        self.setTemplate('full-screen')
 
         self.dialog.leaflet.click()
 
@@ -2481,14 +2264,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
         
         # test for exported raster file
-        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'data/test0.png'))
+        assert os.path.exists(self.dialog.previewUrl.toString().replace('file://', '').replace('index.html', 'data/test0.png'))
 
     def test79_OL3_raster(self):
         """OL3 raster"""
@@ -2507,11 +2290,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         self.dialog.ol3.click()
 
@@ -2521,13 +2300,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
         # test for exported raster file
-        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'layers/test0.png'))
+        assert os.path.exists(self.dialog.previewUrl.toString().replace('file://', '').replace('index.html', 'layers/test0.png'))
 
     def test99_export_folder(self):
         """Export folder"""
@@ -2552,18 +2331,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Set 'Export folder'
         customLocn = '/tmp/customfolder/'
-        self.dialog.paramsTreeOL.findItems('Export folder',
-                                           (Qt.MatchExactly |
-                                            Qt.MatchRecursive))[0].setText(1,
-                                                    customLocn)
+        self.dialog.exporter.folder = customLocn
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
@@ -2590,6 +2362,8 @@ def diff(control_output, test_output):
 
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(qgis2web_classDialogTest)
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(qgis2web_classDialogTest))
+    suite.addTests(unittest.makeSuite(qgis2web_exporterTest))
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)

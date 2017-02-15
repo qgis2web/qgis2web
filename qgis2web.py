@@ -18,15 +18,18 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.core import QGis
+from PyQt4.QtCore import (Qt)
+from PyQt4.QtGui import (QAction,
+                         QIcon)
+import sip
 import resources_rc
 from maindialog import MainDialog
 
 
 class Qgis2Web(object):
     """Class abstraction for managing Qgis2Web plugin in QGIS."""
+
     def __init__(self, iface):
         self.iface = iface
         self.dlg = None
@@ -45,8 +48,9 @@ class Qgis2Web(object):
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
-        if not self.dlg:
+        if not self.dlg or sip.isdeleted(self.dlg):
             self.dlg = MainDialog(self.iface)
+        self.dlg.setAttribute(Qt.WA_DeleteOnClose)
         self.dlg.show()
         # bring to front
         self.dlg.raise_()

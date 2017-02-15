@@ -19,6 +19,7 @@ from qgis.core import QgsApplication
 import os
 import shutil
 from utils import tempFolder
+from exporter import EXPORTER_REGISTRY
 
 
 def getTemplates():
@@ -38,38 +39,41 @@ def getTemplates():
     return tuple(f[:f.find(".")] for f in reversed(os.listdir(dst))
                  if f.endswith("html"))
 
-paramsOL = {
-    "Appearance": {
-        "Add layers list": False,
-        "Match project CRS": False,
-        "Add address search": False,
-        "Layer search": ("None", "placeholder"),
-        "Measure tool": ("None", "Metric", "Imperial"),
-        "Show popups on hover": False,
-        "Highlight on hover": False,
-        "Geolocate user": False,
-        "Template": getTemplates()
-    },
-    "Data export": {
-        "Export folder": tempFolder(),
-        "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
-                      "9", "10", "11", "12", "13", "14", "15"),
-        "Minify GeoJSON files": True,
-        "Mapping library location": ("Local", "CDN")
-    },
-    "Scale/Zoom": {
-        "Extent": ("Canvas extent", "Fit to layers extent"),
-        "Restrict to extent": False,
-        "Max zoom level": ("1", "2", "3", "4", "5", "6", "7",
-                           "8", "9", "10", "11", "12", "13", "14",
-                           "15", "16", "17", "18", "19", "20", "21",
-                           "22", "23", "24", "25", "26", "27", "28"),
-        "Min zoom level": ("1", "2", "3", "4", "5", "6", "7",
-                           "8", "9", "10", "11", "12", "13", "14",
-                           "15", "16", "17", "18", "19", "20", "21",
-                           "22", "23", "24", "25", "26", "27", "28"),
+
+def getParams(configure_exporter_action):
+    return {
+        "Appearance": {
+            "Add layers list": False,
+            "Match project CRS": False,
+            "Add address search": False,
+            "Layer search": ("None", "placeholder"),
+            "Measure tool": ("None", "Metric", "Imperial"),
+            "Show popups on hover": False,
+            "Highlight on hover": False,
+            "Geolocate user": False,
+            "Template": getTemplates()
+        },
+        "Data export": {
+            "Exporter": {'option': EXPORTER_REGISTRY.getOptions(),
+                         'action': configure_exporter_action},
+            "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
+                          "9", "10", "11", "12", "13", "14", "15"),
+            "Minify GeoJSON files": True,
+            "Mapping library location": ("Local", "CDN")
+        },
+        "Scale/Zoom": {
+            "Extent": ("Canvas extent", "Fit to layers extent"),
+            "Restrict to extent": False,
+            "Max zoom level": ("1", "2", "3", "4", "5", "6", "7",
+                               "8", "9", "10", "11", "12", "13", "14",
+                               "15", "16", "17", "18", "19", "20", "21",
+                               "22", "23", "24", "25", "26", "27", "28"),
+            "Min zoom level": ("1", "2", "3", "4", "5", "6", "7",
+                               "8", "9", "10", "11", "12", "13", "14",
+                               "15", "16", "17", "18", "19", "20", "21",
+                               "22", "23", "24", "25", "26", "27", "28"),
+        }
     }
-}
 
 baselayers = (
             "OSM",
