@@ -2334,10 +2334,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Set 'Export folder'
         customLocn = '/tmp/customfolder/'
-        self.dialog.paramsTreeOL.findItems('Export folder',
-                                           (Qt.MatchExactly |
-                                            Qt.MatchRecursive))[0].setText(1,
-                                                    customLocn)
+        self.dialog.exporter.folder = customLocn
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
