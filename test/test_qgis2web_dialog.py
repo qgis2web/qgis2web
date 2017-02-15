@@ -104,8 +104,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Leaflet JSON point single"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
+
         layer = load_layer(layer_path)
+
         layer.loadNamedStyle(style_path)
+
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
@@ -131,7 +134,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -165,7 +168,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -197,7 +200,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -229,7 +232,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -261,7 +264,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -296,7 +299,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -329,7 +332,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace("file://",""))
+        test_file = open(self.dialog.previewUrl.toString().replace("file://",""))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -359,7 +362,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
-        test_file = open(self.dialog.preview.url().toString().replace("file://",""))
+        test_file = open(self.dialog.previewUrl.toString().replace("file://",""))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -391,7 +394,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -425,7 +428,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -458,7 +461,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -492,7 +495,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -525,7 +528,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -558,7 +561,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -590,7 +593,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://",""))
         test_output = test_file.read()
 
@@ -625,7 +628,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://", ""))
         test_output = test_file.read()
 
@@ -658,7 +661,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://", ""))
         test_output = test_file.read()
 
@@ -693,7 +696,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(0)
         self.dialog.leaflet.click()
 
-        test_file = open(self.dialog.preview.url().toString().replace(
+        test_file = open(self.dialog.previewUrl.toString().replace(
                 "file://", ""))
         test_output = test_file.read()
 
@@ -727,11 +730,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
@@ -767,11 +770,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
@@ -806,11 +809,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
@@ -846,11 +849,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
@@ -885,11 +888,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
@@ -924,11 +927,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
@@ -963,11 +966,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
@@ -1002,11 +1005,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/pipelines0_style.js'))
         test_style_output = test_style_file.read()
@@ -1041,11 +1044,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         test_style_file = open(
-                self.dialog.preview.url().toString().replace(
+                self.dialog.previewUrl.toString().replace(
                         'file://', '').replace(
                         'index.html', 'styles/lakes0_style.js'))
         test_style_output = test_style_file.read()
@@ -1074,10 +1077,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # updated
         QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
 
-        test_qgis2web_output = read_output(dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_qgis2web_output = read_output(dialog.previewUrl.toString(), 'resources/qgis2web.js')
         assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert 'title: "airports"' in test_layers_output
 
     def test37_OL3_base_layers_have_type_base(self):
@@ -1101,7 +1104,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # updated
         QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert "'type': 'base'" in test_layers_output
 
     def test39_OL3_base_group_only_included_when_base_map_selected(self):
@@ -1126,7 +1129,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # updated
         QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert "new ol.layer.Group" not in test_layers_output
 
         # Select a base map
@@ -1136,7 +1139,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # updated
         QtTest.QTest.mouseClick(dialog.buttonPreview, Qt.LeftButton)
 
-        test_layers_output = read_output(dialog.preview.url().toString(), 'layers/layers.js')
+        test_layers_output = read_output(dialog.previewUrl.toString(), 'layers/layers.js')
         assert "new ol.layer.Group" in test_layers_output
 
 
@@ -1175,7 +1178,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1219,7 +1222,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", False)
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1263,7 +1266,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1308,7 +1311,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'index.html')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1319,7 +1322,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1359,7 +1362,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1399,7 +1402,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'index.html')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'index.html')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1410,7 +1413,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1450,7 +1453,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1490,7 +1493,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1530,7 +1533,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1570,7 +1573,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1612,7 +1615,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1655,7 +1658,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1667,7 +1670,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1707,7 +1710,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1748,7 +1751,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1787,7 +1790,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1827,7 +1830,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -1866,7 +1869,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1904,7 +1907,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'data/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'data/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1942,7 +1945,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -1982,7 +1985,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -2023,7 +2026,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Compare with control file
@@ -2065,7 +2068,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'data/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'data/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
@@ -2106,7 +2109,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/airports0.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/airports0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
@@ -2138,7 +2141,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2178,7 +2181,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2217,7 +2220,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -2256,7 +2259,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2295,7 +2298,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
@@ -2334,7 +2337,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
@@ -2369,7 +2372,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'resources/qgis2web.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'resources/qgis2web.js')
 
         # Test for expected output
         assert "extent: [" in test_output
@@ -2484,14 +2487,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Open the test file
         test_file = open(
-                self.dialog.preview.url().toString().replace('file://', ''))
+                self.dialog.previewUrl.toString().replace('file://', ''))
         test_output = test_file.read()
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
         
         # test for exported raster file
-        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'data/test0.png'))
+        assert os.path.exists(self.dialog.previewUrl.toString().replace('file://', '').replace('index.html', 'data/test0.png'))
 
     def test79_OL3_raster(self):
         """OL3 raster"""
@@ -2524,13 +2527,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(self.dialog.preview.url().toString(), 'layers/layers.js')
+        test_output = read_output(self.dialog.previewUrl.toString(), 'layers/layers.js')
 
         # Test for expected output
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
         # test for exported raster file
-        assert os.path.exists(self.dialog.preview.url().toString().replace('file://', '').replace('index.html', 'layers/test0.png'))
+        assert os.path.exists(self.dialog.previewUrl.toString().replace('file://', '').replace('index.html', 'layers/test0.png'))
 
     def test99_export_folder(self):
         """Export folder"""

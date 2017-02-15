@@ -55,6 +55,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
+
+        self.previewUrl = None
+
         stgs = QSettings()
 
         self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry",
@@ -65,6 +68,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         else:
             self.previewOnStartup.setCheckState(Qt.Unchecked)
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.preview = None
         if webkit_available:
             widget = QWebView()
             self.preview = widget
@@ -153,13 +157,11 @@ class MainDialog(QDialog, Ui_MainDialog):
                         treeOption.setDisabled(False)
 
     def previewMap(self):
-        if not webkit_available:
-            return
         try:
             if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-                MainDialog.previewOL3(self)
+                self.previewOL3()
             else:
-                MainDialog.previewLeaflet(self)
+                self.previewLeaflet()
         except Exception as e:
             errorHTML = "<html>"
             errorHTML += "<head></head>"
@@ -168,7 +170,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             errorHTML += "<p>qgis2web produced an error:</p><code>"
             errorHTML += traceback.format_exc().replace("\n", "<br />")
             errorHTML += "</code></body></html>"
-            self.preview.setHtml(errorHTML)
+            if self.preview:
+                self.preview.setHtml(errorHTML)
             print traceback.format_exc()
 
     def saveMap(self):
@@ -351,23 +354,30 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.ol3.setChecked(False)
             self.leaflet.setChecked(True)
 
+    def loadPreviewFile(self, file):
+        """
+        Loads a web based preview from a local file path
+        """
+        self.previewUrl = QUrl.fromLocalFile(file)
+        if self.preview:
+            self.preview.settings().clearMemoryCaches()
+            self.preview.setUrl(self.previewUrl)
+
     def previewOL3(self):
-        self.preview.settings().clearMemoryCaches()
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
         previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
                               cluster, params, utils.tempFolder())
-        self.preview.setUrl(QUrl.fromLocalFile(previewFile))
+        self.loadPreviewFile(previewFile)
 
     def previewLeaflet(self):
-        self.preview.settings().clearMemoryCaches()
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
         previewFile = writeLeaflet(self.iface, utils.tempFolder(), layers,
                                    visible, cluster, json, params, popup)
-        self.preview.setUrl(QUrl.fromLocalFile(previewFile))
+        self.loadPreviewFile(previewFile)
 
     def saveOL(self):
         params = self.getParameters()
