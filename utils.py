@@ -214,14 +214,13 @@ def exportLayers(iface, layers, folder, precision, optimize,
             sln = safeName(cleanLayer.name()) + unicode(count)
             tmpPath = os.path.join(layersFolder, sln + ".json")
             path = os.path.join(layersFolder, sln + ".js")
+            options = []
             if precision != "maintain":
-                options = "COORDINATE_PRECISION=" + unicode(precision)
-            else:
-                options = ""
+                options.append("COORDINATE_PRECISION=" + unicode(precision))
             QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
                                                     "utf-8", epsg4326,
                                                     'GeoJson', 0,
-                                                    layerOptions=[options])
+                                                    layerOptions=options)
             with open(path, "w") as f:
                 f.write("var %s = " % ("geojson_" + sln))
                 with open(tmpPath, "r") as f2:
