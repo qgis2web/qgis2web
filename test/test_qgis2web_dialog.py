@@ -23,6 +23,7 @@ from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import *
+from osgeo import gdal
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
@@ -30,6 +31,10 @@ from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
 from maindialog import MainDialog
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return maj * 1000000 + min * 10000 + rev * 100
 
 
 def isLtrRepo():
@@ -1705,6 +1710,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test62_leaflet_precision(self):
         """Leaflet precision"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -1739,6 +1745,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test63_ol3_precision(self):
         """OL3 precision"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -1847,6 +1854,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test67_leaflet_minify(self):
         """Leaflet minify"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -1884,6 +1892,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
+    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2,0,0), 'Test requires updating for GDAL 2.0')
     def test68_ol3_minify(self):
         """OL3 minify"""
         layer_path = test_data_path('layer', 'airports.shp')
