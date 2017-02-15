@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtTest
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 from exporter import (FolderExporter,
                       FtpExporter,
+                      FtpConfigurationDialog,
                       EXPORTER_REGISTRY)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
@@ -90,6 +91,52 @@ class qgis2web_exporterTest(unittest.TestCase):
         EXPORTER_REGISTRY.writeToProject(f)
         restored = EXPORTER_REGISTRY.createFromProject()
         self.assertEqual(type(restored),FtpExporter)
+
+    def test06_FtpConfigurationDialog(self):
+        """Test behavior of the FTP export configuration dialog"""
+        dlg = FtpConfigurationDialog()
+        # should default to port 21
+        self.assertEqual(dlg.port(),21)
+        # test getters and setters
+        dlg.setHost('myhost')
+        self.assertEqual(dlg.host(),'myhost')
+        dlg.setUsername('super')
+        self.assertEqual(dlg.username(),'super')
+        dlg.setPort(54)
+        self.assertEqual(dlg.port(),54)
+        dlg.setFolder('folder')
+        self.assertEqual(dlg.folder(),'folder')
+
+        # try setting port to a non-int
+        dlg.setPort('a')
+        self.assertEqual(dlg.port(), 54)
+
+    def test07_FtpExporterSaveReadFromProject(self):
+        """Test saving and restoring FTP exporter settings in project"""
+        e = FtpExporter()
+        e.host = 'geocities.com'
+        e.username = 'sup3Raw3s0m64'
+        e.port = 123
+        e.remote_folder = 'test_folder'
+        e.writeToProject()
+
+        restored = FtpExporter()
+        restored.readFromProject()
+
+        self.assertEqual(restored.host,'geocities.com')
+        self.assertEqual(restored.username,'sup3Raw3s0m64')
+        self.assertEqual(restored.remote_folder,'test_folder')
+        self.assertEqual(restored.port,123)
+
+    def test08_FtpExporterTempFolder(self):
+        """Test FTP exporter generation of temp folder"""
+        e = FtpExporter()
+        self.assertTrue(e.exportDirectory())
+        prev_folder = e.exportDirectory()
+
+        e.postProcess('')
+        # a new export folder should be generated to avoid outdated files
+        self.assertNotEqual(e.exportDirectory(), prev_folder)
 
 
 if __name__ == "__main__":

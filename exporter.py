@@ -16,10 +16,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
+from datetime import datetime
+
 from qgis.core import (QgsProject)
 from PyQt4.QtCore import (QObject)
-from PyQt4.QtGui import (QFileDialog)
+from PyQt4.QtGui import (QFileDialog,
+                         QDialog)
 from utils import (tempFolder)
+from ui_ftp_configuration import Ui_FtpConfiguration
 
 translator = QObject()
 
@@ -141,6 +146,70 @@ class FolderExporter(Exporter):
             self.folder = folder
 
 
+class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
+
+    """
+    A dialog for configuring FTP connection details such as host
+    and username
+    """
+
+    def __init__(self, parent=None):
+        QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def setHost(self, host):
+        """
+        Sets the host name to initially show in the dialog
+        """
+        self.hostLineEdit.setText(host)
+
+    def setPort(self, port):
+        """
+        Sets the port to initially show in the dialog
+        """
+        try:
+            port_number = int(port)
+            self.portSpinBox.setValue(port_number)
+        except:
+            pass
+
+    def setUsername(self, username):
+        """
+        Sets the username to initially show in the dialog
+        """
+        self.usernameLineEdit.setText(username)
+
+    def setFolder(self, folder):
+        """
+        Sets the folder to initially show in the dialog
+        """
+        self.folderLineEdit.setText(folder)
+
+    def host(self):
+        """
+        Returns the current host name from the dialog
+        """
+        return self.hostLineEdit.text()
+
+    def username(self):
+        """
+        Returns the current user name from the dialog
+        """
+        return self.usernameLineEdit.text()
+
+    def folder(self):
+        """
+        Returns the current folder from the dialog
+        """
+        return self.folderLineEdit.text()
+
+    def port(self):
+        """
+        Returns the current port from the dialog
+        """
+        return self.portSpinBox.value()
+
+
 class FtpExporter(Exporter):
 
     """
@@ -149,8 +218,17 @@ class FtpExporter(Exporter):
 
     def __init__(self):
         super(Exporter, self).__init__()
-        self.folder = tempFolder()
-        self.export_file = None
+        # some default values
+        self.host = 'myhost.com'
+        self.username = 'user'
+        self.remote_folder = 'public_html/'
+        self.port = 21
+        self.temp_folder = self.newTempFolder(tempFolder())
+
+    def newTempFolder(self, base):
+        stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
+        return os.path.join(base,
+                            'qgis2web_' + unicode(stamp))
 
     @classmethod
     def type(cls):
@@ -161,33 +239,60 @@ class FtpExporter(Exporter):
         return QObject.tr(translator, 'Export to FTP site')
 
     def configure(self, parent_widget=None):
-        new_folder = QFileDialog.getExistingDirectory(parent_widget,
-                                                      self.tr(
-                                                          "Choose FTP folder"),
-                                                      self.folder,
-                                                      QFileDialog.ShowDirsOnly)
-        if new_folder:
-            self.folder = new_folder
+        dialog = FtpConfigurationDialog(parent_widget)
+        dialog.setHost(self.host)
+        dialog.setUsername(self.username)
+        dialog.setPort(self.port)
+        dialog.setFolder(self.remote_folder)
+        if dialog.exec_():
+            self.host = dialog.host()
+            self.username = dialog.username()
+            self.port = dialog.port()
+            self.remote_folder = dialog.folder()
 
     def exportDirectory(self):
-        return self.folder
+        return self.temp_folder
 
     def postProcess(self, export_file):
         self.export_file = export_file
+
+        # generate a new temp_folder for next export
+        self.temp_folder = self.newTempFolder(tempFolder())
 
     def destinationUrl(self):
         return self.export_file
 
     def writeToProject(self):
         QgsProject.instance().writeEntry("qgis2web",
-                                         "Exportfolder",
-                                         self.folder)
+                                         "FtpHost",
+                                         self.host)
+        QgsProject.instance().writeEntry("qgis2web",
+                                         "FtpUser",
+                                         self.username)
+        QgsProject.instance().writeEntry("qgis2web",
+                                         "FtpFolder",
+                                         self.remote_folder)
+        QgsProject.instance().writeEntry("qgis2web",
+                                         "FtpPort",
+                                         self.port)
 
     def readFromProject(self):
+        host, ok = QgsProject.instance().readEntry("qgis2web",
+                                                   "FtpHost")
+        if ok and host:
+            self.host = host
+        user, ok = QgsProject.instance().readEntry("qgis2web",
+                                                   "FtpUser")
+        if ok and user:
+            self.username = user
         folder, ok = QgsProject.instance().readEntry("qgis2web",
-                                                     "Exportfolder")
-        if ok and folder:
-            self.folder = folder
+                                                     "FtpFolder")
+        if ok and user:
+            self.remote_folder = folder
+        port, ok = QgsProject.instance().readNumEntry("qgis2web",
+                                                      "FtpPort")
+        if ok and port:
+            self.port = port
 
 
 class ExporterRegistry(QObject):
