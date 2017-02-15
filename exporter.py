@@ -259,7 +259,13 @@ class FtpExporter(Exporter):
     def postProcess(self, export_file):
         self.export_file = export_file
 
+        # generate a new temp_folder for next export
+        self.temp_folder = self.newTempFolder(tempFolder())
+
         source_folder = os.path.dirname(export_file)
+
+        if not self.host or not self.username or not self.port:
+            return
 
         # get password
         password, ok = QInputDialog.getText(
@@ -287,9 +293,6 @@ class FtpExporter(Exporter):
             os.chdir('..')
         uploadPath(source_folder)
         ftp.close()
-
-        # generate a new temp_folder for next export
-        self.temp_folder = self.newTempFolder(tempFolder())
 
     def destinationUrl(self):
         return self.export_file

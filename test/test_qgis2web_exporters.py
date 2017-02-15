@@ -131,6 +131,7 @@ class qgis2web_exporterTest(unittest.TestCase):
     def test08_FtpExporterTempFolder(self):
         """Test FTP exporter generation of temp folder"""
         e = FtpExporter()
+        e.host = None
         self.assertTrue(e.exportDirectory())
         prev_folder = e.exportDirectory()
 
