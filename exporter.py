@@ -18,11 +18,14 @@
 
 import os
 from datetime import datetime
+import ftplib
 
 from qgis.core import (QgsProject)
 from PyQt4.QtCore import (QObject)
 from PyQt4.QtGui import (QFileDialog,
-                         QDialog)
+                         QInputDialog,
+                         QDialog,
+                         QLineEdit)
 from utils import (tempFolder)
 from ui_ftp_configuration import Ui_FtpConfiguration
 
@@ -255,6 +258,35 @@ class FtpExporter(Exporter):
 
     def postProcess(self, export_file):
         self.export_file = export_file
+
+        source_folder = os.path.dirname(export_file)
+
+        # get password
+        password, ok = QInputDialog.getText(
+            None, 'Enter FTP password', 'Password', QLineEdit.Password)
+        if not password or not ok:
+            return
+
+        ftp = ftplib.FTP(self.host, self.username, password)
+        ftp.cwd(self.remote_folder)
+
+        def uploadPath(path):
+            files = os.listdir(path)
+            os.chdir(path)
+            for f in files:
+                current_path = os.path.join(path, f)
+                if os.path.isfile(current_path):
+                    fh = open(f, 'rb')
+                    ftp.storbinary('STOR %s' % f, fh)
+                    fh.close()
+                elif os.path.isdir(current_path):
+                    ftp.mkd(f)
+                    ftp.cwd(f)
+                    uploadPath(current_path)
+            ftp.cwd('..')
+            os.chdir('..')
+        uploadPath(source_folder)
+        ftp.close()
 
         # generate a new temp_folder for next export
         self.temp_folder = self.newTempFolder(tempFolder())
