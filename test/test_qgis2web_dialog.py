@@ -25,11 +25,18 @@ from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
-from maindialog import MainDialog
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
+from maindialog import MainDialog
+
+
+def isLtrRepo():
+    """
+    Returns true if using the LTR repository
+    """
+    return 'QGIS_REPO' in os.environ and os.environ["QGIS_REPO"] == "http://qgis.org/debian-ltr"
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test most common plugin actions"""
@@ -2367,87 +2374,83 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Test for expected output
         assert "extent: [" in test_output
 
+    @unittest.skipIf(isLtrRepo(), 'Not supported using LTR repo')
     def test76_Leaflet_25d(self):
         """Leaflet 2.5d"""
-        if os.environ["QGIS_REPO"] != "http://qgis.org/debian-ltr":
-            layer_path = test_data_path('layer', 'lakes.shp')
-            style_path = test_data_path('style', '25d.qml')
-            layer = load_layer(layer_path)
-            layer.loadNamedStyle(style_path)
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
-            registry = QgsMapLayerRegistry.instance()
-            registry.addMapLayer(layer)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
 
-            # Export to web map
-            self.dialog = MainDialog(IFACE)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Extent',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(1)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Template',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(0)
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Template',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(0)
 
-            self.dialog.leaflet.click()
+        self.dialog.leaflet.click()
 
-            control_file = open(
-                    test_data_path(
-                            'control', 'leaflet_25d.html'), 'r')
-            control_output = control_file.read()
+        control_file = open(
+                test_data_path(
+                        'control', 'leaflet_25d.html'), 'r')
+        control_output = control_file.read()
 
-            # Open the test file
-            test_file = open(
-                    self.dialog.preview.url().toString().replace('file://', ''))
-            test_output = test_file.read()
+        # Open the test file
+        test_file = open(
+                self.dialog.previewUrl.toString().replace('file://', ''))
+        test_output = test_file.read()
 
-            # Test for expected output
-            self.assertEqual(test_output, control_output, diff(control_output, test_output))
-        else:
-            print "skip"
+        # Test for expected output
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
+    @unittest.skipIf(isLtrRepo(), 'Not supported using LTR repo')
     def test77_OL3_25d(self):
         """OL3 2.5d"""
-        if os.environ["QGIS_REPO"] != "http://qgis.org/debian-ltr":
-            layer_path = test_data_path('layer', 'lakes.shp')
-            style_path = test_data_path('style', '25d.qml')
-            layer = load_layer(layer_path)
-            layer.loadNamedStyle(style_path)
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
-            registry = QgsMapLayerRegistry.instance()
-            registry.addMapLayer(layer)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
 
-            # Export to web map
-            self.dialog = MainDialog(IFACE)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Extent',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(1)
-            self.dialog.paramsTreeOL.itemWidget(
-                    self.dialog.paramsTreeOL.findItems(
-                            'Template',
-                            (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                    1).setCurrentIndex(0)
+        # Export to web map
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+                self.dialog.paramsTreeOL.findItems(
+                        'Template',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(0)
 
-            self.dialog.ol3.click()
+        self.dialog.ol3.click()
 
-            control_file = open(
-                    test_data_path(
-                            'control', 'ol3_25d.html'), 'r')
-            control_output = control_file.read()
+        control_file = open(
+                test_data_path(
+                        'control', 'ol3_25d.html'), 'r')
+        control_output = control_file.read()
 
-            # Open the test file
-            test_file = open(
-                    self.dialog.preview.url().toString().replace('file://', ''))
-            test_output = test_file.read()
+        # Open the test file
+        test_file = open(
+                self.dialog.previewUrl.toString().replace('file://', ''))
+        test_output = test_file.read()
 
-            # Test for expected output
-            self.assertEqual(test_output, control_output, diff(control_output, test_output))
-        else:
-            print "skip"
+        # Test for expected output
+        self.assertEqual(test_output, control_output, diff(control_output, test_output))
 
     def test78_Leaflet_raster(self):
         """Leaflet raster"""
