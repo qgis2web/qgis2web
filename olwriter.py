@@ -299,7 +299,8 @@ def writeOL(iface, layers, groups, popup, visible,
             out = replaceInScript("qgis2web.js", values)
             f.write(out.encode("utf-8"))
     except Exception as e:
-        print traceback.format_exc()
+        QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                 level=QgsMessageLog.CRITICAL)
     finally:
         QApplication.restoreOverrideCursor()
     return os.path.join(folder, "index.html")
@@ -986,7 +987,8 @@ def exportStyles(layers, folder, clustered):
         except Exception, e:
             style = """{
             /* """ + traceback.format_exc() + " */}"
-            print traceback.format_exc()
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                     level=QgsMessageLog.CRITICAL)
 
         path = os.path.join(stylesFolder, sln + "_style.js")
 
@@ -1238,7 +1240,6 @@ ol.inherits(geolocateControl, ol.control.Control);"""
 def geolocateStyle(geolocate, controlCount):
     if geolocate:
         ctrlPos = 65 + (controlCount * 35)
-        print ctrlPos
         controlCount = controlCount + 1
         return ("""
         <style>

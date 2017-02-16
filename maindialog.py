@@ -195,7 +195,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             errorHTML += "</code></body></html>"
             if self.preview:
                 self.preview.setHtml(errorHTML)
-            print traceback.format_exc()
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                     level=QgsMessageLog.CRITICAL)
 
     def saveMap(self):
         if self.mapFormat.checkedButton().text() == "OpenLayers 3":

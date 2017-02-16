@@ -189,6 +189,7 @@ software:</p>
     <li>@boesiii</li>
     <li>@ThomasG77</li>
     <li>@NathanW2</li>
+    <li>@nyalldawson (FTP export for Faunalia/ENEL)</li>
 </ul>
 
 <p>In addition, the following libraries have been used:</p>

@@ -422,7 +422,8 @@ def is25d(layer, canvas, restrictToExtent, extent):
                 return True
         return False
     except:
-        print traceback.format_exc()
+        QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                 level=QgsMessageLog.CRITICAL)
         return False
 
 
