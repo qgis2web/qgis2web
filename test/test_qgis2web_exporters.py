@@ -22,7 +22,15 @@ __copyright__ = 'Copyright 2017, Nyall Dawson'
 
 import unittest
 import os
+import shutil
 import difflib
+
+from twisted.application import internet
+from twisted.cred import checkers, portal
+from twisted.internet import reactor
+from twisted.tap import ftp
+from threading import Thread
+from twisted.protocols import ftp
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
@@ -31,6 +39,7 @@ from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 
+from utils import tempFolder
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 from exporter import (FolderExporter,
                       FtpExporter,
@@ -39,16 +48,65 @@ from exporter import (FolderExporter,
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
+
 class qgis2web_exporterTest(unittest.TestCase):
     """Test exporters and exporter registry"""
 
     def setUp(self):
         """Runs before each test"""
-        pass
+        self.test_port = 3232
 
     def tearDown(self):
         """Runs after each test"""
-        pass
+        try:
+            self.stopServer()
+        except:
+            pass
+
+    def createServer(self):
+        """
+        Create a simple (insecure!) ftp server for testing
+        """
+        self.ftp_folder = os.path.join(tempFolder(),'ftp')
+
+        if os.path.exists(self.ftp_folder):
+            shutil.rmtree(self.ftp_folder)
+
+        os.makedirs(self.ftp_folder)
+
+        self.user_ftp_folder = os.path.join(self.ftp_folder,'testuser')
+        os.makedirs(self.user_ftp_folder)
+
+        c = checkers.InMemoryUsernamePasswordDatabaseDontUse()
+        c.addUser('testuser', 'pw')
+
+        def makeService(config):
+            f = ftp.FTPFactory()
+
+            r = ftp.FTPRealm(config['root'], userHome=config['userhome'])
+            p = portal.Portal(r, config.get('credCheckers', []))
+
+            f.tld = config['root']
+            f.userAnonymous = config['userAnonymous']
+            f.portal = p
+            f.protocol = ftp.FTP
+
+            try:
+                portno = int(config['port'])
+            except KeyError:
+                portno = 2121
+            return internet.TCPServer(portno, f)
+
+        svc=makeService({'root':self.ftp_folder,'userhome':self.ftp_folder,
+                         'userAnonymous': 'anon', 'port':self.test_port,'credCheckers':[c]})
+        reactor.callWhenRunning(svc.startService)
+        Thread(target=reactor.run, args=(False,)).start()
+
+    def stopServer(self):
+        """
+        Shutdown the running server
+        """
+        reactor.stop()
 
     def test01_FolderExporterDefaultsToTemp(self):
         """Test that folder exporter defaults to a temporary folder"""
@@ -138,6 +196,42 @@ class qgis2web_exporterTest(unittest.TestCase):
         e.postProcess('')
         # a new export folder should be generated to avoid outdated files
         self.assertNotEqual(e.exportDirectory(), prev_folder)
+
+    def test09_FtpUpload(self):
+        self.createServer()
+
+        e = FtpExporter()
+        e.host = 'localhost'
+        e.port = self.test_port
+        e.username = 'testuser'
+        e.password = 'pw'
+
+        # copy some files to export directory
+        export_folder = e.exportDirectory()
+        try:
+            os.makedirs(export_folder)
+        except:
+            self.assertTrue(False, 'could not create export directory')
+        out_file = os.path.join(export_folder,'index.html')
+        with open(out_file,'w') as i:
+            i.write('test')
+
+        e.postProcess(out_file)
+
+        expected_index_file = os.path.join(self.user_ftp_folder,'public_html','index.html')
+        self.assertTrue(os.path.exists(expected_index_file))
+        content = open(expected_index_file,'r').readlines()
+        self.assertEqual(content,['test'])
+
+        # try overwriting existing file
+        with open(out_file,'w') as i:
+            i.write('test2')
+        e.postProcess(out_file)
+        self.assertTrue(os.path.exists(os.path.join(self.user_ftp_folder,'public_html','index.html')))
+        content = open(expected_index_file,'r').readlines()
+        self.assertEqual(content,['test2'])
+
+
 
 
 if __name__ == "__main__":
