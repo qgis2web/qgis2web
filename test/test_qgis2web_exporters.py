@@ -48,65 +48,79 @@ from exporter import (FolderExporter,
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
+TEST_PORT=3232
+FTP_FOLDER = ''
+FTP_USER_FOLDER = ''
+SERVER_RUNNING = False
+
+def createServer():
+    """
+    Create a simple (insecure!) ftp server for testing
+    """
+    global FTP_FOLDER
+    global TEST_PORT
+    global FTP_USER_FOLDER
+    global SERVER_RUNNING
+
+    if SERVER_RUNNING:
+        return
+
+    SERVER_RUNNING = True
+
+    FTP_FOLDER = os.path.join(tempFolder(), 'ftp')
+
+    if os.path.exists(FTP_FOLDER):
+        shutil.rmtree(FTP_FOLDER)
+
+    os.makedirs(FTP_FOLDER)
+
+    FTP_USER_FOLDER = os.path.join(FTP_FOLDER, 'testuser')
+    os.makedirs(FTP_USER_FOLDER)
+
+    c = checkers.InMemoryUsernamePasswordDatabaseDontUse()
+    c.addUser('testuser', 'pw')
+
+    def makeService(config):
+        f = ftp.FTPFactory()
+
+        r = ftp.FTPRealm(config['root'], userHome=config['userhome'])
+        p = portal.Portal(r, config.get('credCheckers', []))
+
+        f.tld = config['root']
+        f.userAnonymous = config['userAnonymous']
+        f.portal = p
+        f.protocol = ftp.FTP
+
+        try:
+            portno = int(config['port'])
+        except KeyError:
+            portno = 2121
+        return internet.TCPServer(portno, f)
+
+    svc = makeService({'root': FTP_FOLDER, 'userhome': FTP_FOLDER,
+                       'userAnonymous': 'anon', 'port': TEST_PORT, 'credCheckers': [c]})
+    reactor.callWhenRunning(svc.startService)
+    Thread(target=reactor.run, args=(False,)).start()
+
 
 class qgis2web_exporterTest(unittest.TestCase):
     """Test exporters and exporter registry"""
 
     def setUp(self):
         """Runs before each test"""
-        self.test_port = 3232
+        pass
 
-    def tearDown(self):
+    @classmethod
+    def setUpClass(cls):
+        createServer()
+
+    @classmethod
+    def tearDownClass(cls):
         """Runs after each test"""
         try:
-            self.stopServer()
+            reactor.stop()
         except:
             pass
-
-    def createServer(self):
-        """
-        Create a simple (insecure!) ftp server for testing
-        """
-        self.ftp_folder = os.path.join(tempFolder(),'ftp')
-
-        if os.path.exists(self.ftp_folder):
-            shutil.rmtree(self.ftp_folder)
-
-        os.makedirs(self.ftp_folder)
-
-        self.user_ftp_folder = os.path.join(self.ftp_folder,'testuser')
-        os.makedirs(self.user_ftp_folder)
-
-        c = checkers.InMemoryUsernamePasswordDatabaseDontUse()
-        c.addUser('testuser', 'pw')
-
-        def makeService(config):
-            f = ftp.FTPFactory()
-
-            r = ftp.FTPRealm(config['root'], userHome=config['userhome'])
-            p = portal.Portal(r, config.get('credCheckers', []))
-
-            f.tld = config['root']
-            f.userAnonymous = config['userAnonymous']
-            f.portal = p
-            f.protocol = ftp.FTP
-
-            try:
-                portno = int(config['port'])
-            except KeyError:
-                portno = 2121
-            return internet.TCPServer(portno, f)
-
-        svc=makeService({'root':self.ftp_folder,'userhome':self.ftp_folder,
-                         'userAnonymous': 'anon', 'port':self.test_port,'credCheckers':[c]})
-        reactor.callWhenRunning(svc.startService)
-        Thread(target=reactor.run, args=(False,)).start()
-
-    def stopServer(self):
-        """
-        Shutdown the running server
-        """
-        reactor.stop()
 
     def test01_FolderExporterDefaultsToTemp(self):
         """Test that folder exporter defaults to a temporary folder"""
@@ -198,11 +212,9 @@ class qgis2web_exporterTest(unittest.TestCase):
         self.assertNotEqual(e.exportDirectory(), prev_folder)
 
     def test09_FtpUpload(self):
-        self.createServer()
-
         e = FtpExporter()
         e.host = 'localhost'
-        e.port = self.test_port
+        e.port = TEST_PORT
         e.username = 'testuser'
         e.password = 'pw'
 
@@ -218,7 +230,7 @@ class qgis2web_exporterTest(unittest.TestCase):
 
         e.postProcess(out_file)
 
-        expected_index_file = os.path.join(self.user_ftp_folder,'public_html','index.html')
+        expected_index_file = os.path.join(FTP_USER_FOLDER,'public_html','index.html')
         self.assertTrue(os.path.exists(expected_index_file))
         content = open(expected_index_file,'r').readlines()
         self.assertEqual(content,['test'])
@@ -227,7 +239,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         with open(out_file,'w') as i:
             i.write('test2')
         e.postProcess(out_file)
-        self.assertTrue(os.path.exists(os.path.join(self.user_ftp_folder,'public_html','index.html')))
+        self.assertTrue(expected_index_file)
         content = open(expected_index_file,'r').readlines()
         self.assertEqual(content,['test2'])
 
