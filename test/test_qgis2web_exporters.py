@@ -243,6 +243,42 @@ class qgis2web_exporterTest(unittest.TestCase):
         content = open(expected_index_file,'r').readlines()
         self.assertEqual(content,['test2'])
 
+    def test10_FtpUploadSubfolder(self):
+        e = FtpExporter()
+        e.host = 'localhost'
+        e.port = TEST_PORT
+        e.username = 'testuser'
+        e.password = 'pw'
+
+        # copy some files to export directory
+        export_folder = e.exportDirectory()
+        try:
+            os.makedirs(export_folder)
+        except:
+            self.assertTrue(False, 'could not create export directory')
+        out_file = os.path.join(export_folder,'index.html')
+        with open(out_file,'w') as i:
+            i.write('test')
+        sub_folder=os.path.join(export_folder,'sub')
+        try:
+            os.makedirs(sub_folder)
+        except:
+            self.assertTrue(False, 'could not create export directory')
+        sub_folder_out_file = os.path.join(sub_folder,'index.html')
+        with open(sub_folder_out_file,'w') as i:
+            i.write('test2')
+
+        e.postProcess(out_file)
+
+        expected_index_file = os.path.join(FTP_USER_FOLDER,'public_html','index.html')
+        self.assertTrue(os.path.exists(expected_index_file))
+        content = open(expected_index_file,'r').readlines()
+        self.assertEqual(content,['test'])
+        expected_sub_folder_index_file = os.path.join(FTP_USER_FOLDER, 'public_html', 'sub', 'index.html')
+        self.assertTrue(os.path.exists(expected_sub_folder_index_file))
+        content = open(expected_sub_folder_index_file, 'r').readlines()
+        self.assertEqual(content, ['test2'])
+
 
 
 
