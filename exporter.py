@@ -33,7 +33,6 @@ translator = QObject()
 
 
 class Exporter(QObject):
-
     """
     Generic base class for web map exporters
     """
@@ -101,7 +100,6 @@ class Exporter(QObject):
 
 
 class FolderExporter(Exporter):
-
     """
     Exporter for writing web map to a folder
     """
@@ -150,7 +148,6 @@ class FolderExporter(Exporter):
 
 
 class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
-
     """
     A dialog for configuring FTP connection details such as host
     and username
@@ -214,7 +211,6 @@ class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
 
 
 class FtpExporter(Exporter):
-
     """
     Exporter for writing web map to an FTP site
     """
@@ -226,6 +222,8 @@ class FtpExporter(Exporter):
         self.username = 'user'
         self.remote_folder = 'public_html/'
         self.port = 21
+        # if none, user will be prompted for password
+        self.password = None
         self.temp_folder = self.newTempFolder(tempFolder())
 
     def newTempFolder(self, base):
@@ -268,13 +266,34 @@ class FtpExporter(Exporter):
             return
 
         # get password
-        password, ok = QInputDialog.getText(
-            None, 'Enter FTP password', 'Password', QLineEdit.Password)
-        if not password or not ok:
-            return
+        password = self.password
+        if password is None:
+            password, ok = QInputDialog.getText(
+                None, 'Enter FTP password', 'Password', QLineEdit.Password)
+            if not password or not ok:
+                return
 
-        ftp = ftplib.FTP(self.host, self.username, password)
-        ftp.cwd(self.remote_folder)
+        ftp = ftplib.FTP()
+        ftp.connect(self.host, self.port)
+        ftp.login(self.username, password)
+
+        def cwd_and_create(p):
+            """
+            recursively changes directory to an ftp target,
+            creating new folders as required.
+            """
+            if not p:
+                return
+            try:
+                ftp.cwd(p)
+            except:
+                parent, base = os.path.split(p)
+                cwd_and_create(parent)
+                if base:
+                    ftp.mkd(base)
+                    ftp.cwd(base)
+
+        cwd_and_create(self.remote_folder)
 
         def uploadPath(path):
             files = os.listdir(path)
@@ -291,7 +310,8 @@ class FtpExporter(Exporter):
                     uploadPath(current_path)
             ftp.cwd('..')
             os.chdir('..')
-        uploadPath(source_folder)
+
+        uploadPath(os.path.join('.', source_folder))
         ftp.close()
 
     def destinationUrl(self):
@@ -331,7 +351,6 @@ class FtpExporter(Exporter):
 
 
 class ExporterRegistry(QObject):
-
     """
     Registry for managing the available exporter options.
     This is not usually created directly but instead accessed
@@ -385,6 +404,7 @@ class ExporterRegistry(QObject):
         :return: tuple for use within getParams call
         """
         return tuple([e.name() for e in self.exporters.values()])
+
 
 # canonical instance.
 EXPORTER_REGISTRY = ExporterRegistry()

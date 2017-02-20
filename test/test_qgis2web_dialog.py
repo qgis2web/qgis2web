@@ -30,7 +30,6 @@ from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
-from test_qgis2web_exporters import qgis2web_exporterTest
 from maindialog import MainDialog
 
 
@@ -2364,6 +2363,5 @@ def diff(control_output, test_output):
 if __name__ == "__main__":
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(qgis2web_classDialogTest))
-    suite.addTests(unittest.makeSuite(qgis2web_exporterTest))
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
