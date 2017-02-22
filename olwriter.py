@@ -35,9 +35,11 @@ from PyQt4.QtGui import *
 from olScriptStrings import *
 from basemaps import basemapOL
 from writer import (Writer,
-    translator)
+                    translator)
+
 
 class OpenLayersWriter(Writer):
+
     """
     Writer for creation of web maps based on the OpenLayers
     JavaScript library.
@@ -78,8 +80,8 @@ class OpenLayersWriter(Writer):
                          optimize, popup, json, restrictToExtent, extent)
             exportStyles(layers, folder, clustered)
             osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
-                                        settings, json, matchCRS, clustered, iface,
-                                        restrictToExtent, extent)
+                                        settings, json, matchCRS, clustered,
+                                        iface, restrictToExtent, extent)
             jsAddress = '<script src="resources/polyfills.js"></script>'
             if settings["Data export"]["Mapping library location"] == "Local":
                 cssAddress = """<link rel="stylesheet" """
@@ -147,15 +149,17 @@ class OpenLayersWriter(Writer):
                             layerSource += wfsSRS
                         if not matchCRS:
                             layerSource = re.sub('SRSNAME\=EPSG\:\d+',
-                                                 'SRSNAME=EPSG:3857', layerSource)
+                                                 'SRSNAME=EPSG:3857',
+                                                 layerSource)
                         layerSource += "&outputFormat=text%2Fjavascript&"
                         layerSource += "format_options=callback%3A"
                         layerSource += "get" + sln + "Json"
                         wfsVars += ('<script src="%s"></script>' % layerSource)
-                    styleVars += ('<script src="styles/%s_style.js"></script>' %
+                    styleVars += ('<script src="styles/%s_style.js">'
+                                  '</script>' %
                                   (sln))
             popupLayers = "popupLayers = [%s];" % ",".join(
-                    ['1' for field in popup])
+                ['1' for field in popup])
             controls = ['expandedAttribution']
             project = QgsProject.instance()
             if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
@@ -196,14 +200,16 @@ class OpenLayersWriter(Writer):
             highlightFill = mapSettings.selectionColor().name()
             proj4 = ""
             proj = ""
-            view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+            view = "%s maxZoom: %d, minZoom: %d" % (
+                mapextent, maxZoom, minZoom)
             if settings["Appearance"]["Match project CRS"]:
                 proj4 = """
 <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
                 proj4 += "</script>"
-                proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
-                    epsg=mapSettings.destinationCrs().authid(),
-                    defn=mapSettings.destinationCrs().toProj4())
+                proj = "<script>proj4.defs('{epsg}','{defn}');</script>"\
+                    .format(
+                        epsg=mapSettings.destinationCrs().authid(),
+                        defn=mapSettings.destinationCrs().toProj4())
                 view += ", projection: '%s'" % (
                     mapSettings.destinationCrs().authid())
             if settings["Appearance"]["Measure tool"] != "None":
@@ -297,7 +303,8 @@ class OpenLayersWriter(Writer):
                 htmlTemplate = settings["Appearance"]["Template"]
                 if htmlTemplate == "":
                     htmlTemplate = "basic"
-                templateOutput = replaceInTemplate(htmlTemplate + ".html", values)
+                templateOutput = replaceInTemplate(
+                    htmlTemplate + ".html", values)
                 templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
                 f.write(templateOutput)
             values = {"@GEOLOCATEHEAD@": geolocateHead,
@@ -315,7 +322,8 @@ class OpenLayersWriter(Writer):
                       "@MEASURING@": measuring,
                       "@MEASURE@": measure,
                       "@MEASUREUNIT@": measureUnit}
-            with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
+            with open(os.path.join(folder, "resources", "qgis2web.js"),
+                      "w") as f:
                 out = replaceInScript("qgis2web.js", values)
                 f.write(out.encode("utf-8"))
         except Exception as e:
@@ -382,7 +390,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 shadows = ""
                 renderer = layer.rendererV2()
                 renderContext = QgsRenderContext.fromMapSettings(
-                        canvas.mapSettings())
+                    canvas.mapSettings())
                 fields = layer.pendingFields()
                 renderer.startRender(renderContext, fields)
                 for feat in layer.getFeatures():
@@ -465,38 +473,38 @@ osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
             labelFields = ""
             for field, label in zip(labels.keys(), labels.values()):
                 labelFields += "'%(field)s': '%(label)s', " % (
-                        {"field": field, "label": label})
+                    {"field": field, "label": label})
             labelFields = "{%(labelFields)s});\n" % (
-                    {"labelFields": labelFields})
+                {"labelFields": labelFields})
             labelFields = "lyr_%(name)s.set('fieldLabels', " % (
-                        {"name": sln}) + labelFields
+                {"name": sln}) + labelFields
             fieldLabels += labelFields
             for f in fieldList:
                 fieldIndex = fieldList.indexFromName(unicode(f.name()))
                 aliasFields += "'%(field)s': '%(alias)s', " % (
-                        {"field": f.name(),
-                         "alias": layer.attributeDisplayName(fieldIndex)})
+                    {"field": f.name(),
+                     "alias": layer.attributeDisplayName(fieldIndex)})
                 try:
                     widget = layer.editFormConfig().widgetType(fieldIndex)
                 except:
                     widget = layer.editorWidgetV2(fieldIndex)
                 imageFields += "'%(field)s': '%(image)s', " % (
-                        {"field": f.name(),
-                         "image": widget})
+                    {"field": f.name(),
+                     "image": widget})
             aliasFields = "{%(aliasFields)s});\n" % (
-                        {"aliasFields": aliasFields})
+                {"aliasFields": aliasFields})
             aliasFields = "lyr_%(name)s.set('fieldAliases', " % (
-                        {"name": sln}) + aliasFields
+                {"name": sln}) + aliasFields
             fieldAliases += aliasFields
             imageFields = "{%(imageFields)s});\n" % (
-                        {"imageFields": imageFields})
+                {"imageFields": imageFields})
             imageFields = "lyr_%(name)s.set('fieldImages', " % (
-                        {"name": sln}) + imageFields
+                {"name": sln}) + imageFields
             fieldImages += imageFields
             blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = '%(blend)s';
 });""" % (
-                        {"name": sln,
+                {"name": sln,
                          "blend": BLEND_MODES[layer.blendMode()]})
 
     path = os.path.join(folder, "layers", "layers.js")
@@ -643,8 +651,8 @@ function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
 }''' % {
-                        "name": layer.name(), "n": layerName,
-                        "min": minResolution, "max": maxResolution}
+                "name": layer.name(), "n": layerName,
+                "min": minResolution, "max": maxResolution}
             return layerCode
         else:
             layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
@@ -1024,7 +1032,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
-        alpha = 1-(layer_transparency / float(100))
+        alpha = 1 - (layer_transparency / float(100))
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
@@ -1127,7 +1135,7 @@ def getCircle(color, borderColor, borderWidth, size, props):
 def getIcon(path, size, svgWidth, svgHeight, rot):
     size = math.floor(float(size) * 3.8)
     anchor = size / 2
-    scale = unicode(float(size)/float(svgWidth))
+    scale = unicode(float(size) / float(svgWidth))
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,

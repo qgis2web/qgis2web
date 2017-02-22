@@ -35,7 +35,8 @@ from leafletLayerScripts import *
 from leafletScriptStrings import *
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
-    translator)
+                    translator)
+
 
 class LeafletWriter(Writer):
     """
@@ -55,8 +56,10 @@ class LeafletWriter(Writer):
         return QObject.tr(translator, 'Leaflet')
 
     @classmethod
-    def writeLeaflet(cls, iface, outputProjectFileName, layer_list, visible, cluster,
-                     json, params, popup):
+    def writeLeaflet(
+            cls, iface, outputProjectFileName,
+            layer_list, visible, cluster,
+            json, params, popup):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         legends = {}
         canvas = iface.mapCanvas()
@@ -91,9 +94,11 @@ class LeafletWriter(Writer):
         QgsApplication.initQgis()
 
         dataStore, cssStore = writeFoldersAndFiles(pluginDir,
-                                                   outputProjectFileName, cluster,
-                                                   measure, matchCRS, layerSearch,
-                                                   canvas, mapLibLocation, locate)
+                                                   outputProjectFileName,
+                                                   cluster, measure,
+                                                   matchCRS, layerSearch,
+                                                   canvas, mapLibLocation,
+                                                   locate)
         writeCSS(cssStore, mapSettings.backgroundColor().name())
 
         wfsLayers = ""
@@ -105,7 +110,8 @@ class LeafletWriter(Writer):
         lyrCount = 0
         for layer, jsonEncode, eachPopup in zip(layer_list, json, popup):
             rawLayerName = layer.name()
-            safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
+            safeLayerName = re.sub(
+                '[\W_]+', '', rawLayerName) + unicode(lyrCount)
             lyrCount += 1
             dataPath = os.path.join(dataStore, safeLayerName)
             tmpFileName = dataPath + '.json'
@@ -113,19 +119,20 @@ class LeafletWriter(Writer):
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
                     exportJSONLayer(layer, eachPopup, precision, tmpFileName,
-                                    exp_crs, layerFileName, safeLayerName, minify,
-                                    canvas, restrictToExtent, iface, extent)
+                                    exp_crs, layerFileName,
+                                    safeLayerName, minify, canvas,
+                                    restrictToExtent, iface, extent)
                     new_src += jsonScript(safeLayerName)
-                    scaleDependentLayers = scaleDependentLabelScript(layer,
-                                                                     safeLayerName)
+                    scaleDependentLayers =\
+                        scaleDependentLabelScript(layer, safeLayerName)
                     labelVisibility += scaleDependentLayers
 
                 elif layer.type() == QgsMapLayer.RasterLayer:
                     if layer.dataProvider().name() != "wms":
                         exportRasterLayer(layer, safeLayerName, dataPath)
             if layer.hasScaleBasedVisibility():
-                scaleDependentLayers += scaleDependentLayerScript(layer,
-                                                                  safeLayerName)
+                scaleDependentLayers += scaleDependentLayerScript(
+                    layer, safeLayerName)
         if scaleDependentLayers != "":
             scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
@@ -177,9 +184,10 @@ class LeafletWriter(Writer):
                  wfsLayers) = writeVectorLayer(layer, safeLayerName,
                                                usedFields[count], highlight,
                                                popupsOnHover, popup[count],
-                                               outputProjectFileName, wfsLayers,
-                                               cluster[count], visible[count],
-                                               json[count], legends, new_src,
+                                               outputProjectFileName,
+                                               wfsLayers, cluster[count],
+                                               visible[count], json[count],
+                                               legends, new_src,
                                                canvas, count, restrictToExtent,
                                                extent)
             elif layer.type() == QgsMapLayer.RasterLayer:
@@ -200,8 +208,9 @@ class LeafletWriter(Writer):
             new_src += address_text
 
         if params["Appearance"]["Add layers list"]:
-            new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
-                                     legends)
+            new_src += addLayersList(
+                basemapList, matchCRS, layer_list, cluster,
+                legends)
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
             placement = PLACEMENT[placement]
@@ -209,12 +218,13 @@ class LeafletWriter(Writer):
         else:
             end = ''
         searchLayer = "layer_%s" % params["Appearance"]["Search layer"]
-        end += endHTMLscript(wfsLayers, layerSearch, labelVisibility, searchLayer)
+        end += endHTMLscript(
+            wfsLayers, layerSearch, labelVisibility, searchLayer)
         new_src += end
         try:
-            writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                           matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                           new_src, template)
+            writeHTMLstart(outputIndex, title, cluster, addressSearch,
+                           measure, matchCRS, layerSearch, canvas,
+                           mapLibLocation, locate, new_src, template)
         except:
             pass
         finally:
