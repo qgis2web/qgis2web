@@ -23,7 +23,8 @@
 
 from qgis.core import *
 import qgis.utils
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import (Qt,
+                          QObject)
 from PyQt4.QtGui import QApplication, QCursor
 import os
 from datetime import datetime
@@ -33,170 +34,189 @@ from leafletFileScripts import *
 from leafletLayerScripts import *
 from leafletScriptStrings import *
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
+from writer import (Writer,
+    translator)
 
+class LeafletWriter(Writer):
+    """
+    Writer for creation of web maps based on the Leaflet
+    JavaScript library.
+    """
 
-def writeLeaflet(iface, outputProjectFileName, layer_list, visible, cluster,
-                 json, params, popup):
-    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    legends = {}
-    canvas = iface.mapCanvas()
-    project = QgsProject.instance()
-    mapSettings = canvas.mapSettings()
-    title = project.title()
-    pluginDir = os.path.dirname(os.path.realpath(__file__))
-    stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
-    outputProjectFileName = os.path.join(outputProjectFileName,
-                                         'qgis2web_' + unicode(stamp))
-    outputIndex = os.path.join(outputProjectFileName, 'index.html')
+    def __init__(self):
+        super(LeafletWriter, self).__init__()
 
-    mapLibLocation = params["Data export"]["Mapping library location"]
-    minify = params["Data export"]["Minify GeoJSON files"]
-    precision = params["Data export"]["Precision"]
-    extent = params["Scale/Zoom"]["Extent"]
-    minZoom = params["Scale/Zoom"]["Min zoom level"]
-    maxZoom = params["Scale/Zoom"]["Max zoom level"]
-    restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
-    basemapList = params["Appearance"]["Base layer"]
-    matchCRS = params["Appearance"]["Match project CRS"]
-    addressSearch = params["Appearance"]["Add address search"]
-    locate = params["Appearance"]["Geolocate user"]
-    measure = params["Appearance"]["Measure tool"]
-    highlight = params["Appearance"]["Highlight on hover"]
-    layerSearch = params["Appearance"]["Layer search"]
-    popupsOnHover = params["Appearance"]["Show popups on hover"]
-    template = params["Appearance"]["Template"]
+    @classmethod
+    def type(cls):
+        return 'leaflet'
 
-    usedFields = [ALL_ATTRIBUTES] * len(popup)
+    @classmethod
+    def name(cls):
+        return QObject.tr(translator, 'Leaflet')
 
-    QgsApplication.initQgis()
+    @classmethod
+    def writeLeaflet(cls, iface, outputProjectFileName, layer_list, visible, cluster,
+                     json, params, popup):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        legends = {}
+        canvas = iface.mapCanvas()
+        project = QgsProject.instance()
+        mapSettings = canvas.mapSettings()
+        title = project.title()
+        pluginDir = os.path.dirname(os.path.realpath(__file__))
+        stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
+        outputProjectFileName = os.path.join(outputProjectFileName,
+                                             'qgis2web_' + unicode(stamp))
+        outputIndex = os.path.join(outputProjectFileName, 'index.html')
 
-    dataStore, cssStore = writeFoldersAndFiles(pluginDir,
-                                               outputProjectFileName, cluster,
-                                               measure, matchCRS, layerSearch,
-                                               canvas, mapLibLocation, locate)
-    writeCSS(cssStore, mapSettings.backgroundColor().name())
+        mapLibLocation = params["Data export"]["Mapping library location"]
+        minify = params["Data export"]["Minify GeoJSON files"]
+        precision = params["Data export"]["Precision"]
+        extent = params["Scale/Zoom"]["Extent"]
+        minZoom = params["Scale/Zoom"]["Min zoom level"]
+        maxZoom = params["Scale/Zoom"]["Max zoom level"]
+        restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
+        basemapList = params["Appearance"]["Base layer"]
+        matchCRS = params["Appearance"]["Match project CRS"]
+        addressSearch = params["Appearance"]["Add address search"]
+        locate = params["Appearance"]["Geolocate user"]
+        measure = params["Appearance"]["Measure tool"]
+        highlight = params["Appearance"]["Highlight on hover"]
+        layerSearch = params["Appearance"]["Layer search"]
+        popupsOnHover = params["Appearance"]["Show popups on hover"]
+        template = params["Appearance"]["Template"]
 
-    wfsLayers = ""
-    scaleDependentLayers = ""
-    labelVisibility = ""
-    new_src = ""
-    crs = QgsCoordinateReferenceSystem.EpsgCrsId
-    exp_crs = QgsCoordinateReferenceSystem(4326, crs)
-    lyrCount = 0
-    for layer, jsonEncode, eachPopup in zip(layer_list, json, popup):
-        rawLayerName = layer.name()
-        safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
-        lyrCount += 1
-        dataPath = os.path.join(dataStore, safeLayerName)
-        tmpFileName = dataPath + '.json'
-        layerFileName = dataPath + '.js'
-        if layer.providerType() != 'WFS' or jsonEncode is True and layer:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                exportJSONLayer(layer, eachPopup, precision, tmpFileName,
-                                exp_crs, layerFileName, safeLayerName, minify,
-                                canvas, restrictToExtent, iface, extent)
-                new_src += jsonScript(safeLayerName)
-                scaleDependentLayers = scaleDependentLabelScript(layer,
-                                                                 safeLayerName)
-                labelVisibility += scaleDependentLayers
+        usedFields = [ALL_ATTRIBUTES] * len(popup)
 
-            elif layer.type() == QgsMapLayer.RasterLayer:
-                if layer.dataProvider().name() != "wms":
-                    exportRasterLayer(layer, safeLayerName, dataPath)
-        if layer.hasScaleBasedVisibility():
-            scaleDependentLayers += scaleDependentLayerScript(layer,
-                                                              safeLayerName)
-    if scaleDependentLayers != "":
-        scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
+        QgsApplication.initQgis()
 
-    crsSrc = mapSettings.destinationCrs()
-    crsAuthId = crsSrc.authid()
-    crsProj4 = crsSrc.toProj4()
-    middle = """
+        dataStore, cssStore = writeFoldersAndFiles(pluginDir,
+                                                   outputProjectFileName, cluster,
+                                                   measure, matchCRS, layerSearch,
+                                                   canvas, mapLibLocation, locate)
+        writeCSS(cssStore, mapSettings.backgroundColor().name())
+
+        wfsLayers = ""
+        scaleDependentLayers = ""
+        labelVisibility = ""
+        new_src = ""
+        crs = QgsCoordinateReferenceSystem.EpsgCrsId
+        exp_crs = QgsCoordinateReferenceSystem(4326, crs)
+        lyrCount = 0
+        for layer, jsonEncode, eachPopup in zip(layer_list, json, popup):
+            rawLayerName = layer.name()
+            safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(lyrCount)
+            lyrCount += 1
+            dataPath = os.path.join(dataStore, safeLayerName)
+            tmpFileName = dataPath + '.json'
+            layerFileName = dataPath + '.js'
+            if layer.providerType() != 'WFS' or jsonEncode is True and layer:
+                if layer.type() == QgsMapLayer.VectorLayer:
+                    exportJSONLayer(layer, eachPopup, precision, tmpFileName,
+                                    exp_crs, layerFileName, safeLayerName, minify,
+                                    canvas, restrictToExtent, iface, extent)
+                    new_src += jsonScript(safeLayerName)
+                    scaleDependentLayers = scaleDependentLabelScript(layer,
+                                                                     safeLayerName)
+                    labelVisibility += scaleDependentLayers
+
+                elif layer.type() == QgsMapLayer.RasterLayer:
+                    if layer.dataProvider().name() != "wms":
+                        exportRasterLayer(layer, safeLayerName, dataPath)
+            if layer.hasScaleBasedVisibility():
+                scaleDependentLayers += scaleDependentLayerScript(layer,
+                                                                  safeLayerName)
+        if scaleDependentLayers != "":
+            scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
+
+        crsSrc = mapSettings.destinationCrs()
+        crsAuthId = crsSrc.authid()
+        crsProj4 = crsSrc.toProj4()
+        middle = """
         <script>"""
-    if highlight or popupsOnHover:
-        selectionColor = mapSettings.selectionColor().name()
-        middle += highlightScript(highlight, popupsOnHover, selectionColor)
-    if extent == "Canvas extent":
-        pt0 = canvas.extent()
-        crsDest = QgsCoordinateReferenceSystem(4326)
-        xform = QgsCoordinateTransform(crsSrc, crsDest)
-        pt1 = xform.transform(pt0)
-        bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
-                       pt1.xMinimum(), pt1.xMaximum()]
-        bounds = '[[' + unicode(pt1.yMinimum()) + ','
-        bounds += unicode(pt1.xMinimum()) + '],['
-        bounds += unicode(pt1.yMaximum()) + ','
-        bounds += unicode(pt1.xMaximum()) + ']]'
-        if matchCRS and crsAuthId != 'EPSG:4326':
-            middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                            minZoom, bounds, locate)
-    else:
-        bounds = ""
-        if matchCRS and crsAuthId != 'EPSG:4326':
-            middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                            minZoom, 0, locate)
-    middle += featureGroupsScript()
-    if (len(basemapList) == 0 or matchCRS):
-        basemapText = ""
-    else:
-        basemapText = basemapsScript(basemapList, maxZoom)
-    extentCode = extentScript(extent, restrictToExtent)
-    new_src += middle
-    new_src += basemapText
-    new_src += extentCode
+        if highlight or popupsOnHover:
+            selectionColor = mapSettings.selectionColor().name()
+            middle += highlightScript(highlight, popupsOnHover, selectionColor)
+        if extent == "Canvas extent":
+            pt0 = canvas.extent()
+            crsDest = QgsCoordinateReferenceSystem(4326)
+            xform = QgsCoordinateTransform(crsSrc, crsDest)
+            pt1 = xform.transform(pt0)
+            bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
+                           pt1.xMinimum(), pt1.xMaximum()]
+            bounds = '[[' + unicode(pt1.yMinimum()) + ','
+            bounds += unicode(pt1.xMinimum()) + '],['
+            bounds += unicode(pt1.yMaximum()) + ','
+            bounds += unicode(pt1.xMaximum()) + ']]'
+            if matchCRS and crsAuthId != 'EPSG:4326':
+                middle += crsScript(crsAuthId, crsProj4)
+            middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
+                                minZoom, bounds, locate)
+        else:
+            bounds = ""
+            if matchCRS and crsAuthId != 'EPSG:4326':
+                middle += crsScript(crsAuthId, crsProj4)
+            middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
+                                minZoom, 0, locate)
+        middle += featureGroupsScript()
+        if (len(basemapList) == 0 or matchCRS):
+            basemapText = ""
+        else:
+            basemapText = basemapsScript(basemapList, maxZoom)
+        extentCode = extentScript(extent, restrictToExtent)
+        new_src += middle
+        new_src += basemapText
+        new_src += extentCode
 
-    for count, layer in enumerate(layer_list):
-        rawLayerName = layer.name()
-        safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
-        if layer.type() == QgsMapLayer.VectorLayer:
-            (new_src,
-             legends,
-             wfsLayers) = writeVectorLayer(layer, safeLayerName,
-                                           usedFields[count], highlight,
-                                           popupsOnHover, popup[count],
-                                           outputProjectFileName, wfsLayers,
-                                           cluster[count], visible[count],
-                                           json[count], legends, new_src,
-                                           canvas, count, restrictToExtent,
-                                           extent)
-        elif layer.type() == QgsMapLayer.RasterLayer:
-            if layer.dataProvider().name() == "wms":
-                new_obj = wmsScript(layer, safeLayerName)
-            else:
-                new_obj = rasterScript(layer, safeLayerName)
-            if visible[count]:
-                new_obj += """
+        for count, layer in enumerate(layer_list):
+            rawLayerName = layer.name()
+            safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
+            if layer.type() == QgsMapLayer.VectorLayer:
+                (new_src,
+                 legends,
+                 wfsLayers) = writeVectorLayer(layer, safeLayerName,
+                                               usedFields[count], highlight,
+                                               popupsOnHover, popup[count],
+                                               outputProjectFileName, wfsLayers,
+                                               cluster[count], visible[count],
+                                               json[count], legends, new_src,
+                                               canvas, count, restrictToExtent,
+                                               extent)
+            elif layer.type() == QgsMapLayer.RasterLayer:
+                if layer.dataProvider().name() == "wms":
+                    new_obj = wmsScript(layer, safeLayerName)
+                else:
+                    new_obj = rasterScript(layer, safeLayerName)
+                if visible[count]:
+                    new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""
-            new_src += new_obj
-    new_src += scaleDependentLayers
-    if title != "":
-        titleStart = unicode(titleSubScript(title).decode("utf-8"))
-        new_src += unicode(titleStart)
-    if addressSearch:
-        address_text = addressSearchScript()
-        new_src += address_text
+                    new_src += new_obj
+        new_src += scaleDependentLayers
+        if title != "":
+            titleStart = unicode(titleSubScript(title).decode("utf-8"))
+            new_src += unicode(titleStart)
+        if addressSearch:
+            address_text = addressSearchScript()
+            new_src += address_text
 
-    if params["Appearance"]["Add layers list"]:
-        new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
-                                 legends)
-    if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-        placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
-        placement = PLACEMENT[placement]
-        end = scaleBar(placement)
-    else:
-        end = ''
-    searchLayer = "layer_%s" % params["Appearance"]["Search layer"]
-    end += endHTMLscript(wfsLayers, layerSearch, labelVisibility, searchLayer)
-    new_src += end
-    try:
-        writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                       matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                       new_src, template)
-    except:
-        pass
-    finally:
-        QApplication.restoreOverrideCursor()
-    return outputIndex
+        if params["Appearance"]["Add layers list"]:
+            new_src += addLayersList(basemapList, matchCRS, layer_list, cluster,
+                                     legends)
+        if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
+            placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
+            placement = PLACEMENT[placement]
+            end = scaleBar(placement)
+        else:
+            end = ''
+        searchLayer = "layer_%s" % params["Appearance"]["Search layer"]
+        end += endHTMLscript(wfsLayers, layerSearch, labelVisibility, searchLayer)
+        new_src += end
+        try:
+            writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
+                           matchCRS, layerSearch, canvas, mapLibLocation, locate,
+                           new_src, template)
+        except:
+            pass
+        finally:
+            QApplication.restoreOverrideCursor()
+        return outputIndex

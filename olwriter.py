@@ -30,61 +30,81 @@ from utils import (exportLayers, safeName, replaceInTemplate,
 from exp2js import compile_to_file
 from qgis.utils import iface
 from PyQt4.QtCore import *
+from PyQt4.QtCore import QObject
 from PyQt4.QtGui import *
 from olScriptStrings import *
 from basemaps import basemapOL
+from writer import (Writer,
+    translator)
 
+class OpenLayersWriter(Writer):
+    """
+    Writer for creation of web maps based on the OpenLayers
+    JavaScript library.
+    """
 
-def writeOL(iface, layers, groups, popup, visible,
-            json, clustered, settings, folder):
-    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    controlCount = 0
-    stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
-    folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
-    imagesFolder = os.path.join(folder, "images")
-    QDir().mkpath(imagesFolder)
-    restrictToExtent = settings["Scale/Zoom"]["Restrict to extent"]
-    try:
-        dst = os.path.join(folder, "resources")
-        if not os.path.exists(dst):
-            shutil.copytree(os.path.join(os.path.dirname(__file__),
-                                         "resources"),
-                            dst)
-        matchCRS = settings["Appearance"]["Match project CRS"]
-        precision = settings["Data export"]["Precision"]
-        optimize = settings["Data export"]["Minify GeoJSON files"]
-        extent = settings["Scale/Zoom"]["Extent"]
-        exportLayers(iface, layers, folder, precision,
-                     optimize, popup, json, restrictToExtent, extent)
-        exportStyles(layers, folder, clustered)
-        osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
-                                    settings, json, matchCRS, clustered, iface,
-                                    restrictToExtent, extent)
-        jsAddress = '<script src="resources/polyfills.js"></script>'
-        if settings["Data export"]["Mapping library location"] == "Local":
-            cssAddress = """<link rel="stylesheet" """
-            cssAddress += """href="./resources/ol.css" />"""
-            jsAddress += """
+    def __init__(self):
+        super(OpenLayersWriter, self).__init__()
+
+    @classmethod
+    def type(cls):
+        return 'openlayers'
+
+    @classmethod
+    def name(cls):
+        return QObject.tr(translator, 'OpenLayers')
+
+    @classmethod
+    def writeOL(cls, iface, layers, groups, popup, visible,
+                json, clustered, settings, folder):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        controlCount = 0
+        stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
+        folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
+        imagesFolder = os.path.join(folder, "images")
+        QDir().mkpath(imagesFolder)
+        restrictToExtent = settings["Scale/Zoom"]["Restrict to extent"]
+        try:
+            dst = os.path.join(folder, "resources")
+            if not os.path.exists(dst):
+                shutil.copytree(os.path.join(os.path.dirname(__file__),
+                                             "resources"),
+                                dst)
+            matchCRS = settings["Appearance"]["Match project CRS"]
+            precision = settings["Data export"]["Precision"]
+            optimize = settings["Data export"]["Minify GeoJSON files"]
+            extent = settings["Scale/Zoom"]["Extent"]
+            exportLayers(iface, layers, folder, precision,
+                         optimize, popup, json, restrictToExtent, extent)
+            exportStyles(layers, folder, clustered)
+            osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
+                                        settings, json, matchCRS, clustered, iface,
+                                        restrictToExtent, extent)
+            jsAddress = '<script src="resources/polyfills.js"></script>'
+            if settings["Data export"]["Mapping library location"] == "Local":
+                cssAddress = """<link rel="stylesheet" """
+                cssAddress += """href="./resources/ol.css" />"""
+                jsAddress += """
         <script src="./resources/ol.js"></script>"""
-        else:
-            cssAddress = """<link rel="stylesheet" href="http://"""
-            cssAddress += """openlayers.org/en/v3.20.1/css/ol.css" />"""
-            jsAddress += """
+            else:
+                cssAddress = """<link rel="stylesheet" href="http://"""
+                cssAddress += """openlayers.org/en/v3.20.1/css/ol.css" />"""
+                jsAddress += """
         <script src="http://openlayers.org/en/v3.20.1/"""
-            jsAddress += """build/ol.js"></script>"""
-        layerSearch = unicode(settings["Appearance"]["Layer search"])
-        if layerSearch != "None" and layerSearch != "":
-            searchLayer = settings["Appearance"]["Search layer"]
-            cssAddress += """
+                jsAddress += """build/ol.js"></script>"""
+            layerSearch = unicode(settings["Appearance"]["Layer search"])
+            if layerSearch != "None" and layerSearch != "":
+                searchLayer = settings["Appearance"]["Search layer"]
+                cssAddress += """
         <link rel="stylesheet" href="resources/horsey.min.css">
         <link rel="stylesheet" href="resources/ol3-search-layer.min.css">"""
-            jsAddress += """
+                jsAddress += """
         <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features="""
-            jsAddress += """Element.prototype.classList,URL"></script>
+                jsAddress += """Element.prototype.classList,URL"></script>
         <script src="resources/horsey.min.js"></script>
         <script src="resources/ol3-search-layer.min.js"></script>"""
-            searchVals = layerSearch.split(": ")
-            layerSearch = u"""
+                searchVals = layerSearch.split(": ")
+                layerSearch = u"""
     var searchLayer = new ol.SearchLayer({{
       layer: lyr_{layer},
       colName: '{field}',
@@ -95,125 +115,125 @@ def writeOL(iface, layers, groups, popup, visible,
 
     map.addControl(searchLayer);""".format(layer=searchLayer,
                                            field=searchVals[1])
-            controlCount = controlCount + 1
-        else:
-            layerSearch = ""
-        if osmb != "":
-            jsAddress += """
+                controlCount = controlCount + 1
+            else:
+                layerSearch = ""
+            if osmb != "":
+                jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
-        geojsonVars = ""
-        wfsVars = ""
-        styleVars = ""
-        for count, (layer, encode2json) in enumerate(zip(layers, json)):
-            sln = safeName(layer.name()) + unicode(count)
-            if layer.type() == layer.VectorLayer:
-                if layer.providerType() != "WFS" or encode2json:
-                    geojsonVars += ('<script src="layers/%s"></script>' %
-                                    (sln + ".js"))
-                else:
-                    layerSource = layer.source()
-                    if ("retrictToRequestBBOX" in layerSource or
-                            "restrictToRequestBBOX" in layerSource):
-                        provider = layer.dataProvider()
-                        uri = QgsDataSourceURI(provider.dataSourceUri())
-                        wfsURL = uri.param("url")
-                        wfsTypename = uri.param("typename")
-                        wfsSRS = uri.param("srsname")
-                        layerSource = wfsURL
-                        layerSource += "?SERVICE=WFS&VERSION=1.0.0&"
-                        layerSource += "REQUEST=GetFeature&TYPENAME="
-                        layerSource += wfsTypename
-                        layerSource += "&SRSNAME="
-                        layerSource += wfsSRS
-                    if not matchCRS:
-                        layerSource = re.sub('SRSNAME\=EPSG\:\d+',
-                                             'SRSNAME=EPSG:3857', layerSource)
-                    layerSource += "&outputFormat=text%2Fjavascript&"
-                    layerSource += "format_options=callback%3A"
-                    layerSource += "get" + sln + "Json"
-                    wfsVars += ('<script src="%s"></script>' % layerSource)
-                styleVars += ('<script src="styles/%s_style.js"></script>' %
-                              (sln))
-        popupLayers = "popupLayers = [%s];" % ",".join(
-                ['1' for field in popup])
-        controls = ['expandedAttribution']
-        project = QgsProject.instance()
-        if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-            controls.append("new ol.control.ScaleLine({})")
-        if settings["Appearance"]["Add layers list"]:
-            controls.append(
-                'new ol.control.LayerSwitcher({tipLabel: "Layers"})')
-        if settings["Appearance"]["Measure tool"] != "None":
-            controls.append(
-                'new measureControl()')
-        if settings["Appearance"]["Geolocate user"]:
-            controls.append(
-                'new geolocateControl()')
-        pageTitle = project.title()
-        mapSettings = iface.mapCanvas().mapSettings()
-        backgroundColor = """
+            geojsonVars = ""
+            wfsVars = ""
+            styleVars = ""
+            for count, (layer, encode2json) in enumerate(zip(layers, json)):
+                sln = safeName(layer.name()) + unicode(count)
+                if layer.type() == layer.VectorLayer:
+                    if layer.providerType() != "WFS" or encode2json:
+                        geojsonVars += ('<script src="layers/%s"></script>' %
+                                        (sln + ".js"))
+                    else:
+                        layerSource = layer.source()
+                        if ("retrictToRequestBBOX" in layerSource or
+                                "restrictToRequestBBOX" in layerSource):
+                            provider = layer.dataProvider()
+                            uri = QgsDataSourceURI(provider.dataSourceUri())
+                            wfsURL = uri.param("url")
+                            wfsTypename = uri.param("typename")
+                            wfsSRS = uri.param("srsname")
+                            layerSource = wfsURL
+                            layerSource += "?SERVICE=WFS&VERSION=1.0.0&"
+                            layerSource += "REQUEST=GetFeature&TYPENAME="
+                            layerSource += wfsTypename
+                            layerSource += "&SRSNAME="
+                            layerSource += wfsSRS
+                        if not matchCRS:
+                            layerSource = re.sub('SRSNAME\=EPSG\:\d+',
+                                                 'SRSNAME=EPSG:3857', layerSource)
+                        layerSource += "&outputFormat=text%2Fjavascript&"
+                        layerSource += "format_options=callback%3A"
+                        layerSource += "get" + sln + "Json"
+                        wfsVars += ('<script src="%s"></script>' % layerSource)
+                    styleVars += ('<script src="styles/%s_style.js"></script>' %
+                                  (sln))
+            popupLayers = "popupLayers = [%s];" % ",".join(
+                    ['1' for field in popup])
+            controls = ['expandedAttribution']
+            project = QgsProject.instance()
+            if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
+                controls.append("new ol.control.ScaleLine({})")
+            if settings["Appearance"]["Add layers list"]:
+                controls.append(
+                    'new ol.control.LayerSwitcher({tipLabel: "Layers"})')
+            if settings["Appearance"]["Measure tool"] != "None":
+                controls.append(
+                    'new measureControl()')
+            if settings["Appearance"]["Geolocate user"]:
+                controls.append(
+                    'new geolocateControl()')
+            pageTitle = project.title()
+            mapSettings = iface.mapCanvas().mapSettings()
+            backgroundColor = """
         <style>
         html, body {{
             background-color: {bgcol};
         }}
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
-        geolocateUser = settings["Appearance"]["Geolocate user"]
-        (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
-                                                       controlCount)
-        backgroundColor += geolocateCode
-        mapbounds = bounds(iface,
-                           extent == "Canvas extent",
-                           layers,
-                           settings["Appearance"]["Match project CRS"])
-        mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
-        maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
-        minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
-        popupsOnHover = settings["Appearance"]["Show popups on hover"]
-        highlightFeatures = settings["Appearance"]["Highlight on hover"]
-        onHover = unicode(popupsOnHover).lower()
-        highlight = unicode(highlightFeatures).lower()
-        highlightFill = mapSettings.selectionColor().name()
-        proj4 = ""
-        proj = ""
-        view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
-        if settings["Appearance"]["Match project CRS"]:
-            proj4 = """
+            geolocateUser = settings["Appearance"]["Geolocate user"]
+            (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
+                                                           controlCount)
+            backgroundColor += geolocateCode
+            mapbounds = bounds(iface,
+                               extent == "Canvas extent",
+                               layers,
+                               settings["Appearance"]["Match project CRS"])
+            mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
+            maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
+            minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
+            popupsOnHover = settings["Appearance"]["Show popups on hover"]
+            highlightFeatures = settings["Appearance"]["Highlight on hover"]
+            onHover = unicode(popupsOnHover).lower()
+            highlight = unicode(highlightFeatures).lower()
+            highlightFill = mapSettings.selectionColor().name()
+            proj4 = ""
+            proj = ""
+            view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+            if settings["Appearance"]["Match project CRS"]:
+                proj4 = """
 <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
-            proj4 += "</script>"
-            proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
-                epsg=mapSettings.destinationCrs().authid(),
-                defn=mapSettings.destinationCrs().toProj4())
-            view += ", projection: '%s'" % (
-                mapSettings.destinationCrs().authid())
-        if settings["Appearance"]["Measure tool"] != "None":
-            measureControl = measureControlScript()
-            measuring = measuringScript()
-            measure = measureScript()
-            if settings["Appearance"]["Measure tool"] == "Imperial":
-                measureUnit = measureUnitFeetScript()
+                proj4 += "</script>"
+                proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
+                    epsg=mapSettings.destinationCrs().authid(),
+                    defn=mapSettings.destinationCrs().toProj4())
+                view += ", projection: '%s'" % (
+                    mapSettings.destinationCrs().authid())
+            if settings["Appearance"]["Measure tool"] != "None":
+                measureControl = measureControlScript()
+                measuring = measuringScript()
+                measure = measureScript()
+                if settings["Appearance"]["Measure tool"] == "Imperial":
+                    measureUnit = measureUnitFeetScript()
+                else:
+                    measureUnit = measureUnitMetricScript()
+                measureStyle = measureStyleScript(controlCount)
+                controlCount = controlCount + 1
             else:
-                measureUnit = measureUnitMetricScript()
-            measureStyle = measureStyleScript(controlCount)
-            controlCount = controlCount + 1
-        else:
-            measureControl = ""
-            measuring = ""
-            measure = ""
-            measureUnit = ""
-            measureStyle = ""
-        geolocateHead = geolocationHead(geolocateUser)
-        geolocate = geolocation(geolocateUser)
-        geocode = settings["Appearance"]["Add address search"]
-        geocodingLinks = geocodeLinks(geocode)
-        geocodingJS = geocodeJS(geocode)
-        geocodingScript = geocodeScript(geocode)
-        extracss = """
+                measureControl = ""
+                measuring = ""
+                measure = ""
+                measureUnit = ""
+                measureStyle = ""
+            geolocateHead = geolocationHead(geolocateUser)
+            geolocate = geolocation(geolocateUser)
+            geocode = settings["Appearance"]["Add address search"]
+            geocodingLinks = geocodeLinks(geocode)
+            geocodingJS = geocodeJS(geocode)
+            geocodingScript = geocodeScript(geocode)
+            extracss = """
         <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
         <link rel="stylesheet" href="./resources/qgis2web.css">"""
-        if geocode:
-            geocodePos = 65 + (controlCount * 35)
-            extracss += """
+            if geocode:
+                geocodePos = 65 + (controlCount * 35)
+                extracss += """
         <style>
         .ol-geocoder.gcd-gl-container {
             top: %dpx!important;
@@ -223,87 +243,87 @@ def writeOL(iface, layers, groups, popup, visible,
             height: 21px!important;
         }
         </style>""" % geocodePos
-        if settings["Appearance"]["Geolocate user"]:
-            extracss += """
+            if settings["Appearance"]["Geolocate user"]:
+                extracss += """
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
-            extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
-        ol3layerswitcher = """
+                extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
+            ol3layerswitcher = """
         <script src="./resources/ol3-layerswitcher.js"></script>"""
-        ol3popup = """<div id="popup" class="ol-popup">
+            ol3popup = """<div id="popup" class="ol-popup">
                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                 <div id="popup-content"></div>
             </div>"""
-        ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
+            ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
         <script src="./resources/Autolinker.min.js"></script>"""
-        if osmb != "":
-            ol3qgis2webjs += """
+            if osmb != "":
+                ol3qgis2webjs += """
         <script>{osmb}</script>""".format(osmb=osmb)
-        ol3layers = """
+            ol3layers = """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
-        mapSize = iface.mapCanvas().size()
-        exp_js = """
+            mapSize = iface.mapCanvas().size()
+            exp_js = """
         <script src="resources/qgis2web_expressions.js"></script>"""
-        values = {"@PAGETITLE@": pageTitle,
-                  "@CSSADDRESS@": cssAddress,
-                  "@EXTRACSS@": extracss,
-                  "@JSADDRESS@": jsAddress,
-                  "@MAP_WIDTH@": unicode(mapSize.width()) + "px",
-                  "@MAP_HEIGHT@": unicode(mapSize.height()) + "px",
-                  "@OL3_STYLEVARS@": styleVars,
-                  "@OL3_BACKGROUNDCOLOR@": backgroundColor,
-                  "@OL3_POPUP@": ol3popup,
-                  "@OL3_GEOJSONVARS@": geojsonVars,
-                  "@OL3_WFSVARS@": wfsVars,
-                  "@OL3_PROJ4@": proj4,
-                  "@OL3_PROJDEF@": proj,
-                  "@OL3_GEOCODINGLINKS@": geocodingLinks,
-                  "@OL3_GEOCODINGJS@": geocodingJS,
-                  "@QGIS2WEBJS@": ol3qgis2webjs,
-                  "@OL3_LAYERSWITCHER@": ol3layerswitcher,
-                  "@OL3_LAYERS@": ol3layers,
-                  "@OL3_MEASURESTYLE@": measureStyle,
-                  "@EXP_JS@": exp_js,
-                  "@LEAFLET_ADDRESSCSS@": "",
-                  "@LEAFLET_MEASURECSS@": "",
-                  "@LEAFLET_EXTRAJS@": "",
-                  "@LEAFLET_ADDRESSJS@": "",
-                  "@LEAFLET_MEASUREJS@": "",
-                  "@LEAFLET_CRSJS@": "",
-                  "@LEAFLET_LAYERSEARCHCSS@": "",
-                  "@LEAFLET_LAYERSEARCHJS@": "",
-                  "@LEAFLET_CLUSTERCSS@": "",
-                  "@LEAFLET_CLUSTERJS@": ""}
-        with open(os.path.join(folder, "index.html"), "w") as f:
-            htmlTemplate = settings["Appearance"]["Template"]
-            if htmlTemplate == "":
-                htmlTemplate = "basic"
-            templateOutput = replaceInTemplate(htmlTemplate + ".html", values)
-            templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
-            f.write(templateOutput)
-        values = {"@GEOLOCATEHEAD@": geolocateHead,
-                  "@BOUNDS@": mapbounds,
-                  "@CONTROLS@": ",".join(controls),
-                  "@POPUPLAYERS@": popupLayers,
-                  "@VIEW@": view,
-                  "@LAYERSEARCH@": layerSearch,
-                  "@ONHOVER@": onHover,
-                  "@DOHIGHLIGHT@": highlight,
-                  "@HIGHLIGHTFILL@": highlightFill,
-                  "@GEOLOCATE@": geolocate,
-                  "@GEOCODINGSCRIPT@": geocodingScript,
-                  "@MEASURECONTROL@": measureControl,
-                  "@MEASURING@": measuring,
-                  "@MEASURE@": measure,
-                  "@MEASUREUNIT@": measureUnit}
-        with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
-            out = replaceInScript("qgis2web.js", values)
-            f.write(out.encode("utf-8"))
-    except Exception as e:
-        QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                 level=QgsMessageLog.CRITICAL)
-    finally:
-        QApplication.restoreOverrideCursor()
-    return os.path.join(folder, "index.html")
+            values = {"@PAGETITLE@": pageTitle,
+                      "@CSSADDRESS@": cssAddress,
+                      "@EXTRACSS@": extracss,
+                      "@JSADDRESS@": jsAddress,
+                      "@MAP_WIDTH@": unicode(mapSize.width()) + "px",
+                      "@MAP_HEIGHT@": unicode(mapSize.height()) + "px",
+                      "@OL3_STYLEVARS@": styleVars,
+                      "@OL3_BACKGROUNDCOLOR@": backgroundColor,
+                      "@OL3_POPUP@": ol3popup,
+                      "@OL3_GEOJSONVARS@": geojsonVars,
+                      "@OL3_WFSVARS@": wfsVars,
+                      "@OL3_PROJ4@": proj4,
+                      "@OL3_PROJDEF@": proj,
+                      "@OL3_GEOCODINGLINKS@": geocodingLinks,
+                      "@OL3_GEOCODINGJS@": geocodingJS,
+                      "@QGIS2WEBJS@": ol3qgis2webjs,
+                      "@OL3_LAYERSWITCHER@": ol3layerswitcher,
+                      "@OL3_LAYERS@": ol3layers,
+                      "@OL3_MEASURESTYLE@": measureStyle,
+                      "@EXP_JS@": exp_js,
+                      "@LEAFLET_ADDRESSCSS@": "",
+                      "@LEAFLET_MEASURECSS@": "",
+                      "@LEAFLET_EXTRAJS@": "",
+                      "@LEAFLET_ADDRESSJS@": "",
+                      "@LEAFLET_MEASUREJS@": "",
+                      "@LEAFLET_CRSJS@": "",
+                      "@LEAFLET_LAYERSEARCHCSS@": "",
+                      "@LEAFLET_LAYERSEARCHJS@": "",
+                      "@LEAFLET_CLUSTERCSS@": "",
+                      "@LEAFLET_CLUSTERJS@": ""}
+            with open(os.path.join(folder, "index.html"), "w") as f:
+                htmlTemplate = settings["Appearance"]["Template"]
+                if htmlTemplate == "":
+                    htmlTemplate = "basic"
+                templateOutput = replaceInTemplate(htmlTemplate + ".html", values)
+                templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
+                f.write(templateOutput)
+            values = {"@GEOLOCATEHEAD@": geolocateHead,
+                      "@BOUNDS@": mapbounds,
+                      "@CONTROLS@": ",".join(controls),
+                      "@POPUPLAYERS@": popupLayers,
+                      "@VIEW@": view,
+                      "@LAYERSEARCH@": layerSearch,
+                      "@ONHOVER@": onHover,
+                      "@DOHIGHLIGHT@": highlight,
+                      "@HIGHLIGHTFILL@": highlightFill,
+                      "@GEOLOCATE@": geolocate,
+                      "@GEOCODINGSCRIPT@": geocodingScript,
+                      "@MEASURECONTROL@": measureControl,
+                      "@MEASURING@": measuring,
+                      "@MEASURE@": measure,
+                      "@MEASUREUNIT@": measureUnit}
+            with open(os.path.join(folder, "resources", "qgis2web.js"), "w") as f:
+                out = replaceInScript("qgis2web.js", values)
+                f.write(out.encode("utf-8"))
+        except Exception as e:
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                     level=QgsMessageLog.CRITICAL)
+        finally:
+            QApplication.restoreOverrideCursor()
+        return os.path.join(folder, "index.html")
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,

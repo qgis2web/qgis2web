@@ -17,6 +17,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
 import sys
 from collections import defaultdict, OrderedDict
 import webbrowser
@@ -24,6 +25,13 @@ import webbrowser
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
+from qgis.core import (QGis,
+                       QgsProject,
+                       QgsMapLayer,
+                       QgsVectorLayer,
+                       QgsNetworkAccessManager,
+                       QgsMessageLog)
+
 # noinspection PyUnresolvedReferences
 from PyQt4.QtCore import *
 from PyQt4.QtCore import (QSettings,
@@ -45,8 +53,9 @@ from configparams import (getParams,
                           baselayers,
                           specificParams,
                           specificOptions)
-from olwriter import writeOL
-from leafletWriter import *
+from olwriter import OpenLayersWriter
+from leafletWriter import LeafletWriter
+
 from exporter import (EXPORTER_REGISTRY)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -399,16 +408,22 @@ class MainDialog(QDialog, Ui_MainDialog):
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
-                              cluster, params, utils.tempFolder())
+        previewFile = OpenLayersWriter.writeOL(self.iface, layers,
+                                               groups, popup,
+                                               visible, json,
+                                               cluster, params,
+                                               utils.tempFolder())
         self.loadPreviewFile(previewFile)
 
     def previewLeaflet(self):
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = writeLeaflet(self.iface, utils.tempFolder(), layers,
-                                   visible, cluster, json, params, popup)
+        previewFile = LeafletWriter.writeLeaflet(self.iface,
+                                                 utils.tempFolder(),
+                                                 layers, visible,
+                                                 cluster, json,
+                                                 params, popup)
         self.loadPreviewFile(previewFile)
 
     def saveOL(self):
@@ -417,8 +432,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
-            outputFile = writeOL(self.iface, layers, groups, popup, visible,
-                                 json, cluster, params, write_folder)
+            outputFile = OpenLayersWriter.writeOL(self.iface, layers,
+                                                  groups, popup,
+                                                  visible, json,
+                                                  cluster, params,
+                                                  write_folder)
             self.exporter.postProcess(outputFile)
             if (not os.environ.get('CI') and
                     not os.environ.get('TRAVIS')):
@@ -430,7 +448,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
-            outputFile = writeLeaflet(
+            outputFile = LeafletWriter.writeLeaflet(
                 self.iface, write_folder, layers, visible,
                 cluster, json, params, popup)
             self.exporter.postProcess(outputFile)
