@@ -32,6 +32,21 @@ class Writer(object):
     def __init__(self):
         self.written_files = []
         self.preview_file = None
+        # layer groups
+        self.groups = []
+        # list of layers to write
+        self.layers = []
+        # list of whether each layer is visible
+        self.visible = []
+        # list of whether each layer should be clustered
+        self.cluster = []
+        # popup content
+        self.popup = None
+        # json content
+        self.json = None
+        # configuration dictionary (TODO - standardise
+        # between writers!)
+        self.params = {}
 
     @classmethod
     def type(cls):
@@ -47,20 +62,11 @@ class Writer(object):
         """
         return ''
 
-    def write(self, iface, groups, layers, visible, cluster, popup,
-              json, params, dest_folder):
+    def write(self, iface, dest_folder):
         """
         Writes the web map output for a specified configuation.
         :param iface: QGIS interface
-        :param groups: layer groups
-        :param layers: list of layers to write
-        :param visible: list of whether each layer is visible
-        :param cluster: list of whether each layer should be clustered
-        :param popup: popup content
-        :param json: json content
-        :param params: configuration dictionary (TODO - standardise
-        between writers!)
         :param dest_folder destination folder for writing
-        :return: True if writing was successful
+        :return: Main index file for web map
         """
-        return False
+        return ''

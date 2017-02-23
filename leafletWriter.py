@@ -56,14 +56,13 @@ class LeafletWriter(Writer):
     def name(cls):
         return QObject.tr(translator, 'Leaflet')
 
-    def write(self, iface, groups, layers, visible,
-              cluster, popup, json, params, dest_folder):
-        self.preview_file = self.writeLeaflet(iface, layer_list=layers,
-                                              popup=popup,
-                                              visible=visible,
-                                              json=json,
-                                              cluster=cluster,
-                                              params=params,
+    def write(self, iface, dest_folder):
+        self.preview_file = self.writeLeaflet(iface, layer_list=self.layers,
+                                              popup=self.popup,
+                                              visible=self.visible,
+                                              json=self.json,
+                                              cluster=self.cluster,
+                                              params=self.params,
                                               folder=dest_folder)
         return self.preview_file
 

@@ -173,6 +173,18 @@ class MainDialog(QDialog, Ui_MainDialog):
         elif self.mapFormat.checkedButton() == self.leaflet:
             return LeafletWriter
 
+    def createWriter(self):
+        """
+        Creates a writer object reflecting the current settings
+        in the dialog
+        """
+        writer = self.getWriterFactory()()
+        (writer.layers, writer.groups, writer.popup,
+         writer.visible, writer.json,
+         writer.cluster) = self.getLayersAndGroups()
+        writer.params = self.getParameters()
+        return writer
+
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.iteritems():
@@ -206,18 +218,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         treeOption.setDisabled(False)
 
     def createPreview(self):
-        writer = self.getWriterFactory()()
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
-        params = self.getParameters()
+        writer = self.createWriter()
         return writer.write(self.iface,
-                            groups=groups,
-                            layers=layers,
-                            popup=popup,
-                            visible=visible,
-                            cluster=cluster,
-                            json=json,
-                            params=params,
                             dest_folder=utils.tempFolder())
 
     def previewMap(self):
@@ -238,22 +240,12 @@ class MainDialog(QDialog, Ui_MainDialog):
                                      level=QgsMessageLog.CRITICAL)
 
     def saveMap(self):
-        writer = self.getWriterFactory()()
-        params = self.getParameters()
+        writer = self.createWriter()
         write_folder = self.exporter.exportDirectory()
         if not write_folder:
             return
 
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
         outputFile = writer.write(self.iface,
-                                  groups=groups,
-                                  layers=layers,
-                                  popup=popup,
-                                  visible=visible,
-                                  cluster=cluster,
-                                  json=json,
-                                  params=params,
                                   dest_folder=write_folder)
         self.exporter.postProcess(outputFile)
         if (not os.environ.get('CI') and
