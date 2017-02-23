@@ -38,8 +38,10 @@ from PyQt4.QtCore import (QSettings,
                           QByteArray)
 from PyQt4.QtGui import *
 from PyQt4.QtGui import (QHBoxLayout)
+
 try:
     from PyQt4.QtWebKit import *
+
     webkit_available = True
 except ImportError:
     webkit_available = False
@@ -62,7 +64,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class MainDialog(QDialog, Ui_MainDialog):
-
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
@@ -157,12 +158,28 @@ class MainDialog(QDialog, Ui_MainDialog):
         except:
             pass
 
+    def currentMapFormat(self):
+        """
+        Returns the currently selected map writer type
+        """
+        return self.getWriterFactory().type()
+
+    def getWriterFactory(self):
+        """
+        Returns a factory to create the currently selected map writer
+        """
+        if self.mapFormat.checkedButton() == self.ol3:
+            return OpenLayersWriter
+        elif self.mapFormat.checkedButton() == self.leaflet:
+            return LeafletWriter
+
     def toggleOptions(self):
+        currentWriter = self.getWriterFactory()
         for param, value in specificParams.iteritems():
             treeParam = self.paramsTreeOL.findItems(param,
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))[0]
-            if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+            if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
                 else:
@@ -177,7 +194,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))
             for treeOption in treeOptions:
-                if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+                if currentWriter == OpenLayersWriter:
                     if value == "OL3":
                         treeOption.setDisabled(False)
                     else:
@@ -188,12 +205,25 @@ class MainDialog(QDialog, Ui_MainDialog):
                     else:
                         treeOption.setDisabled(False)
 
+    def createPreview(self):
+        writer = self.getWriterFactory()()
+        (layers, groups, popup, visible,
+         json, cluster) = self.getLayersAndGroups()
+        params = self.getParameters()
+        return writer.write(self.iface,
+                            groups=groups,
+                            layers=layers,
+                            popup=popup,
+                            visible=visible,
+                            cluster=cluster,
+                            json=json,
+                            params=params,
+                            dest_folder=utils.tempFolder())
+
     def previewMap(self):
         try:
-            if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-                self.previewOL3()
-            else:
-                self.previewLeaflet()
+            preview_file = self.createPreview()
+            self.loadPreviewFile(preview_file)
         except Exception as e:
             errorHTML = "<html>"
             errorHTML += "<head></head>"
@@ -208,10 +238,27 @@ class MainDialog(QDialog, Ui_MainDialog):
                                      level=QgsMessageLog.CRITICAL)
 
     def saveMap(self):
-        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            MainDialog.saveOL(self)
-        else:
-            MainDialog.saveLeaf(self)
+        writer = self.getWriterFactory()()
+        params = self.getParameters()
+        write_folder = self.exporter.exportDirectory()
+        if not write_folder:
+            return
+
+        (layers, groups, popup, visible,
+         json, cluster) = self.getLayersAndGroups()
+        outputFile = writer.write(self.iface,
+                                  groups=groups,
+                                  layers=layers,
+                                  popup=popup,
+                                  visible=visible,
+                                  cluster=cluster,
+                                  json=json,
+                                  params=params,
+                                  dest_folder=write_folder)
+        self.exporter.postProcess(outputFile)
+        if (not os.environ.get('CI') and
+                not os.environ.get('TRAVIS')):
+            webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def saveSettings(self, paramItem, col):
         QgsProject.instance().removeEntry("qgis2web",
@@ -289,8 +336,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         editorWidget = formCnf.widgetType(fieldIndex)
                     except:
                         editorWidget = layer.editorWidgetV2(fieldIndex)
-                    if (editorWidget == QgsVectorLayer.Hidden or
-                            editorWidget == 'Hidden'):
+                    if editorWidget == QgsVectorLayer.Hidden \
+                            or editorWidget == 'Hidden':
                         continue
                     options.append(unicode(f.name()))
                 for option in options:
@@ -357,8 +404,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             if (isinstance(project.readEntry("qgis2web",
                                              parameter.replace(" ", ""))[0],
                            basestring) and
-               project.readEntry("qgis2web",
-               parameter.replace(" ", ""))[0] != ""):
+                project.readEntry("qgis2web",
+                                  parameter.replace(" ", ""))[0] != ""):
                 value = project.readEntry(
                     "qgis2web", parameter.replace(" ", ""))[0]
         subitem = TreeSettingItem(parent_item, tree_widget,
@@ -403,80 +450,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         if self.preview:
             self.preview.settings().clearMemoryCaches()
             self.preview.setUrl(self.previewUrl)
-
-    def previewOL3(self):
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
-        params = self.getParameters()
-
-        writer = OpenLayersWriter()
-        previewFile = writer.write(self.iface,
-                                   groups=groups,
-                                   layers=layers,
-                                   popup=popup,
-                                   visible=visible,
-                                   cluster=cluster,
-                                   json=json,
-                                   params=params,
-                                   dest_folder=utils.tempFolder())
-        self.loadPreviewFile(previewFile)
-
-    def previewLeaflet(self):
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
-        params = self.getParameters()
-
-        writer = LeafletWriter()
-        previewFile = writer.write(self.iface,
-                                   groups=groups,
-                                   layers=layers,
-                                   popup=popup,
-                                   visible=visible,
-                                   cluster=cluster,
-                                   json=json,
-                                   params=params,
-                                   dest_folder=utils.tempFolder())
-        self.loadPreviewFile(previewFile)
-
-    def saveOL(self):
-        params = self.getParameters()
-        write_folder = self.exporter.exportDirectory()
-        if write_folder:
-            (layers, groups, popup, visible,
-             json, cluster) = self.getLayersAndGroups()
-            writer = OpenLayersWriter()
-            outputFile = writer.write(self.iface,
-                                       groups=groups,
-                                       layers=layers,
-                                       popup=popup,
-                                       visible=visible,
-                                       cluster=cluster,
-                                       json=json,
-                                       params=params,
-                                       dest_folder=write_folder)
-            self.exporter.postProcess(outputFile)
-            if (not os.environ.get('CI') and
-                    not os.environ.get('TRAVIS')):
-                webbrowser.open_new_tab(self.exporter.destinationUrl())
-
-    def saveLeaf(self):
-        params = self.getParameters()
-        write_folder = self.exporter.exportDirectory()
-        if write_folder:
-            (layers, groups, popup, visible,
-             json, cluster) = self.getLayersAndGroups()
-            writer = LeafletWriter()
-            outputFile = writer.write(self.iface,
-                                       groups=groups,
-                                       layers=layers,
-                                       popup=popup,
-                                       visible=visible,
-                                       cluster=cluster,
-                                       json=json,
-                                       params=params,
-                                       dest_folder=write_folder)
-            self.exporter.postProcess(outputFile)
-            webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def getParameters(self):
         parameters = defaultdict(dict)
@@ -589,7 +562,6 @@ class devToggleFilter(QObject):
 
 
 class TreeGroupItem(QTreeWidgetItem):
-
     groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "group.gif"))
 
@@ -613,7 +585,6 @@ class TreeGroupItem(QTreeWidgetItem):
 
 
 class TreeLayerItem(QTreeWidgetItem):
-
     layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "layer.png"))
 
@@ -640,8 +611,8 @@ class TreeLayerItem(QTreeWidgetItem):
                     editorWidget = formCnf.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
+                if editorWidget == QgsVectorLayer.Hidden or\
+                   editorWidget == 'Hidden':
                     continue
                 options.append(f.name())
             for option in options:
@@ -728,7 +699,6 @@ class TreeLayerItem(QTreeWidgetItem):
 
 
 class TreeSettingItem(QTreeWidgetItem):
-
     def __init__(self, parent, tree, name, value, action=None):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent

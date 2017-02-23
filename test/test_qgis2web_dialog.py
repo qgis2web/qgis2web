@@ -26,6 +26,8 @@ from PyQt4.QtCore import *
 from osgeo import gdal
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
+from olwriter import OpenLayersWriter
+from leafletWriter import LeafletWriter
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
@@ -81,6 +83,22 @@ class qgis2web_classDialogTest(unittest.TestCase):
 #        """Save default - no data (OL3)"""
 #        self.dialog = MainDialog(IFACE)
 #        self.dialog.buttonExport.click()
+
+    def test02_toggle_format(self):
+        """ test fetching current writer type"""
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+        self.assertEqual(self.dialog.currentMapFormat(), LeafletWriter.type())
+        self.dialog.ol3.click()
+        self.assertEqual(self.dialog.currentMapFormat(), OpenLayersWriter.type())
+
+    def test02b_toggle_format_factory(self):
+        """ test fetching factory for current writer type"""
+        self.dialog = MainDialog(IFACE)
+        self.dialog.leaflet.click()
+        self.assertEqual(self.dialog.getWriterFactory(), LeafletWriter)
+        self.dialog.ol3.click()
+        self.assertEqual(self.dialog.getWriterFactory(), OpenLayersWriter)
 
     def test03_toggle_Leaflet(self):
         """Toggle to Leaflet - no data"""
