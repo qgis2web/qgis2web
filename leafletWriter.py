@@ -39,6 +39,7 @@ from writer import (Writer,
 
 
 class LeafletWriter(Writer):
+
     """
     Writer for creation of web maps based on the Leaflet
     JavaScript library.
@@ -55,11 +56,23 @@ class LeafletWriter(Writer):
     def name(cls):
         return QObject.tr(translator, 'Leaflet')
 
+    def write(self, iface, groups, layers, visible,
+              cluster, popup, json, params, dest_folder):
+        self.preview_file = self.writeLeaflet(iface, layer_list=layers,
+                                              popup=popup,
+                                              visible=visible,
+                                              json=json,
+                                              cluster=cluster,
+                                              params=params,
+                                              folder=dest_folder)
+        return self.preview_file
+
     @classmethod
     def writeLeaflet(
-            cls, iface, outputProjectFileName,
+            cls, iface, folder,
             layer_list, visible, cluster,
             json, params, popup):
+        outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         legends = {}
         canvas = iface.mapCanvas()

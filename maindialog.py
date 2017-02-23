@@ -408,22 +408,34 @@ class MainDialog(QDialog, Ui_MainDialog):
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = OpenLayersWriter.writeOL(self.iface, layers,
-                                               groups, popup,
-                                               visible, json,
-                                               cluster, params,
-                                               utils.tempFolder())
+
+        writer = OpenLayersWriter()
+        previewFile = writer.write(self.iface,
+                                   groups=groups,
+                                   layers=layers,
+                                   popup=popup,
+                                   visible=visible,
+                                   cluster=cluster,
+                                   json=json,
+                                   params=params,
+                                   dest_folder=utils.tempFolder())
         self.loadPreviewFile(previewFile)
 
     def previewLeaflet(self):
         (layers, groups, popup, visible,
          json, cluster) = self.getLayersAndGroups()
         params = self.getParameters()
-        previewFile = LeafletWriter.writeLeaflet(self.iface,
-                                                 utils.tempFolder(),
-                                                 layers, visible,
-                                                 cluster, json,
-                                                 params, popup)
+
+        writer = LeafletWriter()
+        previewFile = writer.write(self.iface,
+                                   groups=groups,
+                                   layers=layers,
+                                   popup=popup,
+                                   visible=visible,
+                                   cluster=cluster,
+                                   json=json,
+                                   params=params,
+                                   dest_folder=utils.tempFolder())
         self.loadPreviewFile(previewFile)
 
     def saveOL(self):
@@ -432,11 +444,16 @@ class MainDialog(QDialog, Ui_MainDialog):
         if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
-            outputFile = OpenLayersWriter.writeOL(self.iface, layers,
-                                                  groups, popup,
-                                                  visible, json,
-                                                  cluster, params,
-                                                  write_folder)
+            writer = OpenLayersWriter()
+            outputFile = writer.write(self.iface,
+                                       groups=groups,
+                                       layers=layers,
+                                       popup=popup,
+                                       visible=visible,
+                                       cluster=cluster,
+                                       json=json,
+                                       params=params,
+                                       dest_folder=write_folder)
             self.exporter.postProcess(outputFile)
             if (not os.environ.get('CI') and
                     not os.environ.get('TRAVIS')):
@@ -448,9 +465,16 @@ class MainDialog(QDialog, Ui_MainDialog):
         if write_folder:
             (layers, groups, popup, visible,
              json, cluster) = self.getLayersAndGroups()
-            outputFile = LeafletWriter.writeLeaflet(
-                self.iface, write_folder, layers, visible,
-                cluster, json, params, popup)
+            writer = LeafletWriter()
+            outputFile = writer.write(self.iface,
+                                       groups=groups,
+                                       layers=layers,
+                                       popup=popup,
+                                       visible=visible,
+                                       cluster=cluster,
+                                       json=json,
+                                       params=params,
+                                       dest_folder=write_folder)
             self.exporter.postProcess(outputFile)
             webbrowser.open_new_tab(self.exporter.destinationUrl())
 

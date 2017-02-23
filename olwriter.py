@@ -56,6 +56,18 @@ class OpenLayersWriter(Writer):
     def name(cls):
         return QObject.tr(translator, 'OpenLayers')
 
+    def write(self, iface, groups, layers, visible,
+              cluster, popup, json, params, dest_folder):
+        self.preview_file = self.writeOL(iface, layers=layers,
+                                         groups=groups,
+                                         popup=popup,
+                                         visible=visible,
+                                         json=json,
+                                         clustered=cluster,
+                                         settings=params,
+                                         folder=dest_folder)
+        return self.preview_file
+
     @classmethod
     def writeOL(cls, iface, layers, groups, popup, visible,
                 json, clustered, settings, folder):
