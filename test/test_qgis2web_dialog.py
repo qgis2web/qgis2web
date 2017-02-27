@@ -1050,20 +1050,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(IFACE)
 
         # Ensure the OpenLayers 3 option is selected
-        dialog.ol3.click()
+        self.dialog.ol3.click()
 
         # Check the 'Add layers list' checkbox
-        dialog.items['Appearance'].get(
+        self.dialog.items['Appearance'].get(
             'Add layers list').setCheckState(1, QtCore.Qt.Checked)
+        self.setTemplate('full-screen')
 
-        writer = dialog.createWriter()
+        writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
         expected_params = self.defaultParams()
         expected_params['Appearance']['Add layers list'] = True
-        expected_params['Appearance']['Template'] = 'canvas-size'
         expected_params['Scale/Zoom']['Extent'] = 'Canvas extent'
         self.assertEqual(writer.params, expected_params)
         self.assertEqual(writer.groups, {})
