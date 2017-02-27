@@ -143,8 +143,8 @@ def featureGroupsScript():
 def basemapsScript(basemapList, maxZoom):
     basemaps = ""
     for count, basemap in enumerate(basemapList):
-        bmText = basemapAddresses[basemap.text()]
-        bmAttr = basemapAttributions[basemap.text()]
+        bmText = basemapAddresses[basemap]
+        bmAttr = basemapAttributions[basemap]
         basemaps += """
         var basemap{count} = L.tileLayer('{basemap}', {{
             attribution: '{attribution}',
@@ -378,7 +378,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
         controlStart = """
         var baseMaps = {"""
         for count, basemap in enumerate(basemapList):
-            controlStart += comma + "'" + unicode(basemap.text())
+            controlStart += comma + "'" + unicode(basemap)
             controlStart += "': basemap" + unicode(count)
             comma = ", "
         controlStart += "};"

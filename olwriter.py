@@ -351,7 +351,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
-    basemaps = [basemapOL()[item.text()] for _, item in enumerate(basemapList)]
+    basemaps = [basemapOL()[item] for _, item in enumerate(basemapList)]
     if len(basemapList) > 1:
         baseGroup = "Base maps"
     else:

@@ -452,7 +452,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     parameters["Appearance"]["Search layer"] = (
                         self.layer_search_combo.itemData(
                             self.layer_search_combo.currentIndex()))
-        basemaps = self.basemaps.selectedItems()
+        basemaps = [i.text() for i in self.basemaps.selectedItems()]
         parameters["Appearance"]["Base layer"] = basemaps
         return parameters
 
