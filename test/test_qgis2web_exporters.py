@@ -48,10 +48,11 @@ from exporter import (FolderExporter,
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
-TEST_PORT=3232
+TEST_PORT = 3232
 FTP_FOLDER = ''
 FTP_USER_FOLDER = ''
 SERVER_RUNNING = False
+
 
 def createServer():
     """
@@ -104,6 +105,7 @@ def createServer():
 
 
 class qgis2web_exporterTest(unittest.TestCase):
+
     """Test exporters and exporter registry"""
 
     def setUp(self):
@@ -131,7 +133,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         """Test folder exporter post processing"""
         e = FolderExporter()
         e.postProcess('/tmp/file.htm')
-        self.assertEqual(e.destinationUrl(),'/tmp/file.htm')
+        self.assertEqual(e.destinationUrl(), '/tmp/file.htm')
 
     def test03_FolderExporterSaveReadFromProject(self):
         """Test saving and restoring folder exporter settings in project"""
@@ -142,7 +144,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         restored = FolderExporter()
         restored.readFromProject()
 
-        self.assertEqual(restored.exportDirectory(),'/my_folder')
+        self.assertEqual(restored.exportDirectory(), '/my_folder')
 
     def test04_RegistryHasExporters(self):
         """test that exporter registry is populated with exporters"""
@@ -155,29 +157,29 @@ class qgis2web_exporterTest(unittest.TestCase):
         EXPORTER_REGISTRY.writeToProject(e)
 
         restored = EXPORTER_REGISTRY.createFromProject()
-        self.assertEqual(type(restored),FolderExporter)
+        self.assertEqual(type(restored), FolderExporter)
         self.assertEqual(restored.exportDirectory(), '/my_folder')
 
         # try with a non-folder exporter
         f = FtpExporter()
         EXPORTER_REGISTRY.writeToProject(f)
         restored = EXPORTER_REGISTRY.createFromProject()
-        self.assertEqual(type(restored),FtpExporter)
+        self.assertEqual(type(restored), FtpExporter)
 
     def test06_FtpConfigurationDialog(self):
         """Test behavior of the FTP export configuration dialog"""
         dlg = FtpConfigurationDialog()
         # should default to port 21
-        self.assertEqual(dlg.port(),21)
+        self.assertEqual(dlg.port(), 21)
         # test getters and setters
         dlg.setHost('myhost')
-        self.assertEqual(dlg.host(),'myhost')
+        self.assertEqual(dlg.host(), 'myhost')
         dlg.setUsername('super')
-        self.assertEqual(dlg.username(),'super')
+        self.assertEqual(dlg.username(), 'super')
         dlg.setPort(54)
-        self.assertEqual(dlg.port(),54)
+        self.assertEqual(dlg.port(), 54)
         dlg.setFolder('folder')
-        self.assertEqual(dlg.folder(),'folder')
+        self.assertEqual(dlg.folder(), 'folder')
 
         # try setting port to a non-int
         dlg.setPort('a')
@@ -195,10 +197,10 @@ class qgis2web_exporterTest(unittest.TestCase):
         restored = FtpExporter()
         restored.readFromProject()
 
-        self.assertEqual(restored.host,'geocities.com')
-        self.assertEqual(restored.username,'sup3Raw3s0m64')
-        self.assertEqual(restored.remote_folder,'test_folder')
-        self.assertEqual(restored.port,123)
+        self.assertEqual(restored.host, 'geocities.com')
+        self.assertEqual(restored.username, 'sup3Raw3s0m64')
+        self.assertEqual(restored.remote_folder, 'test_folder')
+        self.assertEqual(restored.port, 123)
 
     def test08_FtpExporterTempFolder(self):
         """Test FTP exporter generation of temp folder"""
@@ -224,24 +226,25 @@ class qgis2web_exporterTest(unittest.TestCase):
             os.makedirs(export_folder)
         except:
             self.assertTrue(False, 'could not create export directory')
-        out_file = os.path.join(export_folder,'index.html')
-        with open(out_file,'w') as i:
+        out_file = os.path.join(export_folder, 'index.html')
+        with open(out_file, 'w') as i:
             i.write('test')
 
         e.postProcess(out_file)
 
-        expected_index_file = os.path.join(FTP_USER_FOLDER,'public_html','index.html')
+        expected_index_file = os.path.join(
+            FTP_USER_FOLDER, 'public_html', 'index.html')
         self.assertTrue(os.path.exists(expected_index_file))
-        content = open(expected_index_file,'r').readlines()
-        self.assertEqual(content,['test'])
+        content = open(expected_index_file, 'r').readlines()
+        self.assertEqual(content, ['test'])
 
         # try overwriting existing file
-        with open(out_file,'w') as i:
+        with open(out_file, 'w') as i:
             i.write('test2')
         e.postProcess(out_file)
         self.assertTrue(expected_index_file)
-        content = open(expected_index_file,'r').readlines()
-        self.assertEqual(content,['test2'])
+        content = open(expected_index_file, 'r').readlines()
+        self.assertEqual(content, ['test2'])
 
     def test10_FtpUploadSubfolder(self):
         e = FtpExporter()
@@ -256,30 +259,30 @@ class qgis2web_exporterTest(unittest.TestCase):
             os.makedirs(export_folder)
         except:
             self.assertTrue(False, 'could not create export directory')
-        out_file = os.path.join(export_folder,'index.html')
-        with open(out_file,'w') as i:
+        out_file = os.path.join(export_folder, 'index.html')
+        with open(out_file, 'w') as i:
             i.write('test')
-        sub_folder=os.path.join(export_folder,'sub')
+        sub_folder = os.path.join(export_folder, 'sub')
         try:
             os.makedirs(sub_folder)
         except:
             self.assertTrue(False, 'could not create export directory')
-        sub_folder_out_file = os.path.join(sub_folder,'index.html')
-        with open(sub_folder_out_file,'w') as i:
+        sub_folder_out_file = os.path.join(sub_folder, 'index.html')
+        with open(sub_folder_out_file, 'w') as i:
             i.write('test2')
 
         e.postProcess(out_file)
 
-        expected_index_file = os.path.join(FTP_USER_FOLDER,'public_html','index.html')
+        expected_index_file = os.path.join(
+            FTP_USER_FOLDER, 'public_html', 'index.html')
         self.assertTrue(os.path.exists(expected_index_file))
-        content = open(expected_index_file,'r').readlines()
-        self.assertEqual(content,['test'])
-        expected_sub_folder_index_file = os.path.join(FTP_USER_FOLDER, 'public_html', 'sub', 'index.html')
+        content = open(expected_index_file, 'r').readlines()
+        self.assertEqual(content, ['test'])
+        expected_sub_folder_index_file = os.path.join(
+            FTP_USER_FOLDER, 'public_html', 'sub', 'index.html')
         self.assertTrue(os.path.exists(expected_sub_folder_index_file))
         content = open(expected_sub_folder_index_file, 'r').readlines()
         self.assertEqual(content, ['test2'])
-
-
 
 
 if __name__ == "__main__":

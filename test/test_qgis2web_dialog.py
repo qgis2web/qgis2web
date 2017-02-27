@@ -36,7 +36,9 @@ QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
 from maindialog import MainDialog
 
+
 class qgis2web_classDialogTest(unittest.TestCase):
+
     """Test most common plugin actions"""
 
     def setUp(self):
@@ -57,8 +59,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         Set template to match desired control output
         """
         combo = self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Template',
+            self.dialog.paramsTreeOL.findItems(
+                'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1)
 
@@ -67,15 +69,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def defaultParams(self):
         return {'Data export': {
-                             'Mapping library location' : 'Local',
+            'Mapping library location': 'Local',
                              'Minify GeoJSON files': False,
                              'Exporter': 'Export to folder',
                              'Precision': 'maintain'},
-            'Scale/Zoom': {'Min zoom level': '1',
-                           'Restrict to extent': False,
-                           'Extent': 'Fit to layers extent',
-                           'Max zoom level': '28'},
-            'Appearance': {
+                'Scale/Zoom': {'Min zoom level': '1',
+                               'Restrict to extent': False,
+                               'Extent': 'Fit to layers extent',
+                               'Max zoom level': '28'},
+                'Appearance': {
                 'Add address search': False,
                 'Geolocate user': False,
                 'Base layer': [],
@@ -87,7 +89,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Layer search': 'None',
                 'Highlight on hover': False,
                 'Show popups on hover': False
-            }}
+        }}
 
     def test01_preview_default(self):
         """Preview default - no data (OL3)"""
@@ -105,7 +107,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.leaflet.click()
         self.assertEqual(self.dialog.currentMapFormat(), LeafletWriter.type())
         self.dialog.ol3.click()
-        self.assertEqual(self.dialog.currentMapFormat(), OpenLayersWriter.type())
+        self.assertEqual(
+            self.dialog.currentMapFormat(), OpenLayersWriter.type())
 
     def test02b_toggle_format_factory(self):
         """ test fetching factory for current writer type"""
@@ -164,30 +167,30 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict(
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])])
-        self.assertEqual(writer.json,[False])
-
+        self.assertEqual(writer.json, [False])
 
     def test10_Leaflet_wfs_pnt_single(self):
         """Dialog test: Leaflet  WFS point single"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        layer_url = (
+            'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         layer_style = test_data_path('style', 'point_single.qml')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
@@ -197,24 +200,24 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
 
     def test11_Leaflet_json_line_single(self):
         """Dialog test: Leaflet  JSON line single"""
@@ -228,23 +231,23 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
 
     def test12_Leaflet_wfs_line_single(self):
         """Dialog test: Leaflet  WFS line single"""
@@ -260,23 +263,23 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
 
     def test13_Leaflet_json_poly_single(self):
         """Dialog test: Leaflet  JSON polygon single"""
@@ -290,23 +293,23 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
 
     def test14_Leaflet_wfs_poly_single(self):
         """Dialog test: Leaflet  WFS polygon single"""
@@ -315,7 +318,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'polygon_single.qml')
         control_path = test_data_path(
-                'control', 'leaflet_wfs_polygon_single.html')
+            'control', 'leaflet_wfs_polygon_single.html')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
@@ -324,30 +327,30 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Dialog test: Leaflet  JSON point categorized"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_categorized.qml')
         control_path = test_data_path(
-                'control', 'leaflet_json_point_categorized.html')
+            'control', 'leaflet_json_point_categorized.html')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -357,31 +360,32 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict(
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.json, [False])
 
     def test16_Leaflet_wfs_pnt_categorized(self):
         """Dialog test: Leaflet  WFS point categorized"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        layer_url = (
+            'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         layer_style = test_data_path('style', 'wfs_point_categorized.qml')
         control_path = test_data_path(
-                'control', 'leaflet_wfs_point_categorized.html')
+            'control', 'leaflet_wfs_point_categorized.html')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
@@ -390,30 +394,30 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,[OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
 
     def test17_Leaflet_json_line_categorized(self):
         """Dialog test: Leaflet  JSON line categorized"""
         layer_path = test_data_path('layer', 'pipelines.shp')
         style_path = test_data_path('style', 'pipelines_categorized.qml')
         control_path = test_data_path(
-                'control', 'leaflet_json_line_categorized.html')
+            'control', 'leaflet_json_line_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -422,24 +426,25 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
-                          (u'F_CODEDESC', u'no label')])])
-        self.assertEqual(writer.json,[False])
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
+                              (u'F_CODEDESC', u'no label')])])
+        self.assertEqual(writer.json, [False])
 
     def test18_Leaflet_wfs_line_categorized(self):
         """Dialog test: Leaflet  WFS line categorized"""
@@ -448,7 +453,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         layer_style = test_data_path('style', 'wfs_line_categorized.qml')
         control_path = test_data_path(
-                'control', 'leaflet_wfs_line_categorized.html')
+            'control', 'leaflet_wfs_line_categorized.html')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
@@ -457,31 +462,31 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
                          [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+                          ])
+        self.assertEqual(writer.json, [False])
 
     def test19_Leaflet_json_poly_categorized(self):
         """Dialog test: Leaflet  JSON polygon categorized"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_categorized.qml')
         control_path = test_data_path(
-                'control', 'leaflet_json_polygon_categorized.html')
+            'control', 'leaflet_json_polygon_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -490,24 +495,25 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
-                                       (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])])
-        self.assertEqual(writer.json,[False])
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
+                              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])])
+        self.assertEqual(writer.json, [False])
 
     def test20_Leaflet_wfs_poly_categorized(self):
         """Dialog test: Leaflet  WFS polygon categorized"""
@@ -523,23 +529,23 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
                          [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+                          ])
+        self.assertEqual(writer.json, [False])
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Dialog test: Leaflet  JSON point graduated"""
@@ -553,29 +559,31 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])]
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])]
                          )
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.json, [False])
 
     def test22_Leaflet_wfs_pnt_graduated(self):
         """Dialog test: Leaflet  WFS point graduated"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        layer_url = (
+            'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         layer_style = test_data_path('style', 'wfs_point_graduated.qml')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
@@ -585,24 +593,24 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
                          [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-])
-        self.assertEqual(writer.json,[False])
+                          ])
+        self.assertEqual(writer.json, [False])
 
     def test23_Leaflet_json_line_graduated(self):
         """Dialog test: Leaflet  JSON line graduated"""
@@ -616,25 +624,26 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])]
+                         [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (
+                             u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])]
 
                          )
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.json, [False])
 
     def test24_Leaflet_wfs_line_graduated(self):
         """Dialog test: Leaflet  WFS line graduated"""
@@ -650,25 +659,25 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
                          [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-]
+                          ]
                          )
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.json, [False])
 
     def test25_Leaflet_json_poly_graduated(self):
         """Dialog test: Leaflet  JSON polygon graduated"""
@@ -682,25 +691,26 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
-                                       (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
+                              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
                          )
-        self.assertEqual(writer.json,[False])
+        self.assertEqual(writer.json, [False])
 
     def test26_Leaflet_wfs_poly_graduated(self):
         """Dialog test: Leaflet  WFS polygon graduated"""
@@ -716,25 +726,26 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter ))
+        self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
- [                        OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'),
-                                      (u'area_ha', u'no label'), (u'web_page', u'no label')])
-]                         )
-        self.assertEqual(writer.json,[False])
+                         [OrderedDict(
+                          [(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'),
+                           (u'area_ha', u'no label'), (u'web_page', u'no label')])
+                          ])
+        self.assertEqual(writer.json, [False])
 
     def test27_OL3_pnt_single(self):
         """Dialog test: OL3   point single"""
@@ -748,40 +759,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.ol3.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, OpenLayersWriter ))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params,expected_params)
-        self.assertEqual(writer.groups,{})
-        self.assertEqual(writer.layers,[layer])
-        self.assertEqual(writer.visible,[True])
-        self.assertEqual(writer.cluster,[False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
-]
-                         )
-        self.assertEqual(writer.json,[False])
-
-    def test28_OL3_line_single(self):
-        """Dialog test: OL3   line single"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
@@ -795,8 +774,41 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
-                                       (u'F_CODEDESC', u'no label')])]
+                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
+                          ]
+                         )
+        self.assertEqual(writer.json, [False])
+
+    def test28_OL3_line_single(self):
+        """Dialog test: OL3   line single"""
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        style_path = test_data_path('style', 'pipelines_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
+        self.dialog.ol3.click()
+
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, OpenLayersWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup,
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
+                              (u'F_CODEDESC', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -811,9 +823,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems("Extent",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
         writer = self.dialog.createWriter()
@@ -825,8 +838,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
-                                       (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
+                              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -842,8 +856,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        "Extent", (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            self.dialog.paramsTreeOL.findItems(
+                "Extent", (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
@@ -857,8 +871,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])]
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -873,9 +888,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems("Extent",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
         writer = self.dialog.createWriter()
@@ -887,8 +903,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
-                                       (u'F_CODEDESC', u'no label')])]
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
+                              (u'F_CODEDESC', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -903,9 +920,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems("Extent",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
@@ -918,8 +936,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
-                                       (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
+                              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -934,9 +953,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems("Extent",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
@@ -949,8 +969,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])]
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -965,9 +986,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems("Extent",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
@@ -980,8 +1002,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
-                                       (u'F_CODEDESC', u'no label')])]
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
+                              (u'F_CODEDESC', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -996,9 +1019,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(self.dialog.paramsTreeOL.findItems("Extent",
-                                                (Qt.MatchExactly |
-                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems("Extent",
+                                               (Qt.MatchExactly |
+                                                Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
@@ -1011,8 +1035,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
-                                       (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
+                         [OrderedDict(
+                             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
+                              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
                          )
         self.assertEqual(writer.json, [False])
 
@@ -1031,7 +1056,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         dialog.ol3.click()
 
         # Check the 'Add layers list' checkbox
-        dialog.items['Appearance'].get('Add layers list').setCheckState(1, QtCore.Qt.Checked)
+        dialog.items['Appearance'].get(
+            'Add layers list').setCheckState(1, QtCore.Qt.Checked)
 
         writer = dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
@@ -1046,9 +1072,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
                          [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
-])
+                          ])
         self.assertEqual(writer.json, [False])
-
 
     def test37_OL3_base_layers_have_type_base(self):
         """Dialog test: OL3   Ensure base layers have a type property with a value of 'base'"""
@@ -1069,7 +1094,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         writer = dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
-        self.assertEqual(writer.params['Appearance']['Base layer'],['OSM'])
+        self.assertEqual(writer.params['Appearance']['Base layer'], ['OSM'])
 
     def test39_OL3_base_group_only_included_when_base_map_selected(self):
         """Dialog test: OL3   Only include the 'Base maps' group when +1 base maps are selected"""
@@ -1091,14 +1116,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         writer = dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
-        self.assertEqual(len(writer.params['Appearance']['Base layer']),0)
+        self.assertEqual(len(writer.params['Appearance']['Base layer']), 0)
 
         # Select a base map
         dialog.basemaps.item(0).setSelected(True)
 
         writer = dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
-        self.assertEqual(writer.params['Appearance']['Base layer'],['OSM'])
+        self.assertEqual(writer.params['Appearance']['Base layer'], ['OSM'])
 
     def test40_Leaflet_scalebar(self):
         """Dialog test: Leaflet  scale bar"""
@@ -1113,8 +1138,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
@@ -1133,8 +1158,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1149,16 +1175,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-                test_data_path(
-                        'control', 'ol3_scalebar.js'), 'r')
+            test_data_path(
+                'control', 'ol3_scalebar.js'), 'r')
         control_output = control_file.read()
-
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
@@ -1177,8 +1202,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1195,15 +1221,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Set the 'Measure tool' combo
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Measure tool',
+            self.dialog.paramsTreeOL.findItems(
+                'Measure tool',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -1219,11 +1245,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
-
 
     def test43_OL3_measure(self):
         """Dialog test: OL3   measure control"""
@@ -1238,16 +1264,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         # Set the 'Measure tool' combo
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Measure tool',
+            self.dialog.paramsTreeOL.findItems(
+                'Measure tool',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.dialog.ol3.click()
@@ -1262,8 +1288,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1280,13 +1307,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Add address search' checkbox
-        self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Add address search').setCheckState(1, QtCore.Qt.Checked)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -1300,8 +1328,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1318,14 +1347,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         # Check the 'Add address search' checkbox
-        self.dialog.items['Appearance'].get('Add address search').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Add address search').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -1338,8 +1368,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1356,13 +1387,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Geolocate user' checkbox
-        self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Geolocate user').setCheckState(1, QtCore.Qt.Checked)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -1376,8 +1408,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1394,14 +1427,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Check the 'Geolocate user' checkbox
-        self.dialog.items['Appearance'].get('Geolocate user').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Geolocate user').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -1415,8 +1449,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1433,13 +1468,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Highlight on hover' checkbox
-        self.dialog.items['Appearance'].get('Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -1453,8 +1489,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1471,14 +1508,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Check the 'Highlight on hover' checkbox
-        self.dialog.items['Appearance'].get('Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Highlight on hover').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -1492,8 +1530,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1512,13 +1551,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Match project CRS' checkbox
-        self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Match project CRS').setCheckState(1, QtCore.Qt.Checked)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -1532,8 +1572,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1548,19 +1589,19 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
-        
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
                 # Check the 'Match project CRS' checkbox
-        self.dialog.items['Appearance'].get('Match project CRS').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Match project CRS').setCheckState(1, QtCore.Qt.Checked)
         self.dialog.ol3.click()
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
@@ -1572,8 +1613,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1590,13 +1632,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Add layers list' checkbox
-        self.dialog.items['Appearance'].get('Add layers list').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Appearance'].get(
+            'Add layers list').setCheckState(1, QtCore.Qt.Checked)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -1610,8 +1653,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1628,8 +1672,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
@@ -1647,8 +1691,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [False])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1665,8 +1710,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
@@ -1685,8 +1730,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [False])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1703,8 +1749,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
@@ -1722,8 +1768,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [True])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1740,8 +1787,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
@@ -1760,8 +1807,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [True])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1778,13 +1826,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Set 'Precision' combo to '3'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(3)
+        self.dialog.items['Data export'].get(
+            'Precision').combo.setCurrentIndex(3)
         self.setTemplate('canvas-size')
         self.dialog.leaflet.click()
 
@@ -1799,8 +1848,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1817,14 +1867,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Set 'Precision' combo to '2'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(2)
+        self.dialog.items['Data export'].get(
+            'Precision').combo.setCurrentIndex(2)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -1838,8 +1889,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1856,14 +1908,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         # Set 'Mapping library location' combo to 'CDN'
-        self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
+        self.dialog.items['Data export'].get(
+            'Mapping library location').combo.setCurrentIndex(1)
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
@@ -1876,8 +1929,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1894,14 +1948,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         # Set 'Mapping library location' combo to 'CDN'
-        self.dialog.items['Data export'].get('Mapping library location').combo.setCurrentIndex(1)
+        self.dialog.items['Data export'].get(
+            'Mapping library location').combo.setCurrentIndex(1)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -1914,8 +1969,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1932,16 +1988,18 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Minify GeoJSON files' checkbox
-        self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Data export'].get(
+            'Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
 
         # Set 'Precision' combo to '6'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(6)
+        self.dialog.items['Data export'].get(
+            'Precision').combo.setCurrentIndex(6)
         self.setTemplate('canvas-size')
         self.dialog.leaflet.click()
 
@@ -1957,8 +2015,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -1975,17 +2034,19 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Check the 'Minify GeoJSON files' checkbox
-        self.dialog.items['Data export'].get('Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Data export'].get(
+            'Minify GeoJSON files').setCheckState(1, QtCore.Qt.Checked)
 
         # Set 'Precision' combo to '2'
-        self.dialog.items['Data export'].get('Precision').combo.setCurrentIndex(2)
+        self.dialog.items['Data export'].get(
+            'Precision').combo.setCurrentIndex(2)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -2000,8 +2061,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2018,8 +2080,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(0)
 
@@ -2037,8 +2099,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2055,16 +2118,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Set 'Max zoom' combo to '20'
-        self.dialog.items['Scale/Zoom'].get('Max zoom level').combo.setCurrentIndex(19)
+        self.dialog.items['Scale/Zoom'].get(
+            'Max zoom level').combo.setCurrentIndex(19)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
-
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, LeafletWriter))
@@ -2076,8 +2139,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2094,14 +2158,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Set 'Max zoom level' combo to '20'
-        self.dialog.items['Scale/Zoom'].get('Max zoom level').combo.setCurrentIndex(19)
+        self.dialog.items['Scale/Zoom'].get(
+            'Max zoom level').combo.setCurrentIndex(19)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -2115,8 +2180,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2133,13 +2199,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Set 'Min zoom' combo to '6'
-        self.dialog.items['Scale/Zoom'].get('Min zoom level').combo.setCurrentIndex(5)
+        self.dialog.items['Scale/Zoom'].get(
+            'Min zoom level').combo.setCurrentIndex(5)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -2153,8 +2220,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2171,14 +2239,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Set 'Min zoom level' combo to '6'
-        self.dialog.items['Scale/Zoom'].get('Min zoom level').combo.setCurrentIndex(5)
+        self.dialog.items['Scale/Zoom'].get(
+            'Min zoom level').combo.setCurrentIndex(5)
         self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
@@ -2192,8 +2261,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2210,13 +2280,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Check the 'Restrict to extent' checkbox
-        self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Scale/Zoom'].get(
+            'Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -2230,8 +2301,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2248,14 +2320,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
 
         # Check the 'Restrict to extent' checkbox
-        self.dialog.items['Scale/Zoom'].get('Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
+        self.dialog.items['Scale/Zoom'].get(
+            'Restrict to extent').setCheckState(1, QtCore.Qt.Checked)
 
         self.dialog.ol3.click()
 
@@ -2270,8 +2343,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                                       (u'NAME', u'no label'), (u'USE', u'no label')])
+                         [OrderedDict(
+                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+                              (u'NAME', u'no label'), (u'USE', u'no label')])
                           ])
         self.assertEqual(writer.json, [False])
 
@@ -2288,8 +2362,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2321,8 +2395,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
@@ -2353,16 +2427,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-                test_data_path(
-                        'control', 'ol3_cdn.html'), 'r')
+            test_data_path(
+                'control', 'ol3_cdn.html'), 'r')
         control_output = control_file.read()
-
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
-                self.dialog.paramsTreeOL.findItems(
-                        'Extent',
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('canvas-size')
@@ -2381,6 +2454,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         outputFile = os.path.join(outputFolder, "index.html")
         assert os.path.isfile(outputFile)
 
+
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
     relative path to an output file open the file and return it's contents as a
@@ -2393,7 +2467,6 @@ def read_output(url, path):
 def diff(control_output, test_output):
     """ Produce a unified diff given two strings splitting on newline """
     return '\n'.join(list(difflib.unified_diff(control_output.split('\n'), test_output.split('\n'), lineterm='')))
-
 
 
 if __name__ == "__main__":
