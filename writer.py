@@ -33,7 +33,7 @@ class Writer(object):
         self.written_files = []
         self.preview_file = None
         # layer groups
-        self.groups = []
+        self.groups = {}
         # list of layers to write
         self.layers = []
         # list of whether each layer is visible
