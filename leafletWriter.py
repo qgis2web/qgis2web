@@ -110,7 +110,7 @@ class LeafletWriter(Writer):
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
                                                    canvas, mapLibLocation,
-                                                   locate)
+                                                   addressSearch, locate)
         writeCSS(cssStore, mapSettings.backgroundColor().name())
 
         wfsLayers = ""

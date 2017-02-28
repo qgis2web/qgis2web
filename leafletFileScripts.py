@@ -9,7 +9,7 @@ from utils import replaceInTemplate
 
 def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
                          measure, matchCRS, layerSearch, canvas,
-                         mapLibLocation, locate):
+                         mapLibLocation, address, locate):
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -31,6 +31,11 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     if mapLibLocation == "Local":
         shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
+    if address:
+        shutil.copyfile(jsDir + 'Control.OSMGeocoder.js',
+                        jsStore + 'Control.OSMGeocoder.js')
+        shutil.copyfile(cssDir + 'Control.OSMGeocoder.css',
+                        cssStore + 'Control.OSMGeocoder.css')
     if locate:
         shutil.copyfile(jsDir + 'L.Control.Locate.min.js',
                         jsStore + 'L.Control.Locate.min.js')
@@ -128,12 +133,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         layerSearchJS = ""
     if address:
         addressCSS = """
-        <link rel="stylesheet" href="""
-        addressCSS += '"http://k4r573n.github.io/leaflet-control-osm-geocoder/'
-        addressCSS += 'Control.OSMGeocoder.css" />'
+        <link rel="stylesheet" href="css/Control.OSMGeocoder.css" />"""
         addressJS = """
-        <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/"""
-        addressJS += 'Control.OSMGeocoder.js"></script>'
+        <script src="js/Control.OSMGeocoder.js"></script>"""
     else:
         addressCSS = ""
         addressJS = ""
