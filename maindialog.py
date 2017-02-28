@@ -17,6 +17,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
 import sys
 from collections import defaultdict, OrderedDict
 import webbrowser
@@ -24,14 +25,23 @@ import webbrowser
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
+from qgis.core import (QGis,
+                       QgsProject,
+                       QgsMapLayer,
+                       QgsVectorLayer,
+                       QgsNetworkAccessManager,
+                       QgsMessageLog)
+
 # noinspection PyUnresolvedReferences
 from PyQt4.QtCore import *
 from PyQt4.QtCore import (QSettings,
                           QByteArray)
 from PyQt4.QtGui import *
 from PyQt4.QtGui import (QHBoxLayout)
+
 try:
     from PyQt4.QtWebKit import *
+
     webkit_available = True
 except ImportError:
     webkit_available = False
@@ -45,15 +55,15 @@ from configparams import (getParams,
                           baselayers,
                           specificParams,
                           specificOptions)
-from olwriter import writeOL
-from leafletWriter import *
+from olwriter import OpenLayersWriter
+from leafletWriter import LeafletWriter
+
 from exporter import (EXPORTER_REGISTRY)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class MainDialog(QDialog, Ui_MainDialog):
-
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
@@ -148,12 +158,40 @@ class MainDialog(QDialog, Ui_MainDialog):
         except:
             pass
 
+    def currentMapFormat(self):
+        """
+        Returns the currently selected map writer type
+        """
+        return self.getWriterFactory().type()
+
+    def getWriterFactory(self):
+        """
+        Returns a factory to create the currently selected map writer
+        """
+        if self.mapFormat.checkedButton() == self.ol3:
+            return OpenLayersWriter
+        elif self.mapFormat.checkedButton() == self.leaflet:
+            return LeafletWriter
+
+    def createWriter(self):
+        """
+        Creates a writer object reflecting the current settings
+        in the dialog
+        """
+        writer = self.getWriterFactory()()
+        (writer.layers, writer.groups, writer.popup,
+         writer.visible, writer.json,
+         writer.cluster) = self.getLayersAndGroups()
+        writer.params = self.getParameters()
+        return writer
+
     def toggleOptions(self):
+        currentWriter = self.getWriterFactory()
         for param, value in specificParams.iteritems():
             treeParam = self.paramsTreeOL.findItems(param,
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))[0]
-            if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+            if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
                 else:
@@ -168,7 +206,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))
             for treeOption in treeOptions:
-                if self.mapFormat.checkedButton().text() == "OpenLayers 3":
+                if currentWriter == OpenLayersWriter:
                     if value == "OL3":
                         treeOption.setDisabled(False)
                     else:
@@ -179,12 +217,15 @@ class MainDialog(QDialog, Ui_MainDialog):
                     else:
                         treeOption.setDisabled(False)
 
+    def createPreview(self):
+        writer = self.createWriter()
+        return writer.write(self.iface,
+                            dest_folder=utils.tempFolder())
+
     def previewMap(self):
         try:
-            if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-                self.previewOL3()
-            else:
-                self.previewLeaflet()
+            preview_file = self.createPreview()
+            self.loadPreviewFile(preview_file)
         except Exception as e:
             errorHTML = "<html>"
             errorHTML += "<head></head>"
@@ -199,28 +240,17 @@ class MainDialog(QDialog, Ui_MainDialog):
                                      level=QgsMessageLog.CRITICAL)
 
     def saveMap(self):
-        if self.mapFormat.checkedButton().text() == "OpenLayers 3":
-            MainDialog.saveOL(self)
-        else:
-            MainDialog.saveLeaf(self)
+        writer = self.createWriter()
+        write_folder = self.exporter.exportDirectory()
+        if not write_folder:
+            return
 
-    def saveSettings(self, paramItem, col):
-        QgsProject.instance().removeEntry("qgis2web",
-                                          paramItem.name.replace(" ", ""))
-        if isinstance(paramItem._value, bool):
-            QgsProject.instance().writeEntry("qgis2web",
-                                             paramItem.name.replace(" ", ""),
-                                             paramItem.checkState(col))
-        else:
-            QgsProject.instance().writeEntry("qgis2web",
-                                             paramItem.name.replace(" ", ""),
-                                             paramItem.text(col))
-        if paramItem.name == "Match project CRS":
-            baseLayer = self.basemaps
-            if paramItem.checkState(col):
-                baseLayer.setDisabled(True)
-            else:
-                baseLayer.setDisabled(False)
+        outputFile = writer.write(self.iface,
+                                  dest_folder=write_folder)
+        self.exporter.postProcess(outputFile)
+        if (not os.environ.get('CI') and
+                not os.environ.get('TRAVIS')):
+            webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
@@ -280,8 +310,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         editorWidget = formCnf.widgetType(fieldIndex)
                     except:
                         editorWidget = layer.editorWidgetV2(fieldIndex)
-                    if (editorWidget == QgsVectorLayer.Hidden or
-                            editorWidget == 'Hidden'):
+                    if editorWidget == QgsVectorLayer.Hidden \
+                            or editorWidget == 'Hidden':
                         continue
                     options.append(unicode(f.name()))
                 for option in options:
@@ -348,8 +378,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             if (isinstance(project.readEntry("qgis2web",
                                              parameter.replace(" ", ""))[0],
                            basestring) and
-               project.readEntry("qgis2web",
-               parameter.replace(" ", ""))[0] != ""):
+                project.readEntry("qgis2web",
+                                  parameter.replace(" ", ""))[0] != ""):
                 value = project.readEntry(
                     "qgis2web", parameter.replace(" ", ""))[0]
         subitem = TreeSettingItem(parent_item, tree_widget,
@@ -395,47 +425,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.preview.settings().clearMemoryCaches()
             self.preview.setUrl(self.previewUrl)
 
-    def previewOL3(self):
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
-        params = self.getParameters()
-        previewFile = writeOL(self.iface, layers, groups, popup, visible, json,
-                              cluster, params, utils.tempFolder())
-        self.loadPreviewFile(previewFile)
-
-    def previewLeaflet(self):
-        (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
-        params = self.getParameters()
-        previewFile = writeLeaflet(self.iface, utils.tempFolder(), layers,
-                                   visible, cluster, json, params, popup)
-        self.loadPreviewFile(previewFile)
-
-    def saveOL(self):
-        params = self.getParameters()
-        write_folder = self.exporter.exportDirectory()
-        if write_folder:
-            (layers, groups, popup, visible,
-             json, cluster) = self.getLayersAndGroups()
-            outputFile = writeOL(self.iface, layers, groups, popup, visible,
-                                 json, cluster, params, write_folder)
-            self.exporter.postProcess(outputFile)
-            if (not os.environ.get('CI') and
-                    not os.environ.get('TRAVIS')):
-                webbrowser.open_new_tab(self.exporter.destinationUrl())
-
-    def saveLeaf(self):
-        params = self.getParameters()
-        write_folder = self.exporter.exportDirectory()
-        if write_folder:
-            (layers, groups, popup, visible,
-             json, cluster) = self.getLayersAndGroups()
-            outputFile = writeLeaflet(
-                self.iface, write_folder, layers, visible,
-                cluster, json, params, popup)
-            self.exporter.postProcess(outputFile)
-            webbrowser.open_new_tab(self.exporter.destinationUrl())
-
     def getParameters(self):
         parameters = defaultdict(dict)
         for group, settings in self.items.iteritems():
@@ -445,7 +434,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     parameters["Appearance"]["Search layer"] = (
                         self.layer_search_combo.itemData(
                             self.layer_search_combo.currentIndex()))
-        basemaps = self.basemaps.selectedItems()
+        basemaps = [i.text() for i in self.basemaps.selectedItems()]
         parameters["Appearance"]["Base layer"] = basemaps
         return parameters
 
@@ -456,7 +445,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, item in settings.iteritems():
                 QgsProject.instance().writeEntry("qgis2web",
                                                  param.replace(" ", ""),
-                                                 item.setting())
+                                                 item.value())
         EXPORTER_REGISTRY.writeToProject(self.exporter)
         basemaps = self.basemaps.selectedItems()
         basemaplist = ",".join(basemap.text() for basemap in basemaps)
@@ -547,7 +536,6 @@ class devToggleFilter(QObject):
 
 
 class TreeGroupItem(QTreeWidgetItem):
-
     groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "group.gif"))
 
@@ -571,7 +559,6 @@ class TreeGroupItem(QTreeWidgetItem):
 
 
 class TreeLayerItem(QTreeWidgetItem):
-
     layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "layer.png"))
 
@@ -598,8 +585,8 @@ class TreeLayerItem(QTreeWidgetItem):
                     editorWidget = formCnf.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
+                if editorWidget == QgsVectorLayer.Hidden or\
+                   editorWidget == 'Hidden':
                     continue
                 options.append(f.name())
             for option in options:
@@ -686,7 +673,6 @@ class TreeLayerItem(QTreeWidgetItem):
 
 
 class TreeSettingItem(QTreeWidgetItem):
-
     def __init__(self, parent, tree, name, value, action=None):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
@@ -734,15 +720,5 @@ class TreeSettingItem(QTreeWidgetItem):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
             return self.combo.currentText()
-        else:
-            return self.text(1)
-
-    def setting(self):
-        if isinstance(self._value, bool):
-            return self.checkState(1) == Qt.Checked
-        elif isinstance(self._value, (int, float)):
-            return float(self.text(1))
-        elif isinstance(self._value, tuple):
-            return self.combo.currentIndex()
         else:
             return self.text(1)
