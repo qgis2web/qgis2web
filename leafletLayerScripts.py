@@ -594,8 +594,11 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers):
 
 def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
     attrText = layer.attribution()
-    attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        attrUrl = layer.attributionUrl()
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    else:
+        layerAttr = ""
     hmRadius = renderer.radius() * 2
     hmWeight = renderer.weightExpression()
     if hmWeight is not None and hmWeight != "":
