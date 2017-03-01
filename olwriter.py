@@ -101,10 +101,11 @@ class OpenLayersWriter(Writer):
         <script src="./resources/ol.js"></script>"""
             else:
                 cssAddress = """<link rel="stylesheet" href="http://"""
-                cssAddress += """openlayers.org/en/v3.20.1/css/ol.css" />"""
+                cssAddress += "cdnjs.cloudflare.com/ajax/libs/openlayers/"
+                cssAddress+= """4.0.1/ol.css" />"""
                 jsAddress += """
-        <script src="http://openlayers.org/en/v3.20.1/"""
-                jsAddress += """build/ol.js"></script>"""
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
+                jsAddress += """4.0.1/ol.js"></script>"""
             layerSearch = unicode(settings["Appearance"]["Layer search"])
             if layerSearch != "None" and layerSearch != "":
                 searchLayer = settings["Appearance"]["Search layer"]
