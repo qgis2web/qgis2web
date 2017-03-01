@@ -102,7 +102,7 @@ class OpenLayersWriter(Writer):
             else:
                 cssAddress = """<link rel="stylesheet" href="http://"""
                 cssAddress += "cdnjs.cloudflare.com/ajax/libs/openlayers/"
-                cssAddress+= """4.0.1/ol.css" />"""
+                cssAddress += """4.0.1/ol.css" />"""
                 jsAddress += """
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
                 jsAddress += """4.0.1/ol.js"></script>"""
