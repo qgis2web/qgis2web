@@ -4,7 +4,7 @@
 [![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
-<p>QGIS plugin to export your project to an OpenLayers 3 or Leaflet webmap. No
+<p>QGIS plugin to export your project to an OpenLayers or Leaflet webmap. No
 server-side software required.</p>
 
 <h2>Installation</h2>
@@ -42,18 +42,18 @@ bottom-left pane sets overall options. All options are written to your QGIS
 project, so save your proejct if you want to keep these settings.</p>
 
 <h2>Current limitations</h2>
-<p>QGIS, OpenLayers 3, and Leaflet are all different mapping technologies.
+<p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
 This means that their respective functionality differs in many ways. qgis2web
 does its best to interpret a QGIS project and to export HTML, Javascript, and
 CSS to create a web map as close to the QGIS project as possible.</p>
 <p>However, many elements of a QGIS project cannot be reproduced, and many are
-only possible in <em>either</em> OpenLayers 3 <em>or</em> Leaflet. qgis2web
+only possible in <em>either</em> OpenLayers <em>or</em> Leaflet. qgis2web
 tries its best to produce a publish-ready map, but you can always manually edit
 the output code to achieve what qgis2web cannot.</p>
 <ul>
     <li>SVG point markers sometimes do not appear in the preview
         pane, but work when the map is exported</li>
-    <li>OpenLayers 3 address search does not appear in the preview
+    <li>OpenLayers address search does not appear in the preview
         pane, but works when the map is exported</li>
     <li>Leaflet maps only use each symbol's first symbol layer</li>
     <li>in OL3 maps, only single rendered points cluster, not categorized
@@ -177,7 +177,7 @@ and supported the merge.</p>
 software:</p>
 <ul>
     <li>QGIS</li>
-    <li>OpenLayers 3</li>
+    <li>OpenLayers</li>
     <li>Leaflet</li>
 </ul>
 

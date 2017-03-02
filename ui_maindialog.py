@@ -179,7 +179,7 @@ class Ui_MainDialog(object):
                                                              "Setting", None))
         self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog",
                                                              "Value", None))
-        self.ol3.setText(_translate("MainDialog", "OpenLayers 3", None))
+        self.ol3.setText(_translate("MainDialog", "OpenLayers", None))
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
         self.buttonPreview.setText(_translate("MainDialog", "Update preview",
                                               None))
