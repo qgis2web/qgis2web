@@ -445,7 +445,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, item in settings.iteritems():
                 QgsProject.instance().writeEntry("qgis2web",
                                                  param.replace(" ", ""),
-                                                 item.value())
+                                                 item.setting())
         EXPORTER_REGISTRY.writeToProject(self.exporter)
         basemaps = self.basemaps.selectedItems()
         basemaplist = ",".join(basemap.text() for basemap in basemaps)
@@ -721,4 +721,14 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(self._value, tuple):
             return self.combo.currentText()
         else:
+            return self.text(1)
+
+    def setting(self):		
+        if isinstance(self._value, bool):		
+            return self.checkState(1) == Qt.Checked		
+        elif isinstance(self._value, (int, float)):		
+            return float(self.text(1))		
+        elif isinstance(self._value, tuple):		
+            return self.combo.currentIndex()		
+        else:		
             return self.text(1)
