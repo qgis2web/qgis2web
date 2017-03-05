@@ -55,6 +55,12 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         self.assertEqual(
             WRITER_REGISTRY.getWriterFactoryFromProject(), LeafletWriter)
 
+    def test03_SaveRestoreBasemapsFromProject(self):
+        """Test saving and restoring enabled basemaps from project"""
+        self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(),[])
+        WRITER_REGISTRY.saveBasemapsToProject(['a','b c d'])
+        self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(),['a','b c d'])
+
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()

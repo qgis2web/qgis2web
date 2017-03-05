@@ -400,8 +400,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             for key in baselayers[i]:
                 attrFields.append(key)
         self.basemaps.addItems(attrFields)
-        basemaps = QgsProject.instance().readEntry("qgis2web", "Basemaps")[0]
-        for basemap in basemaps.split(","):
+        for basemap in WRITER_REGISTRY.getBasemapsFromProject():
             try:
                 self.basemaps.findItems(basemap,
                                         (Qt.MatchExactly))[0].setSelected(True)
@@ -445,9 +444,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                                                  param.replace(" ", ""),
                                                  item.setting())
         EXPORTER_REGISTRY.writeToProject(self.exporter)
-        basemaps = self.basemaps.selectedItems()
-        basemaplist = ",".join(basemap.text() for basemap in basemaps)
-        QgsProject.instance().writeEntry("qgis2web", "Basemaps", basemaplist)
+        basemaps = [i.text() for i in self.basemaps.selectedItems()]
+        WRITER_REGISTRY.saveBasemapsToProject(basemaps)
         return parameters
 
     def getLayersAndGroups(self):

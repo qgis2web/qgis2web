@@ -26,6 +26,7 @@ translator = QObject()
 
 
 class WriterRegistry(object):
+
     """
     A registry for known writer types.
     """
@@ -65,6 +66,28 @@ class WriterRegistry(object):
 
         return OpenLayersWriter  # default to OpenLayersWriter
 
+    def saveBasemapsToProject(self, basemaps):
+        """
+        Stores a list of enabled basemaps for the writer
+        in the current project.
+        :param basemaps: list of basemap names
+        """
+        basemaplist = ",".join(basemaps)
+        QgsProject.instance().writeEntry("qgis2web", "Basemaps", basemaplist)
+
+    def getBasemapsFromProject(self):
+        """
+        Returns a list of enabled basemaps for the writer stored
+        in the current project.
+        """
+        try:
+            basemaps = QgsProject.instance().readEntry(
+                "qgis2web", "Basemaps")[0]
+            if basemaps.strip() == '':
+                return []
+            return basemaps.split(",")
+        except:
+            return []
 
 # canonical instance.
 WRITER_REGISTRY = WriterRegistry()
