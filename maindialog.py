@@ -57,7 +57,7 @@ from configparams import (getParams,
                           specificOptions)
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
-
+from writerRegistry import (WRITER_REGISTRY)
 from exporter import (EXPORTER_REGISTRY)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -144,8 +144,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setModal(False)
 
     def changeFormat(self):
-        QgsProject.instance().writeEntry("qgis2web", "mapFormat",
-                                         self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
 
@@ -411,10 +409,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 pass
 
     def selectMapFormat(self):
-        if QgsProject.instance().readEntry("qgis2web",
-                                           "mapFormat")[0] == "Leaflet":
-            self.ol3.setChecked(False)
-            self.leaflet.setChecked(True)
+        default_writer = WRITER_REGISTRY.getWriterFactoryFromProject()
+        self.ol3.setChecked(default_writer == OpenLayersWriter)
+        self.leaflet.setChecked(default_writer == LeafletWriter)
 
     def loadPreviewFile(self, file):
         """
@@ -440,6 +437,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveParameters(self):
         QgsProject.instance().removeEntry("qgis2web", "/")
+        WRITER_REGISTRY.saveTypeToProject(self.currentMapFormat())
         parameters = defaultdict(dict)
         for group, settings in self.items.iteritems():
             for param, item in settings.iteritems():
@@ -585,7 +583,7 @@ class TreeLayerItem(QTreeWidgetItem):
                     editorWidget = formCnf.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
-                if editorWidget == QgsVectorLayer.Hidden or\
+                if editorWidget == QgsVectorLayer.Hidden or \
                    editorWidget == 'Hidden':
                     continue
                 options.append(f.name())
@@ -723,12 +721,12 @@ class TreeSettingItem(QTreeWidgetItem):
         else:
             return self.text(1)
 
-    def setting(self):		
-        if isinstance(self._value, bool):		
-            return self.checkState(1) == Qt.Checked		
-        elif isinstance(self._value, (int, float)):		
-            return float(self.text(1))		
-        elif isinstance(self._value, tuple):		
-            return self.combo.currentIndex()		
-        else:		
+    def setting(self):
+        if isinstance(self._value, bool):
+            return self.checkState(1) == Qt.Checked
+        elif isinstance(self._value, (int, float)):
+            return float(self.text(1))
+        elif isinstance(self._value, tuple):
+            return self.combo.currentIndex()
+        else:
             return self.text(1)
