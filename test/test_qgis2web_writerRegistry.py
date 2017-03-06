@@ -81,6 +81,7 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         # change some parameters (one of each type)
 
         params['Appearance']['Add layers list'] = True
+        params['Data export']['Minify GeoJSON files'] = False
         # no ints in config yet!
         # params['Test']['test int'] = 5
         params['Data export']['Precision'] = '4'

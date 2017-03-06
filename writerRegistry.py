@@ -22,6 +22,7 @@ from PyQt4.QtCore import (QObject)
 from olwriter import (OpenLayersWriter)
 from leafletWriter import (LeafletWriter)
 from configparams import (getDefaultParams)
+
 translator = QObject()
 
 
@@ -103,9 +104,15 @@ class WriterRegistry(object):
         """
         for group, settings in params.iteritems():
             for param, value in settings.iteritems():
-                QgsProject.instance().writeEntry("qgis2web",
-                                                 self.sanitiseKey(param),
-                                                 value)
+                if isinstance(value, bool):
+                    QgsProject.instance().writeEntryBool("qgis2web",
+                                                         self.sanitiseKey(
+                                                             param),
+                                                         value)
+                else:
+                    QgsProject.instance().writeEntry("qgis2web",
+                                                     self.sanitiseKey(param),
+                                                     value)
 
     def readParamFromProject(self, parameter, default_value):
         """
@@ -124,17 +131,17 @@ class WriterRegistry(object):
         value = default_value
         if isinstance(default_value, bool):
             if project.readBoolEntry(
-                    "qgis2web", key_string)[0] != 0:
+                    "qgis2web", key_string)[1]:
                 value = project.readBoolEntry("qgis2web",
                                               key_string)[0]
         elif isinstance(default_value, int):
             if project.readNumEntry(
-                    "qgis2web", key_string)[0] != 0:
+                    "qgis2web", key_string)[1]:
                 value = project.readNumEntry("qgis2web",
                                              key_string)[0]
         elif isinstance(default_value, tuple):
             if project.readEntry("qgis2web",
-                                 key_string)[0] != 0:
+                                 key_string)[1]:
                 saved_value = project.readEntry(
                     "qgis2web", key_string)[0]
                 if saved_value in default_value:
@@ -147,8 +154,8 @@ class WriterRegistry(object):
             if (isinstance(project.readEntry("qgis2web",
                                              key_string)[0],
                            basestring) and
-                project.readEntry("qgis2web",
-                                  key_string)[0] != ""):
+               project.readEntry("qgis2web",
+               key_string)[0] != ""):
                 value = project.readEntry(
                     "qgis2web", key_string)[0]
 
