@@ -27,9 +27,11 @@ import unittest
 import qgis  # pylint: disable=unused-import
 
 from utilities import get_qgis_app
+from qgis.core import (QgsProject)
 from writerRegistry import (WRITER_REGISTRY)
 from olwriter import (OpenLayersWriter)
 from leafletWriter import (LeafletWriter)
+from configparams import (getDefaultParams)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
@@ -60,6 +62,36 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(),[])
         WRITER_REGISTRY.saveBasemapsToProject(['a','b c d'])
         self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(),['a','b c d'])
+
+    def test04_SanitiseKey(self):
+        """Test sanitising param key for storage"""
+        self.assertEqual(WRITER_REGISTRY.sanitiseKey('a'),'a')
+        self.assertEqual(WRITER_REGISTRY.sanitiseKey('a b'),'ab')
+
+    def test05_SaveRestoreParamsFromProject(self):
+        """Test saving and restoring parameters from project"""
+
+        # no settings in project, should match defaults
+        QgsProject.instance().removeEntry("qgis2web", "/")
+
+        params = WRITER_REGISTRY.readParamsFromProject()
+        self.maxDiff = 1000000000
+        self.assertEqual(params, getDefaultParams() )
+
+        # change some parameters (one of each type)
+
+        params['Appearance']['Add layers list'] = True
+        # no ints in config yet!
+        # params['Test']['test int'] = 5
+        params['Data export']['Precision'] = '4'
+        params['Data export']['Mapping library location'] = 'CDN'
+        # no strings in config yet!
+        # params['Test']['test string'] ='test'
+
+        WRITER_REGISTRY.saveParamsToProject(params)
+        restored_params = WRITER_REGISTRY.readParamsFromProject()
+        self.assertEqual(restored_params,params)
+
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ from PyQt4.QtCore import (QObject)
 
 from olwriter import (OpenLayersWriter)
 from leafletWriter import (LeafletWriter)
-
+from configparams import (getDefaultParams)
 translator = QObject()
 
 
@@ -88,6 +88,88 @@ class WriterRegistry(object):
             return basemaps.split(",")
         except:
             return []
+
+    @staticmethod
+    def sanitiseKey(key):
+        """
+        Sanitises a parameter key to make it safe to store in settings
+        """
+        return key.replace(' ', '')
+
+    def saveParamsToProject(self, params):
+        """
+        Saves writer parameters to the current project
+        :param params: writer parameter dictionary
+        """
+        for group, settings in params.iteritems():
+            for param, value in settings.iteritems():
+                QgsProject.instance().writeEntry("qgis2web",
+                                                 self.sanitiseKey(param),
+                                                 value)
+
+    def readParamFromProject(self, parameter, default_value):
+        """
+        Reads the value of a single parameter from the current
+        project.
+        :param parameter: parameter key
+        :param default_value: default value for parameter
+        """
+        project = QgsProject.instance()
+        key_string = self.sanitiseKey(parameter)
+
+        if isinstance(default_value, dict):
+            action = default_value['action']
+            default_value = default_value['option']
+
+        value = default_value
+        if isinstance(default_value, bool):
+            if project.readBoolEntry(
+                    "qgis2web", key_string)[0] != 0:
+                value = project.readBoolEntry("qgis2web",
+                                              key_string)[0]
+        elif isinstance(default_value, int):
+            if project.readNumEntry(
+                    "qgis2web", key_string)[0] != 0:
+                value = project.readNumEntry("qgis2web",
+                                             key_string)[0]
+        elif isinstance(default_value, tuple):
+            if project.readEntry("qgis2web",
+                                 key_string)[0] != 0:
+                saved_value = project.readEntry(
+                    "qgis2web", key_string)[0]
+                if saved_value in default_value:
+                    value = saved_value
+                else:
+                    value = default_value[0]
+            else:
+                value = default_value[0]
+        else:
+            if (isinstance(project.readEntry("qgis2web",
+                                             key_string)[0],
+                           basestring) and
+                project.readEntry("qgis2web",
+                                  key_string)[0] != ""):
+                value = project.readEntry(
+                    "qgis2web", key_string)[0]
+
+        return value
+
+    def readParamsFromProject(self):
+        """
+        Reads all writer parameters from the current project
+        :return: default writer parameters within parameters replaced
+        by any matching settings in the current projects
+        """
+
+        default_params = getDefaultParams()
+        read_params = default_params
+        for group, settings in default_params.iteritems():
+            for param, default_value in settings.iteritems():
+                value = self.readParamFromProject(param, default_value)
+                read_params[group][param] = value
+
+        return read_params
+
 
 # canonical instance.
 WRITER_REGISTRY = WriterRegistry()
