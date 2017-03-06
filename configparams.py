@@ -89,7 +89,10 @@ def getDefaultParams():
     for group, settings in params.iteritems():
         for param, value in settings.iteritems():
             if isinstance(value, tuple):
-                settings[param] = value[0]
+                if param == 'Max zoom level':
+                    settings[param] = value[-1]
+                else:
+                    settings[param] = value[0]
     return params
 
 

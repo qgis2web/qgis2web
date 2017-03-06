@@ -31,6 +31,7 @@ from PyQt4.QtGui import QDialogButtonBox, QDialog
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
+from configparams import (getDefaultParams)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
@@ -2453,6 +2454,34 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         outputFile = os.path.join(outputFolder, "index.html")
         assert os.path.isfile(outputFile)
+
+    def test100_setStateToParams(self):
+        """Test that setting state to match parameters works"""
+        params=getDefaultParams()
+        self.dialog.setStateToParams(params)
+
+        writer = self.dialog.createWriter()
+        self.maxDiff = 1000000000
+        # not present in config params
+        del writer.params['Appearance']['Search layer']
+        del writer.params['Appearance']['Base layer']
+        self.assertEqual(dict(writer.params),params)
+        # change some parameters (one of each type)
+        params['Appearance']['Add layers list'] = True
+        params['Data export']['Minify GeoJSON files'] = False
+        params['Data export']['Precision'] = '4'
+        params['Data export']['Mapping library location'] = 'CDN'
+        self.dialog.setStateToParams(params)
+
+        writer = self.dialog.createWriter()
+        # not present in config params
+        del writer.params['Appearance']['Search layer']
+        del writer.params['Appearance']['Base layer']
+
+        self.assertEqual(writer.params,params)
+
+
+
 
 
 def read_output(url, path):

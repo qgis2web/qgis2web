@@ -64,6 +64,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class MainDialog(QDialog, Ui_MainDialog):
+
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
@@ -103,6 +104,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populate_layers_and_groups(self)
         self.populateLayerSearch()
         self.populateBasemaps()
+
+        self.setStateToParams(WRITER_REGISTRY.readParamsFromProject())
 
         self.exporter = EXPORTER_REGISTRY.createFromProject()
         self.exporter_combo.setCurrentIndex(
@@ -324,6 +327,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.exporter.configure()
 
     def populateConfigParams(self, dlg):
+        """ Populates the dialog with option items and widgets """
         self.items = defaultdict(dict)
         tree = dlg.paramsTreeOL
 
@@ -335,10 +339,10 @@ class MainDialog(QDialog, Ui_MainDialog):
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
-                subitem = self.create_option_item(tree_widget=tree,
-                                                  parent_item=item,
-                                                  parameter=param,
-                                                  value=value)
+                subitem = self.createOptionItem(tree_widget=tree,
+                                                parent_item=item,
+                                                parameter=param,
+                                                default_value=value)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -348,49 +352,31 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.resizeColumnToContents(1)
         self.layer_search_combo.removeItem(1)
 
-    def create_option_item(self, tree_widget, parent_item, parameter, value):
-        project = QgsProject.instance()
+    def createOptionItem(self, tree_widget, parent_item,
+                         parameter, default_value):
+        """create the tree item corresponding to an option parameter"""
         action = None
-        if isinstance(value, dict):
-            action = value['action']
-            value = value['option']
+        if isinstance(default_value, dict):
+            action = default_value['action']
+            default_value = default_value['option']
 
-        if isinstance(value, bool):
-            value = project.readBoolEntry("qgis2web",
-                                          parameter.replace(" ", ""))[0]
-        elif isinstance(value, int):
-            if project.readNumEntry(
-                    "qgis2web", parameter.replace(" ", ""))[0] != 0:
-                value = project.readNumEntry("qgis2web",
-                                             parameter.replace(" ", ""))[0]
-        elif isinstance(value, tuple):
-            if project.readNumEntry("qgis2web",
-                                    parameter.replace(" ", ""))[0] != 0:
-                comboSelection = project.readNumEntry(
-                    "qgis2web", parameter.replace(" ", ""))[0]
-            elif parameter == "Max zoom level":
-                comboSelection = 27
-            else:
-                comboSelection = 0
-        else:
-            if (isinstance(project.readEntry("qgis2web",
-                                             parameter.replace(" ", ""))[0],
-                           basestring) and
-                project.readEntry("qgis2web",
-                                  parameter.replace(" ", ""))[0] != ""):
-                value = project.readEntry(
-                    "qgis2web", parameter.replace(" ", ""))[0]
         subitem = TreeSettingItem(parent_item, tree_widget,
-                                  parameter, value, action)
+                                  parameter, default_value, action)
         if parameter == 'Layer search':
             self.layer_search_combo = subitem.combo
         elif parameter == 'Exporter':
             self.exporter_combo = subitem.combo
 
-        if subitem.combo:
-            subitem.combo.setCurrentIndex(comboSelection)
-
         return subitem
+
+    def setStateToParams(self, params):
+        """
+        Sets the dialog state to match the specified parameters
+        """
+        for group, settings in self.items.iteritems():
+            for param, item in settings.iteritems():
+                value = params[group][param]
+                item.setValue(value)
 
     def populateBasemaps(self):
         multiSelect = QtGui.QAbstractItemView.ExtendedSelection
@@ -436,17 +422,15 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def saveParameters(self):
         QgsProject.instance().removeEntry("qgis2web", "/")
-        WRITER_REGISTRY.saveTypeToProject(self.currentMapFormat())
-        parameters = defaultdict(dict)
-        for group, settings in self.items.iteritems():
-            for param, item in settings.iteritems():
-                QgsProject.instance().writeEntry("qgis2web",
-                                                 param.replace(" ", ""),
-                                                 item.setting())
-        EXPORTER_REGISTRY.writeToProject(self.exporter)
+
+        writer = self.createWriter()
+        WRITER_REGISTRY.saveTypeToProject(writer.type())
+        WRITER_REGISTRY.saveParamsToProject(writer.params)
+
         basemaps = [i.text() for i in self.basemaps.selectedItems()]
         WRITER_REGISTRY.saveBasemapsToProject(basemaps)
-        return parameters
+
+        EXPORTER_REGISTRY.writeToProject(self.exporter)
 
     def getLayersAndGroups(self):
         layers = []
@@ -669,6 +653,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
 
 class TreeSettingItem(QTreeWidgetItem):
+
     def __init__(self, parent, tree, name, value, action=None):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
@@ -709,6 +694,18 @@ class TreeSettingItem(QTreeWidgetItem):
         if widget:
             self.tree.setItemWidget(self, 1, widget)
 
+    def setValue(self, value):
+        if isinstance(value, bool):
+            if value:
+                self.setCheckState(1, Qt.Checked)
+            else:
+                self.setCheckState(1, Qt.Unchecked)
+        elif self.combo:
+            index = self.combo.findText(value)
+            self.combo.setCurrentIndex(index)
+        else:
+            self.setText(1, unicode(value))
+
     def value(self):
         if isinstance(self._value, bool):
             return self.checkState(1) == Qt.Checked
@@ -716,15 +713,5 @@ class TreeSettingItem(QTreeWidgetItem):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
             return self.combo.currentText()
-        else:
-            return self.text(1)
-
-    def setting(self):
-        if isinstance(self._value, bool):
-            return self.checkState(1) == Qt.Checked
-        elif isinstance(self._value, (int, float)):
-            return float(self.text(1))
-        elif isinstance(self._value, tuple):
-            return self.combo.currentIndex()
         else:
             return self.text(1)
