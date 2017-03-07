@@ -105,7 +105,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateLayerSearch()
         self.populateBasemaps()
 
-        self.setStateToParams(WRITER_REGISTRY.readParamsFromProject())
+        writer = WRITER_REGISTRY.createWriterFromProject()
+        self.setStateToWriter(writer)
 
         self.exporter = EXPORTER_REGISTRY.createFromProject()
         self.exporter_combo.setCurrentIndex(
@@ -113,7 +114,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.exporter_combo.currentIndexChanged.connect(
             self.exporterTypeChanged)
 
-        self.selectMapFormat()
         self.toggleOptions()
         if webkit_available:
             if self.previewOnStartup.checkState() == Qt.Checked:
@@ -369,6 +369,14 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         return subitem
 
+    def setStateToWriter(self, writer):
+        """
+        Sets the dialog state to match the specified writer
+        """
+        self.selectMapFormat(writer)
+        self.setStateToParams(writer.params)
+        self.setStateForBasemaps(writer.params["Appearance"]["Base layer"])
+
     def setStateToParams(self, params):
         """
         Sets the dialog state to match the specified parameters
@@ -378,7 +386,24 @@ class MainDialog(QDialog, Ui_MainDialog):
                 value = params[group][param]
                 item.setValue(value)
 
+    def setStateForBasemaps(self, basemaps):
+        """
+        Sets the dialog state to match the specified basemaps
+        """
+        for i in range(self.basemaps.count()):
+            self.basemaps.item(i).setSelected(False)
+
+        for basemap in basemaps:
+            try:
+                self.basemaps.findItems(basemap,
+                                        (Qt.MatchExactly))[0].setSelected(True)
+            except:
+                pass
+
     def populateBasemaps(self):
+        """
+        Adds entries for all known basemaps to the dialog
+        """
         multiSelect = QtGui.QAbstractItemView.ExtendedSelection
         self.basemaps.setSelectionMode(multiSelect)
         attrFields = []
@@ -386,17 +411,13 @@ class MainDialog(QDialog, Ui_MainDialog):
             for key in baselayers[i]:
                 attrFields.append(key)
         self.basemaps.addItems(attrFields)
-        for basemap in WRITER_REGISTRY.getBasemapsFromProject():
-            try:
-                self.basemaps.findItems(basemap,
-                                        (Qt.MatchExactly))[0].setSelected(True)
-            except:
-                pass
 
-    def selectMapFormat(self):
-        default_writer = WRITER_REGISTRY.getWriterFactoryFromProject()
-        self.ol3.setChecked(default_writer == OpenLayersWriter)
-        self.leaflet.setChecked(default_writer == LeafletWriter)
+    def selectMapFormat(self, writer):
+        """
+        Updates dialog state to match the specified writer format
+        """
+        self.ol3.setChecked(isinstance(writer, OpenLayersWriter))
+        self.leaflet.setChecked(isinstance(writer, LeafletWriter))
 
     def loadPreviewFile(self, file):
         """
@@ -421,15 +442,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         return parameters
 
     def saveParameters(self):
-        QgsProject.instance().removeEntry("qgis2web", "/")
-
-        writer = self.createWriter()
-        WRITER_REGISTRY.saveTypeToProject(writer.type())
-        WRITER_REGISTRY.saveParamsToProject(writer.params)
-
-        basemaps = [i.text() for i in self.basemaps.selectedItems()]
-        WRITER_REGISTRY.saveBasemapsToProject(basemaps)
-
+        """
+        Saves current dialog state to project
+        """
+        WRITER_REGISTRY.saveWriterToProject(self.createWriter())
         EXPORTER_REGISTRY.writeToProject(self.exporter)
 
     def getLayersAndGroups(self):

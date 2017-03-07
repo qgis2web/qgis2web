@@ -71,7 +71,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def defaultParams(self):
         return {'Data export': {
             'Mapping library location': 'Local',
-                             'Minify GeoJSON files': False,
+                             'Minify GeoJSON files': True,
                              'Exporter': 'Export to folder',
                              'Precision': 'maintain'},
                 'Scale/Zoom': {'Min zoom level': '1',
@@ -2462,9 +2462,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         writer = self.dialog.createWriter()
         self.maxDiff = 1000000000
-        # not present in config params
-        del writer.params['Appearance']['Search layer']
-        del writer.params['Appearance']['Base layer']
         self.assertEqual(dict(writer.params),params)
         # change some parameters (one of each type)
         params['Appearance']['Add layers list'] = True
@@ -2474,11 +2471,26 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.setStateToParams(params)
 
         writer = self.dialog.createWriter()
-        # not present in config params
-        del writer.params['Appearance']['Search layer']
-        del writer.params['Appearance']['Base layer']
-
         self.assertEqual(writer.params,params)
+
+    def test101_setStateToWriter(self):
+        """Test setting state to writer works"""
+        writer = LeafletWriter()
+        writer.params = getDefaultParams()
+        # change some parameters
+        writer.params['Appearance']['Add layers list'] = True
+        writer.params['Data export']['Minify GeoJSON files'] = False
+        writer.params['Data export']['Precision'] = '4'
+        writer.params['Data export']['Mapping library location'] = 'CDN'
+
+        self.dialog.setStateToWriter(writer)
+
+        new_writer = self.dialog.createWriter()
+        self.maxDiff = 1000000000
+        self.assertTrue( isinstance(new_writer, LeafletWriter))
+        self.assertEqual(dict(new_writer.params),writer.params)
+
+
 
 
 

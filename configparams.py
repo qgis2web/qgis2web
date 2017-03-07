@@ -93,6 +93,8 @@ def getDefaultParams():
                     settings[param] = value[-1]
                 else:
                     settings[param] = value[0]
+    params['Appearance']['Base layer'] = []
+    params['Appearance']['Search layer'] = None
     return params
 
 
