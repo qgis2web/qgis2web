@@ -124,10 +124,6 @@ class WriterRegistry(object):
         project = QgsProject.instance()
         key_string = self.sanitiseKey(parameter)
 
-        if isinstance(default_value, dict):
-            action = default_value['action']
-            default_value = default_value['option']
-
         value = default_value
         if isinstance(default_value, bool):
             if project.readBoolEntry(
@@ -139,17 +135,6 @@ class WriterRegistry(object):
                     "qgis2web", key_string)[1]:
                 value = project.readNumEntry("qgis2web",
                                              key_string)[0]
-        elif isinstance(default_value, tuple):
-            if project.readEntry("qgis2web",
-                                 key_string)[1]:
-                saved_value = project.readEntry(
-                    "qgis2web", key_string)[0]
-                if saved_value in default_value:
-                    value = saved_value
-                else:
-                    value = default_value[0]
-            else:
-                value = default_value[0]
         else:
             if (isinstance(project.readEntry("qgis2web",
                                              key_string)[0],
