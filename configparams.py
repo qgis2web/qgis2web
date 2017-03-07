@@ -40,8 +40,8 @@ def getTemplates():
                  if f.endswith("html"))
 
 
-def getParams(configure_exporter_action):
-    return {
+def getParams(configure_exporter_action=None):
+    params = {
         "Appearance": {
             "Add layers list": False,
             "Match project CRS": False,
@@ -54,8 +54,6 @@ def getParams(configure_exporter_action):
             "Template": getTemplates()
         },
         "Data export": {
-            "Exporter": {'option': EXPORTER_REGISTRY.getOptions(),
-                         'action': configure_exporter_action},
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
                           "9", "10", "11", "12", "13", "14", "15"),
             "Minify GeoJSON files": True,
@@ -75,30 +73,54 @@ def getParams(configure_exporter_action):
         }
     }
 
-baselayers = (
-            "OSM",
-            "OSM B&W",
-            "Stamen Toner",
-            "OSM DE",
-            "OSM HOT",
-            "Thunderforest Cycle",
-            "Thunderforest Transport",
-            "Thunderforest Landscape",
-            "Thunderforest Outdoors",
-            "OpenMapSurfer Roads",
-            "OpenMapSurfer adminb",
-            "OpenMapSurfer roadsg",
-            "Stamen Terrain",
-            "Stamen Terrain background",
-            "Stamen Watercolor",
-            "OpenWeatherMap Clouds",
-            "OpenWeatherMap Precipitation",
-            "OpenWeatherMap Rain",
-            "OpenWeatherMap Pressure",
-            "OpenWeatherMap Wind",
-            "OpenWeatherMap Temp",
-            "OpenWeatherMap Snow"),
+    if configure_exporter_action:
+        params["Data export"]["Exporter"] = {'option':
+                                             EXPORTER_REGISTRY.getOptions(),
+                                             'action':
+                                             configure_exporter_action}
+    else:
+        params["Data export"]["Exporter"] = EXPORTER_REGISTRY.getOptions()
 
+    return params
+
+
+def getDefaultParams():
+    params = getParams()
+    for group, settings in params.iteritems():
+        for param, value in settings.iteritems():
+            if isinstance(value, tuple):
+                if param == 'Max zoom level':
+                    settings[param] = value[-1]
+                else:
+                    settings[param] = value[0]
+    params['Appearance']['Base layer'] = []
+    params['Appearance']['Search layer'] = None
+    return params
+
+
+baselayers = (
+                 "OSM",
+                 "OSM B&W",
+                 "Stamen Toner",
+                 "OSM DE",
+                 "OSM HOT",
+                 "Thunderforest Cycle",
+                 "Thunderforest Transport",
+                 "Thunderforest Landscape",
+                 "Thunderforest Outdoors",
+                 "OpenMapSurfer Roads",
+                 "OpenMapSurfer adminb",
+                 "OpenMapSurfer roadsg",
+                 "Stamen Terrain",
+                 "Stamen Terrain background",
+                 "Stamen Watercolor",
+                 "OpenWeatherMap Clouds",
+                 "OpenWeatherMap Precipitation",
+                 "OpenWeatherMap Rain",
+                 "OpenWeatherMap Pressure",
+                 "OpenWeatherMap Wind",
+                 "OpenWeatherMap Temp",
+                 "OpenWeatherMap Snow"),
 
 specificParams = {
 }

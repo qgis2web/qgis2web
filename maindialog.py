@@ -57,13 +57,14 @@ from configparams import (getParams,
                           specificOptions)
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
-
+from writerRegistry import (WRITER_REGISTRY)
 from exporter import (EXPORTER_REGISTRY)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class MainDialog(QDialog, Ui_MainDialog):
+
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
@@ -104,13 +105,15 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateLayerSearch()
         self.populateBasemaps()
 
+        writer = WRITER_REGISTRY.createWriterFromProject()
+        self.setStateToWriter(writer)
+
         self.exporter = EXPORTER_REGISTRY.createFromProject()
         self.exporter_combo.setCurrentIndex(
             self.exporter_combo.findText(self.exporter.name()))
         self.exporter_combo.currentIndexChanged.connect(
             self.exporterTypeChanged)
 
-        self.selectMapFormat()
         self.toggleOptions()
         if webkit_available:
             if self.previewOnStartup.checkState() == Qt.Checked:
@@ -144,8 +147,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setModal(False)
 
     def changeFormat(self):
-        QgsProject.instance().writeEntry("qgis2web", "mapFormat",
-                                         self.mapFormat.checkedButton().text())
         self.previewMap()
         self.toggleOptions()
 
@@ -326,6 +327,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.exporter.configure()
 
     def populateConfigParams(self, dlg):
+        """ Populates the dialog with option items and widgets """
         self.items = defaultdict(dict)
         tree = dlg.paramsTreeOL
 
@@ -337,10 +339,10 @@ class MainDialog(QDialog, Ui_MainDialog):
             item = QTreeWidgetItem()
             item.setText(0, group)
             for param, value in settings.iteritems():
-                subitem = self.create_option_item(tree_widget=tree,
-                                                  parent_item=item,
-                                                  parameter=param,
-                                                  value=value)
+                subitem = self.createOptionItem(tree_widget=tree,
+                                                parent_item=item,
+                                                parameter=param,
+                                                default_value=value)
                 item.addChild(subitem)
                 self.items[group][param] = subitem
             self.paramsTreeOL.addTopLevelItem(item)
@@ -350,51 +352,58 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.paramsTreeOL.resizeColumnToContents(1)
         self.layer_search_combo.removeItem(1)
 
-    def create_option_item(self, tree_widget, parent_item, parameter, value):
-        project = QgsProject.instance()
+    def createOptionItem(self, tree_widget, parent_item,
+                         parameter, default_value):
+        """create the tree item corresponding to an option parameter"""
         action = None
-        if isinstance(value, dict):
-            action = value['action']
-            value = value['option']
+        if isinstance(default_value, dict):
+            action = default_value['action']
+            default_value = default_value['option']
 
-        if isinstance(value, bool):
-            value = project.readBoolEntry("qgis2web",
-                                          parameter.replace(" ", ""))[0]
-        elif isinstance(value, int):
-            if project.readNumEntry(
-                    "qgis2web", parameter.replace(" ", ""))[0] != 0:
-                value = project.readNumEntry("qgis2web",
-                                             parameter.replace(" ", ""))[0]
-        elif isinstance(value, tuple):
-            if project.readNumEntry("qgis2web",
-                                    parameter.replace(" ", ""))[0] != 0:
-                comboSelection = project.readNumEntry(
-                    "qgis2web", parameter.replace(" ", ""))[0]
-            elif parameter == "Max zoom level":
-                comboSelection = 27
-            else:
-                comboSelection = 0
-        else:
-            if (isinstance(project.readEntry("qgis2web",
-                                             parameter.replace(" ", ""))[0],
-                           basestring) and
-                project.readEntry("qgis2web",
-                                  parameter.replace(" ", ""))[0] != ""):
-                value = project.readEntry(
-                    "qgis2web", parameter.replace(" ", ""))[0]
         subitem = TreeSettingItem(parent_item, tree_widget,
-                                  parameter, value, action)
+                                  parameter, default_value, action)
         if parameter == 'Layer search':
             self.layer_search_combo = subitem.combo
         elif parameter == 'Exporter':
             self.exporter_combo = subitem.combo
 
-        if subitem.combo:
-            subitem.combo.setCurrentIndex(comboSelection)
-
         return subitem
 
+    def setStateToWriter(self, writer):
+        """
+        Sets the dialog state to match the specified writer
+        """
+        self.selectMapFormat(writer)
+        self.setStateToParams(writer.params)
+        self.setStateForBasemaps(writer.params["Appearance"]["Base layer"])
+
+    def setStateToParams(self, params):
+        """
+        Sets the dialog state to match the specified parameters
+        """
+        for group, settings in self.items.iteritems():
+            for param, item in settings.iteritems():
+                value = params[group][param]
+                item.setValue(value)
+
+    def setStateForBasemaps(self, basemaps):
+        """
+        Sets the dialog state to match the specified basemaps
+        """
+        for i in range(self.basemaps.count()):
+            self.basemaps.item(i).setSelected(False)
+
+        for basemap in basemaps:
+            try:
+                self.basemaps.findItems(basemap,
+                                        (Qt.MatchExactly))[0].setSelected(True)
+            except:
+                pass
+
     def populateBasemaps(self):
+        """
+        Adds entries for all known basemaps to the dialog
+        """
         multiSelect = QtGui.QAbstractItemView.ExtendedSelection
         self.basemaps.setSelectionMode(multiSelect)
         attrFields = []
@@ -402,19 +411,13 @@ class MainDialog(QDialog, Ui_MainDialog):
             for key in baselayers[i]:
                 attrFields.append(key)
         self.basemaps.addItems(attrFields)
-        basemaps = QgsProject.instance().readEntry("qgis2web", "Basemaps")[0]
-        for basemap in basemaps.split(","):
-            try:
-                self.basemaps.findItems(basemap,
-                                        (Qt.MatchExactly))[0].setSelected(True)
-            except:
-                pass
 
-    def selectMapFormat(self):
-        if QgsProject.instance().readEntry("qgis2web",
-                                           "mapFormat")[0] == "Leaflet":
-            self.ol3.setChecked(False)
-            self.leaflet.setChecked(True)
+    def selectMapFormat(self, writer):
+        """
+        Updates dialog state to match the specified writer format
+        """
+        self.ol3.setChecked(isinstance(writer, OpenLayersWriter))
+        self.leaflet.setChecked(isinstance(writer, LeafletWriter))
 
     def loadPreviewFile(self, file):
         """
@@ -439,18 +442,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         return parameters
 
     def saveParameters(self):
-        QgsProject.instance().removeEntry("qgis2web", "/")
-        parameters = defaultdict(dict)
-        for group, settings in self.items.iteritems():
-            for param, item in settings.iteritems():
-                QgsProject.instance().writeEntry("qgis2web",
-                                                 param.replace(" ", ""),
-                                                 item.setting())
+        """
+        Saves current dialog state to project
+        """
+        WRITER_REGISTRY.saveWriterToProject(self.createWriter())
         EXPORTER_REGISTRY.writeToProject(self.exporter)
-        basemaps = self.basemaps.selectedItems()
-        basemaplist = ",".join(basemap.text() for basemap in basemaps)
-        QgsProject.instance().writeEntry("qgis2web", "Basemaps", basemaplist)
-        return parameters
 
     def getLayersAndGroups(self):
         layers = []
@@ -585,7 +581,7 @@ class TreeLayerItem(QTreeWidgetItem):
                     editorWidget = formCnf.widgetType(fieldIndex)
                 except:
                     editorWidget = layer.editorWidgetV2(fieldIndex)
-                if editorWidget == QgsVectorLayer.Hidden or\
+                if editorWidget == QgsVectorLayer.Hidden or \
                    editorWidget == 'Hidden':
                     continue
                 options.append(f.name())
@@ -673,6 +669,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
 
 class TreeSettingItem(QTreeWidgetItem):
+
     def __init__(self, parent, tree, name, value, action=None):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
@@ -713,6 +710,18 @@ class TreeSettingItem(QTreeWidgetItem):
         if widget:
             self.tree.setItemWidget(self, 1, widget)
 
+    def setValue(self, value):
+        if isinstance(value, bool):
+            if value:
+                self.setCheckState(1, Qt.Checked)
+            else:
+                self.setCheckState(1, Qt.Unchecked)
+        elif self.combo:
+            index = self.combo.findText(value)
+            self.combo.setCurrentIndex(index)
+        else:
+            self.setText(1, unicode(value))
+
     def value(self):
         if isinstance(self._value, bool):
             return self.checkState(1) == Qt.Checked
@@ -721,14 +730,4 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(self._value, tuple):
             return self.combo.currentText()
         else:
-            return self.text(1)
-
-    def setting(self):		
-        if isinstance(self._value, bool):		
-            return self.checkState(1) == Qt.Checked		
-        elif isinstance(self._value, (int, float)):		
-            return float(self.text(1))		
-        elif isinstance(self._value, tuple):		
-            return self.combo.currentIndex()		
-        else:		
             return self.text(1)
