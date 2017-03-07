@@ -856,7 +856,8 @@ def exportStyles(layers, folder, clustered):
                 cats = []
                 for cat in renderer.categories():
                     if cat.value() != "":
-                        categoryStr = "case '%s':" % cat.value()
+                        categoryStr = "case '%s':" % cat.value().replace("'",
+                                                                         "\\'")
                     else:
                         categoryStr = "default:"
                     categoryStr += '''
