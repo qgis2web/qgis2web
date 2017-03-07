@@ -93,6 +93,24 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         restored_params = WRITER_REGISTRY.readParamsFromProject()
         self.assertEqual(restored_params,params)
 
+    def test06_SaveRestoreWriterFromProject(self):
+        """Test saving and restoring writer state to project"""
+
+        writer = LeafletWriter()
+        writer.params = getDefaultParams()
+        # change some parameters
+        writer.params['Appearance']['Add layers list'] = True
+        writer.params['Data export']['Minify GeoJSON files'] = False
+        writer.params['Data export']['Precision'] = '4'
+        writer.params['Data export']['Mapping library location'] = 'CDN'
+        writer.params['Appearance']['Base layer'] = ['a','b','c']
+
+        WRITER_REGISTRY.saveWriterToProject(writer)
+
+        new_writer = WRITER_REGISTRY.createWriterFromProject()
+        self.assertTrue( isinstance(new_writer, LeafletWriter))
+        self.assertEqual(new_writer.params,writer.params)
+
 
 
 if __name__ == "__main__":

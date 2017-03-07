@@ -177,6 +177,28 @@ class WriterRegistry(object):
 
         return read_params
 
+    def createWriterFromProject(self):
+        """
+        Creates a writer matching the state from the current project
+        """
+        writer = self.getWriterFactoryFromProject()()
+        writer.params = self.readParamsFromProject()
+        writer.params["Appearance"][
+            "Base layer"] = self.getBasemapsFromProject()
+        return writer
+
+    def saveWriterToProject(self, writer):
+        """
+        Saves the settings from a writer to the current project
+        """
+        QgsProject.instance().removeEntry("qgis2web", "/")
+
+        self.saveTypeToProject(writer.type())
+        self.saveParamsToProject(writer.params)
+
+        basemaps = writer.params["Appearance"]["Base layer"]
+        WRITER_REGISTRY.saveBasemapsToProject(basemaps)
+
 
 # canonical instance.
 WRITER_REGISTRY = WriterRegistry()
