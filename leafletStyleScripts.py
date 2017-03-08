@@ -164,7 +164,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
 
         style = getStrokeStyle(color, line_style, line_width,
                                lineCap, lineJoin)
-        style += " fillOpacity: 0,"
+        style += """
+            fillOpacity: 0,"""
     elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
         fillColor = getRGBAColor(props["color"], alpha)
 

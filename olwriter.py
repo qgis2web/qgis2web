@@ -1288,9 +1288,6 @@ def geolocateStyle(geolocate, controlCount):
             top: %dpx;
             left: .5em;
         }
-        .ol-touch .geolocate {
-            top: 80px;
-        }
         </style>""" % ctrlPos, controlCount)
     else:
         return ("", controlCount)

@@ -344,8 +344,5 @@ def measureStyleScript(controlCount):
   top: %(pos)dpx;
   left: .5em;
 }
-.ol-touch .measure-control {
-  top: 80px;
-}
 </style>""" % {"pos": pos}
     return measureStyle
