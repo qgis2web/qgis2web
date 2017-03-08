@@ -164,6 +164,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
 
         style = getStrokeStyle(color, line_style, line_width,
                                lineCap, lineJoin)
+        style += " fillOpacity: 0,"
     elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
         fillColor = getRGBAColor(props["color"], alpha)
 
@@ -252,7 +253,8 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
 def getFillStyle(color, props):
     try:
         if props["style"] == "no":
-            return ""
+            return """
+                fillOpacity: 0,"""
     except:
         pass
     return """
