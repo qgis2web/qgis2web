@@ -545,5 +545,6 @@ def handleHiddenField(layer, field):
 
 
 def getRGBAColor(color, alpha):
-    r, g, b, _ = color.split(",")
-    return "'rgba(%s)'" % ",".join([r, g, b, unicode(alpha)])
+    r, g, b, a = color.split(",")
+    a = (float(a)/255) * alpha
+    return "'rgba(%s)'" % ",".join([r, g, b, unicode(a)])
