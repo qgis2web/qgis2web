@@ -40,11 +40,11 @@ def scaleDependentLabelScript(layer, layerName):
             if (map.hasLayer(layer_%(layerName)s)) {
                 if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
                     layer_%(layerName)s.eachLayer(function (layer) {
-                        layer.showLabel();
+                        layer.openTooltip();
                     });
                 } else {
                     layer_%(layerName)s.eachLayer(function (layer) {
-                        layer.hideLabel();
+                        layer.closeTooltip();
                     });
                 }
             }""" % {"min": min, "max": max, "layerName": layerName}
