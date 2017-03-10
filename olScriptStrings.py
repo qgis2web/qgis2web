@@ -306,6 +306,7 @@ addInteraction();
 
 def measureStyleScript(controlCount):
     pos = 65 + (controlCount * 35)
+    touchPos = 80 + (controlCount * 50)
     measureStyle = """
 <style>
 .tooltip {
@@ -344,5 +345,8 @@ def measureStyleScript(controlCount):
   top: %(pos)dpx;
   left: .5em;
 }
-</style>""" % {"pos": pos}
+.ol-touch .measure-control {
+  top: %(touchPos)dpx;
+}
+</style>""" % {"pos": pos, "touchPos": touchPos}
     return measureStyle

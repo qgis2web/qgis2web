@@ -1281,6 +1281,7 @@ ol.inherits(geolocateControl, ol.control.Control);"""
 def geolocateStyle(geolocate, controlCount):
     if geolocate:
         ctrlPos = 65 + (controlCount * 35)
+        touchCtrlPos = 80 + (controlCount * 50)
         controlCount = controlCount + 1
         return ("""
         <style>
@@ -1288,7 +1289,10 @@ def geolocateStyle(geolocate, controlCount):
             top: %dpx;
             left: .5em;
         }
-        </style>""" % ctrlPos, controlCount)
+        .ol-touch .geolocate {
+            top: %dpx;
+        }
+        </style>""" % (ctrlPos, touchCtrlPos), controlCount)
     else:
         return ("", controlCount)
 
