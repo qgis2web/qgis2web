@@ -1,15 +1,22 @@
-function fnc_sqrt(values, context) {
-    return false;
-};
+// Aggregates
 
-function fnc_radians(values, context) {
-    return false;
-};
+// Color
 
-function fnc_degrees(values, context) {
-    return false;
-};
+// Conditionals
 
+// Conversions
+
+// Custom
+
+// Date and Time
+
+// Fields and Values
+
+// Fuzzy Matching
+
+// General
+
+// Geometry
 function fnc_azimuth(values, context) {
     return false;
 };
@@ -18,52 +25,65 @@ function fnc_project(values, context) {
     return false;
 };
 
+// Math
 function fnc_abs(values, context) {
-    return false;
+    return Math.abs(values[0]);
+};
+
+function fnc_degrees(values, context) {
+    return values[0] * (180/Math.PI);
+};
+
+function fnc_radians(values, context) {
+    return values[0] * (Math.PI/180);
+};
+
+function fnc_sqrt(values, context) {
+    return Math.sqrt(values[0]);
 };
 
 function fnc_cos(values, context) {
-    return false;
+    return Math.cos(values[0]);
 };
 
 function fnc_sin(values, context) {
-    return false;
+    return Math.sin(values[0]);
 };
 
 function fnc_tan(values, context) {
-    return false;
+    return Math.tan(values[0]);
 };
 
 function fnc_asin(values, context) {
-    return false;
+    return Math.asin(values[0]);
 };
 
 function fnc_acos(values, context) {
-    return false;
+    return Math.acos(values[0]);
 };
 
 function fnc_atan(values, context) {
-    return false;
+    return Math.atan(values[0]);
 };
 
 function fnc_atan2(values, context) {
-    return false;
+    return Math.atan2(values[0]);
 };
 
 function fnc_exp(values, context) {
-    return false;
+    return Math.exp(values[0]);
 };
 
 function fnc_ln(values, context) {
-    return false;
+    return Math.log(values[0]);
 };
 
 function fnc_log10(values, context) {
-    return false;
+    return Math.LN10(values[0]);
 };
 
 function fnc_log(values, context) {
-    return false;
+    return Math.log(values[0]) / Math.log(values[1]);
 };
 
 function fnc_round(values, context) {
@@ -71,24 +91,36 @@ function fnc_round(values, context) {
 };
 
 function fnc_rand(values, context) {
-    return false;
+    return Math.floor(Math.random()*(values[1]-values[0]+1)+values[0]);
 };
 
 function fnc_randf(values, context) {
-    return false;
+    return Math.random()*(values[1]-values[0]+1)+values[0];
 };
 
 function fnc_max(values, context) {
-    return false;
+    return Math.max.apply(this, values);
 };
 
 function fnc_min(values, context) {
-    return false;
+    return Math.min.apply(this, values);
 };
 
 function fnc_clamp(values, context) {
     return false;
 };
+
+// Operators
+
+// Record
+
+// String
+
+// TimeManager
+
+// Variables
+
+
 
 function fnc_scale_linear(values, context) {
     return false;
