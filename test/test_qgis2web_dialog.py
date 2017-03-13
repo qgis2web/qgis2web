@@ -32,7 +32,6 @@ from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
 from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
 from configparams import (getDefaultParams)
-print getDefaultParams()
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 

@@ -718,7 +718,8 @@ class TreeSettingItem(QTreeWidgetItem):
                 self.setCheckState(1, Qt.Unchecked)
         elif self.combo:
             index = self.combo.findText(value)
-            self.combo.setCurrentIndex(index)
+            if index != -1:
+                self.combo.setCurrentIndex(index)
         else:
             self.setText(1, unicode(value))
 
