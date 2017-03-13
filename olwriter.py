@@ -182,7 +182,7 @@ class OpenLayersWriter(Writer):
             if settings["Appearance"]["Geolocate user"]:
                 controls.append(
                     'new geolocateControl()')
-            if (settings["Appearance"]["Add layers list"] and 
+            if (settings["Appearance"]["Add layers list"] and
                     settings["Appearance"]["Add layers list"] != "" and
                     settings["Appearance"]["Add layers list"] != "None"):
                 layersList = """
