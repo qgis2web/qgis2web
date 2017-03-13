@@ -28,6 +28,7 @@ var map = new ol.Map({
         @VIEW@
     })
 });
+@LAYERSLIST@
 @LAYERSEARCH@
 map.getView().fit(@BOUNDS@, map.getSize());
 

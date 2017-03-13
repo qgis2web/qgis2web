@@ -77,7 +77,7 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
 
         shutil.copyfile(cssDir + 'leaflet.measurecontrol.css',
                         cssStore + 'leaflet.measurecontrol.css')
-        shutil.copytree(cssDir + 'images', cssStore + 'images')
+    shutil.copytree(cssDir + 'images', cssStore + 'images')
     if (matchCRS and
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
         shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')

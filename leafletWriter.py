@@ -219,10 +219,12 @@ class LeafletWriter(Writer):
             address_text = addressSearchScript()
             new_src += address_text
 
-        if params["Appearance"]["Add layers list"]:
+        if (params["Appearance"]["Add layers list"] and
+                params["Appearance"]["Add layers list"] != "" and
+                params["Appearance"]["Add layers list"] != "None"):
             new_src += addLayersList(
-                basemapList, matchCRS, layer_list, cluster,
-                legends)
+                basemapList, matchCRS, layer_list, cluster, legends,
+                params["Appearance"]["Add layers list"] == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
             placement = PLACEMENT[placement]

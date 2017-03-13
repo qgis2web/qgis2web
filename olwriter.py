@@ -176,15 +176,25 @@ class OpenLayersWriter(Writer):
             project = QgsProject.instance()
             if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
                 controls.append("new ol.control.ScaleLine({})")
-            if settings["Appearance"]["Add layers list"]:
-                controls.append(
-                    'new ol.control.LayerSwitcher({tipLabel: "Layers"})')
             if settings["Appearance"]["Measure tool"] != "None":
                 controls.append(
                     'new measureControl()')
             if settings["Appearance"]["Geolocate user"]:
                 controls.append(
                     'new geolocateControl()')
+            if (settings["Appearance"]["Add layers list"] and 
+                    settings["Appearance"]["Add layers list"] != "" and
+                    settings["Appearance"]["Add layers list"] != "None"):
+                layersList = """
+var layerSwitcher = new ol.control.LayerSwitcher({tipLabel: "Layers"});
+map.addControl(layerSwitcher);"""
+                if settings["Appearance"]["Add layers list"] == "Expanded":
+                    layersList += """
+layerSwitcher.hidePanel = function() {};
+layerSwitcher.showPanel();
+"""
+            else:
+                layersList = ""
             pageTitle = project.title()
             mapSettings = iface.mapCanvas().mapSettings()
             backgroundColor = """
@@ -322,6 +332,7 @@ class OpenLayersWriter(Writer):
             values = {"@GEOLOCATEHEAD@": geolocateHead,
                       "@BOUNDS@": mapbounds,
                       "@CONTROLS@": ",".join(controls),
+                      "@LAYERSLIST@": layersList,
                       "@POPUPLAYERS@": popupLayers,
                       "@VIEW@": view,
                       "@LAYERSEARCH@": layerSearch,

@@ -43,7 +43,7 @@ def getTemplates():
 def getParams(configure_exporter_action=None):
     params = {
         "Appearance": {
-            "Add layers list": False,
+            "Add layers list": ("None", "Collapsed", "Expanded"),
             "Match project CRS": False,
             "Add address search": False,
             "Layer search": ("None", "placeholder"),

@@ -369,7 +369,8 @@ def titleSubScript(webmap_head):
     return titleSub
 
 
-def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
+def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
+                  collapsed):
     if len(basemapList) < 2 or matchCRS:
         controlStart = """
         var baseMaps = {};"""
@@ -409,7 +410,10 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends):
                 layersList += new_layer
         except:
             pass
-    controlEnd = "},{collapsed:false}).addTo(map);"
+    controlEnd = "}"
+    if collapsed:
+        controlEnd += ",{collapsed:false}"
+    controlEnd += ").addTo(map);"
     layersList += controlEnd
     return layersList
 
