@@ -1056,15 +1056,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Ensure the OpenLayers 3 option is selected
         self.dialog.ol3.click()
 
-        # Check the 'Add layers list' checkbox
+        # Change the 'Add layers list' dropdown
         self.dialog.items['Appearance'].get(
-            'Add layers list').setCheckState(1, QtCore.Qt.Checked)
+            'Add layers list').setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
         expected_params = self.defaultParams()
-        expected_params['Appearance']['Add layers list'] = True
+        expected_params['Appearance']['Add layers list'] = 'Collapsed'
         expected_params['Scale/Zoom']['Extent'] = 'Canvas extent'
         self.assertEqual(writer.params, expected_params)
         self.assertEqual(writer.groups, {})
@@ -1638,16 +1638,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
-        # Check the 'Add layers list' checkbox
+        # Change the 'Add layers list' dropdown
         self.dialog.items['Appearance'].get(
-            'Add layers list').setCheckState(1, QtCore.Qt.Checked)
+            'Add layers list').setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        expected_params['Appearance']['Add layers list'] = True
+        expected_params['Appearance']['Add layers list'] = 'Collapsed'
         self.assertEqual(writer.params, expected_params)
         self.assertEqual(writer.groups, {})
         self.assertEqual(writer.layers, [layer])
@@ -2464,7 +2464,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.maxDiff = 1000000000
         self.assertEqual(dict(writer.params),params)
         # change some parameters (one of each type)
-        params['Appearance']['Add layers list'] = True
+        params['Appearance']['Add layers list'] = 'Collapsed'
         params['Data export']['Minify GeoJSON files'] = False
         params['Data export']['Precision'] = '4'
         params['Data export']['Mapping library location'] = 'CDN'
@@ -2478,7 +2478,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         writer = LeafletWriter()
         writer.params = getDefaultParams()
         # change some parameters
-        writer.params['Appearance']['Add layers list'] = True
+        writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.params['Data export']['Minify GeoJSON files'] = False
         writer.params['Data export']['Precision'] = '4'
         writer.params['Data export']['Mapping library location'] = 'CDN'
