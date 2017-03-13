@@ -74,7 +74,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                 'Geolocate user': False,
                 'Base layer': [],
                 'Search layer': None,
-                'Add layers list': False,
+                'Add layers list': 'None',
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',
@@ -1078,7 +1078,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Export to web map
         writer = OpenLayersWriter()
         writer.params = self.defaultParams()
-        writer.params['Appearance']['Add layers list'] = True
+        writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.params['Appearance']['Template'] = 'canvas-size'
         writer.params['Scale/Zoom']['Extent'] = 'Canvas extent'
         writer.groups = {}
@@ -1686,7 +1686,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Export to web map
         writer = LeafletWriter()
         writer.params = self.defaultParams()
-        writer.params['Appearance']['Add layers list'] = True
+        writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]

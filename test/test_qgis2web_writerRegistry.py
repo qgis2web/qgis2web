@@ -89,7 +89,7 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
 
         # change some parameters (one of each type)
 
-        params['Appearance']['Add layers list'] = True
+        params['Appearance']['Add layers list'] = 'Collapsed'
         params['Data export']['Minify GeoJSON files'] = False
         # no ints in config yet!
         # params['Test']['test int'] = 5
@@ -108,7 +108,7 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         writer = LeafletWriter()
         writer.params = getDefaultParams()
         # change some parameters
-        writer.params['Appearance']['Add layers list'] = True
+        writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.params['Data export']['Minify GeoJSON files'] = False
         writer.params['Data export']['Precision'] = '4'
         writer.params['Data export']['Mapping library location'] = 'CDN'
