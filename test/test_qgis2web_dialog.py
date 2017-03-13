@@ -83,7 +83,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Geolocate user': False,
                 'Base layer': [],
                 'Search layer': None,
-                'Add layers list': False,
+                'Add layers list': 'None',
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',
