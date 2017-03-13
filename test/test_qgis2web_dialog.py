@@ -1057,8 +1057,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         # Change the 'Add layers list' dropdown
-        self.dialog.items['Appearance'].get(
-            'Add layers list').setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Add layers list',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         writer = self.dialog.createWriter()
@@ -1639,8 +1642,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
 
         # Change the 'Add layers list' dropdown
-        self.dialog.items['Appearance'].get(
-            'Add layers list').setCurrentIndex(1)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Add layers list',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
