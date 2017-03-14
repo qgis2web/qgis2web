@@ -264,11 +264,11 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         if total_features > 1000:
             # Too many features => too slow!
-            return (False, self.tr('A large number of features are '
+            return (False, self.tr('<p>A large number of features are '
                                    'present in the map. Generating the '
-                                   'preview may take some time.</br>Click '
-                                   'Update Preview to generate the'
-                                   'preview anyway.'))
+                                   'preview may take some time.</p>'
+                                   '<p>Click Update Preview to generate the '
+                                   'preview anyway.</p>'))
 
         return (True, None)
 
