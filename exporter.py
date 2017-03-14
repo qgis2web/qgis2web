@@ -69,13 +69,13 @@ class Exporter(QObject):
         """
         return ''
 
-    def postProcess(self, export_file):
+    def postProcess(self, results):
         """
         Called after HTML output is created and written
         to the exportDirectory(). Can be used to perform
         steps such as uploading the exported files to a remote
         location.
-        :param export_file: index file created for web map
+        :param results: WriterResults from Writer generation
         """
         pass
 
@@ -129,8 +129,8 @@ class FolderExporter(Exporter):
     def exportDirectory(self):
         return self.folder
 
-    def postProcess(self, export_file):
-        self.export_file = export_file
+    def postProcess(self, results):
+        self.export_file = results.index_file
 
     def destinationUrl(self):
         return self.export_file
@@ -254,13 +254,13 @@ class FtpExporter(Exporter):
     def exportDirectory(self):
         return self.temp_folder
 
-    def postProcess(self, export_file):
-        self.export_file = export_file
+    def postProcess(self, results):
+        self.export_file = results.index_file
 
         # generate a new temp_folder for next export
         self.temp_folder = self.newTempFolder(tempFolder())
 
-        source_folder = os.path.dirname(export_file)
+        source_folder = results.folder
 
         if not self.host or not self.username or not self.port:
             return

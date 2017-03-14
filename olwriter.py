@@ -51,6 +51,7 @@ from olScriptStrings import (measureScript,
                              geocodeScript)
 from olStyleScripts import exportStyles
 from writer import (Writer,
+                    WriterResult,
                     translator)
 
 
@@ -81,7 +82,12 @@ class OpenLayersWriter(Writer):
                                          clustered=self.cluster,
                                          settings=self.params,
                                          folder=dest_folder)
-        return self.preview_file
+        result = WriterResult()
+        result.index_file = self.preview_file
+        result.folder = os.path.dirname(self.preview_file)
+        for dirpath, dirnames, filenames in os.walk(result.folder):
+            result.files.extend([os.path.join(dirpath, f) for f in filenames])
+        return result
 
     @classmethod
     def writeOL(cls, iface, layers, groups, popup, visible,

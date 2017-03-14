@@ -260,7 +260,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def createPreview(self):
         writer = self.createWriter()
         return writer.write(self.iface,
-                            dest_folder=utils.tempFolder())
+                            dest_folder=utils.tempFolder()).index_file
 
     def shouldAutoPreview(self):
         """
@@ -312,9 +312,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         if not write_folder:
             return
 
-        outputFile = writer.write(self.iface,
-                                  dest_folder=write_folder)
-        self.exporter.postProcess(outputFile)
+        results = writer.write(self.iface,
+                               dest_folder=write_folder)
+        self.exporter.postProcess(results)
         if (not os.environ.get('CI') and
                 not os.environ.get('TRAVIS')):
             webbrowser.open_new_tab(self.exporter.destinationUrl())

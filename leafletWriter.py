@@ -57,6 +57,7 @@ from leafletScriptStrings import (jsonScript,
                                   scaleDependentScript)
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
+                    WriterResult,
                     translator)
 
 
@@ -86,7 +87,12 @@ class LeafletWriter(Writer):
                                               cluster=self.cluster,
                                               params=self.params,
                                               folder=dest_folder)
-        return self.preview_file
+        result = WriterResult()
+        result.index_file = self.preview_file
+        result.folder = os.path.dirname(self.preview_file)
+        for dirpath, dirnames, filenames in os.walk(result.folder):
+            result.files.extend([os.path.join(dirpath, f) for f in filenames])
+        return result
 
     @classmethod
     def writeLeaflet(
