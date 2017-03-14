@@ -117,7 +117,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.toggleOptions()
         if webkit_available:
             if self.previewOnStartup.checkState() == Qt.Checked:
-                self.previewMap()
+                self.autoUpdatePreview()
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
             self.buttonPreview.setDisabled(True)
@@ -147,7 +147,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setModal(False)
 
     def changeFormat(self):
-        self.previewMap()
+        self.autoUpdatePreview()
         self.toggleOptions()
 
     def exporterTypeChanged(self):
@@ -186,6 +186,33 @@ class MainDialog(QDialog, Ui_MainDialog):
         writer.params = self.getParameters()
         return writer
 
+    def showErrorMessage(self, error):
+        """
+        Shows an error message in the preview window
+        """
+        html = "<html>"
+        html += "<head></head>"
+        html += "<style>body {font-family: sans-serif;}</style>"
+        html += "<body><h1>Error</h1>"
+        html += "<p>qgis2web produced an error:</p><code>"
+        html += error
+        html += "</code></body></html>"
+        if self.preview:
+            self.preview.setHtml(html)
+
+    def showFeedbackMessage(self, title, message):
+        """
+        Shows a feedback message in the preview window
+        """
+        html = "<html>"
+        html += "<head></head>"
+        html += "<style>body {font-family: sans-serif;}</style>"
+        html += "<body><h1>{}</h1>".format(title)
+        html += "<p>{}</p>".format(message)
+        html += "</body></html>"
+        if self.preview:
+            self.preview.setHtml(html)
+
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.iteritems():
@@ -223,20 +250,47 @@ class MainDialog(QDialog, Ui_MainDialog):
         return writer.write(self.iface,
                             dest_folder=utils.tempFolder())
 
+    def shouldAutoPreview(self):
+        """
+        Returns a tuple, with a bool for whether the preview should
+        automatically be generated, and a string for explanations
+        as to why the preview cannot be automatically generated
+        """
+        writer = self.createWriter()
+        total_features = 0
+        for layer in writer.layers:
+            if isinstance(layer, QgsVectorLayer):
+                total_features += layer.featureCount()
+
+        if total_features > 1000:
+            # Too many features => too slow!
+            return (False, self.tr('A large number of features are '
+                                   'present in the map. Generating the '
+                                   'preview may take some time.</br>Click '
+                                   'Update Preview to generate the'
+                                   'preview anyway.'))
+
+        return (True, None)
+
+    def autoUpdatePreview(self):
+        """
+        Triggered when a preview will be automatically generated, i.e.
+        not as a result of the user manually clicking the
+        Update Preview button.
+        """
+        (auto_preview, message) = self.shouldAutoPreview()
+        if not auto_preview:
+            self.showFeedbackMessage(self.tr('Preview Map'), message)
+        else:
+            self.previewMap()
+
     def previewMap(self):
         try:
             preview_file = self.createPreview()
             self.loadPreviewFile(preview_file)
         except Exception as e:
-            errorHTML = "<html>"
-            errorHTML += "<head></head>"
-            errorHTML += "<style>body {font-family: sans-serif;}</style>"
-            errorHTML += "<body><h1>Error</h1>"
-            errorHTML += "<p>qgis2web produced an error:</p><code>"
-            errorHTML += traceback.format_exc().replace("\n", "<br />")
-            errorHTML += "</code></body></html>"
-            if self.preview:
-                self.preview.setHtml(errorHTML)
+            self.showErrorMessage(
+                traceback.format_exc().replace("\n", "<br />"))
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
 
