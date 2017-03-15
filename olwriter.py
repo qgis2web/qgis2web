@@ -740,7 +740,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             })
         });""" % (layerName, layerName, opacity, minResolution, maxResolution,
                   layerAttr, d["url"][0])
-            elif  "tileMatrixSet" in d:
+            elif "tileMatrixSet" in d:
                 layerId = d["layers"][0]
                 url = d["url"][0]
                 format = d["format"][0]
@@ -778,10 +778,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                             opacity: %(opacity)s,
                             %(minRes)s
                             %(maxRes)s
-                          });''' % {"layerId": layerId, "url": url, "style": style,
+                          });''' % {"layerId": layerId, "url": url,
                                     "layerAttr": layerAttr, "format": format,
                                     "n": layerName, "name": layer.name(),
-                                    "opacity": opacity,
+                                    "opacity": opacity, "style": style,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
             else:
