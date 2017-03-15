@@ -308,6 +308,27 @@ def wmsScript(layer, safeLayerName):
         }});
         overlay_{safeLayerName}.addTo(map);""".format(
             opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
+    elif 'tileMatrixSet' in d:
+        wmts_url = d['url'][0]
+        wmts_layer = d['layers'][0]
+        wmts_format = d['format'][0]
+        wmts_crs = d['crs'][0]
+        wmts_style = d['styles'][0]
+        wmts_tileMatrixSet = d['tileMatrixSet'][0]
+        wms = """
+            var overlay_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
+                layer: '{wmts_layer}',
+                tilematrixSet: '{wmts_tileMatrixSet}',
+                format: '{wmts_format}',
+                style: '{wmts_style}',
+                uppercase: true,
+                transparent: true,
+                continuousWorld : true,
+                opacity: {opacity}
+            }});""".format(safeLayerName=safeLayerName, wmts_url=wmts_url,
+                           wmts_layer=wmts_layer, wmts_format=wmts_format,
+                           wmts_tileMatrixSet=wmts_tileMatrixSet,
+                           wmts_style=wmts_style, opacity=opacity)
     else:
         wms_url = d['url'][0]
         wms_layer = d['layers'][0]

@@ -28,6 +28,8 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
     os.makedirs(markerStore)
     shutil.copyfile(jsDir + 'qgis2web_expressions.js',
                     jsStore + 'qgis2web_expressions.js')
+    shutil.copyfile(jsDir + 'leaflet-tilelayer-wmts.js',
+                    jsStore + 'leaflet-tilelayer-wmts.js')
     if mapLibLocation == "Local":
         shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
@@ -150,6 +152,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         measureCSS = ""
         measureJS = ""
     extraJS = """<script src="js/leaflet-hash.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
         <script src="js/Autolinker.min.js"></script>"""
     if (matchCRS and
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
