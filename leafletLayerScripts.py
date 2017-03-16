@@ -422,16 +422,16 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
                 continue
 
             row += """
-                <tr>\\"""
+                    <tr>\\"""
             if val == 'inline label':
                 row += """
-                    <th scope="row">"""
+                        <th scope="row">"""
                 row += layer.attributeDisplayName(fieldIndex)
                 row += """</th>\\
-                    <td>"""
+                        <td>"""
             else:
                 row += """
-                    <td colspan="2">"""
+                        <td colspan="2">"""
             if val == "header label":
                 row += '<strong>'
                 row += layer.attributeDisplayName(fieldIndex)
@@ -452,9 +452,9 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
                 row += "'])) : '') + '"
 
             row += """</td>\\
-                </tr>\\"""
+                    </tr>\\"""
         tableend = """
-            </table>'"""
+                </table>'"""
         table = tablestart + row + tableend
     if popup != 0 and table != "":
         popFuncs = popFuncsScript(table)
