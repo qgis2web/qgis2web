@@ -39,17 +39,20 @@ from leafletFileScripts import (writeFoldersAndFiles,
                                 writeCSS,
                                 writeHTMLstart)
 from leafletLayerScripts import (exportJSONLayer,
-                                 writeVectorLayer)
+                                 writeVectorLayer,
+                                 exportRasterLayer)
 from leafletScriptStrings import (jsonScript,
                                   scaleDependentLabelScript,
                                   mapScript,
                                   featureGroupsScript,
                                   extentScript,
+                                  rasterScript,
                                   addressSearchScript,
                                   endHTMLscript,
                                   addLayersList,
                                   highlightScript,
-                                  crsScript)
+                                  crsScript,
+                                  scaleBar)
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
                     translator)
