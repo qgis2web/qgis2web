@@ -21,7 +21,25 @@ import re
 import shutil
 from PyQt4.QtCore import QDir, QVariant
 from PyQt4.QtGui import QPainter
-from qgis.core import *
+from qgis.core import (QgsApplication,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransform,
+                       QgsVectorLayer,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsRenderContext,
+                       QgsExpression,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsCategorizedSymbolRendererV2,
+                       QgsGraduatedSymbolRendererV2,
+                       Qgs25DRenderer,
+                       QgsVectorFileWriter,
+                       QgsRasterFileWriter,
+                       QgsRasterPipe,
+                       QgsGeometryGeneratorSymbolLayerV2,
+                       QgsMessageLog)
 from qgis.utils import QGis
 import processing
 import tempfile
