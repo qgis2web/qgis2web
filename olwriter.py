@@ -34,6 +34,9 @@ from qgis.core import (QgsProject,
                        QgsRuleBasedRendererV2,
                        QgsHeatmapRenderer,
                        QgsSimpleMarkerSymbolLayerV2,
+                       QgsSvgMarkerSymbolLayerV2,
+                       QgsSimpleLineSymbolLayerV2,
+                       QgsSimpleFillSymbolLayerV2,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 from utils import (exportLayers, safeName, replaceInTemplate,
@@ -1269,7 +1272,8 @@ def getFillStyle(color, props):
         if props["style"] == "no":
             return ""
     except:
-        pass
+        QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                 level=QgsMessageLog.CRITICAL)
     return "fill: new ol.style.Fill({color: %s})" % color
 
 
