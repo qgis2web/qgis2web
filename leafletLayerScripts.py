@@ -16,7 +16,12 @@ from qgis.core import (QgsVectorLayer,
                        QgsRasterPipe,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
-                       QgsDataSourceURI)
+                       QgsDataSourceURI,
+                       QgsField,
+                       QgsRenderContext,
+                       QgsExpression,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils)
 from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
