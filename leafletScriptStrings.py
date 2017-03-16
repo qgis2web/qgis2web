@@ -275,29 +275,6 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def pointJSONLayer(sln, label, usedFields, markerType, layerAttr):
-    pointJSON = """
-        var layer_{sln} = new L.geoJson(json_{sln}, {{
-            attribution: '{attr}',
-            pane: 'pane_{sln}',"""
-    if usedFields != 0:
-        pointJSON += """
-            onEachFeature: pop_{sln},"""
-    pointJSON += """
-            pointToLayer: function (feature, latlng) {{
-                var context = {{
-                    feature: feature,
-                    variables: {{}}
-                }};
-                return L.{markerType}(latlng, """
-    pointJSON += """style_{sln}(feature)){label}
-            }}
-        }});"""
-    pointJSON = pointJSON.format(sln=sln, label=label, markerType=markerType,
-                                 attr=layerAttr)
-    return pointJSON
-
-
 def wmsScript(layer, safeLayerName):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()

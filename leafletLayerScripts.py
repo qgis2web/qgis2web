@@ -572,7 +572,7 @@ def pointLayer(layer, safeLayerName, labeltext, cluster, usedFields, json,
         attrText = layer.attribution()
         attrUrl = layer.attributionUrl()
         layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
-        new_obj = pointJSONLayer(safeLayerName, labeltext,
+        new_obj = buildPointJSON(safeLayerName, labeltext,
                                  usedFields, markerType, layerAttr)
         if cluster:
             new_obj += clusterScript(safeLayerName)
@@ -627,6 +627,29 @@ def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
                "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
                "hmRadius": hmRadius}
     return new_obj, legends, wfsLayers
+
+
+def buildPointJSON(sln, label, usedFields, markerType, layerAttr):
+    pointJSON = """
+        var layer_{sln} = new L.geoJson(json_{sln}, {{
+            attribution: '{attr}',
+            pane: 'pane_{sln}',"""
+    if usedFields != 0:
+        pointJSON += """
+            onEachFeature: pop_{sln},"""
+    pointJSON += """
+            pointToLayer: function (feature, latlng) {{
+                var context = {{
+                    feature: feature,
+                    variables: {{}}
+                }};
+                return L.{markerType}(latlng, """
+    pointJSON += """style_{sln}(feature)){label}
+            }}
+        }});"""
+    pointJSON = pointJSON.format(sln=sln, label=label, markerType=markerType,
+                                 attr=layerAttr)
+    return pointJSON
 
 
 def buildPointWFS(p2lf, layerName, layer, cluster_set):
