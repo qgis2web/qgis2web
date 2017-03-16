@@ -4,11 +4,24 @@ import shutil
 import tempfile
 from PyQt4.QtCore import QSize, QVariant
 import time
-from qgis.core import *
+from qgis.core import (QgsVectorLayer,
+                       QgsVectorFileWriter,
+                       QgsPalLayerSettings,
+                       QgsSingleSymbolRendererV2,
+                       QgsHeatmapRenderer,
+                       QgsSymbolLayerV2Utils,
+                       QgsRasterFileWriter,
+                       QgsRasterPipe,
+                       QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransform,
+                       QgsDataSourceURI)
 from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
-from leafletScriptStrings import *
+from leafletScriptStrings import (popupScript,
+                                  popFuncsScript,
+                                  pointToLayerFunction,
+                                  wfsScript)
 from exp2js import compile_to_file
 from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, BLEND_MODES)
