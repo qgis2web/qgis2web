@@ -6,7 +6,10 @@ import xml.etree.ElementTree
 from qgis.core import (QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
-                       QgsSimpleMarkerSymbolLayerV2)
+                       QgsSimpleMarkerSymbolLayerV2,
+                       QgsSimpleLineSymbolLayerV2,
+                       QgsSimpleFillSymbolLayerV2,
+                       QgsSvgMarkerSymbolLayerV2)
 from exp2js import compile_to_file
 from utils import getRGBAColor, handleHiddenField
 
