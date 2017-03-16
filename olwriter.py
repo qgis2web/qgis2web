@@ -27,10 +27,13 @@ from urlparse import parse_qs
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
+                       QgsVectorLayer,
                        QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
                        QgsRuleBasedRendererV2,
+                       QgsHeatmapRenderer,
+                       QgsSimpleMarkerSymbolLayerV2,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 from utils import (exportLayers, safeName, replaceInTemplate,
