@@ -21,7 +21,12 @@
  ***************************************************************************/
 """
 
-from qgis.core import *
+from qgis.core import (QgsApplication,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransform,
+                       QgsMapLayer)
+import traceback
 import qgis.utils
 from PyQt4.QtCore import (Qt,
                           QObject)
@@ -30,9 +35,21 @@ import os
 from datetime import datetime
 import re
 from basemaps import basemapLeaflet
-from leafletFileScripts import *
-from leafletLayerScripts import *
-from leafletScriptStrings import *
+from leafletFileScripts import (writeFoldersAndFiles,
+                                writeCSS,
+                                writeHTMLstart)
+from leafletLayerScripts import (exportJSONLayer,
+                                 writeVectorLayer)
+from leafletScriptStrings import (jsonScript,
+                                  scaleDependentLabelScript,
+                                  mapScript,
+                                  featureGroupsScript,
+                                  extentScript,
+                                  addressSearchScript,
+                                  endHTMLscript,
+                                  addLayersList,
+                                  highlightScript,
+                                  crsScript)
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
                     translator)
@@ -239,8 +256,9 @@ class LeafletWriter(Writer):
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
                            measure, matchCRS, layerSearch, canvas,
                            mapLibLocation, locate, new_src, template)
-        except:
-            pass
+        except Exception as e:
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                     level=QgsMessageLog.CRITICAL)
         finally:
             QApplication.restoreOverrideCursor()
         return outputIndex
