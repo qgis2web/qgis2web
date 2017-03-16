@@ -24,15 +24,30 @@ import shutil
 import traceback
 import xml.etree.ElementTree
 from urlparse import parse_qs
-from qgis.core import *
+from qgis.core import (QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransform,
+                       QgsSingleSymbolRendererV2,
+                       QgsCategorizedSymbolRendererV2,
+                       QgsGraduatedSymbolRendererV2,
+                       QgsRuleBasedRendererV2,
+                       QgsPalLayerSettings,
+                       QgsMessageLog)
 from utils import (exportLayers, safeName, replaceInTemplate,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
 from exp2js import compile_to_file
 from qgis.utils import iface
-from PyQt4.QtCore import *
+from PyQt4.QtCore import (Qt,
+                          QDir)
 from PyQt4.QtCore import QObject
-from PyQt4.QtGui import *
-from olScriptStrings import *
+from PyQt4.QtGui import (QApplication,
+                         QCursor)
+from olScriptStrings import (measureScript,
+                             measuringScript,
+                             measureControlScript,
+                             measureUnitMetricScript,
+                             measureUnitFeetScript,
+                             measureStyleScript)
 from basemaps import basemapOL
 from writer import (Writer,
                     translator)
