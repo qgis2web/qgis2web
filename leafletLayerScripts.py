@@ -241,9 +241,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      restrictToExtent, extent):
     zIndex = zIndex + 600
     markerFolder = os.path.join(outputProjectFileName, "markers")
-    (new_pop, labeltext,
-     popFuncs) = labelsAndPopups(layer, safeLayerName, highlight,
-                                 popupsOnHover, popup, outputProjectFileName)
+    labeltext = getLabels(layer, safeLayerName, outputProjectFileName)
+    (new_pop, popFuncs) = getPopups(layer, safeLayerName, highlight,
+                                    popupsOnHover, popup)
     renderer = layer.rendererV2()
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
     style = ""
@@ -341,12 +341,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     return new_src, legends, wfsLayers
 
 
-def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
-                    outputProjectFileName):
-    fields = layer.pendingFields()
-    field_names = popup.keys()
-    field_vals = popup.values()
-    html_prov = False
+def getLabels(layer, safeLayerName, outputProjectFileName):
     label_exp = ''
     labeltext = ""
     f = ''
@@ -394,79 +389,79 @@ def labelsAndPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
     else:
         f = "feature.properties['%s']" % handleHiddenField(layer,
                                                            palyr.fieldName)
-    label_exp = False
     labeltext = ".bindTooltip((" + unicode(f)
     labeltext += " !== null?String(%s%s)%s:'')" % (
             styleStart, unicode(f), styleEnd)
     labeltext += ", {permanent: true, offset: [-0, -16], "
     labeltext += "className: 'css_%s'}" % safeLayerName
     labeltext += ").openTooltip();"
+    return labeltext
+
+
+def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
+    palyr = QgsPalLayerSettings()
+    palyr.readFromLayer(layer)
+    fields = layer.pendingFields()
+    field_names = popup.keys()
+    field_vals = popup.values()
+    html_prov = False
     f = palyr.fieldName
     table = ""
     for field in popup:
-        if unicode(field) == 'html_exp':
-            html_prov = True
-            table = 'feature.properties.html_exp'
-        if (unicode(f) != "" and
-                f and palyr.enabled):
-            label_exp = True
-        if not html_prov:
-            tablestart = "'<table>\\"
-            row = ""
-            for field, val in zip(field_names, field_vals):
-                fieldIndex = fields.indexFromName(unicode(field))
-                try:
-                    formCfg = layer.editFormConfig()
-                    editorWidget = formCfg.widgetType(fieldIndex)
-                except:
-                    editorWidget = layer.editorWidgetV2(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
-                    continue
+        tablestart = "'<table>\\"
+        row = ""
+        for field, val in zip(field_names, field_vals):
+            fieldIndex = fields.indexFromName(unicode(field))
+            try:
+                formCfg = layer.editFormConfig()
+                editorWidget = formCfg.widgetType(fieldIndex)
+            except:
+                editorWidget = layer.editorWidgetV2(fieldIndex)
+            if (editorWidget == QgsVectorLayer.Hidden or
+                    editorWidget == 'Hidden'):
+                continue
 
+            row += """
+                <tr>\\"""
+            if val == 'inline label':
                 row += """
-                    <tr>\\"""
-                if val == 'inline label':
-                    row += """
-                        <th scope="row">"""
-                    row += layer.attributeDisplayName(fieldIndex)
-                    row += """</th>\\
-                        <td>"""
-                else:
-                    row += """
-                        <td colspan="2">"""
-                if val == "header label":
-                    row += '<strong>'
-                    row += layer.attributeDisplayName(fieldIndex)
-                    row += '</strong><br />'
-                row += "' + "
-                row += "(feature.properties[\'" + unicode(field) + "\'] "
-                row += "!== null ? "
+                    <th scope="row">"""
+                row += layer.attributeDisplayName(fieldIndex)
+                row += """</th>\\
+                    <td>"""
+            else:
+                row += """
+                    <td colspan="2">"""
+            if val == "header label":
+                row += '<strong>'
+                row += layer.attributeDisplayName(fieldIndex)
+                row += '</strong><br />'
+            row += "' + "
+            row += "(feature.properties[\'" + unicode(field) + "\'] "
+            row += "!== null ? "
 
-                if (editorWidget == QgsVectorLayer.Photo or
-                        editorWidget == 'Photo'):
-                    row += "'<img src=\"images/' + "
-                    row += "String(feature.properties['" + unicode(field)
-                    row += "']).replace(/[\\\/:]/g, '_').trim()"
-                    row += " + '\">' : '') + '"
-                else:
-                    row += "Autolinker.link("
-                    row += "String(feature.properties['" + unicode(field)
-                    row += "'])) : '') + '"
+            if (editorWidget == QgsVectorLayer.Photo or
+                    editorWidget == 'Photo'):
+                row += "'<img src=\"images/' + "
+                row += "String(feature.properties['" + unicode(field)
+                row += "']).replace(/[\\\/:]/g, '_').trim()"
+                row += " + '\">' : '') + '"
+            else:
+                row += "Autolinker.link("
+                row += "String(feature.properties['" + unicode(field)
+                row += "'])) : '') + '"
 
-                row += """</td>\\
-                    </tr>\\"""
-            tableend = """
-                </table>'"""
-            table = tablestart + row + tableend
-    if not label_exp:
-        labeltext = ""
+            row += """</td>\\
+                </tr>\\"""
+        tableend = """
+            </table>'"""
+        table = tablestart + row + tableend
     if popup != 0 and table != "":
         popFuncs = popFuncsScript(table)
     else:
         popFuncs = ""
     new_pop = popupScript(safeLayerName, popFuncs, highlight, popupsOnHover)
-    return new_pop, labeltext, popFuncs
+    return new_pop, popFuncs
 
 
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
