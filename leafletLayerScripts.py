@@ -8,6 +8,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsVectorFileWriter,
                        QgsPalLayerSettings,
                        QgsSingleSymbolRendererV2,
+                       QgsCategorizedSymbolRendererV2,
+                       QgsGraduatedSymbolRendererV2,
                        QgsHeatmapRenderer,
                        QgsSymbolLayerV2Utils,
                        QgsRasterFileWriter,
@@ -21,7 +23,9 @@ from leafletStyleScripts import getLayerStyle
 from leafletScriptStrings import (popupScript,
                                   popFuncsScript,
                                   pointToLayerFunction,
-                                  wfsScript)
+                                  wfsScript,
+                                  clusterScript,
+                                  iconLegend)
 from exp2js import compile_to_file
 from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, BLEND_MODES)
