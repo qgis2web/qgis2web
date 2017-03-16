@@ -347,54 +347,58 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
     f = ''
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(layer)
-    bgColor = palyr.shapeFillColor.name()
-    borderWidth = palyr.shapeBorderWidth
-    borderColor = palyr.shapeBorderColor.name()
-    x = palyr.shapeSize.x()
-    y = palyr.shapeSize.y()
-    font = palyr.textFont
-    fontSize = font.pointSize()
-    fontFamily = font.family()
-    fontItalic = font.italic()
-    fontBold = font.bold()
-    fontColor = palyr.textColor.name()
-    fontUnderline = font.underline()
-    xOffset = palyr.xOffset
-    yOffset = palyr.yOffset
-    styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (
-            fontColor, fontSize)
-    if palyr.shapeDraw:
-        styleStart += "background-color: %s; " % bgColor
-        styleStart += "border: %dpx solid %s; " % (borderWidth, borderColor)
-        if palyr.shapeSizeType == 0:
-            styleStart += "padding: %dpx %dpx; " % (y, x)
-        if palyr.shapeSizeType == 1:
-            styleStart += "width: %dpx; " % x
-            styleStart += "height: %dpx; " % y
-    if fontBold:
-        styleStart += "font-weight: bold; "
-    if fontItalic:
-        styleStart += "font-style: italic; "
-    styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
-    styleEnd = " + '</div>'"
-    if palyr.isExpression and palyr.enabled:
-        exprFilename = os.path.join(outputProjectFileName, "js",
-                                    "qgis2web_expressions.js")
-        name = compile_to_file(palyr.getLabelExpression(),
-                               "label_%s" % safeLayerName, "Leaflet",
-                               exprFilename)
-        js = "%s(context)" % (name)
-        js = js.strip()
-        f = js
+    if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
+        bgColor = palyr.shapeFillColor.name()
+        borderWidth = palyr.shapeBorderWidth
+        borderColor = palyr.shapeBorderColor.name()
+        x = palyr.shapeSize.x()
+        y = palyr.shapeSize.y()
+        font = palyr.textFont
+        fontSize = font.pointSize()
+        fontFamily = font.family()
+        fontItalic = font.italic()
+        fontBold = font.bold()
+        fontColor = palyr.textColor.name()
+        fontUnderline = font.underline()
+        xOffset = palyr.xOffset
+        yOffset = palyr.yOffset
+        styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (
+                fontColor, fontSize)
+        if palyr.shapeDraw:
+            styleStart += "background-color: %s; " % bgColor
+            styleStart += "border: %dpx solid %s; " % (borderWidth,
+                                                       borderColor)
+            if palyr.shapeSizeType == 0:
+                styleStart += "padding: %dpx %dpx; " % (y, x)
+            if palyr.shapeSizeType == 1:
+                styleStart += "width: %dpx; " % x
+                styleStart += "height: %dpx; " % y
+        if fontBold:
+            styleStart += "font-weight: bold; "
+        if fontItalic:
+            styleStart += "font-style: italic; "
+        styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
+        styleEnd = " + '</div>'"
+        if palyr.isExpression and palyr.enabled:
+            exprFilename = os.path.join(outputProjectFileName, "js",
+                                        "qgis2web_expressions.js")
+            name = compile_to_file(palyr.getLabelExpression(),
+                                   "label_%s" % safeLayerName, "Leaflet",
+                                   exprFilename)
+            js = "%s(context)" % (name)
+            js = js.strip()
+            f = js
+        else:
+            f = "feature.properties['%s']" % handleHiddenField(layer,
+                                                               palyr.fieldName)
+        labeltext = ".bindTooltip((" + unicode(f)
+        labeltext += " !== null?String(%s%s)%s:'')" % (
+                styleStart, unicode(f), styleEnd)
+        labeltext += ", {permanent: true, offset: [-0, -16], "
+        labeltext += "className: 'css_%s'}" % safeLayerName
+        labeltext += ").openTooltip();"
     else:
-        f = "feature.properties['%s']" % handleHiddenField(layer,
-                                                           palyr.fieldName)
-    labeltext = ".bindTooltip((" + unicode(f)
-    labeltext += " !== null?String(%s%s)%s:'')" % (
-            styleStart, unicode(f), styleEnd)
-    labeltext += ", {permanent: true, offset: [-0, -16], "
-    labeltext += "className: 'css_%s'}" % safeLayerName
-    labeltext += ").openTooltip();"
+        labeltext = ""
     return labeltext
 
 
