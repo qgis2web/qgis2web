@@ -1,13 +1,16 @@
 import re
 import os
 import shutil
+import traceback
 from urlparse import parse_qs
 from PyQt4.QtCore import QSize
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
+                       QgsMapLayer,
                        QgsPalLayerSettings,
                        QgsSvgMarkerSymbolLayerV2,
-                       QgsSymbolLayerV2Utils)
+                       QgsSymbolLayerV2Utils,
+                       QgsMessageLog)
 from utils import scaleToZoom
 from basemaps import basemapLeaflet, basemapAttributions
 
@@ -411,7 +414,8 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 new_layer += safeLayerName + ""","""
                 layersList += new_layer
         except:
-            pass
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                     level=QgsMessageLog.CRITICAL)
     controlEnd = "}"
     if collapsed:
         controlEnd += ",{collapsed:false}"
