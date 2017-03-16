@@ -3,7 +3,11 @@ import os
 import shutil
 from urlparse import parse_qs
 from PyQt4.QtCore import QSize
-from qgis.core import *
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransform,
+                       QgsPalLayerSettings,
+                       QgsSvgMarkerSymbolLayerV2,
+                       QgsSymbolLayerV2Utils)
 from utils import scaleToZoom
 from basemaps import basemapLeaflet, basemapAttributions
 
