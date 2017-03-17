@@ -1,4 +1,17 @@
+import os
+import shutil
+from PyQt4.QtCore import QDir
 from utils import safeName
+
+
+def writeFiles(settings, folder, restrictToExtent):
+    imagesFolder = os.path.join(folder, "images")
+    QDir().mkpath(imagesFolder)
+    dst = os.path.join(folder, "resources")
+    if not os.path.exists(dst):
+        shutil.copytree(os.path.join(os.path.dirname(__file__),
+                                     "resources"),
+                        dst)
 
 
 def writeHTMLstart(settings, controlCount, osmb):
