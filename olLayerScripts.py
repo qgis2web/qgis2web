@@ -5,8 +5,9 @@ import codecs
 from qgis.core import (QgsRenderContext,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
+                       QgsHeatmapRenderer,
                        QgsMessageLog)
-from utils import safeName, is25d
+from utils import safeName, is25d, BLEND_MODES
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
