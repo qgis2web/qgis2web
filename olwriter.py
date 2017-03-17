@@ -104,6 +104,9 @@ class OpenLayersWriter(Writer):
         measureTool = settings["Appearance"]["Measure tool"]
         addLayersList = settings["Appearance"]["Add layers list"]
         htmlTemplate = settings["Appearance"]["Template"]
+        layerSearch = unicode(settings["Appearance"]["Layer search"])
+        searchLayer = settings["Appearance"]["Search layer"]
+        mapLibLocn = settings["Data export"]["Mapping library location"]
 
         writeFiles(folder, restrictToExtent)
         exportLayers(iface, layers, folder, precision,
@@ -113,7 +116,8 @@ class OpenLayersWriter(Writer):
                                     settings, json, matchCRS, clustered,
                                     iface, restrictToExtent, extent)
         (jsAddress, cssAddress, layerSearch,
-         controlCount) = writeHTMLstart(settings, controlCount, osmb)
+         controlCount) = writeHTMLstart(settings, controlCount, osmb,
+                                        mapLibLocn, layerSearch, searchLayer)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json)
         popupLayers = "popupLayers = [%s];" % ",".join(

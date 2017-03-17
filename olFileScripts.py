@@ -14,9 +14,10 @@ def writeFiles(folder, restrictToExtent):
                         dst)
 
 
-def writeHTMLstart(settings, controlCount, osmb):
+def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
+                   layerSearch, searchLayer):
     jsAddress = '<script src="resources/polyfills.js"></script>'
-    if settings["Data export"]["Mapping library location"] == "Local":
+    if mapLibLocn == "Local":
         cssAddress = """<link rel="stylesheet" """
         cssAddress += """href="./resources/ol.css" />"""
         jsAddress += """
@@ -28,9 +29,8 @@ def writeHTMLstart(settings, controlCount, osmb):
         jsAddress += """
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
         jsAddress += """4.0.1/ol.js"></script>"""
-    layerSearch = unicode(settings["Appearance"]["Layer search"])
     if layerSearch != "None" and layerSearch != "":
-        searchLayer = settings["Appearance"]["Search layer"]
+        searchLayer = searchLayer
         cssAddress += """
         <link rel="stylesheet" href="resources/horsey.min.css">
         <link rel="stylesheet" href="resources/ol3-search-layer.min.css">"""
