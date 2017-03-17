@@ -44,7 +44,13 @@ from olScriptStrings import (measureScript,
                              measureControlScript,
                              measureUnitMetricScript,
                              measureUnitFeetScript,
-                             measureStyleScript)
+                             measureStyleScript,
+                             geolocation,
+                             geolocateStyle,
+                             geolocationHead,
+                             geocodeLinks,
+                             geocodeJS,
+                             geocodeScript)
 from olStyleScripts import exportStyles
 from writer import (Writer,
                     translator)
@@ -417,135 +423,3 @@ def bounds(iface, useCanvas, layers, matchCRS):
 
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                  extent.xMaximum(), extent.yMaximum())
-
-
-def geolocation(geolocate):
-    if geolocate:
-        return """
-      var geolocation = new ol.Geolocation({
-  projection: map.getView().getProjection()
-});
-
-
-var accuracyFeature = new ol.Feature();
-geolocation.on('change:accuracyGeometry', function() {
-  accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
-});
-
-var positionFeature = new ol.Feature();
-positionFeature.setStyle(new ol.style.Style({
-  image: new ol.style.Circle({
-    radius: 6,
-    fill: new ol.style.Fill({
-      color: '#3399CC'
-    }),
-    stroke: new ol.style.Stroke({
-      color: '#fff',
-      width: 2
-    })
-  })
-}));
-
-geolocation.on('change:position', function() {
-  var coordinates = geolocation.getPosition();
-  positionFeature.setGeometry(coordinates ?
-      new ol.geom.Point(coordinates) : null);
-});
-
-var geolocateOverlay = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: [accuracyFeature, positionFeature]
-  })
-});
-
-geolocation.setTracking(true);
-"""
-    else:
-        return ""
-
-
-def geolocationHead(geolocate):
-    if geolocate:
-        return """
-isTracking = false;
-geolocateControl = function(opt_options) {
-    var options = opt_options || {};
-    var button = document.createElement('button');
-    button.className += ' fa fa-map-marker';
-    var handleGeolocate = function() {
-        if (isTracking) {
-            map.removeLayer(geolocateOverlay);
-            isTracking = false;
-      } else if (geolocation.getTracking()) {
-            map.addLayer(geolocateOverlay);
-            map.getView().setCenter(geolocation.getPosition());
-            isTracking = true;
-      }
-    };
-    button.addEventListener('click', handleGeolocate, false);
-    button.addEventListener('touchstart', handleGeolocate, false);
-    var element = document.createElement('div');
-    element.className = 'geolocate ol-unselectable ol-control';
-    element.appendChild(button);
-    ol.control.Control.call(this, {
-        element: element,
-        target: options.target
-    });
-};
-ol.inherits(geolocateControl, ol.control.Control);"""
-    else:
-        return ""
-
-
-def geolocateStyle(geolocate, controlCount):
-    if geolocate:
-        ctrlPos = 65 + (controlCount * 35)
-        touchCtrlPos = 80 + (controlCount * 50)
-        controlCount = controlCount + 1
-        return ("""
-        <style>
-        .geolocate {
-            top: %dpx;
-            left: .5em;
-        }
-        .ol-touch .geolocate {
-            top: %dpx;
-        }
-        </style>""" % (ctrlPos, touchCtrlPos), controlCount)
-    else:
-        return ("", controlCount)
-
-
-def geocodeLinks(geocode):
-    if geocode:
-        returnVal = """
-    <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.min.css" rel="stylesheet">"""
-        return returnVal
-    else:
-        return ""
-
-
-def geocodeJS(geocode):
-    if geocode:
-        returnVal = """
-    <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.js"></script>"""
-        return returnVal
-    else:
-        return ""
-
-
-def geocodeScript(geocode):
-    if geocode:
-        return """
-var geocoder = new Geocoder('nominatim', {
-  provider: 'osm',
-  lang: 'en-US',
-  placeholder: 'Search for ...',
-  limit: 5,
-  keepOpen: true
-});
-map.addControl(geocoder);"""
-    else:
-        return ""
