@@ -29,8 +29,7 @@ from qgis.core import (QgsProject,
                        QgsRectangle,
                        QgsCsException,
                        QgsMessageLog)
-from utils import (exportLayers, safeName, replaceInTemplate,
-                   is25d, ALL_ATTRIBUTES)
+from utils import (exportLayers, replaceInTemplate, is25d, ALL_ATTRIBUTES)
 from exp2js import compile_to_file
 from qgis.utils import iface
 from PyQt4.QtCore import (Qt,
@@ -38,7 +37,7 @@ from PyQt4.QtCore import (Qt,
 from PyQt4.QtCore import QObject
 from PyQt4.QtGui import (QApplication,
                          QCursor)
-from olFileScripts import writeHTMLstart
+from olFileScripts import writeHTMLstart, writeScriptIncludes
 from olLayerScripts import writeLayersAndGroups
 from olScriptStrings import (measureScript,
                              measuringScript,
@@ -114,41 +113,8 @@ class OpenLayersWriter(Writer):
                                         iface, restrictToExtent, extent)
             (jsAddress, cssAddress, layerSearch,
              controlCount) = writeHTMLstart(settings, controlCount, osmb)
-            geojsonVars = ""
-            wfsVars = ""
-            styleVars = ""
-            for count, (layer, encode2json) in enumerate(zip(layers, json)):
-                sln = safeName(layer.name()) + unicode(count)
-                if layer.type() == layer.VectorLayer:
-                    if layer.providerType() != "WFS" or encode2json:
-                        geojsonVars += ('<script src="layers/%s"></script>' %
-                                        (sln + ".js"))
-                    else:
-                        layerSource = layer.source()
-                        if ("retrictToRequestBBOX" in layerSource or
-                                "restrictToRequestBBOX" in layerSource):
-                            provider = layer.dataProvider()
-                            uri = QgsDataSourceURI(provider.dataSourceUri())
-                            wfsURL = uri.param("url")
-                            wfsTypename = uri.param("typename")
-                            wfsSRS = uri.param("srsname")
-                            layerSource = wfsURL
-                            layerSource += "?SERVICE=WFS&VERSION=1.0.0&"
-                            layerSource += "REQUEST=GetFeature&TYPENAME="
-                            layerSource += wfsTypename
-                            layerSource += "&SRSNAME="
-                            layerSource += wfsSRS
-                        if not matchCRS:
-                            layerSource = re.sub('SRSNAME\=EPSG\:\d+',
-                                                 'SRSNAME=EPSG:3857',
-                                                 layerSource)
-                        layerSource += "&outputFormat=text%2Fjavascript&"
-                        layerSource += "format_options=callback%3A"
-                        layerSource += "get" + sln + "Json"
-                        wfsVars += ('<script src="%s"></script>' % layerSource)
-                    styleVars += ('<script src="styles/%s_style.js">'
-                                  '</script>' %
-                                  (sln))
+            (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
+                                                                    json)
             popupLayers = "popupLayers = [%s];" % ",".join(
                 ['1' for field in popup])
             controls = ['expandedAttribution']
