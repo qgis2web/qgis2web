@@ -53,7 +53,8 @@ from leafletScriptStrings import (jsonScript,
                                   addLayersList,
                                   highlightScript,
                                   crsScript,
-                                  scaleBar)
+                                  scaleBar,
+                                  scaleDependentScript)
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
                     translator)

@@ -24,7 +24,6 @@ import webbrowser
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
-import qgis  # pylint: disable=unused-import
 from qgis.core import (QGis,
                        QgsProject,
                        QgsMapLayer,
@@ -33,19 +32,32 @@ from qgis.core import (QGis,
                        QgsMessageLog)
 
 # noinspection PyUnresolvedReferences
-from PyQt4.QtCore import *
-from PyQt4.QtCore import (QSettings,
-                          QByteArray)
-from PyQt4.QtGui import *
-from PyQt4.QtGui import (QHBoxLayout)
+from PyQt4.QtCore import (QObject,
+                          QSettings,
+                          pyqtSignal,
+                          QUrl,
+                          QByteArray,
+                          QEvent,
+                          Qt)
+from PyQt4.QtGui import (QDialog,
+                         QHBoxLayout,
+                         QTreeWidgetItem,
+                         QIcon,
+                         QAbstractItemView,
+                         QAction,
+                         QComboBox,
+                         QCheckBox,
+                         QToolButton,
+                         QWidget,
+                         QTextBrowser)
+from PyQt4.QtNetwork import QNetworkAccessManager
 
 try:
-    from PyQt4.QtWebKit import *
-
+    from PyQt4.QtWebKit import QWebView, QWebSettings, QWebInspector
     webkit_available = True
 except ImportError:
     webkit_available = False
-from PyQt4 import QtGui
+
 import traceback
 import logging
 
@@ -331,7 +343,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
                 except:
-                    pass
+                    QgsMessageLog.logMessage(traceback.format_exc(),
+                                             "qgis2web",
+                                             level=QgsMessageLog.CRITICAL)
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
@@ -458,7 +472,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         """
         Adds entries for all known basemaps to the dialog
         """
-        multiSelect = QtGui.QAbstractItemView.ExtendedSelection
+        multiSelect = QAbstractItemView.ExtendedSelection
         self.basemaps.setSelectionMode(multiSelect)
         attrFields = []
         for i in range(len(baselayers)):
