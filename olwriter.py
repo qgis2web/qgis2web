@@ -91,11 +91,21 @@ class OpenLayersWriter(Writer):
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
         folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
         restrictToExtent = settings["Scale/Zoom"]["Restrict to extent"]
-        writeFiles(settings, folder, restrictToExtent)
         matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
         extent = settings["Scale/Zoom"]["Extent"]
+        geolocateUser = settings["Appearance"]["Geolocate user"]
+        maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
+        minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
+        popupsOnHover = settings["Appearance"]["Show popups on hover"]
+        highlightFeatures = settings["Appearance"]["Highlight on hover"]
+        geocode = settings["Appearance"]["Add address search"]
+        measureTool = settings["Appearance"]["Measure tool"]
+        addLayersList = settings["Appearance"]["Add layers list"]
+        htmlTemplate = settings["Appearance"]["Template"]
+
+        writeFiles(folder, restrictToExtent)
         exportLayers(iface, layers, folder, precision,
                      optimize, popup, json, restrictToExtent, extent)
         exportStyles(layers, folder, clustered)
@@ -112,19 +122,17 @@ class OpenLayersWriter(Writer):
         project = QgsProject.instance()
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             controls.append("new ol.control.ScaleLine({})")
-        if settings["Appearance"]["Measure tool"] != "None":
+        if measureTool != "None":
             controls.append(
                 'new measureControl()')
-        if settings["Appearance"]["Geolocate user"]:
+        if geolocateUser:
             controls.append(
                 'new geolocateControl()')
-        if (settings["Appearance"]["Add layers list"] and
-                settings["Appearance"]["Add layers list"] != "" and
-                settings["Appearance"]["Add layers list"] != "None"):
+        if (addLayersList and addLayersList != "" and addLayersList != "None"):
             layersList = """
 var layerSwitcher = new ol.control.LayerSwitcher({tipLabel: "Layers"});
 map.addControl(layerSwitcher);"""
-            if settings["Appearance"]["Add layers list"] == "Expanded":
+            if addLayersList == "Expanded":
                 layersList += """
 layerSwitcher.hidePanel = function() {};
 layerSwitcher.showPanel();
@@ -140,19 +148,11 @@ layerSwitcher.showPanel();
     }}
     </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
-        geolocateUser = settings["Appearance"]["Geolocate user"]
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
-        mapbounds = bounds(iface,
-                           extent == "Canvas extent",
-                           layers,
-                           settings["Appearance"]["Match project CRS"])
+        mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
         mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
-        maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
-        minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
-        popupsOnHover = settings["Appearance"]["Show popups on hover"]
-        highlightFeatures = settings["Appearance"]["Highlight on hover"]
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
@@ -160,7 +160,7 @@ layerSwitcher.showPanel();
         proj = ""
         view = "%s maxZoom: %d, minZoom: %d" % (
             mapextent, maxZoom, minZoom)
-        if settings["Appearance"]["Match project CRS"]:
+        if matchCRS:
             proj4 = """
 <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
             proj4 += "</script>"
@@ -170,11 +170,11 @@ layerSwitcher.showPanel();
                     defn=mapSettings.destinationCrs().toProj4())
             view += ", projection: '%s'" % (
                 mapSettings.destinationCrs().authid())
-        if settings["Appearance"]["Measure tool"] != "None":
+        if measureTool != "None":
             measureControl = measureControlScript()
             measuring = measuringScript()
             measure = measureScript()
-            if settings["Appearance"]["Measure tool"] == "Imperial":
+            if measureTool == "Imperial":
                 measureUnit = measureUnitFeetScript()
             else:
                 measureUnit = measureUnitMetricScript()
@@ -188,7 +188,6 @@ layerSwitcher.showPanel();
             measureStyle = ""
         geolocateHead = geolocationHead(geolocateUser)
         geolocate = geolocation(geolocateUser)
-        geocode = settings["Appearance"]["Add address search"]
         geocodingLinks = geocodeLinks(geocode)
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
@@ -207,7 +206,7 @@ layerSwitcher.showPanel();
         height: 21px!important;
     }
     </style>""" % geocodePos
-        if settings["Appearance"]["Geolocate user"]:
+        if geolocateUser:
             extracss += """
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
             extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
@@ -258,7 +257,7 @@ layerSwitcher.showPanel();
                   "@LEAFLET_CLUSTERCSS@": "",
                   "@LEAFLET_CLUSTERJS@": ""}
         with open(os.path.join(folder, "index.html"), "w") as f:
-            htmlTemplate = settings["Appearance"]["Template"]
+            htmlTemplate = htmlTemplate
             if htmlTemplate == "":
                 htmlTemplate = "basic"
             templateOutput = replaceInTemplate(

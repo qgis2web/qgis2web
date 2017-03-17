@@ -4,7 +4,7 @@ from PyQt4.QtCore import QDir
 from utils import safeName
 
 
-def writeFiles(settings, folder, restrictToExtent):
+def writeFiles(folder, restrictToExtent):
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
     dst = os.path.join(folder, "resources")
