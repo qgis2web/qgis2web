@@ -38,6 +38,10 @@ from qgis.core import (QgsProject,
                        QgsSimpleLineSymbolLayerV2,
                        QgsSimpleFillSymbolLayerV2,
                        QgsPalLayerSettings,
+                       QgsDataSourceURI,
+                       QgsRenderContext,
+                       QgsRectangle,
+                       QgsCsException,
                        QgsMessageLog)
 from utils import (exportLayers, safeName, replaceInTemplate,
                    is25d, getRGBAColor, ALL_ATTRIBUTES, BLEND_MODES)
@@ -461,11 +465,15 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 renderer.stopRender(renderContext)
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
-osmb.set(geojson_{sln});""".format(shadows=shadows, sln=safeName(layer.name()))
+osmb.set(geojson_{sln}{count});""".format(shadows=shadows,
+                                          sln=safeName(layer.name()),
+                                          count=unicode(count))
             else:
                 mapLayers.append("lyr_" + safeName(layer.name()) +
                                  unicode(count))
         except:
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+                                     level=QgsMessageLog.CRITICAL)
             mapLayers.append("lyr_" + safeName(layer.name()) + unicode(count))
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
