@@ -142,11 +142,11 @@ layerSwitcher.showPanel();
         pageTitle = project.title()
         mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = """
-    <style>
-    html, body {{
-        background-color: {bgcol};
-    }}
-    </style>
+        <style>
+        html, body {{
+            background-color: {bgcol};
+        }}
+        </style>
 """.format(bgcol=mapSettings.backgroundColor().name())
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
@@ -192,40 +192,40 @@ layerSwitcher.showPanel();
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
         extracss = """
-    <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
-    <link rel="stylesheet" href="./resources/qgis2web.css">"""
+        <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
+        <link rel="stylesheet" href="./resources/qgis2web.css">"""
         if geocode:
             geocodePos = 65 + (controlCount * 35)
             extracss += """
-    <style>
-    .ol-geocoder.gcd-gl-container {
-        top: %dpx!important;
-    }
-    .ol-geocoder .gcd-gl-btn {
-        width: 21px!important;
-        height: 21px!important;
-    }
-    </style>""" % geocodePos
+        <style>
+        .ol-geocoder.gcd-gl-container {
+            top: %dpx!important;
+        }
+        .ol-geocoder .gcd-gl-btn {
+            width: 21px!important;
+            height: 21px!important;
+        }
+        </style>""" % geocodePos
         if geolocateUser:
             extracss += """
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
             extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
         ol3layerswitcher = """
-    <script src="./resources/ol3-layerswitcher.js"></script>"""
+        <script src="./resources/ol3-layerswitcher.js"></script>"""
         ol3popup = """<div id="popup" class="ol-popup">
-            <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-            <div id="popup-content"></div>
-        </div>"""
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>"""
         ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
-    <script src="./resources/Autolinker.min.js"></script>"""
+        <script src="./resources/Autolinker.min.js"></script>"""
         if osmb != "":
             ol3qgis2webjs += """
-    <script>{osmb}</script>""".format(osmb=osmb)
+        <script>{osmb}</script>""".format(osmb=osmb)
         ol3layers = """
-    <script src="./layers/layers.js" type="text/javascript"></script>"""
+        <script src="./layers/layers.js" type="text/javascript"></script>"""
         mapSize = iface.mapCanvas().size()
         exp_js = """
-    <script src="resources/qgis2web_expressions.js"></script>"""
+        <script src="resources/qgis2web_expressions.js"></script>"""
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
