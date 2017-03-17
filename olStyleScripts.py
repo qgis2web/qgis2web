@@ -17,6 +17,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMessageLog)
 from utils import safeName, getRGBAColor
 
+
 def exportStyles(layers, folder, clustered):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
