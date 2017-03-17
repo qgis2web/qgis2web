@@ -58,7 +58,6 @@ from olScriptStrings import (measureScript,
                              measureUnitMetricScript,
                              measureUnitFeetScript,
                              measureStyleScript)
-from basemaps import basemapOL
 from writer import (Writer,
                     translator)
 

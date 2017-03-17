@@ -3,11 +3,15 @@ import os
 import codecs
 
 from qgis.core import (QgsRenderContext,
+                       QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
                        QgsHeatmapRenderer,
+                       QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransform,
                        QgsMessageLog)
 from utils import safeName, is25d, BLEND_MODES
+from basemaps import basemapOL
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
