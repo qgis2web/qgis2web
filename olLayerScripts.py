@@ -1,6 +1,7 @@
 import traceback
 import os
 import codecs
+from urlparse import parse_qs
 
 from qgis.core import (QgsRenderContext,
                        QgsSingleSymbolRendererV2,
