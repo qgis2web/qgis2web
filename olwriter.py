@@ -53,6 +53,7 @@ from olStyleScripts import exportStyles
 from writer import (Writer,
                     WriterResult,
                     translator)
+from feedbackDialog import Feedback
 
 
 class OpenLayersWriter(Writer):
@@ -73,7 +74,12 @@ class OpenLayersWriter(Writer):
     def name(cls):
         return QObject.tr(translator, 'OpenLayers')
 
-    def write(self, iface, dest_folder):
+    def write(self, iface, dest_folder, feedback=None):
+        if not feedback:
+            feedback = Feedback()
+
+        feedback.showFeedback('Creating OpenLayers map...')
+
         self.preview_file = self.writeOL(iface, layers=self.layers,
                                          groups=self.groups,
                                          popup=self.popup,

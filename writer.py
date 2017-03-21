@@ -73,11 +73,12 @@ class Writer(object):
         """
         return ''
 
-    def write(self, iface, dest_folder):
+    def write(self, iface, dest_folder, feedback=None):
         """
         Writes the web map output for a specified configuation.
         :param iface: QGIS interface
         :param dest_folder destination folder for writing
+        :param feedback optional feedback object
         :return: WriterResult object
         """
         return WriterResult()

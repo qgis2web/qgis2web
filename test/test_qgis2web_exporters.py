@@ -237,6 +237,7 @@ class qgis2web_exporterTest(unittest.TestCase):
 
         result = WriterResult()
         result.index_file = out_file
+        result.folder = export_folder
         e.postProcess(result)
 
         expected_index_file = os.path.join(
@@ -250,6 +251,7 @@ class qgis2web_exporterTest(unittest.TestCase):
             i.write('test2')
         result = WriterResult()
         result.index_file = out_file
+        result.folder = export_folder
         e.postProcess(result)
         self.assertTrue(expected_index_file)
         content = open(expected_index_file, 'r').readlines()
@@ -282,6 +284,7 @@ class qgis2web_exporterTest(unittest.TestCase):
 
         result = WriterResult()
         result.index_file = out_file
+        result.folder = export_folder
         e.postProcess(result)
 
         expected_index_file = os.path.join(

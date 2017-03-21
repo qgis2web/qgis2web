@@ -21,18 +21,21 @@ from datetime import datetime
 import ftplib
 
 from qgis.core import (QgsProject)
-from PyQt4.QtCore import (QObject)
+from PyQt4.QtCore import (QObject,
+                          QCoreApplication)
 from PyQt4.QtGui import (QFileDialog,
                          QInputDialog,
                          QDialog,
                          QLineEdit)
 from utils import (tempFolder)
 from ui_ftp_configuration import Ui_FtpConfiguration
+from feedbackDialog import Feedback
 
 translator = QObject()
 
 
 class Exporter(QObject):
+
     """
     Generic base class for web map exporters
     """
@@ -69,13 +72,15 @@ class Exporter(QObject):
         """
         return ''
 
-    def postProcess(self, results):
+    def postProcess(self, results, feedback=None):
         """
         Called after HTML output is created and written
         to the exportDirectory(). Can be used to perform
         steps such as uploading the exported files to a remote
         location.
         :param results: WriterResults from Writer generation
+        :param feedback: optional feedback object for progress reports
+        Returns True if processing was successful
         """
         pass
 
@@ -100,6 +105,7 @@ class Exporter(QObject):
 
 
 class FolderExporter(Exporter):
+
     """
     Exporter for writing web map to a folder
     """
@@ -129,8 +135,12 @@ class FolderExporter(Exporter):
     def exportDirectory(self):
         return self.folder
 
-    def postProcess(self, results):
+    def postProcess(self, results, feedback=None):
+        if not feedback:
+            feedback = Feedback()
         self.export_file = results.index_file
+        feedback.setCompleted('Exported to {}'.format(self.folder))
+        return True
 
     def destinationUrl(self):
         return self.export_file
@@ -148,6 +158,7 @@ class FolderExporter(Exporter):
 
 
 class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
+
     """
     A dialog for configuring FTP connection details such as host
     and username
@@ -211,6 +222,7 @@ class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
 
 
 class FtpExporter(Exporter):
+
     """
     Exporter for writing web map to an FTP site
     """
@@ -254,8 +266,12 @@ class FtpExporter(Exporter):
     def exportDirectory(self):
         return self.temp_folder
 
-    def postProcess(self, results):
+    def postProcess(self, results, feedback=None):
+        if not feedback:
+            feedback = Feedback()
+
         self.export_file = results.index_file
+        file_count = max(len(results.files), 1)
 
         # generate a new temp_folder for next export
         self.temp_folder = self.newTempFolder(tempFolder())
@@ -263,7 +279,7 @@ class FtpExporter(Exporter):
         source_folder = results.folder
 
         if not self.host or not self.username or not self.port:
-            return
+            return False
 
         # get password
         password = self.password
@@ -271,11 +287,33 @@ class FtpExporter(Exporter):
             password, ok = QInputDialog.getText(
                 None, 'Enter FTP password', 'Password', QLineEdit.Password)
             if not password or not ok:
-                return
+                feedback.setFatalError('User cancelled')
+                return False
+
+        feedback.showFeedback(
+            'Connecting to {} on port {}...'.format(self.host, self.port))
 
         ftp = ftplib.FTP()
-        ftp.connect(self.host, self.port)
-        ftp.login(self.username, password)
+        try:
+            ftp.connect(self.host, self.port)
+        except:
+            feedback.setFatalError('Could not connect to server!')
+            return False
+
+        feedback.showFeedback('Connected!')
+        feedback.showFeedback('Logging in as {}...'.format(self.username))
+        if feedback.cancelled():
+            feedback.acceptCancel()
+            return False
+
+        try:
+            ftp.login(self.username, password)
+        except:
+            feedback.setFatalError(
+                'Login failed for user {}!'.format(self.username))
+            return False
+
+        feedback.showFeedback('Logged in to {}'.format(self.host))
 
         def cwd_and_create(p):
             """
@@ -290,29 +328,53 @@ class FtpExporter(Exporter):
                 parent, base = os.path.split(p)
                 cwd_and_create(parent)
                 if base:
+                    feedback.showFeedback('Creating {}'.format(base))
                     ftp.mkd(base)
                     ftp.cwd(base)
 
         cwd_and_create(self.remote_folder)
 
+        feedback.uploaded_count = 0.0
+
         def uploadPath(path):
+            if feedback.cancelled():
+                feedback.acceptCancel()
+                return False
+
             files = os.listdir(path)
             os.chdir(path)
             for f in files:
+                if feedback.cancelled():
+                    feedback.acceptCancel()
+                    return False
                 current_path = os.path.join(path, f)
                 if os.path.isfile(current_path):
+                    feedback.showFeedback('Uploading {}'.format(f))
                     fh = open(f, 'rb')
                     ftp.storbinary('STOR %s' % f, fh)
                     fh.close()
+                    feedback.uploaded_count += 1
+                    feedback.setProgress(
+                        100 * feedback.uploaded_count / file_count)
                 elif os.path.isdir(current_path):
-                    ftp.mkd(f)
+                    feedback.showFeedback('Creating folder {}'.format(f))
+                    try:
+                        ftp.mkd(f)
+                    except:
+                        pass
                     ftp.cwd(f)
-                    uploadPath(current_path)
+                    if not uploadPath(current_path):
+                        return False
             ftp.cwd('..')
             os.chdir('..')
+            return True
 
-        uploadPath(os.path.join('.', source_folder))
+        if not uploadPath(os.path.join('.', source_folder)):
+            return False
+
+        feedback.setCompleted('Upload complete!')
         ftp.close()
+        return True
 
     def destinationUrl(self):
         return self.export_file
@@ -351,6 +413,7 @@ class FtpExporter(Exporter):
 
 
 class ExporterRegistry(QObject):
+
     """
     Registry for managing the available exporter options.
     This is not usually created directly but instead accessed

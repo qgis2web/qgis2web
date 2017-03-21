@@ -59,6 +59,7 @@ from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
                     WriterResult,
                     translator)
+from feedbackDialog import Feedback
 
 
 class LeafletWriter(Writer):
@@ -79,7 +80,11 @@ class LeafletWriter(Writer):
     def name(cls):
         return QObject.tr(translator, 'Leaflet')
 
-    def write(self, iface, dest_folder):
+    def write(self, iface, dest_folder, feedback=None):
+        if not feedback:
+            feedback = Feedback()
+
+        feedback.showFeedback('Creating Leaflet map...')
         self.preview_file = self.writeLeaflet(iface, layer_list=self.layers,
                                               popup=self.popup,
                                               visible=self.visible,

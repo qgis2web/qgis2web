@@ -48,7 +48,7 @@ PY_FILES = \
 	qgis2web_mod_dialog.py \
 	__init__.py
 
-UI_FILES = qgis2web_mod_dialog_base.ui ui_ftp_configuration.ui
+UI_FILES = qgis2web_mod_dialog_base.ui ui_ftp_configuration.ui ui_feedback_dialog.ui
 
 EXTRAS = icon.png metadata.txt
 
