@@ -56,7 +56,8 @@ from leafletScriptStrings import (jsonScript,
                                   highlightScript,
                                   crsScript,
                                   scaleBar,
-                                  scaleDependentScript)
+                                  scaleDependentScript,
+                                  titleSubScript)
 from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
 from writer import (Writer,
                     WriterResult,
