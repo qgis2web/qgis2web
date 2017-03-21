@@ -51,7 +51,9 @@ from olScriptStrings import (measureScript,
                              geocodeScript)
 from olStyleScripts import exportStyles
 from writer import (Writer,
+                    WriterResult,
                     translator)
+from feedbackDialog import Feedback
 
 
 class OpenLayersWriter(Writer):
@@ -72,7 +74,12 @@ class OpenLayersWriter(Writer):
     def name(cls):
         return QObject.tr(translator, 'OpenLayers')
 
-    def write(self, iface, dest_folder):
+    def write(self, iface, dest_folder, feedback=None):
+        if not feedback:
+            feedback = Feedback()
+
+        feedback.showFeedback('Creating OpenLayers map...')
+
         self.preview_file = self.writeOL(iface, layers=self.layers,
                                          groups=self.groups,
                                          popup=self.popup,
@@ -81,7 +88,12 @@ class OpenLayersWriter(Writer):
                                          clustered=self.cluster,
                                          settings=self.params,
                                          folder=dest_folder)
-        return self.preview_file
+        result = WriterResult()
+        result.index_file = self.preview_file
+        result.folder = os.path.dirname(self.preview_file)
+        for dirpath, dirnames, filenames in os.walk(result.folder):
+            result.files.extend([os.path.join(dirpath, f) for f in filenames])
+        return result
 
     @classmethod
     def writeOL(cls, iface, layers, groups, popup, visible,

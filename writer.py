@@ -21,6 +21,17 @@ from PyQt4.QtCore import (QObject)
 translator = QObject()
 
 
+class WriterResult(object):
+    """
+    Stores results of a writer operation
+    """
+
+    def __init__(self):
+        self.index_file = None
+        self.folder = None
+        self.files = []
+
+
 class Writer(object):
 
     """
@@ -62,11 +73,12 @@ class Writer(object):
         """
         return ''
 
-    def write(self, iface, dest_folder):
+    def write(self, iface, dest_folder, feedback=None):
         """
         Writes the web map output for a specified configuation.
         :param iface: QGIS interface
         :param dest_folder destination folder for writing
-        :return: Main index file for web map
+        :param feedback optional feedback object
+        :return: WriterResult object
         """
-        return ''
+        return WriterResult()

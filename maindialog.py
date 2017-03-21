@@ -71,6 +71,7 @@ from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
 from writerRegistry import (WRITER_REGISTRY)
 from exporter import (EXPORTER_REGISTRY)
+from feedbackDialog import FeedbackDialog
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -88,6 +89,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.previewUrl = None
         self.layer_search_combo = None
         self.exporter_combo = None
+
+        self.feedback = FeedbackDialog(self)
+        self.feedback.setModal(True)
 
         stgs = QSettings()
 
@@ -260,7 +264,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def createPreview(self):
         writer = self.createWriter()
         return writer.write(self.iface,
-                            dest_folder=utils.tempFolder())
+                            dest_folder=utils.tempFolder()).index_file
 
     def shouldAutoPreview(self):
         """
@@ -312,11 +316,15 @@ class MainDialog(QDialog, Ui_MainDialog):
         if not write_folder:
             return
 
-        outputFile = writer.write(self.iface,
-                                  dest_folder=write_folder)
-        self.exporter.postProcess(outputFile)
-        if (not os.environ.get('CI') and
-                not os.environ.get('TRAVIS')):
+        self.feedback.reset()
+        self.feedback.show()
+        results = writer.write(self.iface,
+                               dest_folder=write_folder,
+                               feedback=self.feedback)
+        self.feedback.showFeedback('Web map created.')
+        result = self.exporter.postProcess(results, feedback=self.feedback)
+        if result and (not os.environ.get('CI') and
+                       not os.environ.get('TRAVIS')):
             webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def populate_layers_and_groups(self, dlg):

@@ -83,6 +83,52 @@ class qgis2web_WriterTest(unittest.TestCase):
                 'Show popups on hover': False
         }}
 
+    def test01_LeafletWriterResults(self):
+        """ Test writer results from a leaflet writer"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        layer = load_layer(layer_path)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+             ('USE', 'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder())
+        self.assertTrue(result.index_file)
+        self.assertTrue(len(result.files)>1)
+        self.assertTrue(result.folder)
+
+    def test02_OpenLayersWriterResults(self):
+        """ Test writer results from a OL writer"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        layer = load_layer(layer_path)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        writer = OpenLayersWriter()
+        writer.params = self.defaultParams()
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+             ('USE', 'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder())
+        self.assertTrue(result.index_file)
+        self.assertTrue(len(result.files) > 1)
+        self.assertTrue(result.folder)
+
     def test09_Leaflet_json_pnt_single(self):
         """Leaflet JSON point single"""
         layer_path = test_data_path('layer', 'airports.shp')
@@ -112,7 +158,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              ('USE', 'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -148,7 +194,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -182,7 +228,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -216,7 +262,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -248,7 +294,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -283,7 +329,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -318,7 +364,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              ('USE', 'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
         self.assertEqual(
@@ -350,7 +396,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -384,7 +430,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'F_CODEDESC', u'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -418,7 +464,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -452,7 +498,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -487,7 +533,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -521,7 +567,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
         self.assertEqual(
@@ -554,7 +600,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -587,7 +633,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -622,7 +668,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -657,7 +703,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -694,7 +740,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
         self.assertEqual(
@@ -726,7 +772,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -767,7 +813,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'F_CODEDESC', u'no label')])]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -809,7 +855,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -851,7 +897,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -893,7 +939,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -934,7 +980,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -974,7 +1020,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -1014,7 +1060,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -1054,7 +1100,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
 
@@ -1089,7 +1135,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
         test_qgis2web_output = read_output(result, 'resources/qgis2web.js')
         assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
 
@@ -1119,7 +1165,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         test_layers_output = read_output(result, 'layers/layers.js')
         assert "'type': 'base'" in test_layers_output
@@ -1146,14 +1192,14 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         test_layers_output = read_output(result, 'layers/layers.js')
         assert "new ol.layer.Group" not in test_layers_output
 
         # with base maps
         writer.params['Appearance']['Base layer'] = ['OSM']
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         test_layers_output = read_output(result, 'layers/layers.js')
         assert "new ol.layer.Group" in test_layers_output
@@ -1189,7 +1235,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1232,7 +1278,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Reset scale bar setting
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", False)
@@ -1272,7 +1318,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1306,7 +1352,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1361,7 +1407,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1395,7 +1441,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1449,7 +1495,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1483,7 +1529,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1525,7 +1571,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1560,7 +1606,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1605,7 +1651,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1641,7 +1687,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1697,7 +1743,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1735,7 +1781,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1769,7 +1815,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1811,7 +1857,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -1844,7 +1890,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1884,7 +1930,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1924,7 +1970,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -1967,7 +2013,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -2006,7 +2052,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -2043,7 +2089,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2083,7 +2129,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2120,7 +2166,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_file = open(result)
@@ -2153,7 +2199,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2193,7 +2239,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2231,7 +2277,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2271,7 +2317,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2309,7 +2355,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2349,7 +2395,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -2379,7 +2425,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2418,7 +2464,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         ]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2453,7 +2499,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict()]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(
@@ -2491,7 +2537,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict()]
         writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder())
+        result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
             test_data_path(

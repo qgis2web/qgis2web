@@ -45,6 +45,7 @@ from exporter import (FolderExporter,
                       FtpExporter,
                       FtpConfigurationDialog,
                       EXPORTER_REGISTRY)
+from writer import (WriterResult)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
@@ -132,7 +133,9 @@ class qgis2web_exporterTest(unittest.TestCase):
     def test02_FolderExporterPostProcess(self):
         """Test folder exporter post processing"""
         e = FolderExporter()
-        e.postProcess('/tmp/file.htm')
+        result = WriterResult()
+        result.index_file = '/tmp/file.htm'
+        e.postProcess(result)
         self.assertEqual(e.destinationUrl(), '/tmp/file.htm')
 
     def test03_FolderExporterSaveReadFromProject(self):
@@ -209,7 +212,9 @@ class qgis2web_exporterTest(unittest.TestCase):
         self.assertTrue(e.exportDirectory())
         prev_folder = e.exportDirectory()
 
-        e.postProcess('')
+        result = WriterResult()
+        result.index_file = ''
+        e.postProcess(result)
         # a new export folder should be generated to avoid outdated files
         self.assertNotEqual(e.exportDirectory(), prev_folder)
 
@@ -230,7 +235,10 @@ class qgis2web_exporterTest(unittest.TestCase):
         with open(out_file, 'w') as i:
             i.write('test')
 
-        e.postProcess(out_file)
+        result = WriterResult()
+        result.index_file = out_file
+        result.folder = export_folder
+        e.postProcess(result)
 
         expected_index_file = os.path.join(
             FTP_USER_FOLDER, 'public_html', 'index.html')
@@ -241,7 +249,10 @@ class qgis2web_exporterTest(unittest.TestCase):
         # try overwriting existing file
         with open(out_file, 'w') as i:
             i.write('test2')
-        e.postProcess(out_file)
+        result = WriterResult()
+        result.index_file = out_file
+        result.folder = export_folder
+        e.postProcess(result)
         self.assertTrue(expected_index_file)
         content = open(expected_index_file, 'r').readlines()
         self.assertEqual(content, ['test2'])
@@ -271,7 +282,10 @@ class qgis2web_exporterTest(unittest.TestCase):
         with open(sub_folder_out_file, 'w') as i:
             i.write('test2')
 
-        e.postProcess(out_file)
+        result = WriterResult()
+        result.index_file = out_file
+        result.folder = export_folder
+        e.postProcess(result)
 
         expected_index_file = os.path.join(
             FTP_USER_FOLDER, 'public_html', 'index.html')
