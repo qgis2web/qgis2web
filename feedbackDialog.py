@@ -125,6 +125,7 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(True)
         self.messages = []
+        self.progressBar.setRange(0, 0)
 
     def pushHtml(self, html):
         self.messages.append(html)
