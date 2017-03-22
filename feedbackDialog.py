@@ -129,6 +129,7 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
     def pushHtml(self, html):
         self.messages.append(html)
         self.feedbackText.document().setHtml('<br/>'.join(self.messages))
+        self.processEvents()
         self.feedbackText.verticalScrollBar().setValue(
             self.feedbackText.verticalScrollBar().maximum())
         self.processEvents()
