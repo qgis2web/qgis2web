@@ -125,10 +125,12 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(True)
         self.messages = []
+        self.progressBar.setRange(0, 0)
 
     def pushHtml(self, html):
         self.messages.append(html)
         self.feedbackText.document().setHtml('<br/>'.join(self.messages))
+        self.processEvents()
         self.feedbackText.verticalScrollBar().setValue(
             self.feedbackText.verticalScrollBar().maximum())
         self.processEvents()
