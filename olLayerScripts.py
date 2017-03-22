@@ -4,6 +4,7 @@ import os
 import codecs
 from urlparse import parse_qs
 
+from PyQt4.QtCore import QCoreApplication
 from qgis.core import (QgsRenderContext,
                        QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
