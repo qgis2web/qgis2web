@@ -242,7 +242,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
                                  layerName + "_" + safeLabel + ".png"))
     catLegend += """<tr><td style="text-align: center;"><img src="legend/"""
     catLegend += layerName + "_" + safeLabel + """.png" /></td><td>"""
-    catLegend += catr.label() + "</td></tr>"
+    catLegend += catr.label().replace("'", "\\'") + "</td></tr>"
     return catLegend
 
 

@@ -514,7 +514,7 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
 def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
                      usedFields, legends, labeltext, cluster, json, wfsLayers,
                      markerType):
-    catLegend = layer.name() + "<br />"
+    catLegend = layer.name().replace("'", "\\'") + "<br />"
     catLegend += "<table>"
     categories = renderer.categories()
     for cnt, cat in enumerate(categories):
