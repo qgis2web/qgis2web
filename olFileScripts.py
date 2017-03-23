@@ -1,6 +1,7 @@
 import os
 import shutil
 from PyQt4.QtCore import QDir
+from qgis.core import QgsDataSourceURI
 from utils import safeName
 
 

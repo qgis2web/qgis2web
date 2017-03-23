@@ -2,7 +2,7 @@ import os
 import codecs
 import math
 import traceback
-from PyQt4.QtCore import (QDir)
+from PyQt4.QtCore import QDir
 from qgis.core import (QgsVectorLayer,
                        QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,

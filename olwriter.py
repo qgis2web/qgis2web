@@ -23,11 +23,9 @@ import xml.etree.ElementTree
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
-                       QgsDataSourceURI,
                        QgsRectangle,
-                       QgsCsException,
-                       QgsMessageLog)
-from utils import (exportLayers, replaceInTemplate, is25d, ALL_ATTRIBUTES)
+                       QgsCsException)
+from utils import (exportLayers, replaceInTemplate)
 from qgis.utils import iface
 from PyQt4.QtCore import Qt
 from PyQt4.QtCore import QObject
