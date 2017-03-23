@@ -15,6 +15,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsSimpleFillSymbolLayerV2,
                        QgsPalLayerSettings,
                        QgsMessageLog)
+from exp2js import compile_to_file
 from utils import safeName, getRGBAColor
 
 

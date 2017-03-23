@@ -28,7 +28,6 @@ from qgis.core import (QgsProject,
                        QgsCsException,
                        QgsMessageLog)
 from utils import (exportLayers, replaceInTemplate, is25d, ALL_ATTRIBUTES)
-from exp2js import compile_to_file
 from qgis.utils import iface
 from PyQt4.QtCore import Qt
 from PyQt4.QtCore import QObject
