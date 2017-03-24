@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.8
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=2.11.0
+version=2.12.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/03/22 2.11.0 Feedback object, dialog, and progress bar (thanks, @nyalldawson!), Leaflet refactor, OL refactor, remove star imports, escape Leaflet layers list
+changelog=2017/03/24 2.12.0 Feedback for Leaflet JSON export (thanks, @boesiii!), fix missing imports
+    2017/03/22 2.11.0 Feedback object, dialog, and progress bar (thanks, @nyalldawson!), Leaflet refactor, OL refactor, remove star imports, escape Leaflet layers list
     2017/03/15 2.10.0 Disable auto-preview if layer > 1000 features (thanks, @nyalldawson!), upgrade Leaflet.Draw to fix measure, fix Pylint test, WMTS
     2017/03/13 2.9.0 Collapsed/expanded layers list (thanks, @walkermatt!), more expression functions, handle switch in config datatype
     2017/03/10 2.8.0 Refactor save/restore settings (thanks, @nyalldawson!), escape category strings, Leaflet simple line, Leaflet no brush, Leaflet fill opacity, OL overlapping controls, combine layer and colour alpha, Leaflet scale-dependent label visibility
