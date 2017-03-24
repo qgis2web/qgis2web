@@ -168,7 +168,7 @@ class LeafletWriter(Writer):
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
                     feedback.showFeedback('Export Layer %s to JSON...' %
-                                            layer.name())
+                                          layer.name())
                     exportJSONLayer(layer, eachPopup, precision, tmpFileName,
                                     exp_crs, layerFileName,
                                     safeLayerName, minify, canvas,
