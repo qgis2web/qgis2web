@@ -47,6 +47,7 @@ import tempfile
 import json
 import traceback
 
+
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
 
@@ -162,7 +163,7 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
     return newlayer
 
 
-def exportLayers(iface, layers, folder, precision, optimize,
+def exportLayers(iface, feedback, layers, folder, precision, optimize,
                  popupField, json, restrictToExtent, extent):
     canvas = iface.mapCanvas()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
@@ -174,6 +175,8 @@ def exportLayers(iface, layers, folder, precision, optimize,
                 (layer.providerType() != "WFS" or encode2json)):
             cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
                                        iface, extent)
+            feedback.showFeedback('Exporting Layer ' + layer.name() + ' to JSON...')
+            print 'ol feedback'
             fields = layer.pendingFields()
             for field in fields:
                 exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
@@ -252,7 +255,8 @@ def exportLayers(iface, layers, folder, precision, optimize,
 
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
-
+            
+            feedback.showFeedback('Exporting Raster Layer ' + layer.name())
             name_ts = (safeName(layer.name()) + unicode(count) +
                        unicode(int(time.time())))
 

@@ -76,7 +76,9 @@ class OpenLayersWriter(Writer):
 
         feedback.showFeedback('Creating OpenLayers map...')
 
-        self.preview_file = self.writeOL(iface, layers=self.layers,
+        self.preview_file = self.writeOL(iface, 
+                                         feedback,        
+                                         layers=self.layers,
                                          groups=self.groups,
                                          popup=self.popup,
                                          visible=self.visible,
@@ -92,7 +94,7 @@ class OpenLayersWriter(Writer):
         return result
 
     @classmethod
-    def writeOL(cls, iface, layers, groups, popup, visible,
+    def writeOL(cls, iface, feedback, layers, groups, popup, visible,
                 json, clustered, settings, folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         controlCount = 0
@@ -117,7 +119,7 @@ class OpenLayersWriter(Writer):
         mapLibLocn = settings["Data export"]["Mapping library location"]
 
         writeFiles(folder, restrictToExtent)
-        exportLayers(iface, layers, folder, precision,
+        exportLayers(iface, feedback, layers, folder, precision,
                      optimize, popup, json, restrictToExtent, extent)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
