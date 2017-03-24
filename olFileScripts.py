@@ -1,3 +1,4 @@
+import re
 import os
 import shutil
 from PyQt4.QtCore import QDir
@@ -5,7 +6,8 @@ from qgis.core import QgsDataSourceURI
 from utils import safeName
 
 
-def writeFiles(folder, restrictToExtent):
+def writeFiles(folder, restrictToExtent, feedback):
+    feedback.showFeedback("Exporting libraries...")
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
     dst = os.path.join(folder, "resources")
@@ -13,10 +15,12 @@ def writeFiles(folder, restrictToExtent):
         shutil.copytree(os.path.join(os.path.dirname(__file__),
                                      "resources"),
                         dst)
+    feedback.completeStep()
 
 
 def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
-                   layerSearch, searchLayer):
+                   layerSearch, searchLayer, feedback):
+    feedback.showFeedback("Writing HTML...")
     jsAddress = '<script src="resources/polyfills.js"></script>'
     if mapLibLocn == "Local":
         cssAddress = """<link rel="stylesheet" """
@@ -58,10 +62,11 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
     if osmb != "":
         jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
+    feedback.completeStep()
     return (jsAddress, cssAddress, layerSearch, controlCount)
 
 
-def writeScriptIncludes(layers, json):
+def writeScriptIncludes(layers, json, matchCRS):
     geojsonVars = ""
     wfsVars = ""
     styleVars = ""

@@ -76,7 +76,8 @@ class OpenLayersWriter(Writer):
 
         feedback.showFeedback('Creating OpenLayers map...')
 
-        self.preview_file = self.writeOL(iface, layers=self.layers,
+        self.preview_file = self.writeOL(iface, feedback,
+                                         layers=self.layers,
                                          groups=self.groups,
                                          popup=self.popup,
                                          visible=self.visible,
@@ -92,7 +93,7 @@ class OpenLayersWriter(Writer):
         return result
 
     @classmethod
-    def writeOL(cls, iface, layers, groups, popup, visible,
+    def writeOL(cls, iface, feedback, layers, groups, popup, visible,
                 json, clustered, settings, folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         controlCount = 0
@@ -116,7 +117,7 @@ class OpenLayersWriter(Writer):
         searchLayer = settings["Appearance"]["Search layer"]
         mapLibLocn = settings["Data export"]["Mapping library location"]
 
-        writeFiles(folder, restrictToExtent)
+        writeFiles(folder, restrictToExtent, feedback)
         exportLayers(iface, layers, folder, precision,
                      optimize, popup, json, restrictToExtent, extent)
         exportStyles(layers, folder, clustered)
@@ -125,9 +126,10 @@ class OpenLayersWriter(Writer):
                                     iface, restrictToExtent, extent)
         (jsAddress, cssAddress, layerSearch,
          controlCount) = writeHTMLstart(settings, controlCount, osmb,
-                                        mapLibLocn, layerSearch, searchLayer)
+                                        mapLibLocn, layerSearch, searchLayer,
+                                        feedback)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
-                                                                json)
+                                                                json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
             ['1' for field in popup])
         controls = ['expandedAttribution']

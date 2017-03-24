@@ -321,7 +321,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         results = writer.write(self.iface,
                                dest_folder=write_folder,
                                feedback=self.feedback)
-        self.feedback.showFeedback('Web map created.')
+        self.feedback.showFeedback('Success')
         result = self.exporter.postProcess(results, feedback=self.feedback)
         if result and (not os.environ.get('CI') and
                        not os.environ.get('TRAVIS')):

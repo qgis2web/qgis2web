@@ -142,13 +142,13 @@ class LeafletWriter(Writer):
 
         QgsApplication.initQgis()
 
-        dataStore, cssStore = writeFoldersAndFiles(pluginDir,
+        dataStore, cssStore = writeFoldersAndFiles(pluginDir, feedback,
                                                    outputProjectFileName,
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
                                                    canvas, mapLibLocation,
                                                    addressSearch, locate)
-        writeCSS(cssStore, mapSettings.backgroundColor().name())
+        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback)
 
         wfsLayers = ""
         scaleDependentLayers = ""
@@ -167,7 +167,7 @@ class LeafletWriter(Writer):
             layerFileName = dataPath + '.js'
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
-                    feedback.showFeedback('Export Layer %s to JSON...' %
+                    feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
                     exportJSONLayer(layer, eachPopup, precision, tmpFileName,
                                     exp_crs, layerFileName,
@@ -177,6 +177,7 @@ class LeafletWriter(Writer):
                     scaleDependentLayers =\
                         scaleDependentLabelScript(layer, safeLayerName)
                     labelVisibility += scaleDependentLayers
+                    feedback.completeStep()
 
                 elif layer.type() == QgsMapLayer.RasterLayer:
                     if layer.dataProvider().name() != "wms":
@@ -240,7 +241,7 @@ class LeafletWriter(Writer):
                                                visible[count], json[count],
                                                legends, new_src,
                                                canvas, count, restrictToExtent,
-                                               extent)
+                                               extent, feedback)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     new_obj = wmsScript(layer, safeLayerName)
@@ -277,7 +278,7 @@ class LeafletWriter(Writer):
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
                            measure, matchCRS, layerSearch, canvas,
-                           mapLibLocation, locate, new_src, template)
+                           mapLibLocation, locate, new_src, template, feedback)
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)

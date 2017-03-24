@@ -260,7 +260,8 @@ def exportRasterLayer(layer, safeLayerName, dataPath):
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
-                     restrictToExtent, extent):
+                     restrictToExtent, extent, feedback):
+    feedback.showFeedback("Writing layer %s..." % layer.name())
     zIndex = zIndex + 600
     markerFolder = os.path.join(outputProjectFileName, "markers")
     labeltext = getLabels(layer, safeLayerName, outputProjectFileName)
@@ -360,6 +361,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             else:
                 new_src += """
         cluster_""" + safeLayerName + """.addTo(map);"""
+    feedback.completeStep()
     return new_src, legends, wfsLayers
 
 

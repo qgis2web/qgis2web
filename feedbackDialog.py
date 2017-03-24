@@ -131,12 +131,21 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
         self.messages.append(html)
         self.feedbackText.document().setHtml('<br/>'.join(self.messages))
         self.processEvents()
-        self.feedbackText.verticalScrollBar().setValue(
-            self.feedbackText.verticalScrollBar().maximum())
+        scrollbar = self.feedbackText.verticalScrollBar()
+        scrollbar.setValue(scrollbar.maximum())
         self.processEvents()
 
     def showFeedback(self, feedback):
         self.pushHtml(feedback)
+        
+    def completeStep(self):
+        self.messages[-1] = self.messages[-1] + """
+            <span style="color: green">done</span>"""
+        self.feedbackText.document().setHtml('<br/>'.join(self.messages))
+        self.processEvents()
+        scrollbar = self.feedbackText.verticalScrollBar()
+        scrollbar.setValue(scrollbar.maximum())
+        self.processEvents()
 
     def setFatalError(self, error):
         self.progressBar.setRange(0, 100)
@@ -146,9 +155,10 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
 
     def setCompleted(self, feedback):
         self.setProgress(100)
-        self.pushHtml('<span style="color:green">{}</span>'.format(feedback))
+        self.pushHtml('<span style="color: green">{}</span>'.format(feedback))
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(False)
+        self.close()
 
     def setProgress(self, progress):
         if not self.progressBar.maximum() == 100:

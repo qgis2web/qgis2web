@@ -7,9 +7,10 @@ import codecs
 from utils import replaceInTemplate
 
 
-def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
-                         measure, matchCRS, layerSearch, canvas,
+def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
+                         cluster_set, measure, matchCRS, layerSearch, canvas,
                          mapLibLocation, address, locate):
+    feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -84,12 +85,14 @@ def writeFoldersAndFiles(pluginDir, outputProjectFileName, cluster_set,
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
         shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
         shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
+    feedback.completeStep()
     return dataStore, cssStore
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                   qgis2webJS, template):
+                   qgis2webJS, template, feedback):
+    feedback.showFeedback("Writing HTML...")
     if webpage_name == "":
         pass
     else:
@@ -201,9 +204,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         base = re.sub('\n[\s_]+\n', '\n', base)
         f.write(unicode(base))
         f.close()
+    feedback.completeStep()
 
 
-def writeCSS(cssStore, backgroundColor):
+def writeCSS(cssStore, backgroundColor, feedback):
+    feedback.showFeedback("Writing CSS...")
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
 #map {
@@ -241,3 +246,4 @@ th {
 }"""
         f_css.write(text)
         f_css.close()
+    feedback.completeStep()
