@@ -61,6 +61,12 @@ class Feedback(object):
         """
         pass
 
+    def completeStep(self):
+        """
+        Sets the previous message to completed
+        """
+        pass
+
     def setCompleted(self, text):
         """
         Sets the feedback to a "completed" message
@@ -137,7 +143,7 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
 
     def showFeedback(self, feedback):
         self.pushHtml(feedback)
-        
+
     def completeStep(self):
         self.messages[-1] = self.messages[-1] + """
             <span style="color: green">done</span>"""
