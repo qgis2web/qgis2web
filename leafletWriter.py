@@ -88,7 +88,8 @@ class LeafletWriter(Writer):
             feedback = Feedback()
 
         feedback.showFeedback('Creating Leaflet map...')
-        self.preview_file = self.writeLeaflet(iface, feedback, layer_list=self.layers,
+        self.preview_file = self.writeLeaflet(iface, feedback,
+                                              layer_list=self.layers,
                                               popup=self.popup,
                                               visible=self.visible,
                                               json=self.json,
@@ -166,7 +167,8 @@ class LeafletWriter(Writer):
             layerFileName = dataPath + '.js'
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
-                    feedback.showFeedback('Export Layer ' + layer.name() + ' to JSON...')
+                    feedback.showFeedback('Export Layer %s to JSON...' %
+                                            layer.name())
                     exportJSONLayer(layer, eachPopup, precision, tmpFileName,
                                     exp_crs, layerFileName,
                                     safeLayerName, minify, canvas,
