@@ -118,8 +118,8 @@ class OpenLayersWriter(Writer):
         mapLibLocn = settings["Data export"]["Mapping library location"]
 
         writeFiles(folder, restrictToExtent, feedback)
-        exportLayers(iface, layers, folder, precision,
-                     optimize, popup, json, restrictToExtent, extent)
+        exportLayers(iface, layers, folder, precision, optimize,
+                     popup, json, restrictToExtent, extent, feedback)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered,

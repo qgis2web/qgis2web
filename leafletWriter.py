@@ -244,9 +244,15 @@ class LeafletWriter(Writer):
                                                extent, feedback)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
+                    feedback.showFeedback('Writing %s as WMS layer...' %
+                                          layer.name())
                     new_obj = wmsScript(layer, safeLayerName)
+                    feedback.completeStep()
                 else:
+                    feedback.showFeedback('Writing %s as raster layer...' %
+                                          layer.name())
                     new_obj = rasterScript(layer, safeLayerName)
+                    feedback.completeStep()
                 if visible[count]:
                     new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""

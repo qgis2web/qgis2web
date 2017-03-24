@@ -163,7 +163,7 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
 
 
 def exportLayers(iface, layers, folder, precision, optimize,
-                 popupField, json, restrictToExtent, extent):
+                 popupField, json, restrictToExtent, extent, feedback):
     canvas = iface.mapCanvas()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
@@ -172,6 +172,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
                                                             popupField)):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
+            feedback.showFeedback("Exporting %s to JSON..." % layer.name())
             cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
                                        iface, extent)
             fields = layer.pendingFields()
@@ -253,6 +254,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
 
+            feedback.showFeedback("Exporting %s to PNG..." % layer.name())
             name_ts = (safeName(layer.name()) + unicode(count) +
                        unicode(int(time.time())))
 
@@ -400,7 +402,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
                                       out_raster)
                 except:
                     shutil.copyfile(piped_3857, out_raster)
-
+    feedback.completeStep()
 
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.geometryType() != QGis.Polygon:
