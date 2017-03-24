@@ -404,6 +404,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
                     shutil.copyfile(piped_3857, out_raster)
     feedback.completeStep()
 
+
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.geometryType() != QGis.Polygon:
         return False
