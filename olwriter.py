@@ -76,8 +76,8 @@ class OpenLayersWriter(Writer):
 
         feedback.showFeedback('Creating OpenLayers map...')
 
-        self.preview_file = self.writeOL(iface, 
-                                         feedback,        
+        self.preview_file = self.writeOL(iface,
+                                         feedback,
                                          layers=self.layers,
                                          groups=self.groups,
                                          popup=self.popup,

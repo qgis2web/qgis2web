@@ -88,7 +88,9 @@ class LeafletWriter(Writer):
             feedback = Feedback()
 
         feedback.showFeedback('Creating Leaflet map...')
-        self.preview_file = self.writeLeaflet(iface, feedback, layer_list=self.layers,
+        self.preview_file = self.writeLeaflet(iface,
+                                              feedback,
+                                              layer_list=self.layers,
                                               popup=self.popup,
                                               visible=self.visible,
                                               json=self.json,
@@ -166,7 +168,8 @@ class LeafletWriter(Writer):
             layerFileName = dataPath + '.js'
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
-                    feedback.showFeedback('Exporting Layer ' + layer.name() + ' to JSON...')
+                    feedback.showFeedback('Exporting Layer ' +
+                                          layer.name() + ' to JSON...')
                     exportJSONLayer(layer, eachPopup, precision, tmpFileName,
                                     exp_crs, layerFileName,
                                     safeLayerName, minify, canvas,
@@ -241,10 +244,12 @@ class LeafletWriter(Writer):
                                                extent)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
-                    feedback.showFeedback('Exporting WMS Layer ' + layer.name() + '...')
+                    feedback.showFeedback('Exporting WMS Layer ' +
+                                          layer.name() + '...')
                     new_obj = wmsScript(layer, safeLayerName)
                 else:
-                    feedback.showFeedback('Exporting Raster Layer ' + layer.name() + '...')
+                    feedback.showFeedback('Exporting Raster Layer ' +
+                                          layer.name() + '...')
                     new_obj = rasterScript(layer, safeLayerName)
                 if visible[count]:
                     new_obj += """

@@ -175,7 +175,8 @@ def exportLayers(iface, feedback, layers, folder, precision, optimize,
                 (layer.providerType() != "WFS" or encode2json)):
             cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
                                        iface, extent)
-            feedback.showFeedback('Exporting Layer ' + layer.name() + ' to JSON...')
+            feedback.showFeedback('Exporting Layer ' +
+                                  layer.name() + ' to JSON...')
             print 'ol feedback'
             fields = layer.pendingFields()
             for field in fields:
@@ -255,7 +256,6 @@ def exportLayers(iface, feedback, layers, folder, precision, optimize,
 
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
-            
             feedback.showFeedback('Exporting Raster Layer ' + layer.name())
             name_ts = (safeName(layer.name()) + unicode(count) +
                        unicode(int(time.time())))
