@@ -142,6 +142,8 @@ class Ui_MainDialog(object):
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
         self.verticalLayout_6 = QtGui.QVBoxLayout(self.tab_3)
         self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
+        self.verticalLayout_6.setAlignment(QtCore.Qt.AlignTop)
+        self.verticalLayout_6.setContentsMargins(11,16,11,11)
         self.previewOnStartup = QtGui.QCheckBox(self.tab_3)
         self.previewOnStartup.setChecked(True)
         self.previewOnStartup.setObjectName(_fromUtf8("previewOnStartup"))
