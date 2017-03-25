@@ -107,6 +107,9 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.closeFeedbackOnSuccess.setCheckState(Qt.Checked)
         else:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Unchecked)
+        self.previewFeatureLimit.setText(
+            stgs.value("qgis2web/previewFeatureLimit", "1000"))
+
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         self.preview = None
         if webkit_available:
@@ -283,7 +286,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             if isinstance(layer, QgsVectorLayer):
                 total_features += layer.featureCount()
 
-        if total_features > 1000:
+        if total_features > int(self.previewFeatureLimit.text()):
             # Too many features => too slow!
             return (False, self.tr('<p>A large number of features are '
                                    'present in the map. Generating the '
@@ -595,6 +598,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                              self.previewOnStartup.checkState())
         QSettings().setValue("qgis2web/closeFeedbackOnSuccess",
                              self.closeFeedbackOnSuccess.checkState())
+        QSettings().setValue("qgis2web/previewFeatureLimit",
+                             self.previewFeatureLimit.text())
         event.accept()
 
 

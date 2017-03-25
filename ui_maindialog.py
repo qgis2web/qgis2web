@@ -152,6 +152,12 @@ class Ui_MainDialog(object):
         self.closeFeedbackOnSuccess.setChecked(True)
         self.closeFeedbackOnSuccess.setObjectName(_fromUtf8("closeFeedbackOnSuccess"))
         self.verticalLayout_6.addWidget(self.closeFeedbackOnSuccess)
+        self.previewFeatureLimitLabel = QtGui.QLabel("Preview feature limit per layer: ", self.tab_3)
+        self.previewFeatureLimit = QtGui.QLineEdit(self.tab_3)
+        self.previewFeatureLimit.setObjectName(_fromUtf8("previewFeatureLimit"))
+        self.previewFeatureLimit.setFixedWidth(120)
+        self.verticalLayout_6.addWidget(self.previewFeatureLimitLabel)
+        self.verticalLayout_6.addWidget(self.previewFeatureLimit)
         self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setStyleSheet(_fromUtf8(
