@@ -1,6 +1,7 @@
 import os
 import codecs
 import math
+import xml.etree.ElementTree
 import traceback
 from PyQt4.QtCore import QDir
 from qgis.core import (QgsVectorLayer,

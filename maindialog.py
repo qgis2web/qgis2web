@@ -102,6 +102,11 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:
             self.previewOnStartup.setCheckState(Qt.Unchecked)
+        if (stgs.value("qgis2web/closeFeedbackOnSuccess", Qt.Checked) ==
+                Qt.Checked):
+            self.closeFeedbackOnSuccess.setCheckState(Qt.Checked)
+        else:
+            self.closeFeedbackOnSuccess.setCheckState(Qt.Unchecked)
         self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
         self.preview = None
         if webkit_available:
@@ -586,6 +591,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         QSettings().setValue("qgis2web/previewOnStartup",
                              self.previewOnStartup.checkState())
+        QSettings().setValue("qgis2web/closeFeedbackOnSuccess",
+                             self.closeFeedbackOnSuccess.checkState())
         event.accept()
 
 

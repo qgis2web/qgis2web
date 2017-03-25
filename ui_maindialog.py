@@ -140,12 +140,16 @@ class Ui_MainDialog(object):
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
-        self.horizontalLayout_5 = QtGui.QHBoxLayout(self.tab_3)
-        self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
+        self.verticalLayout_6 = QtGui.QVBoxLayout(self.tab_3)
+        self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
         self.previewOnStartup = QtGui.QCheckBox(self.tab_3)
         self.previewOnStartup.setChecked(True)
         self.previewOnStartup.setObjectName(_fromUtf8("previewOnStartup"))
-        self.horizontalLayout_5.addWidget(self.previewOnStartup)
+        self.verticalLayout_6.addWidget(self.previewOnStartup)
+        self.closeFeedbackOnSuccess = QtGui.QCheckBox(self.tab_3)
+        self.closeFeedbackOnSuccess.setChecked(True)
+        self.closeFeedbackOnSuccess.setObjectName(_fromUtf8("closeFeedbackOnSuccess"))
+        self.verticalLayout_6.addWidget(self.closeFeedbackOnSuccess)
         self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setStyleSheet(_fromUtf8(
@@ -188,6 +192,8 @@ class Ui_MainDialog(object):
                                   _translate("MainDialog", "Export", None))
         self.previewOnStartup.setText(_translate("MainDialog",
                                                  "Preview on startup", None))
+        self.closeFeedbackOnSuccess.setText(_translate("MainDialog",
+                                                 "Close feedback dialog on success", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3),
                                   _translate("MainDialog", "Settings", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2),

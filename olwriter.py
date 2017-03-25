@@ -19,7 +19,6 @@ import os
 import re
 from datetime import datetime
 import traceback
-import xml.etree.ElementTree
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
