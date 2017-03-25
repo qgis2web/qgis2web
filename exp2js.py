@@ -174,6 +174,7 @@ def handle_literal(node):
     quote = ""
     if isinstance(val, basestring):
         quote = "'"
+        val = val.replace("\n", "\\n")
     return "%s%s%s" % (quote, unicode(val), quote)
 
 
