@@ -164,7 +164,6 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
         self.pushHtml('<span style="color: green">{}</span>'.format(feedback))
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(False)
-        self.close()
 
     def setProgress(self, progress):
         if not self.progressBar.maximum() == 100:

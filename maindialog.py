@@ -327,6 +327,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                                dest_folder=write_folder,
                                feedback=self.feedback)
         self.feedback.showFeedback('Success')
+        if self.closeFeedbackOnSuccess.checkState() == Qt.Checked:
+            self.feedback.close()
         result = self.exporter.postProcess(results, feedback=self.feedback)
         if result and (not os.environ.get('CI') and
                        not os.environ.get('TRAVIS')):
