@@ -3,6 +3,7 @@ import shutil
 import re
 from math import floor
 import xml.etree.ElementTree
+from PyQt4.QtCore import QPyNullVariant
 from qgis.core import (QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
@@ -36,7 +37,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
-            if cat.value is not None and cat.value() != "":
+            if (cat.value() is not None and cat.value() != "" and
+                    not isinstance(cat.value(), QPyNullVariant)):
                 style += """
                 case '%s':""" % cat.value().replace("'", "\\'")
             else:
