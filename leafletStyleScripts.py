@@ -36,7 +36,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
                                                        markerFolder,
                                                        layer_alpha, sln)
-            if not cat.value is None and cat.value() != "":
+            if cat.value is not None and cat.value() != "":
                 style += """
                 case '%s':""" % cat.value().replace("'", "\\'")
             else:
