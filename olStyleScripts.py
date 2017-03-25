@@ -1,9 +1,11 @@
 import os
+import shutil
+import re
 import codecs
 import math
 import xml.etree.ElementTree
 import traceback
-from PyQt4.QtCore import QDir
+from PyQt4.QtCore import QDir, QPyNullVariant
 from qgis.core import (QgsVectorLayer,
                        QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
@@ -78,7 +80,8 @@ def exportStyles(layers, folder, clustered):
                 switch(value) {""" % sln
                 cats = []
                 for cat in renderer.categories():
-                    if cat.value() != "":
+                    if (cat.value() is not None and cat.value() != "" and
+                            not isinstance(cat.value(), QPyNullVariant)):
                         categoryStr = "case '%s':" % cat.value().replace("'",
                                                                          "\\'")
                     else:
