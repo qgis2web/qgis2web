@@ -35,12 +35,15 @@ from qgis.core import (QgsApplication,
                        QgsExpressionContextUtils,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
-                       Qgs25DRenderer,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
                        QgsRasterPipe,
                        QgsGeometryGeneratorSymbolLayerV2,
                        QgsMessageLog)
+try:
+    from qgis.core import Qgs25DRenderer
+except:
+    pass
 from qgis.utils import QGis
 import processing
 import tempfile
