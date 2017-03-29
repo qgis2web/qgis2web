@@ -38,10 +38,9 @@ from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
                        QgsRasterPipe,
-                       QgsGeometryGeneratorSymbolLayerV2,
                        QgsMessageLog)
 try:
-    from qgis.core import Qgs25DRenderer
+    from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayerV2)
 except:
     pass
 from qgis.utils import QGis
