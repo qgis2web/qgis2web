@@ -659,7 +659,35 @@ class TreeLayerItem(QTreeWidgetItem):
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
+        self.visibleItem = QTreeWidgetItem(self)
+        self.visibleCheck = QCheckBox()
+        vis = layer.customProperty("qgis2web/Visible", True)
+        if (vis == 0 or unicode(vis).lower() == "false"):
+            self.visibleCheck.setChecked(False)
+        else:
+            self.visibleCheck.setChecked(True)
+        self.visibleItem.setText(0, "Visible")
+        self.addChild(self.visibleItem)
+        tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
         if layer.type() == layer.VectorLayer:
+            if layer.providerType() == 'WFS':
+                self.jsonItem = QTreeWidgetItem(self)
+                self.jsonCheck = QCheckBox()
+                if layer.customProperty("qgis2web/Encode to JSON") == 2:
+                    self.jsonCheck.setChecked(True)
+                self.jsonItem.setText(0, "Encode to JSON")
+                self.jsonCheck.stateChanged.connect(self.changeJSON)
+                self.addChild(self.jsonItem)
+                tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
+            if layer.geometryType() == QGis.Point:
+                self.clusterItem = QTreeWidgetItem(self)
+                self.clusterCheck = QCheckBox()
+                if layer.customProperty("qgis2web/Cluster") == 2:
+                    self.clusterCheck.setChecked(True)
+                self.clusterItem.setText(0, "Cluster")
+                self.clusterCheck.stateChanged.connect(self.changeCluster)
+                self.addChild(self.clusterItem)
+                tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Popup fields")
             options = []
@@ -690,35 +718,6 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.popupItem.addChild(self.attr)
                 tree.setItemWidget(self.attr, 2, self.attrWidget)
             self.addChild(self.popupItem)
-        self.visibleItem = QTreeWidgetItem(self)
-        self.visibleCheck = QCheckBox()
-        vis = layer.customProperty("qgis2web/Visible", True)
-        if (vis == 0 or unicode(vis).lower() == "false"):
-            self.visibleCheck.setChecked(False)
-        else:
-            self.visibleCheck.setChecked(True)
-        self.visibleItem.setText(0, "Visible")
-        self.addChild(self.visibleItem)
-        tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
-        if layer.type() == layer.VectorLayer:
-            if layer.providerType() == 'WFS':
-                self.jsonItem = QTreeWidgetItem(self)
-                self.jsonCheck = QCheckBox()
-                if layer.customProperty("qgis2web/Encode to JSON") == 2:
-                    self.jsonCheck.setChecked(True)
-                self.jsonItem.setText(0, "Encode to JSON")
-                self.jsonCheck.stateChanged.connect(self.changeJSON)
-                self.addChild(self.jsonItem)
-                tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-            if layer.geometryType() == QGis.Point:
-                self.clusterItem = QTreeWidgetItem(self)
-                self.clusterCheck = QCheckBox()
-                if layer.customProperty("qgis2web/Cluster") == 2:
-                    self.clusterCheck.setChecked(True)
-                self.clusterItem.setText(0, "Cluster")
-                self.clusterCheck.stateChanged.connect(self.changeCluster)
-                self.addChild(self.clusterItem)
-                tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
 
     @property
     def popup(self):
