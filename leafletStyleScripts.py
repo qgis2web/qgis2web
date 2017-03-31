@@ -40,7 +40,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             if (cat.value() is not None and cat.value() != "" and
                     not isinstance(cat.value(), QPyNullVariant)):
                 style += """
-                case '%s':""" % cat.value().replace("'", "\\'")
+                case '%s':""" % unicode(cat.value()).replace("'", "\\'")
             else:
                 style += """
                 default:"""

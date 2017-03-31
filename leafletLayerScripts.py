@@ -262,7 +262,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
                      restrictToExtent, extent, feedback):
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
-    zIndex = zIndex + 600
+    zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
     labeltext = getLabels(layer, safeLayerName, outputProjectFileName)
     (new_pop, popFuncs) = getPopups(layer, safeLayerName, highlight,

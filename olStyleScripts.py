@@ -82,8 +82,8 @@ def exportStyles(layers, folder, clustered):
                 for cat in renderer.categories():
                     if (cat.value() is not None and cat.value() != "" and
                             not isinstance(cat.value(), QPyNullVariant)):
-                        categoryStr = "case '%s':" % cat.value().replace("'",
-                                                                         "\\'")
+                        categoryStr = "case '%s':" % unicode(
+                            cat.value()).replace("'", "\\'")
                     else:
                         categoryStr = "default:"
                     categoryStr += '''
