@@ -67,19 +67,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                         cssStore + 'leaflet-search.css')
         shutil.copytree(imageDir, imageStore)
     if measure != "None":
-        shutil.copyfile(jsDir + 'leaflet.draw.js',
-                        jsStore + 'leaflet.draw.js')
-        shutil.copyfile(cssDir + 'leaflet.draw.css',
-                        cssStore + 'leaflet.draw.css')
-        if measure == "Imperial":
-            shutil.copyfile(jsDir + 'leaflet.measurecontrolFeet.js',
-                            jsStore + 'leaflet.measurecontrol.js')
-        else:
-            shutil.copyfile(jsDir + 'leaflet.measurecontrol.js',
-                            jsStore + 'leaflet.measurecontrol.js')
-
-        shutil.copyfile(cssDir + 'leaflet.measurecontrol.css',
-                        cssStore + 'leaflet.measurecontrol.css')
+        shutil.copyfile(jsDir + 'leaflet-measure.js',
+                        jsStore + 'leaflet-measure.js')
+        shutil.copyfile(cssDir + 'leaflet-measure.css',
+                        cssStore + 'leaflet-measure.css')
     shutil.copytree(cssDir + 'images', cssStore + 'images')
     if (matchCRS and
             canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
@@ -146,11 +137,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         addressJS = ""
     if measure != "None":
         measureCSS = """
-        <link rel="stylesheet" href="css/leaflet.draw.css" />
-        <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />"""
+        <link rel="stylesheet" href="css/leaflet-measure.css" />"""
         measureJS = """
-        <script src="js/leaflet.draw.js"></script>
-        <script src="js/leaflet.measurecontrol.js"></script>"""
+        <script src="js/leaflet-measure.js"></script>"""
     else:
         measureCSS = ""
         measureJS = ""

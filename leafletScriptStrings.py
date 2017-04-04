@@ -120,9 +120,6 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
             crs: crs,
             continuousWorld: false,
             worldCopyJump: false, """
-    if measure != "None":
-        map += """
-            measureControl:true,"""
     map += """
             zoomControl:true, maxZoom:""" + unicode(maxZoom)
     map += """, minZoom:""" + unicode(minZoom) + """
@@ -138,6 +135,24 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
     if locate:
         map += """
         L.control.locate().addTo(map);"""
+    if measure != "None":
+        if measure == "Imperial":
+            options = """{
+            primaryLengthUnit: 'feet',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqfeet',
+            secondaryAreaUnit: 'sqmiles'
+        }"""
+        else:
+            options = """{
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        }"""
+        map += """
+        var measureControl = new L.Control.Measure(%s);
+        measureControl.addTo(map);""" % options
     return map
 
 
