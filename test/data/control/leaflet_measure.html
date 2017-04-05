@@ -10,8 +10,7 @@
         <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-        <link rel="stylesheet" href="css/leaflet.draw.css" />
-        <link rel="stylesheet" href="css/leaflet.measurecontrol.css" />
+        <link rel="stylesheet" href="css/leaflet-measure.css" />
         <style>
         html, body, #map {
             width: 100%;
@@ -33,8 +32,7 @@
         <script src="js/leaflet-hash.js"></script>
         <script src="js/leaflet-tilelayer-wmts.js"></script>
         <script src="js/Autolinker.min.js"></script>
-        <script src="js/leaflet.draw.js"></script>
-        <script src="js/leaflet.measurecontrol.js"></script>
+        <script src="js/leaflet-measure.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
         <script src="data/airports0.js"></script>
         <script>
@@ -44,11 +42,17 @@
             }
         });
         var map = L.map('map', {
-            measureControl:true,
             zoomControl:true, maxZoom:28, minZoom:1
         })
         var hash = new L.Hash(map);
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var measureControl = new L.Control.Measure({
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
