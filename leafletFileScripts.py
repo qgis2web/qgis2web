@@ -73,7 +73,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                         cssStore + 'leaflet-measure.css')
     shutil.copytree(cssDir + 'images', cssStore + 'images')
     if (matchCRS and
-            canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
+            canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
         shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
         shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
     feedback.completeStep()
@@ -147,7 +147,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/leaflet-tilelayer-wmts.js"></script>
         <script src="js/Autolinker.min.js"></script>"""
     if (matchCRS and
-            canvas.mapRenderer().destinationCrs().authid() != 'EPSG:4326'):
+            canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
         crsJS = """
         <script src="js/proj4.js"></script>
         <script src="js/proj4leaflet.js"></script>"""
