@@ -314,10 +314,7 @@ def replaceInScript(template, values):
 def bounds(iface, useCanvas, layers, matchCRS):
     if useCanvas:
         canvas = iface.mapCanvas()
-        try:
-            canvasCrs = canvas.mapSettings().destinationCrs()
-        except:
-            canvasCrs = canvas.mapRenderer().destinationCrs()
+        canvasCrs = canvas.mapSettings().destinationCrs()
         if not matchCRS:
             transform = QgsCoordinateTransform(canvasCrs,
                                                QgsCoordinateReferenceSystem(
