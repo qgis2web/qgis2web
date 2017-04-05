@@ -249,67 +249,113 @@ def exportLayers(iface, layers, folder, precision, optimize,
 
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
+            exportRaster(layer, count, layersFolder, feedback)
+    feedback.completeStep()
 
-            feedback.showFeedback("Exporting %s to PNG..." % layer.name())
-            name_ts = (safeName(layer.name()) + unicode(count) +
-                       unicode(int(time.time())))
 
-            # We need to create a new file to export style
-            piped_file = os.path.join(
-                tempfile.gettempdir(),
-                name_ts + '_piped.tif'
-            )
+def exportRaster(layer, count, layersFolder, feedback):
+    feedback.showFeedback("Exporting %s to PNG..." % layer.name())
+    name_ts = (safeName(layer.name()) + unicode(count) +
+               unicode(int(time.time())))
 
-            piped_extent = layer.extent()
-            piped_width = layer.height()
-            piped_height = layer.width()
-            piped_crs = layer.crs()
-            piped_renderer = layer.renderer()
-            piped_provider = layer.dataProvider()
+    # We need to create a new file to export style
+    piped_file = os.path.join(tempfile.gettempdir(), name_ts + '_piped.tif')
 
-            pipe = QgsRasterPipe()
-            pipe.set(piped_provider.clone())
-            pipe.set(piped_renderer.clone())
+    piped_extent = layer.extent()
+    piped_width = layer.height()
+    piped_height = layer.width()
+    piped_crs = layer.crs()
+    piped_renderer = layer.renderer()
+    piped_provider = layer.dataProvider()
 
-            file_writer = QgsRasterFileWriter(piped_file)
+    pipe = QgsRasterPipe()
+    pipe.set(piped_provider.clone())
+    pipe.set(piped_renderer.clone())
 
-            file_writer.writeRaster(pipe,
-                                    piped_width,
-                                    piped_height,
-                                    piped_extent,
-                                    piped_crs)
+    file_writer = QgsRasterFileWriter(piped_file)
 
-            # Extent of the layer in EPSG:3857
-            crsSrc = layer.crs()
-            crsDest = QgsCoordinateReferenceSystem(3857)
-            xform = QgsCoordinateTransform(crsSrc, crsDest)
-            extentRep = xform.transform(layer.extent())
+    file_writer.writeRaster(pipe, piped_width, piped_height,
+                            piped_extent, piped_crs)
 
-            extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                                     unicode(extentRep.xMaximum()),
-                                     unicode(extentRep.yMinimum()),
-                                     unicode(extentRep.yMaximum())])
+    # Extent of the layer in EPSG:3857
+    crsSrc = layer.crs()
+    crsDest = QgsCoordinateReferenceSystem(3857)
+    xform = QgsCoordinateTransform(crsSrc, crsDest)
+    extentRep = xform.transform(layer.extent())
 
-            # Reproject in 3857
-            piped_3857 = os.path.join(tempfile.gettempdir(),
-                                      name_ts + '_piped_3857.tif')
-            # Export layer as PNG
-            out_raster = os.path.join(layersFolder,
-                                      safeName(layer.name()) +
-                                      unicode(count) + ".png")
+    extentRepNew = ','.join([unicode(extentRep.xMinimum()),
+                             unicode(extentRep.xMaximum()),
+                             unicode(extentRep.yMinimum()),
+                             unicode(extentRep.yMaximum())])
 
-            qgis_version = QGis.QGIS_VERSION
+    # Reproject in 3857
+    piped_3857 = os.path.join(tempfile.gettempdir(),
+                              name_ts + '_piped_3857.tif')
+    # Export layer as PNG
+    out_raster = os.path.join(layersFolder,
+                              safeName(layer.name()) + unicode(count) + ".png")
 
-            if int(qgis_version.split('.')[1]) < 15:
-                processing.runalg("gdalogr:warpreproject", piped_file,
-                                  layer.crs().authid(), "EPSG:3857", "", 0, 1,
-                                  0, -1, 75, 6, 1, False, 0, False, "",
-                                  piped_3857)
-                processing.runalg("gdalogr:translate", piped_3857, 100,
-                                  True, "", 0, "", extentRepNew, False, 0,
-                                  0, 75, 6, 1, False, 0, False, "",
-                                  out_raster)
-            else:
+    qgis_version = QGis.QGIS_VERSION
+
+    if int(qgis_version.split('.')[1]) < 15:
+        processing.runalg("gdalogr:warpreproject", piped_file,
+                          layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                          0, -1, 75, 6, 1, False, 0, False, "", piped_3857)
+        processing.runalg("gdalogr:translate", piped_3857, 100,
+                          True, "", 0, "", extentRepNew, False, 0,
+                          0, 75, 6, 1, False, 0, False, "", out_raster)
+    else:
+        try:
+            warpArgs = {
+                "INPUT": piped_file,
+                "SOURCE_SRS": layer.crs().authid(),
+                "DEST_SRS": "EPSG:3857",
+                "NO_DATA": "",
+                "TR": 0,
+                "METHOD": 2,
+                "RAST_EXT": extentRepNew,
+                "EXT_CRS": "EPSG:3857",
+                "RTYPE": 0,
+                "COMPRESS": 4,
+                "JPEGCOMPRESSION": 75,
+                "ZLEVEL": 6,
+                "PREDICTOR": 1,
+                "TILED": False,
+                "BIGTIFF": 0,
+                "TFW": False,
+                "EXTRA": "",
+                "OUTPUT": piped_3857
+            }
+            procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+            # force exception on algorithm fail
+            for val in procRtn:
+                pass
+        except:
+            try:
+                warpArgs = {
+                    "INPUT": piped_file,
+                    "SOURCE_SRS": layer.crs().authid(),
+                    "DEST_SRS": "EPSG:3857",
+                    "NO_DATA": "",
+                    "TR": 0,
+                    "METHOD": 2,
+                    "RAST_EXT": extentRepNew,
+                    "RTYPE": 0,
+                    "COMPRESS": 4,
+                    "JPEGCOMPRESSION": 75,
+                    "ZLEVEL": 6,
+                    "PREDICTOR": 1,
+                    "TILED": False,
+                    "BIGTIFF": 0,
+                    "TFW": False,
+                    "EXTRA": "",
+                    "OUTPUT": piped_3857
+                }
+                procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+                # force exception on algorithm fail
+                for val in procRtn:
+                    pass
+            except:
                 try:
                     warpArgs = {
                         "INPUT": piped_file,
@@ -318,8 +364,6 @@ def exportLayers(iface, layers, folder, precision, optimize,
                         "NO_DATA": "",
                         "TR": 0,
                         "METHOD": 2,
-                        "RAST_EXT": extentRepNew,
-                        "EXT_CRS": "EPSG:3857",
                         "RTYPE": 0,
                         "COMPRESS": 4,
                         "JPEGCOMPRESSION": 75,
@@ -337,68 +381,14 @@ def exportLayers(iface, layers, folder, precision, optimize,
                     for val in procRtn:
                         pass
                 except:
-                    try:
-                        warpArgs = {
-                            "INPUT": piped_file,
-                            "SOURCE_SRS": layer.crs().authid(),
-                            "DEST_SRS": "EPSG:3857",
-                            "NO_DATA": "",
-                            "TR": 0,
-                            "METHOD": 2,
-                            "RAST_EXT": extentRepNew,
-                            "RTYPE": 0,
-                            "COMPRESS": 4,
-                            "JPEGCOMPRESSION": 75,
-                            "ZLEVEL": 6,
-                            "PREDICTOR": 1,
-                            "TILED": False,
-                            "BIGTIFF": 0,
-                            "TFW": False,
-                            "EXTRA": "",
-                            "OUTPUT": piped_3857
-                        }
-                        procRtn = processing.runalg("gdalogr:warpreproject",
-                                                    warpArgs)
-                        # force exception on algorithm fail
-                        for val in procRtn:
-                            pass
-                    except:
-                        try:
-                            warpArgs = {
-                                "INPUT": piped_file,
-                                "SOURCE_SRS": layer.crs().authid(),
-                                "DEST_SRS": "EPSG:3857",
-                                "NO_DATA": "",
-                                "TR": 0,
-                                "METHOD": 2,
-                                "RTYPE": 0,
-                                "COMPRESS": 4,
-                                "JPEGCOMPRESSION": 75,
-                                "ZLEVEL": 6,
-                                "PREDICTOR": 1,
-                                "TILED": False,
-                                "BIGTIFF": 0,
-                                "TFW": False,
-                                "EXTRA": "",
-                                "OUTPUT": piped_3857
-                            }
-                            procRtn = processing.runalg(
-                                            "gdalogr:warpreproject",
-                                            warpArgs)
-                            # force exception on algorithm fail
-                            for val in procRtn:
-                                pass
-                        except:
-                            shutil.copyfile(piped_file, piped_3857)
+                    shutil.copyfile(piped_file, piped_3857)
 
-                try:
-                    processing.runalg("gdalogr:translate", piped_3857, 100,
-                                      True, "", 0, "", extentRepNew, False, 5,
-                                      4, 75, 6, 1, False, 0, False, "",
-                                      out_raster)
-                except:
-                    shutil.copyfile(piped_3857, out_raster)
-    feedback.completeStep()
+        try:
+            processing.runalg("gdalogr:translate", piped_3857, 100,
+                              True, "", 0, "", extentRepNew, False, 5,
+                              4, 75, 6, 1, False, 0, False, "", out_raster)
+        except:
+            shutil.copyfile(piped_3857, out_raster)
 
 
 def is25d(layer, canvas, restrictToExtent, extent):

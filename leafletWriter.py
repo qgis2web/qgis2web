@@ -40,8 +40,7 @@ from leafletFileScripts import (writeFoldersAndFiles,
                                 writeCSS,
                                 writeHTMLstart)
 from leafletLayerScripts import (exportJSONLayer,
-                                 writeVectorLayer,
-                                 exportRasterLayer)
+                                 writeVectorLayer)
 from leafletScriptStrings import (jsonScript,
                                   scaleDependentLabelScript,
                                   mapScript,
@@ -58,7 +57,7 @@ from leafletScriptStrings import (jsonScript,
                                   scaleBar,
                                   scaleDependentScript,
                                   titleSubScript)
-from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces
+from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces, exportRaster
 from writer import (Writer,
                     WriterResult,
                     translator)
@@ -181,7 +180,9 @@ class LeafletWriter(Writer):
 
                 elif layer.type() == QgsMapLayer.RasterLayer:
                     if layer.dataProvider().name() != "wms":
-                        exportRasterLayer(layer, safeLayerName, dataPath)
+                        layersFolder = os.path.join(outputProjectFileName,
+                                                    "data")
+                        exportRaster(layer, 0, layersFolder, feedback)
             if layer.hasScaleBasedVisibility():
                 scaleDependentLayers += scaleDependentLayerScript(
                     layer, safeLayerName)
