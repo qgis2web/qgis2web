@@ -198,11 +198,10 @@ software:</p>
     <li>Autolinker.js, by @gregjacobs</li>
     <li>requestAnimationFrame polyfill, by @paulirish</li>
     <li>Function.prototype.bind polyfill, by @mozilla</li>
-    <li>Leaflet.draw, by @jacobtoye</li>
     <li>Leaflet.label, by @jacobtoye</li>
     <li>Leaflet.Locate, by @domoritz</li>
     <li>Leaflet.markercluster, by @danzel</li>
-    <li>Leaflet.MeasureControl, by @makinacorpus</li>
+    <li>leaflet-measure, by @ljagis</li>
     <li>leaflet-hash, by @mlevans</li>
     <li>Proj4js, by @madair, @calvinmetcalf, and other</li>
     <li>Proj4Leaflet, by @kartena</li>
