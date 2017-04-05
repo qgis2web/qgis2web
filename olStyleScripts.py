@@ -47,11 +47,8 @@ def exportStyles(layers, folder, clustered):
                 else:
                     fieldIndex = layer.pendingFields().indexFromName(
                         labelField)
-                    try:
-                        editFormConfig = layer.editFormConfig()
-                        editorWidget = editFormConfig.widgetType(fieldIndex)
-                    except:
-                        editorWidget = layer.editorWidgetV2(fieldIndex)
+                    editFormConfig = layer.editFormConfig()
+                    editorWidget = editFormConfig.widgetType(fieldIndex)
                     if (editorWidget == QgsVectorLayer.Hidden or
                             editorWidget == 'Hidden'):
                         labelField = "q2wHide_" + labelField
@@ -95,11 +92,8 @@ def exportStyles(layers, folder, clustered):
                 defs += "\n".join(cats) + "}};"
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
-                try:
-                    editFormConfig = layer.editFormConfig()
-                    editorWidget = editFormConfig.widgetType(fieldIndex)
-                except:
-                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                editFormConfig = layer.editFormConfig()
+                editorWidget = editFormConfig.widgetType(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr
@@ -119,11 +113,8 @@ def exportStyles(layers, folder, clustered):
                 defs += ",\n".join(ranges) + "];"
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
-                try:
-                    editFormConfig = layer.editFormConfig()
-                    editorWidget = editFormConfig.widgetType(fieldIndex)
-                except:
-                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                editFormConfig = layer.editFormConfig()
+                editorWidget = editFormConfig.widgetType(fieldIndex)
                 if (editorWidget == QgsVectorLayer.Hidden or
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr

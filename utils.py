@@ -108,10 +108,7 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
     usedFields = []
     for count, field in enumerate(fields):
         fieldIndex = fields.indexFromName(unicode(field.name()))
-        try:
-            editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-        except:
-            editorWidget = layer.editorWidgetV2(fieldIndex)
+        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
         addField = False
         try:
             if layer.rendererV2().classAttribute() == field.name():
@@ -132,10 +129,7 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
     for field in usedFields:
         fieldIndex = layer.pendingFields().indexFromName(unicode(
             layer.pendingFields().field(field).name()))
-        try:
-            editorWidget = layer.editFormConfig().widgetType(fieldIndex)
-        except:
-            editorWidget = layer.editorWidgetV2(fieldIndex)
+        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
         fieldType = layer.pendingFields().field(field).type()
         fieldName = layer.pendingFields().field(field).name()
         if (editorWidget == QgsVectorLayer.Hidden or
@@ -522,10 +516,7 @@ def replaceInTemplate(template, values):
 def exportImages(layer, field, layerFileName):
     field_index = layer.fieldNameIndex(field)
 
-    try:
-        widget = layer.editFormConfig().widgetType(field_index)
-    except:
-        widget = layer.editorWidgetV2(field_index)
+    widget = layer.editFormConfig().widgetType(field_index)
     if widget != 'Photo':
         return
 
@@ -555,11 +546,8 @@ def exportImages(layer, field, layerFileName):
 
 def handleHiddenField(layer, field):
     fieldIndex = layer.pendingFields().indexFromName(field)
-    try:
-        editFormConfig = layer.editFormConfig()
-        editorWidget = editFormConfig.widgetType(fieldIndex)
-    except:
-        editorWidget = layer.editorWidgetV2(fieldIndex)
+    editFormConfig = layer.editFormConfig()
+    editorWidget = editFormConfig.widgetType(fieldIndex)
     if (editorWidget == QgsVectorLayer.Hidden or
             editorWidget == 'Hidden'):
         fieldName = "q2wHide_" + field

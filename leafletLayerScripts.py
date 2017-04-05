@@ -440,11 +440,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
         row = ""
         for field, val in zip(field_names, field_vals):
             fieldIndex = fields.indexFromName(unicode(field))
-            try:
-                formCfg = layer.editFormConfig()
-                editorWidget = formCfg.widgetType(fieldIndex)
-            except:
-                editorWidget = layer.editorWidgetV2(fieldIndex)
+            formCfg = layer.editFormConfig()
+            editorWidget = formCfg.widgetType(fieldIndex)
             if (editorWidget == QgsVectorLayer.Hidden or
                     editorWidget == 'Hidden'):
                 continue

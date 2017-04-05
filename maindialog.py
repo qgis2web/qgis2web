@@ -392,11 +392,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 fields = layer.pendingFields()
                 for f in fields:
                     fieldIndex = fields.indexFromName(unicode(f.name()))
-                    try:
-                        formCnf = layer.editFormConfig()
-                        editorWidget = formCnf.widgetType(fieldIndex)
-                    except:
-                        editorWidget = layer.editorWidgetV2(fieldIndex)
+                    formCnf = layer.editFormConfig()
+                    editorWidget = formCnf.widgetType(fieldIndex)
                     if editorWidget == QgsVectorLayer.Hidden \
                             or editorWidget == 'Hidden':
                         continue
@@ -694,11 +691,8 @@ class TreeLayerItem(QTreeWidgetItem):
             fields = self.layer.pendingFields()
             for f in fields:
                 fieldIndex = fields.indexFromName(unicode(f.name()))
-                try:
-                    formCnf = layer.editFormConfig()
-                    editorWidget = formCnf.widgetType(fieldIndex)
-                except:
-                    editorWidget = layer.editorWidgetV2(fieldIndex)
+                formCnf = layer.editFormConfig()
+                editorWidget = formCnf.widgetType(fieldIndex)
                 if editorWidget == QgsVectorLayer.Hidden or \
                    editorWidget == 'Hidden':
                     continue

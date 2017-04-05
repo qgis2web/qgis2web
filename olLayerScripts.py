@@ -171,10 +171,7 @@ osmb.set(geojson_{sln}{count});""".format(shadows=shadows,
                 aliasFields += "'%(field)s': '%(alias)s', " % (
                     {"field": f.name(),
                      "alias": layer.attributeDisplayName(fieldIndex)})
-                try:
-                    widget = layer.editFormConfig().widgetType(fieldIndex)
-                except:
-                    widget = layer.editorWidgetV2(fieldIndex)
+                widget = layer.editFormConfig().widgetType(fieldIndex)
                 imageFields += "'%(field)s': '%(image)s', " % (
                     {"field": f.name(),
                      "image": widget})
