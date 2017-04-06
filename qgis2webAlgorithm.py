@@ -98,7 +98,6 @@ class qgis2webAlgorithm(GeoAlgorithm):
         # writer.params = self.readParamsFromProject()
         # writer.params["Appearance"][
         #     "Base layer"] = self.getBasemapsFromProject()
-        print writer.layers
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
