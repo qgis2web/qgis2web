@@ -22,19 +22,24 @@ from qgis.core import QGis
 from PyQt4.QtCore import (Qt)
 from PyQt4.QtGui import (QAction,
                          QIcon)
+from processing.core.Processing import Processing
+
 import sip
 import resources_rc
 from maindialog import MainDialog
+from qgis2webProvider import qgis2webProvider
 
 
 class Qgis2Web(object):
     """Class abstraction for managing Qgis2Web plugin in QGIS."""
 
     def __init__(self, iface):
+        self.provider = qgis2webProvider()
         self.iface = iface
         self.dlg = None
 
     def initGui(self):
+        Processing.addProvider(self.provider)
         self.action = QAction(
             QIcon(":/plugins/qgis2web/icons/qgis2web.png"),
             u"Create web map", self.iface.mainWindow())
@@ -44,6 +49,7 @@ class Qgis2Web(object):
         self.iface.addToolBarIcon(self.action)
 
     def unload(self):
+        Processing.removeProvider(self.provider)
         self.iface.removePluginWebMenu(u"&qgis2web", self.action)
         self.iface.removeToolBarIcon(self.action)
 
