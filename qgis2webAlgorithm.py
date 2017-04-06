@@ -135,9 +135,7 @@ class qgis2webAlgorithm(GeoAlgorithm):
         # a complex model
 
     def getLayersAndGroups(self):
-        """Populate layers on QGIS into our layers and group tree view."""
         root_node = QgsProject.instance().layerTreeRoot()
-        tree_groups = []
         tree_layers = root_node.findLayers()
         layers = []
 
@@ -148,7 +146,6 @@ class qgis2webAlgorithm(GeoAlgorithm):
                 try:
                     if layer.type() == QgsMapLayer.VectorLayer:
                         testDump = layer.rendererV2().dump()
-                    layer_parent = tree_layer.parent()
                     layers.append(layer)
                 except:
                     QgsMessageLog.logMessage(traceback.format_exc(),
