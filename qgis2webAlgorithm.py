@@ -75,10 +75,10 @@ class qgis2webAlgorithm(GeoAlgorithm):
         """
 
         # The name that the user will see in the toolbox
-        self.name = 'Export to webmap'
+        self.name = 'Export project'
 
         # The branch of the toolbox under which the algorithm will appear
-        self.group = 'Webmap'
+        self.group = 'Export to webmap'
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
@@ -176,7 +176,7 @@ class qgis2webAlgorithm(GeoAlgorithm):
             popup.append(OrderedDict(layerPopups))
             visible.append(layer.customProperty("qgis2web/Visible", True))
             json.append(layer.customProperty("qgis2web/Encode to JSON", True))
-            cluster.append(layer.customProperty("qgis2web/Cluster", False))
+            cluster.append(layer.customProperty("qgis2web/Cluster", 0) == 2)
 
         return (layers[::-1],
                 {},

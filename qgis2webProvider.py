@@ -67,8 +67,8 @@ class qgis2webProvider(AlgorithmProvider):
         when the plugin is unloaded.
         """
         AlgorithmProvider.unload(self)
-        ProcessingConfig.removeSetting(
-            qgis2webProvider.MY_DUMMY_SETTING)
+        # ProcessingConfig.removeSetting(
+        #     qgis2webProvider.MY_DUMMY_SETTING)
 
     def getName(self):
         """This is the name that will appear on the toolbox group.
