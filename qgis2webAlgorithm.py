@@ -21,14 +21,6 @@
  ***************************************************************************/
 """
 
-__author__ = 'Tom Chadwin'
-__date__ = '2017-04-03'
-__copyright__ = '(C) 2017 by Tom Chadwin'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from collections import OrderedDict
 import traceback
 from PyQt4.QtCore import QSettings
@@ -47,6 +39,14 @@ from exporter import (EXPORTER_REGISTRY)
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
 from maindialog import MainDialog
+
+__author__ = 'Tom Chadwin'
+__date__ = '2017-04-03'
+__copyright__ = '(C) 2017 by Tom Chadwin'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
 
 
 class qgis2webAlgorithm(GeoAlgorithm):

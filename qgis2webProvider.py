@@ -21,6 +21,10 @@
  ***************************************************************************/
 """
 
+from processing.core.AlgorithmProvider import AlgorithmProvider
+from processing.core.ProcessingConfig import Setting, ProcessingConfig
+from qgis2webAlgorithm import qgis2webAlgorithm
+
 __author__ = 'Tom Chadwin'
 __date__ = '2017-04-03'
 __copyright__ = '(C) 2017 by Tom Chadwin'
@@ -28,10 +32,6 @@ __copyright__ = '(C) 2017 by Tom Chadwin'
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
-
-from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.core.ProcessingConfig import Setting, ProcessingConfig
-from qgis2webAlgorithm import qgis2webAlgorithm
 
 
 class qgis2webProvider(AlgorithmProvider):
@@ -58,9 +58,9 @@ class qgis2webProvider(AlgorithmProvider):
         deactivating the algorithms in the provider.
         """
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting('Example algorithms',
-            qgis2webProvider.MY_DUMMY_SETTING,
-            'Example setting', 'Default value'))
+        # ProcessingConfig.addSetting(Setting('Example algorithms',
+        #     qgis2webProvider.MY_DUMMY_SETTING,
+        #     'Example setting', 'Default value'))
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore
