@@ -160,7 +160,6 @@ class LeafletWriter(Writer):
             rawLayerName = layer.name()
             safeLayerName = re.sub(
                 '[\W_]+', '', rawLayerName) + unicode(lyrCount)
-            lyrCount += 1
             dataPath = os.path.join(dataStore, safeLayerName)
             tmpFileName = dataPath + '.json'
             layerFileName = dataPath + '.js'
@@ -182,10 +181,11 @@ class LeafletWriter(Writer):
                     if layer.dataProvider().name() != "wms":
                         layersFolder = os.path.join(outputProjectFileName,
                                                     "data")
-                        exportRaster(layer, 0, layersFolder, feedback)
+                        exportRaster(layer, lyrCount, layersFolder, feedback)
             if layer.hasScaleBasedVisibility():
                 scaleDependentLayers += scaleDependentLayerScript(
                     layer, safeLayerName)
+            lyrCount += 1
         if scaleDependentLayers != "":
             scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
