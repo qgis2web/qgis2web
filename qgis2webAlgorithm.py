@@ -30,18 +30,10 @@ from qgis.core import (QgsProject,
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterVector, ParameterRaster
 from processing.tools import dataobjects
 from writerRegistry import (WRITER_REGISTRY)
 from exporter import (EXPORTER_REGISTRY)
-
-__author__ = 'Tom Chadwin'
-__date__ = '2017-04-03'
-__copyright__ = '(C) 2017 by Tom Chadwin'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 
 class exportProject(GeoAlgorithm):
@@ -57,13 +49,6 @@ class exportProject(GeoAlgorithm):
     All Processing algorithms should extend the GeoAlgorithm class.
     """
 
-    # Constants used to refer to parameters and outputs. They will be
-    # used when calling the algorithm from another algorithm, or when
-    # calling from the QGIS console.
-
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
-
     def defineCharacteristics(self):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
@@ -75,17 +60,9 @@ class exportProject(GeoAlgorithm):
         # The branch of the toolbox under which the algorithm will appear
         self.group = 'Export to webmap'
 
-        # We add the input vector layer. It can have any kind of geometry
-        # It is a mandatory (not optional) one, hence the False argument
-        # self.addParameter(ParameterMultipleInput(self.INPUT_LAYER,
-        #     self.tr('Input layers'), False))
-
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
 
-        # The first thing to do is retrieve the values of the parameters
-        # entered by the user
-        # inputFilename = self.getParameterValue(self.INPUT_LAYER)
         writer = WRITER_REGISTRY.createWriterFromProject()
         (writer.layers, writer.groups, writer.popup,
          writer.visible, writer.json,
@@ -93,38 +70,6 @@ class exportProject(GeoAlgorithm):
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
-
-        # Input layers vales are always a string with its location.
-        # That string can be converted into a QGIS object (a
-        # QgsVectorLayer in this case) using the
-        # processing.getObjectFromUri() method.
-        # vectorLayer = dataobjects.getObjectFromUri(inputFilename)
-
-        # And now we can process
-
-        # First we create the output layer. The output value entered by
-        # the user is a string containing a filename, so we can use it
-        # directly
-        # settings = QSettings()
-        # systemEncoding = settings.value('/UI/encoding', 'System')
-        # provider = vectorLayer.dataProvider()
-        # writer = QgsVectorFileWriter(output, systemEncoding,
-        #                              provider.fields(),
-        #                              provider.geometryType(), provider.crs())
-
-        # Now we take the features from input layer and add them to the
-        # output. Method features() returns an iterator, considering the
-        # selection that might exist in layer and the configuration that
-        # indicates should algorithm use only selected features or all
-        # of them
-        # features = vector.features(vectorLayer)
-        # for f in features:
-        #     writer.addFeature(f)
-
-        # There is nothing more to do here. We do not have to open the
-        # layer that we have created. The framework will take care of
-        # that, or will handle it if this algorithm is executed within
-        # a complex model
 
     def getLayersAndGroups(self):
         root_node = QgsProject.instance().layerTreeRoot()
@@ -228,31 +173,67 @@ class exportVector(GeoAlgorithm):
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
 
-        # And now we can process
 
-        # First we create the output layer. The output value entered by
-        # the user is a string containing a filename, so we can use it
-        # directly
-        # settings = QSettings()
-        # systemEncoding = settings.value('/UI/encoding', 'System')
-        # provider = vectorLayer.dataProvider()
-        # writer = QgsVectorFileWriter(output, systemEncoding,
-        #                              provider.fields(),
-        #                              provider.geometryType(), provider.crs())
+class exportRaster(GeoAlgorithm):
+    """This is an example algorithm that takes a vector layer and
+    creates a new one just with just those features of the input
+    layer that are selected.
 
-        # Now we take the features from input layer and add them to the
-        # output. Method features() returns an iterator, considering the
-        # selection that might exist in layer and the configuration that
-        # indicates should algorithm use only selected features or all
-        # of them
-        # features = vector.features(vectorLayer)
-        # for f in features:
-        #     writer.addFeature(f)
+    It is meant to be used as an example of how to create your own
+    algorithms and explain methods and variables used to do it. An
+    algorithm like this will be available in all elements, and there
+    is not need for additional work.
 
-        # There is nothing more to do here. We do not have to open the
-        # layer that we have created. The framework will take care of
-        # that, or will handle it if this algorithm is executed within
-        # a complex model
+    All Processing algorithms should extend the GeoAlgorithm class.
+    """
+
+    # Constants used to refer to parameters and outputs. They will be
+    # used when calling the algorithm from another algorithm, or when
+    # calling from the QGIS console.
+
+    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    INPUT_LAYER = 'INPUT_LAYER'
+
+    def defineCharacteristics(self):
+        """Here we define the inputs and output of the algorithm, along
+        with some other properties.
+        """
+
+        # The name that the user will see in the toolbox
+        self.name = 'Export raster layer'
+
+        # The branch of the toolbox under which the algorithm will appear
+        self.group = 'Export to webmap'
+
+        # We add the input vector layer. It can have any kind of geometry
+        # It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterRaster(self.INPUT_LAYER,
+                                          self.tr('Input raster layer'),
+                                          False))
+
+    def processAlgorithm(self, progress):
+        """Here is where the processing itself takes place."""
+
+        # The first thing to do is retrieve the values of the parameters
+        # entered by the user
+        inputFilename = self.getParameterValue(self.INPUT_LAYER)
+
+        # Input layers vales are always a string with its location.
+        # That string can be converted into a QGIS object (a
+        # QgsVectorLayer in this case) using the
+        # processing.getObjectFromUri() method.
+        rasterLayer = dataobjects.getObjectFromUri(inputFilename)
+
+        writer = WRITER_REGISTRY.createWriterFromProject()
+        writer.layers = [rasterLayer]
+        writer.groups = {}
+        writer.popup = []
+        writer.visible = [True]
+        writer.json = []
+        writer.cluster = []
+        exporter = EXPORTER_REGISTRY.createFromProject()
+        write_folder = exporter.exportDirectory()
+        writer.write(iface, write_folder)
 
 
 def getPopup(layer):

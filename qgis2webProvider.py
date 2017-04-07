@@ -23,7 +23,7 @@
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
-from qgis2webAlgorithm import exportProject, exportVector
+from qgis2webAlgorithm import exportProject, exportVector, exportRaster
 
 __author__ = 'Tom Chadwin'
 __date__ = '2017-04-03'
@@ -45,7 +45,7 @@ class qgis2webProvider(AlgorithmProvider):
         self.activate = False
 
         # Load algorithms
-        self.alglist = [exportProject(), exportVector()]
+        self.alglist = [exportProject(), exportVector(), exportRaster()]
         for alg in self.alglist:
             alg.provider = self
 
