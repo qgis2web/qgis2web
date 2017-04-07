@@ -227,10 +227,10 @@ class exportRaster(GeoAlgorithm):
         writer = WRITER_REGISTRY.createWriterFromProject()
         writer.layers = [rasterLayer]
         writer.groups = {}
-        writer.popup = []
+        writer.popup = [False]
         writer.visible = [True]
-        writer.json = []
-        writer.cluster = []
+        writer.json = [False]
+        writer.cluster = [False]
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
