@@ -149,7 +149,7 @@ class exportProject(GeoAlgorithm):
         json = []
         cluster = []
         for layer in layers:
-            if layer.type() == QgsMapLayer.VectorLayer:        
+            if layer.type() == QgsMapLayer.VectorLayer:
                 layerPopups = getPopup(layer)
             else:
                 layerPopups = []
@@ -165,7 +165,7 @@ class exportProject(GeoAlgorithm):
                 json[::-1],
                 cluster[::-1])
 
-                
+
 class exportVector(GeoAlgorithm):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
@@ -200,9 +200,9 @@ class exportVector(GeoAlgorithm):
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input vector layer'),
-            ParameterVector.VECTOR_TYPE_ANY,
-            False))
+                                          self.tr('Input vector layer'),
+                                          ParameterVector.VECTOR_TYPE_ANY,
+                                          False))
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
