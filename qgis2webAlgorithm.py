@@ -152,6 +152,7 @@ class exportVector(GeoAlgorithm):
                                           False))
 
         self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
+        self.addParameter(ParameterBoolean("CLUSTER", "Cluster", False))
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
@@ -160,6 +161,7 @@ class exportVector(GeoAlgorithm):
         # entered by the user
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         inputVisible = self.getParameterValue("VISIBLE")
+        inputCluster = self.getParameterValue("CLUSTER")
 
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a
@@ -173,7 +175,7 @@ class exportVector(GeoAlgorithm):
         writer.popup = [OrderedDict(getPopup(vectorLayer))]
         writer.visible = [inputVisible]
         writer.json = [True]
-        writer.cluster = [False]
+        writer.cluster = [inputCluster]
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
