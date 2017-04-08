@@ -32,10 +32,13 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterRaster,
-                                        ParameterBoolean)
+                                        ParameterBoolean,
+                                        ParameterString)
 from processing.tools import dataobjects
 from writerRegistry import (WRITER_REGISTRY)
 from exporter import (EXPORTER_REGISTRY)
+from olwriter import (OpenLayersWriter)
+from leafletWriter import (LeafletWriter)
 
 
 class exportProject(GeoAlgorithm):
@@ -146,6 +149,9 @@ class exportVector(GeoAlgorithm):
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterString("MAP_FORMAT", "Map format",
+                                          "OpenLayers"))
+
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input vector layer'),
                                           ParameterVector.VECTOR_TYPE_ANY,
@@ -159,6 +165,7 @@ class exportVector(GeoAlgorithm):
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
+        inputMapFormat = self.getParameterValue("MAP_FORMAT")
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         inputVisible = self.getParameterValue("VISIBLE")
         inputCluster = self.getParameterValue("CLUSTER")
@@ -169,7 +176,13 @@ class exportVector(GeoAlgorithm):
         # processing.getObjectFromUri() method.
         vectorLayer = dataobjects.getObjectFromUri(inputFilename)
 
-        writer = WRITER_REGISTRY.createWriterFromProject()
+        if inputMapFormat.lower() == "leaflet":
+            writer = LeafletWriter()
+        else:
+            writer = OpenLayersWriter()
+        writer.params = WRITER_REGISTRY.readParamsFromProject()
+        writer.params["Appearance"][
+            "Base layer"] = WRITER_REGISTRY.getBasemapsFromProject()
         writer.layers = [vectorLayer]
         writer.groups = {}
         writer.popup = [OrderedDict(getPopup(vectorLayer))]
@@ -214,6 +227,9 @@ class exportRaster(GeoAlgorithm):
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterString("MAP_FORMAT", "Map format",
+                                          "OpenLayers"))
+
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Input raster layer'),
                                           False))
@@ -225,6 +241,7 @@ class exportRaster(GeoAlgorithm):
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
+        inputMapFormat = self.getParameterValue("MAP_FORMAT")
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         inputVisible = self.getParameterValue("VISIBLE")
 
@@ -234,7 +251,13 @@ class exportRaster(GeoAlgorithm):
         # processing.getObjectFromUri() method.
         rasterLayer = dataobjects.getObjectFromUri(inputFilename)
 
-        writer = WRITER_REGISTRY.createWriterFromProject()
+        if inputMapFormat.lower() == "leaflet":
+            writer = LeafletWriter()
+        else:
+            writer = OpenLayersWriter()
+        writer.params = WRITER_REGISTRY.readParamsFromProject()
+        writer.params["Appearance"][
+            "Base layer"] = WRITER_REGISTRY.getBasemapsFromProject()
         writer.layers = [rasterLayer]
         writer.groups = {}
         writer.popup = [False]
