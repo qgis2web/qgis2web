@@ -30,7 +30,9 @@ from qgis.core import (QgsProject,
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector, ParameterRaster
+from processing.core.parameters import (ParameterVector,
+                                        ParameterRaster,
+                                        ParameterBoolean)
 from processing.tools import dataobjects
 from writerRegistry import (WRITER_REGISTRY)
 from exporter import (EXPORTER_REGISTRY)
@@ -149,12 +151,15 @@ class exportVector(GeoAlgorithm):
                                           ParameterVector.VECTOR_TYPE_ANY,
                                           False))
 
+        self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
+
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        inputVisible = self.getParameterValue("VISIBLE")
 
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a
@@ -166,7 +171,7 @@ class exportVector(GeoAlgorithm):
         writer.layers = [vectorLayer]
         writer.groups = {}
         writer.popup = [OrderedDict(getPopup(vectorLayer))]
-        writer.visible = [True]
+        writer.visible = [inputVisible]
         writer.json = [True]
         writer.cluster = [False]
         exporter = EXPORTER_REGISTRY.createFromProject()
@@ -211,12 +216,15 @@ class exportRaster(GeoAlgorithm):
                                           self.tr('Input raster layer'),
                                           False))
 
+        self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
+
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        inputVisible = self.getParameterValue("VISIBLE")
 
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a
@@ -228,7 +236,7 @@ class exportRaster(GeoAlgorithm):
         writer.layers = [rasterLayer]
         writer.groups = {}
         writer.popup = [False]
-        writer.visible = [True]
+        writer.visible = [inputVisible]
         writer.json = [False]
         writer.cluster = [False]
         exporter = EXPORTER_REGISTRY.createFromProject()
