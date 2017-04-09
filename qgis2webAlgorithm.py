@@ -164,14 +164,13 @@ class exportVector(GeoAlgorithm):
 
         self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
         self.addParameter(ParameterBoolean("CLUSTER", "Cluster", False))
-        
+
         for group, settings in defaultParams.iteritems():
             for param, value in settings.iteritems():
                 if isinstance(value, basestring):
                     self.addParameter(ParameterString(param, param, value))
                 if isinstance(value, Number):
                     self.addParameter(ParameterNumber(param, param, value))
-
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
@@ -186,20 +185,20 @@ class exportVector(GeoAlgorithm):
         inputExporter = self.getParameterValue("Exporter")
         inputLib = self.getParameterValue("Mapping library location")
         inputJSON = self.getParameterValue("Minify GeoJSON files")
-        inputPrecision = self.getParameterValue("Precision")        
-        inputExtent = self.getParameterValue("Extent")        
-        inputMaxZoom = self.getParameterValue("Max zoom level")        
-        inputMinZoom = self.getParameterValue("Min zoom level")        
-        inputRestrict = self.getParameterValue("Restrict to extent")        
-        inputAddress = self.getParameterValue("Add address search")        
-        inputLayersList = self.getParameterValue("Add layers list")        
-        inputGeolocate = self.getParameterValue("Geolocate user")        
-        inputHighlight = self.getParameterValue("Highlight on hover")        
-        inputLayerSearch = self.getParameterValue("Layer search")        
-        inputCRS = self.getParameterValue("Match project CRS")        
-        inputMeasure = self.getParameterValue("Measure tool")        
-        inputHover = self.getParameterValue("Show popups on hover")        
-        inputTemplate = self.getParameterValue("Template")        
+        inputPrecision = self.getParameterValue("Precision")
+        inputExtent = self.getParameterValue("Extent")
+        inputMaxZoom = self.getParameterValue("Max zoom level")
+        inputMinZoom = self.getParameterValue("Min zoom level")
+        inputRestrict = self.getParameterValue("Restrict to extent")
+        inputAddress = self.getParameterValue("Add address search")
+        inputLayersList = self.getParameterValue("Add layers list")
+        inputGeolocate = self.getParameterValue("Geolocate user")
+        inputHighlight = self.getParameterValue("Highlight on hover")
+        inputLayerSearch = self.getParameterValue("Layer search")
+        inputCRS = self.getParameterValue("Match project CRS")
+        inputMeasure = self.getParameterValue("Measure tool")
+        inputHover = self.getParameterValue("Show popups on hover")
+        inputTemplate = self.getParameterValue("Template")
 
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a
@@ -284,7 +283,7 @@ class exportRaster(GeoAlgorithm):
                                           False))
 
         self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
-        
+
         for group, settings in defaultParams.iteritems():
             for param, value in settings.iteritems():
                 if isinstance(value, basestring):
@@ -304,20 +303,20 @@ class exportRaster(GeoAlgorithm):
         inputExporter = self.getParameterValue("Exporter")
         inputLib = self.getParameterValue("Mapping library location")
         inputJSON = self.getParameterValue("Minify GeoJSON files")
-        inputPrecision = self.getParameterValue("Precision")        
-        inputExtent = self.getParameterValue("Extent")        
-        inputMaxZoom = self.getParameterValue("Max zoom level")        
-        inputMinZoom = self.getParameterValue("Min zoom level")        
-        inputRestrict = self.getParameterValue("Restrict to extent")        
-        inputAddress = self.getParameterValue("Add address search")        
-        inputLayersList = self.getParameterValue("Add layers list")        
-        inputGeolocate = self.getParameterValue("Geolocate user")        
-        inputHighlight = self.getParameterValue("Highlight on hover")        
-        inputLayerSearch = self.getParameterValue("Layer search")        
-        inputCRS = self.getParameterValue("Match project CRS")        
-        inputMeasure = self.getParameterValue("Measure tool")        
-        inputHover = self.getParameterValue("Show popups on hover")        
-        inputTemplate = self.getParameterValue("Template")        
+        inputPrecision = self.getParameterValue("Precision")
+        inputExtent = self.getParameterValue("Extent")
+        inputMaxZoom = self.getParameterValue("Max zoom level")
+        inputMinZoom = self.getParameterValue("Min zoom level")
+        inputRestrict = self.getParameterValue("Restrict to extent")
+        inputAddress = self.getParameterValue("Add address search")
+        inputLayersList = self.getParameterValue("Add layers list")
+        inputGeolocate = self.getParameterValue("Geolocate user")
+        inputHighlight = self.getParameterValue("Highlight on hover")
+        inputLayerSearch = self.getParameterValue("Layer search")
+        inputCRS = self.getParameterValue("Match project CRS")
+        inputMeasure = self.getParameterValue("Measure tool")
+        inputHover = self.getParameterValue("Show popups on hover")
+        inputTemplate = self.getParameterValue("Template")
 
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a
