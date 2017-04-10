@@ -203,7 +203,8 @@ class exportLayer(GeoAlgorithm):
         
     def writerParams(self, writer, inputParams):
         writer.params["Data export"]["Exporter"] = inputParams[0]
-        writer.params["Data export"]["Mapping library location"] = inputParams[1]
+        writer.params["Data export"]["Mapping library location"] = (
+            inputParams[1])
         writer.params["Data export"]["Minify GeoJSON files"] = inputParams[2]
         writer.params["Data export"]["Precision"] = inputParams[3]
         writer.params["Scale/Zoom"]["Extent"] = inputParams[4]
