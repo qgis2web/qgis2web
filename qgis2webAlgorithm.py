@@ -193,14 +193,14 @@ class exportLayer(GeoAlgorithm):
                 inputMeasure,
                 inputHover,
                 inputTemplate)
-                
+
     def getWriter(self, inputMapFormat):
         if inputMapFormat.lower() == "leaflet":
             writer = LeafletWriter()
         else:
             writer = OpenLayersWriter()
         return writer
-        
+
     def writerParams(self, writer, inputParams):
         writer.params["Data export"]["Exporter"] = inputParams[0]
         writer.params["Data export"]["Mapping library location"] = (
@@ -269,7 +269,7 @@ class exportVector(exportLayer):
         inputCluster = self.getParameterValue("CLUSTER")
 
         inputParams = self.getInputs()
-         
+
         inputMapFormat = self.getParameterValue("MAP_FORMAT")
         writer = self.getWriter(inputMapFormat)
 
@@ -336,7 +336,7 @@ class exportRaster(exportLayer):
         inputVisible = self.getParameterValue("VISIBLE")
 
         inputParams = self.getInputs()
-         
+
         inputMapFormat = self.getParameterValue("MAP_FORMAT")
         writer = self.getWriter(inputMapFormat)
 
