@@ -121,7 +121,7 @@ class exportProject(GeoAlgorithm):
                 cluster[::-1])
 
 
-class exportVector(GeoAlgorithm):
+class exportLayer(GeoAlgorithm):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
     layer that are selected.
@@ -140,6 +140,103 @@ class exportVector(GeoAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
+
+    def addParams(self):
+        # The branch of the toolbox under which the algorithm will appear
+        self.group = 'Export to webmap'
+
+        self.addParameter(ParameterString("MAP_FORMAT", "Map format",
+                                          "OpenLayers"))
+        self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
+
+        for group, settings in defaultParams.iteritems():
+            for param, value in settings.iteritems():
+                if isinstance(value, bool):
+                    self.addParameter(ParameterBoolean(param, param, value))
+                elif isinstance(value, Number):
+                    self.addParameter(ParameterNumber(param, param, value))
+                elif isinstance(value, basestring):
+                    self.addParameter(ParameterString(param, param, value))
+
+    def getInputs(self):
+        inputExporter = self.getParameterValue("Exporter")
+        inputLib = self.getParameterValue("Mapping library location")
+        inputJSON = self.getParameterValue("Minify GeoJSON files")
+        inputPrecision = self.getParameterValue("Precision")
+        inputExtent = self.getParameterValue("Extent")
+        inputMaxZoom = self.getParameterValue("Max zoom level")
+        inputMinZoom = self.getParameterValue("Min zoom level")
+        inputRestrict = self.getParameterValue("Restrict to extent")
+        inputAddress = self.getParameterValue("Add address search")
+        inputLayersList = self.getParameterValue("Add layers list")
+        inputGeolocate = self.getParameterValue("Geolocate user")
+        inputHighlight = self.getParameterValue("Highlight on hover")
+        inputLayerSearch = self.getParameterValue("Layer search")
+        inputCRS = self.getParameterValue("Match project CRS")
+        inputMeasure = self.getParameterValue("Measure tool")
+        inputHover = self.getParameterValue("Show popups on hover")
+        inputTemplate = self.getParameterValue("Template")
+        return (inputExporter,
+                inputLib,
+                inputJSON,
+                inputPrecision,
+                inputExtent,
+                inputMaxZoom,
+                inputMinZoom,
+                inputRestrict,
+                inputAddress,
+                inputLayersList,
+                inputGeolocate,
+                inputHighlight,
+                inputLayerSearch,
+                inputCRS,
+                inputMeasure,
+                inputHover,
+                inputTemplate)
+                
+    def getWriter(self, inputMapFormat):
+        if inputMapFormat.lower() == "leaflet":
+            writer = LeafletWriter()
+        else:
+            writer = OpenLayersWriter()
+        return writer
+        
+    def writerParams(self, writer, inputParams):
+        writer.params["Data export"]["Exporter"] = inputParams[0]
+        writer.params["Data export"]["Mapping library location"] = inputParams[1]
+        writer.params["Data export"]["Minify GeoJSON files"] = inputParams[2]
+        writer.params["Data export"]["Precision"] = inputParams[3]
+        writer.params["Scale/Zoom"]["Extent"] = inputParams[4]
+        writer.params["Scale/Zoom"]["Max zoom level"] = inputParams[5]
+        writer.params["Scale/Zoom"]["Min zoom level"] = inputParams[6]
+        writer.params["Scale/Zoom"]["Restrict to extent"] = inputParams[7]
+        writer.params["Appearance"]["Add address search"] = inputParams[8]
+        writer.params["Appearance"]["Add layers list"] = inputParams[9]
+        writer.params["Appearance"]["Geolocate user"] = inputParams[10]
+        writer.params["Appearance"]["Highlight on hover"] = inputParams[11]
+        writer.params["Appearance"]["Layer search"] = inputParams[12]
+        writer.params["Appearance"]["Match project CRS"] = inputParams[13]
+        writer.params["Appearance"]["Measure tool"] = inputParams[14]
+        writer.params["Appearance"]["Show popups on hover"] = inputParams[15]
+        writer.params["Appearance"]["Template"] = inputParams[16]
+
+
+class exportVector(exportLayer):
+    """This is an example algorithm that takes a vector layer and
+    creates a new one just with just those features of the input
+    layer that are selected.
+
+    It is meant to be used as an example of how to create your own
+    algorithms and explain methods and variables used to do it. An
+    algorithm like this will be available in all elements, and there
+    is not need for additional work.
+
+    All Processing algorithms should extend the GeoAlgorithm class.
+    """
+
+    # Constants used to refer to parameters and outputs. They will be
+    # used when calling the algorithm from another algorithm, or when
+    # calling from the QGIS console.
 
     def defineCharacteristics(self):
         """Here we define the inputs and output of the algorithm, along
@@ -149,93 +246,44 @@ class exportVector(GeoAlgorithm):
         # The name that the user will see in the toolbox
         self.name = 'Export vector layer'
 
-        # The branch of the toolbox under which the algorithm will appear
-        self.group = 'Export to webmap'
-
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterString("MAP_FORMAT", "Map format",
-                                          "OpenLayers"))
-
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input vector layer'),
                                           ParameterVector.VECTOR_TYPE_ANY,
                                           False))
 
-        self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
         self.addParameter(ParameterBoolean("CLUSTER", "Cluster", False))
 
-        for group, settings in defaultParams.iteritems():
-            for param, value in settings.iteritems():
-                if isinstance(value, bool):
-                    self.addParameter(ParameterBoolean(param, param, value))
-                elif isinstance(value, Number):
-                    self.addParameter(ParameterNumber(param, param, value))
-                elif isinstance(value, basestring):
-                    self.addParameter(ParameterString(param, param, value))
+        self.addParams()
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
-        inputMapFormat = self.getParameterValue("MAP_FORMAT")
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        inputLayer = dataobjects.getObjectFromUri(inputFilename)
         inputVisible = self.getParameterValue("VISIBLE")
         inputCluster = self.getParameterValue("CLUSTER")
 
-        inputExporter = self.getParameterValue("Exporter")
-        inputLib = self.getParameterValue("Mapping library location")
-        inputJSON = self.getParameterValue("Minify GeoJSON files")
-        inputPrecision = self.getParameterValue("Precision")
-        inputExtent = self.getParameterValue("Extent")
-        inputMaxZoom = self.getParameterValue("Max zoom level")
-        inputMinZoom = self.getParameterValue("Min zoom level")
-        inputRestrict = self.getParameterValue("Restrict to extent")
-        inputAddress = self.getParameterValue("Add address search")
-        inputLayersList = self.getParameterValue("Add layers list")
-        inputGeolocate = self.getParameterValue("Geolocate user")
-        inputHighlight = self.getParameterValue("Highlight on hover")
-        inputLayerSearch = self.getParameterValue("Layer search")
-        inputCRS = self.getParameterValue("Match project CRS")
-        inputMeasure = self.getParameterValue("Measure tool")
-        inputHover = self.getParameterValue("Show popups on hover")
-        inputTemplate = self.getParameterValue("Template")
+        inputParams = self.getInputs()
+         
+        inputMapFormat = self.getParameterValue("MAP_FORMAT")
+        writer = self.getWriter(inputMapFormat)
 
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS object (a
         # QgsVectorLayer in this case) using the
         # processing.getObjectFromUri() method.
-        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
-
-        if inputMapFormat.lower() == "leaflet":
-            writer = LeafletWriter()
-        else:
-            writer = OpenLayersWriter()
 
         writer.params = defaultParams
-        writer.params["Data export"]["Exporter"] = inputExporter
-        writer.params["Data export"]["Mapping library location"] = inputLib
-        writer.params["Data export"]["Minify GeoJSON files"] = inputJSON
-        writer.params["Data export"]["Precision"] = inputPrecision
-        writer.params["Scale/Zoom"]["Extent"] = inputExtent
-        writer.params["Scale/Zoom"]["Max zoom level"] = inputMaxZoom
-        writer.params["Scale/Zoom"]["Min zoom level"] = inputMinZoom
-        writer.params["Scale/Zoom"]["Restrict to extent"] = inputRestrict
-        writer.params["Appearance"]["Add address search"] = inputAddress
-        writer.params["Appearance"]["Add layers list"] = inputLayersList
-        writer.params["Appearance"]["Geolocate user"] = inputGeolocate
-        writer.params["Appearance"]["Highlight on hover"] = inputHighlight
-        writer.params["Appearance"]["Layer search"] = inputLayerSearch
-        writer.params["Appearance"]["Match project CRS"] = inputCRS
-        writer.params["Appearance"]["Measure tool"] = inputMeasure
-        writer.params["Appearance"]["Show popups on hover"] = inputHover
-        writer.params["Appearance"]["Template"] = inputTemplate
+        self.writerParams(writer, inputParams)
         writer.params["Appearance"][
             "Base layer"] = WRITER_REGISTRY.getBasemapsFromProject()
-        writer.layers = [vectorLayer]
+        writer.layers = [inputLayer]
         writer.groups = {}
-        writer.popup = [OrderedDict(getPopup(vectorLayer))]
+        writer.popup = [OrderedDict(getPopup(inputLayer))]
         writer.visible = [inputVisible]
         writer.json = [True]
         writer.cluster = [inputCluster]
@@ -244,7 +292,7 @@ class exportVector(GeoAlgorithm):
         writer.write(iface, write_folder)
 
 
-class exportRaster(GeoAlgorithm):
+class exportRaster(exportLayer):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
     layer that are selected.
@@ -261,9 +309,6 @@ class exportRaster(GeoAlgorithm):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
-
     def defineCharacteristics(self):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
@@ -272,88 +317,33 @@ class exportRaster(GeoAlgorithm):
         # The name that the user will see in the toolbox
         self.name = 'Export raster layer'
 
-        # The branch of the toolbox under which the algorithm will appear
-        self.group = 'Export to webmap'
-
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterString("MAP_FORMAT", "Map format",
-                                          "OpenLayers"))
-
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Input raster layer'),
                                           False))
 
-        self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
-
-        for group, settings in defaultParams.iteritems():
-            for param, value in settings.iteritems():
-                if isinstance(value, bool):
-                    self.addParameter(ParameterBoolean(param, param, value))
-                elif isinstance(value, Number):
-                    self.addParameter(ParameterNumber(param, param, value))
-                elif isinstance(value, basestring):
-                    self.addParameter(ParameterString(param, param, value))
+        self.addParams()
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
-        inputMapFormat = self.getParameterValue("MAP_FORMAT")
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        inputLayer = dataobjects.getObjectFromUri(inputFilename)
         inputVisible = self.getParameterValue("VISIBLE")
 
-        inputExporter = self.getParameterValue("Exporter")
-        inputLib = self.getParameterValue("Mapping library location")
-        inputJSON = self.getParameterValue("Minify GeoJSON files")
-        inputPrecision = self.getParameterValue("Precision")
-        inputExtent = self.getParameterValue("Extent")
-        inputMaxZoom = self.getParameterValue("Max zoom level")
-        inputMinZoom = self.getParameterValue("Min zoom level")
-        inputRestrict = self.getParameterValue("Restrict to extent")
-        inputAddress = self.getParameterValue("Add address search")
-        inputLayersList = self.getParameterValue("Add layers list")
-        inputGeolocate = self.getParameterValue("Geolocate user")
-        inputHighlight = self.getParameterValue("Highlight on hover")
-        inputLayerSearch = self.getParameterValue("Layer search")
-        inputCRS = self.getParameterValue("Match project CRS")
-        inputMeasure = self.getParameterValue("Measure tool")
-        inputHover = self.getParameterValue("Show popups on hover")
-        inputTemplate = self.getParameterValue("Template")
-
-        # Input layers vales are always a string with its location.
-        # That string can be converted into a QGIS object (a
-        # QgsVectorLayer in this case) using the
-        # processing.getObjectFromUri() method.
-        rasterLayer = dataobjects.getObjectFromUri(inputFilename)
-
-        if inputMapFormat.lower() == "leaflet":
-            writer = LeafletWriter()
-        else:
-            writer = OpenLayersWriter()
+        inputParams = self.getInputs()
+         
+        inputMapFormat = self.getParameterValue("MAP_FORMAT")
+        writer = self.getWriter(inputMapFormat)
 
         writer.params = defaultParams
-        writer.params["Data export"]["Exporter"] = inputExporter
-        writer.params["Data export"]["Mapping library location"] = inputLib
-        writer.params["Data export"]["Minify GeoJSON files"] = inputJSON
-        writer.params["Data export"]["Precision"] = inputPrecision
-        writer.params["Scale/Zoom"]["Extent"] = inputExtent
-        writer.params["Scale/Zoom"]["Max zoom level"] = inputMaxZoom
-        writer.params["Scale/Zoom"]["Min zoom level"] = inputMinZoom
-        writer.params["Scale/Zoom"]["Restrict to extent"] = inputRestrict
-        writer.params["Appearance"]["Add address search"] = inputAddress
-        writer.params["Appearance"]["Add layers list"] = inputLayersList
-        writer.params["Appearance"]["Geolocate user"] = inputGeolocate
-        writer.params["Appearance"]["Highlight on hover"] = inputHighlight
-        writer.params["Appearance"]["Layer search"] = inputLayerSearch
-        writer.params["Appearance"]["Match project CRS"] = inputCRS
-        writer.params["Appearance"]["Measure tool"] = inputMeasure
-        writer.params["Appearance"]["Show popups on hover"] = inputHover
-        writer.params["Appearance"]["Template"] = inputTemplate
+        self.writerParams(writer, inputParams)
         writer.params["Appearance"][
             "Base layer"] = WRITER_REGISTRY.getBasemapsFromProject()
-        writer.layers = [rasterLayer]
+        writer.layers = [inputLayer]
         writer.groups = {}
         writer.popup = [False]
         writer.visible = [inputVisible]
