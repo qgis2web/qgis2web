@@ -167,10 +167,12 @@ class exportVector(GeoAlgorithm):
 
         for group, settings in defaultParams.iteritems():
             for param, value in settings.iteritems():
-                if isinstance(value, basestring):
-                    self.addParameter(ParameterString(param, param, value))
-                if isinstance(value, Number):
+                if isinstance(value, bool):
+                    self.addParameter(ParameterBoolean(param, param, value))
+                elif isinstance(value, Number):
                     self.addParameter(ParameterNumber(param, param, value))
+                elif isinstance(value, basestring):
+                    self.addParameter(ParameterString(param, param, value))
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
@@ -286,10 +288,12 @@ class exportRaster(GeoAlgorithm):
 
         for group, settings in defaultParams.iteritems():
             for param, value in settings.iteritems():
-                if isinstance(value, basestring):
-                    self.addParameter(ParameterString(param, param, value))
-                if isinstance(value, Number):
+                if isinstance(value, bool):
+                    self.addParameter(ParameterBoolean(param, param, value))
+                elif isinstance(value, Number):
                     self.addParameter(ParameterNumber(param, param, value))
+                elif isinstance(value, basestring):
+                    self.addParameter(ParameterString(param, param, value))
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
