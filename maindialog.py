@@ -555,7 +555,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 for layer in item.layers:
                     groupLayers.append(layer)
                     layers.append(layer)
-                    popup.append(utils.NO_POPUP)
+                    popup.append({})
                     if item.visible:
                         visible.append(True)
                     else:
