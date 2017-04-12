@@ -269,7 +269,7 @@ class exportVector(exportLayer):
         inputVisible = self.getParameterValue("VISIBLE")
         inputCluster = self.getParameterValue("CLUSTER")
         inputPopup = self.getParameterValue("POPUP")
-        
+
         popupList = []
         fields = inputPopup.split(",")
         for field in fields:
