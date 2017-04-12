@@ -338,6 +338,7 @@ class exportVector(exportLayer):
                 <dd>None | layer:field</dd>
             </dl>""")
 
+
 class exportRaster(exportLayer):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
