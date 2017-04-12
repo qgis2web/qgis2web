@@ -304,6 +304,39 @@ class exportVector(exportLayer):
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
 
+    def shortHelp(self):
+        return self._formatHelp("""
+            <p>Export the selected vector layer as a webmap</p>
+            <h2>Inputs</h2>
+            <dl>
+                <dt>Popup field headers</dt>
+                <dd>fieldname: value, fieldname: value, fieldname: value
+                    value = no label | inline label | header label</dd>
+                <dt>Map format</dt>
+                <dd>OpenLayers | Leaflet</dd>
+                <dt>Mapping library location</dt>
+                <dd>Local | CDN</dd>
+                <dt>Exporter</dt>
+                <dd>Export to folder | Export to FTP site</dd>
+                <dt>Exporter</dt>
+                <dd>Export to folder | Export to FTP site</dd>
+                <dt>Precision</dt>
+                <dd>maintain | [decimal places]</dd>
+                <dt>Min zoom level</dt>
+                <dd>1-28</dd>
+                <dt>Max zoom level</dt>
+                <dd>1-28</dd>
+                <dt>Extent</dt>
+                <dd>Canvas extent | Fit to layers extent</dd>
+                <dt>Add layers list</dt>
+                <dd>None | collapsed | expanded</dd>
+                <dt>Measure tool</dt>
+                <dd>None | metric | imperial</dd>
+                <dt>Template</dt>
+                <dd>[filename]</dd>
+                <dt>Layer search</dt>
+                <dd>None | layer:field</dd>
+            </dl>""")
 
 class exportRaster(exportLayer):
     """This is an example algorithm that takes a vector layer and
@@ -365,3 +398,32 @@ class exportRaster(exportLayer):
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
+
+    def shortHelp(self):
+        return self._formatHelp("""
+            <p>Export the selected raster layer as a webmap</p>
+            <h2>Inputs</h2>
+            <dl>
+                <dt>Map format</dt>
+                <dd>OpenLayers | Leaflet</dd>
+                <dt>Mapping library location</dt>
+                <dd>Local | CDN</dd>
+                <dt>Exporter</dt>
+                <dd>Export to folder | Export to FTP site</dd>
+                <dt>Exporter</dt>
+                <dd>Export to folder | Export to FTP site</dd>
+                <dt>Precision</dt>
+                <dd>maintain | [decimal places]</dd>
+                <dt>Min zoom level</dt>
+                <dd>1-28</dd>
+                <dt>Max zoom level</dt>
+                <dd>1-28</dd>
+                <dt>Extent</dt>
+                <dd>Canvas extent | Fit to layers extent</dd>
+                <dt>Add layers list</dt>
+                <dd>None | collapsed | expanded</dd>
+                <dt>Measure tool</dt>
+                <dd>None | metric | imperial</dd>
+                <dt>Template</dt>
+                <dd>[filename]</dd>
+            </dl>""")
