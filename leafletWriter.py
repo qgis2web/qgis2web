@@ -96,7 +96,6 @@ class LeafletWriter(Writer):
                                               cluster=self.cluster,
                                               params=self.params,
                                               folder=dest_folder)
-        print self.popup
         result = WriterResult()
         result.index_file = self.preview_file
         result.folder = os.path.dirname(self.preview_file)
@@ -174,9 +173,9 @@ class LeafletWriter(Writer):
                                     safeLayerName, minify, canvas,
                                     restrictToExtent, iface, extent)
                     new_src += jsonScript(safeLayerName)
-                    scaleDependentLayers =\
+                    scaleDependentLabels =\
                         scaleDependentLabelScript(layer, safeLayerName)
-                    labelVisibility += scaleDependentLayers
+                    labelVisibility += scaleDependentLabels
                     feedback.completeStep()
 
                 elif layer.type() == QgsMapLayer.RasterLayer:
