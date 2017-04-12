@@ -255,6 +255,7 @@ class exportVector(exportLayer):
                                           False))
 
         self.addParameter(ParameterBoolean("CLUSTER", "Cluster", False))
+        self.addParameter(ParameterString("POPUP", "Popup field headers", ""))
 
         self.addParams()
 
@@ -267,6 +268,17 @@ class exportVector(exportLayer):
         inputLayer = dataobjects.getObjectFromUri(inputFilename)
         inputVisible = self.getParameterValue("VISIBLE")
         inputCluster = self.getParameterValue("CLUSTER")
+        inputPopup = self.getParameterValue("POPUP")
+        
+        popupList = []
+        fields = inputPopup.split(",")
+        for field in fields:
+            fieldList = []
+            print field
+            k, v = field.split(":")
+            fieldList.append(k.strip())
+            fieldList.append(v.strip())
+            popupList.append(tuple(fieldList))
 
         inputParams = self.getInputs()
 
@@ -284,7 +296,7 @@ class exportVector(exportLayer):
             "Base layer"] = WRITER_REGISTRY.getBasemapsFromProject()
         writer.layers = [inputLayer]
         writer.groups = {}
-        writer.popup = [OrderedDict(getPopup(inputLayer))]
+        writer.popup = [OrderedDict(popupList)]
         writer.visible = [inputVisible]
         writer.json = [True]
         writer.cluster = [inputCluster]
@@ -353,22 +365,3 @@ class exportRaster(exportLayer):
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
-
-
-def getPopup(layer):
-    options = []
-    layerPopups = []
-    fields = layer.pendingFields()
-    for f in fields:
-        fieldIndex = fields.indexFromName(unicode(f.name()))
-        formCnf = layer.editFormConfig()
-        editorWidget = formCnf.widgetType(fieldIndex)
-        if editorWidget == QgsVectorLayer.Hidden or \
-           editorWidget == 'Hidden':
-            continue
-        options.append(f.name())
-    for option in options:
-        custProp = layer.customProperty("qgis2web/popup/" + option)
-        pair = (option, custProp)
-        layerPopups.append(pair)
-    return layerPopups

@@ -96,6 +96,7 @@ class LeafletWriter(Writer):
                                               cluster=self.cluster,
                                               params=self.params,
                                               folder=dest_folder)
+        print self.popup
         result = WriterResult()
         result.index_file = self.preview_file
         result.folder = os.path.dirname(self.preview_file)
