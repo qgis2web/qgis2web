@@ -23,7 +23,7 @@ install:
   - sudo pip install coverage
   - sudo pip install nose
   - sudo pip install --upgrade pep8
-  - sudo pip install --upgrade pylint
+  - sudo apt-get install pylint
   - sudo pip install python-coveralls
 
 before_script:
