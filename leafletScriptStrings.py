@@ -70,7 +70,7 @@ def scaleDependentScript(layers):
     scaleDependent += layers
     scaleDependent += """
         });"""
-    # scaleDependent += layers
+    scaleDependent += layers
     return scaleDependent
 
 
