@@ -280,7 +280,12 @@ class LeafletWriter(Writer):
             end = scaleBar(placement)
         else:
             end = ''
-        searchLayer = "layer_%s" % params["Appearance"]["Search layer"]
+        if cluster[count]:
+            layerType = "cluster"
+        else:
+            layerType = "layer"
+        searchLayer = "%s_%s" % (params["Appearance"]["Search layer"],
+                                 layerType)
         end += endHTMLscript(
             wfsLayers, layerSearch, labelVisibility, searchLayer)
         new_src += end
