@@ -284,8 +284,8 @@ class LeafletWriter(Writer):
             layerType = "cluster"
         else:
             layerType = "layer"
-        searchLayer = "%s_%s" % (params["Appearance"]["Search layer"],
-                                 layerType)
+        searchLayer = "%s_%s" % (layerType,
+                                 params["Appearance"]["Search layer"])
         end += endHTMLscript(
             wfsLayers, layerSearch, labelVisibility, searchLayer)
         new_src += end
