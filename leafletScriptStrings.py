@@ -23,16 +23,20 @@ def jsonScript(layer):
     return json
 
 
-def scaleDependentLayerScript(layer, layerName):
+def scaleDependentLayerScript(layer, layerName, cluster):
     min = layer.minimumScale()
     max = layer.maximumScale()
+    if cluster:
+        layerType = "cluster"
+    else:
+        layerType = "layer"
     scaleDependentLayer = """
             if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
-                map.addLayer(layer_{layerName});
+                map.addLayer({layerType}_{layerName});
             }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
-                map.removeLayer(layer_{layerName});
+                map.removeLayer({layerType}_{layerName});
             }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
-                         layerName=layerName)
+                         layerName=layerName, layerType=layerType)
     return scaleDependentLayer
 
 
@@ -66,7 +70,7 @@ def scaleDependentScript(layers):
     scaleDependent += layers
     scaleDependent += """
         });"""
-    scaleDependent += layers
+    # scaleDependent += layers
     return scaleDependent
 
 

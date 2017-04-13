@@ -157,7 +157,8 @@ class LeafletWriter(Writer):
         crs = QgsCoordinateReferenceSystem.EpsgCrsId
         exp_crs = QgsCoordinateReferenceSystem(4326, crs)
         lyrCount = 0
-        for layer, jsonEncode, eachPopup in zip(layer_list, json, popup):
+        for layer, jsonEncode, eachPopup, clst in zip(layer_list, json,
+                                                      popup, cluster):
             rawLayerName = layer.name()
             safeLayerName = re.sub(
                 '[\W_]+', '', rawLayerName) + unicode(lyrCount)
@@ -185,7 +186,7 @@ class LeafletWriter(Writer):
                         exportRaster(layer, lyrCount, layersFolder, feedback)
             if layer.hasScaleBasedVisibility():
                 scaleDependentLayers += scaleDependentLayerScript(
-                    layer, safeLayerName)
+                    layer, safeLayerName, clst)
             lyrCount += 1
         if scaleDependentLayers != "":
             scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
