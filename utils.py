@@ -497,7 +497,7 @@ def replaceInTemplate(template, values):
                         template)
     with open(path) as f:
         lines = f.readlines()
-    s = "".join(lines)
+    s = "".join(lines).decode('utf-8')
     for name, value in values.iteritems():
         s = s.replace(name, value)
     return s

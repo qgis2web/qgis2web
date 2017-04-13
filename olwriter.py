@@ -276,7 +276,7 @@ layerSwitcher.showPanel();
             templateOutput = replaceInTemplate(
                 htmlTemplate + ".html", values)
             templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
-            f.write(templateOutput)
+            f.write(templateOutput.encode('utf-8'))
         values = {"@GEOLOCATEHEAD@": geolocateHead,
                   "@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
