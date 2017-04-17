@@ -210,3 +210,6 @@ software:</p>
     <li>Leaflet.heat, by @mourner</li>
     <li>OSMBuildings, by @kekscom</li>
 </ul>
+
+
+[![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
