@@ -477,7 +477,14 @@ var wgs84Sphere = new ol.Sphere(6378137);
  */
 var formatLength = function(line) {
   var length;
-    length = Math.round(line.getLength() * 100) / 100;
+  var coordinates = line.getCoordinates();
+  length = 0;
+  var sourceProj = map.getView().getProjection();
+  for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
+      var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
+      length += wgs84Sphere.haversineDistance(c1, c2);
+    }
   var output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) +
