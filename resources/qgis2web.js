@@ -94,7 +94,6 @@ var onPointerMove = function(evt) {
             return;
         }
 
-
         var doPopup = false;
         if ( count == 1) {
             currentFeature = feature;
