@@ -36,7 +36,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     layerVars = ""
     layer_names_id = {}
     for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
-                                                                clustered)):
+                                                              clustered)):
         layer_names_id[layer.id()] = str(count)
 
         try:
