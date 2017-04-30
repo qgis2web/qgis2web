@@ -34,8 +34,11 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 });""" % (baseGroup, ','.join(basemaps))
 
     layerVars = ""
+    layer_names_id = {}
     for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
                                                               clustered)):
+        layer_names_id[layer.id()] = str(count)
+
         try:
             if is25d(layer, canvas, restrictToExtent, extent):
                 pass
@@ -59,6 +62,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                 title: "%s"});\n''' %
                       ("group_" + safeName(group),
                        ",".join(["lyr_" + safeName(layer.name())
+                                + layer_names_id[layer.id()]
                                 for layer in groupLayers]),
                        group))
         for layer in groupLayers:
