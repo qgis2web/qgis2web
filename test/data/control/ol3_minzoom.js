@@ -196,6 +196,7 @@ var onSingleClick = function(evt) {
     var popupField;
     var popupText = '';
     var currentFeature;
+    var currentFeatureKeys;
     var count = 1;
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         var doPopup = false;
