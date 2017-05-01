@@ -181,7 +181,7 @@ var onPointerMove = function(evt) {
                     highlightStyle = new ol.style.Style({
                         image: new ol.style.Circle({
                             fill: new ol.style.Fill({
-                                color: "#ffff00"
+                                color: "@HIGHLIGHTFILL@"
                             }),
                             radius: radius
                         })
@@ -192,7 +192,7 @@ var onPointerMove = function(evt) {
 
                     highlightStyle = new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: '#ffff00',
+                            color: '@HIGHLIGHTFILL@',
                             lineDash: null,
                             width: featureWidth
                         })
@@ -201,7 +201,7 @@ var onPointerMove = function(evt) {
                 } else {
                     highlightStyle = new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: '#ffff00'
+                            color: '@HIGHLIGHTFILL@'
                         })
                     })
                 }
