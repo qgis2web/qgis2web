@@ -269,7 +269,7 @@ var onSingleClick = function(evt) {
 	            popupText = popupText + '</table>';
 	        }
 	    }
-        count++;
+      count++;
     });
 
     if (popupText) {
