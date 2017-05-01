@@ -93,9 +93,8 @@ var onPointerMove = function(evt) {
         if (layersList.indexOf(layer) === -1) {
             return;
         }
-
         var doPopup = false;
-        if ( count == 1) {
+        if (count == 1) {
             currentFeature = feature;
             currentLayer = layer;
             currentFeatureKeys = currentFeature.getKeys();
