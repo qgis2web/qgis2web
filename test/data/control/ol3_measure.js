@@ -107,8 +107,8 @@ var featureOverlay = new ol.layer.Vector({
     updateWhileInteracting: true // optional, for instant visual feedback
 });
 
-var doHighlight = @DOHIGHLIGHT@;
-var doHover = @ONHOVER@;
+var doHighlight = false;
+var doHover = false;
 
 var highlight;
 var onPointerMove = function(evt) {
