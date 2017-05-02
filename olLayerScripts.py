@@ -61,8 +61,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                 layers: [%s],
                                 title: "%s"});\n''' %
                       ("group_" + safeName(group),
-                       ",".join(["lyr_" + safeName(layer.name())
-                                + layer_names_id[layer.id()]
+                       ",".join(["lyr_" + safeName(layer.name()) +
+                                layer_names_id[layer.id()]
                                 for layer in groupLayers]),
                        group))
         for layer in groupLayers:
