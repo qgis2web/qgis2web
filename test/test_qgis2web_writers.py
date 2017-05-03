@@ -2662,6 +2662,42 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def test84_Leaflet_WMS(self):
+        """Leaflet WMS"""
+        layer_url = (
+            'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
+        layer = load_wms_layer(layer_url, 'wms')
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(
+            test_data_path('control', 'leaflet_wms.html'), 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
+                        ]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+
+        # Open the test file
+        test_style_file = open(
+            result.replace(
+                'file://', ''))
+        test_style_output = test_style_file.read()
+        test_output = test_style_output
+
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
