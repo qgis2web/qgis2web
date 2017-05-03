@@ -7,7 +7,7 @@ var lyr_wms0 = new ol.layer.Tile({
                                 "TILED": "true",
                                 "VERSION": "1.3.0"},
                             })),
-                            title: "GBR BGS 1:625k Bedrock Lithology",
+                            title: "wms",
                             opacity: 1.000000,
                             
                             
