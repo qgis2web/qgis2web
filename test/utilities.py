@@ -136,3 +136,27 @@ def load_wfs_layer(url, name):
     if not layer.isValid():
         raise Exception(message)
     return layer
+
+
+def load_wms_layer(url, name):
+    """Helper to load wms layer and load it as QGIS layer.
+
+    :param url: The complete URL to the WMS layer.
+    :type url: str
+
+    :param name: The layer name.
+    :type name: str
+
+    :returns: Layer instance.
+    :rtype: QgsMapLayer
+    """
+    layer = QgsRasterLayer(url, name, 'WMS')
+    # noinspection PyUnresolvedReferences
+    message = 'Layer "%s" is not valid' % layer.source()
+    # noinspection PyUnresolvedReferences
+    if not layer.isValid():
+        print message
+    # noinspection PyUnresolvedReferences
+    if not layer.isValid():
+        raise Exception(message)
+    return layer

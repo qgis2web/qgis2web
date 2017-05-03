@@ -30,7 +30,7 @@ from PyQt4.QtGui import QDialogButtonBox, QDialog
 
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
-from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
+from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from configparams import (getDefaultParams)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
@@ -2485,6 +2485,36 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                           ]
                          )
+        self.assertEqual(writer.json, [False])
+
+    def test82_OL3_WMS(self):
+        """Dialog test: OL3 WMS"""
+        layer_url = (
+            'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
+        layer = load_wms_layer(layer_url, 'wms')
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
+        self.dialog.ol3.click()
+
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, OpenLayersWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
+                                        ])
         self.assertEqual(writer.json, [False])
 
     def test99_export_folder(self):
