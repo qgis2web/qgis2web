@@ -2608,7 +2608,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Export to web map
-        writer = OpenLayersWriter()
+        writer = LeafletWriter()
         writer.params = self.defaultParams()
         writer.groups = {}
         writer.layers = [layer]
