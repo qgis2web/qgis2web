@@ -2555,7 +2555,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         assert os.path.exists(result.replace('index.html', 'layers/test0.png'))
 
     def test80_OL3_heatmap(self):
-        """OL3 point single"""
+        """OL3 heatmap"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'heatmap.qml')
         control_path = test_data_path(
@@ -2581,8 +2581,6 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.json = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
-        # test_file = open(result)
-        # test_output = test_file.read()
 
         test_style_file = open(
             result.replace(
@@ -2590,6 +2588,39 @@ class qgis2web_WriterTest(unittest.TestCase):
                     'index.html', 'layers/layers.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
+
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
+    def test81_Leaflet_heatmap(self):
+        """Leaflet heatmap"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'heatmap.qml')
+        control_path = test_data_path(
+            'control', 'leaflet_heatmap.html')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = OpenLayersWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
+                        ]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+        test_file = open(result)
+        test_output = test_file.read()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
