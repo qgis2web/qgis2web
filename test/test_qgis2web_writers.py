@@ -2629,7 +2629,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         """OL3 WMS"""
         layer_url = (
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
-        layer = load_wms_layer(layer_url, 'point')
+        layer = load_wms_layer(layer_url, 'wms')
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
@@ -2639,7 +2639,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Export to web map
-        writer = LeafletWriter()
+        writer = OpenLayersWriter()
         writer.params = self.defaultParams()
         writer.groups = {}
         writer.layers = [layer]
