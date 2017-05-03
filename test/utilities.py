@@ -150,7 +150,7 @@ def load_wms_layer(url, name):
     :returns: Layer instance.
     :rtype: QgsMapLayer
     """
-    layer = QgsRasterLayer(url, name, 'WMS')
+    layer = QgsRasterLayer(url, name, 'wms')
     # noinspection PyUnresolvedReferences
     message = 'Layer "%s" is not valid' % layer.source()
     # noinspection PyUnresolvedReferences
