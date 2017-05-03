@@ -1,4 +1,4 @@
-var lyr_GBRBGS1625kBedrockLithology0 = new ol.layer.Tile({
+var lyr_wms0 = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
                               url: "http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?",
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
@@ -13,5 +13,5 @@ var lyr_GBRBGS1625kBedrockLithology0 = new ol.layer.Tile({
                             
                           });
 
-lyr_GBRBGS1625kBedrockLithology0.setVisible(true);
-var layersList = [lyr_GBRBGS1625kBedrockLithology0];
+lyr_wms0.setVisible(true);
+var layersList = [lyr_wms0];
