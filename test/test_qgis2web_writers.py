@@ -2761,8 +2761,12 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.json = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
-        test_file = open(result)
-        test_output = test_file.read()
+        test_style_file = open(
+            result.replace(
+                'file://', '').replace(
+                    'index.html', 'styles/airports0_style.js'))
+        test_style_output = test_style_file.read()
+        test_output = test_style_output
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
