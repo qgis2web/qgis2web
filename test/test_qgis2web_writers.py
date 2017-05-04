@@ -2732,6 +2732,40 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def test86_OL3_rulebased(self):
+        """OL3 rule-based"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_rule-based.qml')
+        control_path = test_data_path(
+            'control', 'ol3_rule-based.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = OpenLayersWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+             ('USE', 'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+        test_file = open(result)
+        test_output = test_file.read()
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
