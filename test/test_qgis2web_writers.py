@@ -2771,7 +2771,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
     def test87_Leaflet_labels(self):
-        """Leaflet rule-based"""
+        """Leaflet labels"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_labels.qml')
         control_path = test_data_path(

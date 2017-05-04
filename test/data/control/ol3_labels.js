@@ -21,7 +21,7 @@ var style_airports0 = function(feature, resolution){
 
     if (!styleCache_airports0[key]){
         var text = new ol.style.Text({
-              font: '10.725px \'Sans Serif\', sans-serif',
+              font: '10.725px \'MS Shell Dlg 2\', sans-serif',
               text: labelText,
               textBaseline: "center",
               textAlign: "left",
