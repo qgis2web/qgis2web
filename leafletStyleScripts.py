@@ -7,6 +7,7 @@ from PyQt4.QtCore import QPyNullVariant
 from qgis.core import (QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
+                       QgsRuleBasedRendererV2,
                        QgsSimpleMarkerSymbolLayerV2,
                        QgsSimpleLineSymbolLayerV2,
                        QgsSimpleFillSymbolLayerV2,
