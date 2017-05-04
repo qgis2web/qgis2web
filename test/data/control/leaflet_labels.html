@@ -106,7 +106,7 @@
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_airports0(feature)).bindTooltip((feature.properties['NAME'] !== null?String('<div style="color: #000000; font-size: 8pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + feature.properties['NAME']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_airports0'}).openTooltip();
+                return L.circleMarker(latlng, style_airports0(feature)).bindTooltip((feature.properties['NAME'] !== null?String('<div style="color: #000000; font-size: 8pt; font-family: \'Sans Serif\', sans-serif;">' + feature.properties['NAME']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_airports0'}).openTooltip();
             }
         });
         bounds_group.addLayer(layer_airports0);

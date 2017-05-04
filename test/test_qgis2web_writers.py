@@ -2804,6 +2804,44 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def test88_OL3_labels(self):
+        """OL3 labels"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_labels.qml')
+        control_path = test_data_path(
+            'control', 'ol3_labels.js')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = OpenLayersWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+             ('USE', 'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+        test_style_file = open(
+            result.replace(
+                'file://', '').replace(
+                    'index.html', 'styles/airports0_style.js'))
+        test_style_output = test_style_file.read()
+        test_output = test_style_output
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
