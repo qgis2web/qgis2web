@@ -2812,6 +2812,40 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                         ])
         self.assertEqual(writer.json, [False])
 
+    def test92_Leaflet_graduated_25d(self):
+        """Dialog test: Leaflet graduated 2.5d"""
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'graduated_25d.qml')
+        control_path = test_data_path(
+            'control', 'leaflet_graduated_25d.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
+        self.dialog.leaflet.click()
+
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, LeafletWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
+
     def test99_export_folder(self):
         """Export folder"""
         layer_path = test_data_path('layer', 'airports.shp')
