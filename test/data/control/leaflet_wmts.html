@@ -55,7 +55,7 @@
             ];
           });
         }
-            var overlay_taiwanemapen0 = L.tileLayer.wmts('http://wmts.nlsc.gov.tw/wmts', {
+            var overlay_wms0 = L.tileLayer.wmts('http://wmts.nlsc.gov.tw/wmts', {
                 layer: 'EMAP8',
                 tilematrixSet: 'GoogleMapsCompatible',
                 format: 'image/jpeg',
@@ -65,7 +65,7 @@
                 continuousWorld : true,
                 opacity: 1.0
             });
-        map.addLayer(overlay_taiwanemapen0);
+        map.addLayer(overlay_wms0);
         setBounds();
         </script>
     </body>
