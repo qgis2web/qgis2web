@@ -5,10 +5,10 @@
 few others. Please, please do contribute, as there is so much more to do.</p>
 
 <p>As for the overall direction of the plugin, there is now basically feature
-parity between Leaflet and OL3 exports. Any new features should be implemented
+parity between Leaflet and OpenLayers exports. Any new features should be implemented
 in both formats, or I am not keen for it to be included.</p>
 
-<p>The core philosophy of the plugin is: don�t get the plugin to do anything
+<p>The core philosophy of the plugin is: don’t get the plugin to do anything
 which QGIS can already do. Also, keep focused on producing good-quality maps,
 reproducing as much from QGIS as possible, rather than adding extra new
 functionality.</p>
@@ -17,8 +17,8 @@ functionality.</p>
 <ul>
     <li>Comply with PEP8</li>
     <li>Remove <code>print</code> statements before making a pull request</li>
-    <li>Don�t break the tests themselves (all in test/test_qgis2web_dialog.py)
-    </li>
+    <li>Don’t break the tests themselves (all in test/test_qgis2web_dialog.py 
+    and test/test_qgis2web_writers.py)</li>
     <li>Anything which alters the output for the basic tests will mean updating
     the control files in /test/data/control</li>
     <li>Write tests for new functionality</li>
@@ -36,7 +36,7 @@ functionality.</p>
 <h2>Testing</h2>
 
 <p>All commits and PRs are tested by Travis. The tests are in <code>/test
-</code>, specifically <code>/test/test_qgis2web_dialog.py</code>. If you want
+</code>, specifically <code>/test/test_qgis2web_dialog.py</code> and <code>/test/test_qgis2web_writers.py </code>. If you want
 to run these tests locally on Linux, do the following to prepare (assumes
 Ubuntu or derivative):</p>
 
@@ -70,10 +70,7 @@ export QGIS_REPO=http://qgis.org/debian-ltr
 
 <p>Untested functionality includes:</p>
 <ul>
-    <li>labels</li>
-    <li>rule-based renderer</li>
     <li>SVG markers</li>
-    <li>heatmaps</li>
     <li>polygon border style "No pen"</li>
     <li>polygon fill style "No brush"</li>
     <li>line cap/join styles</li>
@@ -90,10 +87,8 @@ export QGIS_REPO=http://qgis.org/debian-ltr
     <li>Leaflet line width > 1</li>
     <li>Leaflet categorized clusters</li>
     <li>Leaflet graduated clusters</li>
-    <li>Leaflet WMS</li>
     <li>Leaflet WFS clusters</li>
     <li>Leaflet JSON non-point popups</li>
-    <li>Leaflet scale-dependent visibility</li>
     <li>Leaflet match CRS</li>
     <li>Leaflet basemaps</li>
     <li>Leaflet basemaps + layers list</li>
@@ -103,7 +98,6 @@ export QGIS_REPO=http://qgis.org/debian-ltr
     <li>Leaflet highlight + popups on hover</li>
     <li>Leaflet categorized on non-string column</li>
     <li>Leaflet categorized JSON point without popup</li>
-    <li>Leaflet custom popup contents via <code>html_prov</code></li>
     <li>Leaflet export</li>
     <li>OL3 measure - imperial units</li>
     <li>OL3 blank template value</li>
