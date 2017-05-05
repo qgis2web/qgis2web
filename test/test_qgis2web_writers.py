@@ -2403,7 +2403,6 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Test for expected output
         assert "extent: [" in test_output
 
-    @unittest.skipIf(isLtrRepo(), 'Not supported using LTR repo')
     def test76_Leaflet_25d(self):
         """Leaflet 2.5d"""
         layer_path = test_data_path('layer', 'lakes.shp')
@@ -2440,7 +2439,6 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
-    @unittest.skipIf(isLtrRepo(), 'Not supported using LTR repo')
     def test77_OL3_25d(self):
         """OL3 2.5d"""
         layer_path = test_data_path('layer', 'lakes.shp')
