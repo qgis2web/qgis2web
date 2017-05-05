@@ -2920,7 +2920,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_scaledependent.qml')
         control_path = test_data_path(
-            'control', 'airports_scaledependent.html')
+            'control', 'leaflet_scaledependent.html')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
