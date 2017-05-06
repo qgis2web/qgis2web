@@ -2933,10 +2933,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
         print root.children()[0]
         print root.children()[1]
-        print root.children()[0].children()[0]
-        
+
         cloned_layer = root.children()[0].clone()
-        root.insertChildNode(1, cloned_layer)
+        lyrGroup.addLayer( cloned_layer)
         root.removeChildNode(root.children()[0])
 
         self.dialog = MainDialog(IFACE)
