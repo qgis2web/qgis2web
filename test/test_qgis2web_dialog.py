@@ -2932,9 +2932,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        cloned_layer = root.children()[1].clone()
-        root.insertChildNode(0, cloned_layer)
-        root.removeChildNode(root.children()[1])
+        cloned_layer = root.children()[0].clone()
+        root.insertChildNode(1, cloned_layer)
+        root.removeChildNode(root.children()[0])
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
