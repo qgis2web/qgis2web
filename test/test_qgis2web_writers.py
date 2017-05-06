@@ -3055,7 +3055,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'svg.qml')
         control_path = test_data_path(
-            'control', 'ol3_svg.html')
+            'control', 'ol3_svg.js')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
