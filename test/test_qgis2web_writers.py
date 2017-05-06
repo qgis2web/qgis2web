@@ -3013,6 +3013,43 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def test94_Leaflet_svg(self):
+        """Leaflet SVG"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'svg.qml')
+        control_path = test_data_path(
+            'control', 'leaflet_svg.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+             ('USE', 'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+        test_file = open(result)
+        test_output = test_file.read()
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
+        # test for exported marker file
+        assert os.path.exists(result.replace('index.html', 'marker/qgis2web.svg'))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
