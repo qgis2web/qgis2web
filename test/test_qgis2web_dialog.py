@@ -2928,12 +2928,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
-        print root.children()[0]
-        print root.children()[0].children()[0]
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-
+        print root.children()[0]
+        print root.children()[1]
+        print root.children()[0].children()[0]
+        
         cloned_layer = root.children()[0].clone()
         root.insertChildNode(1, cloned_layer)
         root.removeChildNode(root.children()[0])
