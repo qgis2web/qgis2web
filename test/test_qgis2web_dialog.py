@@ -2928,7 +2928,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
-        print root.children()[0], root.children()[1]
+        print root.children()[0]
+        print root.children()[1]
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
