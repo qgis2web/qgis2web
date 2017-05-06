@@ -2922,7 +2922,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_path = test_data_path(
             'control', 'leaflet_groups.html')
 
-        lyrGroup = QgsProject.instance().layerTreeRoot().addGroup("group1")
+        root = QgsProject.instance().layerTreeRoot()
+        
+        lyrGroup = root.addGroup("group1")
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -2930,7 +2932,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        cloned_layer = QgsProject.instance().layerTreeRoot().children()[0].clone()
+        cloned_layer = root.children()[0].clone()
         root.insertChildNode(lyrGroup, cloned_layer)
         root.removeChildNode(layer)
 
