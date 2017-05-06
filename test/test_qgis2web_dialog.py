@@ -2930,7 +2930,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        cloned_layer = layer.clone()
+        cloned_layer = QgsProject.instance().layerTreeRoot().children()[0].clone()
         root.insertChildNode(lyrGroup, cloned_layer)
         root.removeChildNode(layer)
 
