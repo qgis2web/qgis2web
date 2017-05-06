@@ -3048,7 +3048,48 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
         # test for exported marker file
-        assert os.path.exists(result.replace('index.html', 'marker/qgis2web.svg'))
+        assert os.path.exists(result.replace('index.html', 'markers/qgis2web.svg'))
+
+    def test95_OL3_svg(self):
+        """OL3 SVG"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'svg.qml')
+        control_path = test_data_path(
+            'control', 'ol3_svg.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = OpenLayersWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+             ('USE', 'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+        test_style_file = open(
+            result.replace(
+                'file://', '').replace(
+                    'index.html', 'styles/airports0_style.js'))
+        test_style_output = test_style_file.read()
+        test_output = test_style_output
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
+        # test for exported marker file
+        assert os.path.exists(result.replace('index.html', 'styles/qgis2web.svg'))
 
 
 def read_output(url, path):
