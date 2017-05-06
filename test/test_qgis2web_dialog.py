@@ -2955,9 +2955,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.layers, [layer])
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup, [{}, OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])])
+        self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
 
     def test99_export_folder(self):
