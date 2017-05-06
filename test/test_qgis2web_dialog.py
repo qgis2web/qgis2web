@@ -2935,7 +2935,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         print root.children()[1]
 
         cloned_layer = root.children()[0].clone()
-        lyrGroup.addLayer( cloned_layer)
+        lyrGroup.addChildNode( cloned_layer)
         root.removeChildNode(root.children()[0])
 
         self.dialog = MainDialog(IFACE)
