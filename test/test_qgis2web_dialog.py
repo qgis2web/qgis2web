@@ -2949,8 +2949,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
         self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.groups, {'group1': [layer]})
+        self.assertEqual(writer.layers, [])
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [OrderedDict(
