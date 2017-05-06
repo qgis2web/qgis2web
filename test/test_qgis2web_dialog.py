@@ -2931,8 +2931,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        print root.children()[0]
-        print root.children()[1]
 
         cloned_layer = root.children()[0].clone()
         lyrGroup.addChildNode( cloned_layer)
