@@ -2823,7 +2823,41 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                         ])
         self.assertEqual(writer.json, [False])
 
-    def test92_Leaflet_graduated_25d(self):
+    def test92_OL3_categorized_25d(self):
+        """Dialog test: OL3 categorized 2.5d"""
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'categorized_25d.qml')
+        control_path = test_data_path(
+            'control', 'leaflet_categorized_25d.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
+        self.dialog.ol3.click()
+
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, OpenLayersWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
+
+    def test93_Leaflet_graduated_25d(self):
         """Dialog test: Leaflet graduated 2.5d"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'graduated_25d.qml')
@@ -2857,7 +2891,41 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                         ])
         self.assertEqual(writer.json, [False])
 
-    def test93_Leaflet_svg(self):
+    def test94_ol3_graduated_25d(self):
+        """Dialog test: OL3 graduated 2.5d"""
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'graduated_25d.qml')
+        control_path = test_data_path(
+            'control', 'leaflet_graduated_25d.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
+        self.dialog.ol3.click()
+
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, OpenLayersWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
+                                        ])
+        self.assertEqual(writer.json, [False])
+
+    def test95_Leaflet_svg(self):
         """Dialog test: Leaflet SVG"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'svg.qml')
@@ -2892,7 +2960,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
              ('USE', 'no label')])])
         self.assertEqual(writer.json, [False])
 
-    def test94_OL3_svg(self):
+    def test96_OL3_svg(self):
         """Dialog test: OL3  SVG"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'svg.qml')
@@ -2926,7 +2994,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
              ('USE', 'no label')])])
         self.assertEqual(writer.json, [False])
 
-    def test95_Leaflet_layergroups(self):
+    def test97_Leaflet_layergroups(self):
         """Dialog test: Leaflet layer groups"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
@@ -2967,7 +3035,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
 
-    def test96_OL3_layergroups(self):
+    def test98_OL3_layergroups(self):
         """Dialog test: OL3 layer groups"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
