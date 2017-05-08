@@ -3091,6 +3091,38 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test for exported marker file
         assert os.path.exists(result.replace('index.html', 'styles/qgis2web.svg'))
 
+    def test96_Leaflet_layer_groups(self):
+        """Leaflet layer groups"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        control_path = test_data_path(
+            'control', 'leaflet_groups.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {'group1': [layer]}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [{}]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+        test_file = open(result)
+        test_output = test_file.read()
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
