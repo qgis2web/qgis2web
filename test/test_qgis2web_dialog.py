@@ -95,7 +95,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test00_close dialog(self):
         """Close dialog - no data (OL3)"""
         self.dialog = MainDialog(IFACE)
-        self.dialog.close()
+        self.dialog.reject()
 
     def test01_preview_default(self):
         """Preview default - no data (OL3)"""
