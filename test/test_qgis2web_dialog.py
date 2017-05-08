@@ -93,7 +93,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
         }}
 
     def test00_close_dialog(self):
-        """Close dialog - no data (OL3)"""
+        """Close dialog (OL3)"""
+        layer_path = test_data_path('layer', 'pipelines.shp')
+        layer = load_layer(layer_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
         self.dialog = MainDialog(IFACE)
         self.dialog.close()
 
