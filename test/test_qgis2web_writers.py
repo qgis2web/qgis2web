@@ -3136,6 +3136,9 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
+        control_file = open(control_path, 'r')
+        control_output = control_file.read()
+
         # Export to web map
         writer = OpenLayersWriter()
         writer.params = self.defaultParams()
