@@ -3128,7 +3128,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         control_path = test_data_path(
-            'control', 'ol3_groups.html')
+            'control', 'ol3_groups.js')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
