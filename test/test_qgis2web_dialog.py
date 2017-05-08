@@ -92,6 +92,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Show popups on hover': False
         }}
 
+    def test00_close dialog(self):
+        """Close dialog - no data (OL3)"""
+        self.dialog = MainDialog(IFACE)
+        self.dialog.close()
+
     def test01_preview_default(self):
         """Preview default - no data (OL3)"""
         self.dialog = MainDialog(IFACE)
