@@ -3123,6 +3123,42 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def test97_OL3_layergroups(self):
+        """OL3 layer groups"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        control_path = test_data_path(
+            'control', 'ol3_groups.html')
+
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        # Export to web map
+        writer = OpenLayersWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {'group1': [layer]}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [{}]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+
+        # Open the test file
+        test_style_file = open(
+            result.replace(
+                'file://', '').replace(
+                    'index.html', 'layers/layers.js'))
+        test_style_output = test_style_file.read()
+        test_output = test_style_output
+
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
