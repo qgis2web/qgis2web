@@ -161,97 +161,95 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
 
 def exportLayers(iface, layers, folder, precision, optimize,
                  popupField, json, restrictToExtent, extent, feedback):
-    canvas = iface.mapCanvas()
-    epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
                                                             popupField)):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
-            feedback.showFeedback("Exporting %s to JSON..." % layer.name())
-            cleanLayer = writeTmpLayer(layer, popup, restrictToExtent,
-                                       iface, extent)
-            fields = layer.pendingFields()
-            for field in fields:
-                exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
-            if is25d(layer, canvas, restrictToExtent, extent):
-                provider = cleanLayer.dataProvider()
-                provider.addAttributes([QgsField("height", QVariant.Double),
-                                        QgsField("wallColor", QVariant.String),
-                                        QgsField("roofColor",
-                                                 QVariant.String)])
-                cleanLayer.updateFields()
-                fields = cleanLayer.pendingFields()
-                renderer = layer.rendererV2()
-                renderContext = QgsRenderContext.fromMapSettings(
-                        canvas.mapSettings())
-                feats = layer.getFeatures()
-                context = QgsExpressionContext()
-                context.appendScope(
-                        QgsExpressionContextUtils.layerScope(layer))
-                expression = QgsExpression('eval(@qgis_25d_height)')
-                heightField = fields.indexFromName("height")
-                wallField = fields.indexFromName("wallColor")
-                roofField = fields.indexFromName("roofColor")
-                renderer.startRender(renderContext, fields)
-                cleanLayer.startEditing()
-                for feat in feats:
-                    context.setFeature(feat)
-                    height = expression.evaluate(context)
-                    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                        classAttribute = renderer.classAttribute()
-                        attrValue = feat.attribute(classAttribute)
-                        catIndex = renderer.categoryIndexForValue(attrValue)
-                        categories = renderer.categories()
-                        symbol = categories[catIndex].symbol()
-                    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                        classAttribute = renderer.classAttribute()
-                        attrValue = feat.attribute(classAttribute)
-                        ranges = renderer.ranges()
-                        for range in ranges:
-                            if (attrValue >= range.lowerValue() and
-                                    attrValue <= range.upperValue()):
-                                symbol = range.symbol().clone()
-                    else:
-                        symbol = renderer.symbolForFeature2(feat,
-                                                            renderContext)
-                    sl1 = symbol.symbolLayer(1)
-                    sl2 = symbol.symbolLayer(2)
-                    wallColor = sl1.subSymbol().color().name()
-                    roofColor = sl2.subSymbol().color().name()
-                    provider.changeAttributeValues(
-                            {feat.id() + 1:
-                             {heightField: height,
-                             wallField: wallColor,
-                             roofField: roofColor}})
-                cleanLayer.commitChanges()
-                renderer.stopRender(renderContext)
-
-            sln = safeName(cleanLayer.name()) + unicode(count)
-            tmpPath = os.path.join(layersFolder, sln + ".json")
-            path = os.path.join(layersFolder, sln + ".js")
-            options = []
-            if precision != "maintain":
-                options.append("COORDINATE_PRECISION=" + unicode(precision))
-            QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
-                                                    "utf-8", epsg4326,
-                                                    'GeoJson', 0,
-                                                    layerOptions=options)
-            with open(path, "w") as f:
-                f.write("var %s = " % ("geojson_" + sln))
-                with open(tmpPath, "r") as f2:
-                    for line in f2:
-                        if optimize:
-                            line = line.strip("\n\t ")
-                            line = removeSpaces(line)
-                        f.write(line)
-            os.remove(tmpPath)
-
+            exportVector(layer, count, popup, restrictToExtent, iface, extent,
+                         layersFolder, precision, optimize, feedback)
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
             exportRaster(layer, count, layersFolder, feedback)
     feedback.completeStep()
+
+
+def exportVector(layer, count, popup, restrictToExtent, iface, extent,
+                 layersFolder, precision, optimize, feedback):
+    feedback.showFeedback("Exporting %s to JSON..." % layer.name())
+    canvas = iface.mapCanvas()
+    epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
+    cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
+    fields = layer.pendingFields()
+    for field in fields:
+        exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
+    if is25d(layer, canvas, restrictToExtent, extent):
+        provider = cleanLayer.dataProvider()
+        provider.addAttributes([QgsField("height", QVariant.Double),
+                                QgsField("wallColor", QVariant.String),
+                                QgsField("roofColor", QVariant.String)])
+        cleanLayer.updateFields()
+        fields = cleanLayer.pendingFields()
+        renderer = layer.rendererV2()
+        renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
+        feats = layer.getFeatures()
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        expression = QgsExpression('eval(@qgis_25d_height)')
+        heightField = fields.indexFromName("height")
+        wallField = fields.indexFromName("wallColor")
+        roofField = fields.indexFromName("roofColor")
+        renderer.startRender(renderContext, fields)
+        cleanLayer.startEditing()
+        for feat in feats:
+            context.setFeature(feat)
+            height = expression.evaluate(context)
+            if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                classAttribute = renderer.classAttribute()
+                attrValue = feat.attribute(classAttribute)
+                catIndex = renderer.categoryIndexForValue(attrValue)
+                categories = renderer.categories()
+                symbol = categories[catIndex].symbol()
+            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                classAttribute = renderer.classAttribute()
+                attrValue = feat.attribute(classAttribute)
+                ranges = renderer.ranges()
+                for range in ranges:
+                    if (attrValue >= range.lowerValue() and
+                            attrValue <= range.upperValue()):
+                        symbol = range.symbol().clone()
+            else:
+                symbol = renderer.symbolForFeature2(feat, renderContext)
+            sl1 = symbol.symbolLayer(1)
+            sl2 = symbol.symbolLayer(2)
+            wallColor = sl1.subSymbol().color().name()
+            roofColor = sl2.subSymbol().color().name()
+            provider.changeAttributeValues(
+                    {feat.id() + 1: {heightField: height,
+                                     wallField: wallColor,
+                                     roofField: roofColor}})
+        cleanLayer.commitChanges()
+        renderer.stopRender(renderContext)
+
+    sln = safeName(cleanLayer.name()) + unicode(count)
+    tmpPath = os.path.join(layersFolder, sln + ".json")
+    path = os.path.join(layersFolder, sln + ".js")
+    options = []
+    if precision != "maintain":
+        options.append("COORDINATE_PRECISION=" + unicode(precision))
+    QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8",
+                                            epsg4326, 'GeoJson', 0,
+                                            layerOptions=options)
+    with open(path, "w") as f:
+        f.write("var %s = " % ("geojson_" + sln))
+        with open(tmpPath, "r") as f2:
+            for line in f2:
+                if optimize:
+                    line = line.strip("\n\t ")
+                    line = removeSpaces(line)
+                f.write(line)
+    os.remove(tmpPath)
 
 
 def exportRaster(layer, count, layersFolder, feedback):
