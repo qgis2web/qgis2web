@@ -176,14 +176,11 @@ def exportLayers(iface, layers, folder, precision, optimize,
 
 
 def exportVector(layer, count, popup, restrictToExtent, iface, extent,
-                 layersFolder, precision, optimize, feedback):
+                 layersFolder, precision, minify, feedback):
     feedback.showFeedback("Exporting %s to JSON..." % layer.name())
     canvas = iface.mapCanvas()
     epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
-    fields = layer.pendingFields()
-    for field in fields:
-        exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
     sln = safeName(cleanLayer.name()) + unicode(count)
@@ -197,13 +194,16 @@ def exportVector(layer, count, popup, restrictToExtent, iface, extent,
                                             layerOptions=options)
     with open(path, "w") as f:
         f.write("var %s = " % ("geojson_" + sln))
-        with open(tmpPath, "r") as f2:
-            for line in f2:
-                if optimize:
+        with open(tmpPath, "r") as tmpFile:
+            for line in tmpFile:
+                if minify:
                     line = line.strip("\n\t ")
                     line = removeSpaces(line)
                 f.write(line)
     os.remove(tmpPath)
+    fields = layer.pendingFields()
+    for field in fields:
+        exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
 
 
 def add25dAttributes(cleanLayer, layer, canvas):

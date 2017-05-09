@@ -37,29 +37,27 @@ from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
-def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
+def exportJSONLayer(layer, popup, precision, tmpPath, exp_crs,
                     layerFileName, safeLayerName, minify, canvas,
                     restrictToExtent, iface, extent):
-    cleanedLayer = writeTmpLayer(layer, eachPopup, restrictToExtent,
-                                 iface, extent)
+    cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
-        add25dAttributes(cleanedLayer, layer, canvas)
+        add25dAttributes(cleanLayer, layer, canvas)
     writer = QgsVectorFileWriter
     options = []
     if precision != "maintain":
         options.append("COORDINATE_PRECISION=" + unicode(precision))
-    writer.writeAsVectorFormat(cleanedLayer, tmpFileName, 'utf-8', exp_crs,
+    writer.writeAsVectorFormat(cleanLayer, tmpPath, 'utf-8', exp_crs,
                                'GeoJson', 0, layerOptions=options)
-
-    with open(layerFileName, "w") as f2:
-        f2.write("var json_" + unicode(safeLayerName) + "=")
-        with open(tmpFileName, "r") as tmpFile:
+    with open(layerFileName, "w") as f:
+        f.write("var json_" + unicode(safeLayerName) + "=")
+        with open(tmpPath, "r") as tmpFile:
             for line in tmpFile:
                 if minify:
                     line = line.strip("\n\t ")
                     line = removeSpaces(line)
-                f2.write(line)
-        os.remove(tmpFileName)
+                f.write(line)
+        os.remove(tmpPath)
 
     fields = layer.pendingFields()
     for field in fields:
