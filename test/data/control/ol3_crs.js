@@ -1,5 +1,5 @@
 var format_airports0 = new ol.format.GeoJSON();
-var features_airports0 = format_airports0.readFeatures(geojson_airports0, 
+var features_airports0 = format_airports0.readFeatures(json_airports0, 
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:2964'});
 var jsonSource_airports0 = new ol.source.Vector({
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
