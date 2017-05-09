@@ -34,7 +34,7 @@ from leafletScriptStrings import (popupScript,
                                   iconLegend)
 from exp2js import compile_to_file
 from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
-                   is25d, handleHiddenField, BLEND_MODES)
+                   is25d, handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
 def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
@@ -43,54 +43,7 @@ def exportJSONLayer(layer, eachPopup, precision, tmpFileName, exp_crs,
     cleanedLayer = writeTmpLayer(layer, eachPopup, restrictToExtent,
                                  iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
-        provider = cleanedLayer.dataProvider()
-        provider.addAttributes([QgsField("height", QVariant.Double),
-                                QgsField("wallColor", QVariant.String),
-                                QgsField("roofColor", QVariant.String)])
-        cleanedLayer.updateFields()
-        fields = cleanedLayer.pendingFields()
-        renderer = layer.rendererV2()
-        renderContext = QgsRenderContext.fromMapSettings(
-                canvas.mapSettings())
-        feats = layer.getFeatures()
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.layerScope(layer))
-        expression = QgsExpression('eval(@qgis_25d_height)')
-        heightField = fields.indexFromName("height")
-        wallField = fields.indexFromName("wallColor")
-        roofField = fields.indexFromName("roofColor")
-        renderer.startRender(renderContext, fields)
-        cleanedLayer.startEditing()
-        for feat in feats:
-            context.setFeature(feat)
-            height = expression.evaluate(context)
-            if isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                classAttribute = renderer.classAttribute()
-                attrValue = feat.attribute(classAttribute)
-                catIndex = renderer.categoryIndexForValue(attrValue)
-                categories = renderer.categories()
-                symbol = categories[catIndex].symbol()
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                classAttribute = renderer.classAttribute()
-                attrValue = feat.attribute(classAttribute)
-                ranges = renderer.ranges()
-                for range in ranges:
-                    if (attrValue >= range.lowerValue() and
-                            attrValue <= range.upperValue()):
-                        symbol = range.symbol().clone()
-            else:
-                symbol = renderer.symbolForFeature2(feat, renderContext)
-            wallColor = symbol.symbolLayer(1).subSymbol().color().name()
-            roofColor = symbol.symbolLayer(2).subSymbol().color().name()
-            cleanedLayer.changeAttributeValue(feat.id() + 1,
-                                              heightField, height)
-            cleanedLayer.changeAttributeValue(feat.id() + 1,
-                                              wallField, wallColor)
-            cleanedLayer.changeAttributeValue(feat.id() + 1,
-                                              roofField, roofColor)
-        cleanedLayer.commitChanges()
-        renderer.stopRender(renderContext)
-
+        add25dAttributes(cleanedLayer, layer, canvas)
     writer = QgsVectorFileWriter
     options = []
     if precision != "maintain":

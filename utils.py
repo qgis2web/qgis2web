@@ -185,53 +185,7 @@ def exportVector(layer, count, popup, restrictToExtent, iface, extent,
     for field in fields:
         exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
     if is25d(layer, canvas, restrictToExtent, extent):
-        provider = cleanLayer.dataProvider()
-        provider.addAttributes([QgsField("height", QVariant.Double),
-                                QgsField("wallColor", QVariant.String),
-                                QgsField("roofColor", QVariant.String)])
-        cleanLayer.updateFields()
-        fields = cleanLayer.pendingFields()
-        renderer = layer.rendererV2()
-        renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
-        feats = layer.getFeatures()
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.layerScope(layer))
-        expression = QgsExpression('eval(@qgis_25d_height)')
-        heightField = fields.indexFromName("height")
-        wallField = fields.indexFromName("wallColor")
-        roofField = fields.indexFromName("roofColor")
-        renderer.startRender(renderContext, fields)
-        cleanLayer.startEditing()
-        for feat in feats:
-            context.setFeature(feat)
-            height = expression.evaluate(context)
-            if isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                classAttribute = renderer.classAttribute()
-                attrValue = feat.attribute(classAttribute)
-                catIndex = renderer.categoryIndexForValue(attrValue)
-                categories = renderer.categories()
-                symbol = categories[catIndex].symbol()
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                classAttribute = renderer.classAttribute()
-                attrValue = feat.attribute(classAttribute)
-                ranges = renderer.ranges()
-                for range in ranges:
-                    if (attrValue >= range.lowerValue() and
-                            attrValue <= range.upperValue()):
-                        symbol = range.symbol().clone()
-            else:
-                symbol = renderer.symbolForFeature2(feat, renderContext)
-            sl1 = symbol.symbolLayer(1)
-            sl2 = symbol.symbolLayer(2)
-            wallColor = sl1.subSymbol().color().name()
-            roofColor = sl2.subSymbol().color().name()
-            provider.changeAttributeValues(
-                    {feat.id() + 1: {heightField: height,
-                                     wallField: wallColor,
-                                     roofField: roofColor}})
-        cleanLayer.commitChanges()
-        renderer.stopRender(renderContext)
-
+        add25dAttributes(cleanLayer, layer, canvas)
     sln = safeName(cleanLayer.name()) + unicode(count)
     tmpPath = os.path.join(layersFolder, sln + ".json")
     path = os.path.join(layersFolder, sln + ".js")
@@ -250,6 +204,55 @@ def exportVector(layer, count, popup, restrictToExtent, iface, extent,
                     line = removeSpaces(line)
                 f.write(line)
     os.remove(tmpPath)
+
+
+def add25dAttributes(cleanLayer, layer, canvas):
+    provider = cleanLayer.dataProvider()
+    provider.addAttributes([QgsField("height", QVariant.Double),
+                            QgsField("wallColor", QVariant.String),
+                            QgsField("roofColor", QVariant.String)])
+    cleanLayer.updateFields()
+    fields = cleanLayer.pendingFields()
+    renderer = layer.rendererV2()
+    renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
+    feats = layer.getFeatures()
+    context = QgsExpressionContext()
+    context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+    expression = QgsExpression('eval(@qgis_25d_height)')
+    heightField = fields.indexFromName("height")
+    wallField = fields.indexFromName("wallColor")
+    roofField = fields.indexFromName("roofColor")
+    renderer.startRender(renderContext, fields)
+    cleanLayer.startEditing()
+    for feat in feats:
+        context.setFeature(feat)
+        height = expression.evaluate(context)
+        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            classAttribute = renderer.classAttribute()
+            attrValue = feat.attribute(classAttribute)
+            catIndex = renderer.categoryIndexForValue(attrValue)
+            categories = renderer.categories()
+            symbol = categories[catIndex].symbol()
+        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            classAttribute = renderer.classAttribute()
+            attrValue = feat.attribute(classAttribute)
+            ranges = renderer.ranges()
+            for range in ranges:
+                if (attrValue >= range.lowerValue() and
+                        attrValue <= range.upperValue()):
+                    symbol = range.symbol().clone()
+        else:
+            symbol = renderer.symbolForFeature2(feat, renderContext)
+        sl1 = symbol.symbolLayer(1)
+        sl2 = symbol.symbolLayer(2)
+        wallColor = sl1.subSymbol().color().name()
+        roofColor = sl2.subSymbol().color().name()
+        provider.changeAttributeValues(
+                {feat.id() + 1: {heightField: height,
+                                 wallField: wallColor,
+                                 roofField: roofColor}})
+    cleanLayer.commitChanges()
+    renderer.stopRender(renderContext)
 
 
 def exportRaster(layer, count, layersFolder, feedback):
