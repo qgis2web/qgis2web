@@ -259,7 +259,7 @@ class LeafletWriter(Writer):
                 if visible[count]:
                     new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""
-                    new_src += new_obj
+                new_src += new_obj
         new_src += scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))
