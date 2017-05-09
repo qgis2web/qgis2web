@@ -162,16 +162,12 @@ class LeafletWriter(Writer):
             rawLayerName = layer.name()
             safeLayerName = re.sub(
                 '[\W_]+', '', rawLayerName) + unicode(lyrCount)
-            dataPath = os.path.join(dataStore, safeLayerName)
-            tmpFileName = dataPath + '.json'
-            layerFileName = dataPath + '.js'
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
-                    exportJSONLayer(layer, eachPopup, precision, tmpFileName,
-                                    exp_crs, layerFileName,
-                                    safeLayerName, minify, canvas,
+                    exportJSONLayer(layer, eachPopup, dataStore, precision,
+                                    exp_crs, safeLayerName, minify, canvas,
                                     restrictToExtent, iface, extent)
                     new_src += jsonScript(safeLayerName)
                     scaleDependentLabels =\

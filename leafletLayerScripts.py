@@ -37,13 +37,15 @@ from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
-def exportJSONLayer(layer, popup, precision, tmpPath, exp_crs,
-                    layerFileName, safeLayerName, minify, canvas,
-                    restrictToExtent, iface, extent):
+def exportJSONLayer(layer, popup, dataStore, precision, exp_crs, safeLayerName,
+                    minify, canvas, restrictToExtent, iface, extent):
     cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
     writer = QgsVectorFileWriter
+    dataPath = os.path.join(dataStore, safeLayerName)
+    tmpPath = dataPath + '.json'
+    layerFileName = dataPath + '.js'
     options = []
     if precision != "maintain":
         options.append("COORDINATE_PRECISION=" + unicode(precision))
@@ -57,8 +59,7 @@ def exportJSONLayer(layer, popup, precision, tmpPath, exp_crs,
                     line = line.strip("\n\t ")
                     line = removeSpaces(line)
                 f.write(line)
-        os.remove(tmpPath)
-
+    os.remove(tmpPath)
     fields = layer.pendingFields()
     for field in fields:
         exportImages(layer, field.name(), layerFileName)
