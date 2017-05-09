@@ -105,8 +105,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(json_{sln}{count});""".format(shadows=shadows,
-                                          sln=safeName(layer.name()),
-                                          count=unicode(count))
+                                       sln=safeName(layer.name()),
+                                       count=unicode(count))
             else:
                 mapLayers.append("lyr_" + safeName(layer.name()) +
                                  unicode(count))
