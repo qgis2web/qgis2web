@@ -167,8 +167,9 @@ def exportLayers(iface, layers, folder, precision, optimize,
                                                             popupField)):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
+            epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
             exportVector(layer, count, popup, restrictToExtent, iface, extent,
-                         layersFolder, precision, optimize, feedback)
+                         layersFolder, precision, crs, optimize, feedback)
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
             exportRaster(layer, count, layersFolder, feedback)
@@ -176,10 +177,9 @@ def exportLayers(iface, layers, folder, precision, optimize,
 
 
 def exportVector(layer, count, popup, restrictToExtent, iface, extent,
-                 layersFolder, precision, minify, feedback):
+                 layersFolder, precision, crs, minify, feedback):
     feedback.showFeedback("Exporting %s to JSON..." % layer.name())
     canvas = iface.mapCanvas()
-    epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
     cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
@@ -189,8 +189,8 @@ def exportVector(layer, count, popup, restrictToExtent, iface, extent,
     options = []
     if precision != "maintain":
         options.append("COORDINATE_PRECISION=" + unicode(precision))
-    QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8",
-                                            epsg4326, 'GeoJson', 0,
+    QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8", crs,
+                                            'GeoJson', 0,
                                             layerOptions=options)
     with open(path, "w") as f:
         f.write("var %s = " % ("geojson_" + sln))

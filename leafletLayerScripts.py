@@ -37,8 +37,9 @@ from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
-def exportJSONLayer(layer, popup, dataStore, precision, exp_crs, safeLayerName,
-                    minify, canvas, restrictToExtent, iface, extent):
+def exportJSONLayer(layer, popup, dataStore, precision, crs, safeLayerName,
+                    minify, restrictToExtent, iface, extent):
+    canvas = iface.mapCanvas()
     cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
@@ -49,7 +50,7 @@ def exportJSONLayer(layer, popup, dataStore, precision, exp_crs, safeLayerName,
     options = []
     if precision != "maintain":
         options.append("COORDINATE_PRECISION=" + unicode(precision))
-    writer.writeAsVectorFormat(cleanLayer, tmpPath, 'utf-8', exp_crs,
+    writer.writeAsVectorFormat(cleanLayer, tmpPath, 'utf-8', crs,
                                'GeoJson', 0, layerOptions=options)
     with open(layerFileName, "w") as f:
         f.write("var json_" + unicode(safeLayerName) + "=")

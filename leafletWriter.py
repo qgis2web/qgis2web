@@ -167,7 +167,7 @@ class LeafletWriter(Writer):
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
                     exportJSONLayer(layer, eachPopup, dataStore, precision,
-                                    exp_crs, safeLayerName, minify, canvas,
+                                    exp_crs, safeLayerName, minify,
                                     restrictToExtent, iface, extent)
                     new_src += jsonScript(safeLayerName)
                     scaleDependentLabels =\
