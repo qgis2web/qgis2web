@@ -37,14 +37,14 @@ from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
                    is25d, handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
-def exportJSONLayer(layer, popup, dataStore, precision, crs, safeLayerName,
-                    minify, restrictToExtent, iface, extent):
+def exportJSONLayer(layer, sln, popup, layersFolder, restrictToExtent, iface,
+                    extent, precision, crs, minify):
     canvas = iface.mapCanvas()
     cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
     writer = QgsVectorFileWriter
-    dataPath = os.path.join(dataStore, safeLayerName)
+    dataPath = os.path.join(layersFolder, sln)
     tmpPath = dataPath + '.json'
     layerFileName = dataPath + '.js'
     options = []
@@ -53,7 +53,7 @@ def exportJSONLayer(layer, popup, dataStore, precision, crs, safeLayerName,
     writer.writeAsVectorFormat(cleanLayer, tmpPath, 'utf-8', crs,
                                'GeoJson', 0, layerOptions=options)
     with open(layerFileName, "w") as f:
-        f.write("var json_" + unicode(safeLayerName) + "=")
+        f.write("var json_" + unicode(sln) + "=")
         with open(tmpPath, "r") as tmpFile:
             for line in tmpFile:
                 if minify:

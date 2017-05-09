@@ -161,29 +161,33 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
 
 def exportLayers(iface, layers, folder, precision, optimize,
                  popupField, json, restrictToExtent, extent, feedback):
+    feedback.showFeedback('Exporting layers...')
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
                                                             popupField)):
+        sln = safeName(layer.name()) + unicode(count)
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
+            feedback.showFeedback('Exporting %s to JSON...' % layer.name())
             crs = QgsCoordinateReferenceSystem("EPSG:4326")
-            exportVector(layer, count, popup, restrictToExtent, iface, extent,
-                         layersFolder, precision, crs, optimize, feedback)
+            exportVector(layer, sln, popup, layersFolder, restrictToExtent,
+                         iface, extent, precision, crs, optimize)
+            feedback.completeStep()
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
+            feedback.showFeedback('Exporting %s as raster...' % layer.name())
             exportRaster(layer, count, layersFolder, feedback)
+            feedback.completeStep()
     feedback.completeStep()
 
 
-def exportVector(layer, count, popup, restrictToExtent, iface, extent,
-                 layersFolder, precision, crs, minify, feedback):
-    feedback.showFeedback("Exporting %s to JSON..." % layer.name())
+def exportVector(layer, sln, popup, layersFolder, restrictToExtent, iface,
+                 extent, precision, crs, minify):
     canvas = iface.mapCanvas()
     cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
-    sln = safeName(cleanLayer.name()) + unicode(count)
     tmpPath = os.path.join(layersFolder, sln + ".json")
     path = os.path.join(layersFolder, sln + ".js")
     options = []

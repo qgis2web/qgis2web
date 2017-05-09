@@ -166,9 +166,9 @@ class LeafletWriter(Writer):
                 if layer.type() == QgsMapLayer.VectorLayer:
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
-                    exportJSONLayer(layer, eachPopup, dataStore, precision,
-                                    exp_crs, safeLayerName, minify,
-                                    restrictToExtent, iface, extent)
+                    exportJSONLayer(layer, safeLayerName, eachPopup, dataStore,
+                                    restrictToExtent, iface, extent,
+                                    precision, exp_crs, minify,)
                     new_src += jsonScript(safeLayerName)
                     scaleDependentLabels =\
                         scaleDependentLabelScript(layer, safeLayerName)
