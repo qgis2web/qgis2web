@@ -167,7 +167,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
                                                             popupField)):
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
-            epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326")
+            crs = QgsCoordinateReferenceSystem("EPSG:4326")
             exportVector(layer, count, popup, restrictToExtent, iface, extent,
                          layersFolder, precision, crs, optimize, feedback)
         elif (layer.type() == layer.RasterLayer and
