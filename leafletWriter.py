@@ -39,8 +39,7 @@ from basemaps import basemapLeaflet
 from leafletFileScripts import (writeFoldersAndFiles,
                                 writeCSS,
                                 writeHTMLstart)
-from leafletLayerScripts import (exportJSONLayer,
-                                 writeVectorLayer)
+from leafletLayerScripts import writeVectorLayer
 from leafletScriptStrings import (jsonScript,
                                   scaleDependentLabelScript,
                                   mapScript,
@@ -58,7 +57,8 @@ from leafletScriptStrings import (jsonScript,
                                   scaleBar,
                                   scaleDependentScript,
                                   titleSubScript)
-from utils import ALL_ATTRIBUTES, PLACEMENT, removeSpaces, exportRaster
+from utils import (ALL_ATTRIBUTES, PLACEMENT, removeSpaces, exportVector,
+                   exportRaster)
 from writer import (Writer,
                     WriterResult,
                     translator)
@@ -166,7 +166,7 @@ class LeafletWriter(Writer):
                 if layer.type() == QgsMapLayer.VectorLayer:
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
-                    exportJSONLayer(layer, safeLayerName, eachPopup, dataStore,
+                    exportVector(layer, safeLayerName, eachPopup, dataStore,
                                     restrictToExtent, iface, extent,
                                     precision, exp_crs, minify,)
                     new_src += jsonScript(safeLayerName)

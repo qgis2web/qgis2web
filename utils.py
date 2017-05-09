@@ -197,7 +197,7 @@ def exportVector(layer, sln, popup, layersFolder, restrictToExtent, iface,
                                             'GeoJson', 0,
                                             layerOptions=options)
     with open(path, "w") as f:
-        f.write("var %s = " % ("geojson_" + sln))
+        f.write("var %s = " % ("json_" + sln))
         with open(tmpPath, "r") as tmpFile:
             for line in tmpFile:
                 if minify:

@@ -104,7 +104,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 renderer.stopRender(renderContext)
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
-osmb.set(geojson_{sln}{count});""".format(shadows=shadows,
+osmb.set(json_{sln}{count});""".format(shadows=shadows,
                                           sln=safeName(layer.name()),
                                           count=unicode(count))
             else:
@@ -294,7 +294,7 @@ function get%(n)sJson(geojson) {
             return layerCode
         else:
             layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
-var features_%(n)s = format_%(n)s.readFeatures(geojson_%(n)s, %(crs)s);
+var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector({
     attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
 });
