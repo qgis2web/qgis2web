@@ -312,7 +312,7 @@ def exportRaster(layer, count, layersFolder, feedback):
     except:
         pass
     sys.stdout = old_stdout
-    
+
     params = {
         "INPUT": piped_file,
         "SOURCE_SRS": layer.crs().authid(),
