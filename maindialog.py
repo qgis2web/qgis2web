@@ -586,7 +586,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             for attr in pop:
                 attrDict['attr'] = pop[attr]
                 layer.setCustomProperty("qgis2web/popup/" + attr, pop[attr])
-                layer.setCustomProperty("qgis2web/Visible", vis)
+            layer.setCustomProperty("qgis2web/Visible", vis)
 
         QSettings().setValue(
             "qgis2web/MainDialogGeometry", self.saveGeometry())
