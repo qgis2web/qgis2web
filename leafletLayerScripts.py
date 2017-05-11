@@ -33,8 +33,8 @@ from leafletScriptStrings import (popupScript,
                                   clusterScript,
                                   iconLegend)
 from exp2js import compile_to_file
-from utils import (writeTmpLayer, getUsedFields, removeSpaces, exportImages,
-                   is25d, handleHiddenField, add25dAttributes, BLEND_MODES)
+from utils import (writeTmpLayer, removeSpaces, exportImages, is25d,
+                   handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
