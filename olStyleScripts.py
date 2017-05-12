@@ -70,7 +70,8 @@ def exportStyles(layers, folder, clustered):
                     style = "var size = 0;\n"
                 style += "    var style = " + getSymbolAsStyle(symbol,
                                                                stylesFolder,
-                                                               layer_alpha)
+                                                               layer_alpha,
+                                                               renderer)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += """function categories_%s(feature, value) {
@@ -85,9 +86,8 @@ def exportStyles(layers, folder, clustered):
                         categoryStr = "default:"
                     categoryStr += '''
                     return %s;
-                    break;''' % (getSymbolAsStyle(cat.symbol(),
-                                                  stylesFolder,
-                                                  layer_alpha))
+                    break;''' % (getSymbolAsStyle(cat.symbol(), stylesFolder,
+                                                  layer_alpha, renderer))
                     cats.append(categoryStr)
                 defs += "\n".join(cats) + "}};"
                 classAttr = renderer.classAttribute()
@@ -106,7 +106,7 @@ def exportStyles(layers, folder, clustered):
                 ranges = []
                 for ran in renderer.ranges():
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                                   layer_alpha)
+                                                   layer_alpha, renderer)
                     ranges.append('[%f, %f, %s]' % (ran.lowerValue(),
                                                     ran.upperValue(),
                                                     symbolstyle))
@@ -151,7 +151,7 @@ def exportStyles(layers, folder, clustered):
                 for count, rule in enumerate(rules):
                     symbol = rule.symbol()
                     styleCode = getSymbolAsStyle(symbol, stylesFolder,
-                                                 layer_alpha)
+                                                 layer_alpha, renderer)
                     name = "".join((sln, "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -257,8 +257,8 @@ var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": sln, "style": style})
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
-    styles = []
+def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
+    styles = {}
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
@@ -348,10 +348,14 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
                       getFillStyle(fillColor, props)))
         else:
             style = ""
-        styles.append('''new ol.style.Style({
+        if renderer.usingSymbolLevels():
+            k = sl.renderingPass()
+        else:
+            k = i
+        styles[k] = '''new ol.style.Style({
         %s
-    })''' % style)
-    return "[ %s]" % ",".join(styles)
+    })''' % style
+    return "[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys()))
 
 
 def getCircle(color, borderColor, borderWidth, size, props):
