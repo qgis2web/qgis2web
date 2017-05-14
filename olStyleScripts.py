@@ -211,6 +211,7 @@ def exportStyles(layers, folder, clustered):
     };
     %(value)s
     %(style)s;
+    var labelText = ""
     if (size >= 2) {
         labelText = size.toString()
     } else {
