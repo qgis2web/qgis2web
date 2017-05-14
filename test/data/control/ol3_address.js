@@ -86,7 +86,6 @@ var onPointerMove = function(evt) {
     var currentLayer;
     var currentFeatureKeys;
     var count = 1;
-    var count = 1;
     var clusteredFeatures;
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         // We only care about features from layers in the layersList, ignore
