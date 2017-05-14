@@ -212,9 +212,9 @@ def exportStyles(layers, folder, clustered):
     %(value)s
     %(style)s;
     if (size >= 2) {
-        labelText = size.toString();
+        labelText = size.toString()
     } else {
-        labelText = "";
+        labelText = ""
     }
     var key = value + "_" + labelText
 
