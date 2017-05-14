@@ -55,23 +55,23 @@ var style_pipelines0 = function(feature, resolution){
     var style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(242,66,72,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
     })];
-    if ("" !== null) {
-        var labelText = String("");
+    var labelText = ""
+    if (size >= 2) {
+        labelText = size.toString()
     } else {
-        var labelText = ""
+        labelText = ""
     }
     var key = value + "_" + labelText
 
-    if (!styleCache_pipelines0[key]){
+    if (!styleCache_FieldSites0[key]){
         var text = new ol.style.Text({
-              font: '10.725px \'MS Shell Dlg 2\', sans-serif',
+              font: '13.0px \'MS Shell Dlg 2\', sans-serif',
               text: labelText,
-              textBaseline: "center",
-              textAlign: "left",
-              offsetX: 5,
-              offsetY: 3,
+              textAlign: "center",
+              offsetX: 0,
+              offsetY: 0,
               fill: new ol.style.Fill({
-                color: 'rgba(0, 0, 0, 255)'
+                color: 'rgba(0, 0, 0, 1)'
               }),
             });
         styleCache_pipelines0[key] = new ol.style.Style({"text": text})
