@@ -178,7 +178,7 @@ def exportStyles(layers, folder, clustered):
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
-            color = "rgba(%s, %s, %s, 255)" % (r, g, b)
+            color = "rgba(%s, %s, %s, 1)" % (r, g, b)
             face = layer.customProperty("labeling/fontFamily")
             palyr = QgsPalLayerSettings()
             palyr.readFromLayer(layer)
@@ -211,10 +211,10 @@ def exportStyles(layers, folder, clustered):
     };
     %(value)s
     %(style)s;
-    if (%(label)s !== null%(labelRes)s) {
-        var labelText = String(%(label)s);
+    if (size >= 2) {
+        labelText = size.toString();
     } else {
-        var labelText = ""
+        labelText = "";
     }
     var key = value + "_" + labelText
 
@@ -222,10 +222,9 @@ def exportStyles(layers, folder, clustered):
         var text = new ol.style.Text({
               font: '%(size)spx \\'%(face)s\\', sans-serif',
               text: labelText,
-              textBaseline: "center",
-              textAlign: "left",
-              offsetX: 5,
-              offsetY: 3,
+              textAlign: "center",
+              offsetX: 0,
+              offsetY: 0,
               fill: new ol.style.Fill({
                 color: '%(color)s'
               }),%(stroke)s
