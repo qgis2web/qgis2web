@@ -131,7 +131,7 @@ var onPointerMove = function(evt) {
                                 popupText = popupText + '<tr>' + popupField + '</tr>';
                             }
                         } 
-                        popupText = popupText + '</table></li>'    
+                        popupText = popupText + '</table></li>';    
                     }
                     popupText = popupText + '</ul>';
                 }
@@ -251,27 +251,27 @@ var onSingleClick = function(evt) {
                     for(var n=0; n<clusteredFeatures.length; n++) {
                         clusterFeature = clusteredFeatures[n];
                         currentFeatureKeys = clusterFeature.getKeys();
-                        popupText = popupText + '<li>'
+                        popupText = popupText + '<li><table>'
                         for (var i=0; i<currentFeatureKeys.length; i++) {
                             if (currentFeatureKeys[i] != 'geometry') {
                                 popupField = '';
                                 if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                    popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong>&nbsp;';
+                                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
                                 } else {
-                                    popupField += '';
+                                    popupField += '<td colspan="2">';
                                 }
                                 if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
                                     popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                                 }
                                 if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '<br />' : '');
+                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                                 } else {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /><br />' : '');
+                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                                 }
-                                popupText = popupText + popupField;
+                                popupText = popupText + '<tr>' + popupField + '</tr>';
                             }
                         } 
-                        popupText = popupText + '</li>'    
+                        popupText = popupText + '</table></li>';    
                     }
                     popupText = popupText + '</ul>';
                 }
