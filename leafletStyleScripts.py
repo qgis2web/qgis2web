@@ -23,111 +23,121 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
     style = ""
     if isinstance(renderer, QgsSingleSymbolRendererV2):
         symbol = renderer.symbol()
-        (styleCode, markerType) = getSymbolAsStyle(symbol, markerFolder,
-                                                   layer_alpha, sln)
-        style = """
-        function style_%s() {
-            return %s
-        }""" % (sln, styleCode)
+        for sl in xrange(symbol.symbolLayerCount()):
+            (styleCode, markerType) = getSymbolAsStyle(symbol, markerFolder,
+                                                       layer_alpha, sln, sl)
+            style += """
+            function style_%s_%s() {
+                return %s
+            }""" % (sln, sl, styleCode)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
-        style = """
-        function style_%s(feature) {
-            switch(feature.properties['%s']) {""" % (sln, classAttr)
-        for cat in renderer.categories():
-            (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
-                                                       markerFolder,
-                                                       layer_alpha, sln)
-            if (cat.value() is not None and cat.value() != "" and
-                    not isinstance(cat.value(), QPyNullVariant)):
-                style += """
-                case '%s':""" % unicode(cat.value()).replace("'", "\\'")
-            else:
-                style += """
-                default:"""
+        symbol = renderer.categories()[0].symbol()
+        for sl in xrange(symbol.symbolLayerCount()):
             style += """
-                    return %s
-                    break;""" % styleCode
-        style += """
-            }
-        }"""
+            function style_%s_%s(feature) {
+                switch(feature.properties['%s']) {""" % (sln, sl, classAttr)
+            for cat in renderer.categories():
+                (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
+                                                           markerFolder,
+                                                           layer_alpha,
+                                                           sln, sl)
+                if (cat.value() is not None and cat.value() != "" and
+                        not isinstance(cat.value(), QPyNullVariant)):
+                    style += """
+                    case '%s':""" % unicode(cat.value()).replace("'", "\\'")
+                else:
+                    style += """
+                    default:"""
+                style += """
+                        return %s
+                        break;""" % styleCode
+            style += """
+                }
+            }"""
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
-        style = """
-        function style_%s(feature) {""" % (sln)
-        for ran in renderer.ranges():
-            (styleCode, markerType) = getSymbolAsStyle(ran.symbol(),
-                                                       markerFolder,
-                                                       layer_alpha, sln)
+        symbol = renderer.ranges()[0].symbol()
+        for sl in xrange(symbol.symbolLayerCount()):
             style += """
-            if (feature.properties['%(a)s'] >= %(l)f """
-            style += """&& feature.properties['%(a)s'] <= %(u)f ) {
-                return %(s)s
+            function style_%s_%s(feature) {""" % (sln, sl)
+            for ran in renderer.ranges():
+                (styleCode, markerType) = getSymbolAsStyle(ran.symbol(),
+                                                           markerFolder,
+                                                           layer_alpha,
+                                                           sln, sl)
+                style += """
+                if (feature.properties['%(a)s'] >= %(l)f """
+                style += """&& feature.properties['%(a)s'] <= %(u)f ) {
+                    return %(s)s
+                }"""
+                style = style % {"a": classAttr, "l": ran.lowerValue(),
+                                 "u": ran.upperValue(),
+                                 "s": styleCode}
+            style += """
             }"""
-            style = style % {"a": classAttr, "l": ran.lowerValue(),
-                             "u": ran.upperValue(),
-                             "s": styleCode}
-        style += """
-        }"""
     elif isinstance(renderer, QgsRuleBasedRendererV2):
-        template = """
-        function style_%s(feature) {
-            var context = {
-                feature: feature,
-                variables: {}
-            };
-            // Start of if blocks and style check logic
-            %s
-            else {
-                return %s;
-            }
-        }
-        """
-        elsejs = "{fill: false, stroke: false}"
-        js = ""
-        root_rule = renderer.rootRule()
-        rules = root_rule.children()
-        expFile = os.path.join(outputProjectFilename, "js",
-                               "qgis2web_expressions.js")
-        ifelse = "if"
-        for count, rule in enumerate(rules):
-            (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
-                                                       markerFolder,
-                                                       layer_alpha, sln)
-            name = "".join((sln, "rule", unicode(count)))
-            exp = rule.filterExpression()
-            if rule.isElse():
-                elsejs = styleCode
-                continue
-            name = compile_to_file(exp, name, "Leaflet", expFile)
-            js += """
-            %s (%s(context)) {
-              return %s;
-            }
-            """ % (ifelse, name, styleCode)
-            js = js.strip()
-            ifelse = "else if"
-        style = template % (sln, js, elsejs)
+        symbol = renderer.rootRule().children()[0].symbol()
+        for sl in xrange(symbol.symbolLayerCount()):
+            template = """
+            function style_%s_{sl}(feature) {{
+                var context = {{
+                    feature: feature,
+                    variables: {{}}
+                }};
+                // Start of if blocks and style check logic
+                %s
+                else {{
+                    return %s;
+                }}
+            }}
+            """.format(sl=sl)
+            elsejs = "{fill: false, stroke: false}"
+            js = ""
+            root_rule = renderer.rootRule()
+            rules = root_rule.children()
+            expFile = os.path.join(outputProjectFilename, "js",
+                                   "qgis2web_expressions.js")
+            ifelse = "if"
+            for count, rule in enumerate(rules):
+                (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
+                                                           markerFolder,
+                                                           layer_alpha,
+                                                           sln, sl)
+                name = "".join((sln, "rule", unicode(count)))
+                exp = rule.filterExpression()
+                if rule.isElse():
+                    elsejs = styleCode
+                    continue
+                name = compile_to_file(exp, name, "Leaflet", expFile)
+                js += """
+                %s (%s(context)) {
+                  return %s;
+                }
+                """ % (ifelse, name, styleCode)
+                js = js.strip()
+                ifelse = "else if"
+            style += template % (sln, js, elsejs)
     else:
         style = ""
     return style, markerType
 
 
-def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln):
+def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
     markerType = None
     styles = []
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
         alpha = 1-(layer_transparency / float(100))
-    sl = symbol.symbolLayer(0)
+    sl = symbol.symbolLayer(sl)
     props = sl.properties()
     if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
         color = getRGBAColor(props["color"], alpha)
         borderColor = getRGBAColor(props["outline_color"], alpha)
         borderWidth = props["outline_width"]
         lineStyle = props["outline_style"]
-        size = symbol.size() * 2
+        size = sl.size() * 2
         style = getCircle(color, borderColor, borderWidth,
                           size, props, lineStyle)
         markerType = "circleMarker"

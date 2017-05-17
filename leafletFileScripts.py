@@ -44,6 +44,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                         jsStore + 'L.Control.Locate.min.js')
         shutil.copyfile(cssDir + 'L.Control.Locate.min.css',
                         cssStore + 'L.Control.Locate.min.css')
+    shutil.copyfile(jsDir + 'multi-style-layer.js',
+                    jsStore + 'multi-style-layer.js')
     shutil.copyfile(jsDir + 'Autolinker.min.js',
                     jsStore + 'Autolinker.min.js')
     shutil.copyfile(jsDir + 'OSMBuildings-Leaflet.js',
@@ -103,6 +105,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css" />'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
+    jsAddress += """
+        <script src="js/multi-style-layer.js"></script>"""
     jsAddress += """
         <script src="js/leaflet-heat.js"></script>"""
     jsAddress += """

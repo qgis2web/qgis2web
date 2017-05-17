@@ -265,19 +265,19 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     return catLegend
 
 
-def pointToLayerFunction(safeLayerName, labeltext, symbol):
+def pointToLayerFunction(safeLayerName, labeltext, symbol, sl):
     if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayerV2):
         markerType = "marker"
     else:
         markerType = "circleMarker"
     pointToLayerFunction = """
-        function pointToLayer_{safeLayerName}(feature, latlng) {{
+        function pointToLayer_{safeLayerName}_{sl}(feature, latlng) {{
             var context = {{
                 feature: feature,
                 variables: {{}}
             }};
-            return L.{markerType}(latlng, style_{safeLayerName}""".format(
-                safeLayerName=safeLayerName,
+            return L.{markerType}(latlng, style_{safeLayerName}_{sl}""".format(
+                safeLayerName=safeLayerName, sl=sl,
                 markerType=markerType)
     pointToLayerFunction += """(feature)){labeltext}
         }}""".format(labeltext=labeltext)
