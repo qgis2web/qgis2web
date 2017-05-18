@@ -53,8 +53,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
                     return %s
                     break;""" % styleCode
             style += """
-                }
-            }"""
+                    }
+                }"""
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
