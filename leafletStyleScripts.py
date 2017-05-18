@@ -238,35 +238,37 @@ def getIcon(path, svgSize):
 
 
 def getStrokeStyle(color, dashed, width, linecap, linejoin):
-    width = round(float(width) * 3.8, 0)
-    if width == 0 and dashed != "no":
-        width = 1
-    dash = dashed.replace("dash", "10,5")
-    dash = dash.replace("dot", "1,5")
-    dash = dash.replace("solid", "")
-    dash = dash.replace(" ", ",")
-    if dash == "no":
-        dash = ""
-    capString = "round"
-    if linecap == 0:
-        capString = "butt"
-    if linecap == 16:
-        capString = "square"
-    joinString = "round"
-    if linejoin == 0:
-        joinString = "miter"
-    if linejoin == 64:
-        joinString = "bevel"
-    strokeString = ("""
+    if dashed != "no":
+        width = round(float(width) * 3.8, 0)
+        if width == 0:
+            width = 1
+        dash = dashed.replace("dash", "10,5")
+        dash = dash.replace("dot", "1,5")
+        dash = dash.replace("solid", "")
+        dash = dash.replace(" ", ",")
+        capString = "round"
+        if linecap == 0:
+            capString = "butt"
+        if linecap == 16:
+            capString = "square"
+        joinString = "round"
+        if linejoin == 0:
+            joinString = "miter"
+        if linejoin == 64:
+            joinString = "bevel"
+        strokeString = ("""
                 opacity: 1,
                 color: %s,
                 dashArray: '%s',""" %
                     (color, dash))
-    strokeString += ("""
+        strokeString += ("""
                 lineCap: '%s',
                 lineJoin: '%s',
                 weight: %s,""" %
                      (capString, joinString, width))
+    else:
+        strokeString = """
+                stroke: false,"""
     return strokeString
 
 
