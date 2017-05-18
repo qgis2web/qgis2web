@@ -41,8 +41,8 @@ var style_airports0 = function(feature, resolution){
             styleCache_airports0[key] = new ol.style.Style({"text": text})
         }
     } else {
-        if (feature.get("NAME") !== null) {
-            var labelText = String(feature.get("NAME"));
+        if ("" !== null) {
++           var labelText = String("");
         } else {
             var labelText = ""
         }
