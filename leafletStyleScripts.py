@@ -27,9 +27,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             (styleCode, markerType) = getSymbolAsStyle(symbol, markerFolder,
                                                        layer_alpha, sln, sl)
             style += """
-            function style_%s_%s() {
-                return %s
-            }""" % (sln, sl, styleCode)
+        function style_%s_%s() {
+            return %s
+        }""" % (sln, sl, styleCode)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.categories()[0].symbol()
