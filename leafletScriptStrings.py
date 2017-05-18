@@ -280,7 +280,7 @@ def pointToLayerFunction(safeLayerName, labeltext, symbol, sl):
                 safeLayerName=safeLayerName, sl=sl,
                 markerType=markerType)
     pointToLayerFunction += """(feature)){labeltext}
-        }}""".format(labeltext=labeltext)
+        }}""".format(labeltext=labeltext.replace("{{", "{").replace("}}", "}"))
     return pointToLayerFunction
 
 

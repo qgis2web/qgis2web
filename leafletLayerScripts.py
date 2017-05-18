@@ -198,8 +198,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
         labeltext = ".bindTooltip((" + unicode(f)
         labeltext += " !== null?String(%s%s)%s:'')" % (
                 styleStart, unicode(f), styleEnd)
-        labeltext += ", {permanent: true, offset: [-0, -16], "
-        labeltext += "className: 'css_%s'}" % safeLayerName
+        labeltext += ", {{permanent: true, offset: [-0, -16], "
+        labeltext += "className: 'css_%s'}}" % safeLayerName
         labeltext += ").openTooltip();"
     else:
         labeltext = ""
@@ -451,12 +451,12 @@ def buildPointJSON(symbol, sln, label, usedFields, markerType, layerAttr):
                     variables: {{}}
                 }};
                 return L.{markerType}(latlng, """
-        pointJSON += """style_{sln}_%s(feature)){label}
-            }},""" % sl
+        pointJSON += """style_{sln}_%s(feature))%s
+            }},""" % (sl, label)
+        label = ""
     pointJSON += """
         ]}});"""
-    pointJSON = pointJSON.format(sln=sln, label=label, markerType=markerType,
-                                 attr=layerAttr)
+    pointJSON = pointJSON.format(sln=sln, markerType=markerType, attr=layerAttr)
     return pointJSON
 
 

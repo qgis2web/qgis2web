@@ -270,7 +270,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
-            print borderWidth
             size = sl.size() * 2
             style = "image: %s" % getCircle(color, borderColor, borderWidth,
                                             size, props)
