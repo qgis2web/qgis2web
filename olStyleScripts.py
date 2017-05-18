@@ -270,6 +270,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
+            print borderWidth
             size = sl.size() * 2
             style = "image: %s" % getCircle(color, borderColor, borderWidth,
                                             size, props)
@@ -359,11 +360,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
 
 
 def getCircle(color, borderColor, borderWidth, size, props):
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.Circle({radius: %s + size,
-            %s %s})""" %
-            (size,
-             getStrokeStyle(borderColor, "", borderWidth, 0, 0),
-             getFillStyle(color, props)))
+            %s %s})""" % (size, stroke, getFillStyle(color, props)))
 
 
 def getIcon(path, size, svgWidth, svgHeight, rot):
