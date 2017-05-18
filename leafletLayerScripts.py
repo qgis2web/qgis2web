@@ -456,7 +456,8 @@ def buildPointJSON(symbol, sln, label, usedFields, markerType, layerAttr):
         label = ""
     pointJSON += """
         ]}});"""
-    pointJSON = pointJSON.format(sln=sln, markerType=markerType, attr=layerAttr)
+    pointJSON = pointJSON.format(sln=sln, markerType=markerType,
+                                 attr=layerAttr)
     return pointJSON
 
 
