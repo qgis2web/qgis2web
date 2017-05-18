@@ -35,8 +35,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
         symbol = renderer.categories()[0].symbol()
         for sl in xrange(symbol.symbolLayerCount()):
             style += """
-            function style_%s_%s(feature) {
-                switch(feature.properties['%s']) {""" % (sln, sl, classAttr)
+        function style_%s_%s(feature) {
+            switch(feature.properties['%s']) {""" % (sln, sl, classAttr)
             for cat in renderer.categories():
                 (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
                                                            markerFolder,
@@ -45,13 +45,13 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
                 if (cat.value() is not None and cat.value() != "" and
                         not isinstance(cat.value(), QPyNullVariant)):
                     style += """
-                    case '%s':""" % unicode(cat.value()).replace("'", "\\'")
+                case '%s':""" % unicode(cat.value()).replace("'", "\\'")
                 else:
                     style += """
-                    default:"""
+                default:"""
                 style += """
-                        return %s
-                        break;""" % styleCode
+                    return %s
+                    break;""" % styleCode
             style += """
                 }
             }"""
@@ -60,38 +60,38 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
         symbol = renderer.ranges()[0].symbol()
         for sl in xrange(symbol.symbolLayerCount()):
             style += """
-            function style_%s_%s(feature) {""" % (sln, sl)
+        function style_%s_%s(feature) {""" % (sln, sl)
             for ran in renderer.ranges():
                 (styleCode, markerType) = getSymbolAsStyle(ran.symbol(),
                                                            markerFolder,
                                                            layer_alpha,
                                                            sln, sl)
                 style += """
-                if (feature.properties['%(a)s'] >= %(l)f """
+            if (feature.properties['%(a)s'] >= %(l)f """
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
-                    return %(s)s
-                }"""
+                return %(s)s
+            }"""
                 style = style % {"a": classAttr, "l": ran.lowerValue(),
                                  "u": ran.upperValue(),
                                  "s": styleCode}
             style += """
-            }"""
+        }"""
     elif isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
         for sl in xrange(symbol.symbolLayerCount()):
             template = """
-            function style_%s_{sl}(feature) {{
-                var context = {{
-                    feature: feature,
-                    variables: {{}}
-                }};
-                // Start of if blocks and style check logic
-                %s
-                else {{
-                    return %s;
-                }}
+        function style_%s_{sl}(feature) {{
+            var context = {{
+                feature: feature,
+                variables: {{}}
+            }};
+            // Start of if blocks and style check logic
+            %s
+            else {{
+                return %s;
             }}
-            """.format(sl=sl)
+        }}
+        """.format(sl=sl)
             elsejs = "{fill: false, stroke: false}"
             js = ""
             root_rule = renderer.rootRule()
