@@ -29,7 +29,7 @@ var style_airports0 = function(feature, resolution){
         }
         var style = rules_airports0(feature, value);
         ;
-    var labelText = ""
+    var labelText = "";
     var currentFeature = feature;
     clusteredFeatures = feature.get("features");
     if (typeof clusteredFeatures !== "undefined") {
@@ -52,9 +52,9 @@ var style_airports0 = function(feature, resolution){
         }
     } else {
         if ("" !== null) {
-+           var labelText = String("");
++           labelText = String("");
         } else {
-            var labelText = ""
+            labelText = ""
         }
         var key = value + "_" + labelText
         if (!styleCache_airports0[key]){

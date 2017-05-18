@@ -132,7 +132,7 @@ var style_lakes0 = function(feature, resolution){
     };
     var value = feature.get("NAMES");
     var style = categories_lakes0(feature, value);
-    var labelText = ""
+    var labelText = "";
     var currentFeature = feature;
     clusteredFeatures = feature.get("features");
     if (typeof clusteredFeatures !== "undefined") {
@@ -155,9 +155,9 @@ var style_lakes0 = function(feature, resolution){
         }
     } else {
         if ("" !== null) {
-+           var labelText = String("");
++           labelText = String("");
         } else {
-            var labelText = ""
+            labelText = ""
         }
         var key = value + "_" + labelText
         if (!styleCache_lakes0[key]){

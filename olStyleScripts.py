@@ -211,7 +211,7 @@ def exportStyles(layers, folder, clustered):
     };
     %(value)s
     %(style)s;
-    var labelText = ""
+    var labelText = "";
     var currentFeature = feature;
     clusteredFeatures = feature.get("features");
     if (typeof clusteredFeatures !== "undefined") {
@@ -234,9 +234,9 @@ def exportStyles(layers, folder, clustered):
         }
     } else {
         if (%(label)s !== null%(labelRes)s) {
-            var labelText = String(%(label)s);
+            labelText = String(%(label)s);
         } else {
-            var labelText = ""
+            labelText = ""
         }
         var key = value + "_" + labelText
         if (!%(cache)s[key]){

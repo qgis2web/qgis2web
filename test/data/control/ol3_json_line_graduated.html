@@ -72,7 +72,7 @@ var style_pipelines0 = function(feature, resolution){
             style =  range[2];
         }
     };
-    var labelText = ""
+    var labelText = "";
     var currentFeature = feature;
     clusteredFeatures = feature.get("features");
     if (typeof clusteredFeatures !== "undefined") {
@@ -95,9 +95,9 @@ var style_pipelines0 = function(feature, resolution){
         }
     } else {
         if ("" !== null) {
-+           var labelText = String("");
++           labelText = String("");
         } else {
-            var labelText = ""
+            labelText = ""
         }
         var key = value + "_" + labelText
         if (!styleCache_pipelines0[key]){
