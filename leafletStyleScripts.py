@@ -256,16 +256,14 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
             joinString = "miter"
         if linejoin == 64:
             joinString = "bevel"
-        strokeString = ("""
+        strokeString = """
                 opacity: 1,
                 color: %s,
-                dashArray: '%s',""" %
-                    (color, dash))
-        strokeString += ("""
+                dashArray: '%s',""" % (color, dash)
+        strokeString += """
                 lineCap: '%s',
                 lineJoin: '%s',
-                weight: %s,""" %
-                     (capString, joinString, width))
+                weight: %s,""" % (capString, joinString, width)
     else:
         strokeString = """
                 stroke: false,"""
