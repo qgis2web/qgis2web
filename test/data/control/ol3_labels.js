@@ -12,7 +12,7 @@ var style_airports0 = function(feature, resolution){
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(39,147,25,1.0)'})})
     })];
-    var labelText = ""
+    var labelText = "";
     var currentFeature = feature;
     clusteredFeatures = feature.get("features");
     if (typeof clusteredFeatures !== "undefined") {
@@ -35,9 +35,9 @@ var style_airports0 = function(feature, resolution){
         }
     } else {
         if (feature.get("NAME") !== null) {
-            var labelText = String(feature.get("NAME"));
+            labelText = String(feature.get("NAME"));
         } else {
-            var labelText = ""
+            labelText = ""
         }
         var key = value + "_" + labelText
         if (!styleCache_airports0[key]){

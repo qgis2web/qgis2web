@@ -52,7 +52,7 @@ var style_airports0 = function(feature, resolution){
         }
     } else {
         if ("" !== null) {
-+           labelText = String("");
+            labelText = String("");
         } else {
             labelText = ""
         }
