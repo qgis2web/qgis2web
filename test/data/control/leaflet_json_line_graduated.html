@@ -25,6 +25,7 @@
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
+        <script src="js/mutl-style-layer.js"></script>
         <script src="js/leaflet-heat.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/OSMBuildings-Leaflet.js"></script>
@@ -77,7 +78,7 @@
             layer.bindPopup(popupContent);
         }
 
-        function style_pipelines0(feature) {
+        function style_pipelines0_0(feature) {
             if (feature.properties['cat'] >= 1.000000 && feature.properties['cat'] <= 8.400000 ) {
                 return {
                 pane: 'pane_pipelines0',
@@ -142,11 +143,11 @@
         map.createPane('pane_pipelines0');
         map.getPane('pane_pipelines0').style.zIndex = 400;
         map.getPane('pane_pipelines0').style['mix-blend-mode'] = 'normal';
-    var layer_pipelines0 = new L.geoJson(json_pipelines0, {
+    var layer_pipelines0 = new L.geoJson.multiStyle(json_pipelines0, {
         attribution: '<a href=""></a>',
         pane: 'pane_pipelines0',
         onEachFeature: pop_pipelines0,
-        style: style_pipelines0
+        styles: [style_pipelines0,]
     });
         bounds_group.addLayer(layer_pipelines0);
         map.addLayer(layer_pipelines0);
