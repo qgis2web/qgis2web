@@ -190,6 +190,8 @@ software:</p>
     <li>@ThomasG77</li>
     <li>@NathanW2</li>
     <li>@nyalldawson (FTP export for Faunalia/ENEL)</li>
+    <li>@perliedman</li>
+    <li>@olakov</li>
 </ul>
 
 <p>In addition, the following libraries have been used:</p>
@@ -209,4 +211,5 @@ software:</p>
     <li>ol3-search-layer, by @ThomasG77</li>
     <li>Leaflet.heat, by @mourner</li>
     <li>OSMBuildings, by @kekscom</li>
+    <li>multi-style-layer, by @perliedman</li>
 </ul>
