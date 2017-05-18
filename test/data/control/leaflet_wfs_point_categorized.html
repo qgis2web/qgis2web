@@ -25,6 +25,7 @@
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
+        <script src="js/multi-style-layer.js"></script>
         <script src="js/leaflet-heat.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/OSMBuildings-Leaflet.js"></script>
@@ -79,7 +80,7 @@
             layer.bindPopup(popupContent);
         }
 
-        function style_point0(feature) {
+        function style_point0_0(feature) {
             switch(feature.properties['digitised']) {
                 default:
                     return {
@@ -212,17 +213,17 @@
         map.createPane('pane_point0');
         map.getPane('pane_point0').style.zIndex = 400;
         map.getPane('pane_point0').style['mix-blend-mode'] = 'normal';
-        function pointToLayer_point0(feature, latlng) {
+        function pointToLayer_point0_0(feature, latlng) {
             var context = {
                 feature: feature,
                 variables: {}
             };
-            return L.circleMarker(latlng, style_point0(feature))
+            return L.circleMarker(latlng, style_point0_0(feature))
         }
-        var layer_point0 = L.geoJson(null, {
+        var layer_point0 = L.geoJson.multiStyle(null, {
             attribution: '<a href=""></a>',
             pane: 'pane_point0',
-            pointToLayer: pointToLayer_point0,
+            pointToLayers: [pointToLayer_point0_0,]
             onEachFeature: pop_point0
         });
         function getpoint0Json(geojson) {
