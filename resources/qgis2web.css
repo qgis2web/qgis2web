@@ -30,7 +30,9 @@ th, td {
     left: -50px;   
     height: auto;
     width: auto;
-    min-width: 100px;     
+    min-width: 100px;
+    max-height:400px;  
+    overflow: auto;      
 }
 
 .ol-popup-closer {
@@ -49,4 +51,17 @@ th, td {
     color: #666;
     font-family: sans-serif;
     font-size: 100%;
+}
+
+#popup-content>ul>li:nth-child(even) {
+    background-color: #eee;
+}
+
+#popup-content ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#popup-content li {
+    margin-bottom:0.25em;
 }

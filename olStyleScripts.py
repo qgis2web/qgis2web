@@ -178,7 +178,7 @@ def exportStyles(layers, folder, clustered):
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
-            color = "rgba(%s, %s, %s, 255)" % (r, g, b)
+            color = "rgba(%s, %s, %s, 1)" % (r, g, b)
             face = layer.customProperty("labeling/fontFamily")
             palyr = QgsPalLayerSettings()
             palyr.readFromLayer(layer)
@@ -211,26 +211,48 @@ def exportStyles(layers, folder, clustered):
     };
     %(value)s
     %(style)s;
-    if (%(label)s !== null%(labelRes)s) {
-        var labelText = String(%(label)s);
+    var labelText = "";
+    var currentFeature = feature;
+    clusteredFeatures = feature.get("features");
+    if (typeof clusteredFeatures !== "undefined") {
+        if (size >= 2) {
+            labelText = size.toString()
+        } else {
+            labelText = ""
+        }
+        var key = value + "_" + labelText
+        if (!%(cache)s[key]){
+            var text = new ol.style.Text({
+                  font: '%(size)spx \\'%(face)s\\', sans-serif',
+                  text: labelText,
+                  textAlign: "center",
+                  fill: new ol.style.Fill({
+                    color: '%(color)s'
+                  }),%(stroke)s
+                });
+            %(cache)s[key] = new ol.style.Style({"text": text})
+        }
     } else {
-        var labelText = ""
-    }
-    var key = value + "_" + labelText
-
-    if (!%(cache)s[key]){
-        var text = new ol.style.Text({
-              font: '%(size)spx \\'%(face)s\\', sans-serif',
-              text: labelText,
-              textBaseline: "center",
-              textAlign: "left",
-              offsetX: 5,
-              offsetY: 3,
-              fill: new ol.style.Fill({
-                color: '%(color)s'
-              }),%(stroke)s
-            });
-        %(cache)s[key] = new ol.style.Style({"text": text})
+        if (%(label)s !== null%(labelRes)s) {
+            labelText = String(%(label)s);
+        } else {
+            labelText = ""
+        }
+        var key = value + "_" + labelText
+        if (!%(cache)s[key]){
+            var text = new ol.style.Text({
+                    font: '%(size)spx \\'%(face)s\\', sans-serif',
+                    text: labelText,
+                    textBaseline: "center",
+                    textAlign: "left",
+                    offsetX: 5,
+                    offsetY: 3,
+                    fill: new ol.style.Fill({
+                      color: '%(color)s'
+                    }),%(stroke)s
+                });
+            %(cache)s[key] = new ol.style.Style({"text": text})
+        }
     }
     var allStyles = [%(cache)s[key]];
     allStyles.push.apply(allStyles, style);
