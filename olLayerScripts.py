@@ -15,6 +15,10 @@ from qgis.core import (QgsRenderContext,
                        QgsMessageLog)
 from utils import safeName, is25d, BLEND_MODES
 from basemaps import basemapOL
+try:
+    from quick_map_services.py_tiled_layer.tilelayer import TileLayer
+except:
+    pass
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
@@ -38,7 +42,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
                                                               clustered)):
         layer_names_id[layer.id()] = str(count)
-
         try:
             if is25d(layer, canvas, restrictToExtent, extent):
                 pass
@@ -49,22 +52,30 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                                           restrictToExtent,
                                                           extent, count)])
         except:
-            layerVars += "\n".join([layerToJavascript(iface, layer,
+            try:
+                layerVars += "\n".join([layerToJavascript(iface, layer,
                                                       encode2json, matchCRS,
                                                       cluster,
                                                       restrictToExtent,
                                                       extent, count)])
+            except:
+                pass
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
+        groupLayerObjs = ""
+        for layer in groupLayers:
+            try:
+                if isinstance(layer, TileLayer):
+                    continue
+            except:
+                pass
+            groupLayerObjs += ("lyr_" + safeName(layer.name()) +
+                               layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 title: "%s"});\n''' %
-                      ("group_" + safeName(group),
-                       ",".join(["lyr_" + safeName(layer.name()) +
-                                layer_names_id[layer.id()]
-                                for layer in groupLayers]),
-                       group))
+                      ("group_" + safeName(group), groupLayerObjs, group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
     mapLayers = ["baseLayer"]
@@ -108,12 +119,21 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
                                        sln=safeName(layer.name()),
                                        count=unicode(count))
             else:
-                mapLayers.append("lyr_" + safeName(layer.name()) +
-                                 unicode(count))
+                try:
+                    if not isinstance(layer, TileLayer):
+                        mapLayers.append("lyr_" + safeName(layer.name()) +
+                                        unicode(count))
+                except:
+                    pass
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
-            mapLayers.append("lyr_" + safeName(layer.name()) + unicode(count))
+            try:
+                if not isinstance(layer, TileLayer):
+                    mapLayers.append("lyr_" + safeName(layer.name()) +
+                                     unicode(count))
+            except:
+                pass
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
