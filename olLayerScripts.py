@@ -54,10 +54,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         except:
             try:
                 layerVars += "\n".join([layerToJavascript(iface, layer,
-                                                      encode2json, matchCRS,
-                                                      cluster,
-                                                      restrictToExtent,
-                                                      extent, count)])
+                                                          encode2json,
+                                                          matchCRS, cluster,
+                                                          restrictToExtent,
+                                                          extent, count)])
             except:
                 pass
     groupVars = ""
@@ -122,7 +122,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
                 try:
                     if not isinstance(layer, TileLayer):
                         mapLayers.append("lyr_" + safeName(layer.name()) +
-                                        unicode(count))
+                                         unicode(count))
                 except:
                     pass
         except:
