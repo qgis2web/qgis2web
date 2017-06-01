@@ -186,7 +186,8 @@ def exportStyles(layers, folder, clustered):
             if sv:
                 min = float(palyr.scaleMin)
                 max = float(palyr.scaleMax)
-                min = 1 / ((1 / min) * 39.37 * 90.7)
+                if min != 0:
+                    min = 1 / ((1 / min) * 39.37 * 90.7)
                 max = 1 / ((1 / max) * 39.37 * 90.7)
                 labelRes = " && resolution > %(min)d " % {"min": min}
                 labelRes += "&& resolution < %(max)d" % {"max": max}
@@ -390,9 +391,18 @@ def getCircle(color, borderColor, borderWidth, size, props):
 
 
 def getIcon(path, size, svgWidth, svgHeight, rot):
-    size = math.floor(float(size) * 3.8)
+    svgWidth = unicode(svgWidth)
+    svgWidth = svgWidth.replace("mm", "")
+    svgWidth = float(svgWidth)
+    svgHeight = unicode(svgHeight)
+    svgHeight = svgHeight.replace("mm", "")
+    svgHeight = float(svgHeight)
+    size = unicode(size)
+    size = size.replace("mm", "")
+    size = float(size)
+    size = math.floor(size * 3.8)
     anchor = size / 2
-    scale = unicode(float(size) / float(svgWidth))
+    scale = unicode(size / float(svgWidth))
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,
