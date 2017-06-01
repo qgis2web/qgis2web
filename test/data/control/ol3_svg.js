@@ -10,7 +10,7 @@ var style_airports0 = function(feature, resolution){
     var size = 0;
     var style = [ new ol.style.Style({
         image: new ol.style.Icon({
-                  imgSize: [100, 100],
+                  imgSize: [100.0, 100.0],
                   scale: 0.07,
                   anchor: [3, 3],
                   anchorXUnits: "pixels",

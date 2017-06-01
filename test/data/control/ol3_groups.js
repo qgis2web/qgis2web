@@ -10,7 +10,7 @@ jsonSource_airports0.addFeatures(features_airports0);var lyr_airports0 = new ol.
                 title: "airports"
             });
 var group_group1 = new ol.layer.Group({
-                                layers: [lyr_airports0],
+                                layers: [lyr_airports0,],
                                 title: "group1"});
 
 lyr_airports0.setVisible(true);
