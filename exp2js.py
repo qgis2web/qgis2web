@@ -1,5 +1,6 @@
 from qgis.core import QgsExpression
 import re
+import json
 
 whenfunctions = []
 
