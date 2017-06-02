@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.14
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=2.18.0
+version=2.19.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/05/19 2.18.0 Leaflet multiple symbol layers (thanks, @perliedman!), fix OL cluster popups (thanks, @olakov!), OL symbol levels, fix OL point size, fix OL point outline, fix Leaflet no stroke, update README
+changelog=2017/06/02 2.19.0 Upgrade OpenLayers to 4.1.1, missing import in expression parser, exclude Quick Map Services layers in OL, OL label minimum visibility 0, handle OL SVG in millimetres, (no filter) in expressions
+    2017/05/19 2.18.0 Leaflet multiple symbol layers (thanks, @perliedman!), fix OL cluster popups (thanks, @olakov!), OL symbol levels, fix OL point size, fix OL point outline, fix Leaflet no stroke, update README
     2017/05/11 2.17.1 Save raster visible state, handle all Processing/GDAL versions in raster export, remove unnecessary import
     2017/05/09 2.17.0 Enlarge test suite, test 2.5D on LTR, dedupe/refactor vector export, update CONTRIBUTING.md, fix Leaflet rule-based layers, fix Leaflet non-visible rasters
     2017/05/03 2.16.3 Fix OL popups (thanks, @OlaKov!), fix layer group bug (thanks, @lucacasagrande!)
