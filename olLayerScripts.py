@@ -133,7 +133,8 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
                     mapLayers.append("lyr_" + safeName(layer.name()) +
                                      unicode(count))
             except:
-                pass
+                mapLayers.append("lyr_" + safeName(layer.name()) +
+                                 unicode(count))
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
