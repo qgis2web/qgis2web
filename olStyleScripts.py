@@ -301,8 +301,10 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             svg = xml.etree.ElementTree.parse(sl.path()).getroot()
             svgWidth = svg.attrib["width"]
             svgWidth = re.sub("px", "", svgWidth)
+            svgWidth = re.sub("mm", "", svgWidth)
             svgHeight = svg.attrib["height"]
             svgHeight = re.sub("px", "", svgHeight)
+            svgHeight = re.sub("mm", "", svgHeight)
             if symbol.dataDefinedAngle().isActive():
                 if symbol.dataDefinedAngle().useExpression():
                     rot = "0"
@@ -391,18 +393,9 @@ def getCircle(color, borderColor, borderWidth, size, props):
 
 
 def getIcon(path, size, svgWidth, svgHeight, rot):
-    svgWidth = unicode(svgWidth)
-    svgWidth = svgWidth.replace("mm", "")
-    svgWidth = float(svgWidth)
-    svgHeight = unicode(svgHeight)
-    svgHeight = svgHeight.replace("mm", "")
-    svgHeight = float(svgHeight)
-    size = unicode(size)
-    size = size.replace("mm", "")
-    size = float(size)
-    size = math.floor(size * 3.8)
+    size = math.floor(float(size) * 3.8)
     anchor = size / 2
-    scale = unicode(size / float(svgWidth))
+    scale = unicode(float(size) / float(svgWidth))
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,
