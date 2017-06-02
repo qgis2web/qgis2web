@@ -69,20 +69,23 @@ function %s(context) {
 
 
 def walkExpression(node, mapLib):
-    if node.nodeType() == QgsExpression.ntBinaryOperator:
-        jsExp = handle_binary(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntUnaryOperator:
-        jsExp = handle_unary(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntInOperator:
-        jsExp = handle_in(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntFunction:
-        jsExp = handle_function(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntLiteral:
-        jsExp = handle_literal(node)
-    elif node.nodeType() == QgsExpression.ntColumnRef:
-        jsExp = handle_columnRef(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntCondition:
-        jsExp = handle_condition(node,mapLib)
+    try:
+        if node.nodeType() == QgsExpression.ntBinaryOperator:
+            jsExp = handle_binary(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntUnaryOperator:
+            jsExp = handle_unary(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntInOperator:
+            jsExp = handle_in(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntFunction:
+            jsExp = handle_function(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntLiteral:
+            jsExp = handle_literal(node)
+        elif node.nodeType() == QgsExpression.ntColumnRef:
+            jsExp = handle_columnRef(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntCondition:
+            jsExp = handle_condition(node,mapLib)
+    except:
+        jsExp = "true"
     return jsExp
 
 
