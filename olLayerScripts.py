@@ -124,7 +124,8 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
                         mapLayers.append("lyr_" + safeName(layer.name()) +
                                          unicode(count))
                 except:
-                    pass
+                    mapLayers.append("lyr_" + safeName(layer.name()) +
+                                     unicode(count))
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
