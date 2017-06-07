@@ -204,7 +204,7 @@ def exportStyles(layers, folder, clustered):
             else:
                 stroke = ""
             if style != "":
-                style = getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value)
+                style = getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
             else:
                 style = "''"
         except Exception, e:
@@ -222,7 +222,7 @@ var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": sln, "style": style})
 
 
-def getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value):
+def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value):
     this_style = '''function(feature, resolution){
     var context = {
         feature: feature,
@@ -230,6 +230,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value
     };
     %(value)s
     var labelText = "";
+    var key = "";
     ''' % {
         "value": value}
     if cluster:
@@ -238,12 +239,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value
     var textAlign = "center"
     var offsetX = 0
     var offsetY = 0
-    if (size > 30) {
-        labelText = size.toString()
-        size = 30; 
-    } else if (size <=30 && size >=2){
-        labelText = size.toString()
-    } else {
+    if (size == 1) {
         textAlign = "left"
         offsetX = 5
         offsetY = 3
@@ -253,9 +249,12 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value
         } else {
             labelText = ""
         }
-        var key = value + "_" + labelText    
+        key = value + "_" + labelText    
+    } else {
+        labelText = size.toString()
+        size = 2*Math.log(size)
     }
-    %(style)s;''' % {
+    %(style)s;\n''' % {
             "style": style, "labelRes": labelRes, "label": labelText}
     else:
         this_style += '''size = 0;
@@ -267,20 +266,20 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value
     } else {
         labelText = ""
     }
-    %(style)s;''' % {
+    %(style)s;\n''' % {
             "style": style, "labelRes": labelRes, "label": labelText}
 
-    this_style += '''var key = value + "_" + labelText
+    this_style += '''   key = value + "_" + labelText
     if (!%(cache)s[key]){
         var text = new ol.style.Text({
                 font: '%(size)spx \\'%(face)s\\', sans-serif',
                 text: labelText,
-                textBaseline: "center",
+                textBaseline: "middle",
                 textAlign: textAlign,
                 offsetX: offsetX,
                 offsetY: offsetY,
                 fill: new ol.style.Fill({
-                  color: '%(stroke)s'
+                  color: '%(color)s'
                 })
             });
         %(cache)s[key] = new ol.style.Style({"text": text})
@@ -291,7 +290,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, stroke, value
     };''' % {
             "cache": "styleCache_" + sln,
             "size": size, "face": face,
-            "stroke": stroke}
+            "color": color}
     return this_style
 
 
@@ -455,7 +454,7 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
 
 def getFillStyle(color, props):
     try:
-        if props["color"] == "no":
+        if props["style"] == "no":
             return ""
     except:
         QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
