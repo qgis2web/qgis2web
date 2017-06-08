@@ -243,7 +243,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
         textAlign = "left"
         offsetX = 5
         offsetY = 3
-        var feature = feature.get("features")[0];
+        var feature = clusteredFeatures[0];
         if (%(label)s !== null%(labelRes)s) {
             labelText = String(%(label)s);
         } else {
@@ -252,7 +252,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
         key = value + "_" + labelText    
     } else {
         labelText = size.toString()
-        size = 2*Math.log(size)
+        size = 2*(Math.log(size)/ Math.log(2))
     }
     %(style)s;\n''' % {
             "style": style, "labelRes": labelRes, "label": labelText}
