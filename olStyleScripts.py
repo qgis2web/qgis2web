@@ -178,7 +178,13 @@ def exportStyles(layers, folder, clustered):
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
             color = "rgba(%s, %s, %s, 1)" % (r, g, b)
+            if (r or g or b) is None:
+                color = "rgba(0, 0, 0, 1)"
+            else:
+                color = "rgba(%s, %s, %s, 1)" % (r, g, b)
             face = layer.customProperty("labeling/fontFamily")
+            if face is None:
+                face = "MS Shell Dlg 2"
             palyr = QgsPalLayerSettings()
             palyr.readFromLayer(layer)
             sv = palyr.scaleVisibility
@@ -287,7 +293,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
     var allStyles = [%(cache)s[key]];
     allStyles.push.apply(allStyles, style);
     return allStyles;
-    };''' % {
+    }''' % {
             "cache": "styleCache_" + sln,
             "size": size, "face": face,
             "color": color}
