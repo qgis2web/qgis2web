@@ -241,7 +241,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
     var offsetY = 0
     if (size == 1) {
         textAlign = "left"
-        offsetX = 5
+        offsetX = 8
         offsetY = 3
         var feature = clusteredFeatures[0];
         if (%(label)s !== null%(labelRes)s) {
@@ -259,7 +259,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
     else:
         this_style += '''size = 0;
     textAlign = "left"
-    offsetX = 5
+    offsetX = 8
     offsetY = 3
     if (%(label)s !== null%(labelRes)s) {
         labelText = String(%(label)s);
