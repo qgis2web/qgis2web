@@ -22,7 +22,7 @@ var style_airports0 = function(feature, resolution){
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(39,147,25,1.0)'})})
     })];
-    var key = value + "_" + labelText
+    key = value + "_" + labelText
     if (!styleCache_airports0[key]){
         var text = new ol.style.Text({
                 font: '10.725px \'MS Shell Dlg 2\', sans-serif',
@@ -33,7 +33,7 @@ var style_airports0 = function(feature, resolution){
                 offsetY: offsetY,
                 fill: new ol.style.Fill({
                   color: 'rgba(0, 0, 0, 1)'
-                }),
+                })
             });
         styleCache_airports0[key] = new ol.style.Style({"text": text})
     }

@@ -65,7 +65,7 @@ var style_lakes0 = function(feature, resolution){
     var style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(56,204,206,1.0)'})
     })];
-    var key = value + "_" + labelText
+    key = value + "_" + labelText
     if (!styleCache_lakes0[key]){
         var text = new ol.style.Text({
                 font: '10.725px \'MS Shell Dlg 2\', sans-serif',
@@ -76,7 +76,7 @@ var style_lakes0 = function(feature, resolution){
                 offsetY: offsetY,
                 fill: new ol.style.Fill({
                   color: 'rgba(0, 0, 0, 1)'
-                }),
+                })
             });
         styleCache_lakes0[key] = new ol.style.Style({"text": text})
     }

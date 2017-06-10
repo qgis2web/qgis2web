@@ -40,7 +40,7 @@ var style_airports0 = function(feature, resolution){
         }
         var style = rules_airports0(feature, value);
         ;
-    var key = value + "_" + labelText
+    key = value + "_" + labelText
     if (!styleCache_airports0[key]){
         var text = new ol.style.Text({
                 font: '10.725px \'MS Shell Dlg 2\', sans-serif',
@@ -51,7 +51,7 @@ var style_airports0 = function(feature, resolution){
                 offsetY: offsetY,
                 fill: new ol.style.Fill({
                   color: 'rgba(0, 0, 0, 1)'
-                }),
+                })
             });
         styleCache_airports0[key] = new ol.style.Style({"text": text})
     }

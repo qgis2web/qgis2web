@@ -29,21 +29,21 @@ var style_airports0 = function(feature, resolution){
                   src: "styles/qgis2web.svg"
             })
     })];
-      var key = value + "_" + labelText
-      if (!styleCache_airports0[key]){
-          var text = new ol.style.Text({
-                  font: '10.725px \'MS Shell Dlg 2\', sans-serif',
-                  text: labelText,
-                  textBaseline: "middle",
-                  textAlign: textAlign,
-                  offsetX: offsetX,
-                  offsetY: offsetY,
-                  fill: new ol.style.Fill({
-                    color: 'rgba(0, 0, 0, 1)'
-                  }),
-              });
-          styleCache_airports0[key] = new ol.style.Style({"text": text})
-      }
+    key = value + "_" + labelText
+    if (!styleCache_airports0[key]){
+        var text = new ol.style.Text({
+                font: '10.725px \'MS Shell Dlg 2\', sans-serif',
+                text: labelText,
+                textBaseline: "middle",
+                textAlign: textAlign,
+                offsetX: offsetX,
+                offsetY: offsetY,
+                fill: new ol.style.Fill({
+                  color: 'rgba(0, 0, 0, 1)'
+                })
+            });
+        styleCache_airports0[key] = new ol.style.Style({"text": text})
+    }
     var allStyles = [styleCache_airports0[key]];
     allStyles.push.apply(allStyles, style);
     return allStyles;
