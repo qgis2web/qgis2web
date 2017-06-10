@@ -7,6 +7,17 @@ var style_airports0 = function(feature, resolution){
         variables: {}
     };
     var value = '';
+    var labelText = "";
+    var key = "";
+    size = 0;
+    var textAlign = "left";
+    var offsetX = 8;
+    var offsetY = 3;
+    if ("" !== null) {
+        labelText = String("");
+    } else {
+        labelText = ""
+    }
     
         function rules_airports0(feature, value) {
             var context = {
@@ -29,48 +40,20 @@ var style_airports0 = function(feature, resolution){
         }
         var style = rules_airports0(feature, value);
         ;
-    var labelText = "";
-    var currentFeature = feature;
-    clusteredFeatures = feature.get("features");
-    if (typeof clusteredFeatures !== "undefined") {
-        if (size >= 2) {
-            labelText = size.toString()
-        } else {
-            labelText = ""
-        }
-        var key = value + "_" + labelText
-        if (!styleCache_airports0[key]){
-            var text = new ol.style.Text({
-                  font: '10.725px \'MS Shell Dlg 2\', sans-serif',
-                  text: labelText,
-                  textAlign: "center",
-                  fill: new ol.style.Fill({
-                    color: 'rgba(0, 0, 0, 1)'
-                  }),
-                });
-            styleCache_airports0[key] = new ol.style.Style({"text": text})
-        }
-    } else {
-        if ("" !== null) {
-            labelText = String("");
-        } else {
-            labelText = ""
-        }
-        var key = value + "_" + labelText
-        if (!styleCache_airports0[key]){
-            var text = new ol.style.Text({
-                    font: '10.725px \'MS Shell Dlg 2\', sans-serif',
-                    text: labelText,
-                    textBaseline: "center",
-                    textAlign: "left",
-                    offsetX: 5,
-                    offsetY: 3,
-                    fill: new ol.style.Fill({
-                      color: 'rgba(0, 0, 0, 1)'
-                    }),
-                });
-            styleCache_airports0[key] = new ol.style.Style({"text": text})
-        }
+    key = value + "_" + labelText
+    if (!styleCache_airports0[key]){
+        var text = new ol.style.Text({
+                font: '10.725px \'MS Shell Dlg 2\', sans-serif',
+                text: labelText,
+                textBaseline: "middle",
+                textAlign: textAlign,
+                offsetX: offsetX,
+                offsetY: offsetY,
+                fill: new ol.style.Fill({
+                  color: 'rgba(0, 0, 0, 1)'
+                })
+            });
+        styleCache_airports0[key] = new ol.style.Style({"text": text})
     }
     var allStyles = [styleCache_airports0[key]];
     allStyles.push.apply(allStyles, style);
