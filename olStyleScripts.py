@@ -177,14 +177,15 @@ def exportStyles(layers, folder, clustered):
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
-            color = "rgba(%s, %s, %s, 1)" % (r, g, b)
             if (r or g or b) is None:
                 color = "rgba(0, 0, 0, 1)"
             else:
                 color = "rgba(%s, %s, %s, 1)" % (r, g, b)
             face = layer.customProperty("labeling/fontFamily")
             if face is None:
-                face = "MS Shell Dlg 2"
+                face = ","
+            else:
+                face = " \\'%s\\'," % face
             palyr = QgsPalLayerSettings()
             palyr.readFromLayer(layer)
             sv = palyr.scaleVisibility
@@ -242,9 +243,9 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
     if cluster:
         this_style += '''var clusteredFeatures = feature.get("features");
     size = clusteredFeatures.length;
-    var textAlign = "center"
-    var offsetX = 0
-    var offsetY = 0
+    var textAlign = "center";
+    var offsetX = 0;
+    var offsetY = 0;
     if (size == 1) {
         textAlign = "left"
         offsetX = 8
@@ -264,9 +265,9 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
             "style": style, "labelRes": labelRes, "label": labelText}
     else:
         this_style += '''size = 0;
-    textAlign = "left"
-    offsetX = 8
-    offsetY = 3
+    var textAlign = "left";
+    var offsetX = 8;
+    var offsetY = 3;
     if (%(label)s !== null%(labelRes)s) {
         labelText = String(%(label)s);
     } else {
@@ -275,10 +276,10 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
     %(style)s;\n''' % {
             "style": style, "labelRes": labelRes, "label": labelText}
 
-    this_style += '''   key = value + "_" + labelText
+    this_style += '''    key = value + "_" + labelText
     if (!%(cache)s[key]){
         var text = new ol.style.Text({
-                font: '%(size)spx \\'%(face)s\\', sans-serif',
+                font: '%(size)spx%(face)s sans-serif',
                 text: labelText,
                 textBaseline: "middle",
                 textAlign: textAlign,
@@ -293,7 +294,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
     var allStyles = [%(cache)s[key]];
     allStyles.push.apply(allStyles, style);
     return allStyles;
-    }''' % {
+}''' % {
             "cache": "styleCache_" + sln,
             "size": size, "face": face,
             "color": color}
