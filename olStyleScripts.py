@@ -64,17 +64,14 @@ def exportStyles(layers, folder, clustered):
             layer_alpha = layer.layerTransparency()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                if cluster:
-                    style = "var size = feature.get('features').length;\n"
-                else:
-                    style = "var size = 0;\n"
-                style += "    var style = " + getSymbolAsStyle(symbol,
-                                                               stylesFolder,
-                                                               layer_alpha,
-                                                               renderer)
+                style = "var style = " + getSymbolAsStyle(symbol,
+                                                          stylesFolder,
+                                                          layer_alpha,
+                                                          renderer)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                defs += """function categories_%s(feature, value) {
+                cluster = False
+                defs += """function categories_%s(feature, value, size) {
                 switch(value) {""" % sln
                 cats = []
                 for cat in renderer.categories():
@@ -98,9 +95,10 @@ def exportStyles(layers, folder, clustered):
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr
                 value = ('var value = feature.get("%s");' % classAttr)
-                style = ('''var style = categories_%s(feature, value)''' %
-                         (sln))
+                style = (
+                    'var style = categories_%s(feature, value, size)' % sln)
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                cluster = False
                 varName = "ranges_" + sln
                 defs += "var %s = [" % varName
                 ranges = []
@@ -127,6 +125,7 @@ def exportStyles(layers, folder, clustered):
         }
     }''' % {"v": varName}
             elif isinstance(renderer, QgsRuleBasedRendererV2):
+                cluster = False
                 template = """
         function rules_%s(feature, value) {
             var context = {
@@ -178,8 +177,15 @@ def exportStyles(layers, folder, clustered):
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
-            color = "rgba(%s, %s, %s, 1)" % (r, g, b)
+            if (r or g or b) is None:
+                color = "rgba(0, 0, 0, 1)"
+            else:
+                color = "rgba(%s, %s, %s, 1)" % (r, g, b)
             face = layer.customProperty("labeling/fontFamily")
+            if face is None:
+                face = ","
+            else:
+                face = " \\'%s\\'," % face
             palyr = QgsPalLayerSettings()
             palyr.readFromLayer(layer)
             sv = palyr.scaleVisibility
@@ -205,64 +211,8 @@ def exportStyles(layers, folder, clustered):
             else:
                 stroke = ""
             if style != "":
-                style = '''function(feature, resolution){
-    var context = {
-        feature: feature,
-        variables: {}
-    };
-    %(value)s
-    %(style)s;
-    var labelText = "";
-    var currentFeature = feature;
-    clusteredFeatures = feature.get("features");
-    if (typeof clusteredFeatures !== "undefined") {
-        if (size >= 2) {
-            labelText = size.toString()
-        } else {
-            labelText = ""
-        }
-        var key = value + "_" + labelText
-        if (!%(cache)s[key]){
-            var text = new ol.style.Text({
-                  font: '%(size)spx \\'%(face)s\\', sans-serif',
-                  text: labelText,
-                  textAlign: "center",
-                  fill: new ol.style.Fill({
-                    color: '%(color)s'
-                  }),%(stroke)s
-                });
-            %(cache)s[key] = new ol.style.Style({"text": text})
-        }
-    } else {
-        if (%(label)s !== null%(labelRes)s) {
-            labelText = String(%(label)s);
-        } else {
-            labelText = ""
-        }
-        var key = value + "_" + labelText
-        if (!%(cache)s[key]){
-            var text = new ol.style.Text({
-                    font: '%(size)spx \\'%(face)s\\', sans-serif',
-                    text: labelText,
-                    textBaseline: "center",
-                    textAlign: "left",
-                    offsetX: 5,
-                    offsetY: 3,
-                    fill: new ol.style.Fill({
-                      color: '%(color)s'
-                    }),%(stroke)s
-                });
-            %(cache)s[key] = new ol.style.Style({"text": text})
-        }
-    }
-    var allStyles = [%(cache)s[key]];
-    allStyles.push.apply(allStyles, style);
-    return allStyles;
-}''' % {
-                    "style": style, "labelRes": labelRes, "label": labelText,
-                    "cache": "styleCache_" + sln,
-                    "size": size, "face": face, "color": color,
-                    "stroke": stroke, "value": value}
+                style = getStyle(style, cluster, labelRes, labelText,
+                                 sln, size, face, color, value)
             else:
                 style = "''"
         except Exception, e:
@@ -278,6 +228,79 @@ def exportStyles(layers, folder, clustered):
 var styleCache_%(name)s={}
 var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": sln, "style": style})
+
+
+def getStyle(style, cluster, labelRes, labelText,
+             sln, size, face, color, value):
+    this_style = '''function(feature, resolution){
+    var context = {
+        feature: feature,
+        variables: {}
+    };
+    %(value)s
+    var labelText = "";
+    var key = "";
+    ''' % {
+        "value": value}
+    if cluster:
+        this_style += '''var clusteredFeatures = feature.get("features");
+    size = clusteredFeatures.length;
+    var textAlign = "center";
+    var offsetX = 0;
+    var offsetY = 0;
+    if (size == 1) {
+        textAlign = "left"
+        offsetX = 8
+        offsetY = 3
+        var feature = clusteredFeatures[0];
+        if (%(label)s !== null%(labelRes)s) {
+            labelText = String(%(label)s);
+        } else {
+            labelText = ""
+        }
+        key = value + "_" + labelText
+    } else {
+        labelText = size.toString()
+        size = 2*(Math.log(size)/ Math.log(2))
+    }
+    %(style)s;\n''' % {
+            "style": style, "labelRes": labelRes, "label": labelText}
+    else:
+        this_style += '''size = 0;
+    var textAlign = "left";
+    var offsetX = 8;
+    var offsetY = 3;
+    if (%(label)s !== null%(labelRes)s) {
+        labelText = String(%(label)s);
+    } else {
+        labelText = ""
+    }
+    %(style)s;\n''' % {
+            "style": style, "labelRes": labelRes, "label": labelText}
+
+    this_style += '''    key = value + "_" + labelText
+    if (!%(cache)s[key]){
+        var text = new ol.style.Text({
+                font: '%(size)spx%(face)s sans-serif',
+                text: labelText,
+                textBaseline: "middle",
+                textAlign: textAlign,
+                offsetX: offsetX,
+                offsetY: offsetY,
+                fill: new ol.style.Fill({
+                  color: '%(color)s'
+                })
+            });
+        %(cache)s[key] = new ol.style.Style({"text": text})
+    }
+    var allStyles = [%(cache)s[key]];
+    allStyles.push.apply(allStyles, style);
+    return allStyles;
+}''' % {
+            "cache": "styleCache_" + sln,
+            "size": size, "face": face,
+            "color": color}
+    return this_style
 
 
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
