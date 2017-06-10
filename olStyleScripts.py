@@ -95,8 +95,8 @@ def exportStyles(layers, folder, clustered):
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr
                 value = ('var value = feature.get("%s");' % classAttr)
-                style = ('''var style = categories_%s(feature, value, size)''' %
-                         (sln))
+                style = (
+                    'var style = categories_%s(feature, value, size)' % sln)
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 cluster = False
                 varName = "ranges_" + sln
@@ -211,7 +211,8 @@ def exportStyles(layers, folder, clustered):
             else:
                 stroke = ""
             if style != "":
-                style = getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
+                style = getStyle(style, cluster, labelRes, labelText,
+                                 sln, size, face, color, value)
             else:
                 style = "''"
         except Exception, e:
@@ -229,7 +230,8 @@ var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": sln, "style": style})
 
 
-def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value):
+def getStyle(style, cluster, labelRes, labelText,
+             sln, size, face, color, value):
     this_style = '''function(feature, resolution){
     var context = {
         feature: feature,
@@ -256,7 +258,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size, face, color, value)
         } else {
             labelText = ""
         }
-        key = value + "_" + labelText    
+        key = value + "_" + labelText
     } else {
         labelText = size.toString()
         size = 2*(Math.log(size)/ Math.log(2))
