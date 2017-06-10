@@ -75,7 +75,7 @@ default:
     })];
                     break;}};
 var styleCache_airports0={}
-var style_airports0 = function(feature, resolution){
+var style_airports0 = function(feature, resolution, size){
     var context = {
         feature: feature,
         variables: {}
@@ -93,7 +93,7 @@ var style_airports0 = function(feature, resolution){
         labelText = ""
     }
     var style = categories_airports0(feature, value, size);
-    key = value + "_" + labelText
+    var key = value + "_" + labelText
     if (!styleCache_airports0[key]){
         var text = new ol.style.Text({
                 font: '10.725px \'MS Shell Dlg 2\', sans-serif',
@@ -104,7 +104,7 @@ var style_airports0 = function(feature, resolution){
                 offsetY: offsetY,
                 fill: new ol.style.Fill({
                   color: 'rgba(0, 0, 0, 1)'
-                })
+                }),
             });
         styleCache_airports0[key] = new ol.style.Style({"text": text})
     }
