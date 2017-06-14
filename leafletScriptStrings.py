@@ -10,7 +10,8 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsPalLayerSettings,
                        QgsSvgMarkerSymbolLayerV2,
                        QgsSymbolLayerV2Utils,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QGis)
 from utils import scaleToZoom
 from basemaps import basemapLeaflet, basemapAttributions
 
