@@ -8,8 +8,8 @@
                 {color: 'white', opacity: 0.8, weight: 6},
                 {color: '#444', opacity: 1, weight: 2}
             ],
-            pointToLayer: function (feature, latlng) {
-                return null
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, {radius: 0})
             },
             filters: [yes, yes, yes]
         },
