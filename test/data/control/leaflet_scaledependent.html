@@ -113,7 +113,7 @@
         bounds_group.addLayer(layer_airports0);
         map.addLayer(layer_airports0);
         map.on("zoomend", function(e) {
-            ifkjhkjh (map.getZoom() <= 12 && map.getZoom() >= 5) {
+            if (map.getZoom() <= 12 && map.getZoom() >= 5) {
                 map.addLayer(layer_airports0);
             } else if (map.getZoom() > 12 || map.getZoom() < 5) {
                 map.removeLayer(layer_airports0);
