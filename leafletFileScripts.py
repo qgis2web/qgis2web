@@ -9,7 +9,7 @@ from utils import replaceInTemplate
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                          cluster_set, measure, matchCRS, layerSearch, canvas,
-                         mapLibLocation, address, locate):
+                         mapLibLocation, address, locate, debugLibs):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -32,7 +32,11 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     shutil.copyfile(jsDir + 'leaflet-tilelayer-wmts.js',
                     jsStore + 'leaflet-tilelayer-wmts.js')
     if mapLibLocation == "Local":
-        shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
+        if debugLibs:
+            shutil.copyfile(jsDir + 'leaflet-src.js',
+                            jsStore + 'leaflet-src.js')
+        else:
+            shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     if address:
         shutil.copyfile(jsDir + 'Control.OSMGeocoder.js',
@@ -84,7 +88,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                   qgis2webJS, template, feedback):
+                   qgis2webJS, template, feedback, debugLibs):
     feedback.showFeedback("Writing HTML...")
     if webpage_name == "":
         pass
@@ -92,12 +96,15 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         webpage_name = unicode(webpage_name)
     if mapLibLocation == "Local":
         cssAddress = '<link rel="stylesheet" href="css/leaflet.css" />'
-        jsAddress = '<script src="js/leaflet.js"></script>'
+        if debugLibs:
+            jsAddress = '<script src="js/leaflet-src.js"></script>'
+        else:
+            jsAddress = '<script src="js/leaflet.js"></script>'
     else:
         cssAddress = '<link rel="stylesheet" href='
-        cssAddress += '"http://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />'
+        cssAddress += '"http://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />'
         jsAddress = '<script src="http://'
-        jsAddress += 'unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>'
+        jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
     if locate:
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
