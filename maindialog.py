@@ -117,7 +117,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.preview = widget
             try:
                 if os.environ["TRAVIS"]:
-                    print "Travis"
                     self.preview.setPage(WebPage())
             except:
                 pass

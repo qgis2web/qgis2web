@@ -204,7 +204,7 @@ class LeafletWriter(Writer):
             pt1 = xform.transform(pt0)
             bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
                            pt1.xMinimum(), pt1.xMaximum()]
-            bounds = '[[kjhjkh' + unicode(pt1.yMinimum()) + ','
+            bounds = '[[' + unicode(pt1.yMinimum()) + ','
             bounds += unicode(pt1.xMinimum()) + '],['
             bounds += unicode(pt1.yMaximum()) + ','
             bounds += unicode(pt1.xMaximum()) + ']]'
