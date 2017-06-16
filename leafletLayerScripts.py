@@ -435,16 +435,24 @@ def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
 
 
 def buildPointJSON(symbol, sln, label, usedFields, markerType, layerAttr):
+    slCount = symbol.symbolLayerCount()
+    multiStyle = ""
+    if slCount > 1:
+        multiStyle = ".multiStyle"
     pointJSON = """
-        var layer_{sln} = new L.geoJson.multiStyle(json_{sln}, {{
+        var layer_{sln} = new L.geoJson%s(json_{sln}, {{
             attribution: '{attr}',
-            pane: 'pane_{sln}',"""
+            pane: 'pane_{sln}',""" % multiStyle
     if usedFields != 0:
         pointJSON += """
             onEachFeature: pop_{sln},"""
-    pointJSON += """
+    if slCount > 1:
+        pointJSON += """
             pointToLayers: ["""
-    for sl in xrange(symbol.symbolLayerCount()):
+    else:
+        pointJSON += """
+            pointToLayer: """
+    for sl in xrange(slCount):
         pointJSON += """function (feature, latlng) {{
                 var context = {{
                     feature: feature,
@@ -454,8 +462,12 @@ def buildPointJSON(symbol, sln, label, usedFields, markerType, layerAttr):
         pointJSON += """style_{sln}_%s(feature))%s
             }},""" % (sl, label)
         label = ""
-    pointJSON += """
+    if slCount > 1:
+        pointJSON += """
         ]}});"""
+    else:
+        pointJSON += """
+        }});"""
     pointJSON = pointJSON.format(sln=sln, markerType=markerType,
                                  attr=layerAttr)
     return pointJSON
@@ -467,15 +479,25 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol):
     layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     p2ls = ""
-    for sl in xrange(symbol.symbolLayerCount()):
+    slCount = symbol.symbolLayerCount()
+    multiStyle = ""
+    p2lStart = "pointToLayer: "
+    p2lEnd = ""
+    if slCount > 1:
+        multiStyle = ".multiStyle"
+        p2lStart = "pointToLayers: ["
+        p2lEnd = "],"
+    for sl in xrange(slCount):
         p2ls += "pointToLayer_%s_%s, " % (layerName, sl)
     new_obj = p2lf + """
-        var layer_{layerName} = L.geoJson.multiStyle(null, {{
+        var layer_{layerName} = L.geoJson{multiStyle}(null, {{
             attribution: '{layerAttr}',
             pane: 'pane_{layerName}',
-            pointToLayers: [{p2ls}],
+            {p2lStart}{p2ls}{p2lEnd}
             onEachFeature: pop_{layerName}
-        }});""".format(layerName=layerName, layerAttr=layerAttr, p2ls=p2ls)
+        }});""".format(layerName=layerName, multiStyle=multiStyle,
+                       layerAttr=layerAttr, p2lStart=p2lStart, p2ls=p2ls,
+                       p2lEnd=p2lEnd)
     if cluster_set:
         new_obj += """
         var cluster_{layerName} = """.format(layerName=layerName)
@@ -501,16 +523,26 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol):
     else:
         onEachFeature = ""
     styles = ""
-    for sl in xrange(symbol.symbolLayerCount()):
+    slCount = symbol.symbolLayerCount()
+    multiStyle = ""
+    styleStart = "style: "
+    styleEnd = ""
+    if slCount > 1:
+        multiStyle = ".multiStyle"
+        styleStart = "styles: ["
+        styleEnd = "]"
+    for sl in xrange(slCount):
         styles += """style_%s_%s,""" % (safeName, sl)
     new_obj = """
-    var layer_{safeName} = new L.geoJson.multiStyle(json_{safeName}, {{
+    var layer_{safeName} = new L.geoJson{multiStyle}(json_{safeName}, {{
         attribution: '{attr}',
         pane: 'pane_{safeName}',{onEachFeature}
-        styles: [{styles}]
+        {styleStart}{styles}{styleEnd}
     }});"""
-    new_obj = new_obj.format(safeName=safeName, attr=layerAttr,
-                             onEachFeature=onEachFeature, styles=styles)
+    new_obj = new_obj.format(safeName=safeName, multiStyle=multiStyle,
+                             attr=layerAttr, onEachFeature=onEachFeature,
+                             styleStart=styleStart, styles=styles,
+                             styleEnd=styleEnd)
     return new_obj
 
 
@@ -520,20 +552,29 @@ def buildNonPointWFS(layerName, layer, symbol):
     layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     styles = ""
-    for sl in xrange(symbol.symbolLayerCount()):
+    slCount = symbol.symbolLayerCount()
+    multiStyle = ""
+    styleStart = "style: "
+    styleEnd = ""
+    if slCount > 1:
+        multiStyle = ".multiStyle"
+        styleStart = "styles: ["
+        styleEnd = "],"
+    for sl in xrange(slCount):
         styles += """style_%s_%s,""" % (layerName, sl)
     new_obj = """
-        var layer_{layerName} = L.geoJson.multiStyle(null, {{
+        var layer_{layerName} = L.geoJson{multiStyle}(null, {{
             attribution: '{attr}',
-            styles: [{styles}],
+            {styleStart}{styles}{styleEnd}
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
         }});"""
     new_obj += """
         function get{layerName}Json(geojson) {{
             layer_{layerName}"""
-    new_obj = new_obj.format(layerName=layerName, attr=layerAttr,
-                             styles=styles)
+    new_obj = new_obj.format(layerName=layerName, multiStyle=multiStyle,
+                             attr=layerAttr, styleStart=styleStart,
+                             styles=styles, styleEnd=styleEnd)
     new_obj += ".addData(geojson);"
     new_obj += """
         };"""
