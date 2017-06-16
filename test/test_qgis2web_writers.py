@@ -68,7 +68,8 @@ class qgis2web_WriterTest(unittest.TestCase):
                 'Scale/Zoom': {'Min zoom level': '1',
                                'Restrict to extent': False,
                                'Extent': 'Fit to layers extent',
-                               'Max zoom level': '28'},
+                               'Max zoom level': '28',
+                               'Use debug libraries': False},
                 'Appearance': {
                 'Add address search': False,
                 'Geolocate user': False,
