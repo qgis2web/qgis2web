@@ -6,7 +6,7 @@ from qgis.core import QgsDataSourceURI
 from utils import safeName
 
 
-def writeFiles(folder, restrictToExtent, feedback):
+def writeFiles(folder, restrictToExtent, feedback, debugLibs):
     feedback.showFeedback("Exporting libraries...")
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
@@ -15,17 +15,25 @@ def writeFiles(folder, restrictToExtent, feedback):
         shutil.copytree(os.path.join(os.path.dirname(__file__),
                                      "resources"),
                         dst)
+    if debugLibs:
+        shutil.copyfile(os.path.join(os.path.dirname(__file__),
+                                     "js", "ol-debug.js"),
+                        os.path.join(dst, "ol-debug.js"))
     feedback.completeStep()
 
 
 def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
-                   layerSearch, searchLayer, feedback):
+                   layerSearch, searchLayer, feedback, debugLibs):
     feedback.showFeedback("Writing HTML...")
     jsAddress = '<script src="resources/polyfills.js"></script>'
     if mapLibLocn == "Local":
         cssAddress = """<link rel="stylesheet" """
         cssAddress += """href="./resources/ol.css" />"""
-        jsAddress += """
+        if debugLibs:
+            jsAddress += """
+        <script src="./resources/ol-debug.js"></script>"""
+        else:
+            jsAddress += """
         <script src="./resources/ol.js"></script>"""
     else:
         cssAddress = """<link rel="stylesheet" href="http://"""

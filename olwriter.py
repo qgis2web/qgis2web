@@ -102,6 +102,7 @@ class OpenLayersWriter(Writer):
         matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
+        debugLibs = settings["Data export"]["Use debug libraries"]
         extent = settings["Scale/Zoom"]["Extent"]
         geolocateUser = settings["Appearance"]["Geolocate user"]
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
@@ -116,7 +117,7 @@ class OpenLayersWriter(Writer):
         searchLayer = settings["Appearance"]["Search layer"]
         mapLibLocn = settings["Data export"]["Mapping library location"]
 
-        writeFiles(folder, restrictToExtent, feedback)
+        writeFiles(folder, restrictToExtent, feedback, debugLibs)
         exportLayers(iface, layers, folder, precision, optimize,
                      popup, json, restrictToExtent, extent, feedback)
         exportStyles(layers, folder, clustered)
@@ -126,7 +127,7 @@ class OpenLayersWriter(Writer):
         (jsAddress, cssAddress, layerSearch,
          controlCount) = writeHTMLstart(settings, controlCount, osmb,
                                         mapLibLocn, layerSearch, searchLayer,
-                                        feedback)
+                                        feedback, debugLibs)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
