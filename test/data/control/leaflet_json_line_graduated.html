@@ -143,7 +143,7 @@
         map.createPane('pane_pipelines0');
         map.getPane('pane_pipelines0').style.zIndex = 400;
         map.getPane('pane_pipelines0').style['mix-blend-mode'] = 'normal';
-    var layer_pipelines0 = new L.geoJson.multiStyle(json_pipelines0, {
+    var layer_pipelines0 = new L.geoJson(json_pipelines0, {
         attribution: '<a href=""></a>',
         pane: 'pane_pipelines0',
         onEachFeature: pop_pipelines0,

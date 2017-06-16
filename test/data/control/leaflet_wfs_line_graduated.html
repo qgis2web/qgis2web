@@ -163,9 +163,9 @@
         map.createPane('pane_centreline0');
         map.getPane('pane_centreline0').style.zIndex = 400;
         map.getPane('pane_centreline0').style['mix-blend-mode'] = 'normal';
-        var layer_centreline0 = L.geoJson.multiStyle(null, {
+        var layer_centreline0 = L.geoJson(null, {
             attribution: '<a href=""></a>',
-            styles: [style_centreline0_0,],
+            style: style_centreline0_0,
             pane: 'pane_centreline0',
             onEachFeature: pop_centreline0
         });
