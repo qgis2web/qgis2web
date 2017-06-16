@@ -53,7 +53,7 @@ from PyQt4.QtGui import (QDialog,
 from PyQt4.QtNetwork import QNetworkAccessManager
 
 try:
-    from PyQt4.QtWebKit import QWebView, QWebSettings, QWebInspector
+    from PyQt4.QtWebKit import QWebView, QWebSettings, QWebInspector, QWebPage
     webkit_available = True
 except ImportError:
     webkit_available = False
@@ -115,6 +115,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         if webkit_available:
             widget = QWebView()
             self.preview = widget
+            try:
+                if os.environ["TRAVIS"]:
+                    self.preview.setPage(WebPage())
+            except:
+                pass
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(
@@ -815,3 +820,16 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.combo.currentText()
         else:
             return self.text(1)
+
+
+class WebPage(QWebPage):		
+    """		
+    Makes it possible to use a Python logger to print javascript		
+    console messages		
+    """		
+    def __init__(self, logger=None, parent=None):		
+        super(WebPage, self).__init__(parent)		
+		
+    def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):		
+        raise Exception("JS " + sourceID + ":" +		
+                            unicode(lineNumber) + "\n" + msg)
