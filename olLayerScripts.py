@@ -354,8 +354,31 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                     var calibratedWeight = featureWeight/maxWeight;
                     return calibratedWeight;
                 },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
-            layerCode += '''
-                title: "%(name)s"
+            if isinstance(renderer, QgsSingleSymbolRendererV2):
+                layerCode += '''
+                title: '<img src="styles/legend/%(icon)s.png" />&nbsp;%(name)s'
+            });''' % {"icon": layerName, "name": layer.name()}
+            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                icons = ""
+                for count, cat in enumerate(renderer.categories()):
+                    text = cat.label().replace("'", "\\'")
+                    icons += ("""<img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                        {"icon": layerName, "count": count, "text": text})
+                layerCode += '''
+                title: '%(name)s<br />%(icons)s'
+            });''' % {"icons": icons, "name": layer.name()}
+            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                icons = ""
+                for count, ran in enumerate(renderer.ranges()):
+                    text = ran.label().replace("'", "\\'")
+                    icons += ("""<img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                        {"icon": layerName, "count": count, "text": text})
+                layerCode += '''
+                title: '%(name)s<br />%(icons)s'
+            });''' % {"icons": icons, "name": layer.name()}
+            else:
+                layerCode += '''
+                title: '%(name)s'
             });''' % {"name": layer.name()}
             return layerCode
     elif layer.type() == layer.RasterLayer:

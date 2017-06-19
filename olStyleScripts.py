@@ -5,7 +5,7 @@ import codecs
 import math
 import xml.etree.ElementTree
 import traceback
-from PyQt4.QtCore import QDir, QPyNullVariant
+from PyQt4.QtCore import QDir, QPyNullVariant, QSize
 from qgis.core import (QgsVectorLayer,
                        QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
@@ -16,6 +16,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsSvgMarkerSymbolLayerV2,
                        QgsSimpleLineSymbolLayerV2,
                        QgsSimpleFillSymbolLayerV2,
+                       QgsSymbolLayerV2Utils,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 from exp2js import compile_to_file
@@ -25,6 +26,8 @@ from utils import safeName, getRGBAColor
 def exportStyles(layers, folder, clustered):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
+    legendFolder = os.path.join(stylesFolder, "legend")
+    QDir().mkpath(legendFolder)
     for count, (layer, cluster) in enumerate(zip(layers, clustered)):
         sln = safeName(layer.name()) + unicode(count)
         if layer.type() != layer.VectorLayer:
@@ -68,13 +71,20 @@ def exportStyles(layers, folder, clustered):
                                                           stylesFolder,
                                                           layer_alpha,
                                                           renderer)
+                legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+                    symbol, QSize(16, 16))
+                legendIcon.save(os.path.join(legendFolder, sln + ".png"))
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 cluster = False
                 defs += """function categories_%s(feature, value, size) {
                 switch(value) {""" % sln
                 cats = []
-                for cat in renderer.categories():
+                for cnt, cat in enumerate(renderer.categories()):
+                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+                        cat.symbol(), QSize(16, 16))
+                    legendIcon.save(os.path.join(
+                        legendFolder, sln + "_" + unicode(cnt) + ".png"))
                     if (cat.value() is not None and cat.value() != "" and
                             not isinstance(cat.value(), QPyNullVariant)):
                         categoryStr = "case '%s':" % unicode(
@@ -102,7 +112,11 @@ def exportStyles(layers, folder, clustered):
                 varName = "ranges_" + sln
                 defs += "var %s = [" % varName
                 ranges = []
-                for ran in renderer.ranges():
+                for cnt, ran in enumerate(renderer.ranges()):
+                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+                        ran.symbol(), QSize(16, 16))
+                    legendIcon.save(os.path.join(
+                        legendFolder, sln + "_" + unicode(cnt) + ".png"))
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,
                                                    layer_alpha, renderer)
                     ranges.append('[%f, %f, %s]' % (ran.lowerValue(),
