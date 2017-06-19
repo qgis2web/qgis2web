@@ -831,4 +831,4 @@ class WebPage(QWebPage):
         super(WebPage, self).__init__(parent)
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        print ("JS " + sourceID + ":" + unicode(lineNumber) + "\n" + msg)
+        print("JS " + sourceID + ":" + unicode(lineNumber) + "\n" + msg)
