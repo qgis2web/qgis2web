@@ -1141,7 +1141,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
 
         test_layers_output = read_output(result, 'layers/layers.js')
-        assert 'title: "airports"' in test_layers_output
+        assert """title: '<img src="styles/legend/airports0.png" /> airports'""" in test_layers_output
 
     def test37_OL3_base_layers_have_type_base(self):
         """OL3 Ensure base layers have a type property with a value of 'base'"""
