@@ -116,8 +116,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             widget = QWebView()
             self.preview = widget
             try:
-                if os.environ["TRAVIS"]:
-                    self.preview.setPage(WebPage())
+                # if os.environ["TRAVIS"]:
+                self.preview.setPage(WebPage())
             except:
                 pass
             webview = self.preview.page()
@@ -828,10 +828,7 @@ class WebPage(QWebPage):
     console messages
     """
     def __init__(self, logger=None, parent=None):
-        print "WebPage instantiated"
         super(WebPage, self).__init__(parent)
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        print "JS error elevated"
-        raise Exception("JS " + sourceID + ":" +
-                        unicode(lineNumber) + "\n" + msg)
+        print ("JS " + sourceID + ":" + unicode(lineNumber) + "\n" + msg)
