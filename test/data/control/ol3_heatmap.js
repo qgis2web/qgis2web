@@ -10,7 +10,7 @@ jsonSource_airports0.addFeatures(features_airports0);var lyr_airports0 = new ol.
                 gradient: ['#ffffff', '#000000'],
                 blur: 15,
                 shadow: 250,
-                title: "airports"
+                title: 'airports'
             });
 
 lyr_airports0.setVisible(true);

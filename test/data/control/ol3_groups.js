@@ -7,7 +7,7 @@ var jsonSource_airports0 = new ol.source.Vector({
 jsonSource_airports0.addFeatures(features_airports0);var lyr_airports0 = new ol.layer.Vector({
                 source:jsonSource_airports0, 
                 style: style_airports0,
-                title: "airports"
+                title: '<img src="styles/legend/airports0.png" /> airports'
             });
 var group_group1 = new ol.layer.Group({
                                 layers: [lyr_airports0,],

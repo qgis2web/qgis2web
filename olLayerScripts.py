@@ -356,14 +356,17 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 layerCode += '''
-                title: '<img src="styles/legend/%(icon)s.png" />&nbsp;%(name)s'
+                title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
             });''' % {"icon": layerName, "name": layer.name()}
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 icons = ""
                 for count, cat in enumerate(renderer.categories()):
                     text = cat.label().replace("'", "\\'")
-                    icons += ("""<img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                        {"icon": layerName, "count": count, "text": text})
+                    icons += ("""
+        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                              {"icon": layerName,
+                               "count": count,
+                               "text": text})
                 layerCode += '''
                 title: '%(name)s<br />%(icons)s'
             });''' % {"icons": icons, "name": layer.name()}
@@ -371,8 +374,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 icons = ""
                 for count, ran in enumerate(renderer.ranges()):
                     text = ran.label().replace("'", "\\'")
-                    icons += ("""<img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                        {"icon": layerName, "count": count, "text": text})
+                    icons += ("""
+        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                              {"icon": layerName, "count": count,
+                               "text": text})
                 layerCode += '''
                 title: '%(name)s<br />%(icons)s'
             });''' % {"icons": icons, "name": layer.name()}

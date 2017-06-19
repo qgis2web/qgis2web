@@ -10,7 +10,7 @@ jsonSource_airports0.addFeatures(features_airports0);cluster_airports0 = new ol.
 });var lyr_airports0 = new ol.layer.Vector({
                 source:cluster_airports0, 
                 style: style_airports0,
-                title: "airports"
+                title: '<img src="styles/legend/airports0.png" /> airports'
             });
 
 lyr_airports0.setVisible(true);
