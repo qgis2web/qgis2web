@@ -1,3 +1,3 @@
 # Code of Conduct
 
-Don't be a beast
+Don't be a beast.
