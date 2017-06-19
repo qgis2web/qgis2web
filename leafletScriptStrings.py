@@ -38,6 +38,7 @@ def scaleDependentLayerScript(layer, layerName, cluster):
                 map.removeLayer({layerType}_{layerName});
             }}""".format(min=scaleToZoom(min), max=scaleToZoom(max),
                          layerName=layerName, layerType=layerType)
+    print "scale-dep layer"
     return scaleDependentLayer
 
 

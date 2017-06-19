@@ -118,9 +118,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             try:
                 # if os.environ["TRAVIS"]:
                 self.preview.setPage(WebPage())
-                print "Set WebPage()"
             except:
-                print "Failed to set WebPage()"
+                pass
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(
