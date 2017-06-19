@@ -828,8 +828,10 @@ class WebPage(QWebPage):
     console messages
     """
     def __init__(self, logger=None, parent=None):
+        print "WebPage instantiated"
         super(WebPage, self).__init__(parent)
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
+        print "JS error elevated"
         raise Exception("JS " + sourceID + ":" +
                         unicode(lineNumber) + "\n" + msg)
