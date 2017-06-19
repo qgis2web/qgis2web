@@ -120,7 +120,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 self.preview.setPage(WebPage())
             except:
                 print "Failed to set WebPage()"
-                pass
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(
