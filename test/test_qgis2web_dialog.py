@@ -2748,8 +2748,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Dialog test: Leaflet scale-dependent"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_scaledependent.qml')
-        control_path = test_data_path(
-            'control', 'airports_scaledependent.html')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -2765,7 +2763,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
-        self.dialog.buttonPreview.click()
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, LeafletWriter))

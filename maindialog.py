@@ -118,6 +118,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             try:
                 # if os.environ["TRAVIS"]:
                 self.preview.setPage(WebPage())
+                print "Set WebPage()"
             except:
                 print "Failed to set WebPage()"
             webview = self.preview.page()
