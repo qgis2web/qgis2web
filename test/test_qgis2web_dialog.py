@@ -109,11 +109,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(IFACE)
         self.dialog.buttonPreview.click()
 
-#    def test02_save_default(self):
-#        """Save default - no data (OL3)"""
-#        self.dialog = MainDialog(IFACE)
-#        self.dialog.buttonExport.click()
-
     def test02_toggle_format(self):
         """ test fetching current writer type"""
         self.dialog = MainDialog(IFACE)
@@ -123,7 +118,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(
             self.dialog.currentMapFormat(), OpenLayersWriter.type())
 
-    def test02b_toggle_format_factory(self):
+    def test03_toggle_format_factory(self):
         """ test fetching factory for current writer type"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
@@ -131,22 +126,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
         self.assertEqual(self.dialog.getWriterFactory(), OpenLayersWriter)
 
-    def test03_toggle_Leaflet(self):
+    def test04_toggle_Leaflet(self):
         """Toggle to Leaflet - no data"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
 
-    def test04_preview_Leaflet(self):
+    def test05_preview_Leaflet(self):
         """Preview Leaflet - no data"""
         self.dialog = MainDialog(IFACE)
         self.dialog.leaflet.click()
         self.dialog.buttonPreview.click()
-
-#    def test05_export_Leaflet(self):
-#        """Export Leaflet - no data"""
-#        self.dialog = MainDialog(IFACE)
-#        self.dialog.leaflet.click()
-#        self.dialog.buttonExport.click()
 
     def test06_toggle_OL3(self):
         """Toggle to OL3 - no data"""
@@ -2776,6 +2765,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
+        self.dialog.buttonPreview.click()
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, LeafletWriter))
