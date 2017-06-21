@@ -227,7 +227,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
         if highlight:
             popup += """
                     layer.setStyle(style_"""
-            popup += """{safeLayerName}(feature));
+            popup += """{safeLayerName}_0(feature));
 """.format(safeLayerName=safeLayerName)
         if popupsOnHover:
             popup += """
