@@ -331,8 +331,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
             size = sl.size() * 2
-            style = "image: %s" % getCircle(color, borderColor, borderWidth,
-                                            size, props)
+            if sl.shape() == 4:
+                style = "image: %s" % getTriangle(color, borderColor,
+                                                borderWidth, size, props)
+            else:
+                style = "image: %s" % getCircle(color, borderColor,
+                                                borderWidth, size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             svg = xml.etree.ElementTree.parse(sl.path()).getroot()
@@ -418,6 +422,15 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
         %s
     })''' % style
     return "[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys()))
+
+
+def getTriangle(color, borderColor, borderWidth, size, props):
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
+    return ("""new ol.style.RegularShape({radius: %s + size, points: 3,
+            %s %s})""" % (size, stroke, getFillStyle(color, props)))
 
 
 def getCircle(color, borderColor, borderWidth, size, props):
