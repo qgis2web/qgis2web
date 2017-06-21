@@ -331,10 +331,14 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
             size = sl.size() * 2
-            if sl.shape() == 4:
-                style = "image: %s" % getTriangle(color, borderColor,
-                                                borderWidth, size, props)
-            else:
+            try:
+                if sl.shape() == 4:
+                    style = "image: %s" % getTriangle(color, borderColor,
+                                                      borderWidth, size, props)
+                else:
+                    style = "image: %s" % getCircle(color, borderColor,
+                                                    borderWidth, size, props)
+            except:
                 style = "image: %s" % getCircle(color, borderColor,
                                                 borderWidth, size, props)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
