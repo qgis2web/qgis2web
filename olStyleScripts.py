@@ -337,13 +337,13 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                                                     borderWidth, size, props)
                 if sl.shape() == 1:
                     style = "image: %s" % getDiamond(color, borderColor,
-                                                    borderWidth, size, props)
+                                                     borderWidth, size, props)
                 if sl.shape() == 2:
                     style = "image: %s" % getPentagon(color, borderColor,
-                                                    borderWidth, size, props)
+                                                      borderWidth, size, props)
                 if sl.shape() == 3:
                     style = "image: %s" % getHexagon(color, borderColor,
-                                                    borderWidth, size, props)
+                                                     borderWidth, size, props)
                 elif sl.shape() == 4 or sl.shape() == 5:
                     style = "image: %s" % getTriangle(color, borderColor,
                                                       borderWidth, size, props)
