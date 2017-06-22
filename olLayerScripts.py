@@ -362,7 +362,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 icons = ""
                 for count, cat in enumerate(renderer.categories()):
                     text = cat.label().replace("'", "\\'")
-                    icons += ("""
+                    icons += ("""\\
         <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
                               {"icon": layerName,
                                "count": count,
@@ -374,7 +374,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 icons = ""
                 for count, ran in enumerate(renderer.ranges()):
                     text = ran.label().replace("'", "\\'")
-                    icons += ("""
+                    icons += ("""\\
         <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
                               {"icon": layerName, "count": count,
                                "text": text})
