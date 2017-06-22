@@ -496,7 +496,7 @@ def getStar(color, borderColor, borderWidth, size, props):
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
             radius2: %s, %s %s})""" % (size, size/2, stroke,
-                                      getFillStyle(color, props)))
+                                       getFillStyle(color, props)))
 
 
 def getCircle(color, borderColor, borderWidth, size, props):
