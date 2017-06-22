@@ -341,6 +341,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                 if sl.shape() == 2:
                     style = "image: %s" % getPentagon(color, borderColor,
                                                     borderWidth, size, props)
+                if sl.shape() == 3:
+                    style = "image: %s" % getHexagon(color, borderColor,
+                                                    borderWidth, size, props)
                 elif sl.shape() == 4 or sl.shape() == 5:
                     style = "image: %s" % getTriangle(color, borderColor,
                                                       borderWidth, size, props)
@@ -465,6 +468,15 @@ def getPentagon(color, borderColor, borderWidth, size, props):
     else:
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
+            %s %s})""" % (size, stroke, getFillStyle(color, props)))
+
+
+def getHexagon(color, borderColor, borderWidth, size, props):
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
+    return ("""new ol.style.RegularShape({radius: %s + size, points: 6,
             %s %s})""" % (size, stroke, getFillStyle(color, props)))
 
 
