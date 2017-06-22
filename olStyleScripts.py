@@ -352,10 +352,10 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                                                   borderWidth, size, props)
                 elif sl.shape() == 9:
                     style = "image: %s" % getCross(color, borderColor,
-                                                  borderWidth, size, props)
+                                                   borderWidth, size, props)
                 elif sl.shape() == 11:
                     style = "image: %s" % getCross2(color, borderColor,
-                                                  borderWidth, size, props)
+                                                    borderWidth, size, props)
                 else:
                     style = "image: %s" % getCircle(color, borderColor,
                                                     borderWidth, size, props)
