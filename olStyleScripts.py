@@ -350,6 +350,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                 elif sl.shape() == 6:
                     style = "image: %s" % getStar(color, borderColor,
                                                   borderWidth, size, props)
+                elif sl.shape() == 9:
+                    style = "image: %s" % getCross(color, borderColor,
+                                                  borderWidth, size, props)
+                elif sl.shape() == 11:
+                    style = "image: %s" % getCross2(color, borderColor,
+                                                  borderWidth, size, props)
                 else:
                     style = "image: %s" % getCircle(color, borderColor,
                                                     borderWidth, size, props)
@@ -449,8 +455,8 @@ def getSquare(color, borderColor, borderWidth, size, props):
     else:
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
-            angle: Math.PI / 4, %s %s})""" % (size, stroke,
-                                              getFillStyle(color, props)))
+            angle: Math.PI/4, %s %s})""" % (size, stroke,
+                                            getFillStyle(color, props)))
 
 
 def getDiamond(color, borderColor, borderWidth, size, props):
@@ -506,6 +512,28 @@ def getCircle(color, borderColor, borderWidth, size, props):
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.Circle({radius: %s + size,
             %s %s})""" % (size, stroke, getFillStyle(color, props)))
+
+
+def getCross(color, borderColor, borderWidth, size, props):
+    print "cross"
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
+    return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
+            radius2: 0, %s %s})""" % (size, stroke,
+                                      getFillStyle(color, props)))
+
+
+def getCross2(color, borderColor, borderWidth, size, props):
+    print "cross"
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
+    return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
+            radius2: 0, angle: Math.PI / 4, %s %s})""" % (
+                size, stroke, getFillStyle(color, props)))
 
 
 def getIcon(path, size, svgWidth, svgHeight, rot):
