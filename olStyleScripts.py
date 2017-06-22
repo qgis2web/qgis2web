@@ -515,7 +515,6 @@ def getCircle(color, borderColor, borderWidth, size, props):
 
 
 def getCross(color, borderColor, borderWidth, size, props):
-    print "cross"
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -526,7 +525,6 @@ def getCross(color, borderColor, borderWidth, size, props):
 
 
 def getCross2(color, borderColor, borderWidth, size, props):
-    print "cross"
     if props['outline_style'] == "no":
         stroke = ""
     else:
