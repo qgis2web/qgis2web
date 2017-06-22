@@ -335,9 +335,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                 if sl.shape() == 0:
                     style = "image: %s" % getSquare(color, borderColor,
                                                     borderWidth, size, props)
-                elif sl.shape() == 4:
+                elif sl.shape() == 4 or sl.shape() == 5:
                     style = "image: %s" % getTriangle(color, borderColor,
                                                       borderWidth, size, props)
+                elif sl.shape() == 6:
+                    style = "image: %s" % getStar(color, borderColor,
+                                                  borderWidth, size, props)
                 else:
                     style = "image: %s" % getCircle(color, borderColor,
                                                     borderWidth, size, props)
@@ -448,6 +451,15 @@ def getTriangle(color, borderColor, borderWidth, size, props):
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.RegularShape({radius: %s + size, points: 3,
             %s %s})""" % (size, stroke, getFillStyle(color, props)))
+
+
+def getStar(color, borderColor, borderWidth, size, props):
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
+    return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
+            radius2: %s,%s %s})""" % (size, size/2, stroke, getFillStyle(color, props)))
 
 
 def getCircle(color, borderColor, borderWidth, size, props):
