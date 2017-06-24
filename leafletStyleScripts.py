@@ -141,10 +141,13 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         shape = sl.shape()
         style = getMarker(color, borderColor, borderWidth,
                           size, props, lineStyle, shape)
-        if sl.shape == 8:
+        try:
+            if shape == 8:
+                markerType = "circleMarker"
+            else:
+                markerType = "shapeMarker"
+        except:
             markerType = "circleMarker"
-        else:
-            markerType = "shapeMarker"
     elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
         path = os.path.join(markerFolder, os.path.basename(sl.path()))
         svgSize = sl.size() * 3.8
@@ -229,6 +232,12 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
 def getMarker(color, borderColor, borderWidth, size, props, lineStyle, shape):
     if shape == 0:
         markerShape = "shape: 'square',"
+    elif shape == 1:
+        markerShape = "shape: 'diamond',"
+    elif shape == 4:
+        markerShape = "shape: 'triangle',"
+    elif shape == 11:
+        markerShape = "shape: 'x',"
     else:
         markerShape = ""
     return ("""
