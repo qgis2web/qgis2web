@@ -146,7 +146,13 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
     writer = newlayer.dataProvider()
     outFeat = QgsFeature()
     if restrictToExtent and extent == "Canvas extent":
-        request = QgsFeatureRequest(iface.mapCanvas().extent())
+        canvas = iface.mapCanvas()
+        extent = canvas.extent()
+        canvasCRS = canvas.mapSettings().destinationCrs()
+        layerCRS = layer.crs()
+        transform = QgsCoordinateTransform(canvasCRS, layerCRS)
+        projectedExtent = transform.transformBoundingBox(extent)
+        request = QgsFeatureRequest(projectedExtent)
         request.setFlags(QgsFeatureRequest.ExactIntersect)
         features = layer.getFeatures(request)
     else:
