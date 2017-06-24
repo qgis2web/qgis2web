@@ -207,4 +207,5 @@ software:</p>
     <li>Leaflet.heat, by @mourner</li>
     <li>OSMBuildings, by @kekscom</li>
     <li>multi-style-layer, by @perliedman</li>
+    <li>Leaflet.SvgShapeMarkers, by @rowanwins</li>
 </ul>
