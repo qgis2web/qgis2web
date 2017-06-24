@@ -138,7 +138,11 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         borderWidth = props["outline_width"]
         lineStyle = props["outline_style"]
         size = sl.size() * 2
-        shape = sl.shape()
+        shape = 8
+        try:
+            shape = sl.shape()
+        except:
+            pass
         style = getMarker(color, borderColor, borderWidth,
                           size, props, lineStyle, shape)
         try:
