@@ -138,9 +138,13 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         borderWidth = props["outline_width"]
         lineStyle = props["outline_style"]
         size = sl.size() * 2
-        style = getCircle(color, borderColor, borderWidth,
-                          size, props, lineStyle)
-        markerType = "circleMarker"
+        shape = sl.shape()
+        style = getMarker(color, borderColor, borderWidth,
+                          size, props, lineStyle, shape)
+        if sl.shape == 8:
+            markerType = "circleMarker"
+        else:
+            markerType = "shapeMarker"
     elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
         path = os.path.join(markerFolder, os.path.basename(sl.path()))
         svgSize = sl.size() * 3.8
@@ -222,10 +226,15 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
             }""" % (sln, style), markerType)
 
 
-def getCircle(color, borderColor, borderWidth, size, props, lineStyle):
+def getMarker(color, borderColor, borderWidth, size, props, lineStyle, shape):
+    if shape == 0:
+        markerShape = "shape: 'square',"
+    else:
+        markerShape = ""
     return ("""
+                %s
                 radius: %s,%s%s""" %
-            (size,
+            (markerShape, size,
              getStrokeStyle(borderColor, lineStyle, borderWidth, 0, 0),
              getFillStyle(color, props)))
 

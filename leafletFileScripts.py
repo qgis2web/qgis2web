@@ -31,6 +31,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'qgis2web_expressions.js')
     shutil.copyfile(jsDir + 'leaflet-tilelayer-wmts.js',
                     jsStore + 'leaflet-tilelayer-wmts.js')
+    shutil.copyfile(jsDir + 'leaflet-svg-shape-markers.min.js',
+                    jsStore + 'leaflet-svg-shape-markers.min.js')
     if mapLibLocation == "Local":
         if debugLibs:
             shutil.copyfile(jsDir + 'leaflet-src.js',
@@ -116,6 +118,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/multi-style-layer.js"></script>"""
     jsAddress += """
         <script src="js/leaflet-heat.js"></script>"""
+    jsAddress += """
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>"""
     jsAddress += """
         <script src="js/leaflet.rotatedMarker.js"></script>"""
     jsAddress += """
