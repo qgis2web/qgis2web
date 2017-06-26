@@ -388,9 +388,9 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers, symbol):
         new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer, symbol)
         wfsLayers += wfsScript(scriptTag)
     else:
-        attrText = layer.attribution()
+        attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
         attrUrl = layer.attributionUrl()
-        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+        layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
         new_obj = buildNonPointJSON(safeLayerName, usedFields, layerAttr,
                                     symbol)
     return new_obj, wfsLayers
@@ -518,22 +518,22 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol):
 
 def buildNonPointJSON(safeName, usedFields, layerAttr, symbol):
     if usedFields != 0:
-        onEachFeature = """
+        onEachFeature = u"""
         onEachFeature: pop_{safeName},""".format(safeName=safeName)
     else:
-        onEachFeature = ""
-    styles = ""
+        onEachFeature = u""
+    styles = u""
     slCount = symbol.symbolLayerCount()
-    multiStyle = ""
+    multiStyle = u""
     styleStart = "style: "
     styleEnd = ""
     if slCount > 1:
-        multiStyle = ".multiStyle"
-        styleStart = "styles: ["
-        styleEnd = "]"
+        multiStyle = u".multiStyle"
+        styleStart = u"styles: ["
+        styleEnd = u"]"
     for sl in xrange(slCount):
-        styles += """style_%s_%s,""" % (safeName, sl)
-    new_obj = """
+        styles += u"""style_%s_%s,""" % (safeName, sl)
+    new_obj = u"""
     var layer_{safeName} = new L.geoJson{multiStyle}(json_{safeName}, {{
         attribution: '{attr}',
         pane: 'pane_{safeName}',{onEachFeature}
