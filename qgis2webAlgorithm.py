@@ -105,7 +105,14 @@ class exportProject(GeoAlgorithm):
         cluster = []
         for layer in layers:
             if layer.type() == QgsMapLayer.VectorLayer:
-                layerPopups = getPopup(layer)
+                fields = layer.customProperty("qgis2web/popup", [])
+                layerPopups = []
+                for field in fields:
+                    fieldList = []
+                    k, v = field.split(":")
+                    fieldList.append(k.strip())
+                    fieldList.append(v.strip())
+                    layerPopups.append(tuple(fieldList))
             else:
                 layerPopups = []
             popup.append(OrderedDict(layerPopups))
@@ -274,7 +281,6 @@ class exportVector(exportLayer):
         fields = inputPopup.split(",")
         for field in fields:
             fieldList = []
-            print field
             k, v = field.split(":")
             fieldList.append(k.strip())
             fieldList.append(v.strip())
