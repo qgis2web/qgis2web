@@ -32,7 +32,7 @@ def scaleDependentLayerScript(layer, layerName, cluster):
     else:
         layerType = "layer"
     scaleDependentLayer = """
-            ifkjhkjh (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
+            if (map.getZoom() <= {min} && map.getZoom() >= {max}) {{
                 map.addLayer({layerType}_{layerName});
             }} else if (map.getZoom() > {min} || map.getZoom() < {max}) {{
                 map.removeLayer({layerType}_{layerName});
