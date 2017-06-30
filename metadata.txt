@@ -22,7 +22,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/06/30 2.21.1 Handle different CRSes for Restrict to extent + Canvas extent, Unicode attribution error, fixed Leaflet scale-dependent layers, fixed Processing: export project
+changelog=2017/06/30 2.21.1 Handle different CRSes for Restrict to extent + Canvas extent, Unicode attribution error (thanks, @saerdnaer!), fixed Leaflet scale-dependent layers, fixed Processing: export project
     2017/06/19 2.21.0 Added code of conduct, fixed Leaflet highlight on hover, simple point marker shapes, fixed OL categorized/graduated layers list, add @rowanwins to credits
     2017/06/19 2.20.0 OL clusters improved (thanks, @OlaKov!), missing import in Leaflet clusters, Debian nightly removed from tests, fixed Leaflet multipoint multistyle (thanks, @perliedman!), use Leaflet multistyle only when required, debug option, Leaflet CDN to 1.0.3, OL upgraded to 4.2.0, OL layers list icons (thanks, @OlaKov!)
     2017/06/02 2.19.0 Upgrade OpenLayers to 4.1.1, missing import in expression parser, exclude Quick Map Services layers in OL, OL label minimum visibility 0, handle OL SVG in millimetres, (no filter) in expressions
