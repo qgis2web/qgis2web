@@ -153,14 +153,9 @@ ol.control.LayerSwitcher.prototype.setVisible_ = function(lyr, visible) {
     if (lyr.getLayers){
         var lyrs = lyr.getLayers().getArray().slice().reverse();
         for (var i = 0; i < lyrs.length; i++) {
-            var l = lyrs[i];
-            var lId = l.get('title').replace(/\s+/g, '-') + '_' + i;
-            var subLyr = document.getElementById(lId);
-            if (l.S.visible){  
-                subLyr.checked = true;
-            } else {
-                subLyr.checked = false; 
-            }
+            var lyr = lyrs[i];
+            var lyrId = lyr.get('id');
+            var subLyr = document.getElementById(lyrId);
             subLyr.disabled = !visible;  
         }
     }
@@ -180,6 +175,7 @@ ol.control.LayerSwitcher.prototype.renderLayer_ = function(lyr, idx) {
 
     var lyrTitle = lyr.get('title');
     var lyrId = lyr.get('title').replace(/\s+/g, '-') + '_' + idx;
+    lyr.S.id = lyrId;
 
     var label = document.createElement('label');
 
@@ -192,12 +188,10 @@ ol.control.LayerSwitcher.prototype.renderLayer_ = function(lyr, idx) {
             this_.setVisible_(lyr, e.target.checked);
         };
         li.appendChild(input);
-        label.htmlFor = lyrId;
-        label.innerHTML = lyrTitle;
-        li.appendChild(label);
 
         li.className = 'group';
         label.innerHTML = lyrTitle;
+        label.htmlFor = lyrId;
         li.appendChild(label);
         var ul = document.createElement('ul');
         li.appendChild(ul);
