@@ -170,7 +170,11 @@ def handle_in(node, mapLib):
     retOperand = walkExpression(operand, mapLib)
     list = node.list().dump()
     retList = json.dumps(list)
-    return "%s.indexOf(%s) > -1 " % (retList, retOperand)
+    if node.isNotIn():
+        notIn = "!"
+    else:
+        notIn = ""
+    return "%s%s.indexOf(%s) > -1 " % (notIn, retList, retOperand)
 
 
 def handle_literal(node):
