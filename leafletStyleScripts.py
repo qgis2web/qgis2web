@@ -112,10 +112,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
                         continue
                     name = compile_to_file(exp, name, "Leaflet", expFile)
                     js += """
-                    %s (%s(context)) {
-                      return %s;
-                    }
-                    """ % (ifelse, name, styleCode)
+                %s (%s(context)) {
+                  return %s;
+                }
+                """ % (ifelse, name, styleCode)
                     js = js.strip()
                     ifelse = "else if"
             style += template % (sln, js, elsejs)
