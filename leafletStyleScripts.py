@@ -100,23 +100,24 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
                                    "qgis2web_expressions.js")
             ifelse = "if"
             for count, rule in enumerate(rules):
-                (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
-                                                           markerFolder,
-                                                           layer_alpha,
-                                                           sln, sl)
-                name = "".join((sln, "rule", unicode(count)))
-                exp = rule.filterExpression()
-                if rule.isElse():
-                    elsejs = styleCode
-                    continue
-                name = compile_to_file(exp, name, "Leaflet", expFile)
-                js += """
-                %s (%s(context)) {
-                  return %s;
-                }
-                """ % (ifelse, name, styleCode)
-                js = js.strip()
-                ifelse = "else if"
+                if rule.symbol().symbolLayer(sl) is not None:
+                    (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
+                                                               markerFolder,
+                                                               layer_alpha,
+                                                               sln, sl)
+                    name = "".join((sln, "rule", unicode(count)))
+                    exp = rule.filterExpression()
+                    if rule.isElse():
+                        elsejs = styleCode
+                        continue
+                    name = compile_to_file(exp, name, "Leaflet", expFile)
+                    js += """
+                    %s (%s(context)) {
+                      return %s;
+                    }
+                    """ % (ifelse, name, styleCode)
+                    js = js.strip()
+                    ifelse = "else if"
             style += template % (sln, js, elsejs)
     else:
         style = ""
@@ -131,7 +132,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
     else:
         alpha = 1-(layer_transparency / float(100))
     sl = symbol.symbolLayer(sl)
-    props = sl.properties()
+    try:
+        props = sl.properties()
+    except:
+        props = {}
     if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
         color = getRGBAColor(props["color"], alpha)
         borderColor = getRGBAColor(props["outline_color"], alpha)
@@ -227,6 +231,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                                  lineCap, lineJoin),
                   getFillStyle(fillColor, props)))
     else:
+        markerType = "circleMarker"
         style = ""
     return ("""{
                 pane: 'pane_%s',%s
