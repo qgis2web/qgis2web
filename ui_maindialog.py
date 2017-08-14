@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from ui_timedialog import Ui_TimeDialog
 import resources_rc
 
 try:
@@ -176,6 +177,7 @@ class Ui_MainDialog(object):
         self.helpField.setObjectName(_fromUtf8("helpField"))
         self.horizontalLayout_4.addWidget(self.helpField)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
+        uitime = Ui_TimeDialog(self.tabWidget, MainDialog)
         self.horizontalLayout_3.addWidget(self.tabWidget)
 
         self.retranslateUi(MainDialog)
