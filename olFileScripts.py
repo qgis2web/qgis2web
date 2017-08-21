@@ -27,7 +27,7 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
     feedback.showFeedback("Writing HTML...")
     jsAddress = '<script src="resources/polyfills.js"></script>'
     if mapLibLocn == "Local":
-        cssAddress = """<link rel="stylesheet" """
+        cssAddress = """<link rel="stylesheet" type="text/css" """
         cssAddress += """href="./resources/ol.css" />"""
         if debugLibs:
             jsAddress += """
@@ -36,8 +36,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
             jsAddress += """
         <script src="./resources/ol.js"></script>"""
     else:
-        cssAddress = """<link rel="stylesheet" href="http://"""
-        cssAddress += "cdnjs.cloudflare.com/ajax/libs/openlayers/"
+        cssAddress = """<link rel="stylesheet" type="text/css" """
+        cssAddress += 'href="http://cdnjs.cloudflare.com/ajax/libs/openlayers/'
         cssAddress += """4.2.0/ol.css" />"""
         jsAddress += """
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
@@ -45,8 +45,9 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
     if layerSearch != "None" and layerSearch != "":
         searchLayer = searchLayer
         cssAddress += """
-        <link rel="stylesheet" href="resources/horsey.min.css">
-        <link rel="stylesheet" href="resources/ol3-search-layer.min.css">"""
+        <link rel="stylesheet" type="text/css" href="resources/horsey.min.css">
+        <link rel="stylesheet" type="text/css" """
+        cssAddress += """href="resources/ol3-search-layer.min.css">"""
         jsAddress += """
         <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features="""
         jsAddress += """Element.prototype.classList,URL"></script>
