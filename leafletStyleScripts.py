@@ -36,7 +36,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
         for sl in xrange(symbol.symbolLayerCount()):
             style += """
         function style_%s_%s(feature) {
-            switch(feature.properties['%s'].toString()) {""" % (sln, sl, classAttr)
+            switch(feature.properties['%s'].toString()) {""" % (sln, sl,
+                                                                classAttr)
             for cat in renderer.categories():
                 (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
                                                            markerFolder,
