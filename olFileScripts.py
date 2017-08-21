@@ -27,8 +27,7 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
     feedback.showFeedback("Writing HTML...")
     jsAddress = '<script src="resources/polyfills.js"></script>'
     if mapLibLocn == "Local":
-        cssAddress = """<link rel="stylesheet" type="text/css" """
-        cssAddress += """href="./resources/ol.css">"""
+        cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
         if debugLibs:
             jsAddress += """
         <script src="./resources/ol-debug.js"></script>"""
@@ -36,7 +35,7 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
             jsAddress += """
         <script src="./resources/ol.js"></script>"""
     else:
-        cssAddress = """<link rel="stylesheet" type="text/css" """
+        cssAddress = """<link rel="stylesheet" """
         cssAddress += 'href="http://cdnjs.cloudflare.com/ajax/libs/openlayers/'
         cssAddress += """4.2.0/ol.css">"""
         jsAddress += """
