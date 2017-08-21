@@ -78,7 +78,7 @@ def exportStyles(layers, folder, clustered):
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 cluster = False
                 defs += """function categories_%s(feature, value, size) {
-                switch(value) {""" % sln
+                switch(value.toString()) {""" % sln
                 cats = []
                 for cnt, cat in enumerate(renderer.categories()):
                     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
