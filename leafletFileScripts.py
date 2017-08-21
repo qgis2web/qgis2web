@@ -97,21 +97,22 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         webpage_name = unicode(webpage_name)
     if mapLibLocation == "Local":
-        cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
+        cssAddress = '<link rel="stylesheet" type="text/css" '
+        cssAddress += 'href="css/leaflet.css">'
         if debugLibs:
             jsAddress = '<script src="js/leaflet-src.js"></script>'
         else:
             jsAddress = '<script src="js/leaflet.js"></script>'
     else:
-        cssAddress = '<link rel="stylesheet" href='
+        cssAddress = '<link rel="stylesheet" type="text/css" href='
         cssAddress += '"http://unpkg.com/leaflet@1.0.3/dist/leaflet.css">'
         jsAddress = '<script src="http://'
         jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
     if locate:
-        cssAddress += '<link rel="stylesheet" '
+        cssAddress += '<link rel="stylesheet" type="text/css" '
         cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
         cssAddress += '4.6.1/css/font-awesome.min.css">'
-        cssAddress += '<link rel="stylesheet" '
+        cssAddress += '<link rel="stylesheet" type="text/css" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
     jsAddress += """
