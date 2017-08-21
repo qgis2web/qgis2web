@@ -86,7 +86,7 @@
         }
 
         function style_lakes0_0(feature) {
-            switch(feature.properties['NAMES']) {
+            switch(feature.properties['NAMES'].toString()) {
                 case 'Becharof Lake':
                     return {
                 pane: 'pane_lakes0',

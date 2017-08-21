@@ -80,7 +80,7 @@
         }
 
         function style_pipelines0_0(feature) {
-            switch(feature.properties['LOCDESC']) {
+            switch(feature.properties['LOCDESC'].toString()) {
                 case 'Below Surface/Submerged/Underground':
                     return {
                 pane: 'pane_pipelines0',

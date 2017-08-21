@@ -83,7 +83,7 @@
         }
 
         function style_airports0_0(feature) {
-            switch(feature.properties['USE']) {
+            switch(feature.properties['USE'].toString()) {
                 case 'Civilian/Public':
                     return {
                 pane: 'pane_airports0',
