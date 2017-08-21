@@ -206,9 +206,9 @@ layerSwitcher.showPanel();
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
         extracss = """
-        <link rel="stylesheet" type="text/css" """
+        <link rel="stylesheet" """
         extracss += """href="./resources/ol3-layerswitcher.css">
-        <link rel="stylesheet" type="text/css" """
+        <link rel="stylesheet" """
         extracss += """href="./resources/qgis2web.css">"""
         if geocode:
             geocodePos = 65 + (controlCount * 35)

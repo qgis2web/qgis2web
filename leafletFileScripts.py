@@ -97,22 +97,21 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         webpage_name = unicode(webpage_name)
     if mapLibLocation == "Local":
-        cssAddress = '<link rel="stylesheet" type="text/css" '
-        cssAddress += 'href="css/leaflet.css">'
+        cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
         if debugLibs:
             jsAddress = '<script src="js/leaflet-src.js"></script>'
         else:
             jsAddress = '<script src="js/leaflet.js"></script>'
     else:
-        cssAddress = '<link rel="stylesheet" type="text/css" href='
+        cssAddress = '<link rel="stylesheet" href='
         cssAddress += '"http://unpkg.com/leaflet@1.0.3/dist/leaflet.css">'
         jsAddress = '<script src="http://'
         jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
     if locate:
-        cssAddress += '<link rel="stylesheet" type="text/css" '
+        cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
         cssAddress += '4.6.1/css/font-awesome.min.css">'
-        cssAddress += '<link rel="stylesheet" type="text/css" '
+        cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
     jsAddress += """
@@ -125,20 +124,17 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/leaflet.rotatedMarker.js"></script>"""
     jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
-    extracss = '<link rel="stylesheet" type="text/css" '
-    extracss += """href="css/qgis2web.css">"""
+    extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
     if len(cluster_set):
-        clusterCSS = '<link rel="stylesheet" type="text/css" '
-        clusterCSS += """href="css/MarkerCluster.css">
-        <link rel="stylesheet" type="text/css" """
-        clusterCSS += """href="css/MarkerCluster.Default.css">"""
+        clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">"""
         clusterJS = '<script src="js/leaflet.markercluster.js">'
         clusterJS += "</script>"
     else:
         clusterCSS = ""
         clusterJS = ""
     if layerSearch != "None":
-        layerSearchCSS = '<link rel="stylesheet" type="text/css" '
+        layerSearchCSS = '<link rel="stylesheet" '
         layerSearchCSS += 'href="css/leaflet-search.css">'
         layerSearchJS = '<script src="js/leaflet-search.js"></script>'
     else:
@@ -146,8 +142,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         layerSearchJS = ""
     if address:
         addressCSS = """
-        <link rel="stylesheet" type="text/css" """
-        addressCSS += """href="css/Control.OSMGeocoder.css">"""
+        <link rel="stylesheet" href="css/Control.OSMGeocoder.css">"""
         addressJS = """
         <script src="js/Control.OSMGeocoder.js"></script>"""
     else:
@@ -155,8 +150,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         addressJS = ""
     if measure != "None":
         measureCSS = """
-        <link rel="stylesheet" type="text/css" """
-        measureCSS += """href="css/leaflet-measure.css">"""
+        <link rel="stylesheet" href="css/leaflet-measure.css">"""
         measureJS = """
         <script src="js/leaflet-measure.js"></script>"""
     else:
