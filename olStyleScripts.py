@@ -14,6 +14,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsHeatmapRenderer,
                        QgsSimpleMarkerSymbolLayerV2,
                        QgsSvgMarkerSymbolLayerV2,
+                       QgsFontMarkerSymbolLayerV2,
                        QgsSimpleLineSymbolLayerV2,
                        QgsSimpleFillSymbolLayerV2,
                        QgsSymbolLayerV2Utils,
@@ -384,6 +385,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
                              sl.size(), svgWidth, svgHeight, rot))
+        elif isinstance(sl, QgsFontMarkerSymbolLayerV2):
+            char = sl.character()
+            color = getRGBAColor(props["color"], alpha)
+            style = """text: new ol.style.Text({
+            text: '%s',
+            %s})""" % (char, getFillStyle(color, props))
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
             # Check for old version
