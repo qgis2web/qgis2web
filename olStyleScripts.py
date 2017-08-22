@@ -357,6 +357,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                 elif sl.shape() == 11:
                     style = "image: %s" % getCross2(color, borderColor,
                                                     borderWidth, size, props)
+                elif sl.shape() == 12:
+                    style = "text: %s" % getLine(color, borderColor,
+                                                 borderWidth, size, props)
                 else:
                     style = "image: %s" % getCircle(color, borderColor,
                                                     borderWidth, size, props)
@@ -539,6 +542,17 @@ def getCross2(color, borderColor, borderWidth, size, props):
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
             radius2: 0, angle: Math.PI / 4, %s %s})""" % (
                 size, stroke, getFillStyle(color, props)))
+
+
+def getLine(color, borderColor, borderWidth, size, props):
+    if props['outline_style'] == "no":
+        stroke = ""
+    else:
+        stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
+    rot = props["angle"]
+    return ("""new ol.style.Text({
+        rotation: %s * Math.PI/180,
+        text: '\u2502',  %s})""" % (rot, stroke))
 
 
 def getIcon(path, size, svgWidth, svgHeight, rot):
