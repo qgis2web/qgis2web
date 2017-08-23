@@ -79,7 +79,7 @@ class Ui_TimeDialog(object):
                     if layer.type() == QgsMapLayer.VectorLayer:
                         testDump = layer.rendererV2().dump()
                     layer_parent = tree_layer.parent()
-                    print "Vector: " + layer.name()
+                    # print "Vector: " + layer.name()
                     if layer_parent.parent() is None:
                         item = TreeLayerItem2(layer, self.layersTree, dlg)
                         self.layers_item.addChild(item)
@@ -87,8 +87,8 @@ class Ui_TimeDialog(object):
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
                 except:
-                    print "Except: " + layer.name()
-                    print "Unexpected error:", sys.exc_info()[0]
+                    # print "Except: " + layer.name()
+                    # print "Unexpected error:", sys.exc_info()[0]
                     raise
                     pass
 
@@ -214,7 +214,7 @@ class TreeLayerItem2(QTreeWidgetItem):
 
     def clickCombo(self):
         global selectedLayerCombo
-        print self.layer.name()
+        # print self.layer.name()
         selectedLayerCombo = self.layer
         
     def saveLayerTimeFromComboSettings(self, value):
@@ -251,8 +251,8 @@ class TreeLayerItem2(QTreeWidgetItem):
                             max = attr2
         projectInstance.writeEntry("qgis2web", "Min", min)
         projectInstance.writeEntry("qgis2web", "Max", max)
-        print min
-        print max
+        # print min
+        # print max
         #TODO add text boxes
         ## self.items["Time axis"]["Min"].lineedit.setText(str(min))
         ## self.items["Time axis"]["Max"].lineedit.setText(str(max))
@@ -283,9 +283,9 @@ class Button(QtGui.QPushButton):
             self.saveLeafletMap()
         
     def saveLeafletMap(self):
-        print "Save leaflet"
+        # print "Save leaflet"
         dir = projectInstance.readEntry("qgis2web", "Exportfolder")[0]
-        print dir
+        # print dir
         root, dirs, files = os.walk(dir).next()
         latest_subdir = max((os.path.getctime(os.path.join(root, f)), f) for f in dirs)
         index = os.path.join(dir, latest_subdir[1], 'index.html')
@@ -368,14 +368,14 @@ class Button(QtGui.QPushButton):
         return html
     
     def saveOLMap(self):
-        print "Save OL"
+        # print "Save OL"
         dir = projectInstance.readEntry("qgis2web", "Exportfolder")[0]
         if dir == "":
             if os.path.isdir("/tmp/qgis2web"):
                 dir = "/tmp/qgis2web"
             if os.path.isdir("C:\\TEMP\\qgis2web"):
                 dir = "C:\\TEMP\\qgis2web"
-        print dir
+        # print dir
         root, dirs, files = os.walk(dir).next()
         latest_subdir = max((os.path.getctime(os.path.join(root, f)), f) for f in dirs)
         
