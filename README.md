@@ -38,8 +38,9 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
 basemap from the list below the preview pane, and click "Update preview".
 CTRL/CMD-click for multiple basemaps or to deselect a basemap.</p>
 <p>The top-left pane lets you set options for each layer in your map. The
-bottom-left pane sets overall options. All options are written to your QGIS
-project, so save your proejct if you want to keep these settings.</p>
+bottom-left pane sets overall options for your project. All options are written
+to your QGIS project, so save your project if you want to keep these settings.
+</p>
 
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
