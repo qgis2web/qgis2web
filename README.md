@@ -56,7 +56,6 @@ the output code to achieve what qgis2web cannot.</p>
         or graduated</li>
     <li>line style (dashed/dotted) does not appear in OL3 preview, but works in
         export</li>
-    <li>Leaflet cannot label lines and polygons, only points</li>
     <li>only a single 2.5d layer will render per map</li>
     <li>2.5d layers only appear when zoomed in to building scales</li>
 </ul>
