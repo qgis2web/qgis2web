@@ -193,8 +193,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
             js = js.strip()
             f = js
         else:
-            f = "layer.feature.properties['%s']" % handleHiddenField(layer,
-                palyr.fieldName)
+            fn = palyr.fieldName
+            f = "layer.feature.properties['%s']" % handleHiddenField(layer, fn)
         labeltext = ".bindTooltip((" + unicode(f)
         labeltext += " !== null?String(%s%s)%s:'')" % (
                 styleStart, unicode(f), styleEnd)
@@ -456,7 +456,7 @@ def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr):
                     variables: {{}}
                 }};
                 return L.{markerType}(latlng, """
-        pointJSON += """style_{sln}_%s(feature))
+        pointJSON += """style_{sln}_%s(feature));
             }},""" % sl
     if slCount > 1:
         pointJSON += """
