@@ -285,7 +285,7 @@ def pointToLayerFunction(safeLayerName, symbol, sl):
             return L.{markerType}(latlng, style_{safeLayerName}_{sl}""".format(
                 safeLayerName=safeLayerName, sl=sl,
                 markerType=markerType)
-    pointToLayerFunction += """(feature))
+    pointToLayerFunction += """(feature));
         }"""
     return pointToLayerFunction
 
