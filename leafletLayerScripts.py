@@ -194,7 +194,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
             f = js
         else:
             f = "layer.feature.properties['%s']" % handleHiddenField(layer,
-                                                               palyr.fieldName)
+                palyr.fieldName)
         labeltext = ".bindTooltip((" + unicode(f)
         labeltext += " !== null?String(%s%s)%s:'')" % (
                 styleStart, unicode(f), styleEnd)
