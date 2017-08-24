@@ -266,7 +266,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     return catLegend
 
 
-def pointToLayerFunction(safeLayerName, labeltext, symbol, sl):
+def pointToLayerFunction(safeLayerName, symbol, sl):
     try:
         if isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             markerType = "marker"
@@ -285,8 +285,8 @@ def pointToLayerFunction(safeLayerName, labeltext, symbol, sl):
             return L.{markerType}(latlng, style_{safeLayerName}_{sl}""".format(
                 safeLayerName=safeLayerName, sl=sl,
                 markerType=markerType)
-    pointToLayerFunction += """(feature)){labeltext}
-        }}""".format(labeltext=labeltext.replace("{{", "{").replace("}}", "}"))
+    pointToLayerFunction += """(feature))
+        }"""
     return pointToLayerFunction
 
 
@@ -468,11 +468,12 @@ def addressSearchScript():
     return addressSearch
 
 
-def endHTMLscript(wfsLayers, layerSearch, labels, searchLayer):
+def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
-        setBounds();"""
+        setBounds();
+        %s""" % labelCode
         endHTML += labels
     if layerSearch != "None":
         searchVals = layerSearch.split(": ")

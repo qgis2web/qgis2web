@@ -153,6 +153,7 @@ class LeafletWriter(Writer):
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback)
 
         wfsLayers = ""
+        labelCode = ""
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -234,7 +235,8 @@ class LeafletWriter(Writer):
             if layer.type() == QgsMapLayer.VectorLayer:
                 (new_src,
                  legends,
-                 wfsLayers) = writeVectorLayer(layer, safeLayerName,
+                 wfsLayers,
+                 labelCode) = writeVectorLayer(layer, safeLayerName,
                                                usedFields[count], highlight,
                                                popupsOnHover, popup[count],
                                                outputProjectFileName,
@@ -242,7 +244,7 @@ class LeafletWriter(Writer):
                                                visible[count], json[count],
                                                legends, new_src,
                                                canvas, count, restrictToExtent,
-                                               extent, feedback)
+                                               extent, feedback, labelCode)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -285,7 +287,7 @@ class LeafletWriter(Writer):
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
         end += endHTMLscript(
-            wfsLayers, layerSearch, labelVisibility, searchLayer)
+            wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
