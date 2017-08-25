@@ -91,7 +91,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
                    qgis2webJS, template, feedback, debugLibs, useMultiStyle,
-                   useHeat, useShapes, useOSMB):
+                   useHeat, useShapes, useOSMB, useWMTS):
     feedback.showFeedback("Writing HTML...")
     if webpage_name == "":
         pass
@@ -162,8 +162,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         measureCSS = ""
         measureJS = ""
     extraJS = """<script src="js/leaflet-hash.js"></script>
-        <script src="js/leaflet-tilelayer-wmts.js"></script>
         <script src="js/Autolinker.min.js"></script>"""
+    if useWMTS:
+        extraJS += """
+        <script src="js/leaflet-tilelayer-wmts.js"></script>"""
     if (matchCRS and
             canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
         crsJS = """
