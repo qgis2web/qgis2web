@@ -134,7 +134,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
-    if len(cluster_set):
+    if useCluster:
         clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">"""
         clusterJS = '<script src="js/leaflet.markercluster.js">'
