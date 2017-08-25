@@ -180,7 +180,9 @@ def handle_in(node, mapLib):
 def handle_literal(node):
     val = node.value()
     quote = ""
-    if isinstance(val, basestring):
+    if val is None:
+        val = "null"
+    elif isinstance(val, basestring):
         quote = "'"
         val = val.replace("\n", "\\n")
     return "%s%s%s" % (quote, unicode(val), quote)
