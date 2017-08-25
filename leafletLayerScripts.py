@@ -94,36 +94,36 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                     outputProjectFileName, useShapes)
         (new_obj, legends, wfsLayers,
          useMultiStyle) = singleLayer(renderer, outputProjectFileName,
-                                  safeLayerName, wfsLayers, layer, cluster,
-                                  json, usedFields, legends, markerType,
-                                  useMultiStyle)
+                                      safeLayerName, wfsLayers, layer, cluster,
+                                      json, usedFields, legends, markerType,
+                                      useMultiStyle)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         (style, markerType,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         (new_obj, legends, wfsLayers,
          useMultiStyle) = categorizedLayer(layer, renderer, safeLayerName,
-                                       outputProjectFileName, usedFields,
-                                       legends, cluster, json, wfsLayers,
-                                       markerType, useMultiStyle)
+                                           outputProjectFileName, usedFields,
+                                           legends, cluster, json, wfsLayers,
+                                           markerType, useMultiStyle)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         (style, markerType,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         (new_obj, legends, wfsLayers,
          useMultiStyle) = graduatedLayer(layer, safeLayerName, renderer,
-                                     outputProjectFileName, cluster, json,
-                                     usedFields, legends, wfsLayers,
-                                     markerType, useMultiStyle)
+                                         outputProjectFileName, cluster, json,
+                                         usedFields, legends, wfsLayers,
+                                         markerType, useMultiStyle)
     elif isinstance(renderer, QgsRuleBasedRendererV2):
         (style, markerType,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         (new_obj, legends, wfsLayers,
          useMultiStyle) = ruleBasedLayer(layer, renderer, safeLayerName,
-                                     outputProjectFileName, usedFields,
-                                     legends, cluster, json, wfsLayers,
-                                     markerType, useMultiStyle)
+                                         outputProjectFileName, usedFields,
+                                         legends, cluster, json, wfsLayers,
+                                         markerType, useMultiStyle)
     blend = BLEND_MODES[layer.blendMode()]
     new_obj = u"""{style}
         map.createPane('pane_{sln}');
@@ -325,7 +325,7 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
         (new_obj,
          wfsLayers,
          useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                    wfsLayers, symbol, useMultiStyle)
+                                        wfsLayers, symbol, useMultiStyle)
     legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers, useMultiStyle
 
