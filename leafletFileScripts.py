@@ -92,6 +92,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
                    qgis2webJS, template, feedback, debugLibs, useMultiStyle,
                    useHeat, useShapes, useOSMB, useWMTS):
+    useCluster = False
+    for cluster in cluster_set:
+        if cluster:
+            useCluster = True
     feedback.showFeedback("Writing HTML...")
     if webpage_name == "":
         pass
