@@ -16,7 +16,7 @@ from exp2js import compile_to_file
 from utils import getRGBAColor, handleHiddenField
 
 
-def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
+def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     markerType = None
     renderer = layer.rendererV2()
     layer_alpha = layer.layerTransparency()
@@ -122,7 +122,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename):
             style += template % (sln, js, elsejs)
     else:
         style = ""
-    return style, markerType
+    if markerType == "shapeMarker":
+        useShapes = True
+    return style, markerType, useShapes
 
 
 def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):

@@ -154,6 +154,9 @@ class LeafletWriter(Writer):
 
         wfsLayers = ""
         labelCode = ""
+        useMultiStyle = False
+        useHeat = False
+        useShapes = False
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -236,15 +239,20 @@ class LeafletWriter(Writer):
                 (new_src,
                  legends,
                  wfsLayers,
-                 labelCode) = writeVectorLayer(layer, safeLayerName,
+                 labelCode,
+                 useMultiStyle,
+                 useHeat,
+                 useShapes) = writeVectorLayer(layer, safeLayerName,
                                                usedFields[count], highlight,
                                                popupsOnHover, popup[count],
                                                outputProjectFileName,
                                                wfsLayers, cluster[count],
                                                visible[count], json[count],
-                                               legends, new_src,
-                                               canvas, count, restrictToExtent,
-                                               extent, feedback, labelCode)
+                                               legends, new_src, canvas, count,
+                                               restrictToExtent, extent,
+                                               feedback, labelCode,
+                                               useMultiStyle, useHeat,
+                                               useShapes)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -293,7 +301,7 @@ class LeafletWriter(Writer):
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
                            measure, matchCRS, layerSearch, canvas,
                            mapLibLocation, locate, new_src, template, feedback,
-                           debugLibs)
+                           debugLibs, useMultiStyle, useHeat, useShapes)
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)

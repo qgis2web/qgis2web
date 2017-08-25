@@ -90,7 +90,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                   qgis2webJS, template, feedback, debugLibs):
+                   qgis2webJS, template, feedback, debugLibs, useMultiStyle,
+                   useHeat, useShapes):
     feedback.showFeedback("Writing HTML...")
     if webpage_name == "":
         pass
@@ -114,11 +115,14 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
-    jsAddress += """
+    if useMultiStyle:
+        jsAddress += """
         <script src="js/multi-style-layer.js"></script>"""
-    jsAddress += """
+    if useHeat:
+        jsAddress += """
         <script src="js/leaflet-heat.js"></script>"""
-    jsAddress += """
+    if useShapes:
+        jsAddress += """
         <script src="js/leaflet-svg-shape-markers.min.js"></script>"""
     jsAddress += """
         <script src="js/leaflet.rotatedMarker.js"></script>"""

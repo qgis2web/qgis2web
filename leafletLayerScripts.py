@@ -40,7 +40,8 @@ from utils import (writeTmpLayer, removeSpaces, exportImages, is25d,
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
-                     restrictToExtent, extent, feedback, labelCode):
+                     restrictToExtent, extent, feedback, labelCode,
+                     useMultiStyle, useHeat, useShapes):
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
@@ -83,40 +84,46 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         var osmb = new OSMBuildings(map).date(new Date({shadows}));
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
     elif isinstance(renderer, QgsHeatmapRenderer):
+        useHeat = True
         (new_obj, legends,
          wfsLayers) = heatmapLayer(layer, safeLayerName, renderer, legends,
                                    wfsLayers)
     elif isinstance(renderer, QgsSingleSymbolRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
-                                            outputProjectFileName)
-        (new_obj, legends,
-         wfsLayers) = singleLayer(renderer, outputProjectFileName,
+        (style, markerType,
+         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                    outputProjectFileName, useShapes)
+        (new_obj, legends, wfsLayers,
+         useMultiStyle) = singleLayer(renderer, outputProjectFileName,
                                   safeLayerName, wfsLayers, layer, cluster,
-                                  json, usedFields, legends, markerType)
+                                  json, usedFields, legends, markerType,
+                                  useMultiStyle)
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
-                                            outputProjectFileName)
-        (new_obj, legends,
-         wfsLayers) = categorizedLayer(layer, renderer, safeLayerName,
+        (style, markerType,
+         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                    outputProjectFileName, useShapes)
+        (new_obj, legends, wfsLayers,
+         useMultiStyle) = categorizedLayer(layer, renderer, safeLayerName,
                                        outputProjectFileName, usedFields,
                                        legends, cluster, json, wfsLayers,
-                                       markerType)
+                                       markerType, useMultiStyle)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
-                                            outputProjectFileName)
-        (new_obj, legends,
-         wfsLayers) = graduatedLayer(layer, safeLayerName, renderer,
+        (style, markerType,
+         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                    outputProjectFileName, useShapes)
+        (new_obj, legends, wfsLayers,
+         useMultiStyle) = graduatedLayer(layer, safeLayerName, renderer,
                                      outputProjectFileName, cluster, json,
                                      usedFields, legends, wfsLayers,
-                                     markerType)
+                                     markerType, useMultiStyle)
     elif isinstance(renderer, QgsRuleBasedRendererV2):
-        (style, markerType) = getLayerStyle(layer, safeLayerName, markerFolder,
-                                            outputProjectFileName)
-        (new_obj, legends,
-         wfsLayers) = ruleBasedLayer(layer, renderer, safeLayerName,
+        (style, markerType,
+         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                    outputProjectFileName, useShapes)
+        (new_obj, legends, wfsLayers,
+         useMultiStyle) = ruleBasedLayer(layer, renderer, safeLayerName,
                                      outputProjectFileName, usedFields,
                                      legends, cluster, json, wfsLayers,
-                                     markerType)
+                                     markerType, useMultiStyle)
     blend = BLEND_MODES[layer.blendMode()]
     new_obj = u"""{style}
         map.createPane('pane_{sln}');
@@ -142,7 +149,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 new_src += """
         cluster_""" + safeLayerName + """.addTo(map);"""
     feedback.completeStep()
-    return new_src, legends, wfsLayers, labelCode
+    return (new_src, legends, wfsLayers, labelCode, useMultiStyle, useHeat,
+            useShapes)
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName):
@@ -274,7 +282,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
 
 
 def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
-                layer, cluster, json, usedFields, legends, markerType):
+                layer, cluster, json, usedFields, legends, markerType,
+                useMultiStyle):
     symbol = renderer.symbol()
     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
                                                            QSize(16, 16))
@@ -284,17 +293,20 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
     legends[safeLayerName] += layer.name()
     if layer.geometryType() == QGis.Point:
         (new_obj,
-         wfsLayers) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                 json, wfsLayers, markerType, symbol)
+         wfsLayers,
+         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
+                                     json, wfsLayers, markerType, symbol,
+                                     useMultiStyle)
     else:
-        new_obj, wfsLayers = nonPointLayer(layer, safeLayerName, usedFields,
-                                           json, wfsLayers, symbol)
-    return new_obj, legends, wfsLayers
+        (new_obj, wfsLayers,
+         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields,
+                                        json, wfsLayers, symbol, useMultiStyle)
+    return new_obj, legends, wfsLayers, useMultiStyle
 
 
 def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
                      usedFields, legends, cluster, json, wfsLayers,
-                     markerType):
+                     markerType, useMultiStyle):
     catLegend = layer.name().replace("'", "\\'") + "<br />"
     catLegend += "<table>"
     categories = renderer.categories()
@@ -305,18 +317,22 @@ def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
     catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
         (new_obj,
-         wfsLayers) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                 json, wfsLayers, markerType, symbol)
+         wfsLayers,
+         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
+                                     json, wfsLayers, markerType, symbol,
+                                     useMultiStyle)
     else:
         (new_obj,
-         wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                    wfsLayers, symbol)
+         wfsLayers,
+         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
+                                    wfsLayers, symbol, useMultiStyle)
     legends[safeLayerName] = catLegend
-    return new_obj, legends, wfsLayers
+    return new_obj, legends, wfsLayers, useMultiStyle
 
 
 def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
-                   cluster, json, usedFields, legends, wfsLayers, markerType):
+                   cluster, json, usedFields, legends, wfsLayers, markerType,
+                   useMultiStyle):
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
     for cnt, r in enumerate(renderer.ranges()):
@@ -326,18 +342,22 @@ def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
     catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
         (new_obj,
-         wfsLayers) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                 json, wfsLayers, markerType, symbol)
+         wfsLayers,
+         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
+                                     json, wfsLayers, markerType, symbol,
+                                     useMultiStyle)
     else:
         (new_obj,
-         wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                    wfsLayers, symbol)
+         wfsLayers,
+         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
+                                        wfsLayers, symbol, useMultiStyle)
     legends[safeLayerName] = catLegend
-    return new_obj, legends, wfsLayers
+    return new_obj, legends, wfsLayers, useMultiStyle
 
 
 def ruleBasedLayer(layer, renderer, safeLayerName, outputProjectFileName,
-                   usedFields, legends, cluster, json, wfsLayers, markerType):
+                   usedFields, legends, cluster, json, wfsLayers, markerType,
+                   useMultiStyle):
     catLegend = layer.name() + "<br />"
     catLegend += "<table>"
     root_rule = renderer.rootRule()
@@ -349,48 +369,57 @@ def ruleBasedLayer(layer, renderer, safeLayerName, outputProjectFileName,
     catLegend += "</table>"
     if layer.geometryType() == QGis.Point:
         (new_obj,
-         wfsLayers) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                 json, wfsLayers, markerType, symbol)
+         wfsLayers,
+         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
+                                     json, wfsLayers, markerType, symbol,
+                                     useMultiStyle)
     else:
         (new_obj,
-         wfsLayers) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                    wfsLayers, symbol)
+         wfsLayers,
+         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
+                                        wfsLayers, symbol, useMultiStyle)
     legends[safeLayerName] = catLegend
-    return new_obj, legends, wfsLayers
+    return new_obj, legends, wfsLayers, useMultiStyle
 
 
 def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
-               markerType, symbol):
+               markerType, symbol, useMultiStyle):
     if layer.providerType() == 'WFS' and json is False:
         p2lf = ""
         for sl in xrange(symbol.symbolLayerCount()):
             p2lf += pointToLayerFunction(safeLayerName, symbol, sl)
         (new_obj,
-         scriptTag) = buildPointWFS(p2lf, safeLayerName, layer, cluster,
-                                    symbol)
+         scriptTag,
+         useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer, cluster,
+                                        symbol, useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         attrText = layer.attribution()
         attrUrl = layer.attributionUrl()
         layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
-        new_obj = buildPointJSON(symbol, safeLayerName, usedFields, markerType,
-                                 layerAttr)
+        (new_obj,
+         useMultiStyle) = buildPointJSON(symbol, safeLayerName, usedFields,
+                                         markerType, layerAttr, useMultiStyle)
         if cluster:
             new_obj += clusterScript(safeLayerName)
-    return new_obj, wfsLayers
+    return new_obj, wfsLayers, useMultiStyle
 
 
-def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers, symbol):
+def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers, symbol,
+                  useMultiStyle):
     if layer.providerType() == 'WFS' and json is False:
-        new_obj, scriptTag = buildNonPointWFS(safeLayerName, layer, symbol)
+        (new_obj, scriptTag,
+         useMultiStyle) = buildNonPointWFS(safeLayerName, layer, symbol,
+                                           useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
         attrUrl = layer.attributionUrl()
         layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
-        new_obj = buildNonPointJSON(safeLayerName, usedFields, layerAttr,
-                                    symbol)
-    return new_obj, wfsLayers
+        new_obj, useMultiStyle = buildNonPointJSON(safeLayerName, usedFields,
+                                                   layerAttr, symbol,
+                                                   useMultiStyle)
+    return new_obj, wfsLayers, useMultiStyle
 
 
 def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
@@ -431,11 +460,13 @@ def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
     return new_obj, legends, wfsLayers
 
 
-def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr):
+def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
+                   useMultiStyle):
     slCount = symbol.symbolLayerCount()
     multiStyle = ""
     if slCount > 1:
         multiStyle = ".multiStyle"
+        useMultiStyle = True
     pointJSON = """
         var layer_{sln} = new L.geoJson%s(json_{sln}, {{
             attribution: '{attr}',
@@ -466,10 +497,10 @@ def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr):
         }});"""
     pointJSON = pointJSON.format(sln=sln, markerType=markerType,
                                  attr=layerAttr)
-    return pointJSON
+    return (pointJSON, useMultiStyle)
 
 
-def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol):
+def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol, useMultiStyle):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
     layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
@@ -481,6 +512,7 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol):
     p2lEnd = ""
     if slCount > 1:
         multiStyle = ".multiStyle"
+        useMultiStyle = True
         p2lStart = "pointToLayers: ["
         p2lEnd = "],"
     for sl in xrange(slCount):
@@ -509,10 +541,10 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol):
     new_obj += """
             setBounds();
         };"""
-    return new_obj, scriptTag
+    return new_obj, scriptTag, useMultiStyle
 
 
-def buildNonPointJSON(safeName, usedFields, layerAttr, symbol):
+def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
     if usedFields != 0:
         onEachFeature = u"""
         onEachFeature: pop_{safeName},""".format(safeName=safeName)
@@ -525,6 +557,7 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol):
     styleEnd = ""
     if slCount > 1:
         multiStyle = u".multiStyle"
+        useMultiStyle = True
         styleStart = u"styles: ["
         styleEnd = u"]"
     for sl in xrange(slCount):
@@ -539,10 +572,10 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol):
                              attr=layerAttr, onEachFeature=onEachFeature,
                              styleStart=styleStart, styles=styles,
                              styleEnd=styleEnd)
-    return new_obj
+    return new_obj, useMultiStyle
 
 
-def buildNonPointWFS(layerName, layer, symbol):
+def buildNonPointWFS(layerName, layer, symbol, useMultiStyle):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
     layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
@@ -554,6 +587,7 @@ def buildNonPointWFS(layerName, layer, symbol):
     styleEnd = ""
     if slCount > 1:
         multiStyle = ".multiStyle"
+        useMultiStyle = True
         styleStart = "styles: ["
         styleEnd = "],"
     for sl in xrange(slCount):
@@ -574,7 +608,7 @@ def buildNonPointWFS(layerName, layer, symbol):
     new_obj += ".addData(geojson);"
     new_obj += """
         };"""
-    return new_obj, scriptTag
+    return new_obj, scriptTag, useMultiStyle
 
 
 def getWFSScriptTag(layer, layerName):
