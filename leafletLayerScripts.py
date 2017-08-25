@@ -41,7 +41,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
                      restrictToExtent, extent, feedback, labelCode,
-                     useMultiStyle, useHeat, useShapes):
+                     useMultiStyle, useHeat, useShapes, useOSMB):
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
@@ -54,6 +54,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     style = ""
 
     if is25d(layer, canvas, restrictToExtent, extent):
+        useOSMB = True
         shadows = ""
         renderer = layer.rendererV2()
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
@@ -150,7 +151,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         cluster_""" + safeLayerName + """.addTo(map);"""
     feedback.completeStep()
     return (new_src, legends, wfsLayers, labelCode, useMultiStyle, useHeat,
-            useShapes)
+            useShapes, useOSMB)
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName):

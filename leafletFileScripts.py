@@ -91,7 +91,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
                    qgis2webJS, template, feedback, debugLibs, useMultiStyle,
-                   useHeat, useShapes):
+                   useHeat, useShapes, useOSMB):
     feedback.showFeedback("Writing HTML...")
     if webpage_name == "":
         pass
@@ -126,7 +126,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/leaflet-svg-shape-markers.min.js"></script>"""
     jsAddress += """
         <script src="js/leaflet.rotatedMarker.js"></script>"""
-    jsAddress += """
+    if useOSMB:
+        jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
     if len(cluster_set):

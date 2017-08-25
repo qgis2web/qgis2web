@@ -157,6 +157,7 @@ class LeafletWriter(Writer):
         useMultiStyle = False
         useHeat = False
         useShapes = False
+        useOSMB = False
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -242,17 +243,18 @@ class LeafletWriter(Writer):
                  labelCode,
                  useMultiStyle,
                  useHeat,
-                 useShapes) = writeVectorLayer(layer, safeLayerName,
-                                               usedFields[count], highlight,
-                                               popupsOnHover, popup[count],
-                                               outputProjectFileName,
-                                               wfsLayers, cluster[count],
-                                               visible[count], json[count],
-                                               legends, new_src, canvas, count,
-                                               restrictToExtent, extent,
-                                               feedback, labelCode,
-                                               useMultiStyle, useHeat,
-                                               useShapes)
+                 useShapes,
+                 useOSMB) = writeVectorLayer(layer, safeLayerName,
+                                             usedFields[count], highlight,
+                                             popupsOnHover, popup[count],
+                                             outputProjectFileName,
+                                             wfsLayers, cluster[count],
+                                             visible[count], json[count],
+                                             legends, new_src, canvas, count,
+                                             restrictToExtent, extent,
+                                             feedback, labelCode,
+                                             useMultiStyle, useHeat,
+                                             useShapes, useOSMB)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -301,7 +303,8 @@ class LeafletWriter(Writer):
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
                            measure, matchCRS, layerSearch, canvas,
                            mapLibLocation, locate, new_src, template, feedback,
-                           debugLibs, useMultiStyle, useHeat, useShapes)
+                           debugLibs, useMultiStyle, useHeat, useShapes,
+                           useOSMB)
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
