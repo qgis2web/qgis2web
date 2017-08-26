@@ -212,9 +212,9 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
                 mouseout: function(e) {"""
         if highlight:
             popup += """
-                    layer.setStyle(style_"""
-            popup += """{safeLayerName}_0(feature));
-""".format(safeLayerName=safeLayerName)
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }"""
         if popupsOnHover:
             popup += """
                     if (typeof layer.closePopup == 'function') {
