@@ -33,11 +33,6 @@
         var crs = new L.Proj.CRS('EPSG:2964', '+proj=aea +lat_1=55 +lat_2=65 +lat_0=50 +lon_0=-154 +x_0=0 +y_0=0 +datum=NAD27 +units=us-ft +no_defs', {
             resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
         });
-        L.ImageOverlay.include({
-            getBounds: function () {
-                return this._bounds;
-            }
-        });
         var map = L.map('map', {
             crs: crs,
             continuousWorld: false,
@@ -51,15 +46,6 @@
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }
-        }
-        function geoJson2heat(geojson, weight) {
-          return geojson.features.map(function(feature) {
-            return [
-              feature.geometry.coordinates[1],
-              feature.geometry.coordinates[0],
-              feature.properties[weight]
-            ];
-          });
         }
         function pop_airports0(feature, layer) {
             var popupContent = '<table>\

@@ -28,11 +28,6 @@
         <script src="js/Autolinker.min.js"></script>
         <script src="data/airports0.js"></script>
         <script>
-        L.ImageOverlay.include({
-            getBounds: function () {
-                return this._bounds;
-            }
-        });
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:6
         })
@@ -43,15 +38,6 @@
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }
-        }
-        function geoJson2heat(geojson, weight) {
-          return geojson.features.map(function(feature) {
-            return [
-              feature.geometry.coordinates[1],
-              feature.geometry.coordinates[0],
-              feature.properties[weight]
-            ];
-          });
         }
         function pop_airports0(feature, layer) {
             var popupContent = '<table>\

@@ -29,11 +29,6 @@
         <script src="js/Autolinker.min.js"></script>
         <script src="data/airports0.js"></script>
         <script>
-        L.ImageOverlay.include({
-            getBounds: function () {
-                return this._bounds;
-            }
-        });
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
         })
