@@ -159,6 +159,7 @@ class LeafletWriter(Writer):
         useShapes = False
         useOSMB = False
         useWMTS = False
+        useRaster = False
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -263,6 +264,7 @@ class LeafletWriter(Writer):
                     new_obj, useWMTS = wmsScript(layer, safeLayerName, useWMTS)
                     feedback.completeStep()
                 else:
+                    useRaster = True
                     feedback.showFeedback('Writing %s as raster layer...' %
                                           layer.name())
                     new_obj = rasterScript(layer, safeLayerName)
@@ -299,7 +301,7 @@ class LeafletWriter(Writer):
                                  params["Appearance"]["Search layer"])
         end += endHTMLscript(
             wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer,
-            useHeat)
+            useHeat, useRaster)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,

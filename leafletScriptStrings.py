@@ -114,11 +114,6 @@ def crsScript(crsAuthId, crsProj4):
 def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
               locate):
     map = """
-        L.ImageOverlay.include({
-            getBounds: function () {
-                return this._bounds;
-            }
-        });
         var map = L.map('map', {"""
     if matchCRS and crsAuthId != 'EPSG:4326':
         map += """
@@ -461,7 +456,7 @@ def addressSearchScript():
 
 
 def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
-                  useHeat):
+                  useHeat, useRaster):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
@@ -488,6 +483,14 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             ];
           });
         }"""
+    if useRaster:
+        endHTML += """
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+"""
     endHTML += """
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
