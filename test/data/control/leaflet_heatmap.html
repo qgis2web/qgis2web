@@ -40,15 +40,6 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function geoJson2heat(geojson, weight) {
-          return geojson.features.map(function(feature) {
-            return [
-              feature.geometry.coordinates[1],
-              feature.geometry.coordinates[0],
-              feature.properties[weight]
-            ];
-          });
-        }
         function pop_airports0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
@@ -84,6 +75,15 @@
         bounds_group.addLayer(layer_airports0);
         map.addLayer(layer_airports0);
         setBounds();
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
         </script>
     </body>
 </html>

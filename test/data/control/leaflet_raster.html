@@ -27,11 +27,6 @@
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script>
-        L.ImageOverlay.include({
-            getBounds: function () {
-                return this._bounds;
-            }
-        });
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
         })
@@ -49,6 +44,11 @@
         bounds_group.addLayer(overlay_test0);
         map.addLayer(overlay_test0);
         setBounds();
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
         </script>
     </body>
 </html>

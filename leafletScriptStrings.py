@@ -489,8 +489,7 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             getBounds: function () {
                 return this._bounds;
             }
-        });
-"""
+        });"""
     endHTML += """
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
