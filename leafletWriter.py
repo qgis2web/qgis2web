@@ -298,7 +298,8 @@ class LeafletWriter(Writer):
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
         end += endHTMLscript(
-            wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer)
+            wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer,
+            useHeat)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,

@@ -195,15 +195,6 @@ def extentScript(extent, restrictToExtent):
         layerOrder += """
             map.setMaxBounds(map.getBounds());"""
     layerOrder += """
-        }
-        function geoJson2heat(geojson, weight) {
-          return geojson.features.map(function(feature) {
-            return [
-              feature.geometry.coordinates[1],
-              feature.geometry.coordinates[0],
-              feature.properties[weight]
-            ];
-          });
         }"""
     return layerOrder
 
@@ -469,7 +460,8 @@ def addressSearchScript():
     return addressSearch
 
 
-def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer):
+def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
+                  useHeat):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
@@ -485,6 +477,17 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer):
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));""".format(searchLayer=searchLayer,
                                                    field=searchVals[1])
+    if useHeat:
+        endHTML += """
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }"""
     endHTML += """
         </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
     return endHTML
