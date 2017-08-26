@@ -57,8 +57,9 @@
         function pop_airports0(feature, layer) {
             layer.on({
                 mouseout: function(e) {
-                    layer.setStyle(style_airports0_0(feature));
-
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
                 },
                 mouseover: highlightFeature,
             });
