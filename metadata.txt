@@ -23,7 +23,7 @@ email=tom.chadwin@nnpa.org.uk
 
 # Uncomment the following line and add your changelog entries:
 changelog=2017/08/26 2.24.0 Label Leaflet non-point layers, handle null in expressions, Leaflet reset multistyle highlight, syntax tidy, remove unneeded Leaflet output, update README
-    2017/08/23 2.23.1 Fix unicode error (remove debug prints in tome functions), update README
+    2017/08/23 2.23.1 Fix unicode error (remove debug prints in time functions), update README
     2017/08/23 2.23.0 Time support (thanks, @ruz76!), OL font marker, OL line point marker, non-numeric categories, Leaflet 1.2.0, OL 4.3.1, improve HTML5 compliance
     2017/07/19 2.22.0 Leaflet 1.1.0, expressions "NOT IN", Leaflet different symbol layers in rule-based renders, OL point marker simple shapes fix
     2017/06/30 2.21.1 Handle different CRSes for Restrict to extent + Canvas extent, Unicode attribution error (thanks, @saerdnaer!), fixed Leaflet scale-dependent layers, fixed Processing: export project
