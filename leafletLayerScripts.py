@@ -209,11 +209,18 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
                 styleStart, unicode(f), styleEnd)
         labeltext += ", {permanent: true, offset: [-0, -16], "
         labeltext += "className: 'css_%s'}" % safeLayerName
-        labeltext += ").openTooltip();"
+        labeltext += ");"
         labeltext = """
+        var i = 0;
         layer_%s.eachLayer(function(layer) {
             layer%s
-        });""" % (safeLayerName, labeltext)
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels(layer_%s);""" % (safeLayerName, labeltext, safeLayerName)
     else:
         labeltext = ""
     return labeltext
