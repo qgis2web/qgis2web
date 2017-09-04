@@ -85,6 +85,7 @@ class exportProject(GeoAlgorithm):
         root_node = QgsProject.instance().layerTreeRoot()
         tree_layers = root_node.findLayers()
         layers = []
+        popup = []
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
@@ -94,28 +95,26 @@ class exportProject(GeoAlgorithm):
                     if layer.type() == QgsMapLayer.VectorLayer:
                         testDump = layer.rendererV2().dump()
                     layers.append(layer)
+                    layerPopups = []
+                    if layer.type() == QgsMapLayer.VectorLayer:
+                        for field in layer.pendingFields():
+                            fieldList = []
+                            k = field.name()
+                            cProp = "qgis2web/popup/" + field.name()
+                            v = layer.customProperty(cProp, "")
+                            fieldList.append(k.strip())
+                            fieldList.append(v.strip())
+                            layerPopups.append(tuple(fieldList))
+                    popup.append(OrderedDict(layerPopups))
                 except:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
                                              level=QgsMessageLog.CRITICAL)
 
-        popup = []
         visible = []
         json = []
         cluster = []
         for layer in layers:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.customProperty("qgis2web/popup", [])
-                layerPopups = []
-                for field in fields:
-                    fieldList = []
-                    k, v = field.split(":")
-                    fieldList.append(k.strip())
-                    fieldList.append(v.strip())
-                    layerPopups.append(tuple(fieldList))
-            else:
-                layerPopups = []
-            popup.append(OrderedDict(layerPopups))
             visible.append(layer.customProperty("qgis2web/Visible", True))
             json.append(layer.customProperty("qgis2web/Encode to JSON", True))
             cluster.append(layer.customProperty("qgis2web/Cluster", 0) == 2)
