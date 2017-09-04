@@ -217,14 +217,12 @@ class LeafletWriter(Writer):
             bounds += unicode(pt1.xMaximum()) + ']]'
             if matchCRS and crsAuthId != 'EPSG:4326':
                 middle += crsScript(crsAuthId, crsProj4)
-            middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                                minZoom, bounds, locate)
         else:
-            bounds = ""
+            bounds = 0
             if matchCRS and crsAuthId != 'EPSG:4326':
                 middle += crsScript(crsAuthId, crsProj4)
-            middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                                minZoom, 0, locate)
+        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
+                            minZoom, bounds, locate)
         middle += featureGroupsScript()
         if (len(basemapList) == 0 or matchCRS):
             basemapText = ""
