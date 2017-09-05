@@ -97,15 +97,15 @@
         var baseMaps = {};
         L.control.layers(baseMaps,{'<img src="legend/airports0.png" /> airports': layer_airports0,}).addTo(map);
         setBounds();
-        resetLabels([layer_airports0]);
+        resetLabels([]);
         map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         </script>
     </body>

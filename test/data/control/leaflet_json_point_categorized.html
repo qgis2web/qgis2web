@@ -155,15 +155,15 @@
         bounds_group.addLayer(layer_airports0);
         map.addLayer(layer_airports0);
         setBounds();
-        resetLabels([layer_airports0]);
+        resetLabels([]);
         map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         </script>
     </body>

@@ -96,15 +96,15 @@
         map.addLayer(layer_airports0);
         L.control.scale({position: 'bottomleft', maxWidth: 100, metric: true, imperial: false, updateWhenIdle: false}).addTo(map);
         setBounds();
-        resetLabels([layer_airports0]);
+        resetLabels([]);
         map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([]);
         });
         </script>
     </body>
