@@ -112,15 +112,15 @@
         bounds_group.addLayer(layer_pipelines0);
         map.addLayer(layer_pipelines0);
         setBounds();
-        resetLabels([layer_airports0]);
+        resetLabels([layer_pipelines0]);
         map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([layer_pipelines0]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([layer_pipelines0]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([layer_pipelines0]);
         });
         </script>
     </body>

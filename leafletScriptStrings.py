@@ -79,7 +79,6 @@ def highlightScript(highlight, popupsOnHover, highlightFill):
     highlightScript = """
         var highlightLayer;
         function highlightFeature(e) {
-            console.log(e);
             highlightLayer = e.target;"""
     if highlight:
         highlightScript += """

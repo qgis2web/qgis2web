@@ -211,29 +211,19 @@
         function getpoint0Json(geojson) {
             layer_point0.addData(geojson);
            setBounds();
-        resetLabels([layer_airports0]);
-        map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
-        });
-        resetLabels([layer_airports0]);
-        map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
-        });
         };
         bounds_group.addLayer(layer_point0);
         map.addLayer(layer_point0);
+        resetLabels([layer_airports0]);
+        map.on("zoomstart", function(){
+            resetLabels([layer_airports0]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_airports0]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_airports0]);
+        });
         </script>
         <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:4326&BBOX=233720,53549,297567,96689&outputFormat=text%2Fjavascript&format_options=callback%3Agetpoint0Json'></script>
     </body>
