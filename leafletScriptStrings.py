@@ -496,5 +496,12 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
         map.on("zoomstart", function(){
             resetLabels([%s]);
         });
-        </script>%s""" % (labelsList, labelsList, wfsLayers)
+        map.on("layeradd", function(){
+            resetLabels([%s]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([%s]);
+        });
+        </script>%s""" % (labelsList, labelsList, labelsList, labelsList,
+                          wfsLayers)
     return endHTML
