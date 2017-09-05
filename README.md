@@ -208,4 +208,5 @@ software:</p>
     <li>OSMBuildings, by @kekscom</li>
     <li>multi-style-layer, by @perliedman</li>
     <li>Leaflet.SvgShapeMarkers, by @rowanwins</li>
+    <li>Labelgun, by @JamesMilnerUK</li>
 </ul>

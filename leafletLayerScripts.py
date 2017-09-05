@@ -219,8 +219,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
               layer.added = true;
               addLabel(layer, i);
               i++;
-        });
-        resetLabels(layer_%s);""" % (safeLayerName, labeltext, safeLayerName)
+        });""" % (safeLayerName, labeltext)
     else:
         labeltext = ""
     return labeltext

@@ -304,9 +304,13 @@ class LeafletWriter(Writer):
             layerType = "layer"
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
+        labelList = []
+        for count, layer in enumerate(layer_list):
+            labelList.append("layer_%s%d" % (layer.name(), count))
+        labelsList = ",".join(labelList)
         end += endHTMLscript(
             wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer,
-            useHeat, useRaster)
+            useHeat, useRaster, labelsList)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,

@@ -79,6 +79,7 @@ def highlightScript(highlight, popupsOnHover, highlightFill):
     highlightScript = """
         var highlightLayer;
         function highlightFeature(e) {
+            console.log(e);
             highlightLayer = e.target;"""
     if highlight:
         highlightScript += """
@@ -456,7 +457,7 @@ def addressSearchScript():
 
 
 def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
-                  useHeat, useRaster):
+                  useHeat, useRaster, labelsList):
     endHTML = ""
     if wfsLayers == "":
         endHTML += """
@@ -491,5 +492,60 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             }
         });"""
     endHTML += """
-        </script>{wfsLayers}""".format(wfsLayers=wfsLayers)
+resetLabels([%s]);
+map.on("zoomend", function(){
+  resetLabels([%s]);
+});
+
+function resetLabels(markers) {
+
+  labelEngine.destroy();
+  var i = 0;
+  for (var j = 0; j < markers.length; j++) {
+    markers[j].eachLayer(function(label){
+      addLabel(label, ++i);
+    });
+  }
+  labelEngine.update();
+
+}
+
+function addLabel(layer, id) {
+
+  // This is ugly but there is no getContainer method on the tooltip :(
+  var label = layer.getTooltip()._source._tooltip._container;
+  if (label) {
+
+    // We need the bounding rectangle of the label itself
+    var rect = label.getBoundingClientRect();
+
+    // We convert the container coordinates (screen space) to Lat/lng
+    var bottomLeft = map.containerPointToLatLng([rect.left, rect.bottom]);
+    var topRight = map.containerPointToLatLng([rect.right, rect.top]);
+    var boundingBox = {
+      bottomLeft : [bottomLeft.lng, bottomLeft.lat],
+      topRight   : [topRight.lng, topRight.lat]
+    };
+
+    // Ingest the label into labelgun itself
+    labelEngine.ingestLabel(
+      boundingBox,
+      id,
+      parseInt(Math.random() * (5 - 1) + 1), // Weight
+      label,
+      "Test " + id,
+      false
+    );
+
+    // If the label hasn't been added to the map already
+    // add it and set the added flag to true
+    if (!layer.added) {
+      layer.addTo(map);
+      layer.added = true;
+    }
+
+  }
+
+}
+        </script>%s""" % (labelsList, labelsList, wfsLayers)
     return endHTML
