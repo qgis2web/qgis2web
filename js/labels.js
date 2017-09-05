@@ -4,7 +4,7 @@ var hideLabel = function(label) {
 };
 var showLabel = function(label) {
     label.labelObject.style.opacity = 1;
-    label.labelObject.style.transition = 'opacity 0.5s';
+    label.labelObject.style.transition = 'opacity 1s';
 };
 labelEngine = new labelgun.default(hideLabel, showLabel);
 
