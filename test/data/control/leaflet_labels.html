@@ -114,9 +114,6 @@
         map.on("layerremove", function(){
             resetLabels([layer_airports0]);
         });
-        layer_airports0.eachLayer(function(layer) {
-            layer.bindTooltip((layer.feature.properties['NAME'] !== null?String('<div style="color: #000000; font-size: 8pt; font-family: \'Sans Serif\', sans-serif;">' + layer.feature.properties['NAME']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_airports0'}).openTooltip();
-        });
         </script>
     </body>
 </html>

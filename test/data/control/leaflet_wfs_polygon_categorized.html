@@ -132,15 +132,15 @@
         };
         bounds_group.addLayer(layer_polygon0);
         map.addLayer(layer_polygon0);
-        resetLabels([layer_airports0]);
+        resetLabels([layer_polygon0]);
         map.on("zoomstart", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([layer_polygon0]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([layer_polygon0]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_airports0]);
+            resetLabels([layer_polygon0]);
         });
         </script>
         <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:con_areas&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetpolygon0Json'></script>

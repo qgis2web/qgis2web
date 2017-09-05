@@ -794,6 +794,16 @@
         };
         bounds_group.addLayer(layer_centreline0);
         map.addLayer(layer_centreline0);
+        resetLabels([layer_centreline0]);
+        map.on("zoomstart", function(){
+            resetLabels([layer_centreline0]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_centreline0]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_centreline0]);
+        });
         </script>
         <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=broads_inspire:centreline&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetcentreline0Json'></script>
     </body>
