@@ -200,14 +200,7 @@ class LeafletWriter(Writer):
         crsAuthId = crsSrc.authid()
         crsProj4 = crsSrc.toProj4()
         middle = """
-        <script>
-        var hideLabel = function(label){ label.labelObject.style.opacity = 0;};
-        var showLabel = function(label){ label.labelObject.style.opacity = 1;};
-        labelEngine = new labelgun.default(hideLabel, showLabel);
-
-        var id = 0;
-        var labels = [];
-        var totalMarkers = 0;"""
+        <script>"""
         if highlight or popupsOnHover:
             selectionColor = mapSettings.selectionColor().name()
             middle += highlightScript(highlight, popupsOnHover, selectionColor)
