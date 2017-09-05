@@ -27,6 +27,9 @@
         <script src="js/OSMBuildings-Leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
         <script src="data/lakes0.js"></script>
         <script>
         var map = L.map('map', {
@@ -70,6 +73,16 @@
         var osmb = new OSMBuildings(map).date(new Date());
         osmb.set(json_lakes0);
         setBounds();
+        resetLabels([layer_airports0]);
+        map.on("zoomstart", function(){
+            resetLabels([layer_airports0]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_airports0]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_airports0]);
+        });
         </script>
     </body>
 </html>

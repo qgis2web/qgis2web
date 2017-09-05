@@ -26,6 +26,9 @@
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
         <script src="data/airports0.js"></script>
         <script>
         var map = L.map('map', {
@@ -93,6 +96,16 @@
         map.addLayer(layer_airports0);
         L.control.scale({position: 'bottomleft', maxWidth: 100, metric: true, imperial: false, updateWhenIdle: false}).addTo(map);
         setBounds();
+        resetLabels([layer_airports0]);
+        map.on("zoomstart", function(){
+            resetLabels([layer_airports0]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_airports0]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_airports0]);
+        });
         </script>
     </body>
 </html>
