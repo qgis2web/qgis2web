@@ -26,6 +26,7 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
+                       QgsPalLayerSettings,
                        QgsMessageLog)
 import traceback
 import qgis.utils
@@ -301,7 +302,10 @@ class LeafletWriter(Writer):
         for count, layer in enumerate(layer_list):
             safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
             if layer.type() == QgsMapLayer.VectorLayer:
-                labelList.append("layer_%s" % safeLayerName)
+                palyr = QgsPalLayerSettings()
+                palyr.readFromLayer(layer)
+                if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
+                    labelList.append("layer_%s" % safeLayerName)
         labelsList = ",".join(labelList)
         end += endHTMLscript(
             wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer,
