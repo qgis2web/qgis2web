@@ -27,7 +27,7 @@
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.min.js"></script>
+        <script src="js/labelgun.js"></script>
         <script src="js/labels.js"></script>
         <script src="data/airports0.js"></script>
         <script>
@@ -97,16 +97,6 @@
         var baseMaps = {};
         L.control.layers(baseMaps,{'<img src="legend/airports0.png" /> airports': layer_airports0,}).addTo(map);
         setBounds();
-        resetLabels([]);
-        map.on("zoomstart", function(){
-            resetLabels([]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([]);
-        });
         </script>
     </body>
 </html>
