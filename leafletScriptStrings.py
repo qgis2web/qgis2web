@@ -490,7 +490,8 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
                 return this._bounds;
             }
         });"""
-    endHTML += """
+    if labelsList != "":
+        endHTML += """
         resetLabels([%s]);
         map.on("zoomstart", function(){
             resetLabels([%s]);
@@ -500,7 +501,7 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
         });
         map.on("layerremove", function(){
             resetLabels([%s]);
-        });
-        </script>%s""" % (labelsList, labelsList, labelsList, labelsList,
-                          wfsLayers)
+        });""" % (labelsList, labelsList, labelsList, labelsList)
+    endHTML += """
+        </script>%s""" % wfsLayers
     return endHTML
