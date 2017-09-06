@@ -27,7 +27,7 @@
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.min.js"></script>
+        <script src="js/labelgun.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet-tilelayer-wmts.js"></script>
         <script>
@@ -54,16 +54,6 @@
             });
         map.addLayer(overlay_wms0);
         setBounds();
-        resetLabels([]);
-        map.on("zoomstart", function(){
-            resetLabels([]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([]);
-        });
         </script>
     </body>
 </html>

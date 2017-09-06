@@ -27,7 +27,7 @@
         <script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.min.js"></script>
+        <script src="js/labelgun.js"></script>
         <script src="js/labels.js"></script>
         <script>
         var map = L.map('map', {
@@ -106,16 +106,6 @@
         };
         bounds_group.addLayer(layer_centreline0);
         map.addLayer(layer_centreline0);
-        resetLabels([]);
-        map.on("zoomstart", function(){
-            resetLabels([]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([]);
-        });
         </script>
         <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=broads_inspire:centreline&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetcentreline0Json'></script>
     </body>
