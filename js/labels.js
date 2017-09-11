@@ -13,7 +13,7 @@ var labels = [];
 var totalMarkers = 0;
 
 function resetLabels(markers) {
-    labelEngine.destroy();
+    labelEngine.reset();
     var i = 0;
     for (var j = 0; j < markers.length; j++) {
         markers[j].eachLayer(function(label){

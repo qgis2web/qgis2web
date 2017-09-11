@@ -35,8 +35,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'leaflet-svg-shape-markers.min.js')
     shutil.copyfile(jsDir + 'rbush.min.js',
                     jsStore + 'rbush.min.js')
-    shutil.copyfile(jsDir + 'labelgun.js',
-                    jsStore + 'labelgun.js')
+    shutil.copyfile(jsDir + 'labelgun.min.js',
+                    jsStore + 'labelgun.min.js')
     shutil.copyfile(jsDir + 'labels.js',
                     jsStore + 'labels.js')
     if mapLibLocation == "Local":
@@ -174,7 +174,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     extraJS = """<script src="js/leaflet-hash.js"></script>
         <script src="js/Autolinker.min.js"></script>
         <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.js"></script>
+        <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>"""
     if useWMTS:
         extraJS += """
