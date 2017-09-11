@@ -493,7 +493,7 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
     if labelsList != "":
         endHTML += """
         resetLabels([%s]);
-        map.on("zoomstart", function(){
+        map.on("zoomend", function(){
             resetLabels([%s]);
         });
         map.on("layeradd", function(){
