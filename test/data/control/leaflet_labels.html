@@ -105,7 +105,7 @@
               i++;
         });
         resetLabels([layer_airports0]);
-        map.on("zoomstart", function(){
+        map.on("zoomend", function(){
             resetLabels([layer_airports0]);
         });
         map.on("layeradd", function(){
