@@ -292,10 +292,12 @@ class LeafletWriter(Writer):
             end = scaleBar(placement)
         else:
             end = ''
-        if cluster[count]:
-            layerType = "cluster"
-        else:
-            layerType = "layer"
+        layerType = "layer"
+        try:
+            if cluster[count]:
+                layerType = "cluster"
+        except:
+            pass
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
         labelList = []
