@@ -3092,7 +3092,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Set 'Export folder'
         customLocn = '/tmp/customfolder/'
         self.dialog.exporter.folder = customLocn
-        self.dialog.ol3.click()
+        self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
         # Does the file exist
