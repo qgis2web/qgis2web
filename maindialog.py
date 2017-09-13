@@ -340,6 +340,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         result = self.exporter.postProcess(results, feedback=self.feedback)
         if result and os.getenv('TRAVIS', "false") != "true":
             webbrowser.open_new_tab(self.exporter.destinationUrl())
+        else:
+            print "Skip browser in Travis"
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
