@@ -2487,22 +2487,17 @@ class qgis2web_classDialogTest(unittest.TestCase):
                           ]
                          )
         self.assertEqual(writer.json, [False])
+        self.dialog.ol3.click()
 
     def test82_OL3_WMS(self):
         """Dialog test: OL3 WMS"""
-        QgsProject.instance().clear()
-        print 1
         layer_url = (
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
-        print 2
         layer = load_wms_layer(layer_url, 'wms')
 
-        print 3
         registry = QgsMapLayerRegistry.instance()
-        print 4
         registry.addMapLayer(layer)
 
-        print 5
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
