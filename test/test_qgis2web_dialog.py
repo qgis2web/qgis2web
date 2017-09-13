@@ -2497,17 +2497,19 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        try:
-            self.dialog = MainDialog(IFACE)
-        except:
-            pass
+        print 1
+        self.dialog = MainDialog(IFACE)
+        print 2
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
+        print 3
         self.setTemplate('full-screen')
+        print 4
         self.dialog.ol3.click()
+        print 5
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
