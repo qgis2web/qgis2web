@@ -468,6 +468,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        
+        print test_output
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
