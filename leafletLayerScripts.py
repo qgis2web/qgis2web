@@ -212,7 +212,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
         labeltext += ");"
         labeltext = """
         var i = 0;
-        layer_%s.eachLayerX(function(layer) {
+        layer_%s.eachLayer(function(layer) {
             var context = {
                 feature: layer.feature,
                 variables: {}
