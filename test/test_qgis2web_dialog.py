@@ -3102,10 +3102,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         outputFile = os.path.join(outputFolder, "index.html")
         assert os.path.isfile(outputFile)
-        
-        index_file = open(outputFile, 'r')
-        print index_file.read()
-
 
     def test100_setStateToParams(self):
         """Test that setting state to match parameters works"""
