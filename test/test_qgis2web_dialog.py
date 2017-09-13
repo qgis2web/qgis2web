@@ -3108,7 +3108,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         print 14
         self.dialog.ol3.click()
         print 15
-        #self.dialog.buttonExport.click()
+        self.dialog.buttonExport.click()
 
         # Does the file exist
         print 16
