@@ -338,8 +338,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         if self.closeFeedbackOnSuccess.checkState() == Qt.Checked:
             self.feedback.close()
         result = self.exporter.postProcess(results, feedback=self.feedback)
-        if result and (not os.environ.get('CI') and
-                       not os.environ.get('TRAVIS')):
+        if result and os.getenv('TRAVIS', "false") != "true":
             webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def populate_layers_and_groups(self, dlg):
