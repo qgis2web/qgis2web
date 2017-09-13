@@ -831,4 +831,15 @@ class WebPage(QWebPage):
         super(WebPage, self).__init__(parent)
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        print("JS " + sourceID + ":" + unicode(lineNumber) + "\n" + msg)
+        raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
+                          Exception())
+
+
+class jsException(Exception):
+    def __init__(self, message, errors):
+
+        # Call the base class constructor with the parameters it needs
+        super(jsException, self).__init__(message)
+
+        # Now for your custom code...
+        self.errors = errors
