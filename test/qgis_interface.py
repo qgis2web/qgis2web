@@ -29,7 +29,8 @@ __copyright__ = (
 import logging
 
 from qgis.core import QgsMapLayerRegistry, QGis, QgsMapLayer
-from qgis.gui import QgsMapCanvasLayer  # pylint: disable=no-name-in-module
+from qgis.gui import QgsMessageBar,
+                     QgsMapCanvasLayer  # pylint: disable=no-name-in-module
 from PyQt4.QtCore import QObject, pyqtSlot, pyqtSignal
 
 
@@ -302,3 +303,6 @@ class QgisInterface(QObject):
         https://github.com/AIFDR/inasafe/pull/924/
         """
         return self.canvas
+
+    def messageBar(self):
+        return QgsMessageBar()
