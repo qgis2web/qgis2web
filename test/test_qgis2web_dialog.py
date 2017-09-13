@@ -3103,8 +3103,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         outputFile = os.path.join(outputFolder, "index.html")
         assert os.path.isfile(outputFile)
         
-        layers_file = open(os.path.join(outputFolder, "layers", "layers.js"), 'r')
-        print layers_file.read()
+        index_file = open(outputFile, 'r')
+        print index_file.read()
 
 
     def test100_setStateToParams(self):
