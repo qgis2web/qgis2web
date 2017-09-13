@@ -213,6 +213,10 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
         labeltext = """
         var i = 0;
         layer_%s.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
             layer%s
             labels.push(layer);
             totalMarkers += 1;
