@@ -2497,7 +2497,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        try:
+            self.dialog = MainDialog(IFACE)
+        except:
+            pass
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
