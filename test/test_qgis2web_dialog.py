@@ -3067,61 +3067,45 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test99_export_folder(self):
         """Export folder"""
-        print 1
         layer_path = test_data_path('layer', 'airports.shp')
-        print 2
         style_path = test_data_path('style', 'airports_single.qml')
-        print 3
         layer = load_layer(layer_path)
-        print 4
         layer.loadNamedStyle(style_path)
 
-        print 5
         registry = QgsMapLayerRegistry.instance()
-        print 6
         registry.addMapLayer(layer)
 
-        print 7
         control_file = open(
             test_data_path(
                 'control', 'ol3_cdn.html'), 'r')
-        print 8
         control_output = control_file.read()
 
         # Export to web map
-        print 9
         self.dialog = MainDialog(IFACE)
-        print 10
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        print 11
         self.setTemplate('canvas-size')
 
         # Set 'Export folder'
-        print 12
         customLocn = '/tmp/customfolder/'
-        print 13
         self.dialog.exporter.folder = customLocn
-        print 14
         self.dialog.ol3.click()
-        print 15
         self.dialog.buttonExport.click()
 
         # Does the file exist
-        print 16
-        #for pth in os.listdir(customLocn):
-        #    print 17
-        #    if os.path.isdir(os.path.join(customLocn, pth)):
-        #        print 18
-        #        outputFolder = os.path.join(customLocn, pth)
+        for pth in os.listdir(customLocn):
+            if os.path.isdir(os.path.join(customLocn, pth)):
+                outputFolder = os.path.join(customLocn, pth)
 
-        #print 19
-        #outputFile = os.path.join(outputFolder, "index.html")
-        #print 20
-        #assert os.path.isfile(outputFile)
+        outputFile = os.path.join(outputFolder, "index.html")
+        assert os.path.isfile(outputFile)
+        
+        layers_file = open(os.path.join(outputFolder, "layers", "layers.js"), 'r')
+        print = layers_file.read()
+
 
     def test100_setStateToParams(self):
         """Test that setting state to match parameters works"""
