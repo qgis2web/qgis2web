@@ -561,10 +561,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     groupLayers.append(layer)
                     layers.append(layer)
                     popup.append({})
-                    if item.visible:
-                        visible.append(True)
-                    else:
-                        visible.append(False)
+                    visible.append(item.visible)
                     if hasattr(item, "json") and item.json:
                         json.append(True)
                     else:
@@ -574,7 +571,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     else:
                         cluster.append(False)
                 groups[group] = groupLayers[::-1]
-
+        print visible[::-1]
         return (layers[::-1],
                 groups,
                 popup[::-1],
@@ -634,16 +631,23 @@ class TreeGroupItem(QTreeWidgetItem):
         self.setText(0, name)
         self.setIcon(0, self.groupIcon)
         self.setCheckState(0, Qt.Checked)
-        self.visibleItem = QTreeWidgetItem(self)
-        self.visibleCheck = QCheckBox()
-        self.visibleCheck.setChecked(True)
-        self.visibleItem.setText(0, "Layers visibility")
-        self.addChild(self.visibleItem)
-        tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        for layer in self.layers:
+            self.layerItem = QTreeWidgetItem(self)
+            self.layerItem.setText(0, layer.name())
+            self.layerItem.layerCheck = QCheckBox()
+            self.layerItem.layerCheck.setChecked(True)
+            self.addChild(self.layerItem)
+            tree.setItemWidget(self.layerItem, 1, self.layerItem.layerCheck)
 
     @property
     def visible(self):
-        return self.visibleCheck.isChecked()
+        visibleLayers = []
+        for layer in range(self.childCount()):
+            v = self.treeWidget().itemWidget(self.child(layer), 1).isChecked()
+            pair = (layer, v)
+            visibleLayers.append(pair)
+        visibleLayers = OrderedDict(visibleLayers)
+        return visibleLayers
 
 
 class TreeLayerItem(QTreeWidgetItem):
