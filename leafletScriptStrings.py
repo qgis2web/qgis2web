@@ -114,7 +114,7 @@ def crsScript(crsAuthId, crsProj4):
 def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
               locate):
     map = """
-        var map = L.map('map', {"""
+        varX map = L.map('map', {"""
     if matchCRS and crsAuthId != 'EPSG:4326':
         map += """
             crs: crs,
