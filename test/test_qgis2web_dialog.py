@@ -3065,43 +3065,43 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
 
-    #def test99_export_folder(self):
-    #    """Export folder"""
-    #    layer_path = test_data_path('layer', 'airports.shp')
-    #    style_path = test_data_path('style', 'airports_single.qml')
-    #    layer = load_layer(layer_path)
-    #    layer.loadNamedStyle(style_path)
+    def test99_export_folder(self):
+        """Export folder"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
-    #    registry = QgsMapLayerRegistry.instance()
-    #    registry.addMapLayer(layer)
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
 
-    #    control_file = open(
-    #        test_data_path(
-    #            'control', 'ol3_cdn.html'), 'r')
-    #    control_output = control_file.read()
+        control_file = open(
+            test_data_path(
+                'control', 'ol3_cdn.html'), 'r')
+        control_output = control_file.read()
 
         # Export to web map
-    #    self.dialog = MainDialog(IFACE)
-    #    self.dialog.paramsTreeOL.itemWidget(
-    #        self.dialog.paramsTreeOL.findItems(
-    #            'Extent',
-    #                    (Qt.MatchExactly | Qt.MatchRecursive))[0],
-    #            1).setCurrentIndex(1)
-    #    self.setTemplate('canvas-size')
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('canvas-size')
 
         # Set 'Export folder'
-    #    customLocn = '/tmp/customfolder/'
-    #    self.dialog.exporter.folder = customLocn
-    #    self.dialog.ol3.click()
-    #    self.dialog.buttonExport.click()
+        customLocn = '/tmp/customfolder/'
+        self.dialog.exporter.folder = customLocn
+        self.dialog.ol3.click()
+        # self.dialog.buttonExport.click()
 
         # Does the file exist
-    #    for pth in os.listdir(customLocn):
-    #        if os.path.isdir(os.path.join(customLocn, pth)):
-    #            outputFolder = os.path.join(customLocn, pth)
+        for pth in os.listdir(customLocn):
+            if os.path.isdir(os.path.join(customLocn, pth)):
+                outputFolder = os.path.join(customLocn, pth)
 
-    #    outputFile = os.path.join(outputFolder, "index.html")
-    #    assert os.path.isfile(outputFile)
+        outputFile = os.path.join(outputFolder, "index.html")
+        assert os.path.isfile(outputFile)
 
     def test100_setStateToParams(self):
         """Test that setting state to match parameters works"""
