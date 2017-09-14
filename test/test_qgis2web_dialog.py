@@ -3093,7 +3093,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         customLocn = '/tmp/customfolder/'
         self.dialog.exporter.folder = customLocn
         self.dialog.ol3.click()
-        # self.dialog.buttonExport.click()
+        self.dialog.buttonExport.click()
 
         # Does the file exist
         for pth in os.listdir(customLocn):

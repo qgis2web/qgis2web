@@ -831,8 +831,10 @@ class WebPage(QWebPage):
         super(WebPage, self).__init__(parent)
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
-                          Exception())
+        if msg != ("Unable to get image data from canvas because "
+                   "the canvas has been tainted by cross-origin data."):
+            raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
+                              Exception())
 
 
 class jsException(Exception):
