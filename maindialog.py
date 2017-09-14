@@ -119,7 +119,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 # if os.environ["TRAVIS"]:
                 self.preview.setPage(WebPage())
             except:
-                pass
+                print "Failed to set custom webpage"
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(
