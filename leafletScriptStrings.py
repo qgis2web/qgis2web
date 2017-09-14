@@ -106,7 +106,7 @@ def crsScript(crsAuthId, crsProj4):
         var crs = new L.Proj.CRS('{crsAuthId}', '{crsProj4}', {{
             resolutions: [2800, 1400, 700, 350, """.format(crsAuthId=crsAuthId,
                                                            crsProj4=crsProj4)
-    crs += """175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
+    crs += """175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07, df],
         });"""
     return crs
 
@@ -114,7 +114,7 @@ def crsScript(crsAuthId, crsProj4):
 def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
               locate):
     map = """
-        varX map = L.map('map', {"""
+        var map = L.map('map', {"""
     if matchCRS and crsAuthId != 'EPSG:4326':
         map += """
             crs: crs,
