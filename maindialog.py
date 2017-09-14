@@ -340,8 +340,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         result = self.exporter.postProcess(results, feedback=self.feedback)
         if result and (not os.environ.get('CI') and
                        not os.environ.get('TRAVIS')):
-            # webbrowser.open_new_tab(self.exporter.destinationUrl())
-            pass
+            webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
