@@ -11,6 +11,7 @@ from qgis.core import (QgsSingleSymbolRendererV2,
                        QgsSimpleMarkerSymbolLayerV2,
                        QgsSimpleLineSymbolLayerV2,
                        QgsSimpleFillSymbolLayerV2,
+                       QgsLinePatternFillSymbolLayer,
                        QgsSvgMarkerSymbolLayerV2)
 from exp2js import compile_to_file
 from utils import getRGBAColor, handleHiddenField
@@ -24,8 +25,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     if isinstance(renderer, QgsSingleSymbolRendererV2):
         symbol = renderer.symbol()
         for sl in xrange(symbol.symbolLayerCount()):
-            (styleCode, markerType) = getSymbolAsStyle(symbol, markerFolder,
-                                                       layer_alpha, sln, sl)
+            (styleCode, markerType,
+             pattern) = getSymbolAsStyle(symbol, markerFolder,
+                                         layer_alpha, sln, sl)
+            style += pattern
             style += """
         function style_%s_%s() {
             return %s
@@ -39,10 +42,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             switch(feature.properties['%s'].toString()) {""" % (sln, sl,
                                                                 classAttr)
             for cat in renderer.categories():
-                (styleCode, markerType) = getSymbolAsStyle(cat.symbol(),
-                                                           markerFolder,
-                                                           layer_alpha,
-                                                           sln, sl)
+                (styleCode, markerType,
+                 pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
+                                             layer_alpha, sln, sl)
                 if (cat.value() is not None and cat.value() != "" and
                         not isinstance(cat.value(), QPyNullVariant)):
                     style += """
@@ -63,10 +65,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             style += """
         function style_%s_%s(feature) {""" % (sln, sl)
             for ran in renderer.ranges():
-                (styleCode, markerType) = getSymbolAsStyle(ran.symbol(),
-                                                           markerFolder,
-                                                           layer_alpha,
-                                                           sln, sl)
+                (styleCode, markerType,
+                 pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
+                                             layer_alpha, sln, sl)
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
@@ -102,10 +103,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             ifelse = "if"
             for count, rule in enumerate(rules):
                 if rule.symbol().symbolLayer(sl) is not None:
-                    (styleCode, markerType) = getSymbolAsStyle(rule.symbol(),
-                                                               markerFolder,
-                                                               layer_alpha,
-                                                               sln, sl)
+                    (styleCode, markerType,
+                     pattern) = getSymbolAsStyle(rule.symbol(), markerFolder,
+                                                 layer_alpha, sln, sl)
                     name = "".join((sln, "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -129,11 +129,13 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
 
 def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
     markerType = None
+    pattern = ""
     styles = []
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
         alpha = 1-(layer_transparency / float(100))
+    slc = sl
     sl = symbol.symbolLayer(sl)
     try:
         props = sl.properties()
@@ -233,12 +235,35 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                  (getStrokeStyle(borderColor, borderStyle, borderWidth,
                                  lineCap, lineJoin),
                   getFillStyle(fillColor, props)))
+    elif isinstance(sl, QgsLinePatternFillSymbolLayer):
+        weight = props["line_width"]
+        spaceWeight = props["distance"]
+        colors = props["color"].split(",")
+        r = int(colors[0])
+        g = int(colors[1])
+        b = int(colors[2])
+        color = '#%02x%02x%02x' % (r, g, b)
+        angle = 360 - int(props["angle"])
+        pattern = """
+            var pattern_%s_%d = new L.StripePattern({
+                weight: %s,
+                spaceWeight: %s,
+                color: '%s',
+                opacity: %s,
+                spaceOpacity: 0,
+                angle: %d
+            });
+            pattern_%s_%d.addTo(map);""" % (sln, slc, weight, spaceWeight,
+                                           color, alpha, angle, sln, slc)
+        style = """
+                stroke: false,
+                fillPattern: pattern_%s_%d""" % (sln, slc)
     else:
         markerType = "circleMarker"
         style = ""
     return ("""{
                 pane: 'pane_%s',%s
-            }""" % (sln, style), markerType)
+            }""" % (sln, style), markerType, pattern)
 
 
 def getMarker(color, borderColor, borderWidth, size, props, lineStyle, shape):

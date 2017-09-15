@@ -33,6 +33,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'leaflet-tilelayer-wmts.js')
     shutil.copyfile(jsDir + 'leaflet-svg-shape-markers.min.js',
                     jsStore + 'leaflet-svg-shape-markers.min.js')
+    shutil.copyfile(jsDir + 'leaflet.pattern.js',
+                    jsStore + 'leaflet.pattern.js')
     shutil.copyfile(jsDir + 'rbush.min.js',
                     jsStore + 'rbush.min.js')
     shutil.copyfile(jsDir + 'labelgun.min.js',
@@ -135,7 +137,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += """
         <script src="js/leaflet-svg-shape-markers.min.js"></script>"""
     jsAddress += """
-        <script src="js/leaflet.rotatedMarker.js"></script>"""
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>"""
     if useOSMB:
         jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
