@@ -832,10 +832,13 @@ class WebPage(QWebPage):
 
     def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
         if (msg != ("Unable to get image data from canvas because "
-                   "the canvas has been tainted by cross-origin data.") and
+                    "the canvas has been tainted by cross-origin data.") and
+            msg != ("Deprecated include of L.Mixin.Events: this property will "
+                    "be removed in future releases, please inherit from "
+                    "L.Evented instead.") and
             os.environ.get('CI') and os.environ.get('TRAVIS')):
                 raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
-                              Exception())
+                                  Exception())
 
 
 class jsException(Exception):
