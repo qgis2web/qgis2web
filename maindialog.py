@@ -836,9 +836,9 @@ class WebPage(QWebPage):
                 msg != ("Deprecated include of L.Mixin.Events: this property "
                         "will be removed in future releases, please inherit "
                         "from L.Evented instead.") and
-            os.environ.get('CI') and os.environ.get('TRAVIS')):
-                raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
-                                  Exception())
+                os.environ.get('CI') and os.environ.get('TRAVIS')):
+            raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
+                              Exception())
 
 
 class jsException(Exception):
