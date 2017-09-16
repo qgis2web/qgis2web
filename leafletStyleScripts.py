@@ -254,7 +254,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                 angle: %d
             });
             pattern_%s_%d.addTo(map);""" % (sln, slc, weight, spaceWeight,
-                                           color, alpha, angle, sln, slc)
+                                            color, alpha, angle, sln, slc)
         style = """
                 stroke: false,
                 fillPattern: pattern_%s_%d""" % (sln, slc)
