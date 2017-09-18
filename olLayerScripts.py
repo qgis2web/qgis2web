@@ -175,6 +175,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
     fieldImages = ""
     fieldLabels = ""
     blend_mode = ""
+    labelgun = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         sln = safeName(layer.name()) + unicode(count)
         if layer.type() == layer.VectorLayer and not is25d(layer, canvas,
