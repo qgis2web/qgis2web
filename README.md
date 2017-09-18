@@ -210,4 +210,5 @@ software:</p>
     <li>Leaflet.SvgShapeMarkers, by @rowanwins</li>
     <li>rbush, by @mourner</li>
     <li>Labelgun, by @JamesMilnerUK</li>
+    <li>Leaflet.pattern, by @teastman</li>
 </ul>
