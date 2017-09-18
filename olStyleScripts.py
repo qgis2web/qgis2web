@@ -299,7 +299,7 @@ def getStyle(style, cluster, labelRes, labelText,
             "color": color}
     this_style += """
 function update() {
-    
+
     var features = lyr_%s.getSource().getFeatures();
     features.forEach(function(feature){
 
@@ -316,14 +316,14 @@ function update() {
         // Create a bounding box for the label using known pixel heights
         var minx = parseInt(pixelCenter[0] - halfText);
         var maxx = parseInt(pixelCenter[0] + halfText);
-        
+
         var maxy = parseInt(pixelCenter[1] - (size / 2));
         var miny = parseInt(pixelCenter[1] + (size / 2));
 
         // Get bounding box points back into coordinate space
         var min = map.getCoordinateFromPixel([minx, miny]);
         var max = map.getCoordinateFromPixel([maxx, maxy]);
-        
+
         // Create the bounds
         var bounds = {
             bottomLeft: min,

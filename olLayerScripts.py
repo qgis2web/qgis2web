@@ -221,7 +221,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
 
     var listenerKey = lyr_%s.on('change', function(e) {
         update();
-        ol.Observable.unByKey(listenerKey);   
+        ol.Observable.unByKey(listenerKey);
     });""" % (sln, sln)
 
     path = os.path.join(folder, "layers", "layers.js")
