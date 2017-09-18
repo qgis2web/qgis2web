@@ -33,6 +33,8 @@
         </div>
         <script src="resources/qgis2web_expressions.js"></script>
         <script src="resources/polyfills.js"></script>
+        <script src="./resources/rbush.min.js"></script>
+        <script src="./resources/labelgun.min.js"></script>
         <script src="./resources/ol.js"></script>
         <script src="./resources/ol3-layerswitcher.js"></script>
         <script src="layers/pipelines0.js"></script>
@@ -66,15 +68,14 @@ var style_pipelines0 = function(feature, resolution){
     };
     var value = feature.get("cat");
     var labelText = "";
-    var key = "";
     size = 0;
+    var labelFont = "font: '10.725px \'MS Shell Dlg 2\', sans-serif'";
+    var labelFill = "rgba(0, 0, 0, 1)";
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
     if ("" !== null) {
         labelText = String("");
-    } else {
-        labelText = ""
     }
     var style = ranges_pipelines0[0][2];
     for (i = 0; i < ranges_pipelines0.length; i++){

@@ -240,7 +240,6 @@ def exportStyles(layers, folder, clustered):
 
         with codecs.open(path, "w", "utf-8") as f:
             f.write('''%(defs)s
-var styleCache_%(name)s={}
 var style_%(name)s = %(style)s;''' %
                     {"defs": defs, "name": sln, "style": style})
 
@@ -621,7 +620,7 @@ def getStrokeStyle(color, dashed, width, linecap, linejoin):
         joinString = "bevel"
     strokeString = ("stroke: new ol.style.Stroke({color: %s, lineDash: %s, " %
                     (color, dash))
-    strokeString += ("lineCap: '%s', lineJoin: '%s', width: %d})," %
+    strokeString += ("lineCap: '%s', lineJoin: '%s', width: %d})" %
                      (capString, joinString, width))
     return strokeString
 
