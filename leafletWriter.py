@@ -302,7 +302,7 @@ class LeafletWriter(Writer):
                                  params["Appearance"]["Search layer"])
         labelList = []
         for count, layer in enumerate(layer_list):
-            safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
+            safeLayerName = re.sub('[\W_]+', '', layer.name()) + unicode(count)
             if layer.type() == QgsMapLayer.VectorLayer:
                 palyr = QgsPalLayerSettings()
                 palyr.readFromLayer(layer)
