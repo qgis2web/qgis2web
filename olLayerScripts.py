@@ -216,6 +216,13 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
 });""" % (
                 {"name": sln,
                          "blend": BLEND_MODES[layer.blendMode()]})
+            labelgun = """
+    lyr_%s.on("postcompose", update);
+
+    var listenerKey = lyr_%s.on('change', function(e) {
+        update();
+        ol.Observable.unByKey(listenerKey);   
+    });""" % (sln, sln)
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
@@ -229,6 +236,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
         f.write(fieldImages)
         f.write(fieldLabels)
         f.write(blend_mode)
+        f.write(labelgun)
     return osmb
 
 

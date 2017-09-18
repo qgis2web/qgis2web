@@ -254,7 +254,6 @@ def getStyle(style, cluster, labelRes, labelText,
     };
     %(value)s
     var labelText = "";
-    var key = "";
     ''' % {
         "value": value}
     if cluster:
@@ -270,8 +269,6 @@ def getStyle(style, cluster, labelRes, labelText,
         var feature = clusteredFeatures[0];
         if (%(label)s !== null%(labelRes)s) {
             labelText = String(%(label)s);
-        } else {
-            labelText = ""
         }
         key = value + "_" + labelText
     } else {
@@ -282,39 +279,65 @@ def getStyle(style, cluster, labelRes, labelText,
             "style": style, "labelRes": labelRes, "label": labelText}
     else:
         this_style += '''size = 0;
+    var labelFont = "font: '%(size)spx%(face)s sans-serif'";
+    var labelFill = "%(labelFill)s";
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
     if (%(label)s !== null%(labelRes)s) {
         labelText = String(%(label)s);
-    } else {
-        labelText = ""
     }
-    %(style)s;\n''' % {
-            "style": style, "labelRes": labelRes, "label": labelText}
+    %(style)s;\n''' % {"style": style, "labelRes": labelRes,
+                       "label": labelText, "size": size, "face": face,
+                       "labelFill": color}
 
-    this_style += '''    key = value + "_" + labelText
-    if (!%(cache)s[key]){
-        var text = new ol.style.Text({
-                font: '%(size)spx%(face)s sans-serif',
-                text: labelText,
-                textBaseline: "middle",
-                textAlign: textAlign,
-                offsetX: offsetX,
-                offsetY: offsetY,
-                fill: new ol.style.Fill({
-                  color: '%(color)s'
-                })
-            });
-        %(cache)s[key] = new ol.style.Style({"text": text})
-    }
-    var allStyles = [%(cache)s[key]];
-    allStyles.push.apply(allStyles, style);
-    return allStyles;
+    this_style += '''
+    return style;
 }''' % {
             "cache": "styleCache_" + sln,
             "size": size, "face": face,
             "color": color}
+    this_style += """
+function update() {
+    
+    var features = lyr_%s.getSource().getFeatures();
+    features.forEach(function(feature){
+
+        // Get the label text as a string
+        var text = %s;
+
+        // Get the center point in pixel space
+        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        var pixelCenter = map.getPixelFromCoordinate(center);
+
+        var size = 12;
+        var halfText = (size + 1) * (text.length / 4);
+
+        // Create a bounding box for the label using known pixel heights
+        var minx = parseInt(pixelCenter[0] - halfText);
+        var maxx = parseInt(pixelCenter[0] + halfText);
+        
+        var maxy = parseInt(pixelCenter[1] - (size / 2));
+        var miny = parseInt(pixelCenter[1] + (size / 2));
+
+        // Get bounding box points back into coordinate space
+        var min = map.getCoordinateFromPixel([minx, miny]);
+        var max = map.getCoordinateFromPixel([maxx, maxy]);
+        
+        // Create the bounds
+        var bounds = {
+            bottomLeft: min,
+            topRight: max
+        };
+        // Weight longer labels higher, use their name as the ID
+        labelEngine.ingestLabel(bounds, text, text.length, feature)
+
+    });
+
+    // Call the label callbacks for showing and hiding
+    labelEngine.update();
+
+}""" % (sln, labelText)
     return this_style
 
 
@@ -454,7 +477,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
         else:
             k = i
         styles[k] = '''new ol.style.Style({
-        %s
+        %s,
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })''' % style
     return "[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys()))
 
