@@ -3216,7 +3216,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(
             test_data_path(
-                'control', 'ol3_shapes.html'), 'r')
+                'control', 'ol3_shapes.js'), 'r')
         control_output = control_file.read()
 
         # Export to web map
