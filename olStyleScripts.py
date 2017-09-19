@@ -78,7 +78,7 @@ def exportStyles(layers, folder, clustered):
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 cluster = False
-                defs += """function categories_%s(feature, value, size) {
+                defs += """function categories_%s(feature, value, size, resolution, labelText, labelFont, labelFill) {
                 switch(value.toString()) {""" % sln
                 cats = []
                 for cnt, cat in enumerate(renderer.categories()):
@@ -106,8 +106,7 @@ def exportStyles(layers, folder, clustered):
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr
                 value = ('var value = feature.get("%s");' % classAttr)
-                style = (
-                    'var style = categories_%s(feature, value, size)' % sln)
+                style = """var style = categories_%s(feature, value, size, resolution, labelText, labelFont, labelFill)""" % sln
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 cluster = False
                 varName = "ranges_" + sln
