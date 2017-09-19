@@ -2488,36 +2488,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    def test83_Leaflet_WMS(self):
-        """Dialog test: Leaflet WMS"""
-        layer_url = (
-            'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
-        layer = load_wms_layer(layer_url, 'wms')
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict()])
-        self.assertEqual(writer.json, [False])
-
     def test84_Leaflet_rulebased(self):
         """Dialog test: Leaflet  rule-based"""
         layer_path = test_data_path('layer', 'airports.shp')
