@@ -2505,7 +2505,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
-#        self.dialog.ol3.click()
+        self.dialog.ol3.click()
 
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, OpenLayersWriter))
