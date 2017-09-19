@@ -46,21 +46,34 @@
 </html>
 var size = 0;
 var ranges_lakes0 = [[20.057000, 219.690600, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(247,251,255,1.0)'})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(247,251,255,1.0)'}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })]],
 [219.690600, 419.324200, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(199,220,239,1.0)'})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(199,220,239,1.0)'}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
+
     })]],
 [419.324200, 618.957800, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(114,178,215,1.0)'})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(114,178,215,1.0)'}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
+
     })]],
 [618.957800, 818.591400, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(40,120,184,1.0)'})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(40,120,184,1.0)'}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
+
     })]],
 [818.591400, 1018.225000, [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(8,48,107,1.0)'})
+        stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(8,48,107,1.0)'}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
+
     })]]];
-var styleCache_lakes0={}
 var style_lakes0 = function(feature, resolution){
     var context = {
         feature: feature,
@@ -84,22 +97,46 @@ var style_lakes0 = function(feature, resolution){
             style =  range[2];
         }
     };
-    key = value + "_" + labelText
-    if (!styleCache_lakes0[key]){
-        var text = new ol.style.Text({
-                font: '10.725px \'MS Shell Dlg 2\', sans-serif',
-                text: labelText,
-                textBaseline: "middle",
-                textAlign: textAlign,
-                offsetX: offsetX,
-                offsetY: offsetY,
-                fill: new ol.style.Fill({
-                  color: 'rgba(0, 0, 0, 1)'
-                })
-            });
-        styleCache_lakes0[key] = new ol.style.Style({"text": text})
-    }
-    var allStyles = [styleCache_lakes0[key]];
-    allStyles.push.apply(allStyles, style);
-    return allStyles;
+
+    return style;
+}
+function update() {
+
+    var features = lyr_lakes0.getSource().getFeatures();
+    features.forEach(function(feature){
+
+        // Get the label text as a string
+        var text = "";
+
+        // Get the center point in pixel space
+        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        var pixelCenter = map.getPixelFromCoordinate(center);
+
+        var size = 12;
+        var halfText = (size + 1) * (text.length / 4);
+
+        // Create a bounding box for the label using known pixel heights
+        var minx = parseInt(pixelCenter[0] - halfText);
+        var maxx = parseInt(pixelCenter[0] + halfText);
+
+        var maxy = parseInt(pixelCenter[1] - (size / 2));
+        var miny = parseInt(pixelCenter[1] + (size / 2));
+
+        // Get bounding box points back into coordinate space
+        var min = map.getCoordinateFromPixel([minx, miny]);
+        var max = map.getCoordinateFromPixel([maxx, maxy]);
+
+        // Create the bounds
+        var bounds = {
+            bottomLeft: min,
+            topRight: max
+        };
+        // Weight longer labels higher, use their name as the ID
+        labelEngine.ingestLabel(bounds, text, text.length, feature)
+
+    });
+
+    // Call the label callbacks for showing and hiding
+    labelEngine.update();
+
 };

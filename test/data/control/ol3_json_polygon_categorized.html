@@ -45,7 +45,9 @@
     </body>
 </html>
 var size = 0;
-function categories_lakes0(feature, value, size) {
+
+function categories_lakes0(feature, value, size, resolution, labelText,
+                       labelFont, labelFill) {
                 switch(value.toString()) {case 'Becharof Lake':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(89,109,204,1.0)'}),
@@ -174,7 +176,9 @@ var style_lakes0 = function(feature, resolution){
     if ("" !== null) {
         labelText = String("");
     }
-    var style = categories_lakes0(feature, value, size);
+    
+var style = categories_lakes0(feature, value, size, resolution, labelText,
+                          labelFont, labelFill);
 
     return style;
 }

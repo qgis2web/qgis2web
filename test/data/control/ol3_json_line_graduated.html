@@ -47,20 +47,29 @@
 var size = 0;
 var ranges_pipelines0 = [[1.000000, 8.400000, [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(247,251,255,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })]],
 [8.400000, 15.800000, [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(199,220,239,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })]],
 [15.800000, 23.200000, [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(114,178,215,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })]],
 [23.200000, 30.600000, [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(40,120,184,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })]],
 [30.600000, 38.000000, [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(8,48,107,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })]]];
-var styleCache_pipelines0={}
 var style_pipelines0 = function(feature, resolution){
     var context = {
         feature: feature,
@@ -84,22 +93,46 @@ var style_pipelines0 = function(feature, resolution){
             style =  range[2];
         }
     };
-    key = value + "_" + labelText
-    if (!styleCache_pipelines0[key]){
-        var text = new ol.style.Text({
-                font: '10.725px \'MS Shell Dlg 2\', sans-serif',
-                text: labelText,
-                textBaseline: "middle",
-                textAlign: textAlign,
-                offsetX: offsetX,
-                offsetY: offsetY,
-                fill: new ol.style.Fill({
-                  color: 'rgba(0, 0, 0, 1)'
-                })
-            });
-        styleCache_pipelines0[key] = new ol.style.Style({"text": text})
-    }
-    var allStyles = [styleCache_pipelines0[key]];
-    allStyles.push.apply(allStyles, style);
-    return allStyles;
+
+    return style;
+}
+function update() {
+
+    var features = lyr_pipelines0.getSource().getFeatures();
+    features.forEach(function(feature){
+
+        // Get the label text as a string
+        var text = "";
+
+        // Get the center point in pixel space
+        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        var pixelCenter = map.getPixelFromCoordinate(center);
+
+        var size = 12;
+        var halfText = (size + 1) * (text.length / 4);
+
+        // Create a bounding box for the label using known pixel heights
+        var minx = parseInt(pixelCenter[0] - halfText);
+        var maxx = parseInt(pixelCenter[0] + halfText);
+
+        var maxy = parseInt(pixelCenter[1] - (size / 2));
+        var miny = parseInt(pixelCenter[1] + (size / 2));
+
+        // Get bounding box points back into coordinate space
+        var min = map.getCoordinateFromPixel([minx, miny]);
+        var max = map.getCoordinateFromPixel([maxx, maxy]);
+
+        // Create the bounds
+        var bounds = {
+            bottomLeft: min,
+            topRight: max
+        };
+        // Weight longer labels higher, use their name as the ID
+        labelEngine.ingestLabel(bounds, text, text.length, feature)
+
+    });
+
+    // Call the label callbacks for showing and hiding
+    labelEngine.update();
+
 };

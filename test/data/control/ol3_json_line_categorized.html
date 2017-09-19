@@ -45,7 +45,8 @@
     </body>
 </html>
 var size = 0;
-function categories_pipelines0(feature, value, size) {
+function categories_pipelines0(feature, value, size, resolution, labelText,
+                       labelFont, labelFill) {
                 switch(value.toString()) {case 'Below Surface/Submerged/Underground':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(161,121,229,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
@@ -83,7 +84,9 @@ var style_pipelines0 = function(feature, resolution){
     if ("" !== null) {
         labelText = String("");
     }
-    var style = categories_pipelines0(feature, value, size);
+    
+var style = categories_pipelines0(feature, value, size, resolution, labelText,
+                          labelFont, labelFill);
 
     return style;
 }

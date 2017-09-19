@@ -45,7 +45,9 @@
     </body>
 </html>
 var size = 0;
-function categories_airports0(feature, value, size) {
+
+function categories_airports0(feature, value, size, resolution, labelText,
+                       labelFont, labelFill) {
                 switch(value.toString()) {case 'Civilian/Public':
                     return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
@@ -90,7 +92,8 @@ default:
 
     })];
                     break;}};
-var style_airports0 = function(feature, resolution){
+var style_airports0 = function(feature, resolution, resolution, labelText,
+                          labelFont, labelFill){
     var context = {
         feature: feature,
         variables: {}
@@ -106,7 +109,9 @@ var style_airports0 = function(feature, resolution){
     if ("" !== null) {
         labelText = String("");
     }
-    var style = categories_airports0(feature, value, size);
+    
+var style = categories_airports0(feature, value, size, resolution, labelText,
+                          labelFont, labelFill);
 
     return style;
 }
