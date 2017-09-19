@@ -5,8 +5,8 @@ var style_airports0 = function(feature, resolution){
         feature: feature,
         variables: {}
     };
+    var value = ""
     var labelText = "";
-    var key = "";
     size = 0;
     var labelFont = "font: '10.725px \'MS Shell Dlg 2\', sans-serif'";
     var labelFill = "rgba(0, 0, 0, 1)";
