@@ -21,3 +21,9 @@ lyr_airports0.set('fieldLabels', {});
 lyr_airports0.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
+    lyr_airports0.on("postcompose", update);
+
+    var listenerKey = lyr_airports0.on('change', function(e) {
+        update();
+        ol.Observable.unByKey(listenerKey);
+    });

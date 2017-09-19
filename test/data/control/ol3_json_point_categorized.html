@@ -62,7 +62,6 @@ case 'Joint Military/Civilian':
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(112,117,206,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
-
     })];
                     break;
 case 'Military':
@@ -71,7 +70,6 @@ case 'Military':
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(215,134,93,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
-
     })];
                     break;
 case 'Other':
@@ -80,7 +78,6 @@ case 'Other':
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(122,222,41,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
-
     })];
                     break;
 default:
@@ -89,11 +86,9 @@ default:
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(86,218,185,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
-
     })];
                     break;}};
-var style_airports0 = function(feature, resolution, resolution, labelText,
-                          labelFont, labelFill){
+var style_airports0 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
