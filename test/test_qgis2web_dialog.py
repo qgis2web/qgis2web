@@ -2496,6 +2496,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wms_layer(layer_url, 'wms')
 
         registry = QgsMapLayerRegistry.instance()
+        registry.removeAllMapLayers()
         registry.addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
