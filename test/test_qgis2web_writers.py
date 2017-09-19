@@ -2657,6 +2657,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                     'index.html', 'layers/layers.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
+        print test_output
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
