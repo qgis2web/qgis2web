@@ -3165,84 +3165,90 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test98_Leaflet_shapes(self):
         """Leaflet shapes"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_shapes.qml')
+        if not isLtrRepo():
+            layer_path = test_data_path('layer', 'airports.shp')
+            style_path = test_data_path('style', 'airports_shapes.qml')
 
-        layer = load_layer(layer_path)
+            layer = load_layer(layer_path)
 
-        layer.loadNamedStyle(style_path)
+            layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+            registry = QgsMapLayerRegistry.instance()
+            registry.addMapLayer(layer)
 
-        control_file = open(
-            test_data_path(
-                'control', 'leaflet_shapes.html'), 'r')
-        control_output = control_file.read()
+            control_file = open(
+                test_data_path(
+                    'control', 'leaflet_shapes.html'), 'r')
+            control_output = control_file.read()
 
-        # Export to web map
-        writer = LeafletWriter()
-        writer.params = self.defaultParams()
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])]
-        writer.json = [False]
+            # Export to web map
+            writer = LeafletWriter()
+            writer.params = self.defaultParams()
+            writer.groups = {}
+            writer.layers = [layer]
+            writer.visible = [True]
+            writer.cluster = [False]
+            writer.popup = [OrderedDict(
+                [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+                 ('USE', 'no label')])]
+            writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder()).index_file
+            result = writer.write(IFACE, tempFolder()).index_file
 
-        # Open the test file
-        test_file = open(result)
-        test_output = test_file.read()
+            # Open the test file
+            test_file = open(result)
+            test_output = test_file.read()
 
-        # Compare with control file
-        self.assertEqual(
-            test_output, control_output, diff(control_output, test_output))
+            # Compare with control file
+            self.assertEqual(
+                test_output, control_output, diff(control_output, test_output))
+        else:
+            print "SKIP"
 
     def test99_OL3_shapes(self):
         """OL3 shapes"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_shapes.qml')
+        if not isLtrRepo():
+            layer_path = test_data_path('layer', 'airports.shp')
+            style_path = test_data_path('style', 'airports_shapes.qml')
 
-        layer = load_layer(layer_path)
+            layer = load_layer(layer_path)
 
-        layer.loadNamedStyle(style_path)
+            layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+            registry = QgsMapLayerRegistry.instance()
+            registry.addMapLayer(layer)
 
-        control_file = open(
-            test_data_path(
-                'control', 'ol3_shapes.js'), 'r')
-        control_output = control_file.read()
+            control_file = open(
+                test_data_path(
+                    'control', 'ol3_shapes.js'), 'r')
+            control_output = control_file.read()
 
-        # Export to web map
-        writer = OpenLayersWriter()
-        writer.params = self.defaultParams()
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])]
-        writer.json = [False]
+            # Export to web map
+            writer = OpenLayersWriter()
+            writer.params = self.defaultParams()
+            writer.groups = {}
+            writer.layers = [layer]
+            writer.visible = [True]
+            writer.cluster = [False]
+            writer.popup = [OrderedDict(
+                [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
+                 ('USE', 'no label')])]
+            writer.json = [False]
 
-        result = writer.write(IFACE, tempFolder()).index_file
+            result = writer.write(IFACE, tempFolder()).index_file
 
-        # Open the test file
-        test_style_file = open(
-            result.replace(
-                'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
-        test_style_output = test_style_file.read()
-        test_output = test_style_output
+            # Open the test file
+            test_style_file = open(
+                result.replace(
+                    'file://', '').replace(
+                        'index.html', 'styles/airports0_style.js'))
+            test_style_output = test_style_file.read()
+            test_output = test_style_output
 
-        self.assertEqual(
-            test_output, control_output, diff(control_output, test_output))
+            self.assertEqual(
+                test_output, control_output, diff(control_output, test_output))
+        else:
+            print "SKIP"
 
 
 def read_output(url, path):
