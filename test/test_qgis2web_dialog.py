@@ -2505,19 +2505,19 @@ class qgis2web_classDialogTest(unittest.TestCase):
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
-        self.dialog.ol3.click()
+#        self.dialog.ol3.click()
 
-#        writer = self.dialog.createWriter()
-#        self.assertTrue(isinstance(writer, OpenLayersWriter))
-#        expected_params = self.defaultParams()
-#        self.assertEqual(writer.params, expected_params)
-#        self.assertEqual(writer.groups, {})
-#        self.assertEqual(writer.layers, [layer])
-#        self.assertEqual(writer.visible, [True])
-#        self.assertEqual(writer.cluster, [False])
-#        self.assertEqual(writer.popup,
-#                         [OrderedDict()])
-#        self.assertEqual(writer.json, [False])
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, OpenLayersWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup,
+                         [OrderedDict()])
+        self.assertEqual(writer.json, [False])
 
     def test83_Leaflet_WMS(self):
         """Dialog test: Leaflet WMS"""
