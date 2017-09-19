@@ -3164,7 +3164,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
     def test98_Leaflet_shapes(self):
-        """Leaflet JSON point single"""
+        """Leaflet shapes"""
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_shapes.qml')
 
@@ -3237,7 +3237,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airport0_style.js'))
+                    'index.html', 'styles/airports0_style.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
 
