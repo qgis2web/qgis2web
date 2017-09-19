@@ -2487,6 +2487,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
                           ]
                          )
         self.assertEqual(writer.json, [False])
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent',
+                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(0)
         self.dialog.ol3.click()
 
     def test82_OL3_WMS(self):
@@ -2503,7 +2508,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(0)
+                1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.ol3.click()
 
