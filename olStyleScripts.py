@@ -465,7 +465,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                 lineCap = 0
                 lineJoin = 0
 
-            style = ('''%s %s''' %
+            style = ('''%s, %s''' %
                      (getStrokeStyle(borderColor, borderStyle, borderWidth,
                                      lineCap, lineJoin),
                       getFillStyle(fillColor, props)))
@@ -545,7 +545,7 @@ def getCircle(color, borderColor, borderWidth, size, props):
     else:
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.Circle({radius: %s + size,
-            %s %s})""" % (size, stroke, getFillStyle(color, props)))
+            %s, %s})""" % (size, stroke, getFillStyle(color, props)))
 
 
 def getCross(color, borderColor, borderWidth, size, props):
