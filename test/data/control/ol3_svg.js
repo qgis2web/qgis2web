@@ -1,22 +1,20 @@
 var size = 0;
 
-var styleCache_airports0={}
 var style_airports0 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
     };
-    var value = ""
     var labelText = "";
     var key = "";
     size = 0;
+    var labelFont = "font: '10.725px \'MS Shell Dlg 2\', sans-serif'";
+    var labelFill = "rgba(0, 0, 0, 1)";
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
     if ("" !== null) {
         labelText = String("");
-    } else {
-        labelText = ""
     }
     var style = [ new ol.style.Style({
         image: new ol.style.Icon({
@@ -27,24 +25,50 @@ var style_airports0 = function(feature, resolution){
                   anchorYUnits: "pixels",
                   rotation: 0.0,
                   src: "styles/qgis2web.svg"
-            })
+            }),
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
     })];
-    key = value + "_" + labelText
-    if (!styleCache_airports0[key]){
-        var text = new ol.style.Text({
-                font: '10.725px \'MS Shell Dlg 2\', sans-serif',
-                text: labelText,
-                textBaseline: "middle",
-                textAlign: textAlign,
-                offsetX: offsetX,
-                offsetY: offsetY,
-                fill: new ol.style.Fill({
-                  color: 'rgba(0, 0, 0, 1)'
-                })
-            });
-        styleCache_airports0[key] = new ol.style.Style({"text": text})
-    }
-    var allStyles = [styleCache_airports0[key]];
-    allStyles.push.apply(allStyles, style);
-    return allStyles;
+
+    return style;
+}
+function update() {
+
+    var features = lyr_airports0.getSource().getFeatures();
+    features.forEach(function(feature){
+
+        // Get the label text as a string
+        var text = "";
+
+        // Get the center point in pixel space
+        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        var pixelCenter = map.getPixelFromCoordinate(center);
+
+        var size = 12;
+        var halfText = (size + 1) * (text.length / 4);
+
+        // Create a bounding box for the label using known pixel heights
+        var minx = parseInt(pixelCenter[0] - halfText);
+        var maxx = parseInt(pixelCenter[0] + halfText);
+
+        var maxy = parseInt(pixelCenter[1] - (size / 2));
+        var miny = parseInt(pixelCenter[1] + (size / 2));
+
+        // Get bounding box points back into coordinate space
+        var min = map.getCoordinateFromPixel([minx, miny]);
+        var max = map.getCoordinateFromPixel([maxx, maxy]);
+
+        // Create the bounds
+        var bounds = {
+            bottomLeft: min,
+            topRight: max
+        };
+        // Weight longer labels higher, use their name as the ID
+        labelEngine.ingestLabel(bounds, text, text.length, feature)
+
+    });
+
+    // Call the label callbacks for showing and hiding
+    labelEngine.update();
+
 };
