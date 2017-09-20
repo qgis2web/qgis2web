@@ -158,7 +158,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         style = getMarker(color, borderColor, borderWidth,
                           size, props, lineStyle, shape)
         try:
-            if shape == 8:
+            if shape == 8 or shape == "circle":
                 markerType = "circleMarker"
             else:
                 markerType = "shapeMarker"
