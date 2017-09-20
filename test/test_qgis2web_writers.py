@@ -3244,6 +3244,45 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def Leaflet_line_pattern_fill(self):
+        """Leaflet line pattern fill"""
+        layer_path = test_data_path('layer', 'lakes.shp')
+        style_path = test_data_path('style', 'lakes_linepatternfill.qml')
+
+        layer = load_layer(layer_path)
+
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        control_file = open(
+            test_data_path(
+                'control', 'leaflet_linepatternfill.html'), 'r')
+        control_output = control_file.read()
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
+             (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+
+        # Open the test file
+        test_file = open(result)
+        test_output = test_file.read()
+
+        # Compare with control file
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
