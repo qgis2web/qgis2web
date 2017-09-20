@@ -256,6 +256,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                                             color, alpha, angle, sln, slc)
         style = """
                 stroke: false,
+                fillOpacity: 1,
                 fillPattern: pattern_%s_%d""" % (sln, slc)
     else:
         markerType = "circleMarker"
