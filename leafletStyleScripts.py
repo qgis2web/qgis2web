@@ -276,7 +276,7 @@ def getMarker(color, borderColor, borderWidth, size, props, lineStyle, shape):
         markerShape = "shape: 'diamond',"
     elif shape == 4 or shape == "triangle":
         markerShape = "shape: 'triangle',"
-    elif shape == 11 or shape == "x":
+    elif shape == 11 or shape == "cross2":
         markerShape = "shape: 'x',"
     else:
         markerShape = ""
