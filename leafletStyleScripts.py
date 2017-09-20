@@ -239,14 +239,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                                  lineCap, lineJoin),
                   getFillStyle(fillColor, props)))
     elif isinstance(sl, QgsLinePatternFillSymbolLayer):
-        weight = props["line_width"]
-        spaceWeight = props["distance"]
-        colors = props["color"].split(",")
-        r = int(colors[0])
-        g = int(colors[1])
-        b = int(colors[2])
-        color = '#%02x%02x%02x' % (r, g, b)
-        angle = 360 - int(props["angle"])
+        weight = sl.subSymbol().width()
+        spaceWeight = sl.distance()
+        color = sl.color().name()
+        angle = 360 - sl.lineAngle()
         pattern = """
             var pattern_%s_%d = new L.StripePattern({
                 weight: %s,
