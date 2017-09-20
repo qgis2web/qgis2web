@@ -358,31 +358,35 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
             borderWidth = props["outline_width"]
             size = sl.size() * 2
             try:
-                if sl.shape() == 0:
+                shape = sl.shape()
+            except:
+                shape = sl.name()
+            try:
+                if shape == 0 or shape == "square":
                     style = "image: %s" % getSquare(color, borderColor,
                                                     borderWidth, size, props)
-                elif sl.shape() == 1:
+                elif shape == 1 or shape == "diamond":
                     style = "image: %s" % getDiamond(color, borderColor,
                                                      borderWidth, size, props)
-                elif sl.shape() == 2:
+                elif shape == 2 or shape == "pentagon":
                     style = "image: %s" % getPentagon(color, borderColor,
                                                       borderWidth, size, props)
-                elif sl.shape() == 3:
+                elif shape == 3 or shape == "hexagon":
                     style = "image: %s" % getHexagon(color, borderColor,
                                                      borderWidth, size, props)
-                elif sl.shape() == 4 or sl.shape() == 5:
+                elif shape == 4 or shape == 5 or shape == "triangle":
                     style = "image: %s" % getTriangle(color, borderColor,
                                                       borderWidth, size, props)
-                elif sl.shape() == 6:
+                elif shape == 6 or shape == "star":
                     style = "image: %s" % getStar(color, borderColor,
                                                   borderWidth, size, props)
-                elif sl.shape() == 9:
+                elif shape == 9 or shape == "cross":
                     style = "image: %s" % getCross(color, borderColor,
                                                    borderWidth, size, props)
-                elif sl.shape() == 11:
+                elif shape == 11 or shape == "cross2":
                     style = "image: %s" % getCross2(color, borderColor,
                                                     borderWidth, size, props)
-                elif sl.shape() == 12:
+                elif shape == 12 or shape == "line":
                     style = "text: %s" % getLine(color, borderColor,
                                                  borderWidth, size, props)
                 else:
