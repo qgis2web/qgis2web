@@ -3244,7 +3244,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
-    def Leaflet_line_pattern_fill(self):
+    def test100_Leaflet_line_pattern_fill(self):
         """Leaflet line pattern fill"""
         layer_path = test_data_path('layer', 'lakes.shp')
         style_path = test_data_path('style', 'lakes_linepatternfill.qml')
