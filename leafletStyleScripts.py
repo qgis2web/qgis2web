@@ -151,7 +151,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         try:
             shape = sl.shape()
         except:
-            pass
+            try:
+                shape = sl.name()
+            except:
+                pass
         style = getMarker(color, borderColor, borderWidth,
                           size, props, lineStyle, shape)
         try:
@@ -267,13 +270,13 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
 
 
 def getMarker(color, borderColor, borderWidth, size, props, lineStyle, shape):
-    if shape == 0:
+    if shape == 0 or shape == "square":
         markerShape = "shape: 'square',"
-    elif shape == 1:
+    elif shape == 1 or shape == "diamond":
         markerShape = "shape: 'diamond',"
-    elif shape == 4:
+    elif shape == 4 or shape == "triangle":
         markerShape = "shape: 'triangle',"
-    elif shape == 11:
+    elif shape == 11 or shape == "x":
         markerShape = "shape: 'x',"
     else:
         markerShape = ""
