@@ -1,6 +1,6 @@
 // OpenLayers. See https://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/openlayers/master/LICENSE.md
-// Version: v4.3.1
+// Version: v4.3.3
 ;(function (root, factory) {
   if (typeof exports === "object") {
     module.exports = factory();
@@ -4931,6 +4931,7 @@ ol.Sphere.DEFAULT_RADIUS = 6371008.8;
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
  * @return {number} The spherical length (in meters).
+ * @api
  */
 ol.Sphere.getLength = function(geometry, opt_options) {
   var options = opt_options || {};
@@ -5026,6 +5027,7 @@ ol.Sphere.getDistance_ = function(c1, c2, radius) {
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
  * @return {number} The spherical area (in square meters).
+ * @api
  */
 ol.Sphere.getArea = function(geometry, opt_options) {
   var options = opt_options || {};
@@ -27787,7 +27789,7 @@ ol.ext.rbush = function() {};
 (function() {(function (exports) {
 'use strict';
 
-var index$2 = partialSort;
+var quickselect = partialSort;
 function partialSort(arr, k, left, right, compare) {
     left = left || 0;
     right = right || (arr.length - 1);
@@ -27833,7 +27835,7 @@ function defaultCompare(a, b) {
     return a < b ? -1 : a > b ? 1 : 0;
 }
 
-var index = rbush;
+var rbush_1 = rbush;
 function rbush(maxEntries, format) {
     if (!(this instanceof rbush)) return new rbush(maxEntries, format);
     this._maxEntries = Math.max(4, maxEntries || 9);
@@ -28212,12 +28214,12 @@ function multiSelect(arr, left, right, n, compare) {
         left = stack.pop();
         if (right - left <= n) continue;
         mid = left + Math.ceil((right - left) / n / 2) * n;
-        index$2(arr, mid, left, right, compare);
+        quickselect(arr, mid, left, right, compare);
         stack.push(left, mid, mid, right);
     }
 }
 
-exports['default'] = index;
+exports['default'] = rbush_1;
 
 }((this.rbush = this.rbush || {})));}).call(ol.ext);
 ol.ext.rbush = ol.ext.rbush.default;
@@ -33944,7 +33946,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
     }
-    var right = (mapSize[0] - pixel[0] - offsetX) + 'px';
+    var right = Math.round(mapSize[0] - pixel[0] - offsetX) + 'px';
     if (this.rendered_.right_ != right) {
       this.rendered_.right_ = style.right = right;
     }
@@ -33957,7 +33959,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
         positioning == ol.OverlayPositioning.TOP_CENTER) {
       offsetX -= this.element_.offsetWidth / 2;
     }
-    var left = (pixel[0] + offsetX) + 'px';
+    var left = Math.round(pixel[0] + offsetX) + 'px';
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
@@ -33968,7 +33970,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered_.top_ !== '') {
       this.rendered_.top_ = style.top = '';
     }
-    var bottom = (mapSize[1] - pixel[1] - offsetY) + 'px';
+    var bottom = Math.round(mapSize[1] - pixel[1] - offsetY) + 'px';
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
     }
@@ -33981,7 +33983,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
       offsetY -= this.element_.offsetHeight / 2;
     }
-    var top = (pixel[1] + offsetY) + 'px';
+    var top = Math.round(pixel[1] + offsetY) + 'px';
     if (this.rendered_.top_ != top) {
       this.rendered_.top_ = style.top = top;
     }
@@ -50845,12 +50847,12 @@ var write = function (buffer, value, offset, isLE, mLen, nBytes) {
   for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
   buffer[offset + i - d] |= s * 128;
 };
-var index$2 = {
+var ieee754 = {
 	read: read,
 	write: write
 };
 
-var index = Pbf;
+var pbf = Pbf;
 function Pbf(buf) {
     this.buf = ArrayBuffer.isView && ArrayBuffer.isView(buf) ? buf : new Uint8Array(buf || 0);
     this.pos = 0;
@@ -50903,12 +50905,12 @@ Pbf.prototype = {
         return val;
     },
     readFloat: function() {
-        var val = index$2.read(this.buf, this.pos, true, 23, 4);
+        var val = ieee754.read(this.buf, this.pos, true, 23, 4);
         this.pos += 4;
         return val;
     },
     readDouble: function() {
-        var val = index$2.read(this.buf, this.pos, true, 52, 8);
+        var val = ieee754.read(this.buf, this.pos, true, 52, 8);
         this.pos += 8;
         return val;
     },
@@ -51078,12 +51080,12 @@ Pbf.prototype = {
     },
     writeFloat: function(val) {
         this.realloc(4);
-        index$2.write(this.buf, val, this.pos, true, 23, 4);
+        ieee754.write(this.buf, val, this.pos, true, 23, 4);
         this.pos += 4;
     },
     writeDouble: function(val) {
         this.realloc(8);
-        index$2.write(this.buf, val, this.pos, true, 52, 8);
+        ieee754.write(this.buf, val, this.pos, true, 52, 8);
         this.pos += 8;
     },
     writeBytes: function(buffer) {
@@ -51361,7 +51363,7 @@ function writeUtf8(buf, str, pos) {
     return pos;
 }
 
-exports['default'] = index;
+exports['default'] = pbf;
 
 }((this.PBF = this.PBF || {})));}).call(ol.ext);
 ol.ext.PBF = ol.ext.PBF.default;
@@ -51379,7 +51381,7 @@ ol.ext.vectortile.VectorTile = function() {};
 (function() {(function (exports) {
 'use strict';
 
-var index$2 = Point;
+var pointGeometry = Point;
 function Point(x, y) {
     this.x = x;
     this.y = y;
@@ -51558,7 +51560,7 @@ VectorTileFeature$1.prototype.loadGeometry = function() {
                 if (line) lines.push(line);
                 line = [];
             }
-            line.push(new index$2(x, y));
+            line.push(new pointGeometry(x, y));
         } else if (cmd === 7) {
             if (line) {
                 line.push(line[0].clone());
@@ -51746,13 +51748,13 @@ function readTile(tag, layers, pbf) {
 var VectorTile = vectortile;
 var VectorTileFeature = vectortilefeature;
 var VectorTileLayer = vectortilelayer;
-var index = {
+var vectorTile = {
 	VectorTile: VectorTile,
 	VectorTileFeature: VectorTileFeature,
 	VectorTileLayer: VectorTileLayer
 };
 
-exports['default'] = index;
+exports['default'] = vectorTile;
 exports.VectorTile = VectorTile;
 exports.VectorTileFeature = VectorTileFeature;
 exports.VectorTileLayer = VectorTileLayer;
@@ -76895,11 +76897,11 @@ Processor.prototype._resolveJob = function() {
 var processor = Processor;
 
 var Processor_1 = processor;
-var index = {
+var lib = {
 	Processor: Processor_1
 };
 
-exports['default'] = index;
+exports['default'] = lib;
 exports.Processor = Processor_1;
 
 }((this.pixelworks = this.pixelworks || {})));}).call(ol.ext);
@@ -81582,6 +81584,16 @@ goog.exportProperty(
     ol.Sphere.prototype,
     'haversineDistance',
     ol.Sphere.prototype.haversineDistance);
+
+goog.exportSymbol(
+    'ol.Sphere.getLength',
+    ol.Sphere.getLength,
+    OPENLAYERS);
+
+goog.exportSymbol(
+    'ol.Sphere.getArea',
+    ol.Sphere.getArea,
+    OPENLAYERS);
 
 goog.exportProperty(
     ol.Tile.prototype,
@@ -93887,7 +93899,7 @@ goog.exportProperty(
     ol.control.ZoomToExtent.prototype,
     'un',
     ol.control.ZoomToExtent.prototype.un);
-ol.VERSION = 'v4.3.1';
+ol.VERSION = 'v4.3.3';
 OPENLAYERS.ol = ol;
 
   return OPENLAYERS.ol;
