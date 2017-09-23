@@ -361,6 +361,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
+        pattern = ""
+        setPattern = ""
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
