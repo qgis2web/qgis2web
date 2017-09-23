@@ -398,34 +398,3 @@ var firstLayerAttribution = attributionList.getElementsByTagName('li')[0];
 var qgis2webAttribution = document.createElement('li');
 qgis2webAttribution.innerHTML = '<a href="https://github.com/tomchadwin/qgis2web">qgis2web</a>';
 attributionList.insertBefore(qgis2webAttribution, firstLayerAttribution);
-
-var labelEngine = new labelgun["default"](
-    function(label){
-        label.labelObject.hide = true;
-    }, 
-    function(label){
-        label.labelObject.hide = false;
-    }
-);
-
-var createTextStyle = function(feature, resolution, labelText, labelFont,
-                               labelFill) {
-
-    if (feature.hide) {
-        return new ol.style.Text(); 
-    } 
-
-    var textStyle = new ol.style.Text({
-        font: labelFont,
-        text: labelText,
-        textBaseline: "middle",
-        textAlign: "left",
-        offsetX: 8,
-        offsetY: 3,
-        fill: new ol.style.Fill({
-          color: labelFill
-        })
-    });
-
-    return textStyle;
-};

@@ -1,5 +1,6 @@
 var size = 0;
 
+
 var style_airports0 = function(feature, resolution){
     var context = {
         feature: feature,
@@ -29,6 +30,10 @@ function update() {
 
     var features = lyr_airports0.getSource().getFeatures();
     features.forEach(function(feature){
+        var context = {
+            feature: feature,
+            variables: {}
+        };
 
         // Get the label text as a string
         var text = feature.get("NAME");

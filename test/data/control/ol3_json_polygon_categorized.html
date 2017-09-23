@@ -35,6 +35,7 @@
         <script src="resources/polyfills.js"></script>
         <script src="./resources/rbush.min.js"></script>
         <script src="./resources/labelgun.min.js"></script>
+        <script src="./resources/functions.js"></script>
         <script src="./resources/ol.js"></script>
         <script src="./resources/ol3-layerswitcher.js"></script>
         <script src="layers/lakes0.js"></script>
@@ -160,6 +161,7 @@ default:
                               labelFill)
     })];
                     break;}};
+
 var style_lakes0 = function(feature, resolution){
     var context = {
         feature: feature,
@@ -186,6 +188,10 @@ function update() {
 
     var features = lyr_lakes0.getSource().getFeatures();
     features.forEach(function(feature){
+        var context = {
+            feature: feature,
+            variables: {}
+        };
 
         // Get the label text as a string
         var text = "";
