@@ -307,6 +307,10 @@ function update() {
 
     var features = lyr_%s.getSource().getFeatures();
     features.forEach(function(feature){
+        var context = {
+            feature: feature,
+            variables: {}
+        };
 
         // Get the label text as a string
         var text = %s;
