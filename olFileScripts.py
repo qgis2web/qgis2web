@@ -27,7 +27,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
     feedback.showFeedback("Writing HTML...")
     jsAddress = """<script src="resources/polyfills.js"></script>
         <script src="./resources/rbush.min.js"></script>
-        <script src="./resources/labelgun.min.js"></script>"""
+        <script src="./resources/labelgun.min.js"></script>
+        <script src="./resources/functions.js"></script>"""
     if mapLibLocn == "Local":
         cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
         if debugLibs:

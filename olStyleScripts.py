@@ -17,6 +17,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFontMarkerSymbolLayerV2,
                        QgsSimpleLineSymbolLayerV2,
                        QgsSimpleFillSymbolLayerV2,
+                       QgsLinePatternFillSymbolLayer,
                        QgsSymbolLayerV2Utils,
                        QgsPalLayerSettings,
                        QgsMessageLog)
@@ -68,10 +69,10 @@ def exportStyles(layers, folder, clustered):
             layer_alpha = layer.layerTransparency()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol,
-                                                          stylesFolder,
-                                                          layer_alpha,
-                                                          renderer)
+                (style, pattern,
+                 setPattern) = getSymbolAsStyle(symbol, stylesFolder,
+                                                layer_alpha, renderer, sln)
+                style = "var style = " + style
                 legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
                     symbol, QSize(16, 16))
                 legendIcon.save(os.path.join(legendFolder, sln + ".png"))
@@ -94,10 +95,13 @@ function categories_%s(feature, value, size, resolution, labelText,
                             cat.value()).replace("'", "\\'")
                     else:
                         categoryStr = "default:"
+                    (style, pattern,
+                     setPattern) = (getSymbolAsStyle(cat.symbol(),
+                                                     stylesFolder, layer_alpha,
+                                                     renderer, sln))
                     categoryStr += '''
                     return %s;
-                    break;''' % (getSymbolAsStyle(cat.symbol(), stylesFolder,
-                                                  layer_alpha, renderer))
+                    break;''' % style
                     cats.append(categoryStr)
                 defs += "\n".join(cats) + "}};"
                 classAttr = renderer.classAttribute()
@@ -120,8 +124,9 @@ var style = categories_%s(feature, value, size, resolution, labelText,
                         ran.symbol(), QSize(16, 16))
                     legendIcon.save(os.path.join(
                         legendFolder, sln + "_" + unicode(cnt) + ".png"))
-                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                                   layer_alpha, renderer)
+                    (symbolstyle, pattern,
+                     setPattern) = getSymbolAsStyle(ran.symbol(), stylesFolder,
+                                                    layer_alpha, renderer, sln)
                     ranges.append("""%sif (value > %f && value <= %f) {
             style = %s
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
@@ -161,8 +166,9 @@ var style = categories_%s(feature, value, size, resolution, labelText,
                 ifelse = "if"
                 for count, rule in enumerate(rules):
                     symbol = rule.symbol()
-                    styleCode = getSymbolAsStyle(symbol, stylesFolder,
-                                                 layer_alpha, renderer)
+                    (styleCode, pattern,
+                     setPattern) = getSymbolAsStyle(symbol, stylesFolder,
+                                                    layer_alpha, renderer, sln)
                     name = "".join((sln, "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -237,8 +243,11 @@ var style = categories_%s(feature, value, size, resolution, labelText,
 
         with codecs.open(path, "w", "utf-8") as f:
             f.write('''%(defs)s
-var style_%(name)s = %(style)s;''' %
-                    {"defs": defs, "name": sln, "style": style})
+%(pattern)s
+var style_%(name)s = %(style)s;
+%(setPattern)s''' %
+                    {"defs": defs, "pattern": pattern, "name": sln,
+                     "style": style, "setPattern": setPattern})
 
 
 def getStyle(style, cluster, labelRes, labelText,
@@ -337,7 +346,7 @@ function update() {
     return this_style
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
+def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
     styles = {}
     if layer_transparency == 0:
         alpha = symbol.alpha()
@@ -470,6 +479,19 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
                      (getStrokeStyle(borderColor, borderStyle, borderWidth,
                                      lineCap, lineJoin),
                       getFillStyle(fillColor, props)))
+        elif isinstance(sl, QgsLinePatternFillSymbolLayer):
+            weight = sl.subSymbol().width()
+            spaceWeight = sl.distance()
+            color = sl.color().name()
+            angle = 360 - sl.lineAngle()
+
+            pattern = """
+    var fill_%s = new ol.style.Fill();""" % sln
+            style = """
+        fill: fill_%s""" % sln
+            setPattern = """
+    fill_%s.setColor(stripe(%s, %s, %s, '%s'));""" % (sln, weight, spaceWeight,
+                                                      angle, color)
         else:
             style = ""
         if renderer.usingSymbolLevels():
@@ -481,7 +503,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer):
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
     })''' % style
-    return "[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys()))
+    return ("[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys())),
+            pattern,
+            setPattern)
 
 
 def getSquare(color, borderColor, borderWidth, size, props):
