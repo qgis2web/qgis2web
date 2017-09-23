@@ -8,7 +8,7 @@
 
 """
 
-__author__ = 'riccardo.klinger@geolicious.de'
+__author__ = 'tom.chadwin@nnpa.org.uk'
 __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
