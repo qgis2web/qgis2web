@@ -113,9 +113,8 @@ var style = categories_%s(feature, value, size, resolution, labelText,
                           labelFont, labelFill)""" % sln
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 cluster = False
-                varName = "ranges_" + sln
-                defs += "var %s = [" % varName
                 ranges = []
+                elseif = ""
                 for cnt, ran in enumerate(renderer.ranges()):
                     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
                         ran.symbol(), QSize(16, 16))
@@ -123,10 +122,12 @@ var style = categories_%s(feature, value, size, resolution, labelText,
                         legendFolder, sln + "_" + unicode(cnt) + ".png"))
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,
                                                    layer_alpha, renderer)
-                    ranges.append('[%f, %f, %s]' % (ran.lowerValue(),
-                                                    ran.upperValue(),
-                                                    symbolstyle))
-                defs += ",\n".join(ranges) + "];"
+                    ranges.append("""%sif (value > %f && value <= %f) {
+            style = %s
+                    }""" % (elseif, ran.lowerValue(), ran.upperValue(),
+                            symbolstyle))
+                    elseif = " else "
+                style = "".join(ranges)
                 classAttr = renderer.classAttribute()
                 fieldIndex = layer.pendingFields().indexFromName(classAttr)
                 editFormConfig = layer.editFormConfig()
@@ -135,13 +136,6 @@ var style = categories_%s(feature, value, size, resolution, labelText,
                         editorWidget == 'Hidden'):
                     classAttr = "q2wHide_" + classAttr
                 value = ('var value = feature.get("%s");' % classAttr)
-                style = '''var style = %(v)s[0][2];
-    for (i = 0; i < %(v)s.length; i++){
-        var range = %(v)s[i];
-        if (value > range[0] && value<=range[1]){
-            style =  range[2];
-        }
-    }''' % {"v": varName}
             elif isinstance(renderer, QgsRuleBasedRendererV2):
                 cluster = False
                 template = """
