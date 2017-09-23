@@ -36,6 +36,8 @@ def exportStyles(layers, folder, clustered):
             continue
         labelsEnabled = unicode(
             layer.customProperty("labeling/enabled")).lower() == "true"
+        pattern = ""
+        setPattern = ""
         if (labelsEnabled):
             labelField = layer.customProperty("labeling/fieldName")
             if labelField != "":
@@ -359,8 +361,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
-        pattern = ""
-        setPattern = ""
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
