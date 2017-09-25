@@ -62,7 +62,7 @@
                         <td colspan="2">' + (feature.properties['USE'] !== null ? Autolinker.link(String(feature.properties['USE'])) : '') + '</td>\
                     </tr>\
                 </table>';
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_airports_0_0() {

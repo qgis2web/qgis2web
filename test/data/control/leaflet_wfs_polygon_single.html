@@ -60,7 +60,7 @@
                         <td colspan="2">' + (feature.properties['web_page'] !== null ? Autolinker.link(String(feature.properties['web_page'])) : '') + '</td>\
                     </tr>\
                 </table>';
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_polygon_0_0() {

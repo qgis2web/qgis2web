@@ -60,7 +60,7 @@
                         <td colspan="2">' + (feature.properties['objtype'] !== null ? Autolinker.link(String(feature.properties['objtype'])) : '') + '</td>\
                     </tr>\
                 </table>';
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_point_0_0() {

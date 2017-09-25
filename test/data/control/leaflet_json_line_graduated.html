@@ -58,7 +58,7 @@
                         <td colspan="2">' + (feature.properties['F_CODEDESC'] !== null ? Autolinker.link(String(feature.properties['F_CODEDESC'])) : '') + '</td>\
                     </tr>\
                 </table>';
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_pipelines_0_0(feature) {

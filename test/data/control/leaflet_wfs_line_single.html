@@ -78,7 +78,7 @@
                         <td colspan="2">' + (feature.properties['shape_stlength__'] !== null ? Autolinker.link(String(feature.properties['shape_stlength__'])) : '') + '</td>\
                     </tr>\
                 </table>';
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_centreline_0_0() {

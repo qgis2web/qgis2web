@@ -64,7 +64,7 @@
                         <td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td>\
                     </tr>\
                 </table>';
-            layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
             var pattern_lakes_0_0 = new L.StripePattern({
