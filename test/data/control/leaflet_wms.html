@@ -42,7 +42,7 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-            var overlay_wms0 = L.tileLayer.wms('http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?', {
+            var overlay_wms_0 = L.tileLayer.wms('http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?', {
                 layers: 'GBR_BGS_625k_BLT',
                 format: 'image/png',
                 uppercase: true,
@@ -50,7 +50,7 @@
                 continuousWorld : true,
                 opacity: 1.0
             });
-        map.addLayer(overlay_wms0);
+        map.addLayer(overlay_wms_0);
         setBounds();
         </script>
     </body>
