@@ -42,7 +42,7 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function pop_centreline0(feature, layer) {
+        function pop_centreline_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['objecttype'] !== null ? Autolinker.link(String(feature.properties['objecttype'])) : '') + '</td>\
@@ -81,10 +81,10 @@
             layer.bindPopup(popupContent);
         }
 
-        function style_centreline0_0(feature) {
+        function style_centreline_0_0(feature) {
             if (feature.properties['shape_stlength__'] >= 22.839879 && feature.properties['shape_stlength__'] <= 3445.788026 ) {
                 return {
-                pane: 'pane_centreline0',
+                pane: 'pane_centreline_0',
                 opacity: 1,
                 color: 'rgba(247,251,255,1.0)',
                 dashArray: '',
@@ -96,7 +96,7 @@
             }
             if (feature.properties['shape_stlength__'] >= 3445.788026 && feature.properties['shape_stlength__'] <= 6868.736173 ) {
                 return {
-                pane: 'pane_centreline0',
+                pane: 'pane_centreline_0',
                 opacity: 1,
                 color: 'rgba(200,221,240,1.0)',
                 dashArray: '',
@@ -108,7 +108,7 @@
             }
             if (feature.properties['shape_stlength__'] >= 6868.736173 && feature.properties['shape_stlength__'] <= 10291.684319 ) {
                 return {
-                pane: 'pane_centreline0',
+                pane: 'pane_centreline_0',
                 opacity: 1,
                 color: 'rgba(115,179,216,1.0)',
                 dashArray: '',
@@ -120,7 +120,7 @@
             }
             if (feature.properties['shape_stlength__'] >= 10291.684319 && feature.properties['shape_stlength__'] <= 13714.632466 ) {
                 return {
-                pane: 'pane_centreline0',
+                pane: 'pane_centreline_0',
                 opacity: 1,
                 color: 'rgba(40,121,185,1.0)',
                 dashArray: '',
@@ -132,7 +132,7 @@
             }
             if (feature.properties['shape_stlength__'] >= 13714.632466 && feature.properties['shape_stlength__'] <= 17137.580613 ) {
                 return {
-                pane: 'pane_centreline0',
+                pane: 'pane_centreline_0',
                 opacity: 1,
                 color: 'rgba(8,48,107,1.0)',
                 dashArray: '',
@@ -143,21 +143,21 @@
             }
             }
         }
-        map.createPane('pane_centreline0');
-        map.getPane('pane_centreline0').style.zIndex = 400;
-        map.getPane('pane_centreline0').style['mix-blend-mode'] = 'normal';
-        var layer_centreline0 = L.geoJson(null, {
+        map.createPane('pane_centreline_0');
+        map.getPane('pane_centreline_0').style.zIndex = 400;
+        map.getPane('pane_centreline_0').style['mix-blend-mode'] = 'normal';
+        var layer_centreline_0 = L.geoJson(null, {
             attribution: '<a href=""></a>',
-            style: style_centreline0_0,
-            pane: 'pane_centreline0',
-            onEachFeature: pop_centreline0
+            style: style_centreline_0_0,
+            pane: 'pane_centreline_0',
+            onEachFeature: pop_centreline_0
         });
-        function getcentreline0Json(geojson) {
-            layer_centreline0.addData(geojson);
+        function getcentreline_0Json(geojson) {
+            layer_centreline_0.addData(geojson);
         };
-        bounds_group.addLayer(layer_centreline0);
-        map.addLayer(layer_centreline0);
+        bounds_group.addLayer(layer_centreline_0);
+        map.addLayer(layer_centreline_0);
         </script>
-        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=broads_inspire:centreline&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetcentreline0Json'></script>
+        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=broads_inspire:centreline&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetcentreline_0Json'></script>
     </body>
 </html>
