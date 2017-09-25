@@ -174,7 +174,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
     QDir().mkpath(layersFolder)
     for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
                                                             popupField)):
-        sln = safeName(layer.name()) + unicode(count)
+        sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and
                 (layer.providerType() != "WFS" or encode2json)):
             feedback.showFeedback('Exporting %s to JSON...' % layer.name())

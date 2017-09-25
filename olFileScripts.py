@@ -82,7 +82,7 @@ def writeScriptIncludes(layers, json, matchCRS):
     wfsVars = ""
     styleVars = ""
     for count, (layer, encode2json) in enumerate(zip(layers, json)):
-        sln = safeName(layer.name()) + unicode(count)
+        sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() != "WFS" or encode2json:
                 geojsonVars += ('<script src="layers/%s"></script>' %

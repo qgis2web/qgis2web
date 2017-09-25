@@ -70,7 +70,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                     continue
             except:
                 pass
-            groupLayerObjs += ("lyr_" + safeName(layer.name()) +
+            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
                                layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
@@ -115,27 +115,27 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 renderer.stopRender(renderContext)
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
-osmb.set(json_{sln}{count});""".format(shadows=shadows,
+osmb.set(json_{sln}_{count});""".format(shadows=shadows,
                                        sln=safeName(layer.name()),
                                        count=unicode(count))
             else:
                 try:
                     if not isinstance(layer, TileLayer):
                         mapLayers.append("lyr_" + safeName(layer.name()) +
-                                         unicode(count))
+                                         "_" + unicode(count))
                 except:
                     mapLayers.append("lyr_" + safeName(layer.name()) +
-                                     unicode(count))
+                                     "_" + unicode(count))
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
             try:
                 if not isinstance(layer, TileLayer):
                     mapLayers.append("lyr_" + safeName(layer.name()) +
-                                     unicode(count))
+                                     "_" + unicode(count))
             except:
                 mapLayers.append("lyr_" + safeName(layer.name()) +
-                                 unicode(count))
+                                 "_" + unicode(count))
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
@@ -155,7 +155,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
                         usedGroups.append(groupName)
                 else:
                     no_group_list.append("lyr_" + safeName(layer.name()) +
-                                         unicode(count))
+                                         "_" + unicode(count))
         except:
             if layer.id() in groupedLayers:
                 groupName = groupedLayers[layer.id()]
@@ -164,7 +164,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
                     usedGroups.append(groupName)
             else:
                 no_group_list.append("lyr_" + safeName(layer.name()) +
-                                     unicode(count))
+                                     "_" + unicode(count))
 
     layersList = []
     for layer in (group_list + no_group_list):
@@ -177,7 +177,7 @@ osmb.set(json_{sln}{count});""".format(shadows=shadows,
     blend_mode = ""
     labelgun = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
-        sln = safeName(layer.name()) + unicode(count)
+        sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() == layer.VectorLayer and not is25d(layer, canvas,
                                                            restrictToExtent,
                                                            extent):
@@ -257,7 +257,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
     else:
         minResolution = ""
         maxResolution = ""
-    layerName = safeName(layer.name()) + unicode(count)
+    layerName = safeName(layer.name()) + "_" + unicode(count)
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
     layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)

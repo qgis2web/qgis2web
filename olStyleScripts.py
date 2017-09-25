@@ -31,7 +31,7 @@ def exportStyles(layers, folder, clustered):
     legendFolder = os.path.join(stylesFolder, "legend")
     QDir().mkpath(legendFolder)
     for count, (layer, cluster) in enumerate(zip(layers, clustered)):
-        sln = safeName(layer.name()) + unicode(count)
+        sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() != layer.VectorLayer:
             continue
         labelsEnabled = unicode(
