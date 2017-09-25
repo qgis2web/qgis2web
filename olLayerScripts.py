@@ -116,8 +116,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 osmb = """
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(json_{sln}_{count});""".format(shadows=shadows,
-                                       sln=safeName(layer.name()),
-                                       count=unicode(count))
+                                        sln=safeName(layer.name()),
+                                        count=unicode(count))
             else:
                 try:
                     if not isinstance(layer, TileLayer):

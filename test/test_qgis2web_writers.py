@@ -780,7 +780,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
+                    'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -821,7 +821,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/pipelines0_style.js'))
+                    'index.html', 'styles/pipelines_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -863,7 +863,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/lakes0_style.js'))
+                    'index.html', 'styles/lakes_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -905,7 +905,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
+                    'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -946,7 +946,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         test_style_file = open(
             result.replace(
-                'index.html', 'styles/pipelines0_style.js'))
+                'index.html', 'styles/pipelines_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -986,7 +986,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_output = test_file.read()
 
         test_style_file = open(result.replace(
-            'index.html', 'styles/lakes0_style.js'))
+            'index.html', 'styles/lakes_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1026,7 +1026,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_output = test_file.read()
 
         test_style_file = open(result.replace(
-            'index.html', 'styles/airports0_style.js'))
+            'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1066,7 +1066,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_output = test_file.read()
 
         test_style_file = open(result.replace(
-            'index.html', 'styles/pipelines0_style.js'))
+            'index.html', 'styles/pipelines_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1106,7 +1106,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_output = test_file.read()
 
         test_style_file = open(result.replace(
-            'index.html', 'styles/lakes0_style.js'))
+            'index.html', 'styles/lakes_0_style.js'))
         test_style_output = test_style_file.read()
         test_output += test_style_output
 
@@ -1141,7 +1141,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         assert 'new ol.control.LayerSwitcher' in test_qgis2web_output
 
         test_layers_output = read_output(result, 'layers/layers.js')
-        assert """title: '<img src="styles/legend/airports0.png" /> airports'""" in test_layers_output
+        assert """title: '<img src="styles/legend/airports_0.png" /> airports'""" in test_layers_output
 
     def test37_OL3_base_layers_have_type_base(self):
         """OL3 Ensure base layers have a type property with a value of 'base'"""
@@ -1939,7 +1939,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(result, 'data/airports0.js')
+        test_output = read_output(result, 'data/airports_0.js')
 
         # Compare with control file
         self.assertEqual(
@@ -1979,7 +1979,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(result, 'layers/airports0.js')
+        test_output = read_output(result, 'layers/airports_0.js')
 
         # Compare with control file
         self.assertEqual(
@@ -2098,7 +2098,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(result, 'data/airports0.js')
+        test_output = read_output(result, 'data/airports_0.js')
 
         # Compare with control file
         self.assertEqual(test_output, control_output)
@@ -2138,7 +2138,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Open the test file
-        test_output = read_output(result, 'layers/airports0.js')
+        test_output = read_output(result, 'layers/airports_0.js')
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
@@ -2763,7 +2763,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
+                    'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
         self.assertEqual(
@@ -2835,7 +2835,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
+                    'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
         self.assertEqual(
@@ -3083,7 +3083,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
+                    'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
         self.assertEqual(
@@ -3237,7 +3237,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_style_file = open(
             result.replace(
                 'file://', '').replace(
-                    'index.html', 'styles/airports0_style.js'))
+                    'index.html', 'styles/airports_0_style.js'))
         test_style_output = test_style_file.read()
         test_output = test_style_output
 
