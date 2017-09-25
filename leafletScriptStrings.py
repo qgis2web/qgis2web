@@ -196,9 +196,12 @@ def extentScript(extent, restrictToExtent):
 
 def popFuncsScript(table):
     table = table.encode("utf-8")
+    style = {'maxHeight':'250px'}
     popFuncs = """
             var popupContent = {table};
-            layer.bindPopup(popupContent);""".format(table=table)
+            var style = {style};
+            layer.bindPopup(popupContent, style);""".format(table=table,
+                                                            style=style)
     return popFuncs
 
 

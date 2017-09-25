@@ -259,9 +259,11 @@ th {
 }
 .leaflet-container {
     background: #fff;
+    padding-right: 10px;
 }
 .leaflet-popup-content {
     width:auto !important;
+    padding-right:10px;
 }
 .leaflet-tooltip {
     background: none;
