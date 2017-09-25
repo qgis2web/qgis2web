@@ -196,7 +196,7 @@ def extentScript(extent, restrictToExtent):
 
 def popFuncsScript(table):
     table = table.encode("utf-8")
-    style = {'maxHeight':'250px'}
+    style = "{maxHeight: 400}"
     popFuncs = """
             var popupContent = {table};
             var style = {style};
