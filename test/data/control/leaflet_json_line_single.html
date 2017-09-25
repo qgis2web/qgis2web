@@ -30,7 +30,7 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/pipelines0.js"></script>
+        <script src="data/pipelines_0.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -43,7 +43,7 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function pop_pipelines0(feature, layer) {
+        function pop_pipelines_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
@@ -61,9 +61,9 @@
             layer.bindPopup(popupContent);
         }
 
-        function style_pipelines0_0() {
+        function style_pipelines_0_0() {
             return {
-                pane: 'pane_pipelines0',
+                pane: 'pane_pipelines_0',
                 opacity: 1,
                 color: 'rgba(242,66,72,1.0)',
                 dashArray: '',
@@ -73,17 +73,17 @@
                 fillOpacity: 0,
             }
         }
-        map.createPane('pane_pipelines0');
-        map.getPane('pane_pipelines0').style.zIndex = 400;
-        map.getPane('pane_pipelines0').style['mix-blend-mode'] = 'normal';
-    var layer_pipelines0 = new L.geoJson(json_pipelines0, {
+        map.createPane('pane_pipelines_0');
+        map.getPane('pane_pipelines_0').style.zIndex = 400;
+        map.getPane('pane_pipelines_0').style['mix-blend-mode'] = 'normal';
+    var layer_pipelines_0 = new L.geoJson(json_pipelines_0, {
         attribution: '<a href=""></a>',
-        pane: 'pane_pipelines0',
-        onEachFeature: pop_pipelines0,
-        style: style_pipelines0_0,
+        pane: 'pane_pipelines_0',
+        onEachFeature: pop_pipelines_0,
+        style: style_pipelines_0_0,
     });
-        bounds_group.addLayer(layer_pipelines0);
-        map.addLayer(layer_pipelines0);
+        bounds_group.addLayer(layer_pipelines_0);
+        map.addLayer(layer_pipelines_0);
         setBounds();
         </script>
     </body>

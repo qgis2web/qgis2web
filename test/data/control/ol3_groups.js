@@ -1,29 +1,29 @@
-var format_airports0 = new ol.format.GeoJSON();
-var features_airports0 = format_airports0.readFeatures(json_airports0, 
+var format_airports_0 = new ol.format.GeoJSON();
+var features_airports_0 = format_airports_0.readFeatures(json_airports_0, 
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
-var jsonSource_airports0 = new ol.source.Vector({
+var jsonSource_airports_0 = new ol.source.Vector({
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
 });
-jsonSource_airports0.addFeatures(features_airports0);var lyr_airports0 = new ol.layer.Vector({
-                source:jsonSource_airports0, 
-                style: style_airports0,
-                title: '<img src="styles/legend/airports0.png" /> airports'
+jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new ol.layer.Vector({
+                source:jsonSource_airports_0, 
+                style: style_airports_0,
+                title: '<img src="styles/legend/airports_0.png" /> airports'
             });
 var group_group1 = new ol.layer.Group({
-                                layers: [lyr_airports0,],
+                                layers: [lyr_airports_0,],
                                 title: "group1"});
 
-lyr_airports0.setVisible(true);
+lyr_airports_0.setVisible(true);
 var layersList = [group_group1];
-lyr_airports0.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
-lyr_airports0.set('fieldImages', {'ID': 'TextEdit', 'fk_region': 'TextEdit', 'ELEV': 'TextEdit', 'NAME': 'TextEdit', 'USE': 'TextEdit', });
-lyr_airports0.set('fieldLabels', {});
-lyr_airports0.on('precompose', function(evt) {
+lyr_airports_0.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
+lyr_airports_0.set('fieldImages', {'ID': 'TextEdit', 'fk_region': 'TextEdit', 'ELEV': 'TextEdit', 'NAME': 'TextEdit', 'USE': 'TextEdit', });
+lyr_airports_0.set('fieldLabels', {});
+lyr_airports_0.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
-    lyr_airports0.on("postcompose", update);
+    lyr_airports_0.on("postcompose", update);
 
-    var listenerKey = lyr_airports0.on('change', function(e) {
+    var listenerKey = lyr_airports_0.on('change', function(e) {
         update();
         ol.Observable.unByKey(listenerKey);
     });

@@ -1,7 +1,7 @@
 var size = 0;
 
 
-var style_airports0 = function(feature, resolution){
+var style_airports_0 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
@@ -35,7 +35,7 @@ var style_airports0 = function(feature, resolution){
 }
 function update() {
 
-    var features = lyr_airports0.getSource().getFeatures();
+    var features = lyr_airports_0.getSource().getFeatures();
     features.forEach(function(feature){
         var context = {
             feature: feature,

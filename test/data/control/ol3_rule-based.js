@@ -1,7 +1,7 @@
 var size = 0;
 
 
-var style_airports0 = function(feature, resolution){
+var style_airports_0 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
@@ -18,13 +18,13 @@ var style_airports0 = function(feature, resolution){
         labelText = String("");
     }
     
-        function rules_airports0(feature, value) {
+        function rules_airports_0(feature, value) {
             var context = {
                 feature: feature,
                 variables: {}
             };
             // Start of if blocks and style check logic
-            if (airports0rule0_eval_expression(context)) {
+            if (airports_0rule0_eval_expression(context)) {
                       return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(220,157,175,1.0)'})}),
@@ -41,14 +41,14 @@ var style_airports0 = function(feature, resolution){
     })];
             }
         }
-        var style = rules_airports0(feature, value);
+        var style = rules_airports_0(feature, value);
         ;
 
     return style;
 }
 function update() {
 
-    var features = lyr_airports0.getSource().getFeatures();
+    var features = lyr_airports_0.getSource().getFeatures();
     features.forEach(function(feature){
         var context = {
             feature: feature,

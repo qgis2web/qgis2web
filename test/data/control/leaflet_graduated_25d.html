@@ -31,7 +31,7 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/lakes0.js"></script>
+        <script src="data/lakes_0.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -44,7 +44,7 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function pop_lakes0(feature, layer) {
+        function pop_lakes_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
@@ -68,11 +68,11 @@
             layer.bindPopup(popupContent);
         }
 
-        map.createPane('pane_lakes0');
-        map.getPane('pane_lakes0').style.zIndex = 400;
-        map.getPane('pane_lakes0').style['mix-blend-mode'] = 'normal';
+        map.createPane('pane_lakes_0');
+        map.getPane('pane_lakes_0').style.zIndex = 400;
+        map.getPane('pane_lakes_0').style['mix-blend-mode'] = 'normal';
         var osmb = new OSMBuildings(map).date(new Date());
-        osmb.set(json_lakes0);
+        osmb.set(json_lakes_0);
         setBounds();
         </script>
     </body>

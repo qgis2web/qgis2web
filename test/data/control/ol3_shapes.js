@@ -1,6 +1,6 @@
 var size = 0;
 
-function categories_airports0(feature, value, size, resolution, labelText,
+function categories_airports_0(feature, value, size, resolution, labelText,
                        labelFont, labelFill) {
                 switch(value.toString()) {case 'ALLEN AAF':
                     return [ new ol.style.Style({
@@ -620,7 +620,7 @@ default:
     })];
                     break;}};
 
-var style_airports0 = function(feature, resolution){
+var style_airports_0 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
@@ -637,14 +637,14 @@ var style_airports0 = function(feature, resolution){
         labelText = String("");
     }
     
-var style = categories_airports0(feature, value, size, resolution, labelText,
+var style = categories_airports_0(feature, value, size, resolution, labelText,
                           labelFont, labelFill);
 
     return style;
 }
 function update() {
 
-    var features = lyr_airports0.getSource().getFeatures();
+    var features = lyr_airports_0.getSource().getFeatures();
     features.forEach(function(feature){
         var context = {
             feature: feature,

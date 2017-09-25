@@ -1,11 +1,11 @@
-var format_airports0 = new ol.format.GeoJSON();
-var features_airports0 = format_airports0.readFeatures(json_airports0, 
+var format_airports_0 = new ol.format.GeoJSON();
+var features_airports_0 = format_airports_0.readFeatures(json_airports_0, 
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
-var jsonSource_airports0 = new ol.source.Vector({
+var jsonSource_airports_0 = new ol.source.Vector({
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
 });
-jsonSource_airports0.addFeatures(features_airports0);var lyr_airports0 = new ol.layer.Heatmap({
-                source:jsonSource_airports0, 
+jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new ol.layer.Heatmap({
+                source:jsonSource_airports_0, 
                 radius: 10 * 2,
                 gradient: ['#ffffff', '#000000'],
                 blur: 15,
@@ -13,17 +13,17 @@ jsonSource_airports0.addFeatures(features_airports0);var lyr_airports0 = new ol.
                 title: 'airports'
             });
 
-lyr_airports0.setVisible(true);
-var layersList = [lyr_airports0];
-lyr_airports0.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
-lyr_airports0.set('fieldImages', {'ID': 'TextEdit', 'fk_region': 'TextEdit', 'ELEV': 'TextEdit', 'NAME': 'TextEdit', 'USE': 'TextEdit', });
-lyr_airports0.set('fieldLabels', {'ID': 'no label', 'fk_region': 'no label', 'ELEV': 'no label', 'NAME': 'no label', 'USE': 'no label', });
-lyr_airports0.on('precompose', function(evt) {
+lyr_airports_0.setVisible(true);
+var layersList = [lyr_airports_0];
+lyr_airports_0.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
+lyr_airports_0.set('fieldImages', {'ID': 'TextEdit', 'fk_region': 'TextEdit', 'ELEV': 'TextEdit', 'NAME': 'TextEdit', 'USE': 'TextEdit', });
+lyr_airports_0.set('fieldLabels', {'ID': 'no label', 'fk_region': 'no label', 'ELEV': 'no label', 'NAME': 'no label', 'USE': 'no label', });
+lyr_airports_0.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
-    lyr_airports0.on("postcompose", update);
+    lyr_airports_0.on("postcompose", update);
 
-    var listenerKey = lyr_airports0.on('change', function(e) {
+    var listenerKey = lyr_airports_0.on('change', function(e) {
         update();
         ol.Observable.unByKey(listenerKey);
     });

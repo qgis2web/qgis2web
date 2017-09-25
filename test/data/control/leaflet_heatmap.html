@@ -31,7 +31,7 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/airports0.js"></script>
+        <script src="data/airports_0.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -44,7 +44,7 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function pop_airports0(feature, layer) {
+        function pop_airports_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
@@ -65,19 +65,19 @@
             layer.bindPopup(popupContent);
         }
 
-        map.createPane('pane_airports0');
-        map.getPane('pane_airports0').style.zIndex = 400;
-        map.getPane('pane_airports0').style['mix-blend-mode'] = 'normal';
-        var airports0_hm = geoJson2heat(json_airports0,
+        map.createPane('pane_airports_0');
+        map.getPane('pane_airports_0').style.zIndex = 400;
+        map.getPane('pane_airports_0').style['mix-blend-mode'] = 'normal';
+        var airports_0_hm = geoJson2heat(json_airports_0,
                                       '');
-        var layer_airports0 = new L.heatLayer(airports0_hm, {
+        var layer_airports_0 = new L.heatLayer(airports_0_hm, {
             attribution: '',
             radius: 20,
             max: 1,
             minOpacity: 1,
             gradient: {0: '#ffffff', 1: '#000000'}});
-        bounds_group.addLayer(layer_airports0);
-        map.addLayer(layer_airports0);
+        bounds_group.addLayer(layer_airports_0);
+        map.addLayer(layer_airports_0);
         setBounds();
         function geoJson2heat(geojson, weight) {
           return geojson.features.map(function(feature) {

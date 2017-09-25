@@ -31,7 +31,7 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/airports0.js"></script>
+        <script src="data/airports_0.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -44,7 +44,7 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        function pop_airports0(feature, layer) {
+        function pop_airports_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
@@ -65,11 +65,11 @@
             layer.bindPopup(popupContent);
         }
 
-        function style_airports0_0(feature) {
+        function style_airports_0_0(feature) {
             switch(feature.properties['NAME'].toString()) {
                 case 'ALLEN AAF':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -84,7 +84,7 @@
                     break;
                 case 'AMBLER':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'square',
                 radius: 4.0,
                 opacity: 1,
@@ -99,7 +99,7 @@
                     break;
                 case 'ANCHORAGE INTL':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -113,7 +113,7 @@
                     break;
                 case 'ANIAK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -127,7 +127,7 @@
                     break;
                 case 'ANNETTE ISLAND':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'triangle',
                 radius: 4.0,
                 opacity: 1,
@@ -142,7 +142,7 @@
                     break;
                 case 'ANVIK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -156,7 +156,7 @@
                     break;
                 case 'ATKA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -170,7 +170,7 @@
                     break;
                 case 'BETHEL':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -184,7 +184,7 @@
                     break;
                 case 'BETTLES':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'x',
                 radius: 4.0,
                 opacity: 1,
@@ -199,7 +199,7 @@
                     break;
                 case 'BIG LAKE':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -213,7 +213,7 @@
                     break;
                 case 'BIG MOUNTAIN AFS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -228,7 +228,7 @@
                     break;
                 case 'BRYANT AHP':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -243,7 +243,7 @@
                     break;
                 case 'BUCKLAND':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -258,7 +258,7 @@
                     break;
                 case 'CAPE NEWENHAM LRRS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -273,7 +273,7 @@
                     break;
                 case 'CAPE ROMANZOF LRRS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -288,7 +288,7 @@
                     break;
                 case 'CLEAR':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -303,7 +303,7 @@
                     break;
                 case 'COLD BAY':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -318,7 +318,7 @@
                     break;
                 case 'DILLINGHAM':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -333,7 +333,7 @@
                     break;
                 case 'EDWARD G PITKA SR':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -348,7 +348,7 @@
                     break;
                 case 'EIELSON AFB':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -363,7 +363,7 @@
                     break;
                 case 'ELMENDORF AFB':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -378,7 +378,7 @@
                     break;
                 case 'EMMONAK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -393,7 +393,7 @@
                     break;
                 case 'FAIRBANKS INTL':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -408,7 +408,7 @@
                     break;
                 case 'FORT YUKON':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -423,7 +423,7 @@
                     break;
                 case 'GAMBELL':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -438,7 +438,7 @@
                     break;
                 case 'GRANITE MOUNTAIN AFS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -453,7 +453,7 @@
                     break;
                 case 'GULKANA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -468,7 +468,7 @@
                     break;
                 case 'GUSTAVUS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -483,7 +483,7 @@
                     break;
                 case 'HAINES':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -498,7 +498,7 @@
                     break;
                 case 'HOMER':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -513,7 +513,7 @@
                     break;
                 case 'HOONAH':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -528,7 +528,7 @@
                     break;
                 case 'ILIAMNA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -543,7 +543,7 @@
                     break;
                 case 'INDIAN MOUNTAIN LRRS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -558,7 +558,7 @@
                     break;
                 case 'KAKE':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -573,7 +573,7 @@
                     break;
                 case 'KALAKAKET CREEK  AS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -588,7 +588,7 @@
                     break;
                 case 'KENAI MUNI':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -603,7 +603,7 @@
                     break;
                 case 'KING SALMON':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -618,7 +618,7 @@
                     break;
                 case 'KLAWOCK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -633,7 +633,7 @@
                     break;
                 case 'KODIAK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -648,7 +648,7 @@
                     break;
                 case 'KOYUK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -663,7 +663,7 @@
                     break;
                 case 'MC GRATH':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -678,7 +678,7 @@
                     break;
                 case 'MEKORYUK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -693,7 +693,7 @@
                     break;
                 case 'MERLE K MUDHOLE SMITH':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -708,7 +708,7 @@
                     break;
                 case 'MERRILL FLD':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -723,7 +723,7 @@
                     break;
                 case 'MINCHUMINA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -738,7 +738,7 @@
                     break;
                 case 'MOSES POINT':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -753,7 +753,7 @@
                     break;
                 case 'NENANA MUNI':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -768,7 +768,7 @@
                     break;
                 case 'NIKOLSKI AS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -783,7 +783,7 @@
                     break;
                 case 'NOATAK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -798,7 +798,7 @@
                     break;
                 case 'NOME':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -813,7 +813,7 @@
                     break;
                 case 'NORTHWAY':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -828,7 +828,7 @@
                     break;
                 case 'PALMER MUNI':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -843,7 +843,7 @@
                     break;
                 case 'PETERSBURG JAMES A JOHNSON':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -858,7 +858,7 @@
                     break;
                 case 'PORT CLARENCE CGS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -873,7 +873,7 @@
                     break;
                 case 'PORT HEIDEN':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -888,7 +888,7 @@
                     break;
                 case 'RALPH M CALHOUN':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -903,7 +903,7 @@
                     break;
                 case 'RALPH WIEN MEM':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -918,7 +918,7 @@
                     break;
                 case 'SAVOONGA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -933,7 +933,7 @@
                     break;
                 case 'SELAWIK':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -948,7 +948,7 @@
                     break;
                 case 'SEWARD':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -963,7 +963,7 @@
                     break;
                 case 'SKAGWAY':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -978,7 +978,7 @@
                     break;
                 case 'SOLDOTNA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -993,7 +993,7 @@
                     break;
                 case 'SPARREVOHN LRRS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1008,7 +1008,7 @@
                     break;
                 case 'ST GEORGE':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1023,7 +1023,7 @@
                     break;
                 case 'ST MARYS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1038,7 +1038,7 @@
                     break;
                 case 'ST PAUL ISLAND':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1053,7 +1053,7 @@
                     break;
                 case 'TALKEETNA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1068,7 +1068,7 @@
                     break;
                 case 'TANACROSS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1083,7 +1083,7 @@
                     break;
                 case 'TATALINA LRRS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1098,7 +1098,7 @@
                     break;
                 case 'TIN CITY LRRS':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1113,7 +1113,7 @@
                     break;
                 case 'UNALAKLEET':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1128,7 +1128,7 @@
                     break;
                 case 'UNALASKA':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1143,7 +1143,7 @@
                     break;
                 case 'VALDEZ':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1158,7 +1158,7 @@
                     break;
                 case 'WAINWRIGHT AAF':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1173,7 +1173,7 @@
                     break;
                 case 'WRANGELL':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1188,7 +1188,7 @@
                     break;
                 case 'YAKUTAT':
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1203,7 +1203,7 @@
                     break;
                 default:
                     return {
-                pane: 'pane_airports0',
+                pane: 'pane_airports_0',
                 shape: 'diamond',
                 radius: 4.0,
                 opacity: 1,
@@ -1218,23 +1218,23 @@
                     break;
             }
         }
-        map.createPane('pane_airports0');
-        map.getPane('pane_airports0').style.zIndex = 400;
-        map.getPane('pane_airports0').style['mix-blend-mode'] = 'normal';
-        var layer_airports0 = new L.geoJson(json_airports0, {
+        map.createPane('pane_airports_0');
+        map.getPane('pane_airports_0').style.zIndex = 400;
+        map.getPane('pane_airports_0').style['mix-blend-mode'] = 'normal';
+        var layer_airports_0 = new L.geoJson(json_airports_0, {
             attribution: '<a href=""></a>',
-            pane: 'pane_airports0',
-            onEachFeature: pop_airports0,
+            pane: 'pane_airports_0',
+            onEachFeature: pop_airports_0,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.shapeMarker(latlng, style_airports0_0(feature));
+                return L.shapeMarker(latlng, style_airports_0_0(feature));
             },
         });
-        bounds_group.addLayer(layer_airports0);
-        map.addLayer(layer_airports0);
+        bounds_group.addLayer(layer_airports_0);
+        map.addLayer(layer_airports_0);
         setBounds();
         </script>
     </body>
