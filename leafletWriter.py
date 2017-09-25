@@ -171,7 +171,7 @@ class LeafletWriter(Writer):
                                                       popup, cluster):
             rawLayerName = layer.name()
             safeLayerName = re.sub(
-                '[\W_]+', '', rawLayerName) + unicode(lyrCount)
+                '[\W_]+', '', rawLayerName) + "_" + unicode(lyrCount)
             if layer.providerType() != 'WFS' or jsonEncode is True and layer:
                 if layer.type() == QgsMapLayer.VectorLayer:
                     feedback.showFeedback('Exporting %s to JSON...' %
@@ -236,7 +236,8 @@ class LeafletWriter(Writer):
 
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
-            safeLayerName = re.sub('[\W_]+', '', rawLayerName) + unicode(count)
+            safeLayerName = re.sub('[\W_]+', '',
+                                   rawLayerName) + "_" + unicode(count)
             if layer.type() == QgsMapLayer.VectorLayer:
                 (new_src,
                  legends,
@@ -302,7 +303,8 @@ class LeafletWriter(Writer):
                                  params["Appearance"]["Search layer"])
         labelList = []
         for count, layer in enumerate(layer_list):
-            safeLayerName = re.sub('[\W_]+', '', layer.name()) + unicode(count)
+            safeLayerName = re.sub('[\W_]+', '',
+                                   layer.name()) + "_" + unicode(count)
             if layer.type() == QgsMapLayer.VectorLayer:
                 palyr = QgsPalLayerSettings()
                 palyr.readFromLayer(layer)
