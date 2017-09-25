@@ -111,6 +111,5 @@ def writeScriptIncludes(layers, json, matchCRS):
                 layerSource += "get" + sln + "Json"
                 wfsVars += ('<script src="%s"></script>' % layerSource)
             styleVars += ('<script src="styles/%s_style.js">'
-                          '</script>' %
-                          (sln))
+                          '</script>' % sln)
     return (geojsonVars, wfsVars, styleVars)
