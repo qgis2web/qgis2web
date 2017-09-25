@@ -663,6 +663,5 @@ def getFillStyle(color, props):
         if props["style"] == "no":
             return ""
     except:
-        QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                 level=QgsMessageLog.CRITICAL)
+        pass
     return "fill: new ol.style.Fill({color: %s})" % color
