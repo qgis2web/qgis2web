@@ -38,198 +38,32 @@ def exportStyles(layers, folder, clustered):
             layer.customProperty("labeling/enabled")).lower() == "true"
         pattern = ""
         setPattern = ""
-        if (labelsEnabled):
-            labelField = layer.customProperty("labeling/fieldName")
-            if labelField != "":
-                if unicode(layer.customProperty(
-                        "labeling/isExpression")).lower() == "true":
-                    exprFilename = os.path.join(folder, "resources",
-                                                "qgis2web_expressions.js")
-                    fieldName = layer.customProperty("labeling/fieldName")
-                    name = compile_to_file(fieldName, "label_%s" % sln,
-                                           "OpenLayers3", exprFilename)
-                    js = "%s(context)" % (name)
-                    js = js.strip()
-                    labelText = js
-                else:
-                    fieldIndex = layer.pendingFields().indexFromName(
-                        labelField)
-                    editFormConfig = layer.editFormConfig()
-                    editorWidget = editFormConfig.widgetType(fieldIndex)
-                    if (editorWidget == QgsVectorLayer.Hidden or
-                            editorWidget == 'Hidden'):
-                        labelField = "q2wHide_" + labelField
-                    labelText = ('feature.get("%s")' %
-                                 labelField.replace('"', '\\"'))
-            else:
-                labelText = '""'
-        else:
-            labelText = '""'
+        labelText = getLabels(labelsEnabled, layer, folder, sln)
         defs = "var size = 0;\n"
         try:
             renderer = layer.rendererV2()
             layer_alpha = layer.layerTransparency()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
-                symbol = renderer.symbol()
                 (style, pattern,
-                 setPattern) = getSymbolAsStyle(symbol, stylesFolder,
-                                                layer_alpha, renderer, sln)
-                style = "var style = " + style
-                legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
-                    symbol, QSize(16, 16))
-                legendIcon.save(os.path.join(legendFolder, sln + ".png"))
-                value = 'var value = ""'
+                 setPattern, value) = singleSymbol(renderer, stylesFolder,
+                                                   layer_alpha, sln,
+                                                   legendFolder)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                cluster = False
-                defs += """
-function categories_%s(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
-                switch(value.toString()) {""" % sln
-                cats = []
-                for cnt, cat in enumerate(renderer.categories()):
-                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
-                        cat.symbol(), QSize(16, 16))
-                    legendIcon.save(os.path.join(
-                        legendFolder, sln + "_" + unicode(cnt) + ".png"))
-                    if (cat.value() is not None and cat.value() != "" and
-                            not isinstance(cat.value(), QPyNullVariant)):
-                        categoryStr = "case '%s':" % unicode(
-                            cat.value()).replace("'", "\\'")
-                    else:
-                        categoryStr = "default:"
-                    (style, pattern,
-                     setPattern) = (getSymbolAsStyle(cat.symbol(),
-                                                     stylesFolder, layer_alpha,
-                                                     renderer, sln))
-                    categoryStr += '''
-                    return %s;
-                    break;''' % style
-                    cats.append(categoryStr)
-                defs += "\n".join(cats) + "}};"
-                classAttr = renderer.classAttribute()
-                fieldIndex = layer.pendingFields().indexFromName(classAttr)
-                editFormConfig = layer.editFormConfig()
-                editorWidget = editFormConfig.widgetType(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
-                    classAttr = "q2wHide_" + classAttr
-                value = ('var value = feature.get("%s");' % classAttr)
-                style = """
-var style = categories_%s(feature, value, size, resolution, labelText,
-                          labelFont, labelFill)""" % sln
+                (style, pattern, setPattern,
+                 value, defs) = categorized(defs, sln, layer, renderer,
+                                            legendFolder, stylesFolder,
+                                            layer_alpha)
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                cluster = False
-                ranges = []
-                elseif = ""
-                for cnt, ran in enumerate(renderer.ranges()):
-                    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
-                        ran.symbol(), QSize(16, 16))
-                    legendIcon.save(os.path.join(
-                        legendFolder, sln + "_" + unicode(cnt) + ".png"))
-                    (symbolstyle, pattern,
-                     setPattern) = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                                    layer_alpha, renderer, sln)
-                    ranges.append("""%sif (value > %f && value <= %f) {
-            style = %s
-                    }""" % (elseif, ran.lowerValue(), ran.upperValue(),
-                            symbolstyle))
-                    elseif = " else "
-                style = "".join(ranges)
-                classAttr = renderer.classAttribute()
-                fieldIndex = layer.pendingFields().indexFromName(classAttr)
-                editFormConfig = layer.editFormConfig()
-                editorWidget = editFormConfig.widgetType(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
-                    classAttr = "q2wHide_" + classAttr
-                value = ('var value = feature.get("%s");' % classAttr)
+                (style, pattern,
+                 setPattern, value) = graduated(layer, renderer, legendFolder,
+                                                sln, stylesFolder, layer_alpha)
             elif isinstance(renderer, QgsRuleBasedRendererV2):
-                cluster = False
-                template = """
-        function rules_%s(feature, value) {
-            var context = {
-                feature: feature,
-                variables: {}
-            };
-            // Start of if blocks and style check logic
-            %s
-            else {
-                return %s;
-            }
-        }
-        var style = rules_%s(feature, value);
-        """
-                elsejs = "[]"
-                js = ""
-                root_rule = renderer.rootRule()
-                rules = root_rule.children()
-                expFile = os.path.join(folder, "resources",
-                                       "qgis2web_expressions.js")
-                ifelse = "if"
-                for count, rule in enumerate(rules):
-                    symbol = rule.symbol()
-                    (styleCode, pattern,
-                     setPattern) = getSymbolAsStyle(symbol, stylesFolder,
-                                                    layer_alpha, renderer, sln)
-                    name = "".join((sln, "rule", unicode(count)))
-                    exp = rule.filterExpression()
-                    if rule.isElse():
-                        elsejs = styleCode
-                        continue
-                    name = compile_to_file(exp, name, "OpenLayers3", expFile)
-                    js += """
-                    %s (%s(context)) {
-                      return %s;
-                    }
-                    """ % (ifelse, name, styleCode)
-                    js = js.strip()
-                    ifelse = "else if"
-                value = ("var value = '';")
-                style = template % (sln, js, elsejs, sln)
+                (style, pattern,
+                 setPattern, value) = ruleBased(renderer, folder, stylesFolder,
+                                                layer_alpha, sln)
             else:
                 style = ""
-            if layer.customProperty("labeling/fontSize"):
-                size = float(layer.customProperty("labeling/fontSize")) * 1.3
-            else:
-                size = 10
-            italic = layer.customProperty("labeling/fontItalic")
-            bold = layer.customProperty("labeling/fontWeight")
-            r = layer.customProperty("labeling/textColorR")
-            g = layer.customProperty("labeling/textColorG")
-            b = layer.customProperty("labeling/textColorB")
-            if (r or g or b) is None:
-                color = "rgba(0, 0, 0, 1)"
-            else:
-                color = "rgba(%s, %s, %s, 1)" % (r, g, b)
-            face = layer.customProperty("labeling/fontFamily")
-            if face is None:
-                face = ","
-            else:
-                face = " \\'%s\\'," % face
-            palyr = QgsPalLayerSettings()
-            palyr.readFromLayer(layer)
-            sv = palyr.scaleVisibility
-            if sv:
-                min = float(palyr.scaleMin)
-                max = float(palyr.scaleMax)
-                if min != 0:
-                    min = 1 / ((1 / min) * 39.37 * 90.7)
-                max = 1 / ((1 / max) * 39.37 * 90.7)
-                labelRes = " && resolution > %(min)d " % {"min": min}
-                labelRes += "&& resolution < %(max)d" % {"max": max}
-            else:
-                labelRes = ""
-            buffer = palyr.bufferDraw
-            if buffer:
-                bufferColor = palyr.bufferColor.name()
-                bufferWidth = palyr.bufferSize
-                stroke = """
-              stroke: new ol.style.Stroke({
-                color: "%s",
-                width: %d
-              }),""" % (bufferColor, bufferWidth)
-            else:
-                stroke = ""
+            (labelRes, size, face, color) = getLabelFormat(layer)
             if style != "":
                 style = getStyle(style, cluster, labelRes, labelText,
                                  sln, size, face, color, value)
@@ -250,6 +84,210 @@ var style_%(name)s = %(style)s;
 %(setPattern)s''' %
                     {"defs": defs, "pattern": pattern, "name": sln,
                      "style": style, "setPattern": setPattern})
+
+
+def getLabels(labelsEnabled, layer, folder, sln):
+    if (labelsEnabled):
+        labelField = layer.customProperty("labeling/fieldName")
+        if labelField != "":
+            if unicode(layer.customProperty(
+                    "labeling/isExpression")).lower() == "true":
+                exprFilename = os.path.join(folder, "resources",
+                                            "qgis2web_expressions.js")
+                fieldName = layer.customProperty("labeling/fieldName")
+                name = compile_to_file(fieldName, "label_%s" % sln,
+                                       "OpenLayers3", exprFilename)
+                js = "%s(context)" % (name)
+                js = js.strip()
+                labelText = js
+            else:
+                fieldIndex = layer.pendingFields().indexFromName(labelField)
+                editFormConfig = layer.editFormConfig()
+                editorWidget = editFormConfig.widgetType(fieldIndex)
+                if (editorWidget == QgsVectorLayer.Hidden or
+                        editorWidget == 'Hidden'):
+                    labelField = "q2wHide_" + labelField
+                labelText = ('feature.get("%s")' %
+                             labelField.replace('"', '\\"'))
+        else:
+            labelText = '""'
+    else:
+        labelText = '""'
+    return labelText
+
+
+def getLabelFormat(layer):
+    if layer.customProperty("labeling/fontSize"):
+        size = float(layer.customProperty("labeling/fontSize")) * 1.3
+    else:
+        size = 10
+    italic = layer.customProperty("labeling/fontItalic")
+    bold = layer.customProperty("labeling/fontWeight")
+    r = layer.customProperty("labeling/textColorR")
+    g = layer.customProperty("labeling/textColorG")
+    b = layer.customProperty("labeling/textColorB")
+    if (r or g or b) is None:
+        color = "rgba(0, 0, 0, 1)"
+    else:
+        color = "rgba(%s, %s, %s, 1)" % (r, g, b)
+    face = layer.customProperty("labeling/fontFamily")
+    if face is None:
+        face = ","
+    else:
+        face = " \\'%s\\'," % face
+    palyr = QgsPalLayerSettings()
+    palyr.readFromLayer(layer)
+    sv = palyr.scaleVisibility
+    if sv:
+        min = float(palyr.scaleMin)
+        max = float(palyr.scaleMax)
+        if min != 0:
+            min = 1 / ((1 / min) * 39.37 * 90.7)
+        max = 1 / ((1 / max) * 39.37 * 90.7)
+        labelRes = " && resolution > %(min)d " % {"min": min}
+        labelRes += "&& resolution < %(max)d" % {"max": max}
+    else:
+        labelRes = ""
+    buffer = palyr.bufferDraw
+    if buffer:
+        bufferColor = palyr.bufferColor.name()
+        bufferWidth = palyr.bufferSize
+        stroke = """
+              stroke: new ol.style.Stroke({
+                color: "%s",
+                width: %d
+              }),""" % (bufferColor, bufferWidth)
+    else:
+        stroke = ""
+    return (labelRes, size, face, color)
+
+
+def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder):
+    symbol = renderer.symbol()
+    (style, pattern,
+     setPattern) = getSymbolAsStyle(symbol, stylesFolder,
+                                    layer_alpha, renderer, sln)
+    style = "var style = " + style
+    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+        symbol, QSize(16, 16))
+    legendIcon.save(os.path.join(legendFolder, sln + ".png"))
+    value = 'var value = ""'
+    return (style, pattern, setPattern, value)
+
+
+def categorized(defs, sln, layer, renderer, legendFolder, stylesFolder,
+                layer_alpha):
+    cluster = False
+    defs += """
+function categories_%s(feature, value, size, resolution, labelText,
+                       labelFont, labelFill) {
+                switch(value.toString()) {""" % sln
+    cats = []
+    for cnt, cat in enumerate(renderer.categories()):
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(cat.symbol(),
+                                                               QSize(16, 16))
+        legendIcon.save(os.path.join(legendFolder,
+                                     sln + "_" + unicode(cnt) + ".png"))
+        if (cat.value() is not None and cat.value() != "" and
+                not isinstance(cat.value(), QPyNullVariant)):
+            categoryStr = "case '%s':" % unicode(
+                cat.value()).replace("'", "\\'")
+        else:
+            categoryStr = "default:"
+        (style, pattern,
+         setPattern) = (getSymbolAsStyle(cat.symbol(), stylesFolder,
+                                         layer_alpha, renderer, sln))
+        categoryStr += '''
+                    return %s;
+                    break;''' % style
+        cats.append(categoryStr)
+    defs += "\n".join(cats) + "}};"
+    classAttr = renderer.classAttribute()
+    fieldIndex = layer.pendingFields().indexFromName(classAttr)
+    editFormConfig = layer.editFormConfig()
+    editorWidget = editFormConfig.widgetType(fieldIndex)
+    if editorWidget == QgsVectorLayer.Hidden or editorWidget == 'Hidden':
+        classAttr = "q2wHide_" + classAttr
+    value = ('var value = feature.get("%s");' % classAttr)
+    style = """
+var style = categories_%s(feature, value, size, resolution, labelText,
+                          labelFont, labelFill)""" % sln
+    return (style, pattern, setPattern, value, defs)
+
+
+def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
+    cluster = False
+    ranges = []
+    elseif = ""
+    for cnt, ran in enumerate(renderer.ranges()):
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+            ran.symbol(), QSize(16, 16))
+        legendIcon.save(os.path.join(
+            legendFolder, sln + "_" + unicode(cnt) + ".png"))
+        (symbolstyle, pattern,
+         setPattern) = getSymbolAsStyle(ran.symbol(), stylesFolder,
+                                        layer_alpha, renderer, sln)
+        ranges.append("""%sif (value > %f && value <= %f) {
+            style = %s
+                    }""" % (elseif, ran.lowerValue(), ran.upperValue(),
+                            symbolstyle))
+        elseif = " else "
+    style = "".join(ranges)
+    classAttr = renderer.classAttribute()
+    fieldIndex = layer.pendingFields().indexFromName(classAttr)
+    editFormConfig = layer.editFormConfig()
+    editorWidget = editFormConfig.widgetType(fieldIndex)
+    if (editorWidget == QgsVectorLayer.Hidden or
+            editorWidget == 'Hidden'):
+        classAttr = "q2wHide_" + classAttr
+    value = ('var value = feature.get("%s");' % classAttr)
+    return (style, pattern, setPattern, value)
+
+
+def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln):
+    cluster = False
+    template = """
+        function rules_%s(feature, value) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            // Start of if blocks and style check logic
+            %s
+            else {
+                return %s;
+            }
+        }
+        var style = rules_%s(feature, value);
+        """
+    elsejs = "[]"
+    js = ""
+    root_rule = renderer.rootRule()
+    rules = root_rule.children()
+    expFile = os.path.join(folder, "resources",
+                           "qgis2web_expressions.js")
+    ifelse = "if"
+    for count, rule in enumerate(rules):
+        symbol = rule.symbol()
+        (styleCode, pattern,
+         setPattern) = getSymbolAsStyle(symbol, stylesFolder,
+                                        layer_alpha, renderer, sln)
+        name = "".join((sln, "rule", unicode(count)))
+        exp = rule.filterExpression()
+        if rule.isElse():
+            elsejs = styleCode
+            continue
+        name = compile_to_file(exp, name, "OpenLayers3", expFile)
+        js += """
+                    %s (%s(context)) {
+                      return %s;
+                    }
+                    """ % (ifelse, name, styleCode)
+        js = js.strip()
+        ifelse = "else if"
+    value = ("var value = '';")
+    style = template % (sln, js, elsejs, sln)
+    return (style, pattern, setPattern, value)
 
 
 def getStyle(style, cluster, labelRes, labelText,
