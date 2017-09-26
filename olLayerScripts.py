@@ -100,31 +100,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
                                                          unicode(v).lower())])
 
-    group_list = ["baseLayer"] if len(basemapList) else []
-    no_group_list = []
-    for count, layer in enumerate(layers):
-        try:
-            if is25d(layer, canvas, restrictToExtent, extent):
-                pass
-            else:
-                if layer.id() in groupedLayers:
-                    groupName = groupedLayers[layer.id()]
-                    if groupName not in usedGroups:
-                        group_list.append("group_" + safeName(groupName))
-                        usedGroups.append(groupName)
-                else:
-                    no_group_list.append("lyr_" + safeName(layer.name()) +
-                                         "_" + unicode(count))
-        except:
-            if layer.id() in groupedLayers:
-                groupName = groupedLayers[layer.id()]
-                if groupName not in usedGroups:
-                    group_list.append("group_" + safeName(groupName))
-                    usedGroups.append(groupName)
-            else:
-                no_group_list.append("lyr_" + safeName(layer.name()) +
-                                     "_" + unicode(count))
-
+    (group_list,
+     no_group_list) = getGroups(canvas, layers, basemapList, restrictToExtent,
+                                extent, groupedLayers, usedGroups)
     layersList = []
     for layer in (group_list + no_group_list):
         layersList.append(layer)
@@ -531,3 +509,32 @@ osmb.set(json_{sln}_{count});""".format(shadows=shadows,
                                         sln=safeName(layer.name()),
                                         count=unicode(count))
     return osmb
+
+
+def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
+              groupedLayers, usedGroups):
+    group_list = ["baseLayer"] if len(basemapList) else []
+    no_group_list = []
+    for count, layer in enumerate(layers):
+        try:
+            if is25d(layer, canvas, restrictToExtent, extent):
+                pass
+            else:
+                if layer.id() in groupedLayers:
+                    groupName = groupedLayers[layer.id()]
+                    if groupName not in usedGroups:
+                        group_list.append("group_" + safeName(groupName))
+                        usedGroups.append(groupName)
+                else:
+                    no_group_list.append("lyr_" + safeName(layer.name()) +
+                                         "_" + unicode(count))
+        except:
+            if layer.id() in groupedLayers:
+                groupName = groupedLayers[layer.id()]
+                if groupName not in usedGroups:
+                    group_list.append("group_" + safeName(groupName))
+                    usedGroups.append(groupName)
+            else:
+                no_group_list.append("lyr_" + safeName(layer.name()) +
+                                     "_" + unicode(count))
+    return (group_list, no_group_list)
