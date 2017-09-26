@@ -120,7 +120,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                                            extent):
             (fieldLabels, fieldAliases, fieldImages,
              blend_mode, labelgun) = getPopups(layer, labels, sln, fieldLabels,
-                                      fieldAliases, fieldImages)
+                                               fieldAliases, fieldImages)
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if basemapList:
@@ -534,8 +534,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = '%(blend)s';
 });""" % (
-                {"name": sln,
-                         "blend": BLEND_MODES[layer.blendMode()]})
+                {"name": sln, "blend": BLEND_MODES[layer.blendMode()]})
     labelgun = """
     lyr_%s.on("postcompose", update);
 
