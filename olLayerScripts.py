@@ -118,50 +118,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         if layer.type() == layer.VectorLayer and not is25d(layer, canvas,
                                                            restrictToExtent,
                                                            extent):
-            fieldList = layer.pendingFields()
-            aliasFields = ""
-            imageFields = ""
-            labelFields = ""
-            for field, label in zip(labels.keys(), labels.values()):
-                labelFields += "'%(field)s': '%(label)s', " % (
-                    {"field": field, "label": label})
-            labelFields = "{%(labelFields)s});\n" % (
-                {"labelFields": labelFields})
-            labelFields = "lyr_%(name)s.set('fieldLabels', " % (
-                {"name": sln}) + labelFields
-            fieldLabels += labelFields
-            for f in fieldList:
-                fieldIndex = fieldList.indexFromName(unicode(f.name()))
-                aliasFields += "'%(field)s': '%(alias)s', " % (
-                    {"field": f.name(),
-                     "alias": layer.attributeDisplayName(fieldIndex)})
-                widget = layer.editFormConfig().widgetType(fieldIndex)
-                imageFields += "'%(field)s': '%(image)s', " % (
-                    {"field": f.name(),
-                     "image": widget})
-            aliasFields = "{%(aliasFields)s});\n" % (
-                {"aliasFields": aliasFields})
-            aliasFields = "lyr_%(name)s.set('fieldAliases', " % (
-                {"name": sln}) + aliasFields
-            fieldAliases += aliasFields
-            imageFields = "{%(imageFields)s});\n" % (
-                {"imageFields": imageFields})
-            imageFields = "lyr_%(name)s.set('fieldImages', " % (
-                {"name": sln}) + imageFields
-            fieldImages += imageFields
-            blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
-    evt.context.globalCompositeOperation = '%(blend)s';
-});""" % (
-                {"name": sln,
-                         "blend": BLEND_MODES[layer.blendMode()]})
-            labelgun = """
-    lyr_%s.on("postcompose", update);
-
-    var listenerKey = lyr_%s.on('change', function(e) {
-        update();
-        ol.Observable.unByKey(listenerKey);
-    });""" % (sln, sln)
-
+            (fieldLabels, fieldAliases, fieldImages,
+             blend_mode, labelgun) = getPopups(layer, labels, sln, fieldLabels,
+                                      fieldAliases, fieldImages)
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if basemapList:
@@ -538,3 +497,50 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
                 no_group_list.append("lyr_" + safeName(layer.name()) +
                                      "_" + unicode(count))
     return (group_list, no_group_list)
+
+
+def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
+    fieldList = layer.pendingFields()
+    aliasFields = ""
+    imageFields = ""
+    labelFields = ""
+    for field, label in zip(labels.keys(), labels.values()):
+        labelFields += "'%(field)s': '%(label)s', " % (
+            {"field": field, "label": label})
+    labelFields = "{%(labelFields)s});\n" % (
+        {"labelFields": labelFields})
+    labelFields = "lyr_%(name)s.set('fieldLabels', " % (
+        {"name": sln}) + labelFields
+    fieldLabels += labelFields
+    for f in fieldList:
+        fieldIndex = fieldList.indexFromName(unicode(f.name()))
+        aliasFields += "'%(field)s': '%(alias)s', " % (
+            {"field": f.name(),
+             "alias": layer.attributeDisplayName(fieldIndex)})
+        widget = layer.editFormConfig().widgetType(fieldIndex)
+        imageFields += "'%(field)s': '%(image)s', " % (
+            {"field": f.name(),
+             "image": widget})
+    aliasFields = "{%(aliasFields)s});\n" % (
+        {"aliasFields": aliasFields})
+    aliasFields = "lyr_%(name)s.set('fieldAliases', " % (
+        {"name": sln}) + aliasFields
+    fieldAliases += aliasFields
+    imageFields = "{%(imageFields)s});\n" % (
+        {"imageFields": imageFields})
+    imageFields = "lyr_%(name)s.set('fieldImages', " % (
+        {"name": sln}) + imageFields
+    fieldImages += imageFields
+    blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
+    evt.context.globalCompositeOperation = '%(blend)s';
+});""" % (
+                {"name": sln,
+                         "blend": BLEND_MODES[layer.blendMode()]})
+    labelgun = """
+    lyr_%s.on("postcompose", update);
+
+    var listenerKey = lyr_%s.on('change', function(e) {
+        update();
+        ol.Observable.unByKey(listenerKey);
+    });""" % (sln, sln)
+    return (fieldLabels, fieldAliases, fieldImages, blend_mode, labelgun)
