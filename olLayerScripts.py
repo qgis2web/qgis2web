@@ -27,16 +27,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
-    basemaps = [basemapOL()[item] for _, item in enumerate(basemapList)]
-    if len(basemapList) > 1:
-        baseGroup = "Base maps"
-    else:
-        baseGroup = ""
-    baseLayer = """var baseLayer = new ol.layer.Group({
-    'title': '%s',
-    layers: [%s\n]
-});""" % (baseGroup, ','.join(basemaps))
-
+    baseLayer = getBasemaps(basemapList)
     layerVars = ""
     layer_names_id = {}
     for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
@@ -85,39 +76,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         try:
             renderer = layer.rendererV2()
             if is25d(layer, canvas, restrictToExtent, extent):
-                shadows = ""
-                renderer = layer.rendererV2()
-                renderContext = QgsRenderContext.fromMapSettings(
-                    canvas.mapSettings())
-                fields = layer.pendingFields()
-                renderer.startRender(renderContext, fields)
-                for feat in layer.getFeatures():
-                    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                        classAttribute = renderer.classAttribute()
-                        attrValue = feat.attribute(classAttribute)
-                        catIndex = renderer.categoryIndexForValue(attrValue)
-                        categories = renderer.categories()
-                        symbol = categories[catIndex].symbol()
-                    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                        classAttribute = renderer.classAttribute()
-                        attrValue = feat.attribute(classAttribute)
-                        ranges = renderer.ranges()
-                        for range in ranges:
-                            if (attrValue >= range.lowerValue() and
-                                    attrValue <= range.upperValue()):
-                                symbol = range.symbol().clone()
-                    else:
-                        symbol = renderer.symbolForFeature2(feat,
-                                                            renderContext)
-                    symbolLayer = symbol.symbolLayer(0)
-                    if not symbolLayer.paintEffect().effectList()[0].enabled():
-                        shadows = "'2015-07-15 10:00:00'"
-                renderer.stopRender(renderContext)
-                osmb = """
-var osmb = new OSMBuildings(map).date(new Date({shadows}));
-osmb.set(json_{sln}_{count});""".format(shadows=shadows,
-                                        sln=safeName(layer.name()),
-                                        count=unicode(count))
+                osmb = build25d(canvas, layer, count)
             else:
                 try:
                     if not isinstance(layer, TileLayer):
@@ -524,3 +483,51 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                   "maxRes": maxResolution,
                                   "layerAttr": layerAttr,
                                   "row": provider.ySize()}
+
+
+def getBasemaps(basemapList):
+    basemaps = [basemapOL()[item] for _, item in enumerate(basemapList)]
+    if len(basemapList) > 1:
+        baseGroup = "Base maps"
+    else:
+        baseGroup = ""
+    baseLayer = """var baseLayer = new ol.layer.Group({
+    'title': '%s',
+    layers: [%s\n]
+});""" % (baseGroup, ','.join(basemaps))
+    return baseLayer
+
+
+def build25d(canvas, layer, count):
+    shadows = ""
+    renderer = layer.rendererV2()
+    renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
+    fields = layer.pendingFields()
+    renderer.startRender(renderContext, fields)
+    for feat in layer.getFeatures():
+        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            classAttribute = renderer.classAttribute()
+            attrValue = feat.attribute(classAttribute)
+            catIndex = renderer.categoryIndexForValue(attrValue)
+            categories = renderer.categories()
+            symbol = categories[catIndex].symbol()
+        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            classAttribute = renderer.classAttribute()
+            attrValue = feat.attribute(classAttribute)
+            ranges = renderer.ranges()
+            for range in ranges:
+                if (attrValue >= range.lowerValue() and
+                        attrValue <= range.upperValue()):
+                    symbol = range.symbol().clone()
+        else:
+            symbol = renderer.symbolForFeature2(feat, renderContext)
+        symbolLayer = symbol.symbolLayer(0)
+        if not symbolLayer.paintEffect().effectList()[0].enabled():
+            shadows = "'2015-07-15 10:00:00'"
+    renderer.stopRender(renderContext)
+    osmb = """
+var osmb = new OSMBuildings(map).date(new Date({shadows}));
+osmb.set(json_{sln}_{count});""".format(shadows=shadows,
+                                        sln=safeName(layer.name()),
+                                        count=unicode(count))
+    return osmb
