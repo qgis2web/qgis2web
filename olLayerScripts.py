@@ -73,7 +73,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     usedGroups = []
     osmb = ""
     for count, layer in enumerate(layers):
-        renderer = layer.rendererV2()
         if is25d(layer, canvas, restrictToExtent, extent):
             osmb = build25d(canvas, layer, count)
         else:

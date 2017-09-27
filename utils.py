@@ -306,8 +306,8 @@ def exportRaster(layer, count, layersFolder, feedback):
     piped_3857 = os.path.join(tempfile.gettempdir(),
                               name_ts + '_piped_3857.tif')
     # Export layer as PNG
-    out_raster = os.path.join(layersFolder,
-                              safeName(layer.name()) + unicode(count) + ".png")
+    out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" +
+                              unicode(count) + ".png")
 
     qgis_version = QGis.QGIS_VERSION
 
@@ -373,9 +373,9 @@ def exportRaster(layer, count, layersFolder, feedback):
 
 
 def is25d(layer, canvas, restrictToExtent, extent):
-    if layer.geometryType() != QGis.Polygon:
-        return False
     if layer.type() != layer.VectorLayer:
+        return False
+    if layer.geometryType() != QGis.Polygon:
         return False
     renderer = layer.rendererV2()
     if isinstance(renderer, Qgs25DRenderer):
