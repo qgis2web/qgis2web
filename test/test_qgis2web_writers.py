@@ -2514,7 +2514,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
         # test for exported raster file
-        assert os.path.exists(result.replace('index.html', 'data/test0.png'))
+        assert os.path.exists(result.replace('index.html', 'data/test_0.png'))
 
     def test79_OL3_raster(self):
         """OL3 raster"""
@@ -2551,7 +2551,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
         # test for exported raster file
-        assert os.path.exists(result.replace('index.html', 'layers/test0.png'))
+        assert os.path.exists(result.replace('index.html', 'layers/test_0.png'))
 
     def test80_OL3_heatmap(self):
         """OL3 heatmap"""
