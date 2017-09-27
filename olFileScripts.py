@@ -45,7 +45,6 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
         jsAddress += """4.2.0/ol.js"></script>"""
     if layerSearch != "None" and layerSearch != "":
-        searchLayer = searchLayer
         cssAddress += """
         <link rel="stylesheet" type="text/css" href="resources/horsey.min.css">
         <link rel="stylesheet" type="text/css" """
