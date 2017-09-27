@@ -375,6 +375,8 @@ def exportRaster(layer, count, layersFolder, feedback):
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.geometryType() != QGis.Polygon:
         return False
+    if layer.type() == layer.VectorLayer:
+        return False
     try:
         renderer = layer.rendererV2()
         if isinstance(renderer, Qgs25DRenderer):
