@@ -375,47 +375,42 @@ def exportRaster(layer, count, layersFolder, feedback):
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.geometryType() != QGis.Polygon:
         return False
-    if layer.type() == layer.VectorLayer:
+    if layer.type() != layer.VectorLayer:
         return False
-    try:
-        renderer = layer.rendererV2()
-        if isinstance(renderer, Qgs25DRenderer):
-            return True
-        symbols = []
-        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
-            categories = renderer.categories()
-            for category in categories:
-                symbols.append(category.symbol())
-        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-            ranges = renderer.ranges()
-            for range in ranges:
-                symbols.append(range.symbol())
+    renderer = layer.rendererV2()
+    if isinstance(renderer, Qgs25DRenderer):
+        return True
+    symbols = []
+    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        categories = renderer.categories()
+        for category in categories:
+            symbols.append(category.symbol())
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        ranges = renderer.ranges()
+        for range in ranges:
+            symbols.append(range.symbol())
+    else:
+        renderContext = QgsRenderContext.fromMapSettings(
+                canvas.mapSettings())
+        fields = layer.pendingFields()
+        if restrictToExtent and extent == "Canvas extent":
+            request = QgsFeatureRequest(iface.mapCanvas().extent())
+            request.setFlags(QgsFeatureRequest.ExactIntersect)
+            features = layer.getFeatures(request)
         else:
-            renderContext = QgsRenderContext.fromMapSettings(
-                    canvas.mapSettings())
-            fields = layer.pendingFields()
-            if restrictToExtent and extent == "Canvas extent":
-                request = QgsFeatureRequest(iface.mapCanvas().extent())
-                request.setFlags(QgsFeatureRequest.ExactIntersect)
-                features = layer.getFeatures(request)
-            else:
-                features = layer.getFeatures()
-            renderer.startRender(renderContext, fields)
-            for feature in features:
-                symbol = renderer.symbolForFeature2(feature, renderContext)
-                symbols.append(symbol)
-            renderer.stopRender(renderContext)
-        for sym in symbols:
-            sl1 = sym.symbolLayer(1)
-            sl2 = sym.symbolLayer(2)
-            if (isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
-                    isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
-                return True
-        return False
-    except:
-        QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                 level=QgsMessageLog.CRITICAL)
-        return False
+            features = layer.getFeatures()
+        renderer.startRender(renderContext, fields)
+        for feature in features:
+            symbol = renderer.symbolForFeature2(feature, renderContext)
+            symbols.append(symbol)
+        renderer.stopRender(renderContext)
+    for sym in symbols:
+        sl1 = sym.symbolLayer(1)
+        sl2 = sym.symbolLayer(2)
+        if (isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
+                isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
+            return True
+    return False
 
 
 def safeName(name):

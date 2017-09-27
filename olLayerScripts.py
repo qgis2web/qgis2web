@@ -15,8 +15,10 @@ from qgis.core import (QgsRenderContext,
                        QgsMessageLog)
 from utils import safeName, is25d, BLEND_MODES
 from basemaps import basemapOL
+qms = False
 try:
     from quick_map_services.py_tiled_layer.tilelayer import TileLayer
+    qms = True
 except:
     pass
 
@@ -56,11 +58,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for group, groupLayers in groups.iteritems():
         groupLayerObjs = ""
         for layer in groupLayers:
-            try:
+            if qms:
                 if isinstance(layer, TileLayer):
                     continue
-            except:
-                pass
             groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
                                layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
@@ -73,28 +73,13 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     usedGroups = []
     osmb = ""
     for count, layer in enumerate(layers):
-        try:
-            renderer = layer.rendererV2()
-            if is25d(layer, canvas, restrictToExtent, extent):
-                osmb = build25d(canvas, layer, count)
-            else:
-                try:
-                    if not isinstance(layer, TileLayer):
-                        mapLayers.append("lyr_" + safeName(layer.name()) +
-                                         "_" + unicode(count))
-                except:
-                    mapLayers.append("lyr_" + safeName(layer.name()) +
-                                     "_" + unicode(count))
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
-            try:
-                if not isinstance(layer, TileLayer):
-                    mapLayers.append("lyr_" + safeName(layer.name()) +
-                                     "_" + unicode(count))
-            except:
-                mapLayers.append("lyr_" + safeName(layer.name()) +
-                                 "_" + unicode(count))
+        renderer = layer.rendererV2()
+        if is25d(layer, canvas, restrictToExtent, extent):
+            osmb = build25d(canvas, layer, count)
+        else:
+            if (qms and not isinstance(layer, TileLayer)) or not qms:
+                mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
+                                 unicode(count))
     visibility = ""
     for layer, v in zip(mapLayers[1:], visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
