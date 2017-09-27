@@ -33,14 +33,24 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
                                                               clustered)):
         layer_names_id[layer.id()] = str(count)
-        if is25d(layer, canvas, restrictToExtent, extent):
-            pass
-        else:
-            layerVars += "\n".join([layerToJavascript(iface, layer,
-                                                      encode2json,
-                                                      matchCRS, cluster,
-                                                      restrictToExtent,
-                                                      extent, count)])
+        try:
+            if is25d(layer, canvas, restrictToExtent, extent):
+                pass
+            else:
+                layerVars += "\n".join([layerToJavascript(iface, layer,
+                                                          encode2json,
+                                                          matchCRS, cluster,
+                                                          restrictToExtent,
+                                                          extent, count)])
+        except:
+            try:
+                layerVars += "\n".join([layerToJavascript(iface, layer,
+                                                          encode2json,
+                                                          matchCRS, cluster,
+                                                          restrictToExtent,
+                                                          extent, count)])
+            except:
+                pass
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():
