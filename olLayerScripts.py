@@ -223,63 +223,11 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             opacity = layer.renderer().opacity()
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
-                return """
-        var lyr_%s = new ol.layer.Tile({
-            'title': '%s',
-            'type': 'base',
-            'opacity': %f,
-            %s
-            %s
-            source: new ol.source.XYZ({
-    attributions: [new ol.Attribution({html: '%s'})],
-                url: '%s'
-            })
-        });""" % (layerName, layerName, opacity, minResolution, maxResolution,
-                  layerAttr, d["url"][0])
+                return getXYZ(layerName, opacity, minResolution,
+                              maxResolution, layerAttr, d["url"][0])
             elif "tileMatrixSet" in d:
-                layerId = d["layers"][0]
-                url = d["url"][0]
-                format = d["format"][0]
-                style = d["styles"][0]
-                return '''
-    var projection_%(n)s = ol.proj.get('EPSG:3857');
-    var projectionExtent_%(n)s = projection_%(n)s.getExtent();
-    var size_%(n)s = ol.extent.getWidth(projectionExtent_%(n)s) / 256;
-    var resolutions_%(n)s = new Array(14);
-    var matrixIds_%(n)s = new Array(14);
-    for (var z = 0; z < 14; ++z) {
-        // generate resolutions and matrixIds arrays for this WMTS
-        resolutions_%(n)s[z] = size_%(n)s / Math.pow(2, z);
-        matrixIds_%(n)s[z] = z;
-    }
-    var lyr_%(n)s = new ol.layer.Tile({
-                            source: new ol.source.WMTS(({
-                              url: "%(url)s",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
-                                "layer": "%(layerId)s",
-                                "TILED": "true",
-             matrixSet: 'EPSG:3857',
-             format: '%(format)s',
-              projection: projection_%(n)s,
-              tileGrid: new ol.tilegrid.WMTS({
-                origin: ol.extent.getTopLeft(projectionExtent_%(n)s),
-                resolutions: resolutions_%(n)s,
-                matrixIds: matrixIds_%(n)s
-              }),
-              style: '%(style)s',
-              wrapX: true,
-                                "VERSION": "1.0.0",
-                            })),
-                            title: "%(name)s",
-                            opacity: %(opacity)s,
-                            %(minRes)s
-                            %(maxRes)s
-                          });''' % {"layerId": layerId, "url": url,
-                                    "layerAttr": layerAttr, "format": format,
-                                    "n": layerName, "name": layer.name(),
-                                    "opacity": opacity, "style": style,
-                                    "minRes": minResolution,
-                                    "maxRes": maxResolution}
+                return getWMTS(layer, d, layerAttr, layerName, opacity,
+                               minResolution, maxResolution)
             else:
                 layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
                 url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
@@ -533,3 +481,67 @@ def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
         return calibratedWeight;
     },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
     return layerCode
+
+
+def getXYZ(layerName, opacity, minResolution, maxResolution,
+           layerAttr, url):
+    return """
+        var lyr_%s = new ol.layer.Tile({
+            'title': '%s',
+            'type': 'base',
+            'opacity': %f,
+            %s
+            %s
+            source: new ol.source.XYZ({
+    attributions: [new ol.Attribution({html: '%s'})],
+                url: '%s'
+            })
+        });""" % (layerName, layerName, opacity, minResolution, maxResolution,
+                  layerAttr, url)
+
+
+def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
+            maxResolution):
+    layerId = d["layers"][0]
+    url = d["url"][0]
+    format = d["format"][0]
+    style = d["styles"][0]
+    return '''
+    var projection_%(n)s = ol.proj.get('EPSG:3857');
+    var projectionExtent_%(n)s = projection_%(n)s.getExtent();
+    var size_%(n)s = ol.extent.getWidth(projectionExtent_%(n)s) / 256;
+    var resolutions_%(n)s = new Array(14);
+    var matrixIds_%(n)s = new Array(14);
+    for (var z = 0; z < 14; ++z) {
+        // generate resolutions and matrixIds arrays for this WMTS
+        resolutions_%(n)s[z] = size_%(n)s / Math.pow(2, z);
+        matrixIds_%(n)s[z] = z;
+    }
+    var lyr_%(n)s = new ol.layer.Tile({
+                            source: new ol.source.WMTS(({
+                              url: "%(url)s",
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+                                "layer": "%(layerId)s",
+                                "TILED": "true",
+             matrixSet: 'EPSG:3857',
+             format: '%(format)s',
+              projection: projection_%(n)s,
+              tileGrid: new ol.tilegrid.WMTS({
+                origin: ol.extent.getTopLeft(projectionExtent_%(n)s),
+                resolutions: resolutions_%(n)s,
+                matrixIds: matrixIds_%(n)s
+              }),
+              style: '%(style)s',
+              wrapX: true,
+                                "VERSION": "1.0.0",
+                            })),
+                            title: "%(name)s",
+                            opacity: %(opacity)s,
+                            %(minRes)s
+                            %(maxRes)s
+                          });''' % {"layerId": layerId, "url": url,
+                                    "layerAttr": layerAttr, "format": format,
+                                    "n": layerName, "name": layer.name(),
+                                    "opacity": opacity, "style": style,
+                                    "minRes": minResolution,
+                                    "maxRes": maxResolution}
