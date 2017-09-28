@@ -141,19 +141,8 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
         else:
             cluster = False
         if isinstance(renderer, QgsHeatmapRenderer):
-            pointLayerType = "Heatmap"
-            hmRadius = renderer.radius()
-            colorRamp = renderer.colorRamp()
-            hmStart = colorRamp.color1().name()
-            hmEnd = colorRamp.color2().name()
-            hmRamp = "['" + hmStart + "', "
-            hmStops = colorRamp.stops()
-            for stop in hmStops:
-                hmRamp += "'" + stop.color.name() + "', "
-            hmRamp += "'" + hmEnd + "']"
-            hmWeight = renderer.weightExpression()
-            hmWeightId = layer.fieldNameIndex(hmWeight)
-            hmWeightMax = layer.maximumValue(hmWeightId)
+            (pointLayerType, hmRadius,
+             hmRamp, hmWeight, hmWeightMax) = getHeatmap(layer, renderer)
         else:
             pointLayerType = "Vector"
         if matchCRS:
@@ -194,20 +183,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 layerCode += '''
                 style: style_%(n)s,''' % {"n": layerName}
             else:
-                layerCode += '''
-                radius: %(hmRadius)d * 2,
-                gradient: %(hmRamp)s,
-                blur: 15,
-                shadow: 250,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
-                if hmWeight != "":
-                    layerCode += '''
-                weight: function(feature){
-                    var weightField = '%(hmWeight)s';
-                    var featureWeight = feature.get(weightField);
-                    var maxWeight = %(hmWeightMax)d;
-                    var calibratedWeight = featureWeight/maxWeight;
-                    return calibratedWeight;
-                },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
+                layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight,
+                                          hmWeightMax)
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
@@ -521,3 +498,38 @@ function get%(n)sJson(geojson) {
     jsonSource_%(n)s.addFeatures(features_%(n)s);
 }''' % {"name": layer.name(), "n": layerName,
         "min": minResolution, "max": maxResolution}
+
+
+def getHeatmap(layer, renderer):
+    pointLayerType = "Heatmap"
+    hmRadius = renderer.radius()
+    colorRamp = renderer.colorRamp()
+    hmStart = colorRamp.color1().name()
+    hmEnd = colorRamp.color2().name()
+    hmRamp = "['" + hmStart + "', "
+    hmStops = colorRamp.stops()
+    for stop in hmStops:
+        hmRamp += "'" + stop.color.name() + "', "
+    hmRamp += "'" + hmEnd + "']"
+    hmWeight = renderer.weightExpression()
+    hmWeightId = layer.fieldNameIndex(hmWeight)
+    hmWeightMax = layer.maximumValue(hmWeightId)
+    return (pointLayerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
+
+
+def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
+    layerCode = '''
+    radius: %(hmRadius)d * 2,
+    gradient: %(hmRamp)s,
+    blur: 15,
+    shadow: 250,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
+    if hmWeight != "":
+        layerCode += '''
+    weight: function(feature){
+        var weightField = '%(hmWeight)s';
+        var featureWeight = feature.get(weightField);
+        var maxWeight = %(hmWeightMax)d;
+        var calibratedWeight = featureWeight/maxWeight;
+        return calibratedWeight;
+    },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
+    return layerCode
