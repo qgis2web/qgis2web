@@ -165,33 +165,8 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
             crsConvert = """
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
         if layer.providerType() == "WFS" and not encode2json:
-            layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
-var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
-    format: format_%(n)s
-});''' % {"n": layerName, "layerAttr": layerAttr}
-            if cluster:
-                layerCode += '''cluster_%(n)s = new ol.source.Cluster({
-  distance: 10,
-  source: jsonSource_%(n)s
-});''' % {"n": layerName}
-            layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
-    source: ''' % {"n": layerName}
-            if cluster:
-                layerCode += 'cluster_%(n)s,' % {"n": layerName}
-            else:
-                layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
-            layerCode += '''%(min)s %(max)s
-    style: style_%(n)s,
-    title: "%(name)s"
-});
-
-function get%(n)sJson(geojson) {
-    var features_%(n)s = format_%(n)s.readFeatures(geojson);
-    jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {
-                "name": layer.name(), "n": layerName,
-                "min": minResolution, "max": maxResolution}
+            layerCode = getWFS(layer, layerName, layerAttr, cluster,
+                               minResolution, maxResolution)
             return layerCode
         else:
             layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
@@ -517,3 +492,32 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
         ol.Observable.unByKey(listenerKey);
     });""" % (sln, sln)
     return (fieldLabels, fieldAliases, fieldImages, blend_mode, labelgun)
+
+
+def getWFS(layer, layerName, layerAttr, cluster, minResolution, maxResolution):
+    layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
+var jsonSource_%(n)s = new ol.source.Vector({
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    format: format_%(n)s
+});''' % {"n": layerName, "layerAttr": layerAttr}
+    if cluster:
+        layerCode += '''cluster_%(n)s = new ol.source.Cluster({
+  distance: 10,
+  source: jsonSource_%(n)s
+});''' % {"n": layerName}
+    layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
+    source: ''' % {"n": layerName}
+    if cluster:
+        layerCode += 'cluster_%(n)s,' % {"n": layerName}
+    else:
+        layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
+    layerCode += '''%(min)s %(max)s
+    style: style_%(n)s,
+    title: "%(name)s"
+});
+
+function get%(n)sJson(geojson) {
+    var features_%(n)s = format_%(n)s.readFeatures(geojson);
+    jsonSource_%(n)s.addFeatures(features_%(n)s);
+}''' % {"name": layer.name(), "n": layerName,
+        "min": minResolution, "max": maxResolution}
