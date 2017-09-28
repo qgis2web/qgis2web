@@ -303,7 +303,7 @@ def getStyle(style, cluster, labelRes, labelText,
         "value": value}
     if cluster:
         this_style += '''var clusteredFeatures = feature.get("features");
-    var labelFont = "font: '%(size)spx%(face)s sans-serif'";
+    var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
     size = clusteredFeatures.length;
     var textAlign = "center";
@@ -327,7 +327,7 @@ def getStyle(style, cluster, labelRes, labelText,
                        "labelFill": color}
     else:
         this_style += '''size = 0;
-    var labelFont = "font: '%(size)spx%(face)s sans-serif'";
+    var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
     var textAlign = "left";
     var offsetX = 8;

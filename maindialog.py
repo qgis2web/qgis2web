@@ -409,7 +409,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     sln = utils.safeName(layer.name())
                     self.layer_search_combo.setItemData(
                         self.layer_search_combo.findText(displayStr),
-                        sln + unicode(count))
+                        sln + "_" + unicode(count))
 
     def configureExporter(self):
         self.exporter.configure()
