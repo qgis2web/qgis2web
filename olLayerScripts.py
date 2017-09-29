@@ -229,36 +229,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 return getWMTS(layer, d, layerAttr, layerName, opacity,
                                minResolution, maxResolution)
             else:
-                layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-                url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
-                metadata = layer.metadata()
-                needle = "<tr><td>%s</td><td>(.+?)</td>" % (
-                    QCoreApplication.translate("QgsWmsProvider",
-                                               "WMS Version"))
-                result = re.search(needle, metadata)
-                if result:
-                    version = result.group(1)
-                else:
-                    version = ""
-                return '''var lyr_%(n)s = new ol.layer.Tile({
-                            source: new ol.source.TileWMS(({
-                              url: "%(url)s",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
-                              params: {
-                                "LAYERS": "%(layers)s",
-                                "TILED": "true",
-                                "VERSION": "%(version)s"},
-                            })),
-                            title: "%(name)s",
-                            opacity: %(opacity)f,
-                            %(minRes)s
-                            %(maxRes)s
-                          });''' % {"layers": layers, "url": url,
-                                    "layerAttr": layerAttr,
-                                    "n": layerName, "name": layer.name(),
-                                    "version": version, "opacity": opacity,
-                                    "minRes": minResolution,
-                                    "maxRes": maxResolution}
+                return getWMS(source, layer, layerAttr, layerName, opacity,
+                              minResolution, maxResolution)
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
 
@@ -543,5 +515,39 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
                                     "layerAttr": layerAttr, "format": format,
                                     "n": layerName, "name": layer.name(),
                                     "opacity": opacity, "style": style,
+                                    "minRes": minResolution,
+                                    "maxRes": maxResolution}
+
+
+def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
+           maxResolution):
+    layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+    url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+    metadata = layer.metadata()
+    needle = "<tr><td>%s</td><td>(.+?)</td>" % (
+        QCoreApplication.translate("QgsWmsProvider",
+                                   "WMS Version"))
+    result = re.search(needle, metadata)
+    if result:
+        version = result.group(1)
+    else:
+        version = ""
+    return '''var lyr_%(n)s = new ol.layer.Tile({
+                            source: new ol.source.TileWMS(({
+                              url: "%(url)s",
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+                              params: {
+                                "LAYERS": "%(layers)s",
+                                "TILED": "true",
+                                "VERSION": "%(version)s"},
+                            })),
+                            title: "%(name)s",
+                            opacity: %(opacity)f,
+                            %(minRes)s
+                            %(maxRes)s
+                          });''' % {"layers": layers, "url": url,
+                                    "layerAttr": layerAttr,
+                                    "n": layerName, "name": layer.name(),
+                                    "version": version, "opacity": opacity,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
