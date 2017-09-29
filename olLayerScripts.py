@@ -69,14 +69,11 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
             if (qms and not isinstance(layer, TileLayer)) or not qms:
                 mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
                                  unicode(count))
-    visibility = ""
-    for layer, v in zip(mapLayers[1:], visible):
-        visibility += "\n".join(["%s.setVisible(%s);" % (layer,
-                                                         unicode(v).lower())])
+    visibility = getVisibility(mapLayers, visible)
 
-    (group_list,
-     no_group_list) = getGroups(canvas, layers, basemapList, restrictToExtent,
-                                extent, groupedLayers, usedGroups)
+    (group_list, no_group_list,
+     usedGroups) = getGroups(canvas, layers, basemapList, restrictToExtent,
+                             extent, groupedLayers)
     layersList = []
     for layer in (group_list + no_group_list):
         layersList.append(layer)
@@ -113,46 +110,21 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
 def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
                       restrictToExtent, extent, count):
-    if layer.hasScaleBasedVisibility():
-        if layer.minimumScale() != 0:
-            minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
-            minResolution = "\nminResolution:%s,\n" % unicode(minRes)
-        else:
-            minResolution = ""
-        if layer.maximumScale() != 0:
-            maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
-            maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
-        else:
-            maxResolution = ""
-    else:
-        minResolution = ""
-        maxResolution = ""
+    (minResolution, maxResolution) = getScaleRes(layer)
     layerName = safeName(layer.name()) + "_" + unicode(count)
-    attrText = layer.attribution()
-    attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    layerAttr = getAttribution(layer)
     if layer.type() == layer.VectorLayer and not is25d(layer,
                                                        iface.mapCanvas(),
                                                        restrictToExtent,
                                                        extent):
         renderer = layer.rendererV2()
-        if (cluster and isinstance(renderer, QgsSingleSymbolRendererV2)):
-            cluster = True
-        else:
-            cluster = False
+        cluster = isCluster(cluster, renderer)
         if isinstance(renderer, QgsHeatmapRenderer):
             (pointLayerType, hmRadius,
              hmRamp, hmWeight, hmWeightMax) = getHeatmap(layer, renderer)
         else:
             pointLayerType = "Vector"
-        if matchCRS:
-            mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
-            crsConvert = """
-            {dataProjection: 'EPSG:4326', featureProjection: '%(d)s'}""" % {
-                "d": mapCRS}
-        else:
-            crsConvert = """
-            {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
+        crsConvert = getCRS(matchCRS)
         if layer.providerType() == "WFS" and not encode2json:
             layerCode = getWFS(layer, layerName, layerAttr, cluster,
                                minResolution, maxResolution)
@@ -236,6 +208,26 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                              maxResolution)
 
 
+def getScaleRes(layer):
+    minResolution = ""
+    maxResolution = ""
+    if layer.hasScaleBasedVisibility():
+        if layer.minimumScale() != 0:
+            minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
+            minResolution = "\nminResolution:%s,\n" % unicode(minRes)
+        if layer.maximumScale() != 0:
+            maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
+            maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
+    return (minResolution, maxResolution)
+
+
+def getAttribution(layer):
+    attrText = layer.attribution()
+    attrUrl = layer.attributionUrl()
+    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    return layerAttr
+
+
 def getBasemaps(basemapList):
     basemaps = [basemapOL()[item] for _, item in enumerate(basemapList)]
     if len(basemapList) > 1:
@@ -284,10 +276,19 @@ osmb.set(json_{sln}_{count});""".format(shadows=shadows,
     return osmb
 
 
+def getVisibility(mapLayers, visible):
+    visibility = ""
+    for layer, v in zip(mapLayers[1:], visible):
+        visibility += "\n".join(["%s.setVisible(%s);" % (layer,
+                                                         unicode(v).lower())])
+    return visibility
+
+
 def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
-              groupedLayers, usedGroups):
+              groupedLayers):
     group_list = ["baseLayer"] if len(basemapList) else []
     no_group_list = []
+    usedGroups = []
     for count, layer in enumerate(layers):
         try:
             if is25d(layer, canvas, restrictToExtent, extent):
@@ -310,7 +311,7 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
             else:
                 no_group_list.append("lyr_" + safeName(layer.name()) +
                                      "_" + unicode(count))
-    return (group_list, no_group_list)
+    return (group_list, no_group_list, usedGroups)
 
 
 def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
@@ -388,6 +389,13 @@ function get%(n)sJson(geojson) {
         "min": minResolution, "max": maxResolution}
 
 
+def isCluster(cluster, renderer):
+    if (cluster and isinstance(renderer, QgsSingleSymbolRendererV2)):
+        cluster = True
+    else:
+        cluster = False
+    return cluster
+
 def getHeatmap(layer, renderer):
     pointLayerType = "Heatmap"
     hmRadius = renderer.radius()
@@ -403,6 +411,17 @@ def getHeatmap(layer, renderer):
     hmWeightId = layer.fieldNameIndex(hmWeight)
     hmWeightMax = layer.maximumValue(hmWeightId)
     return (pointLayerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
+
+
+def getCRS(matchCRS):
+    if matchCRS:
+        mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
+        crsConvert = """
+            {dataProjection: 'EPSG:4326', featureProjection: '%(d)s'}""" % {
+                "d": mapCRS}
+    else:
+            crsConvert = """
+            {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
 
 
 def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
