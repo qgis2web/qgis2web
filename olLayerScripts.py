@@ -467,10 +467,10 @@ def getHeatmap(layer, renderer):
 
 def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
     layerCode = '''
-    radius: %(hmRadius)d * 2,
-    gradient: %(hmRamp)s,
-    blur: 15,
-    shadow: 250,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
+                radius: %(hmRadius)d * 2,
+                gradient: %(hmRamp)s,
+                blur: 15,
+                shadow: 250,''' % {"hmRadius": hmRadius, "hmRamp": hmRamp}
     if hmWeight != "":
         layerCode += '''
     weight: function(feature){
