@@ -131,7 +131,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
         crsConvert = getCRS(iface, matchCRS)
         if layer.providerType() == "WFS" and not encode2json:
             return getWFS(layer, layerName, layerAttr, cluster,
-                               minResolution, maxResolution)
+                          minResolution, maxResolution)
         else:
             return getJSON(layerName, crsConvert, layerAttr, cluster,
                            pointLayerType, minResolution, maxResolution,
@@ -365,8 +365,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
         layerCode += '''
                 style: style_%(n)s,''' % {"n": layerName}
     else:
-        layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight,
-                                  hmWeightMax)
+        layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
     if isinstance(renderer, QgsSingleSymbolRendererV2):
         layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
@@ -377,9 +376,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             text = cat.label().replace("'", "\\'")
             icons += ("""\\
         <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                      {"icon": layerName,
-                       "count": count,
-                       "text": text})
+                      {"icon": layerName, "count": count, "text": text})
         layerCode += '''
         title: '%(name)s<br />%(icons)s'
             });''' % {"icons": icons, "name": layer.name()}
@@ -389,8 +386,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
             text = ran.label().replace("'", "\\'")
             icons += ("""\\
         <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                      {"icon": layerName, "count": count,
-                       "text": text})
+                      {"icon": layerName, "count": count, "text": text})
         layerCode += '''
                 title: '%(name)s<br />%(icons)s'
             });''' % {"icons": icons, "name": layer.name()}
@@ -407,6 +403,7 @@ def isCluster(cluster, renderer):
     else:
         cluster = False
     return cluster
+
 
 def getHeatmap(layer, renderer):
     pointLayerType = "Heatmap"
