@@ -232,40 +232,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 return getWMS(source, layer, layerAttr, layerName, opacity,
                               minResolution, maxResolution)
         elif layer.providerType().lower() == "gdal":
-            provider = layer.dataProvider()
-
-            crsSrc = layer.crs()
-            crsDest = QgsCoordinateReferenceSystem(3857)
-
-            xform = QgsCoordinateTransform(crsSrc, crsDest)
-            extentRep = xform.transform(layer.extent())
-
-            sExtent = "[%f, %f, %f, %f]" % (extentRep.xMinimum(),
-                                            extentRep.yMinimum(),
-                                            extentRep.xMaximum(),
-                                            extentRep.yMaximum())
-
-            return '''var lyr_%(n)s = new ol.layer.Image({
-                            opacity: 1,
-                            title: "%(name)s",
-                            %(minRes)s
-                            %(maxRes)s
-                            source: new ol.source.ImageStatic({
-                               url: "./layers/%(n)s.png",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
-                                projection: 'EPSG:3857',
-                                alwaysInRange: true,
-                                //imageSize: [%(col)d, %(row)d],
-                                imageExtent: %(extent)s
-                            })
-                        });''' % {"n": layerName,
-                                  "extent": sExtent,
-                                  "col": provider.xSize(),
-                                  "name": layer.name(),
-                                  "minRes": minResolution,
-                                  "maxRes": maxResolution,
-                                  "layerAttr": layerAttr,
-                                  "row": provider.ySize()}
+            return getRaster(layer, layerName, layerAttr, minResolution,
+                             maxResolution)
 
 
 def getBasemaps(basemapList):
@@ -551,3 +519,38 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                                     "version": version, "opacity": opacity,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
+
+
+def getRaster(layer, layerName, layerAttr, minResolution, maxResolution):
+    provider = layer.dataProvider()
+
+    crsSrc = layer.crs()
+    crsDest = QgsCoordinateReferenceSystem(3857)
+
+    xform = QgsCoordinateTransform(crsSrc, crsDest)
+    extentRep = xform.transform(layer.extent())
+
+    sExtent = "[%f, %f, %f, %f]" % (extentRep.xMinimum(), extentRep.yMinimum(),
+                                    extentRep.xMaximum(), extentRep.yMaximum())
+
+    return '''var lyr_%(n)s = new ol.layer.Image({
+                            opacity: 1,
+                            title: "%(name)s",
+                            %(minRes)s
+                            %(maxRes)s
+                            source: new ol.source.ImageStatic({
+                               url: "./layers/%(n)s.png",
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+                                projection: 'EPSG:3857',
+                                alwaysInRange: true,
+                                //imageSize: [%(col)d, %(row)d],
+                                imageExtent: %(extent)s
+                            })
+                        });''' % {"n": layerName,
+                                  "extent": sExtent,
+                                  "col": provider.xSize(),
+                                  "name": layer.name(),
+                                  "minRes": minResolution,
+                                  "maxRes": maxResolution,
+                                  "layerAttr": layerAttr,
+                                  "row": provider.ySize()}
