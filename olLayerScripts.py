@@ -119,76 +119,24 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
                                                        extent):
         renderer = layer.rendererV2()
         cluster = isCluster(cluster, renderer)
+        hmRadius = 0
+        hmRamp = ""
+        hmWeight = 0
+        hmWeightMax = 0
         if isinstance(renderer, QgsHeatmapRenderer):
             (pointLayerType, hmRadius,
              hmRamp, hmWeight, hmWeightMax) = getHeatmap(layer, renderer)
         else:
             pointLayerType = "Vector"
-        crsConvert = getCRS(matchCRS)
+        crsConvert = getCRS(iface, matchCRS)
         if layer.providerType() == "WFS" and not encode2json:
-            layerCode = getWFS(layer, layerName, layerAttr, cluster,
+            return getWFS(layer, layerName, layerAttr, cluster,
                                minResolution, maxResolution)
-            return layerCode
         else:
-            layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
-var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
-var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
-});
-jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
-                                                    "crs": crsConvert,
-                                                    "layerAttr": layerAttr}
-            if cluster:
-                layerCode += '''cluster_%(n)s = new ol.source.Cluster({
-  distance: 10,
-  source: jsonSource_%(n)s
-});''' % {"n": layerName}
-            layerCode += '''var lyr_%(n)s = new ol.layer.%(t)s({
-                source:''' % {"n": layerName, "t": pointLayerType}
-            if cluster:
-                layerCode += 'cluster_%(n)s,' % {"n": layerName}
-            else:
-                layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
-            layerCode += '''%(min)s %(max)s''' % {"min": minResolution,
-                                                  "max": maxResolution}
-            if pointLayerType == "Vector":
-                layerCode += '''
-                style: style_%(n)s,''' % {"n": layerName}
-            else:
-                layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight,
-                                          hmWeightMax)
-            if isinstance(renderer, QgsSingleSymbolRendererV2):
-                layerCode += '''
-                title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
-            });''' % {"icon": layerName, "name": layer.name()}
-            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                icons = ""
-                for count, cat in enumerate(renderer.categories()):
-                    text = cat.label().replace("'", "\\'")
-                    icons += ("""\\
-        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                              {"icon": layerName,
-                               "count": count,
-                               "text": text})
-                layerCode += '''
-                title: '%(name)s<br />%(icons)s'
-            });''' % {"icons": icons, "name": layer.name()}
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                icons = ""
-                for count, ran in enumerate(renderer.ranges()):
-                    text = ran.label().replace("'", "\\'")
-                    icons += ("""\\
-        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                              {"icon": layerName, "count": count,
-                               "text": text})
-                layerCode += '''
-                title: '%(name)s<br />%(icons)s'
-            });''' % {"icons": icons, "name": layer.name()}
-            else:
-                layerCode += '''
-                title: '%(name)s'
-            });''' % {"name": layer.name()}
-            return layerCode
+            return getJSON(layerName, crsConvert, layerAttr, cluster,
+                           pointLayerType, minResolution, maxResolution,
+                           hmRadius, hmRamp, hmWeight, hmWeightMax, renderer,
+                           layer)
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -389,6 +337,70 @@ function get%(n)sJson(geojson) {
         "min": minResolution, "max": maxResolution}
 
 
+def getJSON(layerName, crsConvert, layerAttr, cluster, pointLayerType,
+            minResolution, maxResolution, hmRadius, hmRamp, hmWeight,
+            hmWeightMax, renderer, layer):
+    layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
+var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
+var jsonSource_%(n)s = new ol.source.Vector({
+    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+});
+jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
+                                                    "crs": crsConvert,
+                                                    "layerAttr": layerAttr}
+    if cluster:
+        layerCode += '''cluster_%(n)s = new ol.source.Cluster({
+  distance: 10,
+  source: jsonSource_%(n)s
+});''' % {"n": layerName}
+    layerCode += '''var lyr_%(n)s = new ol.layer.%(t)s({
+                source:''' % {"n": layerName, "t": pointLayerType}
+    if cluster:
+        layerCode += 'cluster_%(n)s,' % {"n": layerName}
+    else:
+        layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
+    layerCode += '''%(min)s %(max)s''' % {"min": minResolution,
+                                          "max": maxResolution}
+    if pointLayerType == "Vector":
+        layerCode += '''
+                style: style_%(n)s,''' % {"n": layerName}
+    else:
+        layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight,
+                                  hmWeightMax)
+    if isinstance(renderer, QgsSingleSymbolRendererV2):
+        layerCode += '''
+                title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
+            });''' % {"icon": layerName, "name": layer.name()}
+    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        icons = ""
+        for count, cat in enumerate(renderer.categories()):
+            text = cat.label().replace("'", "\\'")
+            icons += ("""\\
+        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                      {"icon": layerName,
+                       "count": count,
+                       "text": text})
+        layerCode += '''
+        title: '%(name)s<br />%(icons)s'
+            });''' % {"icons": icons, "name": layer.name()}
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        icons = ""
+        for count, ran in enumerate(renderer.ranges()):
+            text = ran.label().replace("'", "\\'")
+            icons += ("""\\
+        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                      {"icon": layerName, "count": count,
+                       "text": text})
+        layerCode += '''
+                title: '%(name)s<br />%(icons)s'
+            });''' % {"icons": icons, "name": layer.name()}
+    else:
+        layerCode += '''
+                title: '%(name)s'
+            });''' % {"name": layer.name()}
+    return layerCode
+
+
 def isCluster(cluster, renderer):
     if (cluster and isinstance(renderer, QgsSingleSymbolRendererV2)):
         cluster = True
@@ -413,15 +425,16 @@ def getHeatmap(layer, renderer):
     return (pointLayerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
 
 
-def getCRS(matchCRS):
+def getCRS(iface, matchCRS):
     if matchCRS:
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
         crsConvert = """
             {dataProjection: 'EPSG:4326', featureProjection: '%(d)s'}""" % {
                 "d": mapCRS}
     else:
-            crsConvert = """
+        crsConvert = """
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
+    return crsConvert
 
 
 def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
