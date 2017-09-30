@@ -132,36 +132,12 @@ class OpenLayersWriter(Writer):
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
             ['1' for field in popup])
-        controls = ['expandedAttribution']
         project = QgsProject.instance()
-        if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-            controls.append("new ol.control.ScaleLine({})")
-        if measureTool != "None":
-            controls.append(
-                'new measureControl()')
-        if geolocateUser:
-            controls.append(
-                'new geolocateControl()')
-        if (addLayersList and addLayersList != "" and addLayersList != "None"):
-            layersList = """
-var layerSwitcher = new ol.control.LayerSwitcher({tipLabel: "Layers"});
-map.addControl(layerSwitcher);"""
-            if addLayersList == "Expanded":
-                layersList += """
-layerSwitcher.hidePanel = function() {};
-layerSwitcher.showPanel();
-"""
-        else:
-            layersList = ""
+        controls = getControls(project, measureTool, geolocateUser)
+        layersList = getLayersList(addLayersList)
         pageTitle = project.title()
         mapSettings = iface.mapCanvas().mapSettings()
-        backgroundColor = """
-        <style>
-        html, body {{
-            background-color: {bgcol};
-        }}
-        </style>
-""".format(bgcol=mapSettings.backgroundColor().name())
+        backgroundColor = getBackground(mapSettings)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
@@ -170,78 +146,22 @@ layerSwitcher.showPanel();
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
-        proj4 = ""
-        proj = ""
-        view = "%s maxZoom: %d, minZoom: %d" % (
-            mapextent, maxZoom, minZoom)
-        if matchCRS:
-            proj4 = """
-<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
-            proj4 += "</script>"
-            proj = "<script>proj4.defs('{epsg}','{defn}');</script>"\
-                .format(
-                    epsg=mapSettings.destinationCrs().authid(),
-                    defn=mapSettings.destinationCrs().toProj4())
-            view += ", projection: '%s'" % (
-                mapSettings.destinationCrs().authid())
-        if measureTool != "None":
-            measureControl = measureControlScript()
-            measuring = measuringScript()
-            measure = measureScript()
-            if measureTool == "Imperial":
-                measureUnit = measureUnitFeetScript()
-            else:
-                measureUnit = measureUnitMetricScript()
-            measureStyle = measureStyleScript(controlCount)
-            controlCount = controlCount + 1
-        else:
-            measureControl = ""
-            measuring = ""
-            measure = ""
-            measureUnit = ""
-            measureStyle = ""
+        (proj, proj4, view) = getCRSView(mapextent, maxZoom, minZoom,
+                                         matchCRS, mapSettings)
+        (measureControl, measuring, measure, measureUnit, measureStyle,
+         controlCount) = getMeasure(measureTool, controlCount)
         geolocateHead = geolocationHead(geolocateUser)
         geolocate = geolocation(geolocateUser)
         geocodingLinks = geocodeLinks(geocode)
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
-        extracss = """
-        <link rel="stylesheet" """
-        extracss += """href="./resources/ol3-layerswitcher.css">
-        <link rel="stylesheet" """
-        extracss += """href="./resources/qgis2web.css">"""
-        if geocode:
-            geocodePos = 65 + (controlCount * 35)
-            extracss += """
-        <style>
-        .ol-geocoder.gcd-gl-container {
-            top: %dpx!important;
-        }
-        .ol-geocoder .gcd-gl-btn {
-            width: 21px!important;
-            height: 21px!important;
-        }
-        </style>""" % geocodePos
-        if geolocateUser:
-            extracss += """
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
-            extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
-        ol3layerswitcher = """
-        <script src="./resources/ol3-layerswitcher.js"></script>"""
-        ol3popup = """<div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>"""
-        ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>"""
-        if osmb != "":
-            ol3qgis2webjs += """
-        <script>{osmb}</script>""".format(osmb=osmb)
-        ol3layers = """
-        <script src="./layers/layers.js" type="text/javascript"></script>"""
+        (extracss, controlCount) = getCSS(geocode, geolocateUser, controlCount)
+        ol3layerswitcher = getLayerSwitcher()
+        ol3popup = getPopup()
+        ol3qgis2webjs = getJS(osmb)
+        ol3layers = getLayers()
         mapSize = iface.mapCanvas().size()
-        exp_js = """
-        <script src="resources/qgis2web_expressions.js"></script>"""
+        exp_js = getExpJS()
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
@@ -349,3 +269,131 @@ def bounds(iface, useCanvas, layers, matchCRS):
 
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                  extent.xMaximum(), extent.yMaximum())
+
+
+def getControls(project, measureTool, geolocateUser):
+    controls = ['expandedAttribution']
+    if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
+        controls.append("new ol.control.ScaleLine({})")
+    if measureTool != "None":
+        controls.append('new measureControl()')
+    if geolocateUser:
+        controls.append('new geolocateControl()')
+    return controls
+
+
+def getLayersList(addLayersList):
+    if (addLayersList and addLayersList != "" and addLayersList != "None"):
+        layersList = """
+var layerSwitcher = new ol.control.LayerSwitcher({tipLabel: "Layers"});
+map.addControl(layerSwitcher);"""
+        if addLayersList == "Expanded":
+            layersList += """
+layerSwitcher.hidePanel = function() {};
+layerSwitcher.showPanel();
+"""
+    else:
+        layersList = ""
+    return layersList
+
+
+def getBackground(mapSettings):
+    return """
+        <style>
+        html, body {{
+            background-color: {bgcol};
+        }}
+        </style>
+""".format(bgcol=mapSettings.backgroundColor().name())
+
+
+def getCRSView(mapextent, maxZoom, minZoom, matchCRS, mapSettings):
+    proj4 = ""
+    proj = ""
+    view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+    if matchCRS:
+        proj4 = """
+<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
+        proj4 += "</script>"
+        proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
+            epsg=mapSettings.destinationCrs().authid(),
+            defn=mapSettings.destinationCrs().toProj4())
+        view += ", projection: '%s'" % (mapSettings.destinationCrs().authid())
+    return (proj, proj4, view)
+    
+    
+def getMeasure(measureTool, controlCount):
+    if measureTool != "None":
+        measureControl = measureControlScript()
+        measuring = measuringScript()
+        measure = measureScript()
+        if measureTool == "Imperial":
+            measureUnit = measureUnitFeetScript()
+        else:
+            measureUnit = measureUnitMetricScript()
+        measureStyle = measureStyleScript(controlCount)
+        controlCount = controlCount + 1
+    else:
+        measureControl = ""
+        measuring = ""
+        measure = ""
+        measureUnit = ""
+        measureStyle = ""
+    return (measureControl, measuring, measure, measureUnit, measureStyle,
+            controlCount)
+
+
+def getCSS(geocode, geolocateUser, controlCount):
+    extracss = """
+        <link rel="stylesheet" """
+    extracss += """href="./resources/ol3-layerswitcher.css">
+        <link rel="stylesheet" """
+    extracss += """href="./resources/qgis2web.css">"""
+    if geocode:
+        geocodePos = 65 + (controlCount * 35)
+        extracss += """
+        <style>
+        .ol-geocoder.gcd-gl-container {
+            top: %dpx!important;
+        }
+        .ol-geocoder .gcd-gl-btn {
+            width: 21px!important;
+            height: 21px!important;
+        }
+        </style>""" % geocodePos
+    if geolocateUser:
+        extracss += """
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
+        extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
+    return (extracss, controlCount)
+    
+    
+def getLayerSwitcher():
+    return """
+        <script src="./resources/ol3-layerswitcher.js"></script>"""
+
+
+def getPopup():
+    return """<div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>"""
+
+
+def getJS(osmb):
+    ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
+        <script src="./resources/Autolinker.min.js"></script>"""
+    if osmb != "":
+        ol3qgis2webjs += """
+        <script>{osmb}</script>""".format(osmb=osmb)
+    return ol3qgis2webjs
+    
+    
+def getLayers():
+    return """
+        <script src="./layers/layers.js" type="text/javascript"></script>"""
+        
+        
+def getExpJS():
+    return """
+        <script src="resources/qgis2web_expressions.js"></script>"""
