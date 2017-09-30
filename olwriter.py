@@ -320,8 +320,8 @@ def getCRSView(mapextent, maxZoom, minZoom, matchCRS, mapSettings):
             defn=mapSettings.destinationCrs().toProj4())
         view += ", projection: '%s'" % (mapSettings.destinationCrs().authid())
     return (proj, proj4, view)
-    
-    
+
+
 def getMeasure(measureTool, controlCount):
     if measureTool != "None":
         measureControl = measureControlScript()
@@ -366,8 +366,8 @@ def getCSS(geocode, geolocateUser, controlCount):
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
         extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
     return (extracss, controlCount)
-    
-    
+
+
 def getLayerSwitcher():
     return """
         <script src="./resources/ol3-layerswitcher.js"></script>"""
@@ -387,13 +387,13 @@ def getJS(osmb):
         ol3qgis2webjs += """
         <script>{osmb}</script>""".format(osmb=osmb)
     return ol3qgis2webjs
-    
-    
+
+
 def getLayers():
     return """
         <script src="./layers/layers.js" type="text/javascript"></script>"""
-        
-        
+
+
 def getExpJS():
     return """
         <script src="resources/qgis2web_expressions.js"></script>"""
