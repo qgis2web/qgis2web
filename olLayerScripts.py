@@ -43,34 +43,12 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                                       matchCRS, cluster,
                                                       restrictToExtent,
                                                       extent, count)])
-    groupVars = ""
-    groupedLayers = {}
-    for group, groupLayers in groups.iteritems():
-        groupLayerObjs = ""
-        for layer in groupLayers:
-            if qms:
-                if isinstance(layer, TileLayer):
-                    continue
-            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
-                               layer_names_id[layer.id()] + ",")
-        groupVars += ('''var %s = new ol.layer.Group({
-                                layers: [%s],
-                                title: "%s"});\n''' %
-                      ("group_" + safeName(group), groupLayerObjs, group))
-        for layer in groupLayers:
-            groupedLayers[layer.id()] = safeName(group)
-    mapLayers = ["baseLayer"]
-    usedGroups = []
-    osmb = ""
-    for count, layer in enumerate(layers):
-        if is25d(layer, canvas, restrictToExtent, extent):
-            osmb = build25d(canvas, layer, count)
-        else:
-            if (qms and not isinstance(layer, TileLayer)) or not qms:
-                mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
-                                 unicode(count))
+    (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
+    (mapLayers, osmb) = layersAnd25d(layers, canvas, restrictToExtent, extent,
+                                     qms)
     visibility = getVisibility(mapLayers, visible)
 
+    usedGroups = []
     (group_list, no_group_list,
      usedGroups) = getGroups(canvas, layers, basemapList, restrictToExtent,
                              extent, groupedLayers)
@@ -230,6 +208,39 @@ def getVisibility(mapLayers, visible):
         visibility += "\n".join(["%s.setVisible(%s);" % (layer,
                                                          unicode(v).lower())])
     return visibility
+
+
+def buildGroups(groups, qms, layer_names_id):
+    groupVars = ""
+    groupedLayers = {}
+    for group, groupLayers in groups.iteritems():
+        groupLayerObjs = ""
+        for layer in groupLayers:
+            if qms:
+                if isinstance(layer, TileLayer):
+                    continue
+            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
+                               layer_names_id[layer.id()] + ",")
+        groupVars += ('''var %s = new ol.layer.Group({
+                                layers: [%s],
+                                title: "%s"});\n''' %
+                      ("group_" + safeName(group), groupLayerObjs, group))
+        for layer in groupLayers:
+            groupedLayers[layer.id()] = safeName(group)
+    return (groupVars, groupedLayers)
+
+
+def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
+    mapLayers = ["baseLayer"]
+    osmb = ""
+    for count, layer in enumerate(layers):
+        if is25d(layer, canvas, restrictToExtent, extent):
+            osmb = build25d(canvas, layer, count)
+        else:
+            if (qms and not isinstance(layer, TileLayer)) or not qms:
+                mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
+                                 unicode(count))
+    return (mapLayers, osmb)
 
 
 def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
