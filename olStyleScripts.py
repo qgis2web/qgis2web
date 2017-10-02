@@ -202,13 +202,6 @@ function categories_%s(feature, value, size, resolution, labelText,
                     break;''' % style
         cats.append(categoryStr)
     defs += "\n".join(cats) + "}};"
-    classAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(classAttr)
-    editFormConfig = layer.editFormConfig()
-    editorWidget = editFormConfig.widgetType(fieldIndex)
-    if editorWidget == QgsVectorLayer.Hidden or editorWidget == 'Hidden':
-        classAttr = "q2wHide_" + classAttr
-    value = ('var value = feature.get("%s");' % classAttr)
     style = """
 var style = categories_%s(feature, value, size, resolution, labelText,
                           labelFont, labelFill)""" % sln
@@ -233,14 +226,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
                             symbolstyle))
         elseif = " else "
     style = "".join(ranges)
-    classAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(classAttr)
-    editFormConfig = layer.editFormConfig()
-    editorWidget = editFormConfig.widgetType(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
-        classAttr = "q2wHide_" + classAttr
-    value = ('var value = feature.get("%s");' % classAttr)
+    value = getValue(layer, renderer)
     return (style, pattern, setPattern, value)
 
 
@@ -289,6 +275,16 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln):
     style = template % (sln, js, elsejs, sln)
     return (style, pattern, setPattern, value)
 
+
+def getValue(layer, renderer):
+    classAttr = renderer.classAttribute()
+    fieldIndex = layer.pendingFields().indexFromName(classAttr)
+    editFormConfig = layer.editFormConfig()
+    editorWidget = editFormConfig.widgetType(fieldIndex)
+    if editorWidget == QgsVectorLayer.Hidden or editorWidget == 'Hidden':
+        classAttr = "q2wHide_" + classAttr
+    value = ('var value = feature.get("%s");' % classAttr)
+    return value
 
 def getStyle(style, cluster, labelRes, labelText,
              sln, size, face, color, value):
