@@ -286,6 +286,7 @@ def getValue(layer, renderer):
     value = ('var value = feature.get("%s");' % classAttr)
     return value
 
+
 def getStyle(style, cluster, labelRes, labelText,
              sln, size, face, color, value):
     this_style = '''function(feature, resolution){
