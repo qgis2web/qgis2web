@@ -382,30 +382,27 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
             });''' % {"icon": layerName, "name": layer.name()}
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-        icons = ""
-        for count, cat in enumerate(renderer.categories()):
-            text = cat.label().replace("'", "\\'")
-            icons += ("""\\
-        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                      {"icon": layerName, "count": count, "text": text})
-        layerCode += '''
-        title: '%(name)s<br />%(icons)s'
-            });''' % {"icons": icons, "name": layer.name()}
+        layerCode += getLegend(renderer.categories(), layer, layerName)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        icons = ""
-        for count, ran in enumerate(renderer.ranges()):
-            text = ran.label().replace("'", "\\'")
-            icons += ("""\\
-        <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                      {"icon": layerName, "count": count, "text": text})
-        layerCode += '''
-                title: '%(name)s<br />%(icons)s'
-            });''' % {"icons": icons, "name": layer.name()}
+        layerCode += getLegend(renderer.ranges(), layer, layerName)
     else:
         layerCode += '''
                 title: '%(name)s'
             });''' % {"name": layer.name()}
     return layerCode
+
+
+def getLegend(subitems, layer, layerName):
+    icons = ""
+    for count, subitem in enumerate(subitems):
+        text = subitem.label().replace("'", "\\'")
+        icons += ("""\\
+    <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
+                  {"icon": layerName, "count": count, "text": text})
+    legend = '''
+    title: '%(name)s<br />%(icons)s'
+        });''' % {"icons": icons, "name": layer.name()}
+    return legend
 
 
 def isCluster(cluster, renderer):
