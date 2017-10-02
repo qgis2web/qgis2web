@@ -22,7 +22,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 from exp2js import compile_to_file
-from utils import safeName, getRGBAColor
+from utils import safeName, getRGBAColor, handleHiddenField
 
 
 def exportStyles(layers, folder, clustered):
@@ -205,6 +205,7 @@ function categories_%s(feature, value, size, resolution, labelText,
     style = """
 var style = categories_%s(feature, value, size, resolution, labelText,
                           labelFont, labelFill)""" % sln
+    value = getValue(layer, renderer)
     return (style, pattern, setPattern, value, defs)
 
 
@@ -277,12 +278,7 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln):
 
 
 def getValue(layer, renderer):
-    classAttr = renderer.classAttribute()
-    fieldIndex = layer.pendingFields().indexFromName(classAttr)
-    editFormConfig = layer.editFormConfig()
-    editorWidget = editFormConfig.widgetType(fieldIndex)
-    if editorWidget == QgsVectorLayer.Hidden or editorWidget == 'Hidden':
-        classAttr = "q2wHide_" + classAttr
+    classAttr = handleHiddenField(layer, renderer.classAttribute())
     value = ('var value = feature.get("%s");' % classAttr)
     return value
 
