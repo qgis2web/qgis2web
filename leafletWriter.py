@@ -29,14 +29,12 @@ from qgis.core import (QgsApplication,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 import traceback
-import qgis.utils
 from PyQt4.QtCore import (Qt,
                           QObject)
 from PyQt4.QtGui import QApplication, QCursor
 import os
 from datetime import datetime
 import re
-from basemaps import basemapLeaflet
 from leafletFileScripts import (writeFoldersAndFiles,
                                 writeCSS,
                                 writeHTMLstart)
@@ -58,8 +56,7 @@ from leafletScriptStrings import (jsonScript,
                                   scaleBar,
                                   scaleDependentScript,
                                   titleSubScript)
-from utils import (ALL_ATTRIBUTES, PLACEMENT, removeSpaces, exportVector,
-                   exportRaster)
+from utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster)
 from writer import (Writer,
                     WriterResult,
                     translator)
