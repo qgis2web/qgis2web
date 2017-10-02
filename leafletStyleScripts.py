@@ -1,8 +1,5 @@
 import os
 import shutil
-import re
-from math import floor
-import xml.etree.ElementTree
 from PyQt4.QtCore import QPyNullVariant
 from qgis.core import (QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,

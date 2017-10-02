@@ -18,7 +18,6 @@
 import os
 import re
 from datetime import datetime
-import traceback
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,

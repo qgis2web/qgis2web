@@ -1,5 +1,4 @@
 import re
-import traceback
 import os
 import codecs
 from urlparse import parse_qs
@@ -11,8 +10,7 @@ from qgis.core import (QgsRenderContext,
                        QgsGraduatedSymbolRendererV2,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform,
-                       QgsMessageLog)
+                       QgsCoordinateTransform)
 from utils import safeName, is25d, BLEND_MODES
 from basemaps import basemapOL
 qms = False

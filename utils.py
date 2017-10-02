@@ -39,17 +39,11 @@ from qgis.core import (QgsApplication,
                        QgsGraduatedSymbolRendererV2,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
-                       QgsRasterPipe,
-                       QgsMessageLog)
-try:
-    from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayerV2)
-except:
-    pass
+                       QgsRasterPipe)
+from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayerV2)
 from qgis.utils import QGis
 import processing
 import tempfile
-import json
-import traceback
 
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
