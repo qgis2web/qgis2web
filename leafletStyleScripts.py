@@ -185,21 +185,9 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         markerType = "marker"
     elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
 
-        # Check for old version
-        if 'color' in props:
-            color = getRGBAColor(props["color"], alpha)
-        else:
-            color = getRGBAColor(props["line_color"], alpha)
-
-        if 'width' in props:
-            line_width = props["width"]
-        else:
-            line_width = props["line_width"]
-
-        if 'penstyle' in props:
-            line_style = props["penstyle"]
-        else:
-            line_style = props["line_style"]
+        color = getRGBAColor(props["line_color"], alpha)
+        line_width = props["line_width"]
+        line_style = props["line_style"]
 
         lineCap = sl.penCapStyle()
         lineJoin = sl.penJoinStyle()
@@ -211,21 +199,9 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
     elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
         fillColor = getRGBAColor(props["color"], alpha)
 
-        # for old version
-        if 'color_border' in props:
-            borderColor = getRGBAColor(props["color_border"], alpha)
-        else:
-            borderColor = getRGBAColor(props["outline_color"], alpha)
-
-        if 'style_border' in props:
-            borderStyle = props["style_border"]
-        else:
-            borderStyle = props["outline_style"]
-
-        if 'width_border' in props:
-            borderWidth = props["width_border"]
-        else:
-            borderWidth = props["outline_width"]
+        borderColor = getRGBAColor(props["outline_color"], alpha)
+        borderStyle = props["outline_style"]
+        borderWidth = props["outline_width"]
 
         try:
             lineCap = sl.penCapStyle()
