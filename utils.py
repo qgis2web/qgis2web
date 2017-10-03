@@ -100,7 +100,7 @@ def getUsedFields(layer):
     return fields
 
 
-def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
+def writeTmpLayer(layer, restrictToExtent, iface, extent):
     fields = layer.pendingFields()
     usedFields = []
     for count, field in enumerate(fields):
@@ -173,7 +173,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
                 (layer.providerType() != "WFS" or encode2json)):
             feedback.showFeedback('Exporting %s to JSON...' % layer.name())
             crs = QgsCoordinateReferenceSystem("EPSG:4326")
-            exportVector(layer, sln, popup, layersFolder, restrictToExtent,
+            exportVector(layer, sln, layersFolder, restrictToExtent,
                          iface, extent, precision, crs, optimize)
             feedback.completeStep()
         elif (layer.type() == layer.RasterLayer and
@@ -184,10 +184,10 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
     feedback.completeStep()
 
 
-def exportVector(layer, sln, popup, layersFolder, restrictToExtent, iface,
+def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
                  extent, precision, crs, minify):
     canvas = iface.mapCanvas()
-    cleanLayer = writeTmpLayer(layer, popup, restrictToExtent, iface, extent)
+    cleanLayer = writeTmpLayer(layer, restrictToExtent, iface, extent)
     if is25d(layer, canvas, restrictToExtent, extent):
         add25dAttributes(cleanLayer, layer, canvas)
     tmpPath = os.path.join(layersFolder, sln + ".json")

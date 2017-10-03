@@ -75,9 +75,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
     elif isinstance(renderer, QgsHeatmapRenderer):
         useHeat = True
-        (new_obj, legends,
-         wfsLayers) = heatmapLayer(layer, safeLayerName, renderer, legends,
-                                   wfsLayers)
+        new_obj = heatmapLayer(layer, safeLayerName, renderer)
     elif isinstance(renderer, QgsSingleSymbolRendererV2):
         (style, markerType,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
@@ -387,7 +385,7 @@ def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
     if layer.providerType() == 'WFS' and json is False:
         p2lf = ""
         for sl in xrange(symbol.symbolLayerCount()):
-            p2lf += pointToLayerFunction(safeLayerName, symbol, sl)
+            p2lf += pointToLayerFunction(safeLayerName, sl)
         (new_obj,
          scriptTag,
          useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer, cluster,
@@ -422,7 +420,7 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers, symbol,
     return new_obj, wfsLayers, useMultiStyle
 
 
-def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
+def heatmapLayer(layer, safeLayerName, renderer):
     attrText = layer.attribution()
     if attrText != "":
         attrUrl = layer.attributionUrl()
@@ -457,7 +455,7 @@ def heatmapLayer(layer, safeLayerName, renderer, legends, wfsLayers):
         """ % {"sln": safeLayerName, "hmWeight": hmWeight, "attr": layerAttr,
                "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
                "hmRadius": hmRadius}
-    return new_obj, legends, wfsLayers
+    return new_obj
 
 
 def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,

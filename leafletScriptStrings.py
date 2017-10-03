@@ -251,7 +251,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     return catLegend
 
 
-def pointToLayerFunction(safeLayerName, symbol, sl):
+def pointToLayerFunction(safeLayerName, sl):
     try:
         if isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             markerType = "marker"
