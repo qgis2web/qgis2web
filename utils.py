@@ -368,7 +368,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
             shutil.copyfile(piped_3857, out_raster)
     else:
             shutil.copyfile(piped_file, out_raster)
-       
+
 
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.type() != layer.VectorLayer:
