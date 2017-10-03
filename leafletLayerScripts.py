@@ -1,11 +1,7 @@
 import re
 import os
-import shutil
-import tempfile
-from PyQt4.QtCore import QSize, QVariant
-import time
+from PyQt4.QtCore import QSize
 from qgis.core import (QgsVectorLayer,
-                       QgsVectorFileWriter,
                        QgsPalLayerSettings,
                        QgsSingleSymbolRendererV2,
                        QgsCategorizedSymbolRendererV2,
@@ -13,16 +9,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsRuleBasedRendererV2,
                        QgsHeatmapRenderer,
                        QgsSymbolLayerV2Utils,
-                       QgsRasterFileWriter,
-                       QgsRasterPipe,
-                       QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform,
                        QgsDataSourceURI,
-                       QgsField,
                        QgsRenderContext,
-                       QgsExpression,
-                       QgsExpressionContext,
-                       QgsExpressionContextUtils)
+                       QgsExpression)
 from qgis.utils import QGis
 import processing
 from leafletStyleScripts import getLayerStyle
