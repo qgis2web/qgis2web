@@ -173,7 +173,7 @@ class LeafletWriter(Writer):
                 if layer.type() == QgsMapLayer.VectorLayer:
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
-                    exportVector(layer, safeLayerName, eachPopup, dataStore,
+                    exportVector(layer, safeLayerName, dataStore,
                                  restrictToExtent, iface, extent, precision,
                                  exp_crs, minify)
                     new_src += jsonScript(safeLayerName)
