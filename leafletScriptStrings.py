@@ -1,6 +1,5 @@
 import re
 import os
-import shutil
 import traceback
 from urlparse import parse_qs
 from PyQt4.QtCore import QSize
