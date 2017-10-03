@@ -161,8 +161,8 @@ def writeTmpLayer(layer, popup, restrictToExtent, iface, extent):
     return newlayer
 
 
-def exportLayers(iface, layers, folder, precision, optimize,
-                 popupField, json, restrictToExtent, extent, feedback):
+def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
+                 restrictToExtent, extent, feedback, matchCRS):
     feedback.showFeedback('Exporting layers...')
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
@@ -179,7 +179,7 @@ def exportLayers(iface, layers, folder, precision, optimize,
         elif (layer.type() == layer.RasterLayer and
                 layer.providerType() != "wms"):
             feedback.showFeedback('Exporting %s as raster...' % layer.name())
-            exportRaster(layer, count, layersFolder, feedback)
+            exportRaster(layer, count, layersFolder, feedback, iface, matchCRS)
             feedback.completeStep()
     feedback.completeStep()
 
@@ -261,7 +261,7 @@ def add25dAttributes(cleanLayer, layer, canvas):
     renderer.stopRender(renderContext)
 
 
-def exportRaster(layer, count, layersFolder, feedback):
+def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     feedback.showFeedback("Exporting %s to PNG..." % layer.name())
     name_ts = (safeName(layer.name()) + unicode(count) +
                unicode(int(time.time())))
@@ -296,67 +296,69 @@ def exportRaster(layer, count, layersFolder, feedback):
                              unicode(extentRep.yMinimum()),
                              unicode(extentRep.yMaximum())])
 
-    # Reproject in 3857
-    piped_3857 = os.path.join(tempfile.gettempdir(),
-                              name_ts + '_piped_3857.tif')
     # Export layer as PNG
     out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" +
                               unicode(count) + ".png")
 
-    qgis_version = QGis.QGIS_VERSION
+    projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
+    if not (matchCRS and layer.crs() == projectCRS):
+        # Reproject in 3857
+        piped_3857 = os.path.join(tempfile.gettempdir(),
+                                  name_ts + '_piped_3857.tif')
+        qgis_version = QGis.QGIS_VERSION
 
-    old_stdout = sys.stdout
-    sys.stdout = mystdout = StringIO()
-    try:
-        processing.runalg("gdalogr:warpreproject")
-    except:
-        pass
-    sys.stdout = old_stdout
-
-    params = {
-        "INPUT": piped_file,
-        "SOURCE_SRS": layer.crs().authid(),
-        "DEST_SRS": "EPSG:3857",
-        "NO_DATA": "",
-        "TR": 0,
-        "METHOD": 2,
-        "RAST_EXT": extentRepNew,
-        "EXT_CRS": "EPSG:3857",
-        "RTYPE": 0,
-        "COMPRESS": 4,
-        "JPEGCOMPRESSION": 75,
-        "ZLEVEL": 6,
-        "PREDICTOR": 1,
-        "TILED": False,
-        "BIGTIFF": 0,
-        "TFW": False,
-        "EXTRA": "",
-        "OUTPUT": piped_3857
-    }
-
-    warpArgs = {}
-
-    lines = mystdout.getvalue()
-    for count, line in enumerate(lines.split("\n\t")):
-        if count != 0 and line != " ":
-            try:
-                k = line.split(" ")[0]
-                warpArgs[k] = params[k]
-            except:
-                pass
-
-    if int(qgis_version.split('.')[1]) < 15:
-        processing.runalg("gdalogr:warpreproject", piped_file,
-                          layer.crs().authid(), "EPSG:3857", "", 0, 1,
-                          0, -1, 75, 6, 1, False, 0, False, "", piped_3857)
-        processing.runalg("gdalogr:translate", piped_3857, 100,
-                          True, "", 0, "", extentRepNew, False, 0,
-                          0, 75, 6, 1, False, 0, False, "", out_raster)
-    else:
+        old_stdout = sys.stdout
+        sys.stdout = mystdout = StringIO()
         try:
-            procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+            processing.runalg("gdalogr:warpreproject")
         except:
-            shutil.copyfile(piped_file, piped_3857)
+            pass
+        sys.stdout = old_stdout
+
+        params = {
+            "INPUT": piped_file,
+            "SOURCE_SRS": layer.crs().authid(),
+            "DEST_SRS": "EPSG:3857",
+            "NO_DATA": "",
+            "TR": 0,
+            "METHOD": 2,
+            "RAST_EXT": extentRepNew,
+            "EXT_CRS": "EPSG:3857",
+            "RTYPE": 0,
+            "COMPRESS": 4,
+            "JPEGCOMPRESSION": 75,
+            "ZLEVEL": 6,
+            "PREDICTOR": 1,
+            "TILED": False,
+            "BIGTIFF": 0,
+            "TFW": False,
+            "EXTRA": "",
+            "OUTPUT": piped_3857
+        }
+
+        warpArgs = {}
+
+        lines = mystdout.getvalue()
+        for count, line in enumerate(lines.split("\n\t")):
+            if count != 0 and line != " ":
+                try:
+                    k = line.split(" ")[0]
+                    warpArgs[k] = params[k]
+                except:
+                    pass
+
+        if int(qgis_version.split('.')[1]) < 15:
+            processing.runalg("gdalogr:warpreproject", piped_file,
+                              layer.crs().authid(), "EPSG:3857", "", 0, 1,
+                              0, -1, 75, 6, 1, False, 0, False, "", piped_3857)
+            processing.runalg("gdalogr:translate", piped_3857, 100,
+                              True, "", 0, "", extentRepNew, False, 0,
+                              0, 75, 6, 1, False, 0, False, "", out_raster)
+        else:
+            try:
+                procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+            except:
+                shutil.copyfile(piped_file, piped_3857)
 
         try:
             processing.runalg("gdalogr:translate", piped_3857, 100,
@@ -364,7 +366,9 @@ def exportRaster(layer, count, layersFolder, feedback):
                               4, 75, 6, 1, False, 0, False, "", out_raster)
         except:
             shutil.copyfile(piped_3857, out_raster)
-
+    else:
+            shutil.copyfile(piped_file, out_raster)
+       
 
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.type() != layer.VectorLayer:

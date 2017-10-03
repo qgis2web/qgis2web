@@ -186,7 +186,8 @@ class LeafletWriter(Writer):
                     if layer.dataProvider().name() != "wms":
                         layersFolder = os.path.join(outputProjectFileName,
                                                     "data")
-                        exportRaster(layer, lyrCount, layersFolder, feedback)
+                        exportRaster(layer, lyrCount, layersFolder,
+                                     feedback, iface, matchCRS)
             if layer.hasScaleBasedVisibility():
                 scaleDependentLayers += scaleDependentLayerScript(
                     layer, safeLayerName, clst)

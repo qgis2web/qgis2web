@@ -118,7 +118,7 @@ class OpenLayersWriter(Writer):
 
         writeFiles(folder, restrictToExtent, feedback, debugLibs)
         exportLayers(iface, layers, folder, precision, optimize,
-                     popup, json, restrictToExtent, extent, feedback)
+                     popup, json, restrictToExtent, extent, feedback, matchCRS)
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered,
