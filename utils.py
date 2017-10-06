@@ -367,7 +367,9 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         except:
             shutil.copyfile(piped_3857, out_raster)
     else:
-            shutil.copyfile(piped_file, out_raster)
+            processing.runalg("gdalogr:translate", piped_file, 100,
+                              True, "", 0, "", extentRepNew, False, 5,
+                              4, 75, 6, 1, False, 0, False, "", out_raster)
 
 
 def is25d(layer, canvas, restrictToExtent, extent):
