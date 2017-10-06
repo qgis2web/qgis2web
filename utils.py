@@ -368,12 +368,12 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
             shutil.copyfile(piped_3857, out_raster)
     else:
         srcExtent = ','.join([unicode(piped_extent.xMinimum()),
-                                 unicode(piped_extent.xMaximum()),
-                                 unicode(piped_extent.yMinimum()),
-                                 unicode(piped_extent.yMaximum())])
-        processing.runalg("gdalogr:translate", piped_file, 100,
-                              True, "", 0, "", srcExtent, False, 5,
-                              4, 75, 6, 1, False, 0, False, "", out_raster)
+                              unicode(piped_extent.xMaximum()),
+                              unicode(piped_extent.yMinimum()),
+                              unicode(piped_extent.yMaximum())])
+        processing.runalg("gdalogr:translate", piped_file, 100, True, "", 0,
+                          "", srcExtent, False, 5, 4, 75, 6, 1, False, 0,
+                          False, "", out_raster)
 
 
 def is25d(layer, canvas, restrictToExtent, extent):
