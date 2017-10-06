@@ -285,23 +285,23 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     file_writer.writeRaster(pipe, piped_width, piped_height,
                             piped_extent, piped_crs)
 
-    # Extent of the layer in EPSG:3857
-    crsSrc = layer.crs()
-    crsDest = QgsCoordinateReferenceSystem(3857)
-    xform = QgsCoordinateTransform(crsSrc, crsDest)
-    extentRep = xform.transform(layer.extent())
-
-    extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                             unicode(extentRep.xMaximum()),
-                             unicode(extentRep.yMinimum()),
-                             unicode(extentRep.yMaximum())])
-
     # Export layer as PNG
     out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" +
                               unicode(count) + ".png")
 
     projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
     if not (matchCRS and layer.crs() == projectCRS):
+        # Extent of the layer in EPSG:3857
+        crsSrc = layer.crs()
+        crsDest = QgsCoordinateReferenceSystem(3857)
+        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        extentRep = xform.transform(layer.extent())
+
+        extentRepNew = ','.join([unicode(extentRep.xMinimum()),
+                                 unicode(extentRep.xMaximum()),
+                                 unicode(extentRep.yMinimum()),
+                                 unicode(extentRep.yMaximum())])
+
         # Reproject in 3857
         piped_3857 = os.path.join(tempfile.gettempdir(),
                                   name_ts + '_piped_3857.tif')
@@ -367,8 +367,12 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         except:
             shutil.copyfile(piped_3857, out_raster)
     else:
-            processing.runalg("gdalogr:translate", piped_file, 100,
-                              True, "", 0, "", extentRepNew, False, 5,
+        srcExtent = ','.join([unicode(piped_extent.xMinimum()),
+                                 unicode(piped_extent.xMaximum()),
+                                 unicode(piped_extent.yMinimum()),
+                                 unicode(piped_extent.yMaximum())])
+        processing.runalg("gdalogr:translate", piped_file, 100,
+                              True, "", 0, "", srcExtent, False, 5,
                               4, 75, 6, 1, False, 0, False, "", out_raster)
 
 
