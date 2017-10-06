@@ -3283,6 +3283,47 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
+    def test101_Leaflet_raster_crs(self):
+        """Leaflet raster with original CRS"""
+        layer_path = test_data_path('layer', 'test.png')
+        # style_path = test_data_path('style', '25d.qml')
+        layer = load_layer(layer_path)
+        # layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+        crs = QgsCoordinateReferenceSystem("EPSG:2964")
+        IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.params['Appearance']['Match project CRS'] = True
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict()]
+        writer.json = [False]
+
+        result = writer.write(IFACE, tempFolder()).index_file
+
+        control_file = open(
+            test_data_path(
+                'control', 'leaflet_raster_crs.html'), 'r')
+        control_output = control_file.read()
+
+        # Open the test file
+        test_file = open(result)
+        test_output = test_file.read()
+
+        # Test for expected output
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
+
+        # test for exported raster file
+        assert os.path.exists(result.replace('index.html', 'data/test_0.png'))
+
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the
