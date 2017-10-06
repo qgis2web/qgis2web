@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -41,11 +42,14 @@
             continuousWorld: false,
             worldCopyJump: false, 
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[54.9703057151,-2.12298114639],[54.9798266108,-2.08318284603]]);
+        })
         var hash = new L.Hash(map);
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
         var img_test_0 = 'data/test_0.png';
         var img_bounds_test_0 = [[54.9705646258,-2.11090194806],[54.979567765,-2.09526212094]];
