@@ -561,7 +561,6 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
     crsSrc = layer.crs()
     projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
     if not (matchCRS and crsSrc == projectCRS):
-        print 1
         mapCRS = "EPSG:3857"
         crsDest = QgsCoordinateReferenceSystem(3857)
 
