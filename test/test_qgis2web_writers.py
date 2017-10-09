@@ -3292,7 +3292,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        crs = QgsCoordinateReferenceSystem("EPSG:27700")
+        crs = QgsCoordinateReferenceSystem("EPSG:2964")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         # Export to web map
