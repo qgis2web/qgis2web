@@ -128,8 +128,8 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
                 return getWMS(source, layer, layerAttr, layerName, opacity,
                               minResolution, maxResolution)
         elif layer.providerType().lower() == "gdal":
-            return getRaster(layer, layerName, layerAttr, minResolution,
-                             maxResolution)
+            return getRaster(iface, layer, layerName, layerAttr, minResolution,
+                             maxResolution, matchCRS)
 
 
 def getScaleRes(layer):
@@ -556,14 +556,21 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                                     "maxRes": maxResolution}
 
 
-def getRaster(layer, layerName, layerAttr, minResolution, maxResolution):
-    provider = layer.dataProvider()
-
+def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
+              matchCRS):
     crsSrc = layer.crs()
-    crsDest = QgsCoordinateReferenceSystem(3857)
+    projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
+    if matchCRS:
+        mapCRS = projectCRS.authid()
+    else:
+        mapCRS = "EPSG:3857"
+    if not (matchCRS and crsSrc == projectCRS):
+        crsDest = QgsCoordinateReferenceSystem(3857)
 
-    xform = QgsCoordinateTransform(crsSrc, crsDest)
-    extentRep = xform.transform(layer.extent())
+        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        extentRep = xform.transform(layer.extent())
+    else:
+        extentRep = layer.extent()
 
     sExtent = "[%f, %f, %f, %f]" % (extentRep.xMinimum(), extentRep.yMinimum(),
                                     extentRep.xMaximum(), extentRep.yMaximum())
@@ -576,16 +583,14 @@ def getRaster(layer, layerName, layerAttr, minResolution, maxResolution):
                             source: new ol.source.ImageStatic({
                                url: "./layers/%(n)s.png",
     attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
-                                projection: 'EPSG:3857',
+                                projection: '%(mapCRS)s',
                                 alwaysInRange: true,
-                                //imageSize: [%(col)d, %(row)d],
                                 imageExtent: %(extent)s
                             })
                         });''' % {"n": layerName,
                                   "extent": sExtent,
-                                  "col": provider.xSize(),
                                   "name": layer.name(),
                                   "minRes": minResolution,
                                   "maxRes": maxResolution,
-                                  "layerAttr": layerAttr,
-                                  "row": provider.ySize()}
+                                  "mapCRS": mapCRS,
+                                  "layerAttr": layerAttr}
