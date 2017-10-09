@@ -8,7 +8,6 @@ var lyr_test_0 = new ol.layer.Image({
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
                                 projection: 'EPSG:3857',
                                 alwaysInRange: true,
-                                //imageSize: [1000, 1003],
                                 imageExtent: [-234984.529972, 7356155.401586, -233243.512382, 7357901.642229]
                             })
                         });
