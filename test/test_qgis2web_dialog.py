@@ -3094,8 +3094,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 outputFolder = os.path.join(customLocn, pth)
 
         outputFile = os.path.join(outputFolder, "index.html")
-        errorFile = read_output(outputFile, "styles/lakes_0_style.js")
-        print errorFile
         assert os.path.isfile(outputFile)
 
     def test100_setStateToParams(self):
