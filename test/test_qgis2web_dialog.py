@@ -2995,7 +2995,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         
         lyrGroup = root.addGroup("group1")
 
-        layer = QgsVectorLayer(layer_path, 'airports'", 'ogr')
+        layer = QgsVectorLayer(layer_path, 'airports', 'ogr')
         layer.loadNamedStyle(style_path)
 
         registry = QgsMapLayerRegistry.instance()
