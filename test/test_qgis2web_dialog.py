@@ -2986,6 +2986,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test97_Leaflet_layergroups(self):
         """Dialog test: Leaflet layer groups"""
+        QgsProject.instance().clear()
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         control_path = test_data_path(
