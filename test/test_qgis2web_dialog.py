@@ -3035,13 +3035,21 @@ class qgis2web_classDialogTest(unittest.TestCase):
         writer = self.dialog.createWriter()
         print 18
         self.assertTrue(isinstance(writer, LeafletWriter))
+        print 19
         expected_params = self.defaultParams()
+        print 20
         self.assertEqual(writer.params, expected_params)
+        print 21
         self.assertEqual(writer.groups, {'group1': [layer]})
+        print 22
         self.assertEqual(writer.layers, [layer])
+        print 23
         self.assertEqual(writer.visible, [True])
+        print 24
         self.assertEqual(writer.cluster, [False])
+        print 25
         self.assertEqual(writer.popup, [{}])
+        print 26
         self.assertEqual(writer.json, [False])
 
     def test98_OL3_layergroups(self):
