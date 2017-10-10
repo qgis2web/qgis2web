@@ -63,8 +63,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and
-            not isinstance(layer.rendererV2(), QgsHeatmapRenderer) and
-            not is25d(layer, canvas, restrictToExtent, extent)):
+                not isinstance(layer.rendererV2(), QgsHeatmapRenderer) and
+                not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
              blend_mode, labelgun) = getPopups(layer, labels, sln, fieldLabels,
                                                fieldAliases, fieldImages)

@@ -2488,6 +2488,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                           ]
                          )
         self.assertEqual(writer.json, [False])
+        QgsProject.instance().clear()
 
     def test82_OL3_WMS(self):
         """Dialog test: OL3 WMS"""
