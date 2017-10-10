@@ -6,7 +6,7 @@ import sys
 import logging
 import urlparse
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsProject
 
 
 LOGGER = logging.getLogger('QGIS')
