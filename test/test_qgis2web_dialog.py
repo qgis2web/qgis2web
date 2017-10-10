@@ -2991,12 +2991,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_path = test_data_path(
             'control', 'leaflet_groups.html')
 
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
         root = QgsProject.instance().layerTreeRoot()
         
         lyrGroup = root.addGroup("group1")
+
+        layer = QgsVectorLayer(layer_path, 'airports'", 'ogr')
+        layer.loadNamedStyle(style_path)
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
