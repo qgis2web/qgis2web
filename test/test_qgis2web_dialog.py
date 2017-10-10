@@ -44,14 +44,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test"""
-        print "setUp"
         QgsProject.instance().clear()
         self.dialog = MainDialog(IFACE)
         self.setTemplate('canvas-size')
 
     def tearDown(self):
         """Runs after each test"""
-        print "tearDown"
         self.dialog = MainDialog(IFACE)
         self.dialog.ol3.click()
         self.dialog = None
@@ -3075,6 +3073,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
+        print "COUNT:" + registry.count()
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
