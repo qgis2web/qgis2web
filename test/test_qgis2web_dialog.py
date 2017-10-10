@@ -3065,10 +3065,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
-        QgsProject.instance().clear()
 
     def test99_export_folder(self):
         """Export folder"""
+        QgsProject.instance().clear()
         layer_path = test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
