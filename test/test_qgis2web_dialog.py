@@ -3065,6 +3065,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
+        QgsProject.instance().clear()
 
     def test99_export_folder(self):
         """Export folder"""
