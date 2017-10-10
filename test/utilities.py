@@ -90,6 +90,8 @@ def load_layer(layer_path):
     :returns: Layer instance.
     :rtype: QgsMapLayer
     """
+    
+    QgsProject.instance().clear()
     # Extract basename and absolute path
     file_name = os.path.split(layer_path)[-1]  # In case path was absolute
     base_name, extension = os.path.splitext(file_name)
@@ -126,6 +128,8 @@ def load_wfs_layer(url, name):
     :returns: Layer instance.
     :rtype: QgsMapLayer
     """
+
+    QgsProject.instance().clear()
     layer = QgsVectorLayer(url, name, 'WFS')
     # noinspection PyUnresolvedReferences
     message = 'Layer "%s" is not valid' % layer.source()
@@ -150,6 +154,8 @@ def load_wms_layer(url, name):
     :returns: Layer instance.
     :rtype: QgsMapLayer
     """
+
+    QgsProject.instance().clear()
     layer = QgsRasterLayer(url, name, 'wms')
     # noinspection PyUnresolvedReferences
     message = 'Layer "%s" is not valid' % layer.source()
