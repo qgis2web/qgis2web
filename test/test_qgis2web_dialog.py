@@ -3064,6 +3064,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
+        self.dialog.leaflet.click()
 
     def test99_export_folder(self):
         """Export folder"""
