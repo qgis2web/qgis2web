@@ -3073,7 +3073,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-        print "COUNT:" + registry.count()
+        print "COUNT: %d" % registry.count()
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
