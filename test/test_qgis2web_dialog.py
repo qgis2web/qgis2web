@@ -3064,7 +3064,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
-        self.dialog.leaflet.click()
 
     def test99_export_folder(self):
         """Export folder"""
@@ -3086,7 +3085,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Set 'Export folder'
         customLocn = '/tmp/customfolder/'
         self.dialog.exporter.folder = customLocn
-        self.dialog.leaflet.click()
+        self.dialog.ol3.click()
         self.dialog.buttonExport.click()
 
         # Does the file exist
@@ -3095,6 +3094,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 outputFolder = os.path.join(customLocn, pth)
 
         outputFile = os.path.join(outputFolder, "index.html")
+        errorFile = read_output(outputFile, "styles/lakes_0_style.js")
+        print errorFile
         assert os.path.isfile(outputFile)
 
     def test100_setStateToParams(self):
