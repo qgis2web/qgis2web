@@ -3003,6 +3003,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         cloned_layer = root.children()[0].clone()
         lyrGroup.addChildNode( cloned_layer)
         root.removeChildNode(root.children()[0])
+        registry.addMapLayer(cloned_layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
