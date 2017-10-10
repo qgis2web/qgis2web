@@ -50,6 +50,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def tearDown(self):
         """Runs after each test"""
+        self.dialog = MainDialog(IFACE)
+        self.dialog.ol3.click()
         self.dialog = None
         QgsProject.instance().clear()
 
@@ -2421,6 +2423,39 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.popup,
                          [OrderedDict()])
         self.assertEqual(writer.json, [False])
+
+    def test81_Leaflet_heatmap(self):
+        """Dialog test: Leaflet heatmap"""
+        layer_path = test_data_path('layer', 'airports.shp')
+        style_path = test_data_path('style', 'heatmap.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
+
+        registry = QgsMapLayerRegistry.instance()
+        registry.addMapLayer(layer)
+
+        self.dialog = MainDialog(IFACE)
+        self.dialog.paramsTreeOL.itemWidget(
+            self.dialog.paramsTreeOL.findItems(
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                1).setCurrentIndex(1)
+        self.setTemplate('full-screen')
+        self.dialog.leaflet.click()
+
+        writer = self.dialog.createWriter()
+        self.assertTrue(isinstance(writer, LeafletWriter))
+        expected_params = self.defaultParams()
+        self.assertEqual(writer.params, expected_params)
+        self.assertEqual(writer.groups, {})
+        self.assertEqual(writer.layers, [layer])
+        self.assertEqual(writer.visible, [True])
+        self.assertEqual(writer.cluster, [False])
+        self.assertEqual(writer.popup,
+                         [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
+                          ]
+                         )
+        self.assertEqual(writer.json, [False])
+        self.dialog.ol3.click()
 
     def test80_OL3_heatmap(self):
         """Dialog test: OL3 heatmap"""
