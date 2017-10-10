@@ -3068,17 +3068,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test99_export_folder(self):
         """Export folder"""
         layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
 
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
-
-        control_file = open(
-            test_data_path(
-                'control', 'ol3_cdn.html'), 'r')
-        control_output = control_file.read()
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -3087,12 +3080,12 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        self.setTemplate('canvas-size')
+        self.setTemplate('full-screen')
 
         # Set 'Export folder'
         customLocn = '/tmp/customfolder/'
         self.dialog.exporter.folder = customLocn
-        self.dialog.ol3.click()
+        self.dialog.leaflet.click()
         self.dialog.buttonExport.click()
 
         # Does the file exist
