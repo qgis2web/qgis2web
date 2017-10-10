@@ -2491,7 +2491,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test82_OL3_WMS(self):
         """Dialog test: OL3 WMS"""
-        QgsProject.instance().clear()
         layer_url = (
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         layer = load_wms_layer(layer_url, 'wms')
