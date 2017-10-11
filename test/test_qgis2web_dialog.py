@@ -3000,6 +3000,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer.loadNamedStyle(style_path)
 
         registry = QgsMapLayerRegistry.instance()
+        registry.removeAllMapLayers()
         registry.addMapLayer(layer)
         print "COUNT: %d" % registry.count()
 
