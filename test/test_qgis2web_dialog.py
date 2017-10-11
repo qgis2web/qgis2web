@@ -2986,7 +2986,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test97_Leaflet_layergroups(self):
         """Dialog test: Leaflet layer groups"""
-        QgsProject.instance().clear()
         layer_path = test_data_path('layer', 'airports.shp')
         style_path = test_data_path('style', 'airports_single.qml')
         control_path = test_data_path(
@@ -3000,9 +2999,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer.loadNamedStyle(style_path)
 
         registry = QgsMapLayerRegistry.instance()
-        registry.removeAllMapLayers()
         registry.addMapLayer(layer)
-        print "COUNT: %d" % registry.count()
 
         cloned_layer = root.children()[0].clone()
         lyrGroup.addChildNode( cloned_layer)
@@ -3039,7 +3036,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         
         lyrGroup = root.addGroup("group1")
 
-        layer = load_layer(layer_path)
+        layer = QgsVectorLayer(layer_path, 'airports', 'ogr')
         layer.loadNamedStyle(style_path)
 
         registry = QgsMapLayerRegistry.instance()
