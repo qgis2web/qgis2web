@@ -15,6 +15,7 @@ __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 import unittest
 import os
 import difflib
+import time
 from collections import OrderedDict
 
 # This import is to enable SIP API V2
@@ -3086,7 +3087,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.setTemplate('full-screen')
 
         # Set 'Export folder'
-        customLocn = '/tmp/customfolder/'
+        customLocn = '/tmp/customfolder/%d/' % int(time.time())
         self.dialog.exporter.folder = customLocn
         self.dialog.ol3.click()
         self.dialog.buttonExport.click()
