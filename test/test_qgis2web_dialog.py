@@ -3067,39 +3067,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.popup, [{}])
         self.assertEqual(writer.json, [False])
 
-    def test99_export_folder(self):
-        """Export folder"""
-        QgsProject.instance().clear()
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        layer = load_layer(layer_path)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.removeAllMapLayers()
-        registry.addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-
-        # Set 'Export folder'
-        customLocn = '/tmp/customfolder/%d/' % int(time.time())
-        self.dialog.exporter.folder = customLocn
-        self.dialog.ol3.click()
-        self.dialog.buttonExport.click()
-
-        # Does the file exist
-        for pth in os.listdir(customLocn):
-            if os.path.isdir(os.path.join(customLocn, pth)):
-                outputFolder = os.path.join(customLocn, pth)
-
-        outputFile = os.path.join(outputFolder, "index.html")
-        assert os.path.isfile(outputFile)
-
     def test100_setStateToParams(self):
         """Test that setting state to match parameters works"""
         params=getDefaultParams()
