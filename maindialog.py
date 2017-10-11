@@ -840,7 +840,7 @@ class WebPage(QWebPage):
             abs_path = sourceID.replace('file://', '')
             with open(abs_path) as f:
                 print f.read()
-            
+
             raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
                               Exception())
 

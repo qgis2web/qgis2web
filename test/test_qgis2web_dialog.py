@@ -3072,6 +3072,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
+        registry.removeAllMapLayers()
         registry.addMapLayer(layer)
         print "COUNT: %d" % registry.count()
 
