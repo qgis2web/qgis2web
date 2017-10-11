@@ -3075,27 +3075,20 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry = QgsMapLayerRegistry.instance()
         registry.removeAllMapLayers()
         registry.addMapLayer(layer)
-        print "COUNT: %d" % registry.count()
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
-        print 2
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
-        print 3
         self.setTemplate('full-screen')
 
         # Set 'Export folder'
-        print 4
         customLocn = '/tmp/customfolder/'
-        print 5
         self.dialog.exporter.folder = customLocn
-        print 6
         self.dialog.ol3.click()
-        print 7
         self.dialog.buttonExport.click()
 
         # Does the file exist

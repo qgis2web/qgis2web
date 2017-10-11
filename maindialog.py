@@ -837,10 +837,6 @@ class WebPage(QWebPage):
                         "will be removed in future releases, please inherit "
                         "from L.Evented instead.") and
                 os.environ.get('CI') and os.environ.get('TRAVIS')):
-            abs_path = sourceID.replace('file://', '')
-            with open(abs_path) as f:
-                print f.read()
-
             raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
                               Exception())
 
