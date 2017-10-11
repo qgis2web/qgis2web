@@ -63,7 +63,7 @@ def get_qgis_app():
     return QGIS_APP, CANVAS, IFACE, PARENT
 
 
-def test_data_path(*args):
+def get_test_data_path(*args):
     """Return the absolute path to the test data or directory path.
 
     :param args: List of path.

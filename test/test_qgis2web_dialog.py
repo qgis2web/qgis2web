@@ -30,7 +30,7 @@ from PyQt4.QtGui import QDialogButtonBox, QDialog
 
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
-from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from configparams import (getDefaultParams)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
@@ -95,7 +95,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test00_close_dialog(self):
         """Close dialog (OL3)"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -156,8 +156,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test09_Leaflet_json_pnt_single(self):
         """Dialog test: Leaflet  JSON point single"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
 
         layer = load_layer(layer_path)
 
@@ -193,7 +193,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Dialog test: Leaflet  WFS point single"""
         layer_url = (
             'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = test_data_path('style', 'point_single.qml')
+        layer_style = get_test_data_path('style', 'point_single.qml')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
@@ -223,8 +223,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test11_Leaflet_json_line_single(self):
         """Dialog test: Leaflet  JSON line single"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_single.qml')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -256,7 +256,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'line_single.qml')
+        layer_style = get_test_data_path('style', 'line_single.qml')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
@@ -285,8 +285,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test13_Leaflet_json_poly_single(self):
         """Dialog test: Leaflet  JSON polygon single"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_single.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -318,8 +318,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'polygon_single.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'polygon_single.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_polygon_single.html')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
@@ -349,9 +349,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Dialog test: Leaflet  JSON point categorized"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_point_categorized.html')
 
         layer = load_layer(layer_path)
@@ -385,8 +385,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Dialog test: Leaflet  WFS point categorized"""
         layer_url = (
             'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = test_data_path('style', 'wfs_point_categorized.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_point_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_point_categorized.html')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
@@ -416,9 +416,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test17_Leaflet_json_line_categorized(self):
         """Dialog test: Leaflet  JSON line categorized"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_line_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -453,8 +453,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_line_categorized.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_line_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_line_categorized.html')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
@@ -485,9 +485,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test19_Leaflet_json_poly_categorized(self):
         """Dialog test: Leaflet  JSON polygon categorized"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_polygon_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -522,7 +522,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_polygon_categorized.qml')
+        layer_style = get_test_data_path('style', 'wfs_polygon_categorized.qml')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
@@ -551,8 +551,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Dialog test: Leaflet  JSON point graduated"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_graduated.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_graduated.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -586,7 +586,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Dialog test: Leaflet  WFS point graduated"""
         layer_url = (
             'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = test_data_path('style', 'wfs_point_graduated.qml')
+        layer_style = get_test_data_path('style', 'wfs_point_graduated.qml')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
@@ -616,8 +616,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test23_Leaflet_json_line_graduated(self):
         """Dialog test: Leaflet  JSON line graduated"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        layer_style = test_data_path('style', 'pipelines_graduated.qml')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        layer_style = get_test_data_path('style', 'pipelines_graduated.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
 
@@ -652,7 +652,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_line_graduated.qml')
+        layer_style = get_test_data_path('style', 'wfs_line_graduated.qml')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
@@ -683,8 +683,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test25_Leaflet_json_poly_graduated(self):
         """Dialog test: Leaflet  JSON polygon graduated"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        layer_style = test_data_path('style', 'lakes_graduated.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        layer_style = get_test_data_path('style', 'lakes_graduated.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
 
@@ -719,7 +719,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_polygon_graduated.qml')
+        layer_style = get_test_data_path('style', 'wfs_polygon_graduated.qml')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
@@ -751,8 +751,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test27_OL3_pnt_single(self):
         """Dialog test: OL3   point single"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -783,8 +783,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test28_OL3_line_single(self):
         """Dialog test: OL3   line single"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_single.qml')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -816,8 +816,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test29_OL3_poly_single(self):
         """Dialog test: OL3   polygon single"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_single.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -848,8 +848,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test30_OL3_pnt_categorized(self):
         """Dialog test: OL3   point categorized"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_categorized.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_categorized.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -881,8 +881,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test31_OL3_line_categorized(self):
         """Dialog test: OL3   line categorized"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_categorized.qml')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_categorized.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -913,8 +913,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test32_OL3_poly_categorized(self):
         """Dialog test: OL3   polygon categorized"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_categorized.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_categorized.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -946,8 +946,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test33_OL3_pnt_graduated(self):
         """Dialog test: OL3   point graduated"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_graduated.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_graduated.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -979,8 +979,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test34_OL3_line_graduated(self):
         """Dialog test: OL3   line graduated"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_graduated.qml')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_graduated.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1012,8 +1012,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test35_OL3_poly_graduated(self):
         """Dialog test: OL3   polygon graduated"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_graduated.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_graduated.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1046,7 +1046,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test36_OL3_layer_list(self):
         """Dialog test: OL3   A layer list is present when selected"""
 
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -1083,7 +1083,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test37_OL3_base_layers_have_type_base(self):
         """Dialog test: OL3   Ensure base layers have a type property with a value of 'base'"""
 
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -1104,7 +1104,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test39_OL3_base_group_only_included_when_base_map_selected(self):
         """Dialog test: OL3   Only include the 'Base maps' group when +1 base maps are selected"""
 
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -1132,8 +1132,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test40_Leaflet_scalebar(self):
         """Dialog test: Leaflet  scale bar"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1171,8 +1171,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test41_OL3_scalebar(self):
         """Dialog test: OL3   scale bar"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1180,7 +1180,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_scalebar.js'), 'r')
         control_output = control_file.read()
 
@@ -1215,8 +1215,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test42_Leaflet_measure(self):
         """Dialog test: Leaflet  measure"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1258,8 +1258,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test43_OL3_measure(self):
         """Dialog test: OL3   measure control"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1301,8 +1301,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test44_Leaflet_address(self):
         """Dialog test: Leaflet  address search"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1341,8 +1341,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test45_OL3_address(self):
         """Dialog test: OL3   address search"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1381,8 +1381,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test46_Leaflet_geolocate(self):
         """Dialog test: Leaflet  geolocate user"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1421,8 +1421,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test47_OL3_geolocate(self):
         """Dialog test: OL3   geolocate user"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1462,8 +1462,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test48_Leaflet_highlight(self):
         """Dialog test: Leaflet  highlight on hover"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1502,8 +1502,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test49_OL3_highlight(self):
         """Dialog test: OL3   highlight on hover"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1543,8 +1543,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test50_Leaflet_CRS(self):
         """Dialog test: Leaflet  match CRS"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1585,8 +1585,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test51_OL3_CRS(self):
         """Dialog test: OL3   match CRS"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1626,8 +1626,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test52_Leaflet_layerslist(self):
         """Dialog test: Leaflet  add layers list"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1669,8 +1669,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test53_Leaflet_visible(self):
         """Dialog test: Leaflet  visible"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1707,8 +1707,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test54_OL3_visible(self):
         """Dialog test: OL3   visible"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1746,8 +1746,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test55_Leaflet_cluster(self):
         """Dialog test: Leaflet  cluster"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1784,8 +1784,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test56_OL3_cluster(self):
         """Dialog test: OL3   cluster"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1823,8 +1823,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test62_leaflet_precision(self):
         """Dialog test: Leaflet  precision"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1864,8 +1864,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test63_ol3_precision(self):
         """Dialog test: OL3   precision"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1905,8 +1905,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test64_Leaflet_cdn(self):
         """Dialog test: Leaflet  CDN"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1945,8 +1945,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test65_OL3_cdn(self):
         """Dialog test: OL3   CDN"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1985,8 +1985,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test67_leaflet_minify(self):
         """Dialog test: Leaflet  minify"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2031,8 +2031,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test68_ol3_minify(self):
         """Dialog test: OL3   minify"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2077,8 +2077,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test69_Leaflet_canvasextent(self):
         """Dialog test: Leaflet  canvas extent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2115,8 +2115,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test70_Leaflet_maxzoom(self):
         """Dialog test: Leaflet  max zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2155,8 +2155,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test71_ol3_maxzoom(self):
         """Dialog test: OL3   max zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2196,8 +2196,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test72_Leaflet_minzoom(self):
         """Dialog test: Leaflet  min zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2236,8 +2236,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test73_ol3_minzoom(self):
         """Dialog test: OL3   min zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2277,8 +2277,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test74_Leaflet_restricttoextent(self):
         """Dialog test: Leaflet  restrict to extent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2317,8 +2317,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test75_ol3_restricttoextent(self):
         """Dialog test: OL3   restrict to extent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2359,8 +2359,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test78_Leaflet_raster(self):
         """Dialog test: Leaflet  raster"""
-        layer_path = test_data_path('layer', 'test.png')
-        # style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'test.png')
+        # style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
@@ -2392,8 +2392,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test79_OL3_raster(self):
         """Dialog test: OL3 raster"""
-        layer_path = test_data_path('layer', 'test.png')
-        # style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'test.png')
+        # style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
@@ -2426,8 +2426,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test81_Leaflet_heatmap(self):
         """Dialog test: Leaflet heatmap"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'heatmap.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'heatmap.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2459,8 +2459,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test80_OL3_heatmap(self):
         """Dialog test: OL3 heatmap"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'heatmap.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'heatmap.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2552,9 +2552,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test84_Leaflet_rulebased(self):
         """Dialog test: Leaflet  rule-based"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_rule-based.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_rule-based.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_rule-based.html')
 
         layer = load_layer(layer_path)
@@ -2586,9 +2586,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test85_OL3_rulebased(self):
         """Dialog test: OL3  rule-based"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_rule-based.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_rule-based.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_rule-based.html')
 
         layer = load_layer(layer_path)
@@ -2620,9 +2620,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test86_Leaflet_labels(self):
         """Dialog test: Leaflet  labels"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_labels.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_labels.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_labels.html')
 
         layer = load_layer(layer_path)
@@ -2654,9 +2654,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test87_OL3_labels(self):
         """Dialog test: OL3  labels"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_labels.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_labels.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_labels.js')
 
         layer = load_layer(layer_path)
@@ -2748,8 +2748,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test90_Leaflet_scale_dependent(self):
         """Dialog test: Leaflet scale-dependent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_scaledependent.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_scaledependent.qml')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -2781,9 +2781,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test91_Leaflet_categorized_25d(self):
         """Dialog test: Leaflet categorized 2.5d"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'categorized_25d.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'categorized_25d.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_categorized_25d.html')
 
         layer = load_layer(layer_path)
@@ -2815,9 +2815,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test92_OL3_categorized_25d(self):
         """Dialog test: OL3 categorized 2.5d"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'categorized_25d.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'categorized_25d.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_categorized_25d.html')
 
         layer = load_layer(layer_path)
@@ -2849,9 +2849,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test93_Leaflet_graduated_25d(self):
         """Dialog test: Leaflet graduated 2.5d"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'graduated_25d.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'graduated_25d.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_graduated_25d.html')
 
         layer = load_layer(layer_path)
@@ -2883,9 +2883,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test94_ol3_graduated_25d(self):
         """Dialog test: OL3 graduated 2.5d"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'graduated_25d.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'graduated_25d.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_graduated_25d.html')
 
         layer = load_layer(layer_path)
@@ -2917,9 +2917,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test95_Leaflet_svg(self):
         """Dialog test: Leaflet SVG"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'svg.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'svg.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_svg.html')
 
         layer = load_layer(layer_path)
@@ -2952,9 +2952,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test96_OL3_svg(self):
         """Dialog test: OL3  SVG"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'svg.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'svg.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_svg.js')
 
         layer = load_layer(layer_path)
@@ -2986,9 +2986,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test97_Leaflet_layergroups(self):
         """Dialog test: Leaflet layer groups"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_groups.html')
 
         root = QgsProject.instance().layerTreeRoot()
@@ -3027,9 +3027,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test98_OL3_layergroups(self):
         """Dialog test: OL3 layer groups"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_groups.html')
 
         root = QgsProject.instance().layerTreeRoot()
@@ -3069,7 +3069,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def test99_export_folder(self):
         """Export folder"""
         QgsProject.instance().clear()
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -3079,17 +3079,23 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
+        print 2
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
+        print 3
         self.setTemplate('full-screen')
 
         # Set 'Export folder'
+        print 4
         customLocn = '/tmp/customfolder/'
+        print 5
         self.dialog.exporter.folder = customLocn
+        print 6
         self.dialog.ol3.click()
+        print 7
         self.dialog.buttonExport.click()
 
         # Does the file exist

@@ -30,7 +30,7 @@ from leafletWriter import LeafletWriter
 from utils import tempFolder
 
 from osgeo import gdal
-from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
@@ -86,7 +86,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test01_LeafletWriterResults(self):
         """ Test writer results from a leaflet writer"""
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
@@ -109,7 +109,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test02_OpenLayersWriterResults(self):
         """ Test writer results from a OL writer"""
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
         registry = QgsMapLayerRegistry.instance()
         registry.addMapLayer(layer)
@@ -132,8 +132,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test09_Leaflet_json_pnt_single(self):
         """Leaflet JSON point single"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
 
         layer = load_layer(layer_path)
 
@@ -143,7 +143,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_json_point_single.html'), 'r')
         control_output = control_file.read()
 
@@ -173,7 +173,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         """Leaflet WFS point single"""
         layer_url = (
             'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = test_data_path('style', 'point_single.qml')
+        layer_style = get_test_data_path('style', 'point_single.qml')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
@@ -181,7 +181,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
+            get_test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -206,8 +206,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test11_Leaflet_json_line_single(self):
         """Leaflet JSON line single"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_single.qml')
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -215,7 +215,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'leaflet_json_line_single.html'), 'r')
+            get_test_data_path('control', 'leaflet_json_line_single.html'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -241,7 +241,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'line_single.qml')
+        layer_style = get_test_data_path('style', 'line_single.qml')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
@@ -249,7 +249,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
+            get_test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -272,8 +272,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test13_Leaflet_json_poly_single(self):
         """Leaflet JSON polygon single"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_single.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -281,7 +281,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_json_polygon_single.html'), 'r')
         control_output = control_file.read()
         # Export to web map
@@ -307,8 +307,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'polygon_single.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'polygon_single.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_polygon_single.html')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
@@ -339,9 +339,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_point_categorized.html')
 
         layer = load_layer(layer_path)
@@ -375,8 +375,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         """Leaflet WFS point categorized"""
         layer_url = (
             'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = test_data_path('style', 'wfs_point_categorized.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_point_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_point_categorized.html')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
@@ -406,9 +406,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test17_Leaflet_json_line_categorized(self):
         """Leaflet JSON line categorized"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_line_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -443,8 +443,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_line_categorized.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_line_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_line_categorized.html')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
@@ -474,9 +474,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test19_Leaflet_json_poly_categorized(self):
         """Leaflet JSON polygon categorized"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_polygon_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -511,8 +511,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_polygon_categorized.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_polygon_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_polygon_categorized.html')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
@@ -543,9 +543,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Leaflet JSON point graduated"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_graduated.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_point_graduated.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -578,8 +578,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         """Leaflet WFS point graduated"""
         layer_url = (
             'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = test_data_path('style', 'wfs_point_graduated.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_point_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_point_graduated.html')
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
@@ -610,9 +610,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test23_Leaflet_json_line_graduated(self):
         """Leaflet JSON line graduated"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        layer_style = test_data_path('style', 'pipelines_graduated.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        layer_style = get_test_data_path('style', 'pipelines_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_line_graduated.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
@@ -646,8 +646,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_line_graduated.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_line_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_line_graduated.html')
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
@@ -678,9 +678,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test25_Leaflet_json_poly_graduated(self):
         """Leaflet JSON polygon graduated"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        layer_style = test_data_path('style', 'lakes_graduated.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        layer_style = get_test_data_path('style', 'lakes_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_json_polygon_graduated.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
@@ -716,8 +716,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = test_data_path('style', 'wfs_polygon_graduated.qml')
-        control_path = test_data_path(
+        layer_style = get_test_data_path('style', 'wfs_polygon_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_wfs_polygon_graduated.html')
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
@@ -749,9 +749,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test27_OL3_pnt_single(self):
         """OL3 point single"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_point_single.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -789,9 +789,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test28_OL3_line_single(self):
         """OL3 line single"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_single.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_line_single.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -830,9 +830,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test29_OL3_poly_single(self):
         """OL3 polygon single"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_single.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_polygon_single.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -872,9 +872,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test30_OL3_pnt_categorized(self):
         """OL3 point categorized"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_point_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -914,9 +914,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test31_OL3_line_categorized(self):
         """OL3 line categorized"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_line_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -955,9 +955,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test32_OL3_poly_categorized(self):
         """OL3 polygon categorized"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_categorized.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_categorized.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_polygon_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -995,9 +995,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test33_OL3_pnt_graduated(self):
         """OL3 point graduated"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_graduated.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_point_graduated.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -1035,9 +1035,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test34_OL3_line_graduated(self):
         """OL3 line graduated"""
-        layer_path = test_data_path('layer', 'pipelines.shp')
-        style_path = test_data_path('style', 'pipelines_graduated.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'pipelines.shp')
+        style_path = get_test_data_path('style', 'pipelines_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_line_graduated.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -1075,9 +1075,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test35_OL3_poly_graduated(self):
         """OL3 polygon graduated"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_graduated.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_graduated.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_json_polygon_graduated.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -1116,7 +1116,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     def test36_OL3_layer_list(self):
         """OL3 A layer list is present when selected"""
 
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -1146,7 +1146,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     def test37_OL3_base_layers_have_type_base(self):
         """OL3 Ensure base layers have a type property with a value of 'base'"""
 
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -1174,7 +1174,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     def test39_OL3_base_group_only_included_when_base_map_selected(self):
         """OL3 Only include the 'Base maps' group when +1 base maps are selected"""
 
-        layer_path = test_data_path('layer', 'airports.shp')
+        layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
         registry = QgsMapLayerRegistry.instance()
@@ -1207,8 +1207,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test40_Leaflet_scalebar(self):
         """Leaflet scale bar"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1216,7 +1216,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_scalebar.html'), 'r')
         control_output = control_file.read()
 
@@ -1249,8 +1249,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test41_OL3_scalebar(self):
         """OL3 scale bar"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1258,7 +1258,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_scalebar.js'), 'r')
         control_output = control_file.read()
 
@@ -1293,8 +1293,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test42_Leaflet_measure(self):
         """Leaflet measure"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1302,7 +1302,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_measure.html'), 'r')
         control_output = control_file.read()
         # Export to web map
@@ -1331,8 +1331,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test43_OL3_measure(self):
         """OL3 measure control"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1356,7 +1356,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_measure.html'), 'r')
         control_output = control_file.read()
 
@@ -1368,7 +1368,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_measure.js'), 'r')
         control_output = control_file.read()
 
@@ -1381,8 +1381,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test44_Leaflet_address(self):
         """Leaflet address search"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1390,7 +1390,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_address.html'), 'r')
         control_output = control_file.read()
 
@@ -1420,8 +1420,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test45_OL3_address(self):
         """OL3 address search"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1445,7 +1445,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_address.html'), 'r')
         control_output = control_file.read()
 
@@ -1456,7 +1456,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_address.js'), 'r')
         control_output = control_file.read()
 
@@ -1469,8 +1469,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test46_Leaflet_geolocate(self):
         """Leaflet geolocate user"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1478,7 +1478,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_geolocate.html'), 'r')
         control_output = control_file.read()
 
@@ -1508,8 +1508,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test47_OL3_geolocate(self):
         """OL3 geolocate user"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1533,7 +1533,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_geolocate.js'), 'r')
         control_output = control_file.read()
 
@@ -1546,8 +1546,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test48_Leaflet_highlight(self):
         """Leaflet highlight on hover"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1555,7 +1555,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_highlight.html'), 'r')
         control_output = control_file.read()
         # Export to web map
@@ -1584,8 +1584,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test49_OL3_highlight(self):
         """OL3 highlight on hover"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1610,7 +1610,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_highlight.js'), 'r')
         control_output = control_file.read()
 
@@ -1623,8 +1623,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test50_Leaflet_CRS(self):
         """Leaflet match CRS"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1634,7 +1634,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_crs.html'), 'r')
         control_output = control_file.read()
 
@@ -1664,8 +1664,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test51_OL3_CRS(self):
         """OL3 match CRS"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1691,7 +1691,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_crs.html'), 'r')
         control_output = control_file.read()
 
@@ -1704,7 +1704,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             test_output, control_output, diff(control_output, test_output))
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_crs.js'), 'r')
         control_output = control_file.read()
 
@@ -1717,8 +1717,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test52_Leaflet_layerslist(self):
         """Leaflet add layers list"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1726,7 +1726,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_layerslist.html'), 'r')
         control_output = control_file.read()
 
@@ -1756,8 +1756,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test53_Leaflet_visible(self):
         """Leaflet visible"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1765,7 +1765,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_visible.html'), 'r')
         control_output = control_file.read()
 
@@ -1794,8 +1794,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test54_OL3_visible(self):
         """OL3 visible"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1819,7 +1819,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_visible.js'), 'r')
         control_output = control_file.read()
 
@@ -1832,8 +1832,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test55_Leaflet_cluster(self):
         """Leaflet cluster"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1841,7 +1841,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_cluster.html'), 'r')
         control_output = control_file.read()
 
@@ -1870,8 +1870,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test56_OL3_cluster(self):
         """OL3 cluster"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1894,7 +1894,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_cluster.js'), 'r')
         control_output = control_file.read()
 
@@ -1908,8 +1908,8 @@ class qgis2web_WriterTest(unittest.TestCase):
     @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test62_leaflet_precision(self):
         """Leaflet precision"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1934,7 +1934,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_precision.js'), 'r')
         control_output = control_file.read()
 
@@ -1948,8 +1948,8 @@ class qgis2web_WriterTest(unittest.TestCase):
     @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test63_ol3_precision(self):
         """OL3 precision"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1974,7 +1974,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_precision.js'), 'r')
         control_output = control_file.read()
 
@@ -1987,8 +1987,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test64_Leaflet_cdn(self):
         """Leaflet CDN"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -1996,7 +1996,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_cdn.html'), 'r')
         control_output = control_file.read()
 
@@ -2026,8 +2026,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test65_OL3_cdn(self):
         """OL3 CDN"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2035,7 +2035,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_cdn.html'), 'r')
         control_output = control_file.read()
 
@@ -2066,8 +2066,8 @@ class qgis2web_WriterTest(unittest.TestCase):
     @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test67_leaflet_minify(self):
         """Leaflet minify"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2093,7 +2093,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_minify.js'), 'r')
         control_output = control_file.read()
 
@@ -2106,8 +2106,8 @@ class qgis2web_WriterTest(unittest.TestCase):
     @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test68_ol3_minify(self):
         """OL3 minify"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2133,7 +2133,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_minify.js'), 'r')
         control_output = control_file.read()
 
@@ -2144,8 +2144,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test69_Leaflet_canvasextent(self):
         """Leaflet canvas extent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2178,8 +2178,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test70_Leaflet_maxzoom(self):
         """Leaflet max zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2203,7 +2203,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_maxzoom.html'), 'r')
         control_output = control_file.read()
 
@@ -2217,8 +2217,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test71_ol3_maxzoom(self):
         """OL3 max zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2243,7 +2243,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_maxzoom.js'), 'r')
         control_output = control_file.read()
 
@@ -2256,8 +2256,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test72_Leaflet_minzoom(self):
         """Leaflet min zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2281,7 +2281,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_minzoom.html'), 'r')
         control_output = control_file.read()
 
@@ -2295,8 +2295,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test73_ol3_minzoom(self):
         """OL3 min zoom"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2321,7 +2321,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_minzoom.js'), 'r')
         control_output = control_file.read()
 
@@ -2334,8 +2334,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test74_Leaflet_restricttoextent(self):
         """Leaflet restrict to extent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2359,7 +2359,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_restricttoextent.html'), 'r')
         control_output = control_file.read()
 
@@ -2373,8 +2373,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test75_ol3_restricttoextent(self):
         """OL3 restrict to extent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2406,8 +2406,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test76_Leaflet_25d(self):
         """Leaflet 2.5d"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2428,7 +2428,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_25d.html'), 'r')
         control_output = control_file.read()
 
@@ -2442,8 +2442,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test77_OL3_25d(self):
         """OL3 2.5d"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -2466,7 +2466,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_25d.html'), 'r')
         control_output = control_file.read()
 
@@ -2480,8 +2480,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test78_Leaflet_raster(self):
         """Leaflet raster"""
-        layer_path = test_data_path('layer', 'test.png')
-        # style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'test.png')
+        # style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
@@ -2501,7 +2501,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_raster.html'), 'r')
         control_output = control_file.read()
 
@@ -2518,8 +2518,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test79_OL3_raster(self):
         """OL3 raster"""
-        layer_path = test_data_path('layer', 'test.png')
-        # style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'test.png')
+        # style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
@@ -2539,7 +2539,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_raster.js'), 'r')
         control_output = control_file.read()
 
@@ -2555,9 +2555,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test80_OL3_heatmap(self):
         """OL3 heatmap"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'heatmap.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'heatmap.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_heatmap.js')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -2593,9 +2593,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test81_Leaflet_heatmap(self):
         """Leaflet heatmap"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'heatmap.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'heatmap.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_heatmap.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -2634,7 +2634,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'ol3_wms.js'), 'r')
+            get_test_data_path('control', 'ol3_wms.js'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -2671,7 +2671,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'leaflet_wms.html'), 'r')
+            get_test_data_path('control', 'leaflet_wms.html'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -2699,9 +2699,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test85_Leaflet_rulebased(self):
         """Leaflet rule-based"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_rule-based.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_rule-based.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_rule-based.html')
 
         layer = load_layer(layer_path)
@@ -2733,9 +2733,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test86_OL3_rulebased(self):
         """OL3 rule-based"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_rule-based.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_rule-based.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_rule-based.js')
 
         layer = load_layer(layer_path)
@@ -2771,9 +2771,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test87_Leaflet_labels(self):
         """Leaflet labels"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_labels.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_labels.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_labels.html')
 
         layer = load_layer(layer_path)
@@ -2805,9 +2805,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test88_OL3_labels(self):
         """OL3 labels"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_labels.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_labels.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_labels.js')
 
         layer = load_layer(layer_path)
@@ -2851,7 +2851,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'ol3_wmts.js'), 'r')
+            get_test_data_path('control', 'ol3_wmts.js'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -2888,7 +2888,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path('control', 'leaflet_wmts.html'), 'r')
+            get_test_data_path('control', 'leaflet_wmts.html'), 'r')
         control_output = control_file.read()
 
         # Export to web map
@@ -2916,9 +2916,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test91_Leaflet_scaledependent(self):
         """Leaflet scale-dependent"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_scaledependent.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_scaledependent.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_scaledependent.html')
 
         layer = load_layer(layer_path)
@@ -2950,9 +2950,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test92_Leaflet_categorized_25d(self):
         """Leaflet categorized 2.5D"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'categorized_25d.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'categorized_25d.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_categorized_25d.html')
 
         layer = load_layer(layer_path)
@@ -2983,9 +2983,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test93_Leaflet_graduated_25d(self):
         """Leaflet graduated 2.5D"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'graduated_25d.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'graduated_25d.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_graduated_25d.html')
 
         layer = load_layer(layer_path)
@@ -3016,9 +3016,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test94_Leaflet_svg(self):
         """Leaflet SVG"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'svg.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'svg.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_svg.html')
 
         layer = load_layer(layer_path)
@@ -3053,9 +3053,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test95_OL3_svg(self):
         """OL3 SVG"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'svg.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'svg.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_svg.js')
 
         layer = load_layer(layer_path)
@@ -3094,9 +3094,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test96_Leaflet_layer_groups(self):
         """Leaflet layer groups"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        control_path = get_test_data_path(
             'control', 'leaflet_groups.html')
 
         layer = load_layer(layer_path)
@@ -3126,9 +3126,9 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test97_OL3_layergroups(self):
         """OL3 layer groups"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_single.qml')
-        control_path = test_data_path(
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        control_path = get_test_data_path(
             'control', 'ol3_groups.js')
 
         layer = load_layer(layer_path)
@@ -3165,8 +3165,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test98_Leaflet_shapes(self):
         """Leaflet shapes"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_shapes.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_shapes.qml')
 
         layer = load_layer(layer_path)
 
@@ -3176,7 +3176,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_shapes.html'), 'r')
         control_output = control_file.read()
 
@@ -3204,8 +3204,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test99_OL3_shapes(self):
         """OL3 shapes"""
-        layer_path = test_data_path('layer', 'airports.shp')
-        style_path = test_data_path('style', 'airports_shapes.qml')
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_shapes.qml')
 
         layer = load_layer(layer_path)
 
@@ -3215,7 +3215,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'ol3_shapes.js'), 'r')
         control_output = control_file.read()
 
@@ -3246,8 +3246,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test100_Leaflet_line_pattern_fill(self):
         """Leaflet line pattern fill"""
-        layer_path = test_data_path('layer', 'lakes.shp')
-        style_path = test_data_path('style', 'lakes_linepatternfill.qml')
+        layer_path = get_test_data_path('layer', 'lakes.shp')
+        style_path = get_test_data_path('style', 'lakes_linepatternfill.qml')
 
         layer = load_layer(layer_path)
 
@@ -3257,7 +3257,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         registry.addMapLayer(layer)
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_linepatternfill.html'), 'r')
         control_output = control_file.read()
 
@@ -3285,8 +3285,8 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test101_Leaflet_raster_crs(self):
         """Leaflet raster with original CRS"""
-        layer_path = test_data_path('layer', 'test.png')
-        # style_path = test_data_path('style', '25d.qml')
+        layer_path = get_test_data_path('layer', 'test.png')
+        # style_path = get_test_data_path('style', '25d.qml')
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
@@ -3309,7 +3309,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(IFACE, tempFolder()).index_file
 
         control_file = open(
-            test_data_path(
+            get_test_data_path(
                 'control', 'leaflet_raster_crs.html'), 'r')
         control_output = control_file.read()
 

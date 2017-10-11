@@ -40,7 +40,7 @@ from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenc
 from PyQt4 import QtCore, QtTest
 
 from utils import tempFolder
-from utilities import get_qgis_app, test_data_path, load_layer, load_wfs_layer
+from utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer
 from exporter import (FolderExporter,
                       FtpExporter,
                       FtpConfigurationDialog,
