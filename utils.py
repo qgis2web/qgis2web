@@ -39,7 +39,8 @@ from qgis.core import (QgsApplication,
                        QgsGraduatedSymbolRendererV2,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
-                       QgsRasterPipe)
+                       QgsRasterPipe,
+                       QgsWKBTypes)
 from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayerV2)
 from qgis.utils import QGis
 import processing
@@ -61,7 +62,7 @@ TYPE_MAP = {
     QGis.WKBMultiLineString25D: 'MultiLineString',
     QGis.WKBMultiPolygon: 'MultiPolygon',
     QGis.WKBMultiPolygon25D: 'MultiPolygon',
-    QGis.WKBMultiPolygonZM: 'MultiPolygon'}
+    QgsWKBTypes.MultiPolygonZM: 'MultiPolygon'}
 
 BLEND_MODES = {
     QPainter.CompositionMode_SourceOver: 'normal',
