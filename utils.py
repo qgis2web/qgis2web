@@ -60,7 +60,8 @@ TYPE_MAP = {
     QGis.WKBMultiLineString: 'MultiLineString',
     QGis.WKBMultiLineString25D: 'MultiLineString',
     QGis.WKBMultiPolygon: 'MultiPolygon',
-    QGis.WKBMultiPolygon25D: 'MultiPolygon'}
+    QGis.WKBMultiPolygon25D: 'MultiPolygon',
+    QGis.WKBMultiPolygonZM: 'MultiPolygon'}
 
 BLEND_MODES = {
     QPainter.CompositionMode_SourceOver: 'normal',
