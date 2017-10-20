@@ -284,8 +284,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
 
     file_writer = QgsRasterFileWriter(piped_file)
 
-    file_writer.writeRaster(pipe, piped_height, piped_width,
-                            piped_extent, piped_crs)
+    file_writer.writeRaster(pipe, piped_height, -1, piped_extent, piped_crs)
 
     # Export layer as PNG
     out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" +
