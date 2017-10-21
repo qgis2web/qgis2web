@@ -80,32 +80,14 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         (style, markerType,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
-        if isinstance(renderer, QgsSingleSymbolRendererV2):
-            (new_obj, legends, wfsLayers,
-             useMultiStyle) = singleLayer(renderer, outputProjectFileName,
-                                          safeLayerName, wfsLayers, layer,
-                                          cluster, json, usedFields, legends,
-                                          markerType, useMultiStyle)
-        elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-            (new_obj, legends, wfsLayers,
-             useMultiStyle) = categorizedLayer(layer, renderer, safeLayerName,
-                                               outputProjectFileName,
-                                               usedFields, legends, cluster,
-                                               json, wfsLayers, markerType,
-                                               useMultiStyle)
-        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-            (new_obj, legends, wfsLayers,
-             useMultiStyle) = graduatedLayer(layer, safeLayerName, renderer,
-                                             outputProjectFileName, cluster,
-                                             json, usedFields, legends,
-                                             wfsLayers, markerType,
-                                             useMultiStyle)
-        elif isinstance(renderer, QgsRuleBasedRendererV2):
-            (new_obj, legends, wfsLayers,
-             useMultiStyle) = ruleBasedLayer(layer, renderer, safeLayerName,
-                                             outputProjectFileName, usedFields,
-                                             legends, cluster, json, wfsLayers,
-                                             markerType, useMultiStyle)
+        (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
+                                     safeLayerName)
+        legends[safeLayerName] = legend
+        (new_obj, legends, wfsLayers,
+         useMultiStyle) = getLayer(layer, renderer, safeLayerName,
+                                   outputProjectFileName, usedFields, legends,
+                                   cluster, json, wfsLayers, markerType,
+                                   useMultiStyle, symbol)
     blend = BLEND_MODES[layer.blendMode()]
     new_obj = u"""{style}
         map.createPane('pane_{sln}');
@@ -273,16 +255,49 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
     return new_pop, popFuncs
 
 
-def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
-                layer, cluster, json, usedFields, legends, markerType,
-                useMultiStyle):
-    symbol = renderer.symbol()
-    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
-                                                           QSize(16, 16))
-    legendIcon.save(os.path.join(outputProjectFileName, "legend",
-                                 safeLayerName + ".png"))
-    legends[safeLayerName] = '<img src="legend/' + safeLayerName + '.png" /> '
-    legends[safeLayerName] += layer.name()
+def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
+    if isinstance(renderer, QgsSingleSymbolRendererV2):
+        symbol = renderer.symbol()
+        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+                                                               QSize(16, 16))
+        legendIcon.save(os.path.join(outputProjectFileName, "legend",
+                                     safeLayerName + ".png"))
+        legend = ('<img src="legend/' + safeLayerName +
+                                  '.png" /> ')
+        legend += layer.name()
+    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        legend = layer.name().replace("'", "\\'") + "<br />"
+        legend += "<table>"
+        categories = renderer.categories()
+        for cnt, cat in enumerate(categories):
+            symbol = cat.symbol()
+            legend = iconLegend(symbol, cat, outputProjectFileName,
+                                safeLayerName, legend, cnt)
+        legend += "</table>"
+    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        legend = layer.name() + "<br />"
+        legend += "<table>"
+        for cnt, r in enumerate(renderer.ranges()):
+            symbol = r.symbol()
+            legend = iconLegend(symbol, r, outputProjectFileName,
+                                safeLayerName, legend, cnt)
+        legend += "</table>"
+    elif isinstance(renderer, QgsRuleBasedRendererV2):
+        legend = layer.name() + "<br />"
+        legend += "<table>"
+        root_rule = renderer.rootRule()
+        rules = root_rule.children()
+        for cnt, r in enumerate(rules):
+            symbol = r.symbol()
+            legend = iconLegend(symbol, r, outputProjectFileName,
+                                safeLayerName, legend, cnt)
+        legend += "</table>"
+    return (legend, symbol)
+
+
+def getLayer(layer, renderer, safeLayerName, outputProjectFileName, usedFields,
+             legends, cluster, json, wfsLayers, markerType, useMultiStyle,
+             symbol):
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers,
@@ -293,84 +308,6 @@ def singleLayer(renderer, outputProjectFileName, safeLayerName, wfsLayers,
         (new_obj, wfsLayers,
          useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields,
                                         json, wfsLayers, symbol, useMultiStyle)
-    return new_obj, legends, wfsLayers, useMultiStyle
-
-
-def categorizedLayer(layer, renderer, safeLayerName, outputProjectFileName,
-                     usedFields, legends, cluster, json, wfsLayers,
-                     markerType, useMultiStyle):
-    catLegend = layer.name().replace("'", "\\'") + "<br />"
-    catLegend += "<table>"
-    categories = renderer.categories()
-    for cnt, cat in enumerate(categories):
-        symbol = cat.symbol()
-        catLegend = iconLegend(symbol, cat, outputProjectFileName,
-                               safeLayerName, catLegend, cnt)
-    catLegend += "</table>"
-    if layer.geometryType() == QGis.Point:
-        (new_obj,
-         wfsLayers,
-         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                     json, wfsLayers, markerType, symbol,
-                                     useMultiStyle)
-    else:
-        (new_obj,
-         wfsLayers,
-         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                        wfsLayers, symbol, useMultiStyle)
-    legends[safeLayerName] = catLegend
-    return new_obj, legends, wfsLayers, useMultiStyle
-
-
-def graduatedLayer(layer, safeLayerName, renderer, outputProjectFileName,
-                   cluster, json, usedFields, legends, wfsLayers, markerType,
-                   useMultiStyle):
-    catLegend = layer.name() + "<br />"
-    catLegend += "<table>"
-    for cnt, r in enumerate(renderer.ranges()):
-        symbol = r.symbol()
-        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend, cnt)
-    catLegend += "</table>"
-    if layer.geometryType() == QGis.Point:
-        (new_obj,
-         wfsLayers,
-         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                     json, wfsLayers, markerType, symbol,
-                                     useMultiStyle)
-    else:
-        (new_obj,
-         wfsLayers,
-         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                        wfsLayers, symbol, useMultiStyle)
-    legends[safeLayerName] = catLegend
-    return new_obj, legends, wfsLayers, useMultiStyle
-
-
-def ruleBasedLayer(layer, renderer, safeLayerName, outputProjectFileName,
-                   usedFields, legends, cluster, json, wfsLayers, markerType,
-                   useMultiStyle):
-    catLegend = layer.name() + "<br />"
-    catLegend += "<table>"
-    root_rule = renderer.rootRule()
-    rules = root_rule.children()
-    for cnt, r in enumerate(rules):
-        symbol = r.symbol()
-        catLegend = iconLegend(symbol, r, outputProjectFileName, safeLayerName,
-                               catLegend, cnt)
-    catLegend += "</table>"
-    if layer.geometryType() == QGis.Point:
-        (new_obj,
-         wfsLayers,
-         useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,
-                                     json, wfsLayers, markerType, symbol,
-                                     useMultiStyle)
-    else:
-        (new_obj,
-         wfsLayers,
-         useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields, json,
-                                        wfsLayers, symbol, useMultiStyle)
-    legends[safeLayerName] = catLegend
     return new_obj, legends, wfsLayers, useMultiStyle
 
 
