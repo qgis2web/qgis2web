@@ -264,36 +264,21 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
                                      safeLayerName + ".png"))
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
         legend += layer.name()
-    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+    else:
+        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            classes = renderer.categories()
+        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            classes = renderer.ranges()
+        elif isinstance(renderer, QgsRuleBasedRendererV2):
+            classes = renderer.rootRule().children()
         legend = layer.name().replace("'", "\\'") + "<br />"
         legend += "<table>"
-        categories = renderer.categories()
-        for cnt, cat in enumerate(categories):
-            symbol = cat.symbol()
-            legend = iconLegend(symbol, cat, outputProjectFileName,
+        for cnt, c in enumerate(classes):
+            symbol = c.symbol()
+            legend = iconLegend(symbol, c, outputProjectFileName,
                                 safeLayerName, legend, cnt)
         legend += "</table>"
-        symbol = renderer.categories()[0].symbol()
-    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-        legend = layer.name() + "<br />"
-        legend += "<table>"
-        for cnt, r in enumerate(renderer.ranges()):
-            symbol = r.symbol()
-            legend = iconLegend(symbol, r, outputProjectFileName,
-                                safeLayerName, legend, cnt)
-        legend += "</table>"
-        symbol = renderer.ranges()[0].symbol()
-    elif isinstance(renderer, QgsRuleBasedRendererV2):
-        legend = layer.name() + "<br />"
-        legend += "<table>"
-        root_rule = renderer.rootRule()
-        rules = root_rule.children()
-        for cnt, r in enumerate(rules):
-            symbol = r.symbol()
-            legend = iconLegend(symbol, r, outputProjectFileName,
-                                safeLayerName, legend, cnt)
-        legend += "</table>"
-        symbol = rules[0].symbol()
+        symbol = classes[0].symbol()
     return (legend, symbol)
 
 
