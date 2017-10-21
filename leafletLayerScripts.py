@@ -262,8 +262,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
                                                                QSize(16, 16))
         legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                      safeLayerName + ".png"))
-        legend = ('<img src="legend/' + safeLayerName +
-                                  '.png" /> ')
+        legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
         legend += layer.name()
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         legend = layer.name().replace("'", "\\'") + "<br />"
@@ -274,6 +273,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
             legend = iconLegend(symbol, cat, outputProjectFileName,
                                 safeLayerName, legend, cnt)
         legend += "</table>"
+        symbol = renderer.categories()[0].symbol()
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         legend = layer.name() + "<br />"
         legend += "<table>"
@@ -282,6 +282,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
             legend = iconLegend(symbol, r, outputProjectFileName,
                                 safeLayerName, legend, cnt)
         legend += "</table>"
+        symbol = renderer.ranges()[0].symbol()
     elif isinstance(renderer, QgsRuleBasedRendererV2):
         legend = layer.name() + "<br />"
         legend += "<table>"
@@ -292,6 +293,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
             legend = iconLegend(symbol, r, outputProjectFileName,
                                 safeLayerName, legend, cnt)
         legend += "</table>"
+        symbol = rules[0].symbol()
     return (legend, symbol)
 
 
