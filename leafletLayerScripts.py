@@ -393,18 +393,24 @@ def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
     if slCount > 1:
         pointJSON += """
             pointToLayers: ["""
-    else:
-        pointJSON += """
-            pointToLayer: """
-    for sl in xrange(slCount):
-        pointJSON += """function (feature, latlng) {{
+        for sl in xrange(slCount):
+            pointJSON += """function (feature, latlng) {{
                 var context = {{
                     feature: feature,
                     variables: {{}}
                 }};
                 return L.{markerType}(latlng, """
-        pointJSON += """style_{sln}_%s(feature));
+            pointJSON += """style_{sln}_%s(feature));
             }},""" % sl
+    else:
+        pointJSON += """
+            pointToLayer: function (feature, latlng) {{
+                var context = {{
+                    feature: feature,
+                    variables: {{}}
+                }};
+                return L.{markerType}(latlng, style_{sln}_0(feature));
+            }},"""
     if slCount > 1:
         pointJSON += """
         ]}});"""
@@ -431,8 +437,10 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol, useMultiStyle):
         useMultiStyle = True
         p2lStart = "pointToLayers: ["
         p2lEnd = "],"
-    for sl in xrange(slCount):
-        p2ls += "pointToLayer_%s_%s, " % (layerName, sl)
+        for sl in xrange(slCount):
+            p2ls += "pointToLayer_%s_%s, " % (layerName, sl)
+    else:
+        p2ls = "pointToLayer_%s_0, " % layerName
     new_obj = p2lf + """
         var layer_{layerName} = L.geoJson{multiStyle}(null, {{
             attribution: '{layerAttr}',
@@ -476,8 +484,10 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
         useMultiStyle = True
         styleStart = u"styles: ["
         styleEnd = u"]"
-    for sl in xrange(slCount):
-        styles += u"""style_%s_%s,""" % (safeName, sl)
+        for sl in xrange(slCount):
+            styles += u"""style_%s_%s,""" % (safeName, sl)
+    else:
+        styles = u"""style_%s_0,""" % safeName
     new_obj = u"""
     var layer_{safeName} = new L.geoJson{multiStyle}(json_{safeName}, {{
         attribution: '{attr}',
@@ -506,8 +516,10 @@ def buildNonPointWFS(layerName, layer, symbol, useMultiStyle):
         useMultiStyle = True
         styleStart = "styles: ["
         styleEnd = "],"
-    for sl in xrange(slCount):
-        styles += """style_%s_%s,""" % (layerName, sl)
+        for sl in xrange(slCount):
+            styles += """style_%s_%s,""" % (layerName, sl)
+    else:
+        styles = """style_%s_0,""" % layerName
     new_obj = """
         var layer_{layerName} = L.geoJson{multiStyle}(null, {{
             attribution: '{attr}',
