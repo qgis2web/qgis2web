@@ -43,7 +43,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             style += """
         function style_%s_%s(feature) {
             switch(String(feature.properties['%s'])) {""" % (sln, sl,
-                                                                classAttr)
+                                                             classAttr)
             for cat in renderer.categories():
                 (styleCode, markerType,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
