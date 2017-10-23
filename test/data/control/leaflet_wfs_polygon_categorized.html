@@ -64,7 +64,7 @@
         }
 
         function style_polygon_0_0(feature) {
-            switch(feature.properties['details'].toString()) {
+            switch(String(feature.properties['details'])) {
                 default:
                     return {
                 pane: 'pane_polygon_0',

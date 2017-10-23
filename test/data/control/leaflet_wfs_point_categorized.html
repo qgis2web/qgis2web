@@ -64,7 +64,7 @@
         }
 
         function style_point_0_0(feature) {
-            switch(feature.properties['digitised'].toString()) {
+            switch(String(feature.properties['digitised'])) {
                 default:
                     return {
                 pane: 'pane_point_0',

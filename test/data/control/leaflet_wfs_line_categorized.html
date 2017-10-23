@@ -82,7 +82,7 @@
         }
 
         function style_centreline_0_0(feature) {
-            switch(feature.properties['route'].toString()) {
+            switch(String(feature.properties['route'])) {
                 case 'Acle Dyke':
                     return {
                 pane: 'pane_centreline_0',
