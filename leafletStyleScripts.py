@@ -21,7 +21,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     style = ""
     if isinstance(renderer, QgsSingleSymbolRendererV2):
         symbol = renderer.symbol()
-        for sl in xrange(symbol.symbolLayerCount()):
+        slCount = symbol.symbolLayerCount()
+        if slCount < 1:
+            slCount = 1
+        for sl in xrange(slCount):
             (styleCode, markerType,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
                                          layer_alpha, sln, sl)
@@ -33,7 +36,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.categories()[0].symbol()
-        for sl in xrange(symbol.symbolLayerCount()):
+        slCount = symbol.symbolLayerCount()
+        if slCount < 1:
+            slCount = 1
+        for sl in xrange(slCount):
             style += """
         function style_%s_%s(feature) {
             switch(feature.properties['%s'].toString()) {""" % (sln, sl,
@@ -58,7 +64,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
-        for sl in xrange(symbol.symbolLayerCount()):
+        slCount = symbol.symbolLayerCount()
+        if slCount < 1:
+            slCount = 1
+        for sl in xrange(slCount):
             style += """
         function style_%s_%s(feature) {""" % (sln, sl)
             for ran in renderer.ranges():
@@ -77,7 +86,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         }"""
     elif isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()
-        for sl in xrange(symbol.symbolLayerCount()):
+        slCount = symbol.symbolLayerCount()
+        if slCount < 1:
+            slCount = 1
+        for sl in xrange(slCount):
             template = """
         function style_%s_{sl}(feature) {{
             var context = {{

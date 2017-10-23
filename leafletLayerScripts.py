@@ -302,7 +302,10 @@ def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
                markerType, symbol, useMultiStyle):
     if layer.providerType() == 'WFS' and json is False:
         p2lf = ""
-        for sl in xrange(symbol.symbolLayerCount()):
+        slCount = symbol.symbolLayerCount()
+        if slCount < 1:
+            slCount = 1
+        for sl in xrange(slCount):
             p2lf += pointToLayerFunction(safeLayerName, sl)
         (new_obj,
          scriptTag,
