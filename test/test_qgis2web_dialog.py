@@ -52,7 +52,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def tearDown(self):
         """Runs after each test"""
         self.dialog = MainDialog(IFACE)
-        self.dialog.ol3.click()
+        # self.dialog.ol3.click()
         self.dialog = None
         QgsProject.instance().clear()
 

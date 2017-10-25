@@ -322,6 +322,7 @@ class LeafletWriter(Writer):
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
+            QApplication.restoreOverrideCursor()
         finally:
             QApplication.restoreOverrideCursor()
         return outputIndex
