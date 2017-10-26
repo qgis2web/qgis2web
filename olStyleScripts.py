@@ -333,10 +333,8 @@ def getStyle(style, cluster, labelRes, labelText,
 
     this_style += '''
     return style;
-}''' % {
-            "cache": "styleCache_" + sln,
-            "size": size, "face": face,
-            "color": color}
+}''' % {"cache": "styleCache_" + sln, "size": size, "face": face,
+        "color": color}
     this_style += """
 function update() {
 
@@ -576,7 +574,7 @@ def getStar(color, borderColor, borderWidth, size, props):
     else:
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
-            radius2: %s, %s, %s})""" % (size, size/2, stroke,
+            radius2: %s, %s, %s})""" % (size, size / 2, stroke,
                                         getFillStyle(color, props)))
 
 
@@ -605,8 +603,8 @@ def getCross2(color, borderColor, borderWidth, size, props):
     else:
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
-            radius2: 0, angle: Math.PI / 4, %s, %s})""" % (
-                size, stroke, getFillStyle(color, props)))
+            radius2: 0, angle: Math.PI / 4, %s, %s})""" % (size, stroke,
+        getFillStyle(color, props)))
 
 
 def getLine(color, borderColor, borderWidth, size, props):

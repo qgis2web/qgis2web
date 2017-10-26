@@ -143,7 +143,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
-        alpha = 1-(layer_transparency / float(100))
+        alpha = 1 - (layer_transparency / float(100))
     slc = sl
     sl = symbol.symbolLayer(sl)
     try:

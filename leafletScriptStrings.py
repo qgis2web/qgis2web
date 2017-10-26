@@ -268,8 +268,7 @@ def pointToLayerFunction(safeLayerName, sl):
                 variables: {{}}
             }};
             return L.{markerType}(latlng, style_{safeLayerName}_{sl}""".format(
-                safeLayerName=safeLayerName, sl=sl,
-                markerType=markerType)
+        safeLayerName=safeLayerName, sl=sl, markerType=markerType)
     pointToLayerFunction += """(feature));
         }"""
     return pointToLayerFunction
@@ -365,7 +364,7 @@ def rasterScript(layer, safeLayerName):
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
         bounds_group.addLayer(overlay_{safeLayerName});""".format(
-                safeLayerName=safeLayerName)
+        safeLayerName=safeLayerName)
     return raster
 
 

@@ -93,9 +93,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};
         map.getPane('pane_{sln}').style['mix-blend-mode'] = '{blend}';
-        {new_obj}""".format(
-            style=style, sln=safeLayerName, zIndex=zIndex,
-            blend=blend, new_obj=new_obj)
+        {new_obj}""".format(style=style, sln=safeLayerName, zIndex=zIndex,
+                            blend=blend, new_obj=new_obj)
     if usedFields != 0:
         new_src += new_pop.decode("utf-8")
     new_src += """
@@ -138,8 +137,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
         fontUnderline = font.underline()
         xOffset = palyr.xOffset
         yOffset = palyr.yOffset
-        styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (
-                fontColor, fontSize)
+        styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (fontColor,
+                                                                     fontSize)
         if palyr.shapeDraw:
             styleStart += "background-color: %s; " % bgColor
             styleStart += "border: %dpx solid %s; " % (borderWidth,
@@ -168,8 +167,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
             fn = palyr.fieldName
             f = "layer.feature.properties['%s']" % handleHiddenField(layer, fn)
         labeltext = ".bindTooltip((" + unicode(f)
-        labeltext += " !== null?String(%s%s)%s:'')" % (
-                styleStart, unicode(f), styleEnd)
+        labeltext += " !== null?String(%s%s)%s:'')" % (styleStart, unicode(f),
+                                                       styleEnd)
         labeltext += ", {permanent: true, offset: [-0, -16], "
         labeltext += "className: 'css_%s'}" % safeLayerName
         labeltext += ");"

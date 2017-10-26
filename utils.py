@@ -135,8 +135,7 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
                 editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
         fieldType = "double" if (fieldType == QVariant.Double or
-                                 fieldType == QVariant.Int) else (
-                                    "string")
+                                 fieldType == QVariant.Int) else ("string")
         uri += '&field=' + unicode(fieldName) + ":" + fieldType
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()
@@ -255,10 +254,9 @@ def add25dAttributes(cleanLayer, layer, canvas):
         sl2 = symbol.symbolLayer(2)
         wallColor = sl1.subSymbol().color().name()
         roofColor = sl2.subSymbol().color().name()
-        provider.changeAttributeValues(
-                {feat.id() + 1: {heightField: height,
-                                 wallField: wallColor,
-                                 roofField: roofColor}})
+        provider.changeAttributeValues({feat.id() + 1: {heightField: height,
+                                                        wallField: wallColor,
+                                                        roofField: roofColor}})
     cleanLayer.commitChanges()
     renderer.stopRender(renderContext)
 
@@ -395,8 +393,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
         for range in ranges:
             symbols.append(range.symbol())
     else:
-        renderContext = QgsRenderContext.fromMapSettings(
-                canvas.mapSettings())
+        renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
         fields = layer.pendingFields()
         if restrictToExtent and extent == "Canvas extent":
             request = QgsFeatureRequest(iface.mapCanvas().extent())
@@ -531,5 +528,5 @@ def handleHiddenField(layer, field):
 
 def getRGBAColor(color, alpha):
     r, g, b, a = color.split(",")
-    a = (float(a)/255) * alpha
+    a = (float(a) / 255) * alpha
     return "'rgba(%s)'" % ",".join([r, g, b, unicode(a)])
