@@ -293,6 +293,7 @@ new ol.layer.Tile({{
                 for k, v in basemaps.iteritems()}
     return basemaps
 
+
 basemapAttributions = {
     'OSM': """\
 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,\
