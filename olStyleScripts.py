@@ -602,9 +602,14 @@ def getCross2(color, borderColor, borderWidth, size, props):
         stroke = ""
     else:
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0)
-    return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
-            radius2: 0, angle: Math.PI / 4, %s, %s})""" % (size, stroke,
-        getFillStyle(color, props)))
+    return ("""new ol.style.RegularShape({radius: %s + size,
+                                          points: 4,
+                                          radius2: 0,
+                                          angle: Math.PI / 4,
+                                          %s,
+                                          %s})""" % (size, stroke,
+                                                     getFillStyle(color,
+                                                                  props)))
 
 
 def getLine(color, borderColor, borderWidth, size, props):

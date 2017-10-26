@@ -305,8 +305,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     fieldImages += imageFields
     blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = '%(blend)s';
-});""" % (
-                {"name": sln, "blend": BLEND_MODES[layer.blendMode()]})
+});""" % ({"name": sln, "blend": BLEND_MODES[layer.blendMode()]})
     labelgun = """
     lyr_%s.on("postcompose", update);
 
@@ -433,7 +432,7 @@ def getCRS(iface, matchCRS):
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs().authid()
         crsConvert = """
             {dataProjection: 'EPSG:4326', featureProjection: '%(d)s'}""" % {
-                "d": mapCRS}
+            "d": mapCRS}
     else:
         crsConvert = """
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'}"""
