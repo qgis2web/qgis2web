@@ -440,37 +440,59 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test18_Leaflet_wfs_line_categorized(self):
         """Leaflet WFS line categorized"""
+        print 1
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
                      'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
                      '=broads_inspire:centreline&SRSNAME=EPSG:27700')
+        print 2
         layer_style = get_test_data_path('style', 'wfs_line_categorized.qml')
+        print 3
         control_path = get_test_data_path(
             'control', 'leaflet_wfs_line_categorized.html')
+        print 4
         layer = load_wfs_layer(layer_url, 'centreline')
+        print 5
         layer.loadNamedStyle(layer_style)
 
+        print 6
         registry = QgsMapLayerRegistry.instance()
+        print 7
         registry.addMapLayer(layer)
 
+        print 8
         control_file = open(control_path, 'r')
+        print 9
         control_output = control_file.read()
         # Export to web map
+        print 10
         writer = LeafletWriter()
+        print 11
         writer.params = self.defaultParams()
+        print 12
         writer.groups = {}
+        print 13
         writer.layers = [layer]
+        print 14
         writer.visible = [True]
+        print 15
         writer.cluster = [False]
+        print 16
         writer.popup = [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
                         ]
+        print 17
         writer.json = [False]
 
+        print 18
         result = writer.write(IFACE, tempFolder()).index_file
+        print 19
         test_file = open(result)
+        print 20
         test_output = test_file.read()
 
+        print 21
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
+        print 22
 
     def test19_Leaflet_json_poly_categorized(self):
         """Leaflet JSON polygon categorized"""
