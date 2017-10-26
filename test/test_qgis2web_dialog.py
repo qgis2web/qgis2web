@@ -449,41 +449,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                               (u'F_CODEDESC', u'no label')])])
         self.assertEqual(writer.json, [False])
 
-    def test18_Leaflet_wfs_line_categorized(self):
-        """Dialog test: Leaflet  WFS line categorized"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = get_test_data_path('style', 'wfs_line_categorized.qml')
-        control_path = get_test_data_path(
-            'control', 'leaflet_wfs_line_categorized.html')
-        layer = load_wfs_layer(layer_url, 'centreline')
-        layer.loadNamedStyle(layer_style)
-
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
-
-        self.dialog = MainDialog(IFACE)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
-
     def test19_Leaflet_json_poly_categorized(self):
         """Dialog test: Leaflet  JSON polygon categorized"""
         layer_path = get_test_data_path('layer', 'lakes.shp')
