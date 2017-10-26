@@ -18,13 +18,13 @@ install:
   - sudo add-apt-repository ${QGIS_REPO}
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
-  - sudo pip install --upgrade pip
-  - sudo pip install coverage
-  - sudo pip install nose
-  - sudo pip install rednose
-  - sudo pip install --upgrade pycodestyle
+  - sudo -H pip install --upgrade pip
+  - sudo -H pip install coverage
+  - sudo -H pip install nose
+  - sudo -H pip install rednose
+  - sudo -H pip install --upgrade pycodestyle
   - sudo apt-get install pylint
-  - sudo pip install python-coveralls
+  - sudo -H pip install python-coveralls
 
 before_script:
   - echo "Build starting on " `date`
