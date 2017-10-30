@@ -122,7 +122,7 @@ baselayers = (
     "OpenWeatherMap Wind",
     "OpenWeatherMap Temp",
     "OpenWeatherMap Snow"
-)
+),
 
 specificParams = {
 }
