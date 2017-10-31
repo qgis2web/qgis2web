@@ -68,8 +68,12 @@ case 'BETHEL':
                     break;
 case 'BETTLES':
                     return [ new ol.style.Style({
-        image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
-            radius2: 0, angle: Math.PI / 4, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(109,219,166,1.0)'})}),
+        image: new ol.style.RegularShape({radius: 4.0 + size,
+                                          points: 4,
+                                          radius2: 0,
+                                          angle: Math.PI / 4,
+                                          stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}),
+                                          fill: new ol.style.Fill({color: 'rgba(109,219,166,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
     })];
