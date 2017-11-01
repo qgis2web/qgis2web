@@ -229,16 +229,16 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         color = sl.color().name()
         angle = 360 - sl.lineAngle()
         pattern = """
-            var pattern_%s_%d = new L.StripePattern({
-                weight: %s,
-                spaceWeight: %s,
-                color: '%s',
-                opacity: %s,
-                spaceOpacity: 0,
-                angle: %d
-            });
-            pattern_%s_%d.addTo(map);""" % (sln, slc, weight, spaceWeight,
-                                            color, alpha, angle, sln, slc)
+        var pattern_%s_%d = new L.StripePattern({
+            weight: %s,
+            spaceWeight: %s,
+            color: '%s',
+            opacity: %s,
+            spaceOpacity: 0,
+            angle: %d
+        });
+        pattern_%s_%d.addTo(map);""" % (sln, slc, weight, spaceWeight,
+                                        color, alpha, angle, sln, slc)
         style = """
                 stroke: false,
                 fillOpacity: 1,
