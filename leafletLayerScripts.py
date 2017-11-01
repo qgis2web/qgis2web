@@ -473,7 +473,7 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol, useMultiStyle):
 def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
     if usedFields != 0:
         onEachFeature = u"""
-        onEachFeature: pop_{safeName},""".format(safeName=safeName)
+            onEachFeature: pop_{safeName},""".format(safeName=safeName)
     else:
         onEachFeature = u""
     styles = u""
