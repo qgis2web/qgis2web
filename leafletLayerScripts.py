@@ -491,11 +491,11 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
     else:
         styles = u"""style_%s_0,""" % safeName
     new_obj = u"""
-    var layer_{safeName} = new L.geoJson{multiStyle}(json_{safeName}, {{
-        attribution: '{attr}',
-        pane: 'pane_{safeName}',{onEachFeature}
-        {styleStart}{styles}{styleEnd}
-    }});"""
+        var layer_{safeName} = new L.geoJson{multiStyle}(json_{safeName}, {{
+            attribution: '{attr}',
+            pane: 'pane_{safeName}',{onEachFeature}
+            {styleStart}{styles}{styleEnd}
+        }});"""
     new_obj = new_obj.format(safeName=safeName, multiStyle=multiStyle,
                              attr=layerAttr, onEachFeature=onEachFeature,
                              styleStart=styleStart, styles=styles,
