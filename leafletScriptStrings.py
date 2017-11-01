@@ -310,19 +310,19 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS):
         wmts_style = d['styles'][0]
         wmts_tileMatrixSet = d['tileMatrixSet'][0]
         wms = """
-            var overlay_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
-                layer: '{wmts_layer}',
-                tilematrixSet: '{wmts_tileMatrixSet}',
-                format: '{wmts_format}',
-                style: '{wmts_style}',
-                uppercase: true,
-                transparent: true,
-                continuousWorld : true,
-                opacity: {opacity}
-            }});""".format(safeLayerName=safeLayerName, wmts_url=wmts_url,
-                           wmts_layer=wmts_layer, wmts_format=wmts_format,
-                           wmts_tileMatrixSet=wmts_tileMatrixSet,
-                           wmts_style=wmts_style, opacity=opacity)
+        var overlay_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
+            layer: '{wmts_layer}',
+            tilematrixSet: '{wmts_tileMatrixSet}',
+            format: '{wmts_format}',
+            style: '{wmts_style}',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            opacity: {opacity}
+        }});""".format(safeLayerName=safeLayerName, wmts_url=wmts_url,
+                       wmts_layer=wmts_layer, wmts_format=wmts_format,
+                       wmts_tileMatrixSet=wmts_tileMatrixSet,
+                       wmts_style=wmts_style, opacity=opacity)
     else:
         useWMS = True
         wms_url = d['url'][0]

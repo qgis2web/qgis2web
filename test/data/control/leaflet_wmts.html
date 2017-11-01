@@ -43,16 +43,16 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-            var overlay_wms_0 = L.tileLayer.wmts('http://wmts.nlsc.gov.tw/wmts', {
-                layer: 'EMAP8',
-                tilematrixSet: 'GoogleMapsCompatible',
-                format: 'image/jpeg',
-                style: 'default',
-                uppercase: true,
-                transparent: true,
-                continuousWorld : true,
-                opacity: 1.0
-            });
+        var overlay_wms_0 = L.tileLayer.wmts('http://wmts.nlsc.gov.tw/wmts', {
+            layer: 'EMAP8',
+            tilematrixSet: 'GoogleMapsCompatible',
+            format: 'image/jpeg',
+            style: 'default',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            opacity: 1.0
+        });
         map.addLayer(overlay_wms_0);
         setBounds();
         </script>
