@@ -156,6 +156,7 @@ class LeafletWriter(Writer):
         useHeat = False
         useShapes = False
         useOSMB = False
+        useWMS = False
         useWMTS = False
         useRaster = False
         scaleDependentLayers = ""
@@ -259,7 +260,8 @@ class LeafletWriter(Writer):
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
-                    new_obj, useWMTS = wmsScript(layer, safeLayerName, useWMTS)
+                    new_obj, useWMS, useWMTS = wmsScript(layer, safeLayerName,
+                                                         useWMS, useWMTS)
                     feedback.completeStep()
                 else:
                     useRaster = True
@@ -318,7 +320,7 @@ class LeafletWriter(Writer):
                            measure, matchCRS, layerSearch, canvas,
                            mapLibLocation, locate, new_src, template, feedback,
                            debugLibs, useMultiStyle, useHeat, useShapes,
-                           useOSMB, useWMTS)
+                           useOSMB, useWMS, useWMTS)
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)

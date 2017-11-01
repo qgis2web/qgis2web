@@ -30,6 +30,7 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -42,14 +43,12 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-            var overlay_wms_0 = L.tileLayer.wms('http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?', {
-                layers: 'GBR_BGS_625k_BLT',
-                format: 'image/png',
-                uppercase: true,
-                transparent: true,
-                continuousWorld : true,
-                opacity: 1.0
-            });
+        var overlay_wms_0 = L.WMS.source("http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?", {
+            transparent: true,
+            tiled: true,
+            opacity: 1.0
+        });
+        overlay_wms_0.getLayer("GBR_BGS_625k_BLT").addTo(map);
         map.addLayer(overlay_wms_0);
         setBounds();
         </script>

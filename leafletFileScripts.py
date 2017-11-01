@@ -29,6 +29,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     os.makedirs(markerStore)
     shutil.copyfile(jsDir + 'qgis2web_expressions.js',
                     jsStore + 'qgis2web_expressions.js')
+    shutil.copyfile(jsDir + 'leaflet.wms.js',
+                    jsStore + 'leaflet.wms.js')
     shutil.copyfile(jsDir + 'leaflet-tilelayer-wmts.js',
                     jsStore + 'leaflet-tilelayer-wmts.js')
     shutil.copyfile(jsDir + 'leaflet-svg-shape-markers.min.js',
@@ -101,7 +103,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
                    qgis2webJS, template, feedback, debugLibs, useMultiStyle,
-                   useHeat, useShapes, useOSMB, useWMTS):
+                   useHeat, useShapes, useOSMB, useWMS, useWMTS):
     useCluster = False
     for cluster in cluster_set:
         if cluster:
@@ -181,6 +183,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>"""
+    if useWMS:
+        extraJS += """
+        <script src="js/leaflet.wms.js"></script>"""
     if useWMTS:
         extraJS += """
         <script src="js/leaflet-tilelayer-wmts.js"></script>"""
