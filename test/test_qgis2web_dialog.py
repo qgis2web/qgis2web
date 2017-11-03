@@ -18,7 +18,7 @@ import difflib
 import time
 from collections import OrderedDict
 
-from timeout import timeout
+from nose.tools import timed
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
@@ -192,7 +192,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
              ('USE', 'no label')])])
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test10_Leaflet_wfs_pnt_single(self):
         """Dialog test: Leaflet  WFS point single"""
         layer_url = (
@@ -255,7 +255,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                         ])
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test12_Leaflet_wfs_line_single(self):
         """Dialog test: Leaflet  WFS line single"""
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
@@ -318,7 +318,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                         ])
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test14_Leaflet_wfs_poly_single(self):
         """Dialog test: Leaflet  WFS polygon single"""
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
@@ -387,7 +387,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
              ('USE', 'no label')])])
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test16_Leaflet_wfs_pnt_categorized(self):
         """Dialog test: Leaflet  WFS point categorized"""
         layer_url = (
@@ -489,7 +489,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                               (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])])
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test20_Leaflet_wfs_poly_categorized(self):
         """Dialog test: Leaflet  WFS polygon categorized"""
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
@@ -555,7 +555,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test22_Leaflet_wfs_pnt_graduated(self):
         """Dialog test: Leaflet  WFS point graduated"""
         layer_url = (
@@ -621,7 +621,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test24_Leaflet_wfs_line_graduated(self):
         """Dialog test: Leaflet  WFS line graduated"""
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
@@ -689,7 +689,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    @timeout()
+    @timed(10)
     def test26_Leaflet_wfs_poly_graduated(self):
         """Dialog test: Leaflet  WFS polygon graduated"""
         layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
