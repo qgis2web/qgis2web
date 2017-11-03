@@ -453,7 +453,10 @@ def addressSearchScript():
 
 def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
                   useHeat, useRaster, labelsList):
-    endHTML = ""
+    endHTML = """
+        map.on("zoomend", function(){
+%s
+        });""" % labels
     if wfsLayers == "":
         endHTML += """
         setBounds();
