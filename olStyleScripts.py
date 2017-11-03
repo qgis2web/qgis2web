@@ -489,10 +489,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
                 lineCap = 0
                 lineJoin = 0
 
-            style = ('''%s, %s''' %
-                     (getStrokeStyle(borderColor, borderStyle, borderWidth,
-                                     lineCap, lineJoin),
-                      getFillStyle(fillColor, props)))
+            style = ""
+            stroke = getStrokeStyle(borderColor, borderStyle, borderWidth,
+                                    lineCap, lineJoin)
+            if stroke != "":
+                style = "%s, " % stroke
+            style += getFillStyle(fillColor, props)
         elif isinstance(sl, QgsLinePatternFillSymbolLayer):
             weight = sl.subSymbol().width()
             spaceWeight = sl.distance()
