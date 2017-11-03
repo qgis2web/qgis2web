@@ -328,16 +328,15 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS):
         wms_url = d['url'][0]
         wms_layer = d['layers'][0]
         wms_format = d['format'][0]
-        wms_crs = d['crs'][0]
         wms = """
-        var overlay_%s = L.WMS.source("%s", {
+        var overlay_%s = L.WMS.layer("%s", "%s", {
+            format: '%s',
+            uppercase: true,
             transparent: true,
+            continuousWorld : true,
             tiled: true,
-            opacity: %s
-        });
-        overlay_%s.getLayer("%s").addTo(map);""" % (safeLayerName, wms_url,
-                                                    opacity, safeLayerName,
-                                                    wms_layer)
+            opacity: %d
+        });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity)
     return wms, useWMS, useWMTS
 
 

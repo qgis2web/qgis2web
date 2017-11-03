@@ -43,10 +43,13 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        var overlay_wms_0 = L.WMS.source("http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?", {
+        var overlay_GBRBGS1625kBedrockLithology_0 = L.WMS.layer("http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?", "GBR_BGS_625k_BLT", {
+            format: 'image/png',
+            uppercase: true,
             transparent: true,
+            continuousWorld : true,
             tiled: true,
-            opacity: 1.0
+            opacity: 1
         });
         overlay_wms_0.getLayer("GBR_BGS_625k_BLT").addTo(map);
         map.addLayer(overlay_wms_0);
