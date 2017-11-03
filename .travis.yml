@@ -15,7 +15,9 @@ addons:
   - sudo apt-get -qq -y update
 
 install:
-  - sudo -H pip install pyOpenSSL ndg-httpsclient pyasn1
+  - sudo -H pip install pyOpenSSL cryptography idna certifi --upgrade
+  - sudo -H pip install urllib3[secure] --upgrade
+  - sudo -H pip install requests[security] --upgrade
   - sudo add-apt-repository ${QGIS_REPO}
   - sudo apt-get update
   - sudo apt-get install -y --force-yes qgis python-qgis xvfb
