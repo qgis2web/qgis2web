@@ -514,8 +514,10 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
             k = sl.renderingPass()
         else:
             k = i
+        if style != "":
+            style += ","
         styles[k] = '''new ol.style.Style({
-        %s,
+        %s
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)
     })''' % style
