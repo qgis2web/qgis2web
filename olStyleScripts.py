@@ -533,7 +533,7 @@ def getSquare(color, borderColor, borderWidth, size, props):
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0) + ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
             angle: Math.PI/4, %s %s})""" % (size, stroke,
-                                             getFillStyle(color, props)))
+                                            getFillStyle(color, props)))
 
 
 def getDiamond(color, borderColor, borderWidth, size, props):
@@ -579,7 +579,7 @@ def getStar(color, borderColor, borderWidth, size, props):
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0) + ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
             radius2: %s, %s %s})""" % (size, size / 2, stroke,
-                                        getFillStyle(color, props)))
+                                       getFillStyle(color, props)))
 
 
 def getCircle(color, borderColor, borderWidth, size, props):
@@ -598,7 +598,7 @@ def getCross(color, borderColor, borderWidth, size, props):
         stroke = getStrokeStyle(borderColor, "", borderWidth, 0, 0) + ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
             radius2: 0, %s %s})""" % (size, stroke,
-                                       getFillStyle(color, props)))
+                                      getFillStyle(color, props)))
 
 
 def getCross2(color, borderColor, borderWidth, size, props):
