@@ -335,6 +335,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS):
             transparent: true,
             continuousWorld : true,
             tiled: true,
+            info_format: 'text/html',
             opacity: %d
         });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity)
     return wms, useWMS, useWMTS
