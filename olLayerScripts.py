@@ -70,7 +70,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                                                fieldAliases, fieldImages)
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
-        f.write("    var wms_layers = [];\n");
+        f.write("var wms_layers = [];\n");
         if basemapList:
             f.write(baseLayer + "\n")
         f.write(layerVars + "\n")
@@ -550,11 +550,13 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                             %(maxRes)s
                           });
               wms_layers.push(lyr_%(n)s);''' % {"layers": layers, "url": url,
-                                    "layerAttr": layerAttr,
-                                    "n": layerName, "name": layer.name(),
-                                    "version": version, "opacity": opacity,
-                                    "minRes": minResolution,
-                                    "maxRes": maxResolution}
+                                                "layerAttr": layerAttr,
+                                                "n": layerName,
+                                                "name": layer.name(),
+                                                "version": version,
+                                                "opacity": opacity,
+                                                "minRes": minResolution,
+                                                "maxRes": maxResolution}
 
 
 def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,

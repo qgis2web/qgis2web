@@ -1,3 +1,4 @@
+var wms_layers = [];
 var lyr_test_0 = new ol.layer.Image({
                             opacity: 1,
                             title: "test",

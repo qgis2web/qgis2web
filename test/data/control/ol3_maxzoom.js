@@ -305,6 +305,19 @@ var onSingleClick = function(evt) {
         count++;
     });
 
+    var viewProjection = map.getView().getProjection();
+    var viewResolution = map.getView().getResolution();
+    for (i = 0; i < wms_layers.length; i++) {
+        var url = wms_layers[i].getSource().getGetFeatureInfoUrl(
+            evt.coordinate, viewResolution, viewProjection,
+            {
+                'INFO_FORMAT': 'text/html',
+            });
+        if (url) {
+            popupText = popupText + '<iframe style="width:100%;height:110px;border:0px;" id="iframe" seamless src="' + url + '"></iframe>';
+        }
+    }
+
     if (popupText) {
         overlayPopup.setPosition(coord);
         content.innerHTML = popupText;

@@ -1,3 +1,4 @@
+var wms_layers = [];
 
     var projection_wms_0 = ol.proj.get('EPSG:3857');
     var projectionExtent_wms_0 = projection_wms_0.getExtent();

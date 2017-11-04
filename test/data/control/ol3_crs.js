@@ -1,3 +1,4 @@
+var wms_layers = [];
 var format_airports_0 = new ol.format.GeoJSON();
 var features_airports_0 = format_airports_0.readFeatures(json_airports_0, 
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:2964'});
