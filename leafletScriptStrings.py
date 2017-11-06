@@ -284,7 +284,8 @@ def clusterScript(safeLayerName):
     cluster = """
         var cluster_"""
     cluster += "{safeLayerName} = ".format(safeLayerName=safeLayerName)
-    cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false}});
+    cluster += """new L.MarkerClusterGroup({{showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2}});
         cluster_{safeLayerName}""".format(safeLayerName=safeLayerName)
     cluster += """.addLayer(layer_{safeLayerName});
 """.format(safeLayerName=safeLayerName)
