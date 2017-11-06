@@ -96,7 +96,8 @@
                 return L.circleMarker(latlng, style_airports_0_0(feature));
             },
         });
-        var cluster_airports_0 = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        var cluster_airports_0 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
         cluster_airports_0.addLayer(layer_airports_0);
 
         bounds_group.addLayer(layer_airports_0);
