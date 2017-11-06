@@ -94,6 +94,7 @@ class OpenLayersWriter(Writer):
     def writeOL(cls, iface, feedback, layers, groups, popup, visible,
                 json, clustered, settings, folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        mapSettings = iface.mapCanvas().mapSettings()
         controlCount = 0
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
         folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
@@ -103,6 +104,7 @@ class OpenLayersWriter(Writer):
         optimize = settings["Data export"]["Minify GeoJSON files"]
         debugLibs = settings["Data export"]["Use debug libraries"]
         extent = settings["Scale/Zoom"]["Extent"]
+        mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
         geolocateUser = settings["Appearance"]["Geolocate user"]
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
@@ -122,7 +124,8 @@ class OpenLayersWriter(Writer):
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered,
-                                    iface, restrictToExtent, extent)
+                                    iface, restrictToExtent, extent, mapbounds,
+                                    mapSettings.destinationCrs().authid())
         (jsAddress, cssAddress, layerSearch,
          controlCount) = writeHTMLstart(settings, controlCount, osmb,
                                         mapLibLocn, layerSearch, searchLayer,
@@ -135,12 +138,10 @@ class OpenLayersWriter(Writer):
         controls = getControls(project, measureTool, geolocateUser)
         layersList = getLayersList(addLayersList)
         pageTitle = project.title()
-        mapSettings = iface.mapCanvas().mapSettings()
         backgroundColor = getBackground(mapSettings)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
-        mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
         mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
