@@ -71,9 +71,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if matchCRS:
-            f.write("""ol.proj.get("%s").setExtent(%s);""" % (authid, bounds))
-        f.write("""
-var wms_layers = [];\n""")
+            f.write("""ol.proj.get("%s").setExtent(%s);
+""" % (authid, bounds))
+        f.write("""var wms_layers = [];\n""")
         if basemapList:
             f.write(baseLayer + "\n")
         f.write(layerVars + "\n")
