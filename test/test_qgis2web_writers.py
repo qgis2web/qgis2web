@@ -2682,6 +2682,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2902,6 +2903,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
