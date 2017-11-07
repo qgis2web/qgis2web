@@ -101,6 +101,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder())
         self.assertTrue(result.index_file)
@@ -124,6 +125,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder())
         self.assertTrue(result.index_file)
