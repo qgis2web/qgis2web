@@ -553,7 +553,7 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                             %(minRes)s
                             %(maxRes)s
                           });
-              wms_layers.push(lyr_%(n)s, %(info)d);''' % {
+              wms_layers.push([lyr_%(n)s, %(info)d]);''' % {
         "layers": layers, "url": url, "layerAttr": layerAttr, "n": layerName,
         "name": layer.name(), "version": version, "opacity": opacity,
         "minRes": minResolution, "maxRes": maxResolution, "info": info}
