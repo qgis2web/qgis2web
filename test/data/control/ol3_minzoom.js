@@ -309,7 +309,7 @@ var onSingleClick = function(evt) {
     var viewResolution = map.getView().getResolution();
     for (i = 0; i < wms_layers.length; i++) {
         if (wms_layers[i, 1]) {
-            var url = wms_layers[i].getSource().getGetFeatureInfoUrl(
+            var url = wms_layers[i, 0].getSource().getGetFeatureInfoUrl(
                 evt.coordinate, viewResolution, viewProjection,
                 {
                     'INFO_FORMAT': 'text/html',
