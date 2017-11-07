@@ -1,4 +1,4 @@
-ol.proj.get("EPSG:2964").setExtent([-6358071.865295, 1306799.273085, 6492998.322066, 6629313.356134]);
+ol.proj.get("EPSG:2964").setExtent([-4480198.522214, 1433525.798872, 4615124.978985, 6502586.830347]);
 var wms_layers = [];
 var format_airports_0 = new ol.format.GeoJSON();
 var features_airports_0 = format_airports_0.readFeatures(json_airports_0, 
