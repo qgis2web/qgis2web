@@ -740,6 +740,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -781,6 +782,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
              (u'F_CODEDESC', u'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -823,6 +825,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -865,6 +868,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -907,6 +911,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'F_CODEDESC', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -948,6 +953,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -988,6 +994,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -1028,6 +1035,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'F_CODEDESC', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -1068,6 +1076,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])]
 
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_file = open(result)
@@ -1103,6 +1112,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_qgis2web_output = read_output(result, 'resources/qgis2web.js')
@@ -1133,6 +1143,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'objtype', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1160,6 +1171,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'objtype', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1246,6 +1258,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1320,6 +1333,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1409,6 +1423,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1497,6 +1512,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1574,6 +1590,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1655,6 +1672,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1783,6 +1801,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1858,6 +1877,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -1938,6 +1958,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2020,6 +2041,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2097,6 +2119,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2207,6 +2230,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2285,6 +2309,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2363,6 +2388,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'NAME', u'no label'), (u'USE', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2430,6 +2456,7 @@ class qgis2web_WriterTest(unittest.TestCase):
              (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2503,6 +2530,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2546,6 +2574,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2615,6 +2644,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -2726,6 +2756,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_style_file = open(
@@ -2798,6 +2829,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_style_file = open(
@@ -2832,6 +2864,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
                         ]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -3046,6 +3079,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
         test_style_file = open(
@@ -3117,6 +3151,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.cluster = [False]
         writer.popup = [{}]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
@@ -3198,6 +3233,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
         writer.json = [False]
+        writer.getFeatureInfo = [False]
 
         result = writer.write(IFACE, tempFolder()).index_file
 
