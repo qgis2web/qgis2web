@@ -292,7 +292,7 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def wmsScript(layer, safeLayerName, useWMS, useWMTS):
+def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     if 'type' in d and d['type'][0] == "xyz":
@@ -329,6 +329,10 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS):
         wms_url = d['url'][0]
         wms_layer = d['layers'][0]
         wms_format = d['format'][0]
+        getFeatureInfo = ""
+        if not identify:
+            getFeatureInfo = """,
+            identify: false,"""
         wms = """
         var overlay_%s = L.WMS.layer("%s", "%s", {
             format: '%s',
@@ -337,8 +341,9 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS):
             continuousWorld : true,
             tiled: true,
             info_format: 'text/html',
-            opacity: %d
-        });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity)
+            opacity: %d%s
+        });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity,
+                  getFeatureInfo)
     return wms, useWMS, useWMTS
 
 

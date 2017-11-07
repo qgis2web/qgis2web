@@ -211,7 +211,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         writer = self.getWriterFactory()()
         (writer.layers, writer.groups, writer.popup,
          writer.visible, writer.json,
-         writer.cluster) = self.getLayersAndGroups()
+         writer.cluster, writer.getFeatureInfo) = self.getLayersAndGroups()
         writer.params = self.getParameters()
         return writer
 
@@ -390,7 +390,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layer_search_combo.clear()
         self.layer_search_combo.addItem("None")
         (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 options = []
@@ -543,6 +543,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         visible = []
         json = []
         cluster = []
+        getFeatureInfo = []
         for i in xrange(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
@@ -552,6 +553,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     visible.append(item.visible)
                     json.append(item.json)
                     cluster.append(item.cluster)
+                    getFeatureInfo.append(item.getFeatureInfo)
             else:
                 group = item.name
                 groupLayers = []
@@ -573,6 +575,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                         cluster.append(True)
                     else:
                         cluster.append(False)
+                    if hasattr(item, "getFeatureInfo") and item.getFeatureInfo:
+                        getFeatureInfo.append(True)
+                    else:
+                        getFeatureInfo.append(False)
                 groups[group] = groupLayers[::-1]
 
         return (layers[::-1],
@@ -580,12 +586,13 @@ class MainDialog(QDialog, Ui_MainDialog):
                 popup[::-1],
                 visible[::-1],
                 json[::-1],
-                cluster[::-1])
+                cluster[::-1],
+                getFeatureInfo[::-1])
 
     def closeEvent(self, event):
         self.saveParameters()
         (layers, groups, popup, visible,
-         json, cluster) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         for layer, pop, vis in zip(layers, popup, visible):
             attrDict = {}
             for attr in pop:
@@ -717,6 +724,18 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.popupItem.addChild(self.attr)
                 tree.setItemWidget(self.attr, 2, self.attrWidget)
             self.addChild(self.popupItem)
+        else:
+            if layer.providerType() == 'wms':
+                self.getFeatureInfoItem = QTreeWidgetItem(self)
+                self.getFeatureInfoCheck = QCheckBox()
+                if layer.customProperty("qgis2web/GetFeatureInfo") == 2:
+                    self.getFeatureInfoCheck.setChecked(True)
+                self.getFeatureInfoItem.setText(0, "Enable GetFeatureInfo?")
+                self.getFeatureInfoCheck.stateChanged.connect(
+                    self.changeGetFeatureInfo)
+                self.addChild(self.getFeatureInfoItem)
+                tree.setItemWidget(self.getFeatureInfoItem, 1,
+                                   self.getFeatureInfoCheck)
 
     @property
     def popup(self):
@@ -749,11 +768,22 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             return False
 
+    @property
+    def getFeatureInfo(self):
+        try:
+            return self.getFeatureInfoCheck.isChecked()
+        except:
+            return False
+
     def changeJSON(self, isJSON):
         self.layer.setCustomProperty("qgis2web/Encode to JSON", isJSON)
 
     def changeCluster(self, isCluster):
         self.layer.setCustomProperty("qgis2web/Cluster", isCluster)
+
+    def changeGetFeatureInfo(self, isGetFeatureInfo):
+        self.layer.setCustomProperty("qgis2web/GetFeatureInfo",
+                                     isGetFeatureInfo)
 
 
 class TreeSettingItem(QTreeWidgetItem):

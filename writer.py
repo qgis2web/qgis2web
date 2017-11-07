@@ -55,6 +55,8 @@ class Writer(object):
         self.popup = None
         # json content
         self.json = None
+        # queryable WMS
+        self.getFeatureInfo = None
         # configuration dictionary (TODO - standardise
         # between writers!)
         self.params = {}

@@ -86,14 +86,17 @@ class LeafletWriter(Writer):
             feedback = Feedback()
 
         feedback.showFeedback('Creating Leaflet map...')
-        self.preview_file = self.writeLeaflet(iface, feedback,
-                                              layer_list=self.layers,
-                                              popup=self.popup,
-                                              visible=self.visible,
-                                              json=self.json,
-                                              cluster=self.cluster,
-                                              params=self.params,
-                                              folder=dest_folder)
+        self.preview_file = self.writeLeaflet(
+            iface,
+            feedback,
+            layer_list=self.layers,
+            popup=self.popup,
+            visible=self.visible,
+            json=self.json,
+            cluster=self.cluster,
+            getFeatureInfo=self.getFeatureInfo,
+            params=self.params,
+            folder=dest_folder)
         result = WriterResult()
         result.index_file = self.preview_file
         result.folder = os.path.dirname(self.preview_file)
@@ -105,7 +108,7 @@ class LeafletWriter(Writer):
     def writeLeaflet(
             cls, iface, feedback, folder,
             layer_list, visible, cluster,
-            json, params, popup):
+            json, getFeatureInfo, params, popup):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         legends = {}
@@ -261,7 +264,8 @@ class LeafletWriter(Writer):
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
                     new_obj, useWMS, useWMTS = wmsScript(layer, safeLayerName,
-                                                         useWMS, useWMTS)
+                                                         useWMS, useWMTS,
+                                                         getFeatureInfo[count])
                     feedback.completeStep()
                 else:
                     useRaster = True

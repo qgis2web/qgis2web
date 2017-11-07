@@ -81,6 +81,7 @@ class OpenLayersWriter(Writer):
                                          visible=self.visible,
                                          json=self.json,
                                          clustered=self.cluster,
+                                         getFeatureInfo=self.getFeatureInfo,
                                          settings=self.params,
                                          folder=dest_folder)
         result = WriterResult()
@@ -92,7 +93,7 @@ class OpenLayersWriter(Writer):
 
     @classmethod
     def writeOL(cls, iface, feedback, layers, groups, popup, visible,
-                json, clustered, settings, folder):
+                json, clustered, getFeatureInfo, settings, folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         mapSettings = iface.mapCanvas().mapSettings()
         controlCount = 0
@@ -124,7 +125,8 @@ class OpenLayersWriter(Writer):
         exportStyles(layers, folder, clustered)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered,
-                                    iface, restrictToExtent, extent, mapbounds,
+                                    getFeatureInfo, iface, restrictToExtent,
+                                    extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
         (jsAddress, cssAddress, layerSearch,
          controlCount) = writeHTMLstart(settings, controlCount, osmb,

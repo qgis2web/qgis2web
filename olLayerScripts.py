@@ -22,23 +22,24 @@ except:
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
-                         settings, json, matchCRS, clustered, iface,
-                         restrictToExtent, extent, bounds, authid):
+                         settings, json, matchCRS, clustered, getFeatureInfo,
+                         iface, restrictToExtent, extent, bounds, authid):
 
     canvas = iface.mapCanvas()
     basemapList = settings["Appearance"]["Base layer"]
     baseLayer = getBasemaps(basemapList)
     layerVars = ""
     layer_names_id = {}
-    for count, (layer, encode2json, cluster) in enumerate(zip(layers, json,
-                                                              clustered)):
+    for count, (layer, encode2json,
+                cluster, info) in enumerate(zip(layers, json, clustered,
+                                                getFeatureInfo)):
         layer_names_id[layer.id()] = str(count)
         if is25d(layer, canvas, restrictToExtent, extent):
             pass
         else:
             layerVars += "\n".join([layerToJavascript(iface, layer,
                                                       encode2json,
-                                                      matchCRS, cluster,
+                                                      matchCRS, cluster, info,
                                                       restrictToExtent,
                                                       extent, count)])
     (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
@@ -88,7 +89,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     return osmb
 
 
-def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
+def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
                       restrictToExtent, extent, count):
     (minResolution, maxResolution) = getScaleRes(layer)
     layerName = safeName(layer.name()) + "_" + unicode(count)
@@ -130,7 +131,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster,
                                minResolution, maxResolution)
             else:
                 return getWMS(source, layer, layerAttr, layerName, opacity,
-                              minResolution, maxResolution)
+                              minResolution, maxResolution, info)
         elif layer.providerType().lower() == "gdal":
             return getRaster(iface, layer, layerName, layerAttr, minResolution,
                              maxResolution, matchCRS)
@@ -526,7 +527,7 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
 
 
 def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
-           maxResolution):
+           maxResolution, info):
     layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
     url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
     metadata = layer.metadata()
@@ -552,14 +553,10 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                             %(minRes)s
                             %(maxRes)s
                           });
-              wms_layers.push(lyr_%(n)s);''' % {"layers": layers, "url": url,
-                                                "layerAttr": layerAttr,
-                                                "n": layerName,
-                                                "name": layer.name(),
-                                                "version": version,
-                                                "opacity": opacity,
-                                                "minRes": minResolution,
-                                                "maxRes": maxResolution}
+              wms_layers.push(lyr_%(n)s, %(info)d);''' % {
+        "layers": layers, "url": url, "layerAttr": layerAttr, "n": layerName,
+        "name": layer.name(), "version": version, "opacity": opacity,
+        "minRes": minResolution, "maxRes": maxResolution, "info": info}
 
 
 def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
