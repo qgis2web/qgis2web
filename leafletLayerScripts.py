@@ -84,7 +84,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     elif layer.customProperty("vector_tile_source") is not None:
         vts = layer.customProperty("vector_tile_source")
         useVT = True
-        if vtStyles.has_key(vts):
+        if vts in vtStyles:
             new_obj = ""
             addVT = False
         else:
@@ -424,12 +424,12 @@ def VTLayer(layer, sln):
     styleSuffix = safeName(json_url)
     vtJS = """
         var layer_%s = L.vectorGrid.protobuf("%s", {
-			rendererFactory: L.svg.tile,
+            rendererFactory: L.svg.tile,
             vectorTileLayerStyles: style_%s
-		});""" % (sln, key_url, styleSuffix)
+        });""" % (sln, key_url, styleSuffix)
     return vtJS
 
-    
+
 def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
                    useMultiStyle):
     slCount = symbol.symbolLayerCount()

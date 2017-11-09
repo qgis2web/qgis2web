@@ -318,7 +318,7 @@ class LeafletWriter(Writer):
             safeLayerName = re.sub('[\W_]+', '',
                                    layer.name()) + "_" + unicode(count)
             if (layer.type() == QgsMapLayer.VectorLayer and
-                layer.customProperty("vector_tile_source") is None):
+                    layer.customProperty("vector_tile_source") is None):
                 palyr = QgsPalLayerSettings()
                 palyr.readFromLayer(layer)
                 if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
