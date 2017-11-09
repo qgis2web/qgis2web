@@ -68,6 +68,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'OSMBuildings-Leaflet.js')
     shutil.copyfile(jsDir + 'leaflet-heat.js',
                     jsStore + 'leaflet-heat.js')
+    shutil.copyfile(jsDir + 'Leaflet.VectorGrid.js',
+                    jsStore + 'Leaflet.VectorGrid.js')
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js',
                     jsStore + 'leaflet.rotatedMarker.js')
@@ -103,7 +105,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
                    matchCRS, layerSearch, canvas, mapLibLocation, locate,
                    qgis2webJS, template, feedback, debugLibs, useMultiStyle,
-                   useHeat, useShapes, useOSMB, useWMS, useWMTS):
+                   useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT):
     useCluster = False
     for cluster in cluster_set:
         if cluster:
@@ -137,6 +139,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     if useHeat:
         jsAddress += """
         <script src="js/leaflet-heat.js"></script>"""
+    if useVT:
+        jsAddress += """
+        <script src="js/Leaflet.VectorGrid.js"></script>"""
     if useShapes:
         jsAddress += """
         <script src="js/leaflet-svg-shape-markers.min.js"></script>"""

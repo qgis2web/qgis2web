@@ -21,16 +21,21 @@ from leafletScriptStrings import (popupScript,
                                   wfsScript,
                                   clusterScript,
                                   iconLegend)
+try:
+    from vector_tiles_reader.tile_json import TileJSON
+    vt_enabled = True
+except:
+    vt_enabled = False
 from exp2js import compile_to_file
-from utils import (writeTmpLayer, removeSpaces, exportImages, is25d,
+from utils import (writeTmpLayer, removeSpaces, exportImages, is25d, safeName,
                    handleHiddenField, add25dAttributes, BLEND_MODES)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
-                     restrictToExtent, extent, feedback, labelCode,
-                     useMultiStyle, useHeat, useShapes, useOSMB):
+                     restrictToExtent, extent, feedback, labelCode, vtStyles,
+                     useMultiStyle, useHeat, useVT, useShapes, useOSMB):
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
@@ -76,6 +81,27 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     elif isinstance(renderer, QgsHeatmapRenderer):
         useHeat = True
         new_obj = heatmapLayer(layer, safeLayerName, renderer)
+    elif layer.customProperty("vector_tile_source") is not None:
+        vts = layer.customProperty("vector_tile_source")
+        useVT = True
+        if vtStyles.has_key(vts):
+            new_obj = ""
+            addVT = False
+        else:
+            new_obj = VTLayer(layer, safeLayerName)
+            addVT = True
+        (style, markerType,
+         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
+                                    outputProjectFileName, useShapes)
+        if style != "":
+            new_vtStyle = "%s: %s" % (layer.name(), style)
+            try:
+                old_vtStyles = vtStyles[vts]
+                new_vtStyles = "%s,%s" % (old_vtStyles, new_vtStyle)
+            except:
+                new_vtStyles = new_vtStyle
+            vtStyles[vts] = new_vtStyles
+        style = ""
     else:
         (style, markerType,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
@@ -89,7 +115,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    cluster, json, wfsLayers, markerType,
                                    useMultiStyle, symbol)
     blend = BLEND_MODES[layer.blendMode()]
-    new_obj = u"""{style}
+    if layer.customProperty("vector_tile_source") is None:
+        new_obj = u"""{style}
         map.createPane('pane_{sln}');
         map.getPane('pane_{sln}').style.zIndex = {zIndex};
         map.getPane('pane_{sln}').style['mix-blend-mode'] = '{blend}';
@@ -101,6 +128,10 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
 """ + new_obj
     if is25d(layer, canvas, restrictToExtent, extent):
         pass
+    elif layer.customProperty("vector_tile_source") is not None:
+        if addVT:
+            new_src += """
+        map.addLayer(layer_""" + safeLayerName + """);"""
     else:
         new_src += """
         bounds_group.addLayer(layer_""" + safeLayerName + """);"""
@@ -112,8 +143,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 new_src += """
         cluster_""" + safeLayerName + """.addTo(map);"""
     feedback.completeStep()
-    return (new_src, legends, wfsLayers, labelCode, useMultiStyle, useHeat,
-            useShapes, useOSMB)
+    return (new_src, legends, wfsLayers, labelCode, vtStyles, useMultiStyle,
+            useHeat, useVT, useShapes, useOSMB)
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName):
@@ -192,6 +223,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName):
 
 
 def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup):
+    if layer.customProperty("vector_tile_source") is not None:
+        return "", ""
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(layer)
     fields = layer.pendingFields()
@@ -378,6 +411,22 @@ def heatmapLayer(layer, safeLayerName, renderer):
     return new_obj
 
 
+def VTLayer(layer, sln):
+    json_url = layer.customProperty("vector_tile_source")
+    key = json_url.split("?")[1]
+    json = TileJSON(json_url)
+    json.load()
+    tile_url = json.tiles()[0].split("?")[0]
+    key_url = "%s?%s" % (tile_url, key)
+    styleSuffix = safeName(json_url)
+    vtJS = """
+        var layer_%s = L.vectorGrid.protobuf("%s", {
+			rendererFactory: L.svg.tile,
+            vectorTileLayerStyles: style_%s
+		});""" % (sln, key_url, styleSuffix)
+    return vtJS
+
+    
 def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
                    useMultiStyle):
     slCount = symbol.symbolLayerCount()

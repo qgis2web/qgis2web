@@ -11,7 +11,7 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsSymbolLayerV2Utils,
                        QgsMessageLog,
                        QGis)
-from utils import scaleToZoom
+from utils import scaleToZoom, safeName
 from basemaps import basemapLeaflet, basemapAttributions
 
 basemapAddresses = basemapLeaflet()
@@ -456,6 +456,13 @@ def addressSearchScript():
         });
         osmGeocoder.addTo(map);"""
     return addressSearch
+
+
+def getVTStyles(vtStyles):
+    vtStyleString = ""
+    for (k, v) in vtStyles.items():
+        vtStyleString += "style_%s = {%s}" % (safeName(k), v)
+    return vtStyleString
 
 
 def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,

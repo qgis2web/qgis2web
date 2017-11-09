@@ -55,7 +55,8 @@ from leafletScriptStrings import (jsonScript,
                                   crsScript,
                                   scaleBar,
                                   scaleDependentScript,
-                                  titleSubScript)
+                                  titleSubScript,
+                                  getVTStyles)
 from utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster)
 from writer import (Writer,
                     WriterResult,
@@ -155,8 +156,10 @@ class LeafletWriter(Writer):
 
         wfsLayers = ""
         labelCode = ""
+        vtStyles = {}
         useMultiStyle = False
         useHeat = False
+        useVT = False
         useShapes = False
         useOSMB = False
         useWMS = False
@@ -165,6 +168,7 @@ class LeafletWriter(Writer):
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
+        jsons = ""
         crs = QgsCoordinateReferenceSystem.EpsgCrsId
         exp_crs = QgsCoordinateReferenceSystem(4326, crs)
         lyrCount = 0
@@ -173,14 +177,15 @@ class LeafletWriter(Writer):
             rawLayerName = layer.name()
             safeLayerName = re.sub(
                 '[\W_]+', '', rawLayerName) + "_" + unicode(lyrCount)
-            if layer.providerType() != 'WFS' or jsonEncode is True and layer:
-                if layer.type() == QgsMapLayer.VectorLayer:
+            if layer.providerType() != 'WFS' or jsonEncode is True:
+                if (layer.customProperty("vector_tile_source") is None and
+                        layer.type() == QgsMapLayer.VectorLayer):
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
                     exportVector(layer, safeLayerName, dataStore,
                                  restrictToExtent, iface, extent, precision,
                                  exp_crs, minify)
-                    new_src += jsonScript(safeLayerName)
+                    jsons += jsonScript(safeLayerName)
                     scaleDependentLabels =\
                         scaleDependentLabelScript(layer, safeLayerName)
                     labelVisibility += scaleDependentLabels
@@ -203,7 +208,7 @@ class LeafletWriter(Writer):
         crsAuthId = crsSrc.authid()
         crsProj4 = crsSrc.toProj4()
         middle = """
-        <script>"""
+        """
         if highlight or popupsOnHover:
             selectionColor = mapSettings.selectionColor().name()
             middle += highlightScript(highlight, popupsOnHover, selectionColor)
@@ -245,8 +250,10 @@ class LeafletWriter(Writer):
                  legends,
                  wfsLayers,
                  labelCode,
+                 vtStyles,
                  useMultiStyle,
                  useHeat,
+                 useVT,
                  useShapes,
                  useOSMB) = writeVectorLayer(layer, safeLayerName,
                                              usedFields[count], highlight,
@@ -256,8 +263,8 @@ class LeafletWriter(Writer):
                                              visible[count], json[count],
                                              legends, new_src, canvas, count,
                                              restrictToExtent, extent,
-                                             feedback, labelCode,
-                                             useMultiStyle, useHeat,
+                                             feedback, labelCode, vtStyles,
+                                             useMultiStyle, useHeat, useVT,
                                              useShapes, useOSMB)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
@@ -277,6 +284,7 @@ class LeafletWriter(Writer):
                     new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""
                 new_src += new_obj
+        new_src = jsons + "<script>" + getVTStyles(vtStyles) + new_src
         new_src += scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))
@@ -324,7 +332,7 @@ class LeafletWriter(Writer):
                            measure, matchCRS, layerSearch, canvas,
                            mapLibLocation, locate, new_src, template, feedback,
                            debugLibs, useMultiStyle, useHeat, useShapes,
-                           useOSMB, useWMS, useWMTS)
+                           useOSMB, useWMS, useWMTS, useVT)
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)

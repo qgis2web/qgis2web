@@ -380,6 +380,8 @@ def is25d(layer, canvas, restrictToExtent, extent):
         return False
     if layer.geometryType() != QGis.Polygon:
         return False
+    if layer.customProperty("vector_tile_source") is not None:
+        return False
     renderer = layer.rendererV2()
     if isinstance(renderer, Qgs25DRenderer):
         return True

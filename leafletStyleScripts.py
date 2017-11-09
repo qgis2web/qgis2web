@@ -318,5 +318,6 @@ def getFillStyle(color, props):
     except:
         pass
     return """
+                fill: true,
                 fillOpacity: 1,
                 fillColor: %s,""" % color
