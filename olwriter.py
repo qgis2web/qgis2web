@@ -315,7 +315,7 @@ def getCRSView(mapextent, maxZoom, minZoom, matchCRS, mapSettings):
     view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
     if matchCRS:
         proj4 = """
-<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js">"""
+<script src="resources/proj4.js">"""
         proj4 += "</script>"
         proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
             epsg=mapSettings.destinationCrs().authid(),
