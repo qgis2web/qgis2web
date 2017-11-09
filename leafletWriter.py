@@ -284,7 +284,8 @@ class LeafletWriter(Writer):
                     new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""
                 new_src += new_obj
-        new_src = jsons + "<script>" + getVTStyles(vtStyles) + new_src
+        new_src = jsons + """
+        <script>""" + getVTStyles(vtStyles) + new_src
         new_src += scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))
