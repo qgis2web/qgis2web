@@ -59,11 +59,16 @@ function %s(context) {
 
     var feature = context.feature;
     %s
-    return %s;
+    if (feature.properties) {
+        return %s;
+    } else {
+        return %s;
+    }
 }""" % (name,
         exp.dump(),
         "\n".join(whenfunctions),
-        js)
+        js,
+        js.replace("feature.properties['", "feature['"))
     return temp, name, exp.dump()
 
 

@@ -94,6 +94,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         if style != "":
+            style = style.replace("feature.properties['", "feature.['")
             new_vtStyle = "%s: %s" % (layer.name(), style)
             try:
                 old_vtStyles = vtStyles[vts]
@@ -148,6 +149,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName):
+    if layer.customProperty("vector_tile_source") is not None:
+        return ""
     label_exp = ''
     labeltext = ""
     f = ''
