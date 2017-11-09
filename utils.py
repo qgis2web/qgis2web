@@ -37,6 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsExpressionContextUtils,
                        QgsCategorizedSymbolRendererV2,
                        QgsGraduatedSymbolRendererV2,
+                       QgsRuleBasedRendererV2,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
                        QgsRasterPipe,
@@ -394,6 +395,10 @@ def is25d(layer, canvas, restrictToExtent, extent):
         ranges = renderer.ranges()
         for range in ranges:
             symbols.append(range.symbol())
+    elif isinstance(renderer, QgsRuleBasedRendererV2):
+        rules = renderer.rootRule().children()
+        for rule in rules:
+            symbols.append(rule.symbol())
     else:
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
         fields = layer.pendingFields()
