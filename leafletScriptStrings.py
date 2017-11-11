@@ -471,7 +471,7 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
         endHTML = ""
     else:
         endHTML = """
-        map.on("zoomend", function(e){
+        map.on("zoomend", function(){
 %s
         });""" % labels
     if wfsLayers == "":
@@ -488,7 +488,7 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
         endHTML += """
         newM2px();
 %s
-        map.on("zoomend", function(e){
+        map.on("zoomend", function(){
             newM2px();
 %s
         });""" % (lyrScripts, lyrScripts)
