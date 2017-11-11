@@ -113,6 +113,7 @@ class LeafletWriter(Writer):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         legends = {}
+        mapUnitLayers = []
         canvas = iface.mapCanvas()
         project = QgsProject.instance()
         mapSettings = canvas.mapSettings()
@@ -251,6 +252,7 @@ class LeafletWriter(Writer):
                  wfsLayers,
                  labelCode,
                  vtStyles,
+                 useMapUnits,
                  useMultiStyle,
                  useHeat,
                  useVT,
@@ -266,6 +268,8 @@ class LeafletWriter(Writer):
                                              feedback, labelCode, vtStyles,
                                              useMultiStyle, useHeat, useVT,
                                              useShapes, useOSMB)
+                if useMapUnits:
+                    mapUnitLayers.append(safeLayerName)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -285,7 +289,24 @@ class LeafletWriter(Writer):
         map.addLayer(overlay_""" + safeLayerName + """);"""
                 new_src += new_obj
         new_src = jsons + """
-        <script>""" + getVTStyles(vtStyles) + new_src
+        <script>
+        var m2px = 1;
+        function newM2px() {
+            var centerLatLng = map.getCenter();
+            var pointC = map.latLngToContainerPoint(centerLatLng);
+            var pointX = [pointC.x + 100, pointC.y];
+
+            var latLngC = map.containerPointToLatLng(pointC);
+            var latLngX = map.containerPointToLatLng(pointX);
+
+            var distanceX = latLngC.distanceTo(latLngX)/100;
+
+            reciprocal = 1 / distanceX;
+            m2px = reciprocal;
+        }
+        function geoStyle(m) {
+            return Math.ceil(m * m2px);
+        }""" + getVTStyles(vtStyles) + new_src
         new_src += scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))
@@ -325,9 +346,9 @@ class LeafletWriter(Writer):
                 if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
                     labelList.append("layer_%s" % safeLayerName)
         labelsList = ",".join(labelList)
-        end += endHTMLscript(
-            wfsLayers, layerSearch, labelCode, labelVisibility, searchLayer,
-            useHeat, useRaster, labelsList)
+        end += endHTMLscript(wfsLayers, layerSearch, labelCode,
+                             labelVisibility, searchLayer, useHeat, useRaster,
+                             labelsList, mapUnitLayers)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,

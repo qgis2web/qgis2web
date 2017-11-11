@@ -90,7 +90,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         else:
             new_obj = VTLayer(layer, safeLayerName)
             addVT = True
-        (style, markerType,
+        (style, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         if style != "":
@@ -104,7 +104,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             vtStyles[vts] = new_vtStyles
         style = ""
     else:
-        (style, markerType,
+        (style, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
@@ -144,8 +144,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 new_src += """
         cluster_""" + safeLayerName + """.addTo(map);"""
     feedback.completeStep()
-    return (new_src, legends, wfsLayers, labelCode, vtStyles, useMultiStyle,
-            useHeat, useVT, useShapes, useOSMB)
+    return (new_src, legends, wfsLayers, labelCode, vtStyles, useMapUnits,
+            useMultiStyle, useHeat, useVT, useShapes, useOSMB)
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName):

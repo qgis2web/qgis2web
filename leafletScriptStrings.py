@@ -466,12 +466,12 @@ def getVTStyles(vtStyles):
 
 
 def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
-                  useHeat, useRaster, labelsList):
+                  useHeat, useRaster, labelsList, mapUnitLayers):
     if labels == "":
         endHTML = ""
     else:
         endHTML = """
-        map.on("zoomend", function(){
+        map.on("zoomend", function(e){
 %s
         });""" % labels
     if wfsLayers == "":
@@ -479,6 +479,19 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
         setBounds();
         %s""" % labelCode
         endHTML += labels
+    if len(mapUnitLayers) > 0:
+        lyrs = []
+        for layer in mapUnitLayers:
+            lyrs.append("""
+            layer_%s.setStyle(style_%s_0);""" % (layer, layer))
+        lyrScripts = "".join(lyrs)
+        endHTML += """
+        newM2px();
+%s
+        map.on("zoomend", function(e){
+            newM2px();
+%s
+        });""" % (lyrScripts, lyrScripts)
     if layerSearch != "None":
         searchVals = layerSearch.split(": ")
         endHTML += """
