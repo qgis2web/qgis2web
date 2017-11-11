@@ -46,6 +46,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     renderer = layer.rendererV2()
     layer_transp = 1 - (float(layer.layerTransparency()) / 100)
     style = ""
+    useMapUnits = False
 
     if is25d(layer, canvas, restrictToExtent, extent):
         useOSMB = True
