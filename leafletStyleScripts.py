@@ -224,7 +224,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         except:
             lineCap = 0
             lineJoin = 0
-        
+
         strokeStyle, useMapUnits = getStrokeStyle(borderColor, borderStyle,
                                                   borderWidth, line_units,
                                                   lineCap, lineJoin)

@@ -288,6 +288,7 @@ class LeafletWriter(Writer):
                     new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""
                 new_src += new_obj
+        the_src = new_src
         new_src = jsons + """
         <script>"""
         if len(mapUnitLayers) > 0:
@@ -308,8 +309,8 @@ class LeafletWriter(Writer):
         }
         function geoStyle(m) {
             return Math.ceil(m * m2px);
-        }""" + getVTStyles(vtStyles) + new_src
-        new_src += scaleDependentLayers
+        }""" + getVTStyles(vtStyles)
+        new_src += the_src + scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))
             new_src += unicode(titleStart)
