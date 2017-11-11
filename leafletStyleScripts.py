@@ -254,6 +254,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
     else:
         markerType = "circleMarker"
         style = ""
+        useMapUnits = False
     return ("""{
                 pane: 'pane_%s',%s
             }""" % (sln, style), markerType, useMapUnits, pattern)
