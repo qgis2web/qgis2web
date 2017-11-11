@@ -289,7 +289,9 @@ class LeafletWriter(Writer):
         map.addLayer(overlay_""" + safeLayerName + """);"""
                 new_src += new_obj
         new_src = jsons + """
-        <script>
+        <script>"""
+        if len(mapUnitLayers) > 0:
+            new_src += """
         var m2px = 1;
         function newM2px() {
             var centerLatLng = map.getCenter();
