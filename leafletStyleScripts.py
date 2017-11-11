@@ -197,6 +197,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         icon: %s""" % (rot, getIcon("markers/" + os.path.basename(sl.path()),
                                     svgSize))
         markerType = "marker"
+        useMapUnits = False
     elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
         color = getRGBAColor(props["line_color"], alpha)
         line_width = props["line_width"]
@@ -251,6 +252,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                 stroke: false,
                 fillOpacity: 1,
                 fillPattern: pattern_%s_%d""" % (sln, slc)
+        useMapUnits = False
     else:
         markerType = "circleMarker"
         style = ""
