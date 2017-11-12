@@ -130,6 +130,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                     ifelse = "else if"
             style += template % (sln, js, elsejs)
     else:
+        useMapUnits = False
         style = ""
     if markerType == "shapeMarker":
         useShapes = True

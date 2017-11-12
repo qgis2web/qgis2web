@@ -309,7 +309,8 @@ class LeafletWriter(Writer):
         }
         function geoStyle(m) {
             return Math.ceil(m * m2px);
-        }""" + getVTStyles(vtStyles)
+        }"""
+        new_src += getVTStyles(vtStyles)
         new_src += the_src + scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))
