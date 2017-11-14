@@ -172,6 +172,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
                                                             popupField)):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and
+                layer.customProperty("vector_tile_source") is None and
                 (layer.providerType() != "WFS" or encode2json)):
             feedback.showFeedback('Exporting %s to JSON...' % layer.name())
             crs = QgsCoordinateReferenceSystem("EPSG:4326")

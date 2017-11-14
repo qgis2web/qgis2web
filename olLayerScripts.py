@@ -15,6 +15,11 @@ from utils import safeName, is25d, BLEND_MODES
 from basemaps import basemapOL
 qms = False
 try:
+    from vector_tiles_reader.util.tile_json import TileJSON
+    vt_enabled = True
+except:
+    vt_enabled = False
+try:
     from quick_map_services.py_tiled_layer.tilelayer import TileLayer
     qms = True
 except:
@@ -30,6 +35,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     baseLayer = getBasemaps(basemapList)
     layerVars = ""
     layer_names_id = {}
+    vtLayers = []
     for count, (layer, encode2json,
                 cluster, info) in enumerate(zip(layers, json, clustered,
                                                 getFeatureInfo)):
@@ -37,21 +43,22 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         if is25d(layer, canvas, restrictToExtent, extent):
             pass
         else:
-            layerVars += "\n".join([layerToJavascript(iface, layer,
-                                                      encode2json,
-                                                      matchCRS, cluster, info,
-                                                      restrictToExtent,
-                                                      extent, count)])
+            (layerVar,
+             vtLayers) = layerToJavascript(iface, layer, encode2json, matchCRS,
+                                           cluster, info, restrictToExtent,
+                                           extent, count, vtLayers)
+            layerVars += "\n".join([layerVar])
     (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
-    (mapLayers, osmb) = layersAnd25d(layers, canvas, restrictToExtent, extent,
-                                     qms)
-    visibility = getVisibility(mapLayers, visible)
+    (mapLayers, layerObjs, osmb) = layersAnd25d(layers, canvas,
+                                                restrictToExtent, extent, qms)
+    visibility = getVisibility(mapLayers, layerObjs, visible)
 
     usedGroups = []
     (group_list, no_group_list,
      usedGroups) = getGroups(canvas, layers, basemapList, restrictToExtent,
                              extent, groupedLayers)
     layersList = []
+    currentVT = ""
     for layer in (group_list + no_group_list):
         layersList.append(layer)
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
@@ -64,6 +71,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and
+                layer.customProperty("vector_tile_source") is None and
                 not isinstance(layer.rendererV2(), QgsHeatmapRenderer) and
                 not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
@@ -90,7 +98,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
 
 def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
-                      restrictToExtent, extent, count):
+                      restrictToExtent, extent, count, vtLayers):
     (minResolution, maxResolution) = getScaleRes(layer)
     layerName = safeName(layer.name()) + "_" + unicode(count)
     layerAttr = getAttribution(layer)
@@ -104,6 +112,13 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
         hmRamp = ""
         hmWeight = 0
         hmWeightMax = 0
+        if layer.customProperty("vector_tile_source") is not None:
+            vts = layer.customProperty("vector_tile_source")
+            if vts not in vtLayers:
+                vtLayers.append(vts)
+                return getVT(layer), vtLayers
+            else:
+                return "", vtLayers
         if isinstance(renderer, QgsHeatmapRenderer):
             (pointLayerType, hmRadius,
              hmRamp, hmWeight, hmWeightMax) = getHeatmap(layer, renderer)
@@ -112,12 +127,12 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
         crsConvert = getCRS(iface, matchCRS)
         if layer.providerType() == "WFS" and not encode2json:
             return getWFS(layer, layerName, layerAttr, cluster,
-                          minResolution, maxResolution)
+                          minResolution, maxResolution), vtLayers
         else:
             return getJSON(layerName, crsConvert, layerAttr, cluster,
                            pointLayerType, minResolution, maxResolution,
                            hmRadius, hmRamp, hmWeight, hmWeightMax, renderer,
-                           layer)
+                           layer), vtLayers
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -125,16 +140,16 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
                 return getXYZ(layerName, opacity, minResolution,
-                              maxResolution, layerAttr, d["url"][0])
+                              maxResolution, layerAttr, d["url"][0]), vtLayers
             elif "tileMatrixSet" in d:
                 return getWMTS(layer, d, layerAttr, layerName, opacity,
-                               minResolution, maxResolution)
+                               minResolution, maxResolution), vtLayers
             else:
                 return getWMS(source, layer, layerAttr, layerName, opacity,
-                              minResolution, maxResolution, info)
+                              minResolution, maxResolution, info), vtLayers
         elif layer.providerType().lower() == "gdal":
             return getRaster(iface, layer, layerName, layerAttr, minResolution,
-                             maxResolution, matchCRS)
+                             maxResolution, matchCRS), vtLayers
 
 
 def getScaleRes(layer):
@@ -205,11 +220,20 @@ osmb.set(json_{sln}_{count});""".format(shadows=shadows,
     return osmb
 
 
-def getVisibility(mapLayers, visible):
+def getVisibility(mapLayers, layers, visible):
     visibility = ""
-    for layer, v in zip(mapLayers[1:], visible):
-        visibility += "\n".join(["%s.setVisible(%s);" % (layer,
-                                                         unicode(v).lower())])
+    currentVT = ""
+    for layer, layerObj, v in zip(mapLayers[1:], layers, visible):
+        vts = layerObj.customProperty("vector_tile_source")
+        if vts is None or vts != currentVT:
+            if vts is not None:
+                lname = "lyr_%s" % safeName(vts)
+            else:
+                lname = layer
+            visibility += "\n".join(["%s.setVisible(%s);" % (
+                lname, unicode(v).lower())])
+            if vts is not None:
+                currentVT = vts
     return visibility
 
 
@@ -222,6 +246,8 @@ def buildGroups(groups, qms, layer_names_id):
             if qms:
                 if isinstance(layer, TileLayer):
                     continue
+            if layer.customProperty("vector_tile_source") is not None:
+                continue
             groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
                                layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
@@ -235,6 +261,7 @@ def buildGroups(groups, qms, layer_names_id):
 
 def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
     mapLayers = ["baseLayer"]
+    layerObjs = []
     osmb = ""
     for count, layer in enumerate(layers):
         if is25d(layer, canvas, restrictToExtent, extent):
@@ -243,7 +270,8 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
             if (qms and not isinstance(layer, TileLayer)) or not qms:
                 mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
                                  unicode(count))
-    return (mapLayers, osmb)
+                layerObjs.append(layer)
+    return (mapLayers, layerObjs, osmb)
 
 
 def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
@@ -251,7 +279,12 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
     group_list = ["baseLayer"] if len(basemapList) else []
     no_group_list = []
     usedGroups = []
+    currentVT = ""
     for count, layer in enumerate(layers):
+        vts = layer.customProperty("vector_tile_source")
+        if (vts is not None and vts != currentVT):
+            no_group_list.append("lyr_" + safeName(vts))
+            currentVT = vts
         try:
             if is25d(layer, canvas, restrictToExtent, extent):
                 pass
@@ -413,6 +446,25 @@ def isCluster(cluster, renderer):
     else:
         cluster = False
     return cluster
+
+
+def getVT(layer):
+    json_url = layer.customProperty("vector_tile_source")
+    sln = safeName(json_url)
+    key = json_url.split("?")[1]
+    json = TileJSON(json_url)
+    json.load()
+    tile_url = json.tiles()[0].split("?")[0]
+    key_url = "%s?%s" % (tile_url, key)
+    layerCode = """
+        var lyr_%s = new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+                format: new ol.format.MVT(),
+                url: '%s'
+            }),
+        });
+        """ % (sln, key_url)
+    return layerCode
 
 
 def getHeatmap(layer, renderer):

@@ -22,7 +22,7 @@ from leafletScriptStrings import (popupScript,
                                   clusterScript,
                                   iconLegend)
 try:
-    from vector_tiles_reader.tile_json import TileJSON
+    from vector_tiles_reader.util.tile_json import TileJSON
     vt_enabled = True
 except:
     vt_enabled = False
@@ -89,7 +89,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             new_obj = ""
             addVT = False
         else:
-            new_obj = VTLayer(layer, safeLayerName)
+            new_obj = VTLayer(layer)
             addVT = True
         (style, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
@@ -132,8 +132,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         pass
     elif layer.customProperty("vector_tile_source") is not None:
         if addVT:
+            sln = safeName(layer.customProperty("vector_tile_source"))
             new_src += """
-        map.addLayer(layer_""" + safeLayerName + """);"""
+        map.addLayer(layer_""" + sln + """);"""
     else:
         new_src += """
         bounds_group.addLayer(layer_""" + safeLayerName + """);"""
@@ -415,8 +416,9 @@ def heatmapLayer(layer, safeLayerName, renderer):
     return new_obj
 
 
-def VTLayer(layer, sln):
+def VTLayer(layer):
     json_url = layer.customProperty("vector_tile_source")
+    sln = safeName(json_url)
     key = json_url.split("?")[1]
     json = TileJSON(json_url)
     json.load()

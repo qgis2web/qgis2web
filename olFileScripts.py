@@ -84,8 +84,9 @@ def writeScriptIncludes(layers, json, matchCRS):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() != "WFS" or encode2json:
-                geojsonVars += ('<script src="layers/%s"></script>' %
-                                (sln + ".js"))
+                if layer.customProperty("vector_tile_source") is None:
+                    geojsonVars += ('<script src="layers/%s"></script>' %
+                                    (sln + ".js"))
             else:
                 layerSource = layer.source()
                 if ("retrictToRequestBBOX" in layerSource or
