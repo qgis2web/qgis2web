@@ -1,12 +1,3 @@
-var labelEngine = new labelgun["default"](
-    function(label){
-        label.labelObject.hide = true;
-    }, 
-    function(label){
-        label.labelObject.hide = false;
-    }
-);
-
 var createTextStyle = function(feature, resolution, labelText, labelFont,
                                labelFill) {
 

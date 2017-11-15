@@ -67,7 +67,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     fieldImages = ""
     fieldLabels = ""
     blend_mode = ""
-    labelgun = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and
@@ -75,8 +74,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 not isinstance(layer.rendererV2(), QgsHeatmapRenderer) and
                 not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
-             blend_mode, labelgun) = getPopups(layer, labels, sln, fieldLabels,
-                                               fieldAliases, fieldImages)
+             blend_mode) = getPopups(layer, labels, sln, fieldLabels,
+                                     fieldAliases, fieldImages)
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if matchCRS:
@@ -93,7 +92,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         f.write(fieldImages)
         f.write(fieldLabels)
         f.write(blend_mode)
-        f.write(labelgun)
     return osmb
 
 
@@ -344,14 +342,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     blend_mode = """lyr_%(name)s.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = '%(blend)s';
 });""" % ({"name": sln, "blend": BLEND_MODES[layer.blendMode()]})
-    labelgun = """
-    lyr_%s.on("postcompose", update);
-
-    var listenerKey = lyr_%s.on('change', function(e) {
-        update();
-        ol.Observable.unByKey(listenerKey);
-    });""" % (sln, sln)
-    return (fieldLabels, fieldAliases, fieldImages, blend_mode, labelgun)
+    return (fieldLabels, fieldAliases, fieldImages, blend_mode)
 
 
 def getWFS(layer, layerName, layerAttr, cluster, minResolution, maxResolution):
@@ -366,6 +357,7 @@ var jsonSource_%(n)s = new ol.source.Vector({
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
     layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
+    declutter: true,
     source: ''' % {"n": layerName}
     if cluster:
         layerCode += 'cluster_%(n)s,' % {"n": layerName}
@@ -400,6 +392,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
     layerCode += '''var lyr_%(n)s = new ol.layer.%(t)s({
+                declutter: true,
                 source:''' % {"n": layerName, "t": pointLayerType}
     if cluster:
         layerCode += 'cluster_%(n)s,' % {"n": layerName}

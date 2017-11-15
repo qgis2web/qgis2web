@@ -363,52 +363,6 @@ def getStyle(layer, style, cluster, labelRes, labelText,
     return style;
 }''' % {"cache": "styleCache_" + sln, "size": size, "face": face,
         "color": color}
-    if layer.customProperty("vector_tile_source") is None:
-        this_style += """
-function update() {
-
-    var features = lyr_%s.getSource().getFeatures();
-    features.forEach(function(feature){
-        var context = {
-            feature: feature,
-            variables: {}
-        };
-
-        // Get the label text as a string
-        var text = %s;
-
-        // Get the center point in pixel space
-        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
-        var pixelCenter = map.getPixelFromCoordinate(center);
-
-        var size = 12;
-        var halfText = (size + 1) * (text.length / 4);
-
-        // Create a bounding box for the label using known pixel heights
-        var minx = parseInt(pixelCenter[0] - halfText);
-        var maxx = parseInt(pixelCenter[0] + halfText);
-
-        var maxy = parseInt(pixelCenter[1] - (size / 2));
-        var miny = parseInt(pixelCenter[1] + (size / 2));
-
-        // Get bounding box points back into coordinate space
-        var min = map.getCoordinateFromPixel([minx, miny]);
-        var max = map.getCoordinateFromPixel([maxx, maxy]);
-
-        // Create the bounds
-        var bounds = {
-            bottomLeft: min,
-            topRight: max
-        };
-        // Weight longer labels higher, use their name as the ID
-        labelEngine.ingestLabel(bounds, text, text.length, feature)
-
-    });
-
-    // Call the label callbacks for showing and hiding
-    labelEngine.update();
-
-}""" % (sln, labelText)
     return this_style
 
 
