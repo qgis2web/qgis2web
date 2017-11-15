@@ -32,4 +32,4 @@ var style_airports_0 = function(feature, resolution){
     })];
 
     return style;
-}
+};

@@ -645,4 +645,4 @@ var style = categories_airports_0(feature, value, size, resolution, labelText,
                           labelFont, labelFill);
 
     return style;
-}
+};

@@ -109,7 +109,7 @@ var style_%(name)s = %(style)s;
 var style_%(name)s = function(feature, resolution) {
     %(style)s;
 }''' % {"defs": defs, "pattern": pattern, "name": styleName,
-                        "style": styleString, "setPattern": setPattern})
+                    "style": styleString, "setPattern": setPattern})
 
 
 def getLabels(labelsEnabled, layer, folder, sln):
