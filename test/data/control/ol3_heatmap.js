@@ -6,6 +6,7 @@ var jsonSource_airports_0 = new ol.source.Vector({
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
 });
 jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new ol.layer.Heatmap({
+                declutter: true,
                 source:jsonSource_airports_0, 
                 radius: 10 * 2,
                 gradient: ['#ffffff', '#000000'],

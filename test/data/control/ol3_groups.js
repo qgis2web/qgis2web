@@ -6,6 +6,7 @@ var jsonSource_airports_0 = new ol.source.Vector({
     attributions: [new ol.Attribution({html: '<a href=""></a>'})],
 });
 jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new ol.layer.Vector({
+                declutter: true,
                 source:jsonSource_airports_0, 
                 style: style_airports_0,
                 title: '<img src="styles/legend/airports_0.png" /> airports'
@@ -22,9 +23,3 @@ lyr_airports_0.set('fieldLabels', {});
 lyr_airports_0.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
-    lyr_airports_0.on("postcompose", update);
-
-    var listenerKey = lyr_airports_0.on('change', function(e) {
-        update();
-        ol.Observable.unByKey(listenerKey);
-    });
