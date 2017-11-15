@@ -21,7 +21,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 from exp2js import compile_to_file
-from utils import safeName, getRGBAColor, handleHiddenField
+from utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
 
 
 def exportStyles(layers, folder, clustered):
@@ -88,10 +88,12 @@ var style_%(name)s = %(style)s;
                          "style": style, "setPattern": setPattern})
         elif style != "" and style != "''":
             # style = style.replace("feature.properties['", "feature.['")
-            new_vtStyle = """if (feature.get('layer') == '%s') {
+            new_vtStyle = "if (feature.get('layer') == "
+            new_vtStyle += """'%s' && feature.getGeometry().getType() == '%s'){
             return %s(feature, resolution);
         }""" % (
-                layer.name(), style)
+                layer.name(), TYPE_MAP[layer.wkbType()].replace("Multi", ""),
+                style)
             try:
                 old_vtStyles = vtStyles[vts]
                 new_vtStyles = """%s
