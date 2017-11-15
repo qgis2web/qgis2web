@@ -460,10 +460,15 @@ def getVT(layer):
         var lyr_%s = new ol.layer.VectorTile({
             source: new ol.source.VectorTile({
                 format: new ol.format.MVT(),
-                url: '%s'
+                url: '%s',
+                tileGrid: new ol.tilegrid.createXYZ({
+                    tileSize: 512, maxZoom: 14
+                }),
+                tilePixelRatio: 8
             }),
+            style: style_%s
         });
-        """ % (sln, key_url)
+        """ % (sln, key_url, sln)
     return layerCode
 
 

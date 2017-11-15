@@ -29,6 +29,7 @@ def exportStyles(layers, folder, clustered):
     QDir().mkpath(stylesFolder)
     legendFolder = os.path.join(stylesFolder, "legend")
     QDir().mkpath(legendFolder)
+    vtStyles = {}
     for count, (layer, cluster) in enumerate(zip(layers, clustered)):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() != layer.VectorLayer:
@@ -46,7 +47,7 @@ def exportStyles(layers, folder, clustered):
                 (style, pattern,
                  setPattern, value) = singleSymbol(renderer, stylesFolder,
                                                    layer_alpha, sln,
-                                                   legendFolder)
+                                                   legendFolder, layer)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 (style, pattern, setPattern,
                  value, defs) = categorized(defs, sln, layer, renderer,
@@ -59,12 +60,12 @@ def exportStyles(layers, folder, clustered):
             elif isinstance(renderer, QgsRuleBasedRendererV2):
                 (style, pattern,
                  setPattern, value) = ruleBased(renderer, folder, stylesFolder,
-                                                layer_alpha, sln)
+                                                layer_alpha, sln, layer)
             else:
                 style = ""
             (labelRes, size, face, color) = getLabelFormat(layer)
             if style != "":
-                style = getStyle(style, cluster, labelRes, labelText,
+                style = getStyle(layer, style, cluster, labelRes, labelText,
                                  sln, size, face, color, value)
             else:
                 style = "''"
@@ -74,15 +75,42 @@ def exportStyles(layers, folder, clustered):
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
 
-        path = os.path.join(stylesFolder, sln + "_style.js")
+        vts = layer.customProperty("vector_tile_source")
+        if vts is None:
+            path = os.path.join(stylesFolder, sln + "_style.js")
 
-        with codecs.open(path, "w", "utf-8") as f:
-            f.write('''%(defs)s
+            with codecs.open(path, "w", "utf-8") as f:
+                f.write('''%(defs)s
 %(pattern)s
 var style_%(name)s = %(style)s;
 %(setPattern)s''' %
-                    {"defs": defs, "pattern": pattern, "name": sln,
-                     "style": style, "setPattern": setPattern})
+                        {"defs": defs, "pattern": pattern, "name": sln,
+                         "style": style, "setPattern": setPattern})
+        elif style != "" and style != "''":
+            # style = style.replace("feature.properties['", "feature.['")
+            new_vtStyle = """if (feature.get('layer') == '%s') {
+            return %s(feature, resolution);
+        }""" % (
+                layer.name(), style)
+            try:
+                old_vtStyles = vtStyles[vts]
+                new_vtStyles = """%s
+                %s""" % (old_vtStyles, new_vtStyle)
+            except:
+                new_vtStyles = new_vtStyle
+            vtStyles[vts] = new_vtStyles
+    for k, v in vtStyles.items():
+        styleName = safeName(k)
+        styleString = v
+        path = os.path.join(stylesFolder, styleName + "_style.js")
+
+        with codecs.open(path, "w", "utf-8") as f:
+            f.write('''
+var style_%(name)s = function(feature, resolution) {
+    %(style)s;
+}''' %
+                {"defs": defs, "pattern": pattern, "name": styleName,
+                 "style": styleString, "setPattern": setPattern})
 
 
 def getLabels(labelsEnabled, layer, folder, sln):
@@ -161,11 +189,12 @@ def getLabelFormat(layer):
     return (labelRes, size, face, color)
 
 
-def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder):
+def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
+                 layer):
     symbol = renderer.symbol()
     (style, pattern,
      setPattern) = getSymbolAsStyle(symbol, stylesFolder,
-                                    layer_alpha, renderer, sln)
+                                    layer_alpha, renderer, sln, layer)
     style = "var style = " + style
     legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
         symbol, QSize(16, 16))
@@ -195,7 +224,7 @@ function categories_%s(feature, value, size, resolution, labelText,
             categoryStr = "default:"
         (style, pattern,
          setPattern) = (getSymbolAsStyle(cat.symbol(), stylesFolder,
-                                         layer_alpha, renderer, sln))
+                                         layer_alpha, renderer, sln, layer))
         categoryStr += '''
                     return %s;
                     break;''' % style
@@ -219,7 +248,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
             legendFolder, sln + "_" + unicode(cnt) + ".png"))
         (symbolstyle, pattern,
          setPattern) = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                        layer_alpha, renderer, sln)
+                                        layer_alpha, renderer, sln, layer)
         ranges.append("""%sif (value > %f && value <= %f) {
             style = %s
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
@@ -230,7 +259,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
     return (style, pattern, setPattern, value)
 
 
-def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln):
+def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer):
     cluster = False
     template = """
         function rules_%s(feature, value) {
@@ -257,7 +286,7 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln):
         symbol = rule.symbol()
         (styleCode, pattern,
          setPattern) = getSymbolAsStyle(symbol, stylesFolder,
-                                        layer_alpha, renderer, sln)
+                                        layer_alpha, renderer, sln, layer)
         name = "".join((sln, "rule", unicode(count)))
         exp = rule.filterExpression()
         if rule.isElse():
@@ -282,7 +311,7 @@ def getValue(layer, renderer):
     return value
 
 
-def getStyle(style, cluster, labelRes, labelText,
+def getStyle(layer, style, cluster, labelRes, labelText,
              sln, size, face, color, value):
     this_style = '''function(feature, resolution){
     var context = {
@@ -335,7 +364,8 @@ def getStyle(style, cluster, labelRes, labelText,
     return style;
 }''' % {"cache": "styleCache_" + sln, "size": size, "face": face,
         "color": color}
-    this_style += """
+    if layer.customProperty("vector_tile_source") is None:
+        this_style += """
 function update() {
 
     var features = lyr_%s.getSource().getFeatures();
@@ -383,7 +413,8 @@ function update() {
     return this_style
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
+def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
+                     layer):
     styles = {}
     if layer_transparency == 0:
         alpha = symbol.alpha()
@@ -516,11 +547,14 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln):
             k = i
         if style != "":
             style += ","
-        styles[k] = '''new ol.style.Style({
-        %s
+        ts = ""
+        if layer.customProperty("vector_tile_source") is None:
+            ts = """
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
-    })''' % style
+                              labelFill)"""
+        styles[k] = '''new ol.style.Style({
+        %s%s
+    })''' % (style, ts)
     return ("[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys())),
             pattern,
             setPattern)

@@ -110,6 +110,8 @@ def writeScriptIncludes(layers, json, matchCRS):
                 layerSource += "format_options=callback%3A"
                 layerSource += "get" + sln + "Json"
                 wfsVars += ('<script src="%s"></script>' % layerSource)
+            if layer.customProperty("vector_tile_source") is not None:
+                sln = safeName(layer.customProperty("vector_tile_source"))
             styleVars += ('<script src="styles/%s_style.js">'
                           '</script>' % sln)
     return (geojsonVars, wfsVars, styleVars)
