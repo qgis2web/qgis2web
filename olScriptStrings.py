@@ -486,3 +486,14 @@ var geocoder = new Geocoder('nominatim', {
 map.addControl(geocoder);"""
     else:
         return ""
+
+
+def getGrid(project):
+    grid = ""
+    print 1
+    if project.readBoolEntry("Grid", "/Enabled", False)[0]:
+        print 2
+        grid = """
+    var gcl = new ol.Graticule();
+    gcl.setMap(map);"""
+    return grid

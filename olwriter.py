@@ -42,7 +42,8 @@ from olScriptStrings import (measureScript,
                              geolocationHead,
                              geocodeLinks,
                              geocodeJS,
-                             geocodeScript)
+                             geocodeScript,
+                             getGrid)
 from olStyleScripts import exportStyles
 from writer import (Writer,
                     WriterResult,
@@ -164,6 +165,7 @@ class OpenLayersWriter(Writer):
         ol3layers = getLayers()
         mapSize = iface.mapCanvas().size()
         exp_js = getExpJS()
+        grid = getGrid(project)
         values = {"@PAGETITLE@": pageTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
@@ -217,7 +219,8 @@ class OpenLayersWriter(Writer):
                   "@MEASURECONTROL@": measureControl,
                   "@MEASURING@": measuring,
                   "@MEASURE@": measure,
-                  "@MEASUREUNIT@": measureUnit}
+                  "@MEASUREUNIT@": measureUnit,
+                  "@GRID@": grid}
         with open(os.path.join(folder, "resources", "qgis2web.js"),
                   "w") as f:
             out = replaceInScript("qgis2web.js", values)
