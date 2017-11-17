@@ -1,3 +1,7 @@
+import xmltodict
+
+from olStyleScripts import getStrokeStyle
+
 def measureControlScript():
     measureControl = """
 var measuring = false;
@@ -490,10 +494,26 @@ map.addControl(geocoder);"""
 
 def getGrid(project):
     grid = ""
-    print 1
     if project.readBoolEntry("Grid", "/Enabled", False)[0]:
-        print 2
+        stroke = project.readEntry("Grid", "/LineSymbol", "")[0]
+        strokeDict = xmltodict.parse(stroke)
+        symbol = strokeDict["symbol"]
+        layer = symbol["layer"]
+        props = layer["prop"]
+        for prop in props:
+            if prop["@k"] == "line_color":
+                color = "'rgba(%s)'" % prop["@v"]
+            if prop["@k"] == "line_style":
+                dashed = prop["@v"]
+            if prop["@k"] == "line_width":
+                width = prop["@v"]
+            if prop["@k"] == "capstyle":
+                linecap = prop["@v"]
+            if prop["@k"] == "joinstyle":
+                linejoin = prop["@v"]
+        strokeStyle = getStrokeStyle(color, dashed, width, linecap, linejoin)
+        strokeStyle = strokeStyle.replace("stroke:", "strokeStyle:")
         grid = """
-    var gcl = new ol.Graticule();
-    gcl.setMap(map);"""
+    var gcl = new ol.Graticule({%s});
+    gcl.setMap(map);""" % strokeStyle
     return grid
