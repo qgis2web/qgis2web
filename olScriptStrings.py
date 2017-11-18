@@ -2,6 +2,7 @@ import xmltodict
 
 from olStyleScripts import getStrokeStyle
 
+
 def measureControlScript():
     measureControl = """
 var measuring = false;
