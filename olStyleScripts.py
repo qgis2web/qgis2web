@@ -75,7 +75,7 @@ def exportStyles(layers, folder, clustered):
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
 
-        vts = layer.customProperty("vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
         if vts is None:
             path = os.path.join(stylesFolder, sln + "_style.js")
 
@@ -503,7 +503,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         if style != "":
             style += ","
         ts = ""
-        if layer.customProperty("vector_tile_source") is None:
+        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        if vts is None:
             ts = """
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill)"""

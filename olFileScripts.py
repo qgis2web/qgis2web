@@ -79,10 +79,11 @@ def writeScriptIncludes(layers, json, matchCRS):
     wfsVars = ""
     styleVars = ""
     for count, (layer, encode2json) in enumerate(zip(layers, json)):
+        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
         sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() != "WFS" or encode2json:
-                if layer.customProperty("vector_tile_source") is None:
+                if vts is None:
                     geojsonVars += ('<script src="layers/%s"></script>' %
                                     (sln + ".js"))
             else:
@@ -108,8 +109,8 @@ def writeScriptIncludes(layers, json, matchCRS):
                 layerSource += "format_options=callback%3A"
                 layerSource += "get" + sln + "Json"
                 wfsVars += ('<script src="%s"></script>' % layerSource)
-            if layer.customProperty("vector_tile_source") is not None:
-                sln = safeName(layer.customProperty("vector_tile_source"))
+            if vts is not None:
+                sln = safeName(vts)
             styleVars += ('<script src="styles/%s_style.js">'
                           '</script>' % sln)
     return (geojsonVars, wfsVars, styleVars)

@@ -340,10 +340,10 @@ class LeafletWriter(Writer):
                                  params["Appearance"]["Search layer"])
         labelList = []
         for count, layer in enumerate(layer_list):
+            vts = layer.customProperty("VectorTilesReader/vector_tile_source")
             safeLayerName = re.sub('[\W_]+', '',
                                    layer.name()) + "_" + unicode(count)
-            if (layer.type() == QgsMapLayer.VectorLayer and
-                    layer.customProperty("vector_tile_source") is None):
+            if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
                 palyr = QgsPalLayerSettings()
                 palyr.readFromLayer(layer)
                 if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
