@@ -28,7 +28,7 @@ except:
     vt_enabled = False
 from exp2js import compile_to_file
 from utils import (writeTmpLayer, removeSpaces, exportImages, is25d, safeName,
-                   handleHiddenField, add25dAttributes, BLEND_MODES)
+                   handleHiddenField, add25dAttributes, BLEND_MODES, TYPE_MAP)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
@@ -90,20 +90,29 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             addVT = False
         else:
             new_obj = VTLayer(vts)
+            vtStyles[vts] = {}
             addVT = True
+        vtStyle = vtStyles[vts]
         (style, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
-        if style != "":
-            style = style.replace("feature.properties['", "feature.['")
-            new_vtStyle = "%s: %s" % (layer.name(), style)
-            try:
-                old_vtStyles = vtStyles[vts]
-                new_vtStyles = """%s,
-        %s""" % (old_vtStyles, new_vtStyle)
-            except:
-                new_vtStyles = new_vtStyle
-            vtStyles[vts] = new_vtStyles
+        style = style.replace("feature.properties['", "feature.['")
+        if layer.name() not in vtStyle:
+            vtStyle[layer.name()] = ["", "", ""]
+        isLayer = False
+        geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
+        if geom == "Point":
+            index = 0
+            isLayer = True
+        if geom == "LineString":
+            index = 1
+            isLayer = True
+        if geom == "Polygon":
+            index = 2
+            isLayer = True
+        if isLayer:
+            print index
+            vtStyles[vts][layer.name()][index] = style
         style = ""
     else:
         (style, markerType, useMapUnits,

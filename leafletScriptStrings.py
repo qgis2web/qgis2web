@@ -460,8 +460,23 @@ def addressSearchScript():
 
 def getVTStyles(vtStyles):
     vtStyleString = ""
-    for (k, v) in vtStyles.items():
-        vtStyleString += "style_%s = {%s}" % (safeName(k), v)
+    for (vts, lyrs) in vtStyles.items():
+        vtStyleString += "style_%s = {" % safeName(vts)
+        for (lyr, styles) in lyrs.items():
+            vtStyleString += "%s: [" % lyr
+            for style in styles:
+                if style != "":
+                    style = style.split("\n", 2)[2]
+                    style = style.replace("return {", "{")
+                    style = style.replace("}", "")
+                    style += "}"
+                else:
+                    style = "{}"
+                vtStyleString += "%s," % style
+            vtStyleString += "],"
+            vtStyleString = vtStyleString.replace(",]", "]")
+    vtStyleString += "}"
+                
     return vtStyleString
 
 
