@@ -178,8 +178,9 @@ class LeafletWriter(Writer):
             rawLayerName = layer.name()
             safeLayerName = re.sub(
                 '[\W_]+', '', rawLayerName) + "_" + unicode(lyrCount)
+            vts = layer.customProperty("VectorTilesReader/vector_tile_source")
             if layer.providerType() != 'WFS' or jsonEncode is True:
-                if layer.type() == QgsMapLayer.VectorLayer:
+                if layer.type() == QgsMapLayer.VectorLayer and vts is None:
                     feedback.showFeedback('Exporting %s to JSON...' %
                                           layer.name())
                     exportVector(layer, safeLayerName, dataStore,

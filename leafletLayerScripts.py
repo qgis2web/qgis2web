@@ -99,7 +99,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             new_vtStyle = "%s: %s" % (layer.name(), style)
             try:
                 old_vtStyles = vtStyles[vts]
-                new_vtStyles = "%s,%s" % (old_vtStyles, new_vtStyle)
+                new_vtStyles = """%s,
+        %s""" % (old_vtStyles, new_vtStyle)
             except:
                 new_vtStyles = new_vtStyle
             vtStyles[vts] = new_vtStyles
