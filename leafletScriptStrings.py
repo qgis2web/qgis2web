@@ -472,7 +472,7 @@ def getVTStyles(vtStyles):
                 vtStyleString += "%s," % style
             vtStyleString += "],"
             vtStyleString = vtStyleString.replace(",]", "]")
-    vtStyleString += "}"
+        vtStyleString += "}"
 
     return vtStyleString
 
