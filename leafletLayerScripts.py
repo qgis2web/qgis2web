@@ -111,7 +111,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             index = 2
             isLayer = True
         if isLayer:
-            print index
             vtStyles[vts][layer.name()][index] = style
         style = ""
     else:
