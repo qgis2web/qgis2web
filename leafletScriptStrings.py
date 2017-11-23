@@ -468,10 +468,6 @@ def getVTStyles(vtStyles):
             %s: [""" % lyr
             for style in styles:
                 if style == "":
-                    # style = style.split("\n", 2)[2]
-                    # style = style.replace("return {", "{")
-                    # style = style[:style.rfind('\n')]
-                # else:
                     style = "{}"
                 vtStyleString += "%s," % style
             vtStyleString += "],"
