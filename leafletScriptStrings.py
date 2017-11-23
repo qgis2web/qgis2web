@@ -477,7 +477,7 @@ def getVTStyles(vtStyles):
             vtStyleString += "],"
             vtStyleString = vtStyleString.replace(",]", "]")
     vtStyleString += "}"
-                
+
     return vtStyleString
 
 
