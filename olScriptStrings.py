@@ -518,3 +518,37 @@ def getGrid(project):
     var gcl = new ol.Graticule({%s});
     gcl.setMap(map);""" % strokeStyle
     return grid
+
+
+def getM2px(mapUnitsLayers):
+    m2px = ""
+    if len(mapUnitsLayers) > 0:
+        m2px = """
+function m2px(m) {
+    var centerLatLng = map.getView().getCenter();
+    var pointC = map.getPixelFromCoordinate(centerLatLng);
+    var pointX = [pointC[0] + 100, pointC[1]];
+    var latLngC = map.getCoordinateFromPixel(pointC);
+    var latLngX = map.getCoordinateFromPixel(pointX);
+    var lineX = new ol.geom.LineString([latLngC, latLngX]);
+    var distanceX = lineX.getLength() / 100;
+    reciprocal = 1 / distanceX;
+    px = Math.ceil(reciprocal);
+    return px;
+}"""
+    return m2px
+
+
+def getMapUnitLayers(mapUnitsLayers):
+    mapUnitLayers = ""
+    if len(mapUnitsLayers) > 0:
+        lyrs = []
+        for layer in mapUnitsLayers:
+            lyrs.append("""
+            lyr_%s.setStyle(style_%s);""" % (layer, layer))
+        lyrScripts = "".join(lyrs)
+        mapUnitLayers = """
+map.getView().on('change:resolution', function(evt){
+%s
+});""" % lyrScripts
+    return mapUnitLayers

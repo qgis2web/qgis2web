@@ -43,7 +43,9 @@ from olScriptStrings import (measureScript,
                              geocodeLinks,
                              geocodeJS,
                              geocodeScript,
-                             getGrid)
+                             getGrid,
+                             getM2px,
+                             getMapUnitLayers)
 from olStyleScripts import exportStyles
 from writer import (Writer,
                     WriterResult,
@@ -123,7 +125,8 @@ class OpenLayersWriter(Writer):
         writeFiles(folder, restrictToExtent, feedback, debugLibs)
         exportLayers(iface, layers, folder, precision, optimize,
                      popup, json, restrictToExtent, extent, feedback, matchCRS)
-        exportStyles(layers, folder, clustered)
+        mapUnitsLayers = exportStyles(layers, folder, clustered)
+        mapUnitLayers = getMapUnitLayers(mapUnitsLayers)
         osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
                                     settings, json, matchCRS, clustered,
                                     getFeatureInfo, iface, restrictToExtent,
@@ -158,6 +161,7 @@ class OpenLayersWriter(Writer):
         geocodingLinks = geocodeLinks(geocode)
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
+        m2px = getM2px(mapUnitsLayers)
         (extracss, controlCount) = getCSS(geocode, geolocateUser, controlCount)
         ol3layerswitcher = getLayerSwitcher()
         ol3popup = getPopup()
@@ -220,7 +224,9 @@ class OpenLayersWriter(Writer):
                   "@MEASURING@": measuring,
                   "@MEASURE@": measure,
                   "@MEASUREUNIT@": measureUnit,
-                  "@GRID@": grid}
+                  "@GRID@": grid,
+                  "@M2PX@": m2px,
+                  "@MAPUNITLAYERS@": mapUnitLayers}
         with open(os.path.join(folder, "resources", "qgis2web.js"),
                   "w") as f:
             out = replaceInScript("qgis2web.js", values)
