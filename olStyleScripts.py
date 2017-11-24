@@ -506,9 +506,9 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                 lineJoin = 0
 
             style = ""
-            stroke, useMapUnits = getStrokeStyle(borderColor, borderStyle,
-                                                 borderWidth, line_units,
-                                                 lineCap, lineJoin)
+            (stroke, useMapUnits) = getStrokeStyle(borderColor, borderStyle,
+                                                   borderWidth, line_units,
+                                                   lineCap, lineJoin)
             if stroke != "":
                 style = "%s, " % stroke
             style += getFillStyle(fillColor, props)
@@ -695,7 +695,7 @@ def getIcon(path, size, svgWidth, svgHeight, rot):
 
 def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin):
     if dashed == "no":
-        return ""
+        return ("", False)
     if line_units != "MapUnit":
         width = unicode(math.floor(float(width) * 3.8))
         useMapUnits = False
