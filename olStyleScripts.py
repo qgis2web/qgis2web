@@ -217,6 +217,7 @@ function categories_%s(feature, value, size, resolution, labelText,
                        labelFont, labelFill) {
                 switch(value.toString()) {""" % sln
     cats = []
+    useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
         legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(cat.symbol(),
                                                                QSize(16, 16))
@@ -231,6 +232,8 @@ function categories_%s(feature, value, size, resolution, labelText,
         (style, pattern, setPattern,
          useMapUnits) = (getSymbolAsStyle(cat.symbol(), stylesFolder,
                                           layer_alpha, renderer, sln, layer))
+        if useMapUnits:
+            useAnyMapUnits = True
         categoryStr += '''
                     return %s;
                     break;''' % style
@@ -240,13 +243,14 @@ function categories_%s(feature, value, size, resolution, labelText,
 var style = categories_%s(feature, value, size, resolution, labelText,
                           labelFont, labelFill)""" % sln
     value = getValue(layer, renderer)
-    return (style, pattern, setPattern, value, defs, useMapUnits)
+    return (style, pattern, setPattern, value, defs, useAnyMapUnits)
 
 
 def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
     cluster = False
     ranges = []
     elseif = ""
+    useAnyMapUnits = False
     for cnt, ran in enumerate(renderer.ranges()):
         legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
             ran.symbol(), QSize(16, 16))
@@ -260,9 +264,11 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
                             symbolstyle))
         elseif = " else "
+        if useMapUnits:
+            useAnyMapUnits = True
     style = "".join(ranges)
     value = getValue(layer, renderer)
-    return (style, pattern, setPattern, value, useMapUnits)
+    return (style, pattern, setPattern, value, useAnyMapUnits)
 
 
 def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer):
@@ -288,6 +294,7 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer):
     expFile = os.path.join(folder, "resources",
                            "qgis2web_expressions.js")
     ifelse = "if"
+    useAnyMapUnits = False
     for count, rule in enumerate(rules):
         symbol = rule.symbol()
         (styleCode, pattern, setPattern,
@@ -306,9 +313,11 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer):
                     """ % (ifelse, name, styleCode)
         js = js.strip()
         ifelse = "else if"
+        if useMapUnits:
+            useAnyMapUnits = True
     value = ("var value = '';")
     style = template % (sln, js, elsejs, sln)
-    return (style, pattern, setPattern, value, useMapUnits)
+    return (style, pattern, setPattern, value, useAnyMapUnits)
 
 
 def getValue(layer, renderer):
