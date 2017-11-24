@@ -211,4 +211,5 @@ software:</p>
     <li>rbush, by @mourner</li>
     <li>Labelgun, by @JamesMilnerUK</li>
     <li>Leaflet.pattern, by @teastman</li>
+    <li>Leaflet.VectorGrid, by @IvanSanchez</li>
 </ul>
