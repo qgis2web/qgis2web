@@ -699,7 +699,7 @@ def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin):
     if dashed == "no":
         return ("", False)
     if line_units != "MapUnit":
-        width = unicode(math.floor(float(width) * 3.8))
+        width = unicode(int(float(width) * 3.8))
         useMapUnits = False
     else:
         width = "m2px(%s)" % width
