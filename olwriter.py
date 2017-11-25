@@ -109,6 +109,7 @@ class OpenLayersWriter(Writer):
         debugLibs = settings["Data export"]["Use debug libraries"]
         extent = settings["Scale/Zoom"]["Extent"]
         mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
+        fullextent = bounds(iface, False, layers, matchCRS)
         geolocateUser = settings["Appearance"]["Geolocate user"]
         maxZoom = int(settings["Scale/Zoom"]["Max zoom level"])
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
@@ -152,8 +153,8 @@ class OpenLayersWriter(Writer):
         onHover = unicode(popupsOnHover).lower()
         highlight = unicode(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
-        (proj, proj4, view) = getCRSView(mapextent, maxZoom, minZoom,
-                                         matchCRS, mapSettings)
+        (proj, proj4, view) = getCRSView(mapextent, fullextent, maxZoom,
+                                         minZoom, matchCRS, mapSettings)
         (measureControl, measuring, measure, measureUnit, measureStyle,
          controlCount) = getMeasure(measureTool, controlCount)
         geolocateHead = geolocationHead(geolocateUser)
@@ -318,7 +319,8 @@ def getBackground(mapSettings):
 """.format(bgcol=mapSettings.backgroundColor().name())
 
 
-def getCRSView(mapextent, maxZoom, minZoom, matchCRS, mapSettings):
+def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
+    units = ['m', 'ft', 'degrees', '']
     proj4 = ""
     proj = ""
     view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
@@ -329,7 +331,12 @@ def getCRSView(mapextent, maxZoom, minZoom, matchCRS, mapSettings):
         proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
             epsg=mapSettings.destinationCrs().authid(),
             defn=mapSettings.destinationCrs().toProj4())
-        view += ", projection: '%s'" % (mapSettings.destinationCrs().authid())
+        view += """, projection: new ol.proj.Projection({
+            code: '%s',
+            extent: %s,
+            units: '%s'})""" % (mapSettings.destinationCrs().authid(),
+                              fullextent,
+                              units[mapSettings.destinationCrs().mapUnits()])
     return (proj, proj4, view)
 
 
