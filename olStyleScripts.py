@@ -39,6 +39,7 @@ def exportStyles(layers, folder, clustered):
             layer.customProperty("labeling/enabled")).lower() == "true"
         pattern = ""
         setPattern = ""
+        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
         labelText = getLabels(labelsEnabled, layer, folder, sln)
         defs = "var size = 0;\n"
         try:
@@ -66,7 +67,10 @@ def exportStyles(layers, folder, clustered):
                 style = ""
                 useMapUnits = False
             if useMapUnits:
-                mapUnitLayers.append(sln)
+                if vts is None:
+                    mapUnitLayers.append(sln)
+                else:
+                    mapUnitLayers.append(safeName(vts))
             (labelRes, size, face, color) = getLabelFormat(layer)
             if style != "":
                 style = getStyle(layer, style, cluster, labelRes, labelText,
@@ -74,12 +78,10 @@ def exportStyles(layers, folder, clustered):
             else:
                 style = "''"
         except Exception, e:
-            style = """{
-            /* """ + traceback.format_exc() + " */}"
+            style = ""
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
 
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
         if vts is None:
             path = os.path.join(stylesFolder, sln + "_style.js")
 
