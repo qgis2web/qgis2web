@@ -64,7 +64,11 @@ def exportStyles(layers, folder, clustered):
                  useMapUnits) = ruleBased(renderer, folder, stylesFolder,
                                           layer_alpha, sln, layer)
             else:
-                style = ""
+                style = """
+    var style = [ new ol.style.Style({
+        text: createTextStyle(feature, resolution, labelText, labelFont,
+                              labelFill)
+    })];"""
                 useMapUnits = False
             if useMapUnits:
                 if vts is None:
@@ -73,7 +77,7 @@ def exportStyles(layers, folder, clustered):
                     mapUnitLayers.append(safeName(vts))
             (labelRes, size, face, color) = getLabelFormat(layer)
             if style != "":
-                style = getStyle(layer, style, cluster, labelRes, labelText,
+                style = getStyle(style, cluster, labelRes, labelText,
                                  sln, size, face, color, value)
             else:
                 style = "''"
@@ -93,7 +97,6 @@ var style_%(name)s = %(style)s;
                         {"defs": defs, "pattern": pattern, "name": sln,
                          "style": style, "setPattern": setPattern})
         elif style != "" and style != "''":
-            # style = style.replace("feature.properties['", "feature.['")
             new_vtStyle = "if (feature.get('layer') == "
             new_vtStyle += """'%s' && feature.getGeometry().getType() == '%s'){
             return %s(feature, resolution);
@@ -328,7 +331,7 @@ def getValue(layer, renderer):
     return value
 
 
-def getStyle(layer, style, cluster, labelRes, labelText,
+def getStyle(style, cluster, labelRes, labelText,
              sln, size, face, color, value):
     this_style = '''function(feature, resolution){
     var context = {
