@@ -57,7 +57,8 @@ from leafletScriptStrings import (jsonScript,
                                   scaleDependentScript,
                                   titleSubScript,
                                   getVTStyles)
-from utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster)
+from utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster,
+                   safeName)
 from writer import (Writer,
                     WriterResult,
                     translator)
@@ -176,8 +177,7 @@ class LeafletWriter(Writer):
         for layer, jsonEncode, eachPopup, clst in zip(layer_list, json,
                                                       popup, cluster):
             rawLayerName = layer.name()
-            safeLayerName = re.sub(
-                '[\W_]+', '', rawLayerName) + "_" + unicode(lyrCount)
+            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
             vts = layer.customProperty("VectorTilesReader/vector_tile_source")
             if layer.providerType() != 'WFS' or jsonEncode is True:
                 if layer.type() == QgsMapLayer.VectorLayer and vts is None:
@@ -244,8 +244,7 @@ class LeafletWriter(Writer):
 
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
-            safeLayerName = re.sub('[\W_]+', '',
-                                   rawLayerName) + "_" + unicode(count)
+            safeLayerName = safeName(rawLayerName) + "_" + unicode(count)
             if layer.type() == QgsMapLayer.VectorLayer:
                 (new_src,
                  legends,
