@@ -139,6 +139,7 @@ class Ui_MainDialog(object):
         self.right_layout.addWidget(self.basemaps)
         self.horizontalLayout.addWidget(self.splitter_2)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
+        uitime = Ui_TimeDialog(self.tabWidget, MainDialog)
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
         self.verticalLayout_6 = QtGui.QVBoxLayout(self.tab_3)
@@ -177,7 +178,6 @@ class Ui_MainDialog(object):
         self.helpField.setObjectName(_fromUtf8("helpField"))
         self.horizontalLayout_4.addWidget(self.helpField)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
-        uitime = Ui_TimeDialog(self.tabWidget, MainDialog)
         self.horizontalLayout_3.addWidget(self.tabWidget)
 
         self.retranslateUi(MainDialog)

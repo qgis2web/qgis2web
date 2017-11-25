@@ -89,7 +89,7 @@ class Ui_TimeDialog(object):
                 except:
                     # print "Except: " + layer.name()
                     # print "Unexpected error:", sys.exc_info()[0]
-                    # raise
+                    raise
                     pass
 
         for tree_group in tree_groups:
@@ -231,6 +231,21 @@ class TreeLayerItem2(QTreeWidgetItem):
             
     #ruzicka
     #TODO
+    def dateToInt(self, datestr):
+        datestr = datestr.replace("-", "")
+        if datestr == "NULL":
+            datestr = "1000" #TODO work better with null dates
+        if len(datestr) == 4:
+            datestr = datestr + "0101"
+        if len(datestr) == 6:
+            datestr = datestr + "01"
+        return int(datestr)
+
+    def dateIntToString(self, dateint):
+        datestr = str(dateint)
+        dateout = datestr[0:4] + "-" + datestr[4:6] + "-" + datestr[6:8]
+        return dateout
+
     def populateMinMax(self):
         global projectInstance
         min = sys.maxint;
@@ -243,16 +258,16 @@ class TreeLayerItem2(QTreeWidgetItem):
                 if layer.customProperty("qgis2web/Time from") is not None and layer.customProperty("qgis2web/Time to") is not None and layer.customProperty("qgis2web/Time from") is not QPyNullVariant and layer.customProperty("qgis2web/Time to") is not QPyNullVariant:
                     for feat in layer.getFeatures():
                         attrs = feat.attributes()
-                        attr = int(attrs[int(layer.customProperty("qgis2web/Time from")) - 1])
+                        attr = self.dateToInt(str(attrs[int(layer.customProperty("qgis2web/Time from")) - 1]))
                         if attr < min:
                             min = attr
-                        attr2 = int(attrs[int(layer.customProperty("qgis2web/Time to")) - 1])
+                        attr2 = self.dateToInt(str(attrs[int(layer.customProperty("qgis2web/Time to")) - 1]))
                         if attr2 > max:
                             max = attr2
-        projectInstance.writeEntry("qgis2web", "Min", min)
-        projectInstance.writeEntry("qgis2web", "Max", max)
-        # print min
-        # print max
+        projectInstance.writeEntry("qgis2web", "Min", self.dateIntToString(min))
+        projectInstance.writeEntry("qgis2web", "Max", self.dateIntToString(max))
+        #print min
+        #print max
         #TODO add text boxes
         ## self.items["Time axis"]["Min"].lineedit.setText(str(min))
         ## self.items["Time axis"]["Max"].lineedit.setText(str(max))
@@ -281,6 +296,7 @@ class Button(QtGui.QPushButton):
             self.saveOLMap()
         else:
             self.saveLeafletMap()
+        QMessageBox.information(None, "INFO", "Time options were added to index_time.html file.") 
         
     def saveLeafletMap(self):
         # print "Save leaflet"
@@ -298,17 +314,44 @@ class Button(QtGui.QPushButton):
         f.close()
     def addLeafletHeader(self, html):
         mintime = projectInstance.readEntry("qgis2web", "Min")[0]
-        maxtime = projectInstance.readEntry("qgis2web", "Max")[0]    
-        header = '<p style="position: fixed; top: 0; right: 0;">Time axis: <input type="range" id="date" min="' + mintime + '" max="' + maxtime + '"/><input id="datetxt"/></p>'
-        header += '<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>'
-        header += '<script>'
-        header += "$(document).ready(function(){\n"
-        header +=	"$('input').change(function(){\n"
-        header += "$('#datetxt').val($('#date').val());\n"
+        maxtime = projectInstance.readEntry("qgis2web", "Max")[0]
+        
+        header = '<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>\n'
+        header += '<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />\n'
+        header += '<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>\n'
+        header += '<div style="position: fixed; top: 10px; left: 70px;"><div id="slider-range" style="width:300px"></div>\n'
+        header += '<p><input id="datefrom"/>   <input id="dateto"/> </p>\n'
+        header += '</div>\n'
+        
+        header += "<script>\n"
+        header += "function getDateString(d) {\n"
+        header += "m = d.getMonth() + 1;\n"
+        header += "month = String('0' + m).slice(-2);\n"
+        header += "day = String('0' + d.getDate()).slice(-2);\n"
+        header += "return d.getFullYear() + '-' + month + '-' + day;\n"
+        header += "}\n"
+        header += "$(document).ready(function() {\n"
+        header += "$( '#slider-range' ).slider({\n"
+        header += "range: true,\n"
+        header += "min: new Date('" + mintime + "').getTime() / 1000,\n"
+        header += "max: new Date('" + maxtime + "').getTime() / 1000,\n"
+        header += "step: 86400,\n"
+        header += "values: [ new Date('" + mintime + "').getTime() / 1000, new Date('" + maxtime + "').getTime() / 1000 ],\n"
+        header += "slide: function( event, ui ) {\n"
+        header += "var from = new Date(ui.values[0] *1000);\n"
+        header += "var to = new Date(ui.values[1] *1000);\n"
+        header += "$( '#datefrom' ).val(getDateString(new Date(ui.values[0] *1000)));\n"
+        header += "$( '#dateto' ).val(getDateString(new Date(ui.values[1] *1000)));\n"
         header += "setVisibility();\n"
+        header += "}\n"
         header += "});\n"
-        header += "$('#datetxt').val($('#date').val());\n"
-        header += "});"
+        
+        header += "var from = new Date($('#slider-range').slider('values', 0)*1000);\n"
+        header += "var to = new Date($('#slider-range').slider('values', 1)*1000);\n"
+        header += "$( '#datefrom' ).val(getDateString(from));\n"
+        header += "$( '#dateto' ).val(getDateString(to));\n"
+        header += "});\n"
+        
         html = html.replace("<script>", header)
         return html
 
@@ -317,38 +360,47 @@ class Button(QtGui.QPushButton):
         tree_layers = root_node.findLayers()
         layerid = len(tree_layers) - 1
         layernames = []
-	layers = []
+        layers = []
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.customProperty("qgis2web/Time from") is not None and layer.customProperty("qgis2web/Time to") is not None and layer.customProperty("qgis2web/Time from") is not QPyNullVariant and layer.customProperty("qgis2web/Time to") is not QPyNullVariant:
                     start = html.find("function style_" + layer.name())
                     flen = len("function style_") + len(layer.name())
-                    layeridstr = html[start+flen:start+flen+1]
+                    layeridstr = html[start+flen:start+flen+2]
                     layernames.append(layer.name() + layeridstr)
                     start2 = html.find("{", start + 1)
                     end = html.find("}", start + 1)
                     style = html[start2+1:end]
                     style = style.replace("return", "s = ") + "\n};"
                     end = html.find("}", end + 1)
-                    style = "function style_" + layer.name() + layeridstr + "(feature) {" + "\n" + style
+                    style = "function style_" + layer.name() + layeridstr + "_0(feature) {" + "\n" + style
                     #print layer.customProperty("qgis2web/Time from")
                     field_from = layer.pendingFields()[int(layer.customProperty("qgis2web/Time from"))-1].name()
                     field_to = layer.pendingFields()[int(layer.customProperty("qgis2web/Time to"))-1].name()
-                    #print layer.customProperty("qgis2web/Time to")
-                    style += "if (feature.properties." + field_from + " <= $('#date').val() && feature.properties." + field_to + " >= $('#date').val()) {\n"
-                    style += "s['opacity'] = 1.0;\n"
-                    style += "s['fillOpacity'] = 1.0;\n"
-                    style += "} else {\n"
+                    
+                    style += "var featuredatefrom = String(feature.properties." + field_from + ");\n"
+                    style += "var featuredateto = String(feature.properties." + field_to + ");\n"
+                    style += "if (featuredatefrom.length == 4) { featuredatefrom = featuredatefrom + '-01-01'; }\n"
+                    style += "if (featuredatefrom.length == 7) { featuredatefrom = featuredatefrom + '-01'; }\n"
+                    style += "if (featuredateto.length == 4) { featuredateto = featuredateto + '-01-01'; }\n"
+                    style += "if (featuredateto.length == 7) { featuredateto = featuredateto + '-01'; }\n"
+                    style += "if (\n"
+                    style += "(featuredatefrom <= $('#datefrom').val() && featuredateto <= $('#datefrom').val())\n"
+                    style += "||\n"
+                    style += "(featuredatefrom >= $('#dateto').val() && featuredateto >= $('#dateto').val())\n"
+                    style += ") {\n"
                     style += "s['opacity'] = 0.0;\n"
                     style += "s['fillOpacity'] = 0.0;\n"
                     style += "}\n"
+
                     style += "return s;\n"
                     style += "}\n"
+                    
                     style += "function setVisibility" + layer.name() + layeridstr + "() {\n"   
                     style += "for (var row=0; row<1000; row++) {\n"
                     style += "if ( typeof(layer_" + layer.name() + layeridstr + "._layers[row])=='undefined') continue;\n"
-                    style += "  s = style_" + layer.name() + layeridstr + "(layer_" + layer.name() + layeridstr + "._layers[row].feature);\n"
+                    style += "  s = style_" + layer.name() + layeridstr + "_0(layer_" + layer.name() + layeridstr + "._layers[row].feature);\n"
                     style += "  layer_" + layer.name() + layeridstr + "._layers[row].setStyle(s);\n"
                     style += " }\n"      
                     style += "}\n"
@@ -387,24 +439,52 @@ class Button(QtGui.QPushButton):
         fvisibility = "function setVisibility() {\n"
         for layername in layernames:
             fvisibility += "lyr_" + layername + ".getSource().changed();\n"
-            html = html.replace(layername + "_style.js", layername + "_style_time.js")
         fvisibility += "}</script>\n"
+        
+        html = html.replace("_style.js", "_style_time.js")
         
         mintime = projectInstance.readEntry("qgis2web", "Min")[0]
         maxtime = projectInstance.readEntry("qgis2web", "Max")[0]        
-        header = '<head>\n<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>'
-        header += '<script>'
-        header += "$(document).ready(function(){\n"
-        header +=	"$('input').change(function(){\n"
-        header += "$('#datetxt').val($('#date').val());\n"
+        header = '<head>\n<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>\n'
+        header += '<script>\n'
+        
+        header += "function getDateString(d) {\n"
+        header += "m = d.getMonth() + 1;\n"
+        header += "month = String('0' + m).slice(-2);\n"
+        header += "day = String('0' + d.getDate()).slice(-2);\n"
+        header += "return d.getFullYear() + '-' + month + '-' + day;\n"
+        header += "}\n"
+
+        header += "$(document).ready(function() {\n"
+        header += "$( '#slider-range' ).slider({\n"
+        header += "range: true,\n"
+        header += "min: new Date('" + mintime + "').getTime() / 1000,\n"
+        header += "max: new Date('" + maxtime + "').getTime() / 1000,\n"
+        header += "step: 86400,\n"
+        header += "values: [ new Date('" + mintime + "').getTime() / 1000, new Date('" + maxtime + "').getTime() / 1000 ],\n"
+        header += "slide: function( event, ui ) {\n"
+        header += "var from = new Date(ui.values[0] *1000);\n"
+        header += "var to = new Date(ui.values[1] *1000);\n"
+        header += "$( '#datefrom' ).val(getDateString(new Date(ui.values[0] *1000)));\n"
+        header += "$( '#dateto' ).val(getDateString(new Date(ui.values[1] *1000)));\n"
         header += "setVisibility();\n"
+        header += "}\n"
         header += "});\n"
-        header += "$('#datetxt').val($('#date').val());\n"
+        header += "var from = new Date($('#slider-range').slider('values', 0)*1000);\n"
+        header += "var to = new Date($('#slider-range').slider('values', 1)*1000);\n"
+        header += "$( '#datefrom' ).val(getDateString(from));\n"
+        header += "$( '#dateto' ).val(getDateString(to));\n"
         header += "});\n"
+        
         header += fvisibility
         html = html.replace("<head>", header)
         
-        header = '<p style="position: fixed; top: 0; right: 0;">Time axis: <input type="range" id="date" min="' + mintime + '" max="' + maxtime + '"/><input id="datetxt"/></p></body>'
+        header = '<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />\n'
+        header += '<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>\n'
+        header += '<div style="position: fixed; top: 10px; left: 70px;"><div id="slider-range" style="width:300px"></div>\n'
+        header += '<p><input id="datefrom"/>   <input id="dateto"/> </p>\n'
+        header += '</div>\n'
+        #header = '<p style="position: fixed; top: 0; right: 0;">Time axis: <input type="range" id="date" min="' + mintime + '" max="' + maxtime + '"/><input id="datetxt"/></p></body>'
         html = html.replace("</body>", header)
         
         index_time = os.path.join(dir, latest_subdir[1], 'index_time.html')
@@ -425,24 +505,41 @@ class Button(QtGui.QPushButton):
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.customProperty("qgis2web/Time from") is not None and layer.customProperty("qgis2web/Time to") is not None and layer.customProperty("qgis2web/Time from") is not QPyNullVariant and layer.customProperty("qgis2web/Time to") is not QPyNullVariant:
                     stylefile = os.path.join(path, layer.name() + unicode(layerid) + "_style.js")
+                    styletimefile = os.path.join(path, layer.name() + unicode(layerid) + "_style_time.js")
+                    if not os.path.exists(stylefile):
+                        stylefile = os.path.join(path, layer.name() + "_style.js")
+                        styletimefile = os.path.join(path, layer.name() + "_style_time.js")
+                    else:
+                        layernames.append(layer.name() + unicode(layerid))
+                    if not os.path.exists(stylefile):
+                        stylefile = os.path.join(path, layer.name() + "_" + unicode(layerid) + "_style.js")
+                        styletimefile = os.path.join(path, layer.name() + "_" + unicode(layerid) + "_style_time.js")
+                        layernames.append(layer.name() +  "_" + unicode(layerid))
+                    else:
+                        layernames.append(layer.name())
                     style = open(stylefile, 'r').read()
                     start = style.find("var style =")
                     end = style.find(";", start)
                     styledef = style[start+4:end+1]
                     field_from = layer.pendingFields()[int(layer.customProperty("qgis2web/Time from"))-1].name()
                     field_to = layer.pendingFields()[int(layer.customProperty("qgis2web/Time to"))-1].name()
-                    stylevis = "if (feature.get('" + field_from + "') <= $('#date').val() && feature.get('" + field_to + "') >= $('#date').val()) {\n"
-                    stylevis += styledef + "\n"
-                    stylevis += "} else {\n"
-                    #TODO replace with changeAlpha
+                    stylevis = "var featuredatefrom = String(feature.get('" + field_from + "'));\n"
+                    stylevis += "var featuredateto = String(feature.get('" + field_to + "'));\n"
+                    stylevis += "if (featuredatefrom.length == 4) { featuredatefrom = featuredatefrom + '-01-01'; }\n"
+                    stylevis += "if (featuredatefrom.length == 7) { featuredatefrom = featuredatefrom + '-01'; }\n"
+                    stylevis += "if (featuredateto.length == 4) { featuredateto = featuredateto + '-01-01'; }\n"
+                    stylevis += "if (featuredateto.length == 7) { featuredateto = featuredateto + '-01'; }\n"
+                    stylevis += "if (\n"
+                    stylevis += "(featuredatefrom <= $('#datefrom').val() && featuredateto <= $('#datefrom').val())\n"
+                    stylevis += "||\n"
+                    stylevis += "(featuredatefrom >= $('#dateto').val() && featuredateto >= $('#dateto').val())\n"
+                    stylevis += ") {\n"
                     stylevis += styledef.replace("1.0", "0.0") + "\n"
                     stylevis += "}\n"
                     style = style[:end+1] + stylevis + style[end+2:]
-                    styletimefile = os.path.join(path, layer.name() + unicode(layerid) + "_style_time.js")
                     f = open(styletimefile, 'w')
                     f.write(style)
                     f.close()
-                    layernames.append(layer.name() + unicode(layerid))
                 layerid -= 1
         return layernames
     
