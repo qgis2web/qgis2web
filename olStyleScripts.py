@@ -67,7 +67,7 @@ def exportStyles(layers, folder, clustered):
                 style = """
     var style = [ new ol.style.Style({
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];"""
                 useMapUnits = False
             if useMapUnits:
@@ -77,8 +77,9 @@ def exportStyles(layers, folder, clustered):
                     mapUnitLayers.append(safeName(vts))
             (labelRes, size, face, color) = getLabelFormat(layer)
             if style != "":
+                geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
                 style = getStyle(style, cluster, labelRes, labelText,
-                                 sln, size, face, color, value)
+                                 sln, size, face, color, value, geom)
             else:
                 style = "''"
         except Exception, e:
@@ -332,7 +333,10 @@ def getValue(layer, renderer):
 
 
 def getStyle(style, cluster, labelRes, labelText,
-             sln, size, face, color, value):
+             sln, size, face, color, value, geom):
+    placement = "point"
+    if geom == "LineString":
+        placement = "line"
     this_style = '''function(feature, resolution){
     var context = {
         feature: feature,
@@ -373,12 +377,13 @@ def getStyle(style, cluster, labelRes, labelText,
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
+    var placement = '%(placement)s';
     if (%(label)s !== null%(labelRes)s) {
         labelText = String(%(label)s);
     }
-    %(style)s;\n''' % {"style": style, "labelRes": labelRes,
-                       "label": labelText, "size": size, "face": face,
-                       "labelFill": color}
+    %(style)s;\n''' % {"style": style, "placement": placement,
+                       "labelRes": labelRes, "label": labelText, "size": size,
+                       "face": face, "labelFill": color}
 
     this_style += '''
     return style;
@@ -543,7 +548,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         if vts is None:
             ts = """
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)"""
+                              labelFill, placement)"""
         styles[k] = '''new ol.style.Style({
         %s%s
     })''' % (style, ts)
