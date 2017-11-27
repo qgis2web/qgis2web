@@ -331,12 +331,12 @@ def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
         proj = "<script>proj4.defs('{epsg}','{defn}');</script>".format(
             epsg=mapSettings.destinationCrs().authid(),
             defn=mapSettings.destinationCrs().toProj4())
+        unit = mapSettings.destinationCrs().mapUnits()
         view += """, projection: new ol.proj.Projection({
             code: '%s',
             extent: %s,
-            units: '%s'})""" % (
-                mapSettings.destinationCrs().authid(), fullextent,
-                units[mapSettings.destinationCrs().mapUnits()])
+            units: '%s'})""" % (mapSettings.destinationCrs().authid(),
+                                    fullextent, units[unit])
     return (proj, proj4, view)
 
 
