@@ -41,7 +41,7 @@ def exportStyles(layers, folder, clustered):
         setPattern = ""
         vts = layer.customProperty("VectorTilesReader/vector_tile_source")
         labelText = getLabels(labelsEnabled, layer, folder, sln)
-        defs = "var size = 0;\n"
+        defs = "var size = 0;\nvar placement = 'point';"
         try:
             renderer = layer.rendererV2()
             layer_alpha = layer.layerTransparency()
