@@ -336,7 +336,7 @@ def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
             code: '%s',
             extent: %s,
             units: '%s'})""" % (mapSettings.destinationCrs().authid(),
-                                    fullextent, units[unit])
+                                fullextent, units[unit])
     return (proj, proj4, view)
 
 
