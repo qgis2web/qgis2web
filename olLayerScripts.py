@@ -374,6 +374,7 @@ function get%(n)sJson(geojson) {
     jsonSource_%(n)s.addFeatures(features_%(n)s);
 }''' % {"name": layer.name(), "n": layerName,
         "min": minResolution, "max": maxResolution}
+    return layerCode
 
 
 def getJSON(layerName, crsConvert, layerAttr, cluster, pointLayerType,

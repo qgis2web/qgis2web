@@ -353,7 +353,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if layer.type() != QgsMapLayer.PluginLayer:
+            if (layer.type() != QgsMapLayer.PluginLayer and
+                layer.customProperty("ol_layer_type") is None):
                 try:
                     if layer.type() == QgsMapLayer.VectorLayer:
                         testDump = layer.rendererV2().dump()
