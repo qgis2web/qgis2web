@@ -44,7 +44,7 @@
     </body>
 </html>
 var size = 0;
-
+var placement = 'point';
 
 var style_pipelines_0 = function(feature, resolution){
     var context = {
@@ -59,6 +59,7 @@ var style_pipelines_0 = function(feature, resolution){
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
+    var placement = 'line';
     if ("" !== null) {
         labelText = String("");
     }
@@ -66,31 +67,31 @@ var style_pipelines_0 = function(feature, resolution){
             style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(247,251,255,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })]
                     } else if (value > 8.400000 && value <= 15.800000) {
             style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(199,220,239,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })]
                     } else if (value > 15.800000 && value <= 23.200000) {
             style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(114,178,215,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })]
                     } else if (value > 23.200000 && value <= 30.600000) {
             style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(40,120,184,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })]
                     } else if (value > 30.600000 && value <= 38.000000) {
             style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(8,48,107,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })]
                     };
 

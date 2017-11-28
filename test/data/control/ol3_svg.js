@@ -28,7 +28,7 @@ var style_airports_0 = function(feature, resolution){
                   src: "styles/qgis2web.svg"
             }),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
 
     return style;

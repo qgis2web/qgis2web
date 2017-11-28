@@ -1,13 +1,13 @@
 var size = 0;
 
 function categories_airports_0(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
+                       labelFont, labelFill, placement) {
                 switch(value.toString()) {case 'ALLEN AAF':
                     return [ new ol.style.Style({
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(32,224,176,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'AMBLER':
@@ -15,7 +15,7 @@ case 'AMBLER':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             angle: Math.PI/4, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(215,126,151,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ANCHORAGE INTL':
@@ -23,7 +23,7 @@ case 'ANCHORAGE INTL':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 5,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(229,153,125,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ANIAK':
@@ -31,7 +31,7 @@ case 'ANIAK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 6,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(146,20,219,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ANNETTE ISLAND':
@@ -39,7 +39,7 @@ case 'ANNETTE ISLAND':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 3,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(177,129,228,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ANVIK':
@@ -47,7 +47,7 @@ case 'ANVIK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             radius2: 0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(200,169,27,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ATKA':
@@ -55,7 +55,7 @@ case 'ATKA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 5,
             radius2: 2.0, stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(215,76,213,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'BETHEL':
@@ -63,7 +63,7 @@ case 'BETHEL':
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(115,212,128,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'BETTLES':
@@ -75,7 +75,7 @@ case 'BETTLES':
                                           stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}),
                                           fill: new ol.style.Fill({color: 'rgba(109,219,166,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'BIG LAKE':
@@ -84,7 +84,7 @@ case 'BIG LAKE':
         rotation: 0 * Math.PI/180,
         text: '\u2502',  stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'BIG MOUNTAIN AFS':
@@ -92,7 +92,7 @@ case 'BIG MOUNTAIN AFS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(226,234,63,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'BRYANT AHP':
@@ -100,7 +100,7 @@ case 'BRYANT AHP':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(207,202,57,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'BUCKLAND':
@@ -108,7 +108,7 @@ case 'BUCKLAND':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(180,200,24,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'CAPE NEWENHAM LRRS':
@@ -116,7 +116,7 @@ case 'CAPE NEWENHAM LRRS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(227,151,134,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'CAPE ROMANZOF LRRS':
@@ -124,7 +124,7 @@ case 'CAPE ROMANZOF LRRS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(114,142,208,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'CLEAR':
@@ -132,7 +132,7 @@ case 'CLEAR':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(106,146,211,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'COLD BAY':
@@ -140,7 +140,7 @@ case 'COLD BAY':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(44,195,240,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'DILLINGHAM':
@@ -148,7 +148,7 @@ case 'DILLINGHAM':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(238,131,177,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'EDWARD G PITKA SR':
@@ -156,7 +156,7 @@ case 'EDWARD G PITKA SR':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(204,20,13,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'EIELSON AFB':
@@ -164,7 +164,7 @@ case 'EIELSON AFB':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(103,203,220,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ELMENDORF AFB':
@@ -172,7 +172,7 @@ case 'ELMENDORF AFB':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(225,153,18,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'EMMONAK':
@@ -180,7 +180,7 @@ case 'EMMONAK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(220,77,58,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'FAIRBANKS INTL':
@@ -188,7 +188,7 @@ case 'FAIRBANKS INTL':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(64,209,161,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'FORT YUKON':
@@ -196,7 +196,7 @@ case 'FORT YUKON':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(171,240,146,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'GAMBELL':
@@ -204,7 +204,7 @@ case 'GAMBELL':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(142,109,212,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'GRANITE MOUNTAIN AFS':
@@ -212,7 +212,7 @@ case 'GRANITE MOUNTAIN AFS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(238,99,148,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'GULKANA':
@@ -220,7 +220,7 @@ case 'GULKANA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(195,90,200,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'GUSTAVUS':
@@ -228,7 +228,7 @@ case 'GUSTAVUS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(222,42,63,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'HAINES':
@@ -236,7 +236,7 @@ case 'HAINES':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(63,60,209,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'HOMER':
@@ -244,7 +244,7 @@ case 'HOMER':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(202,66,239,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'HOONAH':
@@ -252,7 +252,7 @@ case 'HOONAH':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(59,216,214,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ILIAMNA':
@@ -260,7 +260,7 @@ case 'ILIAMNA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(200,92,216,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'INDIAN MOUNTAIN LRRS':
@@ -268,7 +268,7 @@ case 'INDIAN MOUNTAIN LRRS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(19,165,232,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KAKE':
@@ -276,7 +276,7 @@ case 'KAKE':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(200,31,39,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KALAKAKET CREEK  AS':
@@ -284,7 +284,7 @@ case 'KALAKAKET CREEK  AS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(212,50,145,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KENAI MUNI':
@@ -292,7 +292,7 @@ case 'KENAI MUNI':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(129,213,46,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KING SALMON':
@@ -300,7 +300,7 @@ case 'KING SALMON':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(210,105,30,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KLAWOCK':
@@ -308,7 +308,7 @@ case 'KLAWOCK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(139,233,174,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KODIAK':
@@ -316,7 +316,7 @@ case 'KODIAK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(137,213,36,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'KOYUK':
@@ -324,7 +324,7 @@ case 'KOYUK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(97,170,233,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'MC GRATH':
@@ -332,7 +332,7 @@ case 'MC GRATH':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(136,236,226,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'MEKORYUK':
@@ -340,7 +340,7 @@ case 'MEKORYUK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(117,208,51,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'MERLE K MUDHOLE SMITH':
@@ -348,7 +348,7 @@ case 'MERLE K MUDHOLE SMITH':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(219,144,68,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'MERRILL FLD':
@@ -356,7 +356,7 @@ case 'MERRILL FLD':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(216,98,159,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'MINCHUMINA':
@@ -364,7 +364,7 @@ case 'MINCHUMINA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(137,127,239,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'MOSES POINT':
@@ -372,7 +372,7 @@ case 'MOSES POINT':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(105,148,200,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'NENANA MUNI':
@@ -380,7 +380,7 @@ case 'NENANA MUNI':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(156,83,215,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'NIKOLSKI AS':
@@ -388,7 +388,7 @@ case 'NIKOLSKI AS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(23,202,172,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'NOATAK':
@@ -396,7 +396,7 @@ case 'NOATAK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(212,82,180,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'NOME':
@@ -404,7 +404,7 @@ case 'NOME':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(207,196,111,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'NORTHWAY':
@@ -412,7 +412,7 @@ case 'NORTHWAY':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(97,225,68,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'PALMER MUNI':
@@ -420,7 +420,7 @@ case 'PALMER MUNI':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(72,200,98,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'PETERSBURG JAMES A JOHNSON':
@@ -428,7 +428,7 @@ case 'PETERSBURG JAMES A JOHNSON':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(115,205,112,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'PORT CLARENCE CGS':
@@ -436,7 +436,7 @@ case 'PORT CLARENCE CGS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(115,205,112,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'PORT HEIDEN':
@@ -444,7 +444,7 @@ case 'PORT HEIDEN':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(183,220,36,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'RALPH M CALHOUN':
@@ -452,7 +452,7 @@ case 'RALPH M CALHOUN':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(112,94,205,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'RALPH WIEN MEM':
@@ -460,7 +460,7 @@ case 'RALPH WIEN MEM':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(22,217,77,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'SAVOONGA':
@@ -468,7 +468,7 @@ case 'SAVOONGA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(114,82,211,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'SELAWIK':
@@ -476,7 +476,7 @@ case 'SELAWIK':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(214,120,205,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'SEWARD':
@@ -484,7 +484,7 @@ case 'SEWARD':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(222,113,202,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'SKAGWAY':
@@ -492,7 +492,7 @@ case 'SKAGWAY':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(219,176,115,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'SOLDOTNA':
@@ -500,7 +500,7 @@ case 'SOLDOTNA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(92,221,78,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'SPARREVOHN LRRS':
@@ -508,7 +508,7 @@ case 'SPARREVOHN LRRS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(17,47,217,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ST GEORGE':
@@ -516,7 +516,7 @@ case 'ST GEORGE':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(69,237,142,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ST MARYS':
@@ -524,7 +524,7 @@ case 'ST MARYS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(182,235,83,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'ST PAUL ISLAND':
@@ -532,7 +532,7 @@ case 'ST PAUL ISLAND':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(200,235,109,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'TALKEETNA':
@@ -540,7 +540,7 @@ case 'TALKEETNA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(53,158,223,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'TANACROSS':
@@ -548,7 +548,7 @@ case 'TANACROSS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(47,236,56,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'TATALINA LRRS':
@@ -556,7 +556,7 @@ case 'TATALINA LRRS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(74,236,171,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'TIN CITY LRRS':
@@ -564,7 +564,7 @@ case 'TIN CITY LRRS':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(122,200,82,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'UNALAKLEET':
@@ -572,7 +572,7 @@ case 'UNALAKLEET':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(22,35,215,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'UNALASKA':
@@ -580,7 +580,7 @@ case 'UNALASKA':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(218,88,18,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'VALDEZ':
@@ -588,7 +588,7 @@ case 'VALDEZ':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(164,74,200,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'WAINWRIGHT AAF':
@@ -596,7 +596,7 @@ case 'WAINWRIGHT AAF':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(224,198,124,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'WRANGELL':
@@ -604,7 +604,7 @@ case 'WRANGELL':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(45,194,207,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'YAKUTAT':
@@ -612,7 +612,7 @@ case 'YAKUTAT':
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(234,122,197,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 default:
@@ -620,7 +620,7 @@ default:
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(96,119,201,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;}};
 
@@ -642,7 +642,7 @@ var style_airports_0 = function(feature, resolution){
     }
     
 var style = categories_airports_0(feature, value, size, resolution, labelText,
-                          labelFont, labelFill);
+                          labelFont, labelFill, placement);
 
     return style;
 };

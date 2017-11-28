@@ -44,28 +44,28 @@
     </body>
 </html>
 var size = 0;
-
+var placement = 'point';
 function categories_pipelines_0(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
+                       labelFont, labelFill, placement) {
                 switch(value.toString()) {case 'Below Surface/Submerged/Underground':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(161,121,229,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 case 'On Ground Surface':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(38,209,101,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;
 default:
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(239,120,50,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
                     break;}};
 
@@ -82,12 +82,13 @@ var style_pipelines_0 = function(feature, resolution){
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
+    var placement = 'line';
     if ("" !== null) {
         labelText = String("");
     }
     
 var style = categories_pipelines_0(feature, value, size, resolution, labelText,
-                          labelFont, labelFill);
+                          labelFont, labelFill, placement);
 
     return style;
 };

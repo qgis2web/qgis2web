@@ -44,7 +44,7 @@
     </body>
 </html>
 var size = 0;
-
+var placement = 'point';
 
 var style_pipelines_0 = function(feature, resolution){
     var context = {
@@ -59,13 +59,14 @@ var style_pipelines_0 = function(feature, resolution){
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
+    var placement = 'line';
     if ("" !== null) {
         labelText = String("");
     }
     var style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(242,66,72,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill)
+                              labelFill, placement)
     })];
 
     return style;
