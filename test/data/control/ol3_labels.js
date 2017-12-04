@@ -1,5 +1,5 @@
 var size = 0;
-
+var placement = 'point';
 
 var style_airports_0 = function(feature, resolution){
     var context = {
@@ -14,6 +14,7 @@ var style_airports_0 = function(feature, resolution){
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
+    var placement = 'point';
     if (feature.get("NAME") !== null) {
         labelText = String(feature.get("NAME"));
     }

@@ -46,7 +46,7 @@
 var size = 0;
 var placement = 'point';
 function categories_pipelines_0(feature, value, size, resolution, labelText,
-                       labelFont, labelFill, placement) {
+                       labelFont, labelFill) {
                 switch(value.toString()) {case 'Below Surface/Submerged/Underground':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(161,121,229,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
@@ -88,7 +88,7 @@ var style_pipelines_0 = function(feature, resolution){
     }
     
 var style = categories_pipelines_0(feature, value, size, resolution, labelText,
-                          labelFont, labelFill, placement);
+                          labelFont, labelFill);
 
     return style;
 };
