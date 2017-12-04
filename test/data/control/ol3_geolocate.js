@@ -329,8 +329,8 @@ var onSingleClick = function(evt) {
                     }
                 }
             }
+            count++;
         }
-        count++;
     });
 
     var viewProjection = map.getView().getProjection();
