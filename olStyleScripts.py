@@ -560,6 +560,7 @@ def getSquare(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -573,6 +574,7 @@ def getDiamond(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -585,6 +587,7 @@ def getPentagon(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -597,6 +600,7 @@ def getHexagon(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -609,6 +613,7 @@ def getTriangle(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -621,6 +626,7 @@ def getStar(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -647,6 +653,7 @@ def getCross(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -659,6 +666,7 @@ def getCross2(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
@@ -677,6 +685,7 @@ def getLine(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
     else:
+        line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
     rot = props["angle"]
