@@ -13,7 +13,7 @@ name=qgis2web
 qgisMinimumVersion=2.14
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=2.31.0
+version=2.32.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -22,7 +22,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2017/11/07 2.31.0 WMS getFeatureInfo, OL border "no pen", Leaflet scale-dependent labels, improve Leaflet cluster, OL match CRS
+changelog=2017/12/04 2.32.0 Upgrade to OL 4.5.0, export styled vector tiles imported with Vector Tiles Reader (experimental), OL declutter, OL grid, map units, coalesce expressions function, time2web fixes, Leaflet layer search, OL match CRS, OL label along lines, OL WFS, exclude OpenLayers plugin layers, rule-based is25d(), OL proj4js local
+    2017/11/07 2.31.0 WMS getFeatureInfo, OL border "no pen", Leaflet scale-dependent labels, improve Leaflet cluster, OL match CRS
     2017/10/31 2.30.0 Deduplicate Leaflet style code, fix swapped raster width/height, Leaflet layer code refactor, deduplicate Leaflet legend code, handle strange negative symbolLayerCount(), handle null in Leaflet categorized, remove erratic Leaflet categorized WFS tests, upgrade from PEP8 to pycodestyle, use sudo _H in Travis pip install
     2017/10/17 2.29.0 OL refactor, remove unused exception handling, refactor is25d(), fix layer search, fix OL label font, extend coverage tests, remove unused style code, remove unused imports, avoid unnecessary raster reprojection, remove unused function arguments, add tests, clear project between tests, use rednose, handle MultiPolygonZM
     2017/09/26 2.28.0 OL line pattern fill, fix OL expressions, Leaflet popup images, avoid layer name duplication, popup size, OL clusters, code tidy, reduce unnecessary log messages
