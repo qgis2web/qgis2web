@@ -2155,7 +2155,7 @@ L.VectorGrid = L.GridLayer.extend({
 			return;
 		}
 		for(var i = 0; i < userLayers.length; i++) {
-			console.log('remove layer');
+//			console.log('remove layer');
 			this._map.removeLayer(userLayers[i]);
 		}
 		delete this._userLayers[tileKey];
