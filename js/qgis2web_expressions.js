@@ -3,6 +3,15 @@
 // Color
 
 // Conditionals
+function fnc_coalesce(values, context) {
+    for (i = 0; i < values.length; i++) {
+        if (values[i] !== null) {
+            return values[i];
+        }
+        
+    }
+    return 'ERROR';
+};
 
 // Conversions
 
@@ -167,10 +176,6 @@ function fnc_to_time(values, context) {
 };
 
 function fnc_to_interval(values, context) {
-    return false;
-};
-
-function fnc_coalesce(values, context) {
     return false;
 };
 
