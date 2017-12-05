@@ -29,40 +29,42 @@ from qgis.core import (QgsApplication,
                        QgsPalLayerSettings,
                        QgsMessageLog)
 import traceback
-from PyQt4.QtCore import (Qt,
+from PyQt5.QtCore import (Qt,
                           QObject)
-from PyQt4.QtGui import QApplication, QCursor
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QApplication
 import os
 from datetime import datetime
 import re
-from leafletFileScripts import (writeFoldersAndFiles,
-                                writeCSS,
-                                writeHTMLstart)
-from leafletLayerScripts import writeVectorLayer
-from leafletScriptStrings import (jsonScript,
-                                  scaleDependentLabelScript,
-                                  mapScript,
-                                  featureGroupsScript,
-                                  extentScript,
-                                  rasterScript,
-                                  wmsScript,
-                                  basemapsScript,
-                                  scaleDependentLayerScript,
-                                  addressSearchScript,
-                                  endHTMLscript,
-                                  addLayersList,
-                                  highlightScript,
-                                  crsScript,
-                                  scaleBar,
-                                  scaleDependentScript,
-                                  titleSubScript,
-                                  getVTStyles)
-from utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster,
-                   safeName)
-from writer import (Writer,
-                    WriterResult,
-                    translator)
-from feedbackDialog import Feedback
+from .leafletFileScripts import (writeFoldersAndFiles,
+                                 writeCSS,
+                                 writeHTMLstart)
+from .leafletLayerScripts import writeVectorLayer
+from .leafletScriptStrings import (jsonScript,
+                                   scaleDependentLabelScript,
+                                   mapScript,
+                                   featureGroupsScript,
+                                   extentScript,
+                                   rasterScript,
+                                   wmsScript,
+                                   basemapsScript,
+                                   scaleDependentLayerScript,
+                                   addressSearchScript,
+                                   endHTMLscript,
+                                   addLayersList,
+                                   highlightScript,
+                                   crsScript,
+                                   scaleBar,
+                                   scaleDependentScript,
+                                   titleSubScript,
+                                   getVTStyles,
+                                   getVTLabels)
+from .utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster,
+                    safeName)
+from .writer import (Writer,
+                     WriterResult,
+                     translator)
+from .feedbackDialog import Feedback
 
 
 class LeafletWriter(Writer):
@@ -158,6 +160,7 @@ class LeafletWriter(Writer):
 
         wfsLayers = ""
         labelCode = ""
+        vtLabels = {}
         vtStyles = {}
         useMultiStyle = False
         useHeat = False
@@ -250,6 +253,7 @@ class LeafletWriter(Writer):
                  legends,
                  wfsLayers,
                  labelCode,
+                 vtLabels,
                  vtStyles,
                  useMapUnits,
                  useMultiStyle,
@@ -264,9 +268,9 @@ class LeafletWriter(Writer):
                                              visible[count], json[count],
                                              legends, new_src, canvas, count,
                                              restrictToExtent, extent,
-                                             feedback, labelCode, vtStyles,
-                                             useMultiStyle, useHeat, useVT,
-                                             useShapes, useOSMB)
+                                             feedback, labelCode, vtLabels,
+                                             vtStyles, useMultiStyle, useHeat,
+                                             useVT, useShapes, useOSMB)
                 if useMapUnits:
                     mapUnitLayers.append(safeLayerName)
             elif layer.type() == QgsMapLayer.RasterLayer:
@@ -310,6 +314,7 @@ class LeafletWriter(Writer):
             return Math.ceil(m * m2px);
         }"""
         new_src += getVTStyles(vtStyles)
+        new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
         if title != "":
             titleStart = unicode(titleSubScript(title).decode("utf-8"))

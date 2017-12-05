@@ -1,18 +1,18 @@
 import re
 import os
 import traceback
-from urlparse import parse_qs
-from PyQt4.QtCore import QSize
+from urllib.parse import parse_qs
+from PyQt5.QtCore import QSize
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
                        QgsPalLayerSettings,
-                       QgsSvgMarkerSymbolLayerV2,
-                       QgsSymbolLayerV2Utils,
+                       QgsSvgMarkerSymbolLayer,
+                       QgsSymbolLayerUtils,
                        QgsMessageLog,
-                       QGis)
-from utils import scaleToZoom, safeName
-from basemaps import basemapLeaflet, basemapAttributions
+                       Qgis)
+from .utils import scaleToZoom, safeName
+from .basemaps import basemapLeaflet, basemapAttributions
 
 basemapAddresses = basemapLeaflet()
 
@@ -475,6 +475,21 @@ def getVTStyles(vtStyles):
         vtStyleString += "}"
 
     return vtStyleString
+
+
+def getVTLabels(vtLabels):
+    labels = []
+    for k, v in vtLabels.items():
+        labels.append("""
+    function label_%s(feature, featureLayer, vtLayer, tileCoords) {
+        var context = {
+            feature: feature,
+            variables: {}
+        };
+        %s
+    }""" % (safeName(k), v))
+    labelString = "".join(labels)
+    return labelString
 
 
 def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,

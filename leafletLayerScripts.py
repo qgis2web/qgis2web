@@ -1,46 +1,48 @@
 import re
 import os
-from PyQt4.QtCore import QSize
+from PyQt5.QtCore import QSize
 from qgis.core import (QgsVectorLayer,
                        QgsPalLayerSettings,
-                       QgsSingleSymbolRendererV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRuleBasedRendererV2,
+                       QgsSingleSymbolRenderer,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
+                       QgsRuleBasedRenderer,
                        QgsHeatmapRenderer,
-                       QgsSymbolLayerV2Utils,
-                       QgsDataSourceURI,
+                       QgsSymbolLayerUtils,
+                       QgsDataSourceUri,
                        QgsRenderContext,
                        QgsExpression)
-from qgis.utils import QGis
+from qgis.utils import Qgis
 import processing
-from leafletStyleScripts import getLayerStyle
-from leafletScriptStrings import (popupScript,
-                                  popFuncsScript,
-                                  pointToLayerFunction,
-                                  wfsScript,
-                                  clusterScript,
-                                  iconLegend)
+from .leafletStyleScripts import getLayerStyle
+from .leafletScriptStrings import (popupScript,
+                                   popFuncsScript,
+                                   pointToLayerFunction,
+                                   wfsScript,
+                                   clusterScript,
+                                   iconLegend)
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
     vt_enabled = True
 except:
     vt_enabled = False
-from exp2js import compile_to_file
-from utils import (writeTmpLayer, removeSpaces, exportImages, is25d, safeName,
+from .exp2js import compile_to_file
+from .utils import (writeTmpLayer, removeSpaces, exportImages, is25d, safeName,
                    handleHiddenField, add25dAttributes, BLEND_MODES, TYPE_MAP)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
-                     restrictToExtent, extent, feedback, labelCode, vtStyles,
-                     useMultiStyle, useHeat, useVT, useShapes, useOSMB):
+                     restrictToExtent, extent, feedback, labelCode, vtLabels,
+                     vtStyles, useMultiStyle, useHeat, useVT, useShapes,
+                     useOSMB):
     vts = layer.customProperty("VectorTilesReader/vector_tile_source")
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
-    labeltext = getLabels(layer, safeLayerName, outputProjectFileName, vts)
+    labeltext, vtLabels = getLabels(layer, safeLayerName,
+                                    outputProjectFileName, vts, vtLabels)
     labelCode += labeltext
     (new_pop, popFuncs) = getPopups(layer, safeLayerName, highlight,
                                     popupsOnHover, popup, vts)
@@ -155,13 +157,11 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 new_src += """
         cluster_""" + safeLayerName + """.addTo(map);"""
     feedback.completeStep()
-    return (new_src, legends, wfsLayers, labelCode, vtStyles, useMapUnits,
-            useMultiStyle, useHeat, useVT, useShapes, useOSMB)
+    return (new_src, legends, wfsLayers, labelCode, vtLabels, vtStyles,
+            useMapUnits, useMultiStyle, useHeat, useVT, useShapes, useOSMB)
 
 
-def getLabels(layer, safeLayerName, outputProjectFileName, vts):
-    if vts is not None:
-        return ""
+def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
     label_exp = ''
     labeltext = ""
     f = ''
@@ -217,7 +217,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts):
         labeltext += ", {permanent: true, offset: [-0, -16], "
         labeltext += "className: 'css_%s'}" % safeLayerName
         labeltext += ");"
-        labeltext = """
+        if vts is None:
+            labeltext = """
         var i = 0;
         layer_%s.eachLayer(function(layer) {
             var context = {
@@ -231,9 +232,30 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts):
               addLabel(layer, i);
               i++;
         });""" % (safeLayerName, labeltext)
+        else:
+            if palyr.isExpression and palyr.enabled:
+                labelVal = f
+            else:
+                labelVal = "feature.properties['%s']" % palyr.fieldName
+            labeltext = """
+        if (vtLayer.name === '%s') {
+            var latlng = this.vtGeometryToLatLng(feature.geometry[0],
+                                                 vtLayer, tileCoords)
+            marker = new L.CircleMarker(latlng, 
+                                        {stroke: false, fill: false});
+            marker.bindTooltip(%s,
+                               {permanent: true,
+                                direction: 'center'}).openTooltip();
+            this.addUserLayer(marker, tileCoords);
+        }""" % (layer.name(), labelVal)
+            if vts not in vtLabels:
+                vtLabels[vts] = labeltext
+            else:
+                vtLabels[vts] = vtLabels[vts] + labeltext
+            labeltext = ""
     else:
         labeltext = ""
-    return labeltext
+    return labeltext, vtLabels
 
 
 def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
@@ -436,8 +458,9 @@ def VTLayer(json_url):
     vtJS = """
         var layer_%s = L.vectorGrid.protobuf("%s", {
             rendererFactory: L.svg.tile,
+            onEachFeature: label_%s,
             vectorTileLayerStyles: style_%s
-        });""" % (sln, key_url, styleSuffix)
+        });""" % (sln, key_url, sln, styleSuffix)
     return vtJS
 
 
@@ -609,7 +632,7 @@ def getWFSScriptTag(layer, layerName):
     if ("retrictToRequestBBOX" in layerSource or
             "restrictToRequestBBOX" in layerSource):
         provider = layer.dataProvider()
-        uri = QgsDataSourceURI(provider.dataSourceUri())
+        uri = QgsDataSourceUri(provider.dataSourceUri())
         wfsURL = uri.param("url")
         wfsTypename = uri.param("typename")
         wfsSRS = uri.param("srsname")
