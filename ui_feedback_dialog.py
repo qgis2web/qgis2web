@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -50,5 +50,3 @@ class Ui_Feedback(object):
 
     def retranslateUi(self, Feedback):
         Feedback.setWindowTitle(_translate("Feedback", "Progress", None))
-
-import resources_rc

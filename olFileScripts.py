@@ -1,9 +1,9 @@
 import re
 import os
 import shutil
-from PyQt4.QtCore import QDir
-from qgis.core import QgsDataSourceURI
-from utils import safeName
+from PyQt5.QtCore import QDir
+from qgis.core import QgsDataSourceUri
+from .utils import safeName
 
 
 def writeFiles(folder, restrictToExtent, feedback, debugLibs):
@@ -91,7 +91,7 @@ def writeScriptIncludes(layers, json, matchCRS):
                 if ("retrictToRequestBBOX" in layerSource or
                         "restrictToRequestBBOX" in layerSource):
                     provider = layer.dataProvider()
-                    uri = QgsDataSourceURI(provider.dataSourceUri())
+                    uri = QgsDataSourceUri(provider.dataSourceUri())
                     wfsURL = uri.param("url")
                     wfsTypename = uri.param("typename")
                     wfsSRS = uri.param("srsname")

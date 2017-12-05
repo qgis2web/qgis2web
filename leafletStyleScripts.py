@@ -1,17 +1,16 @@
 import os
 import shutil
-from PyQt4.QtCore import QPyNullVariant
-from qgis.core import (QgsSingleSymbolRendererV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRuleBasedRendererV2,
-                       QgsSimpleMarkerSymbolLayerV2,
-                       QgsSimpleLineSymbolLayerV2,
-                       QgsSimpleFillSymbolLayerV2,
+from qgis.core import (QgsSingleSymbolRenderer,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
+                       QgsRuleBasedRenderer,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsSimpleLineSymbolLayer,
+                       QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsSvgMarkerSymbolLayerV2)
-from exp2js import compile_to_file
-from utils import getRGBAColor, handleHiddenField
+                       QgsSvgMarkerSymbolLayer)
+from .exp2js import compile_to_file
+from .utils import getRGBAColor, handleHiddenField
 
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
@@ -48,8 +47,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
                                              layer_alpha, sln, sl)
-                if (cat.value() is not None and cat.value() != "" and
-                        not isinstance(cat.value(), QPyNullVariant)):
+                if (cat.value() is not None and cat.value() != ""):
                     style += """
                 case '%s':""" % unicode(cat.value()).replace("'", "\\'")
                 else:

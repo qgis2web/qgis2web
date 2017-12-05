@@ -31,7 +31,7 @@ from PyQt5.uic import loadUiType
 from .utils import (tempFolder)
 from .feedbackDialog import Feedback
 
-Ui_FtpConfiguration = loadUiType("ui_ftp_configuration.ui")
+from .ui_ftp_configuration import Ui_FtpConfiguration
 translator = QObject()
 
 

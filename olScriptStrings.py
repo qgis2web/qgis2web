@@ -1,6 +1,6 @@
-import xmltodict
+from . import xmltodict
 
-from olStyleScripts import getStrokeStyle
+from .olStyleScripts import getStrokeStyle
 
 
 def measureControlScript():

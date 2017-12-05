@@ -17,11 +17,11 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from qgis.core import (QgsProject)
-from PyQt4.QtCore import (QObject)
+from PyQt5.QtCore import (QObject)
 
-from olwriter import (OpenLayersWriter)
-from leafletWriter import (LeafletWriter)
-from configparams import (getDefaultParams)
+from .olwriter import (OpenLayersWriter)
+from .leafletWriter import (LeafletWriter)
+from .configparams import (getDefaultParams)
 
 translator = QObject()
 

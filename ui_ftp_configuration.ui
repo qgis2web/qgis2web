@@ -80,9 +80,7 @@
   <tabstop>folderLineEdit</tabstop>
   <tabstop>usernameLineEdit</tabstop>
  </tabstops>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

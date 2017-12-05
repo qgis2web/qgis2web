@@ -68,18 +68,18 @@ from .configparams import (getParams,
                           baselayers,
                           specificParams,
                           specificOptions)
-from olwriter import OpenLayersWriter
-from leafletWriter import LeafletWriter
-from writerRegistry import (WRITER_REGISTRY)
-from exporter import (EXPORTER_REGISTRY)
-from feedbackDialog import FeedbackDialog
+from .olwriter import OpenLayersWriter
+from .leafletWriter import LeafletWriter
+from .writerRegistry import (WRITER_REGISTRY)
+from .exporter import (EXPORTER_REGISTRY)
+from .feedbackDialog import FeedbackDialog
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-ui = uic.loadUiType("ui_maindialog.ui")
+from .ui_maindialog import Ui_MainDialog
 
 
-class MainDialog(QDialog, ui):
+class MainDialog(QDialog, Ui_MainDialog):
 
     """The main dialog of QGIS2Web plugin."""
     items = {}

@@ -23,34 +23,33 @@ from qgis.core import (QgsProject,
                        QgsCoordinateTransform,
                        QgsRectangle,
                        QgsCsException)
-from utils import (exportLayers, replaceInTemplate)
+from .utils import (exportLayers, replaceInTemplate)
 from qgis.utils import iface
-from PyQt4.QtCore import Qt
-from PyQt4.QtCore import QObject
-from PyQt4.QtGui import (QApplication,
-                         QCursor)
-from olFileScripts import writeFiles, writeHTMLstart, writeScriptIncludes
-from olLayerScripts import writeLayersAndGroups
-from olScriptStrings import (measureScript,
-                             measuringScript,
-                             measureControlScript,
-                             measureUnitMetricScript,
-                             measureUnitFeetScript,
-                             measureStyleScript,
-                             geolocation,
-                             geolocateStyle,
-                             geolocationHead,
-                             geocodeLinks,
-                             geocodeJS,
-                             geocodeScript,
-                             getGrid,
-                             getM2px,
-                             getMapUnitLayers)
-from olStyleScripts import exportStyles
-from writer import (Writer,
-                    WriterResult,
-                    translator)
-from feedbackDialog import Feedback
+from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QApplication
+from .olFileScripts import writeFiles, writeHTMLstart, writeScriptIncludes
+from .olLayerScripts import writeLayersAndGroups
+from .olScriptStrings import (measureScript,
+                              measuringScript,
+                              measureControlScript,
+                              measureUnitMetricScript,
+                              measureUnitFeetScript,
+                              measureStyleScript,
+                              geolocation,
+                              geolocateStyle,
+                              geolocationHead,
+                              geocodeLinks,
+                              geocodeJS,
+                              geocodeScript,
+                              getGrid,
+                              getM2px,
+                              getMapUnitLayers)
+from .olStyleScripts import exportStyles
+from .writer import (Writer,
+                     WriterResult,
+                     translator)
+from .feedbackDialog import Feedback
 
 
 class OpenLayersWriter(Writer):

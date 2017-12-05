@@ -1,11 +1,12 @@
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWebKit
 import sys
 from collections import defaultdict
 import qgis  
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
-import utils
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtWebKit import *
+from . import utils
 import os.path
 from qgis.core import *
 
@@ -271,7 +272,7 @@ class TreeLayerItem2(QTreeWidgetItem):
         ## self.items["Time axis"]["Min"].lineedit.setText(str(min))
         ## self.items["Time axis"]["Max"].lineedit.setText(str(max))
 
-class Button(QtGui.QPushButton):
+class Button(QPushButton):
     def __init__(self, parent, main):
         super(Button, self).__init__(parent)
         self.main = main

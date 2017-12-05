@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -76,5 +76,3 @@ class Ui_FtpConfiguration(object):
         self.label.setText(_translate("FtpConfiguration", "Host", None))
         self.label_3.setText(_translate("FtpConfiguration", "Port", None))
         self.label_4.setText(_translate("FtpConfiguration", "Remote folder", None))
-
-import resources_rc

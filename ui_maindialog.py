@@ -7,9 +7,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
-from ui_timedialog import Ui_TimeDialog
-import resources_rc
+from PyQt5 import QtCore, QtGui
+from .ui_timedialog import Ui_TimeDialog
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8

@@ -5,23 +5,23 @@ import codecs
 import math
 import xml.etree.ElementTree
 import traceback
-from PyQt4.QtCore import QDir, QPyNullVariant, QSize
+from PyQt5.QtCore import QDir, QSize
 from qgis.core import (QgsVectorLayer,
-                       QgsSingleSymbolRendererV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRuleBasedRendererV2,
-                       QgsSimpleMarkerSymbolLayerV2,
-                       QgsSvgMarkerSymbolLayerV2,
-                       QgsFontMarkerSymbolLayerV2,
-                       QgsSimpleLineSymbolLayerV2,
-                       QgsSimpleFillSymbolLayerV2,
+                       QgsSingleSymbolRenderer,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
+                       QgsRuleBasedRenderer,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsSvgMarkerSymbolLayer,
+                       QgsFontMarkerSymbolLayer,
+                       QgsSimpleLineSymbolLayer,
+                       QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsSymbolLayerV2Utils,
+                       QgsSymbolLayerUtils,
                        QgsPalLayerSettings,
                        QgsMessageLog)
-from exp2js import compile_to_file
-from utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
+from .exp2js import compile_to_file
+from .utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
 
 
 def exportStyles(layers, folder, clustered):
@@ -82,7 +82,7 @@ def exportStyles(layers, folder, clustered):
                                  sln, size, face, color, value, geom)
             else:
                 style = "''"
-        except Exception, e:
+        except Exception(e):
             style = ""
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
@@ -229,8 +229,7 @@ function categories_%s(feature, value, size, resolution, labelText,
                                                                QSize(16, 16))
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + unicode(cnt) + ".png"))
-        if (cat.value() is not None and cat.value() != "" and
-                not isinstance(cat.value(), QPyNullVariant)):
+        if (cat.value() is not None and cat.value() != ""):
             categoryStr = "case '%s':" % unicode(
                 cat.value()).replace("'", "\\'")
         else:

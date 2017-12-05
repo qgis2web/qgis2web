@@ -30,8 +30,7 @@ from PyQt5.QtWidgets import (QFileDialog,
                          QLineEdit,
                          QDialogButtonBox)
 from .utils import (tempFolder)
-Ui_Feedback = loadUiType(os.path.join(os.path.dirname(__file__),
-                                      "ui_feedback_dialog.ui"))
+from .ui_feedback_dialog import Ui_Feedback
 
 translator = QObject()
 

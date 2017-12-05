@@ -1,18 +1,18 @@
 import re
 import os
 import codecs
-from urlparse import parse_qs
+from urllib.parse import parse_qs
 
-from PyQt4.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsRenderContext,
-                       QgsSingleSymbolRendererV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
+                       QgsSingleSymbolRenderer,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform)
-from utils import safeName, is25d, BLEND_MODES
-from basemaps import basemapOL
+from .utils import safeName, is25d, BLEND_MODES
+from .basemaps import basemapOL
 qms = False
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
