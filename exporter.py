@@ -21,16 +21,17 @@ from datetime import datetime
 import ftplib
 
 from qgis.core import (QgsProject)
-from PyQt4.QtCore import (QObject,
+from PyQt5.QtCore import (QObject,
                           QCoreApplication)
-from PyQt4.QtGui import (QFileDialog,
-                         QInputDialog,
-                         QDialog,
-                         QLineEdit)
-from utils import (tempFolder)
-from ui_ftp_configuration import Ui_FtpConfiguration
-from feedbackDialog import Feedback
+from PyQt5.QtWidgets import (QFileDialog,
+                             QInputDialog,
+                             QDialog,
+                             QLineEdit)
+from PyQt5.uic import loadUiType
+from .utils import (tempFolder)
+from .feedbackDialog import Feedback
 
+Ui_FtpConfiguration = loadUiType("ui_ftp_configuration.ui")
 translator = QObject()
 
 

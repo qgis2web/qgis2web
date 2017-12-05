@@ -24,7 +24,7 @@ import webbrowser
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
-from qgis.core import (QGis,
+from qgis.core import (Qgis,
                        QgsProject,
                        QgsMapLayer,
                        QgsVectorLayer,
@@ -32,28 +32,29 @@ from qgis.core import (QGis,
                        QgsMessageLog)
 
 # noinspection PyUnresolvedReferences
-from PyQt4.QtCore import (QObject,
+from PyQt5.QtCore import (QObject,
                           QSettings,
                           pyqtSignal,
                           QUrl,
                           QByteArray,
                           QEvent,
                           Qt)
-from PyQt4.QtGui import (QDialog,
-                         QHBoxLayout,
-                         QTreeWidgetItem,
-                         QIcon,
-                         QAbstractItemView,
-                         QAction,
-                         QComboBox,
-                         QCheckBox,
-                         QToolButton,
-                         QWidget,
-                         QTextBrowser)
-from PyQt4.QtNetwork import QNetworkAccessManager
+from PyQt5.QtGui import (QIcon)
+from PyQt5.QtWidgets import (QAction,
+                             QAbstractItemView,
+                             QDialog,
+                             QHBoxLayout,
+                             QTreeWidgetItem,
+                             QComboBox,
+                             QCheckBox,
+                             QToolButton,
+                             QWidget,
+                             QTextBrowser)
+from PyQt5.QtNetwork import QNetworkAccessManager
+from PyQt5.uic import loadUiType
 
 try:
-    from PyQt4.QtWebKit import QWebView, QWebSettings, QWebInspector, QWebPage
+    from PyQt5.QtWebKit import QWebView, QWebSettings, QWebInspector, QWebPage
     webkit_available = True
 except ImportError:
     webkit_available = False
@@ -61,9 +62,9 @@ except ImportError:
 import traceback
 import logging
 
-from ui_maindialog import Ui_MainDialog
-import utils
-from configparams import (getParams,
+# from .ui_maindialog import Ui_MainDialog
+from . import utils
+from .configparams import (getParams,
                           baselayers,
                           specificParams,
                           specificOptions)
@@ -75,8 +76,10 @@ from feedbackDialog import FeedbackDialog
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+ui = uic.loadUiType("ui_maindialog.ui")
 
-class MainDialog(QDialog, Ui_MainDialog):
+
+class MainDialog(QDialog, ui):
 
     """The main dialog of QGIS2Web plugin."""
     items = {}
@@ -119,7 +122,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 # if os.environ["TRAVIS"]:
                 self.preview.setPage(WebPage())
             except:
-                print "Failed to set custom webpage"
+                print("Failed to set custom webpage")
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(

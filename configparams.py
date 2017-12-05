@@ -18,8 +18,8 @@
 from qgis.core import QgsApplication
 import os
 import shutil
-from utils import tempFolder
-from exporter import EXPORTER_REGISTRY
+from .utils import tempFolder
+from .exporter import EXPORTER_REGISTRY
 
 
 def getTemplates():

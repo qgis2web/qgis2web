@@ -20,9 +20,9 @@ import time
 import re
 import shutil
 import sys
-from cStringIO import StringIO
-from PyQt4.QtCore import QDir, QVariant
-from PyQt4.QtGui import QPainter
+from io import StringIO
+from PyQt5.QtCore import QDir, QVariant
+from PyQt5.QtGui import QPainter
 from qgis.core import (QgsApplication,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
@@ -35,15 +35,15 @@ from qgis.core import (QgsApplication,
                        QgsExpression,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRuleBasedRendererV2,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
+                       QgsRuleBasedRenderer,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
                        QgsRasterPipe,
-                       QgsWKBTypes)
-from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayerV2)
-from qgis.utils import QGis
+                       QgsWkbTypes)
+from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayer)
+from qgis.utils import Qgis
 import processing
 import tempfile
 
@@ -51,19 +51,19 @@ NO_POPUP = 0
 ALL_ATTRIBUTES = 1
 
 TYPE_MAP = {
-    QGis.WKBPoint: 'Point',
-    QGis.WKBPoint25D: 'Point',
-    QGis.WKBLineString: 'LineString',
-    QGis.WKBLineString25D: 'LineString',
-    QGis.WKBPolygon: 'Polygon',
-    QGis.WKBPolygon25D: 'Polygon',
-    QGis.WKBMultiPoint: 'MultiPoint',
-    QGis.WKBMultiPoint25D: 'MultiPoint',
-    QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiLineString25D: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
-    QGis.WKBMultiPolygon25D: 'MultiPolygon',
-    QgsWKBTypes.MultiPolygonZM: 'MultiPolygon'}
+    QgsWkbTypes.Point: 'Point',
+    QgsWkbTypes.Point25D: 'Point',
+    QgsWkbTypes.LineString: 'LineString',
+    QgsWkbTypes.LineString25D: 'LineString',
+    QgsWkbTypes.Polygon: 'Polygon',
+    QgsWkbTypes.Polygon25D: 'Polygon',
+    QgsWkbTypes.MultiPoint: 'MultiPoint',
+    QgsWkbTypes.MultiPoint25D: 'MultiPoint',
+    QgsWkbTypes.MultiLineString: 'MultiLineString',
+    QgsWkbTypes.MultiLineString25D: 'MultiLineString',
+    QgsWkbTypes.MultiPolygon: 'MultiPolygon',
+    QgsWkbTypes.MultiPolygon25D: 'MultiPolygon',
+    QgsWkbTypes.MultiPolygonZM: 'MultiPolygon'}
 
 BLEND_MODES = {
     QPainter.CompositionMode_SourceOver: 'normal',

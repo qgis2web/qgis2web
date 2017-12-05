@@ -19,17 +19,19 @@
 import os
 from datetime import datetime
 import ftplib
+from PyQt5.uic import loadUiType
 
 from qgis.core import (QgsProject)
-from PyQt4.QtCore import (QObject,
+from PyQt5.QtCore import (QObject,
                           QCoreApplication)
-from PyQt4.QtGui import (QFileDialog,
+from PyQt5.QtWidgets import (QFileDialog,
                          QInputDialog,
                          QDialog,
                          QLineEdit,
                          QDialogButtonBox)
-from utils import (tempFolder)
-from ui_feedback_dialog import Ui_Feedback
+from .utils import (tempFolder)
+Ui_Feedback = loadUiType(os.path.join(os.path.dirname(__file__),
+                                      "ui_feedback_dialog.ui"))
 
 translator = QObject()
 

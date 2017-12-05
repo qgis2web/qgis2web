@@ -6,7 +6,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 import utils
-import resources_rc
 import os.path
 from qgis.core import *
 
