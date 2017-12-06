@@ -119,10 +119,11 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                     outputProjectFileName, useShapes)
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
                                      safeLayerName)
+        print safeLayerName
         legends[safeLayerName] = legend
-        (new_obj, legends, wfsLayers,
+        (new_obj, wfsLayers,
          useMultiStyle) = getLayer(layer, renderer, safeLayerName,
-                                   outputProjectFileName, usedFields, legends,
+                                   outputProjectFileName, usedFields,
                                    cluster, json, wfsLayers, markerType,
                                    useMultiStyle, symbol)
     blend = BLEND_MODES[layer.blendMode()]
@@ -329,8 +330,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
 
 
 def getLayer(layer, renderer, safeLayerName, outputProjectFileName, usedFields,
-             legends, cluster, json, wfsLayers, markerType, useMultiStyle,
-             symbol):
+             cluster, json, wfsLayers, markerType, useMultiStyle, symbol):
     if layer.geometryType() == QGis.Point:
         (new_obj,
          wfsLayers,
@@ -341,7 +341,7 @@ def getLayer(layer, renderer, safeLayerName, outputProjectFileName, usedFields,
         (new_obj, wfsLayers,
          useMultiStyle) = nonPointLayer(layer, safeLayerName, usedFields,
                                         json, wfsLayers, symbol, useMultiStyle)
-    return new_obj, legends, wfsLayers, useMultiStyle
+    return new_obj, wfsLayers, useMultiStyle
 
 
 def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
