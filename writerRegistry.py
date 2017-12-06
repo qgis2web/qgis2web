@@ -102,8 +102,8 @@ class WriterRegistry(object):
         Saves writer parameters to the current project
         :param params: writer parameter dictionary
         """
-        for group, settings in params.iteritems():
-            for param, value in settings.iteritems():
+        for group, settings in params.items():
+            for param, value in settings.items():
                 if isinstance(value, bool):
                     QgsProject.instance().writeEntryBool("qgis2web",
                                                          self.sanitiseKey(
@@ -155,8 +155,8 @@ class WriterRegistry(object):
 
         default_params = getDefaultParams()
         read_params = default_params
-        for group, settings in default_params.iteritems():
-            for param, default_value in settings.iteritems():
+        for group, settings in default_params.items():
+            for param, default_value in settings.items():
                 value = self.readParamFromProject(param, default_value)
                 read_params[group][param] = value
 

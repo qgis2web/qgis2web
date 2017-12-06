@@ -86,7 +86,7 @@ class qgis2webProvider(QgsProcessingProvider):
     def icon(self):
         """We return the default icon.
         """
-        return QgsProcessingProvider.getIcon(self)
+        return QgsProcessingProvider.icon(self)
 
     def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.

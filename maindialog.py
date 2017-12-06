@@ -245,7 +245,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
-        for param, value in specificParams.iteritems():
+        for param, value in specificParams.items():
             treeParam = self.paramsTreeOL.findItems(param,
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))[0]
@@ -259,7 +259,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     treeParam.setDisabled(True)
                 else:
                     treeParam.setDisabled(False)
-        for option, value in specificOptions.iteritems():
+        for option, value in specificOptions.items():
             treeOptions = self.layersTree.findItems(option,
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))
@@ -383,7 +383,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
-        for i in xrange(self.layers_item.childCount()):
+        for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if item.checkState(0) != Qt.Checked:
                 item.setExpanded(False)
@@ -425,10 +425,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         configure_export_action.triggered.connect(self.configureExporter)
 
         params = getParams(configure_exporter_action=configure_export_action)
-        for group, settings in params.iteritems():
+        for group, settings in params.items():
             item = QTreeWidgetItem()
             item.setText(0, group)
-            for param, value in settings.iteritems():
+            for param, value in settings.items():
                 subitem = self.createOptionItem(tree_widget=tree,
                                                 parent_item=item,
                                                 parameter=param,
@@ -471,8 +471,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         """
         Sets the dialog state to match the specified parameters
         """
-        for group, settings in self.items.iteritems():
-            for param, item in settings.iteritems():
+        for group, settings in self.items.items():
+            for param, item in settings.items():
                 value = params[group][param]
                 item.setValue(value)
 
@@ -520,8 +520,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def getParameters(self):
         parameters = defaultdict(dict)
-        for group, settings in self.items.iteritems():
-            for param, item in settings.iteritems():
+        for group, settings in self.items.items():
+            for param, item in settings.items():
                 parameters[group][param] = item.value()
                 if param == "Layer search":
                     parameters["Appearance"]["Search layer"] = (
@@ -546,7 +546,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         json = []
         cluster = []
         getFeatureInfo = []
-        for i in xrange(self.layers_item.childCount()):
+        for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
                 if item.checkState(0) == Qt.Checked:
@@ -743,7 +743,7 @@ class TreeLayerItem(QTreeWidgetItem):
     def popup(self):
         popup = []
         self.tree = self.treeWidget()
-        for p in xrange(self.childCount()):
+        for p in range(self.childCount()):
             item = self.child(p).text(1)
             if item != "":
                 popupVal = self.tree.itemWidget(self.child(p), 2).currentText()

@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 import sys
 from collections import defaultdict
 import qgis  
@@ -24,24 +24,24 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
 
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_TimeDialog(object):
     def __init__(self, tabWidget, MainDialog):
     ## def setupUi(self, tabWidget, MainDialog):
         self.maindialog = MainDialog
-        self.tab_3 = QtGui.QWidget()
+        self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
-        self.tab3_Layout = QtGui.QVBoxLayout(self.tab_3)
+        self.tab3_Layout = QtWidgets.QVBoxLayout(self.tab_3)
         self.tab3_Layout.setObjectName(_fromUtf8("tab3_Layout"))
         
-        self.layersTree = QtGui.QTreeWidget(self.tab_3)
+        self.layersTree = QtWidgets.QTreeWidget(self.tab_3)
         self.tab3_Layout.addWidget(self.layersTree)
         self.layersTree.setMinimumSize(QtCore.QSize(400, 0))
         self.layersTree.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -77,7 +77,7 @@ class Ui_TimeDialog(object):
             if layer.type() != QgsMapLayer.PluginLayer:
                 try:
                     if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.rendererV2().dump()
+                        testDump = layer.renderer().dump()
                     layer_parent = tree_layer.parent()
                     # print "Vector: " + layer.name()
                     if layer_parent.parent() is None:
@@ -103,7 +103,7 @@ class Ui_TimeDialog(object):
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
-        for i in xrange(self.layers_item.childCount()):
+        for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if item.checkState(0) != Qt.Checked:
                 item.setExpanded(False)
@@ -248,7 +248,7 @@ class TreeLayerItem2(QTreeWidgetItem):
 
     def populateMinMax(self):
         global projectInstance
-        min = sys.maxint;
+        min = sys.maxsize;
         max = 0;
         root_node = QgsProject.instance().layerTreeRoot()
         tree_layers = root_node.findLayers()
