@@ -22,12 +22,12 @@ from qgis.core import Qgis
 from qgis.PyQt.QtCore import (Qt)
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
-from processing.core.Processing import Processing
+from qgis.core import QgsApplication, QgsProcessingRegistry
 
 import sip
 # from . import resources_rc
 from .maindialog import MainDialog
-from qgis2webProvider import qgis2webProvider
+from .qgis2webProvider import qgis2webProvider
 
 
 class Qgis2Web(object):
@@ -39,7 +39,7 @@ class Qgis2Web(object):
         self.dlg = None
 
     def initGui(self):
-        Processing.addProvider(self.provider)
+        QgsApplication.processingRegistry().addProvider(self.provider)
         self.action = QAction(
             QIcon(":/plugins/qgis2web/icons/qgis2web.png"),
             u"Create web map", self.iface.mainWindow())
@@ -49,7 +49,7 @@ class Qgis2Web(object):
         self.iface.addToolBarIcon(self.action)
 
     def unload(self):
-        Processing.removeProvider(self.provider)
+        QgsApplication.processingRegistry().removeProvider(self.provider)
         self.iface.removePluginWebMenu(u"&qgis2web", self.action)
         self.iface.removeToolBarIcon(self.action)
 

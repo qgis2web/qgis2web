@@ -21,9 +21,9 @@
  ***************************************************************************/
 """
 
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
-from qgis2webAlgorithm import exportProject, exportVector, exportRaster
+from .qgis2webAlgorithm import exportProject, exportVector, exportRaster
 
 __author__ = 'Tom Chadwin'
 __date__ = '2017-04-03'
@@ -34,12 +34,12 @@ __copyright__ = '(C) 2017 by Tom Chadwin'
 __revision__ = '$Format:%H$'
 
 
-class qgis2webProvider(AlgorithmProvider):
+class qgis2webProvider(QgsProcessingProvider):
 
     MY_DUMMY_SETTING = 'MY_DUMMY_SETTING'
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        QgsProcessingProvider.__init__(self)
 
         # Deactivate provider by default
         self.activate = False
@@ -57,7 +57,7 @@ class qgis2webProvider(AlgorithmProvider):
         or automatically adding a setting for activating or
         deactivating the algorithms in the provider.
         """
-        AlgorithmProvider.initializeSettings(self)
+        QgsProcessingProvider.initializeSettings(self)
         # ProcessingConfig.addSetting(Setting('Example algorithms',
         #     qgis2webProvider.MY_DUMMY_SETTING,
         #     'Example setting', 'Default value'))
@@ -66,11 +66,11 @@ class qgis2webProvider(AlgorithmProvider):
         """Setting should be removed here, so they do not appear anymore
         when the plugin is unloaded.
         """
-        AlgorithmProvider.unload(self)
+        QgsProcessingProvider.unload(self)
         # ProcessingConfig.removeSetting(
         #     qgis2webProvider.MY_DUMMY_SETTING)
 
-    def getName(self):
+    def id(self):
         """This is the name that will appear on the toolbox group.
 
         It is also used to create the command line name of all the
@@ -78,17 +78,17 @@ class qgis2webProvider(AlgorithmProvider):
         """
         return 'qgis2web'
 
-    def getDescription(self):
+    def name(self):
         """This is the provired full name.
         """
         return 'qgis2web'
 
-    def getIcon(self):
+    def icon(self):
         """We return the default icon.
         """
-        return AlgorithmProvider.getIcon(self)
+        return QgsProcessingProvider.getIcon(self)
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.
 
         This method is called whenever the list of algorithms should

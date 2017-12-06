@@ -87,8 +87,8 @@ def getParams(configure_exporter_action=None):
 
 def getDefaultParams():
     params = getParams()
-    for group, settings in params.iteritems():
-        for param, value in settings.iteritems():
+    for group, settings in params.items():
+        for param, value in settings.items():
             if isinstance(value, tuple):
                 if param == 'Max zoom level':
                     settings[param] = value[-1]

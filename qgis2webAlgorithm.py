@@ -30,23 +30,19 @@ from qgis.core import (QgsProject,
                        QgsMessageLog)
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import (ParameterVector,
-                                        ParameterRaster,
-                                        ParameterBoolean,
-                                        ParameterString,
-                                        ParameterNumber)
+from qgis.core import QgsProcessingAlgorithm
+from qgis.core import QgsProcessingParameters
 from processing.tools import dataobjects
-from writerRegistry import (WRITER_REGISTRY)
-from exporter import (EXPORTER_REGISTRY)
-from olwriter import (OpenLayersWriter)
-from leafletWriter import (LeafletWriter)
-from configparams import getDefaultParams
+from .writerRegistry import (WRITER_REGISTRY)
+from .exporter import (EXPORTER_REGISTRY)
+from .olwriter import (OpenLayersWriter)
+from .leafletWriter import (LeafletWriter)
+from .configparams import getDefaultParams
 
 defaultParams = getDefaultParams()
 
 
-class exportProject(GeoAlgorithm):
+class exportProject(QgsProcessingAlgorithm):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
     layer that are selected.
@@ -127,7 +123,7 @@ class exportProject(GeoAlgorithm):
                 cluster[::-1])
 
 
-class exportLayer(GeoAlgorithm):
+class exportLayer(QgsProcessingAlgorithm):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
     layer that are selected.

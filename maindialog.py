@@ -52,12 +52,10 @@ from PyQt5.QtWidgets import (QAction,
                              QTextBrowser)
 from PyQt5.QtNetwork import QNetworkAccessManager
 from PyQt5.uic import loadUiType
+from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
 
-try:
-    from PyQt5.QtWebKit import QWebView, QWebSettings, QWebInspector, QWebPage
-    webkit_available = True
-except ImportError:
-    webkit_available = False
+from qgis.PyQt.QtWebKit import QWebSettings
+webkit_available = True
 
 import traceback
 import logging
