@@ -177,7 +177,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                 markerType = "shapeMarker"
         except:
             markerType = "circleMarker"
-    elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
+    elif isinstance(sl, QgsSvgMarkerSymbolLayer):
         path = os.path.join(markerFolder, os.path.basename(sl.path()))
         svgSize = sl.size() * 3.8
         if symbol.dataDefinedAngle().isActive():
@@ -197,7 +197,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                                     svgSize))
         markerType = "marker"
         useMapUnits = False
-    elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
+    elif isinstance(sl, QgsSimpleLineSymbolLayer):
         color = getRGBAColor(props["line_color"], alpha)
         line_width = props["line_width"]
         line_style = props["line_style"]
@@ -210,7 +210,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                                             line_units, lineCap, lineJoin)
         style += """
                 fillOpacity: 0,"""
-    elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
+    elif isinstance(sl, QgsSimpleFillSymbolLayer):
         fillColor = getRGBAColor(props["color"], alpha)
 
         borderColor = getRGBAColor(props["outline_color"], alpha)

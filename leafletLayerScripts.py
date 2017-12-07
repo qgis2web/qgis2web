@@ -60,13 +60,13 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         fields = layer.pendingFields()
         renderer.startRender(renderContext, fields)
         for feat in layer.getFeatures():
-            if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            if isinstance(renderer, QgsCategorizedSymbolRenderer):
                 classAttribute = renderer.classAttribute()
                 attrValue = feat.attribute(classAttribute)
                 catIndex = renderer.categoryIndexForValue(attrValue)
                 categories = renderer.categories()
                 symbol = categories[catIndex].symbol()
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            elif isinstance(renderer, QgsGraduatedSymbolRenderer):
                 classAttribute = renderer.classAttribute()
                 attrValue = feat.attribute(classAttribute)
                 ranges = renderer.ranges()
@@ -332,9 +332,9 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
         legend += layer.name()
     else:
-        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        if isinstance(renderer, QgsCategorizedSymbolRenderer):
             classes = renderer.categories()
-        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        elif isinstance(renderer, QgsGraduatedSymbolRenderer):
             classes = renderer.ranges()
         elif isinstance(renderer, QgsRuleBasedRendererV2):
             classes = renderer.rootRule().children()

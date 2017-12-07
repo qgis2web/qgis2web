@@ -523,10 +523,8 @@ def exportImages(layer, field, layerFileName):
 
 def handleHiddenField(layer, field):
     fieldIndex = layer.pendingFields().indexFromName(field)
-    editFormConfig = layer.editFormConfig()
-    editorWidget = editFormConfig.widgetType(fieldIndex)
-    if (editorWidget == QgsVectorLayer.Hidden or
-            editorWidget == 'Hidden'):
+    editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+    if (editorWidget == 'Hidden'):
         fieldName = "q2wHide_" + field
     else:
         fieldName = field

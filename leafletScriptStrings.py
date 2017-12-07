@@ -240,7 +240,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
         iconSize = (symbol.size() * 4) + 5
     except:
         iconSize = 16
-    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+    legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                            QSize(iconSize,
                                                                  iconSize))
     safeLabel = re.sub('[\W_]+', '', catr.label()) + unicode(cnt)
