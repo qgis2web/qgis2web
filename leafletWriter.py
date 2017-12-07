@@ -349,10 +349,11 @@ class LeafletWriter(Writer):
             safeLayerName = re.sub('[\W_]+', '',
                                    layer.name()) + "_" + unicode(count)
             if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
-                palyr = QgsPalLayerSettings()
-                palyr.readFromLayer(layer)
-                if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
-                    labelList.append("layer_%s" % safeLayerName)
+                labelling = layer.labeling()
+                if labelling is not None:
+                    palyr = labelling.settings()
+                    if palyr.fieldName and palyr.fieldName != "":
+                        labelList.append("layer_%s" % safeLayerName)
         labelsList = ",".join(labelList)
         end += endHTMLscript(wfsLayers, layerSearch, labelCode,
                              labelVisibility, searchLayer, useHeat, useRaster,

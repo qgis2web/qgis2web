@@ -15,15 +15,15 @@ from .utils import getRGBAColor, handleHiddenField
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     markerType = None
-    renderer = layer.rendererV2()
-    layer_alpha = layer.layerTransparency()
+    renderer = layer.renderer()
+    layer_alpha = layer.opacity()
     style = ""
-    if isinstance(renderer, QgsSingleSymbolRendererV2):
+    if isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
         slCount = symbol.symbolLayerCount()
         if slCount < 1:
             slCount = 1
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             (styleCode, markerType, useMapUnits,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
                                          layer_alpha, sln, sl)
@@ -32,13 +32,13 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         function style_%s_%s() {
             return %s
         }""" % (sln, sl, styleCode)
-    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+    elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.categories()[0].symbol()
         slCount = symbol.symbolLayerCount()
         if slCount < 1:
             slCount = 1
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             style += """
         function style_%s_%s(feature) {
             switch(String(feature.properties['%s'])) {""" % (sln, sl,
@@ -59,13 +59,13 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             style += """
             }
         }"""
-    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+    elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
         slCount = symbol.symbolLayerCount()
         if slCount < 1:
             slCount = 1
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             style += """
         function style_%s_%s(feature) {""" % (sln, sl)
             for ran in renderer.ranges():
@@ -82,12 +82,12 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                                  "s": styleCode}
             style += """
         }"""
-    elif isinstance(renderer, QgsRuleBasedRendererV2):
+    elif isinstance(renderer, QgsRuleBasedRenderer):
         symbol = renderer.rootRule().children()[0].symbol()
         slCount = symbol.symbolLayerCount()
         if slCount < 1:
             slCount = 1
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             template = """
         function style_%s_{sl}(feature) {{
             var context = {{
@@ -149,7 +149,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         props = sl.properties()
     except:
         props = {}
-    if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
+    if isinstance(sl, QgsSimpleMarkerSymbolLayer):
         color = getRGBAColor(props["color"], alpha)
         borderColor = getRGBAColor(props["outline_color"], alpha)
         borderWidth = props["outline_width"]

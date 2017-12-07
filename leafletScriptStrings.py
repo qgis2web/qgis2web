@@ -41,25 +41,27 @@ def scaleDependentLayerScript(layer, layerName, cluster):
 
 
 def scaleDependentLabelScript(layer, layerName):
-    pal = QgsPalLayerSettings()
-    pal.readFromLayer(layer)
-    sv = pal.scaleVisibility
-    if sv:
-        min = scaleToZoom(pal.scaleMin)
-        max = scaleToZoom(pal.scaleMax)
-        scaleDependentLabel = """
-            if (map.hasLayer(layer_%(layerName)s)) {
-                if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
-                    layer_%(layerName)s.eachLayer(function (layer) {
-                        layer.openTooltip();
-                    });
-                } else {
-                    layer_%(layerName)s.eachLayer(function (layer) {
-                        layer.closeTooltip();
-                    });
-                }
-            }""" % {"min": min, "max": max, "layerName": layerName}
-        return scaleDependentLabel
+    if layer.labeling() is not None:
+        labelling = layer.labeling().settings()
+        sv = labelling.scaleVisibility
+        if sv:
+            min = scaleToZoom(labelling.minimumScale)
+            max = scaleToZoom(labelling.maximumScale)
+            scaleDependentLabel = """
+                if (map.hasLayer(layer_%(layerName)s)) {
+                    if (map.getZoom() <= %(min)d && map.getZoom() >= %(max)d) {
+                        layer_%(layerName)s.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_%(layerName)s.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }""" % {"min": min, "max": max, "layerName": layerName}
+            return scaleDependentLabel
+        else:
+            return ""
     else:
         return ""
 
@@ -411,8 +413,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
-            safeLayerName = (re.sub('[\W_]+', '', rawLayerName) +
-                             "_" + unicode(lyrCount))
+            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
             lyrCount -= 1
             if i.type() == QgsMapLayer.VectorLayer:
                 testDump = i.rendererV2().dump()

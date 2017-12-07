@@ -89,7 +89,7 @@ class Ui_TimeDialog(object):
                 except:
                     # print "Except: " + layer.name()
                     # print "Unexpected error:", sys.exc_info()[0]
-                    raise
+                    # raise
                     pass
 
         for tree_group in tree_groups:

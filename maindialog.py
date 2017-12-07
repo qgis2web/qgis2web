@@ -24,7 +24,7 @@ import webbrowser
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
-from qgis.core import (Qgis,
+from qgis.core import (QgsWkbTypes,
                        QgsProject,
                        QgsMapLayer,
                        QgsVectorLayer,
@@ -356,21 +356,16 @@ class MainDialog(QDialog, Ui_MainDialog):
             layer = tree_layer.layer()
             if (layer.type() != QgsMapLayer.PluginLayer and
                     layer.customProperty("ol_layer_type") is None):
-                try:
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.rendererV2().dump()
-                    layer_parent = tree_layer.parent()
-                    if layer_parent.parent() is None:
-                        item = TreeLayerItem(self.iface, layer,
-                                             self.layersTree, dlg)
-                        self.layers_item.addChild(item)
-                    else:
-                        if layer_parent not in tree_groups:
-                            tree_groups.append(layer_parent)
-                except:
-                    QgsMessageLog.logMessage(traceback.format_exc(),
-                                             "qgis2web",
-                                             level=QgsMessageLog.CRITICAL)
+                if layer.type() == QgsMapLayer.VectorLayer:
+                    testDump = layer.renderer().dump()
+                layer_parent = tree_layer.parent()
+                if layer_parent.parent() is None:
+                    item = TreeLayerItem(self.iface, layer,
+                                         self.layersTree, dlg)
+                    self.layers_item.addChild(item)
+                else:
+                    if layer_parent not in tree_groups:
+                        tree_groups.append(layer_parent)
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
@@ -399,10 +394,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                 fields = layer.pendingFields()
                 for f in fields:
                     fieldIndex = fields.indexFromName(unicode(f.name()))
-                    formCnf = layer.editFormConfig()
-                    editorWidget = formCnf.widgetType(fieldIndex)
-                    if editorWidget == QgsVectorLayer.Hidden \
-                            or editorWidget == 'Hidden':
+                    editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                    if editorWidget == 'Hidden':
                         continue
                     options.append(unicode(f.name()))
                 for option in options:
@@ -690,7 +683,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonCheck.stateChanged.connect(self.changeJSON)
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-            if layer.geometryType() == QGis.Point:
+            if layer.geometryType() == QgsWkbTypes.PointGeometry:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
@@ -705,10 +698,8 @@ class TreeLayerItem(QTreeWidgetItem):
             fields = self.layer.pendingFields()
             for f in fields:
                 fieldIndex = fields.indexFromName(unicode(f.name()))
-                formCnf = layer.editFormConfig()
-                editorWidget = formCnf.widgetType(fieldIndex)
-                if editorWidget == QgsVectorLayer.Hidden or \
-                   editorWidget == 'Hidden':
+                editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                if editorWidget == 'Hidden':
                     continue
                 options.append(f.name())
             for option in options:

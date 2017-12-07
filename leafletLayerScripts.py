@@ -11,7 +11,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsSymbolLayerUtils,
                        QgsDataSourceUri,
                        QgsRenderContext,
-                       QgsExpression)
+                       QgsExpression,
+                       QgsWkbTypes)
 from qgis.utils import Qgis
 import processing
 from .leafletStyleScripts import getLayerStyle
@@ -46,15 +47,15 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     labelCode += labeltext
     (new_pop, popFuncs) = getPopups(layer, safeLayerName, highlight,
                                     popupsOnHover, popup, vts)
-    renderer = layer.rendererV2()
-    layer_transp = 1 - (float(layer.layerTransparency()) / 100)
+    renderer = layer.renderer()
+    layer_transp = 1 - (float(layer.opacity()) / 100)
     style = ""
     useMapUnits = False
 
     if is25d(layer, canvas, restrictToExtent, extent):
         useOSMB = True
         shadows = ""
-        renderer = layer.rendererV2()
+        renderer = layer.renderer()
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
         fields = layer.pendingFields()
         renderer.startRender(renderContext, fields)
@@ -136,7 +137,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         {new_obj}""".format(style=style, sln=safeLayerName, zIndex=zIndex,
                             blend=blend, new_obj=new_obj)
     if usedFields != 0:
-        new_src += new_pop.decode("utf-8")
+        new_src += new_pop
     new_src += """
 """ + new_obj
     if is25d(layer, canvas, restrictToExtent, extent):
@@ -165,93 +166,96 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
     label_exp = ''
     labeltext = ""
     f = ''
-    palyr = QgsPalLayerSettings()
-    palyr.readFromLayer(layer)
-    if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
-        bgColor = palyr.shapeFillColor.name()
-        borderWidth = palyr.shapeBorderWidth
-        borderColor = palyr.shapeBorderColor.name()
-        x = palyr.shapeSize.x()
-        y = palyr.shapeSize.y()
-        font = palyr.textFont
-        fontSize = font.pointSize()
-        fontFamily = font.family()
-        fontItalic = font.italic()
-        fontBold = font.bold()
-        fontColor = palyr.textColor.name()
-        fontUnderline = font.underline()
-        xOffset = palyr.xOffset
-        yOffset = palyr.yOffset
-        styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (fontColor,
-                                                                     fontSize)
-        if palyr.shapeDraw:
-            styleStart += "background-color: %s; " % bgColor
-            styleStart += "border: %dpx solid %s; " % (borderWidth,
-                                                       borderColor)
-            if palyr.shapeSizeType == 0:
-                styleStart += "padding: %dpx %dpx; " % (y, x)
-            if palyr.shapeSizeType == 1:
-                styleStart += "width: %dpx; " % x
-                styleStart += "height: %dpx; " % y
-        if fontBold:
-            styleStart += "font-weight: bold; "
-        if fontItalic:
-            styleStart += "font-style: italic; "
-        styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
-        styleEnd = " + '</div>'"
-        if palyr.isExpression and palyr.enabled:
-            exprFilename = os.path.join(outputProjectFileName, "js",
-                                        "qgis2web_expressions.js")
-            name = compile_to_file(palyr.getLabelExpression(),
-                                   "label_%s" % safeLayerName, "Leaflet",
-                                   exprFilename)
-            js = "%s(context)" % (name)
-            js = js.strip()
-            f = js
-        else:
-            fn = palyr.fieldName
-            f = "layer.feature.properties['%s']" % handleHiddenField(layer, fn)
-        labeltext = ".bindTooltip((" + unicode(f)
-        labeltext += " !== null?String(%s%s)%s:'')" % (styleStart, unicode(f),
-                                                       styleEnd)
-        labeltext += ", {permanent: true, offset: [-0, -16], "
-        labeltext += "className: 'css_%s'}" % safeLayerName
-        labeltext += ");"
-        if vts is None:
-            labeltext = """
-        var i = 0;
-        layer_%s.eachLayer(function(layer) {
-            var context = {
-                feature: layer.feature,
-                variables: {}
-            };
-            layer%s
-            labels.push(layer);
-            totalMarkers += 1;
-              layer.added = true;
-              addLabel(layer, i);
-              i++;
-        });""" % (safeLayerName, labeltext)
-        else:
+    labelling = layer.labeling()
+    if labelling is not None:
+        palyr = labelling.settings()
+        if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
+            bgColor = palyr.shapeFillColor.name()
+            borderWidth = palyr.shapeBorderWidth
+            borderColor = palyr.shapeBorderColor.name()
+            x = palyr.shapeSize.x()
+            y = palyr.shapeSize.y()
+            font = palyr.textFont
+            fontSize = font.pointSize()
+            fontFamily = font.family()
+            fontItalic = font.italic()
+            fontBold = font.bold()
+            fontColor = palyr.textColor.name()
+            fontUnderline = font.underline()
+            xOffset = palyr.xOffset
+            yOffset = palyr.yOffset
+            styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (fontColor,
+                                                                         fontSize)
+            if palyr.shapeDraw:
+                styleStart += "background-color: %s; " % bgColor
+                styleStart += "border: %dpx solid %s; " % (borderWidth,
+                                                           borderColor)
+                if palyr.shapeSizeType == 0:
+                    styleStart += "padding: %dpx %dpx; " % (y, x)
+                if palyr.shapeSizeType == 1:
+                    styleStart += "width: %dpx; " % x
+                    styleStart += "height: %dpx; " % y
+            if fontBold:
+                styleStart += "font-weight: bold; "
+            if fontItalic:
+                styleStart += "font-style: italic; "
+            styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
+            styleEnd = " + '</div>'"
             if palyr.isExpression and palyr.enabled:
-                labelVal = f
+                exprFilename = os.path.join(outputProjectFileName, "js",
+                                            "qgis2web_expressions.js")
+                name = compile_to_file(palyr.getLabelExpression(),
+                                       "label_%s" % safeLayerName, "Leaflet",
+                                       exprFilename)
+                js = "%s(context)" % (name)
+                js = js.strip()
+                f = js
             else:
-                labelVal = "feature.properties['%s']" % palyr.fieldName
-            labeltext = """
-        if (vtLayer.name === '%s') {
-            var latlng = this.vtGeometryToLatLng(feature.geometry[0],
-                                                 vtLayer, tileCoords)
-            marker = new L.CircleMarker(latlng, 
-                                        {stroke: false, fill: false});
-            marker.bindTooltip(%s,
-                               {permanent: true,
-                                direction: 'center'}).openTooltip();
-            this.addUserLayer(marker, tileCoords);
-        }""" % (layer.name(), labelVal)
-            if vts not in vtLabels:
-                vtLabels[vts] = labeltext
+                fn = palyr.fieldName
+                f = "layer.feature.properties['%s']" % handleHiddenField(layer, fn)
+            labeltext = ".bindTooltip((" + unicode(f)
+            labeltext += " !== null?String(%s%s)%s:'')" % (styleStart, unicode(f),
+                                                           styleEnd)
+            labeltext += ", {permanent: true, offset: [-0, -16], "
+            labeltext += "className: 'css_%s'}" % safeLayerName
+            labeltext += ");"
+            if vts is None:
+                labeltext = """
+            var i = 0;
+            layer_%s.eachLayer(function(layer) {
+                var context = {
+                    feature: layer.feature,
+                    variables: {}
+                };
+                layer%s
+                labels.push(layer);
+                totalMarkers += 1;
+                  layer.added = true;
+                  addLabel(layer, i);
+                  i++;
+            });""" % (safeLayerName, labeltext)
             else:
-                vtLabels[vts] = vtLabels[vts] + labeltext
+                if palyr.isExpression and palyr.enabled:
+                    labelVal = f
+                else:
+                    labelVal = "feature.properties['%s']" % palyr.fieldName
+                labeltext = """
+            if (vtLayer.name === '%s') {
+                var latlng = this.vtGeometryToLatLng(feature.geometry[0],
+                                                     vtLayer, tileCoords)
+                marker = new L.CircleMarker(latlng, 
+                                            {stroke: false, fill: false});
+                marker.bindTooltip(%s,
+                                   {permanent: true,
+                                    direction: 'center'}).openTooltip();
+                this.addUserLayer(marker, tileCoords);
+            }""" % (layer.name(), labelVal)
+                if vts not in vtLabels:
+                    vtLabels[vts] = labeltext
+                else:
+                    vtLabels[vts] = vtLabels[vts] + labeltext
+                labeltext = ""
+        else:
             labeltext = ""
     else:
         labeltext = ""
@@ -261,23 +265,19 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
 def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
     if vts is not None:
         return "", ""
-    palyr = QgsPalLayerSettings()
-    palyr.readFromLayer(layer)
     fields = layer.pendingFields()
     field_names = popup.keys()
     field_vals = popup.values()
     html_prov = False
-    f = palyr.fieldName
     table = ""
     for field in popup:
         tablestart = "'<table>\\"
         row = ""
         for field, val in zip(field_names, field_vals):
             fieldIndex = fields.indexFromName(unicode(field))
-            formCfg = layer.editFormConfig()
-            editorWidget = formCfg.widgetType(fieldIndex)
-            if (editorWidget == QgsVectorLayer.Hidden or
-                    editorWidget == 'Hidden'):
+            editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+
+            if (editorWidget == 'Hidden'):
                 continue
 
             row += """
@@ -299,8 +299,7 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
             row += "(feature.properties[\'" + unicode(field) + "\'] "
             row += "!== null ? "
 
-            if (editorWidget == QgsVectorLayer.Photo or
-                    editorWidget == 'Photo'):
+            if (editorWidget == 'Photo'):
                 row += "'<img src=\"images/' + "
                 row += "String(feature.properties['" + unicode(field)
                 row += "']).replace(/[\\\/:]/g, '_').trim()"
@@ -324,9 +323,9 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
 
 
 def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
-    if isinstance(renderer, QgsSingleSymbolRendererV2):
+    if isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(symbol,
+        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                                QSize(16, 16))
         legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                      safeLayerName + ".png"))
@@ -353,7 +352,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
 def getLayer(layer, renderer, safeLayerName, outputProjectFileName, usedFields,
              legends, cluster, json, wfsLayers, markerType, useMultiStyle,
              symbol):
-    if layer.geometryType() == QGis.Point:
+    if layer.geometryType() == QgsWkbTypes.PointGeometry:
         (new_obj,
          wfsLayers,
          useMultiStyle) = pointLayer(layer, safeLayerName, cluster, usedFields,

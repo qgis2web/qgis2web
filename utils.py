@@ -93,7 +93,7 @@ def tempFolder():
 def getUsedFields(layer):
     fields = []
     try:
-        fields.append(layer.rendererV2().classAttribute())
+        fields.append(layer.renderer().classAttribute())
     except:
         pass
     labelsEnabled = unicode(
@@ -108,17 +108,16 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
     usedFields = []
     for count, field in enumerate(fields):
         fieldIndex = fields.indexFromName(unicode(field.name()))
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+        editorWidget = layer.editorWidgetSetup(fieldIndex).type()
         addField = False
         try:
-            if layer.rendererV2().classAttribute() == field.name():
+            if layer.renderer().classAttribute() == field.name():
                 addField = True
         except:
             pass
         if layer.customProperty("labeling/fieldName") == field.name():
             addField = True
-        if (editorWidget != QgsVectorLayer.Hidden and
-                editorWidget != 'Hidden'):
+        if (editorWidget != 'Hidden'):
             addField = True
         if addField:
             usedFields.append(count)
@@ -129,11 +128,10 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
     for field in usedFields:
         fieldIndex = layer.pendingFields().indexFromName(unicode(
             layer.pendingFields().field(field).name()))
-        editorWidget = layer.editFormConfig().widgetType(fieldIndex)
+        editorWidget = layer.editorWidgetSetup(fieldIndex).type()
         fieldType = layer.pendingFields().field(field).type()
         fieldName = layer.pendingFields().field(field).name()
-        if (editorWidget == QgsVectorLayer.Hidden or
-                editorWidget == 'Hidden'):
+        if (editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
         fieldType = "double" if (fieldType == QVariant.Double or
                                  fieldType == QVariant.Int) else ("string")
@@ -222,7 +220,7 @@ def add25dAttributes(cleanLayer, layer, canvas):
                             QgsField("roofColor", QVariant.String)])
     cleanLayer.updateFields()
     fields = cleanLayer.pendingFields()
-    renderer = layer.rendererV2()
+    renderer = layer.renderer()
     renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
     feats = layer.getFeatures()
     context = QgsExpressionContext()
@@ -236,13 +234,13 @@ def add25dAttributes(cleanLayer, layer, canvas):
     for feat in feats:
         context.setFeature(feat)
         height = expression.evaluate(context)
-        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        if isinstance(renderer, QgsCategorizedSymbolRenderer):
             classAttribute = renderer.classAttribute()
             attrValue = feat.attribute(classAttribute)
             catIndex = renderer.categoryIndexForValue(attrValue)
             categories = renderer.categories()
             symbol = categories[catIndex].symbol()
-        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        elif isinstance(renderer, QgsGraduatedSymbolRenderer):
             classAttribute = renderer.classAttribute()
             attrValue = feat.attribute(classAttribute)
             ranges = renderer.ranges()
@@ -251,7 +249,7 @@ def add25dAttributes(cleanLayer, layer, canvas):
                         attrValue <= range.upperValue()):
                     symbol = range.symbol().clone()
         else:
-            symbol = renderer.symbolForFeature2(feat, renderContext)
+            symbol = renderer.symbolForFeature(feat, renderContext)
         sl1 = symbol.symbolLayer(1)
         sl2 = symbol.symbolLayer(2)
         wallColor = sl1.subSymbol().color().name()
@@ -380,24 +378,24 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.type() != layer.VectorLayer:
         return False
-    if layer.geometryType() != QGis.Polygon:
+    if layer.geometryType() != QgsWkbTypes.PointGeometry:
         return False
     vts = layer.customProperty("VectorTilesReader/vector_tile_source")
     if vts is not None:
         return False
-    renderer = layer.rendererV2()
+    renderer = layer.renderer()
     if isinstance(renderer, Qgs25DRenderer):
         return True
     symbols = []
-    if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+    if isinstance(renderer, QgsCategorizedSymbolRenderer):
         categories = renderer.categories()
         for category in categories:
             symbols.append(category.symbol())
-    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+    elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         ranges = renderer.ranges()
         for range in ranges:
             symbols.append(range.symbol())
-    elif isinstance(renderer, QgsRuleBasedRendererV2):
+    elif isinstance(renderer, QgsRuleBasedRenderer):
         rules = renderer.rootRule().children()
         for rule in rules:
             symbols.append(rule.symbol())
@@ -412,14 +410,14 @@ def is25d(layer, canvas, restrictToExtent, extent):
             features = layer.getFeatures()
         renderer.startRender(renderContext, fields)
         for feature in features:
-            symbol = renderer.symbolForFeature2(feature, renderContext)
+            symbol = renderer.symbolForFeature(feature, renderContext)
             symbols.append(symbol)
         renderer.stopRender(renderContext)
     for sym in symbols:
         sl1 = sym.symbolLayer(1)
         sl2 = sym.symbolLayer(2)
-        if (isinstance(sl1, QgsGeometryGeneratorSymbolLayerV2) and
-                isinstance(sl2, QgsGeometryGeneratorSymbolLayerV2)):
+        if (isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and
+                isinstance(sl2, QgsGeometryGeneratorSymbolLayer)):
             return True
     return False
 
@@ -486,16 +484,16 @@ def replaceInTemplate(template, values):
                         template)
     with open(path) as f:
         lines = f.readlines()
-    s = "".join(lines).decode('utf-8')
-    for name, value in values.iteritems():
+    s = "".join(lines)
+    for name, value in values.items():
         s = s.replace(name, value)
     return s
 
 
 def exportImages(layer, field, layerFileName):
-    field_index = layer.fieldNameIndex(field)
+    field_index = layer.pendingFields().indexFromName(field)
 
-    widget = layer.editFormConfig().widgetType(field_index)
+    widget = layer.editorWidgetSetup(field_index).type()
     if widget != 'Photo':
         return
 
