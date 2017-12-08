@@ -169,30 +169,32 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
     labelling = layer.labeling()
     if labelling is not None:
         palyr = labelling.settings()
-        if palyr.enabled and palyr.fieldName and palyr.fieldName != "":
-            bgColor = palyr.shapeFillColor.name()
-            borderWidth = palyr.shapeBorderWidth
-            borderColor = palyr.shapeBorderColor.name()
-            x = palyr.shapeSize.x()
-            y = palyr.shapeSize.y()
-            font = palyr.textFont
+        if palyr and palyr.fieldName and palyr.fieldName != "":
+            props = palyr.dataDefinedProperties()
+            text = palyr.format()
+            bgColor = props.property(palyr.ShapeFillColor).staticValue()
+            borderWidth = props.property(palyr.ShapeStrokeWidth).staticValue()
+            borderColor = props.property(palyr.ShapeStrokeColor).staticValue()
+            x = props.property(palyr.ShapeSizeX).staticValue()
+            y = props.property(palyr.ShapeSizeY).staticValue()
+            font = text.font()
             fontSize = font.pointSize()
             fontFamily = font.family()
             fontItalic = font.italic()
             fontBold = font.bold()
-            fontColor = palyr.textColor.name()
+            fontColor = text.color().name()
             fontUnderline = font.underline()
             xOffset = palyr.xOffset
             yOffset = palyr.yOffset
-            styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (fontColor,
-                                                                         fontSize)
-            if palyr.shapeDraw:
+            styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (
+                fontColor, fontSize)
+            if props.property(palyr.ShapeDraw).staticValue():
                 styleStart += "background-color: %s; " % bgColor
                 styleStart += "border: %dpx solid %s; " % (borderWidth,
                                                            borderColor)
-                if palyr.shapeSizeType == 0:
+                if props.property(palyr.ShapeSizeType).staticValue() == 0:
                     styleStart += "padding: %dpx %dpx; " % (y, x)
-                if palyr.shapeSizeType == 1:
+                if props.property(palyr.ShapeSizeType).staticValue() == 1:
                     styleStart += "width: %dpx; " % x
                     styleStart += "height: %dpx; " % y
             if fontBold:
