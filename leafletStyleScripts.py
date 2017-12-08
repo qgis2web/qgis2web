@@ -15,6 +15,7 @@ from .utils import getRGBAColor, handleHiddenField
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     markerType = None
+    useMapUnits = False
     renderer = layer.renderer()
     layer_alpha = layer.opacity()
     style = ""
@@ -26,7 +27,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         for sl in range(slCount):
             (styleCode, markerType, useMapUnits,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
-                                         layer_alpha, sln, sl)
+                                         layer_alpha, sln, sl, useMapUnits)
             style += pattern
             style += """
         function style_%s_%s() {
@@ -46,7 +47,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             for cat in renderer.categories():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
-                                             layer_alpha, sln, sl)
+                                             layer_alpha, sln, sl, useMapUnits)
                 if (cat.value() is not None and cat.value() != ""):
                     style += """
                 case '%s':""" % unicode(cat.value()).replace("'", "\\'")
@@ -71,7 +72,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             for ran in renderer.ranges():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
-                                             layer_alpha, sln, sl)
+                                             layer_alpha, sln, sl, useMapUnits)
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
@@ -112,7 +113,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 if rule.symbol().symbolLayer(sl) is not None:
                     (styleCode, markerType, useMapUnits,
                      pattern) = getSymbolAsStyle(rule.symbol(), markerFolder,
-                                                 layer_alpha, sln, sl)
+                                                 layer_alpha, sln, sl,
+                                                 useMapUnits)
                     name = "".join((sln, "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -135,7 +137,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     return style, markerType, useMapUnits, useShapes
 
 
-def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
+def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
+                     useMapUnits):
     markerType = None
     pattern = ""
     styles = []
@@ -196,7 +199,6 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         icon: %s""" % (rot, getIcon("markers/" + os.path.basename(sl.path()),
                                     svgSize))
         markerType = "marker"
-        useMapUnits = False
     elif isinstance(sl, QgsSimpleLineSymbolLayer):
         color = getRGBAColor(props["line_color"], alpha)
         line_width = props["line_width"]
@@ -207,7 +209,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         lineJoin = sl.penJoinStyle()
 
         style, useMapUnits = getStrokeStyle(color, line_style, line_width,
-                                            line_units, lineCap, lineJoin)
+                                            line_units, lineCap, lineJoin,
+                                            useMapUnits)
         style += """
                 fillOpacity: 0,"""
     elif isinstance(sl, QgsSimpleFillSymbolLayer):
@@ -227,7 +230,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
 
         strokeStyle, useMapUnits = getStrokeStyle(borderColor, borderStyle,
                                                   borderWidth, line_units,
-                                                  lineCap, lineJoin)
+                                                  lineCap, lineJoin,
+                                                  useMapUnits)
 
         style = ('''%s %s''' %
                  (strokeStyle, getFillStyle(fillColor, props)))
@@ -251,7 +255,6 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
                 stroke: false,
                 fillOpacity: 1,
                 fillPattern: pattern_%s_%d""" % (sln, slc)
-        useMapUnits = False
     else:
         markerType = "circleMarker"
         style = ""
@@ -265,7 +268,8 @@ def getMarker(color, borderColor, borderWidth, borderUnits, size, sizeUnits,
               props, lineStyle, shape):
     useMapUnits = False
     strokeStyle, useMapUnits = getStrokeStyle(borderColor, lineStyle,
-                                              borderWidth, borderUnits, 0, 0)
+                                              borderWidth, borderUnits, 0, 0,
+                                              useMapUnits)
     if sizeUnits == "MapUnit":
         useMapUnits = True
         size = "geoStyle(%s)" % size
@@ -293,8 +297,8 @@ def getIcon(path, svgSize):
         }),''' % {"s": svgSize, "path": path.replace("\\", "\\\\")}
 
 
-def getStrokeStyle(color, dashed, width, units, linecap, linejoin):
-    useMapUnits = False
+def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
+                   useMapUnits):
     if dashed != "no":
         width = round(float(width) * 3.8, 0)
         if width == 0:
