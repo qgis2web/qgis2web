@@ -190,13 +190,13 @@ def build25d(canvas, layer, count):
     fields = layer.pendingFields()
     renderer.startRender(renderContext, fields)
     for feat in layer.getFeatures():
-        if isinstance(renderer, QgsCategorizedSymbolRendererV2):
+        if isinstance(renderer, QgsCategorizedSymbolRenderer):
             classAttribute = renderer.classAttribute()
             attrValue = feat.attribute(classAttribute)
             catIndex = renderer.categoryIndexForValue(attrValue)
             categories = renderer.categories()
             symbol = categories[catIndex].symbol()
-        elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+        elif isinstance(renderer, QgsGraduatedSymbolRenderer):
             classAttribute = renderer.classAttribute()
             attrValue = feat.attribute(classAttribute)
             ranges = renderer.ranges()
@@ -411,9 +411,9 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
         layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
             });''' % {"icon": layerName, "name": layer.name()}
-    elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+    elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         layerCode += getLegend(renderer.categories(), layer, layerName)
-    elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+    elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         layerCode += getLegend(renderer.ranges(), layer, layerName)
     else:
         layerCode += '''

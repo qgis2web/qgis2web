@@ -486,7 +486,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
                              sl.size(), svgWidth, svgHeight, rot))
-        elif isinstance(sl, QgsFontMarkerSymbolLayerV2):
+        elif isinstance(sl, QgsFontMarkerSymbolLayer):
             char = sl.character()
             color = getRGBAColor(props["color"], alpha)
             style = """text: new ol.style.Text({
