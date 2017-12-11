@@ -43,23 +43,23 @@ def exportStyles(layers, folder, clustered):
         labelText = getLabels(labelsEnabled, layer, folder, sln)
         defs = "var size = 0;\nvar placement = 'point';"
         try:
-            renderer = layer.rendererV2()
-            layer_alpha = layer.layerTransparency()
-            if isinstance(renderer, QgsSingleSymbolRendererV2):
+            renderer = layer.renderer()
+            layer_alpha = layer.opacity()
+            if isinstance(renderer, QgsSingleSymbolRenderer):
                 (style, pattern, setPattern, value,
                  useMapUnits) = singleSymbol(renderer, stylesFolder,
                                              layer_alpha, sln, legendFolder,
                                              layer)
-            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            elif isinstance(renderer, QgsCategorizedSymbolRenderer):
                 (style, pattern, setPattern, value, defs,
                  useMapUnits) = categorized(defs, sln, layer, renderer,
                                             legendFolder, stylesFolder,
                                             layer_alpha)
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            elif isinstance(renderer, QgsGraduatedSymbolRenderer):
                 (style, pattern, setPattern, value,
                  useMapUnits) = graduated(layer, renderer, legendFolder, sln,
                                           stylesFolder, layer_alpha)
-            elif isinstance(renderer, QgsRuleBasedRendererV2):
+            elif isinstance(renderer, QgsRuleBasedRenderer):
                 (style, pattern, setPattern, value,
                  useMapUnits) = ruleBased(renderer, folder, stylesFolder,
                                           layer_alpha, sln, layer)
@@ -82,7 +82,7 @@ def exportStyles(layers, folder, clustered):
                                  sln, size, face, color, value, geom)
             else:
                 style = "''"
-        except Exception(e):
+        except Exception as e:
             style = ""
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
@@ -174,29 +174,33 @@ def getLabelFormat(layer):
         face = ","
     else:
         face = " \\'%s\\'," % face
-    palyr = QgsPalLayerSettings()
-    palyr.readFromLayer(layer)
-    sv = palyr.scaleVisibility
-    if sv:
-        min = float(palyr.scaleMin)
-        max = float(palyr.scaleMax)
-        if min != 0:
-            min = 1 / ((1 / min) * 39.37 * 90.7)
-        max = 1 / ((1 / max) * 39.37 * 90.7)
-        labelRes = " && resolution > %(min)d " % {"min": min}
-        labelRes += "&& resolution < %(max)d" % {"max": max}
+    labelling = layer.labeling()
+    if labelling is not None:
+        palyr = labelling.settings()
+        sv = palyr.scaleVisibility
+        if sv:
+            min = float(palyr.scaleMin)
+            max = float(palyr.scaleMax)
+            if min != 0:
+                min = 1 / ((1 / min) * 39.37 * 90.7)
+            max = 1 / ((1 / max) * 39.37 * 90.7)
+            labelRes = " && resolution > %(min)d " % {"min": min}
+            labelRes += "&& resolution < %(max)d" % {"max": max}
+        else:
+            labelRes = ""
+        buffer = palyr.BufferDraw
+        if buffer:
+            bufferColor = palyr.BufferColor
+            bufferWidth = palyr.BufferSize
+            stroke = """
+                  stroke: new ol.style.Stroke({
+                    color: "%s",
+                    width: %d
+                  }),""" % (bufferColor, bufferWidth)
+        else:
+            stroke = ""
     else:
         labelRes = ""
-    buffer = palyr.bufferDraw
-    if buffer:
-        bufferColor = palyr.bufferColor.name()
-        bufferWidth = palyr.bufferSize
-        stroke = """
-              stroke: new ol.style.Stroke({
-                color: "%s",
-                width: %d
-              }),""" % (bufferColor, bufferWidth)
-    else:
         stroke = ""
     return (labelRes, size, face, color)
 
@@ -208,7 +212,7 @@ def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
      useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
                                      layer_alpha, renderer, sln, layer)
     style = "var style = " + style
-    legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+    legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
         symbol, QSize(16, 16))
     legendIcon.save(os.path.join(legendFolder, sln + ".png"))
     value = 'var value = ""'
@@ -225,7 +229,7 @@ function categories_%s(feature, value, size, resolution, labelText,
     cats = []
     useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(cat.symbol(),
+        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(cat.symbol(),
                                                                QSize(16, 16))
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + unicode(cnt) + ".png"))
@@ -257,7 +261,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
     elseif = ""
     useAnyMapUnits = False
     for cnt, ran in enumerate(renderer.ranges()):
-        legendIcon = QgsSymbolLayerV2Utils.symbolPreviewPixmap(
+        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
             ran.symbol(), QSize(16, 16))
         legendIcon.save(os.path.join(
             legendFolder, sln + "_" + unicode(cnt) + ".png"))
@@ -399,12 +403,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         alpha = symbol.alpha()
     else:
         alpha = 1 - (layer_transparency / float(100))
-    for i in xrange(symbol.symbolLayerCount()):
+    for i in range(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         pattern = ""
         setPattern = ""
-        if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
+        if isinstance(sl, QgsSimpleMarkerSymbolLayer):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
@@ -460,7 +464,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                 style, useMapUnits = getCircle(color, borderColor, borderWidth,
                                                size, props)
                 style = "image: %s" % style
-        elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
+        elif isinstance(sl, QgsSvgMarkerSymbolLayer):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             svg = xml.etree.ElementTree.parse(sl.path()).getroot()
             svgWidth = svg.attrib["width"]
@@ -488,7 +492,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             style = """text: new ol.style.Text({
             text: '%s',
             %s})""" % (char, getFillStyle(color, props))
-        elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
+        elif isinstance(sl, QgsSimpleLineSymbolLayer):
 
             color = getRGBAColor(props["line_color"], alpha)
             line_width = props["line_width"]
@@ -499,7 +503,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
 
             style, useMapUnits = getStrokeStyle(color, line_style, line_width,
                                                 line_units, lineCap, lineJoin)
-        elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
+        elif isinstance(sl, QgsSimpleFillSymbolLayer):
             fillColor = getRGBAColor(props["color"], alpha)
 
             borderColor = getRGBAColor(props["outline_color"], alpha)
@@ -551,7 +555,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         styles[k] = '''new ol.style.Style({
         %s%s
     })''' % (style, ts)
-    return ("[ %s]" % ",".join(styles[s] for s in sorted(styles.iterkeys())),
+    return ("[ %s]" % ",".join(styles[s] for s in sorted(styles.keys())),
             pattern, setPattern, useMapUnits)
 
 

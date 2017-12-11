@@ -71,7 +71,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         vts = layer.customProperty("VectorTilesReader/vector_tile_source")
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and vts is None and
-                not isinstance(layer.rendererV2(), QgsHeatmapRenderer) and
+                not isinstance(layer.renderer(), QgsHeatmapRenderer) and
                 not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
              blend_mode) = getPopups(layer, labels, sln, fieldLabels,
@@ -104,7 +104,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
                                                        iface.mapCanvas(),
                                                        restrictToExtent,
                                                        extent):
-        renderer = layer.rendererV2()
+        renderer = layer.renderer()
         cluster = isCluster(cluster, renderer)
         hmRadius = 0
         hmRamp = ""
@@ -185,7 +185,7 @@ def getBasemaps(basemapList):
 
 def build25d(canvas, layer, count):
     shadows = ""
-    renderer = layer.rendererV2()
+    renderer = layer.renderer()
     renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
     fields = layer.pendingFields()
     renderer.startRender(renderContext, fields)
@@ -238,7 +238,7 @@ def getVisibility(mapLayers, layers, visible):
 def buildGroups(groups, qms, layer_names_id):
     groupVars = ""
     groupedLayers = {}
-    for group, groupLayers in groups.iteritems():
+    for group, groupLayers in groups.items():
         groupLayerObjs = ""
         for layer in groupLayers:
             vts = layer.customProperty("VectorTilesReader/vector_tile_source")
@@ -326,7 +326,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
         aliasFields += "'%(field)s': '%(alias)s', " % (
             {"field": f.name(),
              "alias": layer.attributeDisplayName(fieldIndex)})
-        widget = layer.editFormConfig().widgetType(fieldIndex)
+        widget = layer.editorWidgetSetup(fieldIndex).type()
         imageFields += "'%(field)s': '%(image)s', " % (
             {"field": f.name(),
              "image": widget})
@@ -407,7 +407,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                 style: style_%(n)s,''' % {"n": layerName}
     else:
         layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
-    if isinstance(renderer, QgsSingleSymbolRendererV2):
+    if isinstance(renderer, QgsSingleSymbolRenderer):
         layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
             });''' % {"icon": layerName, "name": layer.name()}
@@ -436,7 +436,7 @@ def getLegend(subitems, layer, layerName):
 
 
 def isCluster(cluster, renderer):
-    if (cluster and isinstance(renderer, QgsSingleSymbolRendererV2)):
+    if (cluster and isinstance(renderer, QgsSingleSymbolRenderer)):
         cluster = True
     else:
         cluster = False

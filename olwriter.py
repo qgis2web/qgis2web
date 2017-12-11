@@ -207,7 +207,7 @@ class OpenLayersWriter(Writer):
             templateOutput = replaceInTemplate(
                 htmlTemplate + ".html", values)
             templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
-            f.write(templateOutput.encode('utf-8'))
+            f.write(templateOutput)
         values = {"@GEOLOCATEHEAD@": geolocateHead,
                   "@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
@@ -230,7 +230,7 @@ class OpenLayersWriter(Writer):
         with open(os.path.join(folder, "resources", "qgis2web.js"),
                   "w") as f:
             out = replaceInScript("qgis2web.js", values)
-            f.write(out.encode("utf-8"))
+            f.write(out)
         QApplication.restoreOverrideCursor()
         return os.path.join(folder, "index.html")
 
@@ -240,7 +240,7 @@ def replaceInScript(template, values):
     with open(path) as f:
         lines = f.readlines()
     s = "".join(lines)
-    for name, value in values.iteritems():
+    for name, value in values.items():
         s = s.replace(name, value)
     return s
 
@@ -254,7 +254,7 @@ def bounds(iface, useCanvas, layers, matchCRS):
                                                QgsCoordinateReferenceSystem(
                                                    "EPSG:3857"))
             try:
-                extent = transform.transform(canvas.extent())
+                extent = transform.transformBoundingBox(canvas.extent())
             except QgsCsException:
                 extent = QgsRectangle(-20026376.39, -20048966.10,
                                       20026376.39, 20048966.10)
@@ -267,7 +267,8 @@ def bounds(iface, useCanvas, layers, matchCRS):
                 epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
                 transform = QgsCoordinateTransform(layer.crs(), epsg3857)
                 try:
-                    layerExtent = transform.transform(layer.extent())
+                    layerExtent = transform.transformBoundingBox(
+                        layer.extent())
                 except QgsCsException:
                     layerExtent = QgsRectangle(-20026376.39, -20048966.10,
                                                20026376.39, 20048966.10)

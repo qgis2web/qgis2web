@@ -2,7 +2,6 @@ import re
 import os
 from PyQt5.QtCore import QSize
 from qgis.core import (QgsVectorLayer,
-                       QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,

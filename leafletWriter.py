@@ -26,7 +26,6 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
-                       QgsPalLayerSettings,
                        QgsMessageLog)
 import traceback
 from PyQt5.QtCore import (Qt,
