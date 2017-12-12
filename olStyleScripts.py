@@ -18,7 +18,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
                        QgsSymbolLayerUtils,
-                       QgsPalLayerSettings,
                        QgsMessageLog)
 from .exp2js import compile_to_file
 from .utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
@@ -35,12 +34,10 @@ def exportStyles(layers, folder, clustered):
         sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() != layer.VectorLayer:
             continue
-        labelsEnabled = unicode(
-            layer.customProperty("labeling/enabled")).lower() == "true"
         pattern = ""
         setPattern = ""
         vts = layer.customProperty("VectorTilesReader/vector_tile_source")
-        labelText = getLabels(labelsEnabled, layer, folder, sln)
+        labelText = getLabels(layer, folder, sln)
         defs = "var size = 0;\nvar placement = 'point';"
         try:
             renderer = layer.renderer()
@@ -125,29 +122,34 @@ var style_%(name)s = function(feature, resolution) {
     return mapUnitLayers
 
 
-def getLabels(labelsEnabled, layer, folder, sln):
-    if (labelsEnabled):
-        labelField = layer.customProperty("labeling/fieldName")
-        if labelField != "":
-            if unicode(layer.customProperty(
-                    "labeling/isExpression")).lower() == "true":
-                exprFilename = os.path.join(folder, "resources",
-                                            "qgis2web_expressions.js")
-                fieldName = layer.customProperty("labeling/fieldName")
-                name = compile_to_file(fieldName, "label_%s" % sln,
-                                       "OpenLayers3", exprFilename)
-                js = "%s(context)" % (name)
-                js = js.strip()
-                labelText = js
+def getLabels(layer, folder, sln):
+    labelling = layer.labeling()
+    if labelling is not None:
+        palyr = labelling.settings()
+        if palyr and palyr.fieldName and palyr.fieldName != "":
+            labelField = palyr.fieldName
+            if labelField != "":
+                if unicode(layer.customProperty(
+                        "labeling/isExpression")).lower() == "true":
+                    exprFilename = os.path.join(folder, "resources",
+                                                "qgis2web_expressions.js")
+                    fieldName = layer.customProperty("labeling/fieldName")
+                    name = compile_to_file(fieldName, "label_%s" % sln,
+                                           "OpenLayers3", exprFilename)
+                    js = "%s(context)" % (name)
+                    js = js.strip()
+                    labelText = js
+                else:
+                    fieldIndex = layer.pendingFields().indexFromName(
+                        labelField)
+                    editFormConfig = layer.editFormConfig()
+                    editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                    if (editorWidget == 'Hidden'):
+                        labelField = "q2wHide_" + labelField
+                    labelText = ('feature.get("%s")' %
+                                 labelField.replace('"', '\\"'))
             else:
-                fieldIndex = layer.pendingFields().indexFromName(labelField)
-                editFormConfig = layer.editFormConfig()
-                editorWidget = editFormConfig.widgetType(fieldIndex)
-                if (editorWidget == QgsVectorLayer.Hidden or
-                        editorWidget == 'Hidden'):
-                    labelField = "q2wHide_" + labelField
-                labelText = ('feature.get("%s")' %
-                             labelField.replace('"', '\\"'))
+                labelText = '""'
         else:
             labelText = '""'
     else:
