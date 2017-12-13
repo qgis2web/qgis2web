@@ -378,7 +378,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
 def is25d(layer, canvas, restrictToExtent, extent):
     if layer.type() != layer.VectorLayer:
         return False
-    if layer.geometryType() != QgsWkbTypes.PointGeometry:
+    if layer.geometryType() != QgsWkbTypes.PolygonGeometry:
         return False
     vts = layer.customProperty("VectorTilesReader/vector_tile_source")
     if vts is not None:

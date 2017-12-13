@@ -205,7 +205,7 @@ def build25d(canvas, layer, count):
                         attrValue <= range.upperValue()):
                     symbol = range.symbol().clone()
         else:
-            symbol = renderer.symbolForFeature2(feat, renderContext)
+            symbol = renderer.symbolForFeature(feat, renderContext)
         symbolLayer = symbol.symbolLayer(0)
         if not symbolLayer.paintEffect().effectList()[0].enabled():
             shadows = "'2015-07-15 10:00:00'"
@@ -478,7 +478,8 @@ def getHeatmap(layer, renderer):
         hmRamp += "'" + stop.color.name() + "', "
     hmRamp += "'" + hmEnd + "']"
     hmWeight = renderer.weightExpression()
-    hmWeightId = layer.fieldNameIndex(hmWeight)
+    fields = layer.pendingFields()
+    hmWeightId = fields.indexFromName(hmWeight)
     hmWeightMax = layer.maximumValue(hmWeightId)
     return (pointLayerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
 

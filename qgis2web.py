@@ -25,6 +25,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsApplication, QgsProcessingRegistry
 
 import sip
+import os
 # from . import resources_rc
 from .maindialog import MainDialog
 from .qgis2webProvider import qgis2webProvider
@@ -40,8 +41,9 @@ class Qgis2Web(object):
 
     def initGui(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
+        icon = os.path.join(os.path.dirname(__file__), "icons", "qgis2web.png")
         self.action = QAction(
-            QIcon(":/plugins/qgis2web/icons/qgis2web.png"),
+            QIcon(icon),
             u"Create web map", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
 

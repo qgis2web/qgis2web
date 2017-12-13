@@ -74,7 +74,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                             attrValue <= range.upperValue()):
                         symbol = range.symbol().clone()
             else:
-                symbol = renderer.symbolForFeature2(feat, renderContext)
+                symbol = renderer.symbolForFeature(feat, renderContext)
             symbolLayer = symbol.symbolLayer(0)
             if not symbolLayer.paintEffect().effectList()[0].enabled():
                 shadows = "'2015-07-15 10:00:00'"

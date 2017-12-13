@@ -315,14 +315,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.previewMap()
 
     def previewMap(self):
-        try:
-            preview_file = self.createPreview()
-            self.loadPreviewFile(preview_file)
-        except Exception as e:
-            self.showErrorMessage(
-                traceback.format_exc().replace("\n", "<br />"))
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
+        preview_file = self.createPreview()
+        self.loadPreviewFile(preview_file)
 
     def saveMap(self):
         writer = self.createWriter()

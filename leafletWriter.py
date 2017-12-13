@@ -219,7 +219,7 @@ class LeafletWriter(Writer):
             pt0 = canvas.extent()
             crsDest = QgsCoordinateReferenceSystem(4326)
             xform = QgsCoordinateTransform(crsSrc, crsDest)
-            pt1 = xform.transform(pt0)
+            pt1 = xform.transformBoundingBox(pt0)
             bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
                            pt1.xMinimum(), pt1.xMaximum()]
             bounds = '[[' + unicode(pt1.yMinimum()) + ','
