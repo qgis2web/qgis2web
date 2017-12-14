@@ -361,20 +361,49 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
             except:
                 shutil.copyfile(piped_file, piped_3857)
 
-        try:
-            processing.runalg("gdalogr:translate", piped_3857, 100,
-                              True, "", 0, "", extentRepNew, False, 5,
-                              4, 75, 6, 1, False, 0, False, "", out_raster)
-        except:
-            shutil.copyfile(piped_3857, out_raster)
+        processing.runalg("gdalogr:translate", {"INPUT": piped_3857,
+                                                    "OUTSIZE": 100,
+                                                    "OUTSIZE_PERC": True, 
+                                                    "NO_DATA": "",
+                                                    "EXPAND": 0,
+                                                    "SRS": "",
+                                                    "PROJWIN": extentRepNew,
+                                                    "SDS": False,
+                                                    "RTYPE": 5,
+                                                    "COMPRESS": 4,
+                                                    "JPEGCOMPRESSION": 75,
+                                                    "ZLEVEL": 6,
+                                                    "PREDICTOR": 1,
+                                                    "TILED": False,
+                                                    "BIGTIFF": 0,
+                                                    "TFW": False,
+                                                    "EXTRA": "",
+                                                    "OUTPUT": out_raster})
+        #except:
+        #    shutil.copyfile(piped_3857, out_raster)
     else:
         srcExtent = ','.join([unicode(piped_extent.xMinimum()),
                               unicode(piped_extent.xMaximum()),
                               unicode(piped_extent.yMinimum()),
                               unicode(piped_extent.yMaximum())])
-        processing.runalg("gdalogr:translate", piped_file, 100, True, "", 0,
-                          "", srcExtent, False, 5, 4, 75, 6, 1, False, 0,
-                          False, "", out_raster)
+        processing.runalg("gdalogr:translate", {"INPUT": piped_file,
+                                                "OUTSIZE": 100,
+                                                "OUTSIZE_PERC": True,
+                                                "NO_DATA": "",
+                                                "EXPAND": 0,
+                                                "SRS": "",
+                                                "PROJWIN": srcExtent,
+                                                "SDS": False,
+                                                "RTYPE": 5,
+                                                "COMPRESS": 4,
+                                                "JPEGCOMPRESSION": 75,
+                                                "ZLEVEL": 6,
+                                                "PREDICTOR": 1,
+                                                "TILED": False,
+                                                "BIGTIFF": 0,
+                                                "TFW": False,
+                                                "EXTRA": "",
+                                                "OUTPUT": out_raster})
 
 
 def is25d(layer, canvas, restrictToExtent, extent):
