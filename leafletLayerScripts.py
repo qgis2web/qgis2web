@@ -373,7 +373,7 @@ def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
         slCount = symbol.symbolLayerCount()
         if slCount < 1:
             slCount = 1
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             p2lf += pointToLayerFunction(safeLayerName, sl)
         (new_obj,
          scriptTag,
@@ -481,7 +481,7 @@ def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
     if slCount > 1:
         pointJSON += """
             pointToLayers: ["""
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             pointJSON += """function (feature, latlng) {{
                 var context = {{
                     feature: feature,
@@ -525,7 +525,7 @@ def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol, useMultiStyle):
         useMultiStyle = True
         p2lStart = "pointToLayers: ["
         p2lEnd = "],"
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             p2ls += "pointToLayer_%s_%s, " % (layerName, sl)
     else:
         p2ls = "pointToLayer_%s_0, " % layerName
@@ -572,7 +572,7 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
         useMultiStyle = True
         styleStart = u"styles: ["
         styleEnd = u"]"
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             styles += u"""style_%s_%s,""" % (safeName, sl)
     else:
         styles = u"""style_%s_0,""" % safeName
@@ -604,7 +604,7 @@ def buildNonPointWFS(layerName, layer, symbol, useMultiStyle):
         useMultiStyle = True
         styleStart = "styles: ["
         styleEnd = "],"
-        for sl in xrange(slCount):
+        for sl in range(slCount):
             styles += """style_%s_%s,""" % (layerName, sl)
     else:
         styles = """style_%s_0,""" % layerName

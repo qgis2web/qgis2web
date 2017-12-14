@@ -354,7 +354,7 @@ def rasterScript(layer, safeLayerName):
     crsSrc = layer.crs()
     crsDest = QgsCoordinateReferenceSystem(4326)
     xform = QgsCoordinateTransform(crsSrc, crsDest)
-    pt3 = xform.transform(pt2)
+    pt3 = xform.transformBoundingBox(pt2)
     bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
                     pt3.xMinimum(), pt3.xMaximum()]
     bounds = '[[' + unicode(pt3.yMinimum()) + ','

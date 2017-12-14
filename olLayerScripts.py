@@ -620,7 +620,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
         crsDest = QgsCoordinateReferenceSystem(3857)
 
         xform = QgsCoordinateTransform(crsSrc, crsDest)
-        extentRep = xform.transform(layer.extent())
+        extentRep = xform.transformBoundingBox(layer.extent())
     else:
         mapCRS = projectCRS.authid()
         extentRep = layer.extent()

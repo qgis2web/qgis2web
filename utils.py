@@ -294,7 +294,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         crsSrc = layer.crs()
         crsDest = QgsCoordinateReferenceSystem(3857)
         xform = QgsCoordinateTransform(crsSrc, crsDest)
-        extentRep = xform.transform(layer.extent())
+        extentRep = xform.transformBoundingBox(layer.extent())
 
         extentRepNew = ','.join([unicode(extentRep.xMinimum()),
                                  unicode(extentRep.xMaximum()),
@@ -304,7 +304,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         # Reproject in 3857
         piped_3857 = os.path.join(tempfile.gettempdir(),
                                   name_ts + '_piped_3857.tif')
-        qgis_version = QGis.QGIS_VERSION
+        qgis_version = Qgis.QGIS_VERSION
 
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
@@ -346,21 +346,13 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                 except:
                     pass
 
-        if int(qgis_version.split('.')[1]) < 15:
-            processing.runalg("gdalogr:warpreproject", piped_file,
-                              layer.crs().authid(), "EPSG:3857", "", 0, 1,
-                              0, -1, 75, 6, 1, False, 0, False, "", piped_3857)
-            processing.runalg("gdalogr:translate", piped_3857, 100,
-                              True, "", 0, "", extentRepNew, False, 0,
-                              0, 75, 6, 1, False, 0, False, "", out_raster)
-        else:
-            try:
-                procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
-            except:
-                shutil.copyfile(piped_file, piped_3857)
+        try:
+            procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+        except:
+            shutil.copyfile(piped_file, piped_3857)
 
         try:
-            processing.runalg("gdalogr:translate", piped_3857, 100,
+            processing.runalg("gdal:translate", piped_3857, 100,
                               True, "", 0, "", extentRepNew, False, 5,
                               4, 75, 6, 1, False, 0, False, "", out_raster)
         except:
@@ -370,7 +362,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                               unicode(piped_extent.xMaximum()),
                               unicode(piped_extent.yMinimum()),
                               unicode(piped_extent.yMaximum())])
-        processing.runalg("gdalogr:translate", piped_file, 100, True, "", 0,
+        processing.run("gdal:translate", piped_file, 100, True, "", 0,
                           "", srcExtent, False, 5, 4, 75, 6, 1, False, 0,
                           False, "", out_raster)
 
