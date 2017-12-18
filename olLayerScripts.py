@@ -372,7 +372,7 @@ var jsonSource_%(n)s = new ol.source.Vector({
 function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {"name": layer.name(), "n": layerName,
+}''' % {"name": layer.name().replace("'", "\\'"), "n": layerName,
         "min": minResolution, "max": maxResolution}
     return layerCode
 
@@ -410,7 +410,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     if isinstance(renderer, QgsSingleSymbolRendererV2):
         layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
-            });''' % {"icon": layerName, "name": layer.name()}
+            });''' % {"icon": layerName,
+                      "name": layer.name().replace("'", "\\'")}
     elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
         layerCode += getLegend(renderer.categories(), layer, layerName)
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
@@ -418,7 +419,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     else:
         layerCode += '''
                 title: '%(name)s'
-            });''' % {"name": layer.name()}
+            });''' % {"name": layer.name().replace("'", "\\'")}
     return layerCode
 
 
@@ -431,7 +432,7 @@ def getLegend(subitems, layer, layerName):
                   {"icon": layerName, "count": count, "text": text})
     legend = '''
     title: '%(name)s<br />%(icons)s'
-        });''' % {"icons": icons, "name": layer.name()}
+        });''' % {"icons": icons, "name": layer.name().replace("'", "\\'")}
     return legend
 
 
@@ -571,7 +572,8 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
                             %(maxRes)s
                           });''' % {"layerId": layerId, "url": url,
                                     "layerAttr": layerAttr, "format": format,
-                                    "n": layerName, "name": layer.name(),
+                                    "n": layerName,
+                                    "name": layer.name().replace("'", "\\'"),
                                     "opacity": opacity, "style": style,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
@@ -606,8 +608,9 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                           });
               wms_layers.push([lyr_%(n)s, %(info)d]);''' % {
         "layers": layers, "url": url, "layerAttr": layerAttr, "n": layerName,
-        "name": layer.name(), "version": version, "opacity": opacity,
-        "minRes": minResolution, "maxRes": maxResolution, "info": info}
+        "name": layer.name().replace("'", "\\'"), "version": version,
+        "opacity": opacity, "minRes": minResolution, "maxRes": maxResolution,
+        "info": info}
 
 
 def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
@@ -641,7 +644,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
                             })
                         });''' % {"n": layerName,
                                   "extent": sExtent,
-                                  "name": layer.name(),
+                                  "name": layer.name().replace("'", "\\'"),
                                   "minRes": minResolution,
                                   "maxRes": maxResolution,
                                   "mapCRS": mapCRS,
