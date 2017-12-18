@@ -362,24 +362,24 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                 shutil.copyfile(piped_file, piped_3857)
 
         processing.runalg("gdalogr:translate", {"INPUT": piped_3857,
-                                                    "OUTSIZE": 100,
-                                                    "OUTSIZE_PERC": True, 
-                                                    "NO_DATA": "",
-                                                    "EXPAND": 0,
-                                                    "SRS": "",
-                                                    "PROJWIN": extentRepNew,
-                                                    "SDS": False,
-                                                    "RTYPE": 5,
-                                                    "COMPRESS": 4,
-                                                    "JPEGCOMPRESSION": 75,
-                                                    "ZLEVEL": 6,
-                                                    "PREDICTOR": 1,
-                                                    "TILED": False,
-                                                    "BIGTIFF": 0,
-                                                    "TFW": False,
-                                                    "EXTRA": "",
-                                                    "OUTPUT": out_raster})
-        #except:
+                                                "OUTSIZE": 100,
+                                                "OUTSIZE_PERC": True,
+                                                "NO_DATA": "",
+                                                "EXPAND": 0,
+                                                "SRS": "",
+                                                "PROJWIN": extentRepNew,
+                                                "SDS": False,
+                                                "RTYPE": 5,
+                                                "COMPRESS": 4,
+                                                "JPEGCOMPRESSION": 75,
+                                                "ZLEVEL": 6,
+                                                "PREDICTOR": 1,
+                                                "TILED": False,
+                                                "BIGTIFF": 0,
+                                                "TFW": False,
+                                                "EXTRA": "",
+                                                "OUTPUT": out_raster})
+        # except:
         #    shutil.copyfile(piped_3857, out_raster)
     else:
         srcExtent = ','.join([unicode(piped_extent.xMinimum()),
