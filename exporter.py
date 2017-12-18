@@ -139,7 +139,7 @@ class FolderExporter(Exporter):
         if not feedback:
             feedback = Feedback()
         self.export_file = results.index_file
-        feedback.setCompleted('Exported to {}'.format(self.folder))
+        feedback.setCompleted('Exported to {}'.format(unicode(self.folder)))
         return True
 
     def destinationUrl(self):
