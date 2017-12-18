@@ -417,10 +417,12 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 testDump = i.rendererV2().dump()
                 if (clustered and
                         i.geometryType() == QGis.Point):
-                    new_layer = "'" + legends[safeLayerName].replace("'", "\\'")
+                    new_layer = "'" + legends[safeLayerName].replace("'",
+                                                                     "\\'")
                     new_layer += "': cluster_""" + safeLayerName + ","
                 else:
-                    new_layer = "'" + legends[safeLayerName].replace("'", "\\'")
+                    new_layer = "'" + legends[safeLayerName].replace("'",
+                                                                     "\\'")
                     new_layer += "': layer_" + safeLayerName + ","
                 layersList += new_layer
             elif i.type() == QgsMapLayer.RasterLayer:
