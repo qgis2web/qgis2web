@@ -19,7 +19,7 @@
 set -e
 
 pushd /usr/src
-apt-get install python-software-properties
+apt-get -y install python-software-properties
 pip install --upgrade pip
 pip install coverage
 pip install nose
