@@ -19,14 +19,14 @@
 set -e
 
 pushd /usr/src
-apt-get -y install python3-pip
-pip install --upgrade pip
-pip install coverage
-pip install nose
-pip install rednose
-pip install --upgrade pycodestyle
+# apt-get -y install python3-pip
+python3 -m pip install --upgrade pip
+python3 -m pip install coverage
+python3 -m pip install nose
+python3 -m pip install rednose
+python3 -m pip install --upgrade pycodestyle
 apt-get install pylint
-pip install python-coveralls
+python3 -m pip install python-coveralls
 
 pycodestyle --exclude=test,resources*.py,exp2js.py,ui*.py,xmltodict.py ./ --format=pylint --ignore=E722
 make pylint
