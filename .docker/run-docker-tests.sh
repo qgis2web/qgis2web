@@ -25,6 +25,8 @@ python3 -m pip install coverage
 python3 -m pip install nose
 python3 -m pip install rednose
 python3 -m pip install --upgrade pycodestyle
+apt remove pylint
+python3 -m pip install pylint
 apt-get -y install pylint
 python3 -m pip install python-coveralls
 
