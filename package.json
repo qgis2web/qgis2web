@@ -1,6 +1,6 @@
 {
   "name": "qgis2web",
-  "version": "2.99.0"
+  "version": "2.99.0",
   "dependencies": {
     "leaflet": "^1.0.0"
   }
