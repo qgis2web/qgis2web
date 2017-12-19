@@ -19,6 +19,7 @@
 set -e
 
 pushd /usr/src
+apt-get install pip
 pip install --upgrade pip
 pip install coverage
 pip install nose
