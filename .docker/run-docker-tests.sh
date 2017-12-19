@@ -25,7 +25,7 @@ python3 -m pip install coverage
 python3 -m pip install nose
 python3 -m pip install rednose
 python3 -m pip install --upgrade pycodestyle
-apt-get install pylint
+apt-get -y install pylint
 python3 -m pip install python-coveralls
 
 pycodestyle --exclude=test,resources*.py,exp2js.py,ui*.py,xmltodict.py ./ --format=pylint --ignore=E722
