@@ -20,20 +20,18 @@ __author__ = 'nyall.dawson@gmail.com'
 __date__ = '2017-02-15'
 __copyright__ = 'Copyright 2017, Nyall Dawson'
 
-import unittest
-
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 
-from utilities import get_qgis_app
 from qgis.core import (QgsProject)
 from writerRegistry import (WRITER_REGISTRY)
 from olwriter import (OpenLayersWriter)
 from leafletWriter import (LeafletWriter)
 from configparams import (getDefaultParams)
+from qgis.testing import unittest, start_app
 
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+start_app()
 
 
 class qgis2web_writerRegistryTest(unittest.TestCase):

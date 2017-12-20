@@ -14,15 +14,14 @@ __copyright__ = ('Copyright 2012, Australia Indonesia Facility for '
                  'Disaster Reduction')
 
 import os
-import unittest
 from qgis.core import (
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
     QgsRasterLayer)
 
-from utilities import get_qgis_app
+from qgis.testing import unittest, start_app
 
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+start_app()
 
 
 class QGISTest(unittest.TestCase):

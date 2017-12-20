@@ -12,7 +12,6 @@ __author__ = 'riccardo.klinger@geolicious.de'
 __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
-import unittest
 import os
 import difflib
 from collections import OrderedDict
@@ -21,8 +20,7 @@ from collections import OrderedDict
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
-from qgis.core import (QgsMapLayerRegistry,
-                       QgsCoordinateReferenceSystem)
+from qgis.core import (QgsCoordinateReferenceSystem)
 from PyQt4 import QtCore
 from PyQt4.QtCore import *
 from olwriter import OpenLayersWriter
@@ -30,9 +28,10 @@ from leafletWriter import LeafletWriter
 from utils import tempFolder
 
 from osgeo import gdal
-from utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from qgis.testing import unittest, start_app
 
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+start_app()
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -56,8 +55,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def tearDown(self):
         """Runs after each test"""
-        registry = QgsMapLayerRegistry.instance()
-        registry.removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def defaultParams(self):
         return {'Data export': {
@@ -88,8 +86,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         """ Test writer results from a leaflet writer"""
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -112,8 +109,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         """ Test writer results from a OL writer"""
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -141,8 +137,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -179,8 +174,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
@@ -213,8 +207,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'leaflet_json_line_single.html'), 'r')
@@ -247,8 +240,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
@@ -279,8 +271,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -315,8 +306,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -349,8 +339,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -383,8 +372,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -415,8 +403,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -449,8 +436,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -485,8 +471,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -518,8 +503,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -552,8 +536,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -585,8 +568,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -620,8 +602,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -653,8 +634,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -690,8 +670,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -724,8 +703,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -765,8 +743,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -807,8 +784,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -850,8 +826,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -893,8 +868,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -935,8 +909,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -976,8 +949,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -1017,8 +989,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -1058,8 +1029,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -1096,8 +1066,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1127,8 +1096,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1156,8 +1124,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # no base maps
         writer = OpenLayersWriter()
@@ -1192,8 +1159,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1234,8 +1200,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1279,8 +1244,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1317,8 +1281,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1368,8 +1331,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1407,8 +1369,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1457,8 +1418,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1496,8 +1456,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1535,8 +1494,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1573,8 +1531,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1613,8 +1570,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
@@ -1654,8 +1610,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
@@ -1708,8 +1663,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1747,8 +1701,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1785,8 +1738,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1824,8 +1776,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1862,8 +1813,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1901,8 +1851,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -1941,8 +1890,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1981,8 +1929,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -2020,8 +1967,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -2061,8 +2007,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2101,8 +2046,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2140,8 +2084,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2174,8 +2117,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2213,8 +2155,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2253,8 +2194,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2292,8 +2232,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2332,8 +2271,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2371,8 +2309,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2405,8 +2342,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2441,8 +2377,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2480,8 +2415,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = LeafletWriter()
@@ -2518,8 +2452,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2558,8 +2491,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2597,8 +2529,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2627,8 +2558,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'ol3_wms.js'), 'r')
@@ -2665,8 +2595,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'leaflet_wms.html'), 'r')
@@ -2706,8 +2635,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2740,8 +2668,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2779,8 +2706,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2813,8 +2739,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2848,8 +2773,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'ol3_wmts.js'), 'r')
@@ -2886,8 +2810,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path('control', 'leaflet_wmts.html'), 'r')
@@ -2927,8 +2850,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2961,8 +2883,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -2994,8 +2915,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -3027,8 +2947,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -3064,8 +2983,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -3106,8 +3024,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -3138,8 +3055,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
@@ -3177,8 +3093,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -3216,8 +3131,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -3259,8 +3173,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -3296,8 +3209,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:27700")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 

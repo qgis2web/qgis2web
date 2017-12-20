@@ -12,7 +12,6 @@ __author__ = 'tom.chadwin@nnpa.org.uk'
 __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
-import unittest
 import os
 import difflib
 import time
@@ -23,11 +22,11 @@ from collections import OrderedDict
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem
-from PyQt4 import QtCore, QtTest
-from PyQt4.QtCore import *
-from PyQt4.QtGui import (QListWidgetItem)
+from PyQt5 import QtCore, QtTest
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import (QListWidgetItem)
 from osgeo import gdal
-from PyQt4.QtGui import QDialogButtonBox, QDialog
+from PyQt5.QtWidgets import QDialogButtonBox, QDialog
 
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter

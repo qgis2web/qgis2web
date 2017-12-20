@@ -12,14 +12,12 @@ __author__ = 'riccardo.klinger@geolicious.de'
 __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
-import unittest
-
 from PyQt4.QtGui import QIcon
-from utilities import get_qgis_app
-
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+from qgis.testing import unittest, start_app
 
 print("test_resources.py")
+start_app()
+
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test rerources work."""
