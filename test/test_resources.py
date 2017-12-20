@@ -12,7 +12,7 @@ __author__ = 'riccardo.klinger@geolicious.de'
 __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
-from PyQt4.QtGui import QIcon
+from PyQt5.QtWidgets import QIcon
 from qgis.testing import unittest, start_app
 
 print("test_resources.py")
