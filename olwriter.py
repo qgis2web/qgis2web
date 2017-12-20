@@ -23,7 +23,7 @@ from qgis.core import (QgsProject,
                        QgsCoordinateTransform,
                        QgsRectangle,
                        QgsCsException)
-from .utils import (exportLayers, replaceInTemplate)
+from qgis2web.utils import (exportLayers, replaceInTemplate)
 from qgis.utils import iface
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QCursor
