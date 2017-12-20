@@ -22,7 +22,7 @@ from collections import OrderedDict
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
+from qgis.core import QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 from PyQt4.QtCore import *
 from PyQt4.QtGui import (QListWidgetItem)
@@ -99,8 +99,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'pipelines.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.close()
@@ -164,8 +163,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -198,8 +196,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -229,8 +226,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -261,8 +257,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -291,8 +286,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -325,8 +319,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -358,8 +351,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -392,8 +384,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -424,8 +415,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -458,8 +448,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -492,8 +481,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -522,8 +510,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -556,8 +543,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'point')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -587,8 +573,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -622,8 +607,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'centreline')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -654,8 +638,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -689,8 +672,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_wfs_layer(layer_url, 'polygon')
         layer.loadNamedStyle(layer_style)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -722,8 +704,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -754,8 +735,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -787,8 +767,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -819,8 +798,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -852,8 +830,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -884,8 +861,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -917,8 +893,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -950,8 +925,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -983,8 +957,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -1015,8 +988,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
 
@@ -1052,8 +1024,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         dialog = MainDialog(IFACE)
 
@@ -1073,8 +1044,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer_path = get_test_data_path('layer', 'airports.shp')
         layer = load_layer(layer_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         dialog = MainDialog(IFACE)
 
@@ -1103,8 +1073,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1142,8 +1111,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
             get_test_data_path(
@@ -1186,8 +1154,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1229,8 +1196,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1272,8 +1238,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1312,8 +1277,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1352,8 +1316,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1392,8 +1355,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1433,8 +1395,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1473,8 +1434,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1514,8 +1474,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
@@ -1556,8 +1515,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
         IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
@@ -1597,8 +1555,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1640,8 +1597,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1678,8 +1634,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1717,8 +1672,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1755,8 +1709,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1794,8 +1747,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1835,8 +1787,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1876,8 +1827,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1916,8 +1866,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -1956,8 +1905,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2002,8 +1950,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2048,8 +1995,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2086,8 +2032,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2126,8 +2071,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2167,8 +2111,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2207,8 +2150,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2248,8 +2190,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2288,8 +2229,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2330,8 +2270,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2363,8 +2302,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         # layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
         self.dialog = MainDialog(IFACE)
@@ -2397,8 +2335,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2430,8 +2367,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2462,8 +2398,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2492,8 +2427,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2526,8 +2460,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2560,8 +2493,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2594,8 +2526,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2628,8 +2559,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2658,8 +2588,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2688,8 +2617,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
         layer = load_wms_layer(layer_url, 'wms')
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2720,8 +2648,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2755,8 +2682,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2789,8 +2715,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2823,8 +2748,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2857,8 +2781,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2891,8 +2814,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2926,8 +2848,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(IFACE)
         self.dialog.paramsTreeOL.itemWidget(
@@ -2964,8 +2885,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = QgsVectorLayer(layer_path, 'airports', 'ogr')
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         cloned_layer = root.children()[0].clone()
         lyrGroup.addChildNode( cloned_layer)
@@ -3005,8 +2925,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         layer = QgsVectorLayer(layer_path, 'airports', 'ogr')
         layer.loadNamedStyle(style_path)
 
-        registry = QgsMapLayerRegistry.instance()
-        registry.addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         cloned_layer = root.children()[0].clone()
         lyrGroup.addChildNode( cloned_layer)

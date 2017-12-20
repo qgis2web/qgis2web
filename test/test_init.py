@@ -11,7 +11,7 @@ __copyright__ += 'Disaster Reduction'
 import os
 import unittest
 import logging
-import ConfigParser
+import configparser
 from utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()

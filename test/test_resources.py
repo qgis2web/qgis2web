@@ -19,7 +19,7 @@ from utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
-print "test_resources.py"
+print("test_resources.py")
 
 class qgis2web_classDialogTest(unittest.TestCase):
     """Test rerources work."""
