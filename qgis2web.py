@@ -27,8 +27,8 @@ from qgis.core import QgsApplication, QgsProcessingRegistry
 import sip
 import os
 # from . import resources_rc
-from maindialog import MainDialog
-from qgis2webProvider import qgis2webProvider
+from qgis2web.maindialog import MainDialog
+from qgis2web.qgis2webProvider import qgis2webProvider
 
 
 class Qgis2Web(object):
