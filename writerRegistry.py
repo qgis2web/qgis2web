@@ -19,9 +19,9 @@
 from qgis.core import (QgsProject)
 from PyQt5.QtCore import (QObject)
 
-from .olwriter import (OpenLayersWriter)
-from .leafletWriter import (LeafletWriter)
-from .configparams import (getDefaultParams)
+from qgis2web.olwriter import (OpenLayersWriter)
+from qgis2web.leafletWriter import (LeafletWriter)
+from qgis2web.configparams import (getDefaultParams)
 
 translator = QObject()
 
