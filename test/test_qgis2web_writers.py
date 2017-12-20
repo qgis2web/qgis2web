@@ -19,7 +19,7 @@ from collections import OrderedDict
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
-from qgis.core import QgsProject, QgsCoordinateReferenceSystem)
+from qgis.core import QgsProject, QgsCoordinateReferenceSystem
 from PyQt5.QtCore import *
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
