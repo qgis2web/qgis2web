@@ -35,35 +35,35 @@ from PyQt5.QtWidgets import QApplication
 import os
 from datetime import datetime
 import re
-from .leafletFileScripts import (writeFoldersAndFiles,
+from qgis2web.leafletFileScripts import (writeFoldersAndFiles,
                                  writeCSS,
                                  writeHTMLstart)
-from .leafletLayerScripts import writeVectorLayer
-from .leafletScriptStrings import (jsonScript,
-                                   scaleDependentLabelScript,
-                                   mapScript,
-                                   featureGroupsScript,
-                                   extentScript,
-                                   rasterScript,
-                                   wmsScript,
-                                   basemapsScript,
-                                   scaleDependentLayerScript,
-                                   addressSearchScript,
-                                   endHTMLscript,
-                                   addLayersList,
-                                   highlightScript,
-                                   crsScript,
-                                   scaleBar,
-                                   scaleDependentScript,
-                                   titleSubScript,
-                                   getVTStyles,
-                                   getVTLabels)
-from .utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector, exportRaster,
-                    safeName)
-from .writer import (Writer,
-                     WriterResult,
-                     translator)
-from .feedbackDialog import Feedback
+from qgis2web.leafletLayerScripts import writeVectorLayer
+from qgis2web.leafletScriptStrings import (jsonScript,
+                                           scaleDependentLabelScript,
+                                           mapScript,
+                                           featureGroupsScript,
+                                           extentScript,
+                                           rasterScript,
+                                           wmsScript,
+                                           basemapsScript,
+                                           scaleDependentLayerScript,
+                                           addressSearchScript,
+                                           endHTMLscript,
+                                           addLayersList,
+                                           highlightScript,
+                                           crsScript,
+                                           scaleBar,
+                                           scaleDependentScript,
+                                           titleSubScript,
+                                           getVTStyles,
+                                           getVTLabels)
+from qgis2web.utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector,
+                            exportRaster, safeName)
+from qgis2web.writer import (Writer,
+                             WriterResult,
+                             translator)
+from qgis2web.feedbackDialog import Feedback
 
 
 class LeafletWriter(Writer):

@@ -60,16 +60,16 @@ import traceback
 import logging
 
 from . import utils
-from .configparams import (getParams,
-                           baselayers,
-                           specificParams,
-                           specificOptions)
-from .olwriter import OpenLayersWriter
-from .leafletWriter import LeafletWriter
-from .writerRegistry import (WRITER_REGISTRY)
-from .exporter import (EXPORTER_REGISTRY)
-from .feedbackDialog import FeedbackDialog
-from .ui_maindialog import Ui_MainDialog
+from qgis2web.configparams import (getParams,
+                                   baselayers,
+                                   specificParams,
+                                   specificOptions)
+from qgis2web.olwriter import OpenLayersWriter
+from qgis2web.leafletWriter import LeafletWriter
+from qgis2web.writerRegistry import (WRITER_REGISTRY)
+from qgis2web.exporter import (EXPORTER_REGISTRY)
+from qgis2web.feedbackDialog import FeedbackDialog
+from qgis2web.ui_maindialog import Ui_MainDialog
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 webkit_available = True

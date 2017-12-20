@@ -14,21 +14,22 @@ from qgis.core import (QgsVectorLayer,
                        QgsWkbTypes)
 from qgis.utils import Qgis
 import processing
-from .leafletStyleScripts import getLayerStyle
-from .leafletScriptStrings import (popupScript,
-                                   popFuncsScript,
-                                   pointToLayerFunction,
-                                   wfsScript,
-                                   clusterScript,
-                                   iconLegend)
+from qgis2web.leafletStyleScripts import getLayerStyle
+from qgis2web.leafletScriptStrings import (popupScript,
+                                           popFuncsScript,
+                                           pointToLayerFunction,
+                                           wfsScript,
+                                           clusterScript,
+                                           iconLegend)
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
     vt_enabled = True
 except:
     vt_enabled = False
-from .exp2js import compile_to_file
-from .utils import (writeTmpLayer, removeSpaces, exportImages, is25d, safeName,
-                    handleHiddenField, add25dAttributes, BLEND_MODES, TYPE_MAP)
+from qgis2web.exp2js import compile_to_file
+from qgis2web.utils import (writeTmpLayer, removeSpaces, exportImages, is25d,
+                            safeName, handleHiddenField, add25dAttributes,
+                            BLEND_MODES, TYPE_MAP)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,

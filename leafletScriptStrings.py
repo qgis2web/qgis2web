@@ -11,8 +11,8 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsSymbolLayerUtils,
                        QgsMessageLog,
                        Qgis)
-from .utils import scaleToZoom, safeName
-from .basemaps import basemapLeaflet, basemapAttributions
+from qgis2web.utils import scaleToZoom, safeName
+from qgis2web.basemaps import basemapLeaflet, basemapAttributions
 
 basemapAddresses = basemapLeaflet()
 

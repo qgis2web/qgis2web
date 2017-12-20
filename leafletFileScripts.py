@@ -4,7 +4,7 @@ import re
 import os
 import shutil
 import codecs
-from .utils import replaceInTemplate
+from qgis2web.utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,

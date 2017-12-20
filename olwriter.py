@@ -28,28 +28,28 @@ from qgis.utils import iface
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication
-from .olFileScripts import writeFiles, writeHTMLstart, writeScriptIncludes
-from .olLayerScripts import writeLayersAndGroups
-from .olScriptStrings import (measureScript,
-                              measuringScript,
-                              measureControlScript,
-                              measureUnitMetricScript,
-                              measureUnitFeetScript,
-                              measureStyleScript,
-                              geolocation,
-                              geolocateStyle,
-                              geolocationHead,
-                              geocodeLinks,
-                              geocodeJS,
-                              geocodeScript,
-                              getGrid,
-                              getM2px,
-                              getMapUnitLayers)
-from .olStyleScripts import exportStyles
-from .writer import (Writer,
+from qgis2web.olFileScripts import writeFiles, writeHTMLstart, writeScriptIncludes
+from qgis2web.olLayerScripts import writeLayersAndGroups
+from qgis2web.olScriptStrings import (measureScript,
+                                      measuringScript,
+                                      measureControlScript,
+                                      measureUnitMetricScript,
+                                      measureUnitFeetScript,
+                                      measureStyleScript,
+                                      geolocation,
+                                      geolocateStyle,
+                                      geolocationHead,
+                                      geocodeLinks,
+                                      geocodeJS,
+                                      geocodeScript,
+                                      getGrid,
+                                      getM2px,
+                                      getMapUnitLayers)
+from qgis2web.olStyleScripts import exportStyles
+from qgis2web.writer import (Writer,
                      WriterResult,
                      translator)
-from .feedbackDialog import Feedback
+from qgis2web.feedbackDialog import Feedback
 
 
 class OpenLayersWriter(Writer):

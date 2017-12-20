@@ -9,8 +9,8 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
                        QgsSvgMarkerSymbolLayer)
-from .exp2js import compile_to_file
-from .utils import getRGBAColor, handleHiddenField
+from qgis2web.exp2js import compile_to_file
+from qgis2web.utils import getRGBAColor, handleHiddenField
 
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):

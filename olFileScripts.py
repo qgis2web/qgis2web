@@ -3,7 +3,7 @@ import os
 import shutil
 from PyQt5.QtCore import QDir
 from qgis.core import QgsDataSourceUri
-from .utils import safeName
+from qgis2web.utils import safeName
 
 
 def writeFiles(folder, restrictToExtent, feedback, debugLibs):

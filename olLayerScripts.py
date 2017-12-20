@@ -11,8 +11,8 @@ from qgis.core import (QgsRenderContext,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform)
-from .utils import safeName, is25d, BLEND_MODES
-from .basemaps import basemapOL
+from qgis2web.utils import safeName, is25d, BLEND_MODES
+from qgis2web.basemaps import basemapOL
 qms = False
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
@@ -372,7 +372,7 @@ var jsonSource_%(n)s = new ol.source.Vector({
 function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {"name": layer.name().replace("'", "\\'"), "n": layerName,
+}''' % {"name": layer.name(), "n": layerName,
         "min": minResolution, "max": maxResolution}
     return layerCode
 
@@ -410,8 +410,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     if isinstance(renderer, QgsSingleSymbolRenderer):
         layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
-            });''' % {"icon": layerName,
-                      "name": layer.name().replace("'", "\\'")}
+            });''' % {"icon": layerName, "name": layer.name()}
     elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         layerCode += getLegend(renderer.categories(), layer, layerName)
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
@@ -419,7 +418,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     else:
         layerCode += '''
                 title: '%(name)s'
-            });''' % {"name": layer.name().replace("'", "\\'")}
+            });''' % {"name": layer.name()}
     return layerCode
 
 
@@ -432,7 +431,7 @@ def getLegend(subitems, layer, layerName):
                   {"icon": layerName, "count": count, "text": text})
     legend = '''
     title: '%(name)s<br />%(icons)s'
-        });''' % {"icons": icons, "name": layer.name().replace("'", "\\'")}
+        });''' % {"icons": icons, "name": layer.name()}
     return legend
 
 
@@ -573,8 +572,7 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
                             %(maxRes)s
                           });''' % {"layerId": layerId, "url": url,
                                     "layerAttr": layerAttr, "format": format,
-                                    "n": layerName,
-                                    "name": layer.name().replace("'", "\\'"),
+                                    "n": layerName, "name": layer.name(),
                                     "opacity": opacity, "style": style,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
@@ -609,9 +607,8 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                           });
               wms_layers.push([lyr_%(n)s, %(info)d]);''' % {
         "layers": layers, "url": url, "layerAttr": layerAttr, "n": layerName,
-        "name": layer.name().replace("'", "\\'"), "version": version,
-        "opacity": opacity, "minRes": minResolution, "maxRes": maxResolution,
-        "info": info}
+        "name": layer.name(), "version": version, "opacity": opacity,
+        "minRes": minResolution, "maxRes": maxResolution, "info": info}
 
 
 def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
@@ -645,7 +642,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
                             })
                         });''' % {"n": layerName,
                                   "extent": sExtent,
-                                  "name": layer.name().replace("'", "\\'"),
+                                  "name": layer.name(),
                                   "minRes": minResolution,
                                   "maxRes": maxResolution,
                                   "mapCRS": mapCRS,

@@ -19,8 +19,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsLinePatternFillSymbolLayer,
                        QgsSymbolLayerUtils,
                        QgsMessageLog)
-from .exp2js import compile_to_file
-from .utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
+from qgis2web.exp2js import compile_to_file
+from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
 
 
 def exportStyles(layers, folder, clustered):
