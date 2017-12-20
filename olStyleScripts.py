@@ -232,7 +232,7 @@ function categories_%s(feature, value, size, resolution, labelText,
     useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
         legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(cat.symbol(),
-                                                               QSize(16, 16))
+                                                             QSize(16, 16))
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + unicode(cnt) + ".png"))
         if (cat.value() is not None and cat.value() != ""):

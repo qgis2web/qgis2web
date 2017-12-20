@@ -63,9 +63,9 @@ import logging
 # from .ui_maindialog import Ui_MainDialog
 from . import utils
 from .configparams import (getParams,
-                          baselayers,
-                          specificParams,
-                          specificOptions)
+                           baselayers,
+                           specificParams,
+                           specificOptions)
 from .olwriter import OpenLayersWriter
 from .leafletWriter import LeafletWriter
 from .writerRegistry import (WRITER_REGISTRY)

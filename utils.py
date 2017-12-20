@@ -354,7 +354,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         try:
             processing.runalg("gdal:translate", {"INPUT": piped_3857,
                                                  "OUTSIZE": 100,
-                                                 "OUTSIZE_PERC": True, 
+                                                 "OUTSIZE_PERC": True,
                                                  "NO_DATA": "",
                                                  "EXPAND": 0,
                                                  "SRS": "",

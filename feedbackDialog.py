@@ -25,10 +25,10 @@ from qgis.core import (QgsProject)
 from PyQt5.QtCore import (QObject,
                           QCoreApplication)
 from PyQt5.QtWidgets import (QFileDialog,
-                         QInputDialog,
-                         QDialog,
-                         QLineEdit,
-                         QDialogButtonBox)
+                             QInputDialog,
+                             QDialog,
+                             QLineEdit,
+                             QDialogButtonBox)
 from .utils import (tempFolder)
 from .ui_feedback_dialog import Ui_Feedback
 

@@ -28,7 +28,7 @@ except:
     vt_enabled = False
 from .exp2js import compile_to_file
 from .utils import (writeTmpLayer, removeSpaces, exportImages, is25d, safeName,
-                   handleHiddenField, add25dAttributes, BLEND_MODES, TYPE_MAP)
+                    handleHiddenField, add25dAttributes, BLEND_MODES, TYPE_MAP)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
@@ -200,7 +200,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
                 styleStart += "font-weight: bold; "
             if fontItalic:
                 styleStart += "font-style: italic; "
-            styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % fontFamily
+            styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % (
+                fontFamily)
             styleEnd = " + '</div>'"
             if palyr.isExpression and palyr.enabled:
                 exprFilename = os.path.join(outputProjectFileName, "js",
@@ -213,9 +214,11 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
                 f = js
             else:
                 fn = palyr.fieldName
-                f = "layer.feature.properties['%s']" % handleHiddenField(layer, fn)
+                f = "layer.feature.properties['%s']" % handleHiddenField(layer,
+                                                                         fn)
             labeltext = ".bindTooltip((" + unicode(f)
-            labeltext += " !== null?String(%s%s)%s:'')" % (styleStart, unicode(f),
+            labeltext += " !== null?String(%s%s)%s:'')" % (styleStart,
+                                                           unicode(f),
                                                            styleEnd)
             labeltext += ", {permanent: true, offset: [-0, -16], "
             labeltext += "className: 'css_%s'}" % safeLayerName
@@ -244,7 +247,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
             if (vtLayer.name === '%s') {
                 var latlng = this.vtGeometryToLatLng(feature.geometry[0],
                                                      vtLayer, tileCoords)
-                marker = new L.CircleMarker(latlng, 
+                marker = new L.CircleMarker(latlng,
                                             {stroke: false, fill: false});
                 marker.bindTooltip(%s,
                                    {permanent: true,
@@ -327,7 +330,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
     if isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
         legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
-                                                               QSize(16, 16))
+                                                             QSize(16, 16))
         legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                      safeLayerName + ".png"))
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
