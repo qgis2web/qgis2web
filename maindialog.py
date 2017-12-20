@@ -55,12 +55,10 @@ from PyQt5.uic import loadUiType
 from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
 
 from qgis.PyQt.QtWebKit import QWebSettings
-webkit_available = True
 
 import traceback
 import logging
 
-# from .ui_maindialog import Ui_MainDialog
 from . import utils
 from .configparams import (getParams,
                            baselayers,
@@ -71,10 +69,10 @@ from .leafletWriter import LeafletWriter
 from .writerRegistry import (WRITER_REGISTRY)
 from .exporter import (EXPORTER_REGISTRY)
 from .feedbackDialog import FeedbackDialog
+from .ui_maindialog import Ui_MainDialog
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from .ui_maindialog import Ui_MainDialog
+webkit_available = True
 
 
 class MainDialog(QDialog, Ui_MainDialog):
