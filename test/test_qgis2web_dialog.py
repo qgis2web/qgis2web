@@ -31,12 +31,13 @@ from PyQt4.QtGui import QDialogButtonBox, QDialog
 
 from olwriter import OpenLayersWriter
 from leafletWriter import LeafletWriter
-from utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from configparams import (getDefaultParams)
-
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+from qgis.testing import unittest, start_app
 
 from maindialog import MainDialog
+
+start_app()
 
 
 class qgis2web_classDialogTest(unittest.TestCase):
