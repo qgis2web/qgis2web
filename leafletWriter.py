@@ -36,8 +36,8 @@ import os
 from datetime import datetime
 import re
 from qgis2web.leafletFileScripts import (writeFoldersAndFiles,
-                                 writeCSS,
-                                 writeHTMLstart)
+                                         writeCSS,
+                                         writeHTMLstart)
 from qgis2web.leafletLayerScripts import writeVectorLayer
 from qgis2web.leafletScriptStrings import (jsonScript,
                                            scaleDependentLabelScript,

@@ -28,7 +28,9 @@ from qgis.utils import iface
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication
-from qgis2web.olFileScripts import writeFiles, writeHTMLstart, writeScriptIncludes
+from qgis2web.olFileScripts import (writeFiles,
+                                    writeHTMLstart,
+                                    writeScriptIncludes)
 from qgis2web.olLayerScripts import writeLayersAndGroups
 from qgis2web.olScriptStrings import (measureScript,
                                       measuringScript,
@@ -47,8 +49,8 @@ from qgis2web.olScriptStrings import (measureScript,
                                       getMapUnitLayers)
 from qgis2web.olStyleScripts import exportStyles
 from qgis2web.writer import (Writer,
-                     WriterResult,
-                     translator)
+                             WriterResult,
+                             translator)
 from qgis2web.feedbackDialog import Feedback
 
 
