@@ -4,4 +4,4 @@ services:
     build: .
     tty: true
     volumes:
-      - ${TRAVIS_BUILD_DIR}:/usr/src
+      - ${TRAVIS_BUILD_DIR}:/usr/src/qgis2web
