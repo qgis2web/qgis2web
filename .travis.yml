@@ -9,14 +9,13 @@ before_install:
   - sudo apt-get -y install docker-ce
 
 install:
-  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  qgis2web/.docker
 
 jobs:
   include:
     - stage: test
       env:
         QGIS_TEST_VERSION="2.99-alpha"
-      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
 after_success:
   - coveralls
