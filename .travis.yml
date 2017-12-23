@@ -16,7 +16,7 @@ jobs:
     - stage: test
       env:
         QGIS_TEST_VERSION="2.99-alpha"
-      script: docker-compose -f qgis2web/.docker/docker-compose.travis.yml run qgis /usr/src/qgis2web/.docker/run-docker-tests.sh
+      script: docker-compose -f qgis2web/.docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
 after_success:
   - coveralls
