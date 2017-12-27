@@ -218,7 +218,8 @@ class LeafletWriter(Writer):
         if extent == "Canvas extent":
             pt0 = canvas.extent()
             crsDest = QgsCoordinateReferenceSystem(4326)
-            xform = QgsCoordinateTransform(crsSrc, crsDest)
+            xform = QgsCoordinateTransform(crsSrc, crsDest,
+                                           QgsProject.instance())
             pt1 = xform.transformBoundingBox(pt0)
             bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
                            pt1.xMinimum(), pt1.xMaximum()]
