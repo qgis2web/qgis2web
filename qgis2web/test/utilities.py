@@ -4,7 +4,6 @@
 import os
 import sys
 import logging
-import urlparse
 
 from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsProject
 
