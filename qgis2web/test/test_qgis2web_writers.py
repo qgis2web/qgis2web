@@ -128,39 +128,58 @@ class qgis2web_WriterTest(unittest.TestCase):
 
     def test09_Leaflet_json_pnt_single(self):
         """Leaflet JSON point single"""
+        print(1)
         layer_path = get_test_data_path('layer', 'airports.shp')
+        print(2)
         style_path = get_test_data_path('style', 'airports_single.qml')
 
+        print(3)
         layer = load_layer(layer_path)
 
+        print(4)
         layer.loadNamedStyle(style_path)
 
+        print(5)
         QgsProject.instance().addMapLayer(layer)
 
+        print(6)
         control_file = open(
             get_test_data_path(
                 'control', 'leaflet_json_point_single.html'), 'r')
+        print(7)
         control_output = control_file.read()
 
         # Export to web map
+        print(8)
         writer = LeafletWriter()
+        print(9)
         writer.params = self.defaultParams()
+        print(10)
         writer.groups = {}
+        print(11)
         writer.layers = [layer]
+        print(12)
         writer.visible = [True]
+        print(13)
         writer.cluster = [False]
+        print(14)
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
              ('USE', 'no label')])]
+        print(15)
         writer.json = [False]
 
+        print(16)
         result = writer.write(IFACE, tempFolder()).index_file
 
         # Open the test file
+        print(17)
         test_file = open(result)
+        print(18)
         test_output = test_file.read()
 
         # Compare with control file
+        print(19)
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
