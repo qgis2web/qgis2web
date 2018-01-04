@@ -1841,7 +1841,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
-    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test62_leaflet_precision(self):
         """Leaflet precision"""
         layer_path = get_test_data_path('layer', 'airports.shp')
@@ -1880,7 +1880,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
-    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test63_ol3_precision(self):
         """OL3 precision"""
         layer_path = get_test_data_path('layer', 'airports.shp')
@@ -1997,7 +1997,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
-    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test67_leaflet_minify(self):
         """Leaflet minify"""
         layer_path = get_test_data_path('layer', 'airports.shp')
@@ -2036,7 +2036,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Compare with control file
         self.assertEqual(test_output, control_output)
 
-    @unittest.skipIf(gdal.VersionInfo('VERSION_NUM') >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(2, 0, 0), 'Test requires updating for GDAL 2.0')
     def test68_ol3_minify(self):
         """OL3 minify"""
         layer_path = get_test_data_path('layer', 'airports.shp')
