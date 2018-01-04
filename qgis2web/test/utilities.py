@@ -109,7 +109,7 @@ def load_layer(layer_path):
     message = 'Layer "%s" is not valid' % layer.source()
     # noinspection PyUnresolvedReferences
     if not layer.isValid():
-        print message
+        print(message)
     # noinspection PyUnresolvedReferences
     if not layer.isValid():
         raise Exception(message)
@@ -135,7 +135,7 @@ def load_wfs_layer(url, name):
     message = 'Layer "%s" is not valid' % layer.source()
     # noinspection PyUnresolvedReferences
     if not layer.isValid():
-        print message
+        print(message)
     # noinspection PyUnresolvedReferences
     if not layer.isValid():
         raise Exception(message)
@@ -161,7 +161,7 @@ def load_wms_layer(url, name):
     message = 'Layer "%s" is not valid' % layer.source()
     # noinspection PyUnresolvedReferences
     if not layer.isValid():
-        print message
+        print(message)
     # noinspection PyUnresolvedReferences
     if not layer.isValid():
         raise Exception(message)
