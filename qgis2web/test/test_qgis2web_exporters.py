@@ -39,13 +39,13 @@ from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 
-from utils import tempFolder
-from utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer
-from exporter import (FolderExporter,
-                      FtpExporter,
-                      FtpConfigurationDialog,
-                      EXPORTER_REGISTRY)
-from writer import (WriterResult)
+from qgis2web.utils import tempFolder
+from qgis2web.test.utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer
+from qgis2web.exporter import (FolderExporter,
+                               FtpExporter,
+                               FtpConfigurationDialog,
+                               EXPORTER_REGISTRY)
+from qgis2web.writer import (WriterResult)
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 

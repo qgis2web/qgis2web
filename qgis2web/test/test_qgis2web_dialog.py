@@ -34,7 +34,7 @@ from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_lay
 from qgis2web.configparams import (getDefaultParams)
 from qgis.testing import unittest, start_app
 
-from maindialog import MainDialog
+from qgis2web.maindialog import MainDialog
 
 start_app()
 
