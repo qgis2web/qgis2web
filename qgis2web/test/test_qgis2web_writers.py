@@ -26,7 +26,7 @@ from qgis2web.leafletWriter import LeafletWriter
 from qgis2web.utils import tempFolder
 
 from osgeo import gdal
-from utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from qgis.testing import unittest, start_app
 
 start_app()

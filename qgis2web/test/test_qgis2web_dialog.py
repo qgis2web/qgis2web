@@ -30,7 +30,7 @@ from PyQt5.QtWidgets import QDialogButtonBox, QDialog
 
 from qgis2web.olwriter import OpenLayersWriter
 from qgis2web.leafletWriter import LeafletWriter
-from qgis2web.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from qgis2web.configparams import (getDefaultParams)
 from qgis.testing import unittest, start_app
 
