@@ -4,7 +4,8 @@ import codecs
 from urllib.parse import parse_qs
 
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsRenderContext,
+from qgis.core import (QgsProject,
+                       QgsRenderContext,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
@@ -619,7 +620,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
         mapCRS = "EPSG:3857"
         crsDest = QgsCoordinateReferenceSystem(3857)
 
-        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
         extentRep = xform.transformBoundingBox(layer.extent())
     else:
         mapCRS = projectCRS.authid()
