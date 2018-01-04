@@ -28,6 +28,7 @@ python3 -m pip install --upgrade pycodestyle
 apt remove pylint
 python3 -m pip install pylint
 python3 -m pip install python-coveralls
+python3 -m pip install Twisted
 
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
 
