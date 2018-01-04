@@ -3,7 +3,8 @@ import os
 import traceback
 from urllib.parse import parse_qs
 from PyQt5.QtCore import QSize
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsProject,
+                       QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
                        QgsPalLayerSettings,
@@ -353,7 +354,7 @@ def rasterScript(layer, safeLayerName):
     pt2 = layer.extent()
     crsSrc = layer.crs()
     crsDest = QgsCoordinateReferenceSystem(4326)
-    xform = QgsCoordinateTransform(crsSrc, crsDest)
+    xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
     pt3 = xform.transformBoundingBox(pt2)
     bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
                     pt3.xMinimum(), pt3.xMaximum()]

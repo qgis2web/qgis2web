@@ -293,7 +293,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         # Extent of the layer in EPSG:3857
         crsSrc = layer.crs()
         crsDest = QgsCoordinateReferenceSystem(3857)
-        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
         extentRep = xform.transformBoundingBox(layer.extent())
 
         extentRepNew = ','.join([unicode(extentRep.xMinimum()),
