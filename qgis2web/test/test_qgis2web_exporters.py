@@ -37,7 +37,7 @@ from twisted.protocols import ftp
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsCoordinateReferenceSystem
-from PyQt4 import QtCore, QtTest
+from PyQt5 import QtCore, QtTest
 
 from qgis2web.utils import tempFolder
 from qgis2web.test.utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer
