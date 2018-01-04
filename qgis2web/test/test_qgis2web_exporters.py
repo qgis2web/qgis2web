@@ -36,7 +36,7 @@ from twisted.protocols import ftp
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
+from qgis.core import QgsVectorLayer, QgsCoordinateReferenceSystem
 from PyQt4 import QtCore, QtTest
 
 from qgis2web.utils import tempFolder
