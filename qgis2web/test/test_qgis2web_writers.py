@@ -21,9 +21,9 @@ from collections import OrderedDict
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem
 from PyQt5.QtCore import *
-from olwriter import OpenLayersWriter
-from leafletWriter import LeafletWriter
-from utils import tempFolder
+from qgis2web.olwriter import OpenLayersWriter
+from qgis2web.leafletWriter import LeafletWriter
+from qgis2web.utils import tempFolder
 
 from osgeo import gdal
 from utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer

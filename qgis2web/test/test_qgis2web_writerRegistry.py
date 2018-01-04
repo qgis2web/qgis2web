@@ -25,10 +25,10 @@ __copyright__ = 'Copyright 2017, Nyall Dawson'
 import qgis  # pylint: disable=unused-import
 
 from qgis.core import (QgsProject)
-from writerRegistry import (WRITER_REGISTRY)
-from olwriter import (OpenLayersWriter)
-from leafletWriter import (LeafletWriter)
-from configparams import (getDefaultParams)
+from qgis2web.writerRegistry import (WRITER_REGISTRY)
+from qgis2web.olwriter import (OpenLayersWriter)
+from qgis2web.leafletWriter import (LeafletWriter)
+from qgis2web.configparams import (getDefaultParams)
 from qgis.testing import unittest, start_app
 
 start_app()
