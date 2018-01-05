@@ -243,7 +243,9 @@ class qgis2web_exporterTest(unittest.TestCase):
         expected_index_file = os.path.join(
             FTP_USER_FOLDER, 'public_html', 'index.html')
         self.assertTrue(os.path.exists(expected_index_file))
-        content = open(expected_index_file, 'r').readlines()
+        f = open(expected_index_file, 'r')
+        content = f.readlines()
+        f.close()
         self.assertEqual(content, ['test'])
 
         # try overwriting existing file
