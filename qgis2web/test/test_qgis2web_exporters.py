@@ -256,7 +256,9 @@ class qgis2web_exporterTest(unittest.TestCase):
         result.folder = export_folder
         e.postProcess(result)
         self.assertTrue(expected_index_file)
-        content = open(expected_index_file, 'r').readlines()
+        f = open(expected_index_file, 'r')
+        content = f.readlines()
+        f.close()
         self.assertEqual(content, ['test2'])
 
     def test10_FtpUploadSubfolder(self):
@@ -292,12 +294,16 @@ class qgis2web_exporterTest(unittest.TestCase):
         expected_index_file = os.path.join(
             FTP_USER_FOLDER, 'public_html', 'index.html')
         self.assertTrue(os.path.exists(expected_index_file))
-        content = open(expected_index_file, 'r').readlines()
+        f = open(expected_index_file, 'r')
+        content = f.readlines()
+        f.close()
         self.assertEqual(content, ['test'])
         expected_sub_folder_index_file = os.path.join(
             FTP_USER_FOLDER, 'public_html', 'sub', 'index.html')
         self.assertTrue(os.path.exists(expected_sub_folder_index_file))
-        content = open(expected_sub_folder_index_file, 'r').readlines()
+        f = open(expected_sub_folder_index_file, 'r')
+        content = f.readlines()
+        f.close()
         self.assertEqual(content, ['test2'])
 
 
