@@ -137,7 +137,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         layer = load_layer(layer_path)
 
         print(4)
-        layer.loadNamedStyle(style_path)
+        _, _ = layer.loadNamedStyle(style_path)
 
         print(5)
         QgsProject.instance().addMapLayer(layer)
