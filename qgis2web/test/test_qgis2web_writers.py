@@ -150,6 +150,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                 'control', 'leaflet_json_point_single.html'), 'r')
         print(7)
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         print(8)
@@ -198,6 +199,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -231,6 +233,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'leaflet_json_line_single.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -264,6 +267,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -296,6 +300,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_json_polygon_single.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
         # Export to web map
         writer = LeafletWriter()
         writer.params = self.defaultParams()
@@ -329,6 +334,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -362,6 +368,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -395,6 +402,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
         # Export to web map
         writer = LeafletWriter()
         writer.params = self.defaultParams()
@@ -426,6 +434,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -459,6 +468,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -494,6 +504,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -526,6 +537,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -559,6 +571,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -591,6 +604,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -625,6 +639,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -657,6 +672,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -693,6 +709,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -726,6 +743,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -766,6 +784,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -807,6 +826,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -849,6 +869,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -891,6 +912,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -932,6 +954,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -972,6 +995,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1012,6 +1036,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1052,6 +1077,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -1184,6 +1210,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_scalebar.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Check the 'Add scale bar' checkbox
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
@@ -1225,6 +1252,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_scalebar.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Check the 'Add scale bar' checkbox
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", True)
@@ -1269,6 +1297,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_measure.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
         # Export to web map
         writer = LeafletWriter()
         writer.params = self.defaultParams()
@@ -1323,6 +1352,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_measure.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'index.html')
@@ -1335,6 +1365,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_measure.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -1356,6 +1387,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_address.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1411,6 +1443,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_address.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'index.html')
@@ -1422,6 +1455,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_address.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -1443,6 +1477,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_geolocate.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1498,6 +1533,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_geolocate.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -1519,6 +1555,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_highlight.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
         # Export to web map
         writer = LeafletWriter()
         writer.params = self.defaultParams()
@@ -1574,6 +1611,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_highlight.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -1597,6 +1635,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_crs.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1654,6 +1693,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_crs.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -1667,6 +1707,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_crs.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'layers/layers.js')
@@ -1688,6 +1729,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_layerslist.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1726,6 +1768,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_visible.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1780,6 +1823,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_visible.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'layers/layers.js')
@@ -1801,6 +1845,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_cluster.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1854,6 +1899,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_cluster.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'layers/layers.js')
@@ -1893,6 +1939,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_precision.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'data/airports_0.js')
@@ -1933,6 +1980,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_precision.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'layers/airports_0.js')
@@ -1954,6 +2002,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_cdn.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -1992,6 +2041,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_cdn.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2050,6 +2100,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_minify.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'data/airports_0.js')
@@ -2090,6 +2141,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_minify.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'layers/airports_0.js')
@@ -2158,6 +2210,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_maxzoom.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -2198,6 +2251,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_maxzoom.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -2235,6 +2289,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_minzoom.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -2275,6 +2330,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_minzoom.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'resources/qgis2web.js')
@@ -2312,6 +2368,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_restricttoextent.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -2380,6 +2437,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_25d.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -2418,6 +2476,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_25d.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -2452,6 +2511,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_raster.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
@@ -2490,6 +2550,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_raster.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_output = read_output(result, 'layers/layers.js')
@@ -2514,6 +2575,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2552,6 +2614,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2582,6 +2645,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'ol3_wms.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2619,6 +2683,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'leaflet_wms.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2658,6 +2723,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2691,6 +2757,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2729,6 +2796,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2762,6 +2830,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2797,6 +2866,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'ol3_wmts.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2834,6 +2904,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         control_file = open(
             get_test_data_path('control', 'leaflet_wmts.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2873,6 +2944,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2906,6 +2978,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2938,6 +3011,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -2970,6 +3044,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -3006,6 +3081,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -3047,6 +3123,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -3078,6 +3155,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         control_file = open(control_path, 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -3118,6 +3196,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_shapes.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -3156,6 +3235,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_shapes.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -3198,6 +3278,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_linepatternfill.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         writer = LeafletWriter()
@@ -3249,6 +3330,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'leaflet_raster_crs.html'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Open the test file
         test_file = open(result)
