@@ -172,7 +172,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.json = [False]
 
         print(16)
-        result = writer.write(iface, tempFolder()).index_file
+        result = writer.write(self.iface, tempFolder()).index_file
 
         # Open the test file
         print(17)
