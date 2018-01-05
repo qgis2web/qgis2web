@@ -28,6 +28,7 @@ from qgis2web.utils import tempFolder
 from osgeo import gdal
 from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from qgis.testing import unittest, start_app
+from qgis.testing.mocked import get_iface
 
 start_app()
 
@@ -50,6 +51,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     def setUp(self):
         """Runs before each test"""
         QgsProject.instance().writeEntryBool("ScaleBar", "/Enabled", False)
+        self.iface = get_iface()
 
     def tearDown(self):
         """Runs after each test"""
