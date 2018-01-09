@@ -180,6 +180,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_file = open(result)
         print(18)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         print(19)
@@ -217,6 +218,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -249,6 +251,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -283,6 +286,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -315,6 +319,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -350,6 +355,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -385,6 +391,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -417,6 +424,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -451,6 +459,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -485,6 +494,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -520,6 +530,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -554,6 +565,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -587,6 +599,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -620,6 +633,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -655,6 +669,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -690,6 +705,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -727,6 +743,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -760,6 +777,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(
             result.replace(
@@ -802,6 +820,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(
             result.replace(
@@ -845,6 +864,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(
             result.replace(
@@ -888,6 +908,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(
             result.replace(
@@ -931,6 +952,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(
             result.replace(
@@ -973,6 +995,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(result.replace(
             'index.html', 'styles/lakes_0_style.js'))
@@ -1014,6 +1037,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(result.replace(
             'index.html', 'styles/airports_0_style.js'))
@@ -1055,6 +1079,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(result.replace(
             'index.html', 'styles/pipelines_0_style.js'))
@@ -1096,6 +1121,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         test_style_file = open(result.replace(
             'index.html', 'styles/lakes_0_style.js'))
@@ -1233,6 +1259,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
 
@@ -1317,6 +1344,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1408,6 +1436,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1498,6 +1527,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1575,6 +1605,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1656,6 +1687,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1698,6 +1730,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1750,6 +1783,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1788,6 +1822,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -1865,6 +1900,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -2023,6 +2059,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -2063,6 +2100,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -2177,6 +2215,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         assert "}).fitBounds([[" in test_output
@@ -2215,6 +2254,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
@@ -2294,6 +2334,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
@@ -2373,6 +2414,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
@@ -2442,6 +2484,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
@@ -2481,6 +2524,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
@@ -2516,6 +2560,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
@@ -2630,6 +2675,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
@@ -2740,6 +2786,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -2813,6 +2860,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -2961,6 +3009,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -2994,6 +3043,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -3027,6 +3077,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -3061,6 +3112,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -3138,6 +3190,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         result = writer.write(self.iface, tempFolder()).index_file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
         self.assertEqual(
             test_output, control_output, diff(control_output, test_output))
 
@@ -3215,6 +3268,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -3297,6 +3351,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -3335,6 +3390,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # Open the test file
         test_file = open(result)
         test_output = test_file.read()
+        test_file.close()
 
         # Test for expected output
         self.assertEqual(
