@@ -171,14 +171,13 @@ def getLabelFormat(layer):
         color = "rgba(0, 0, 0, 1)"
     else:
         color = "rgba(%s, %s, %s, 1)" % (r, g, b)
-    face = layer.customProperty("labeling/fontFamily")
-    if face is None:
-        face = ","
-    else:
-        face = " \\'%s\\'," % face
     labelling = layer.labeling()
+    face = ","
     if labelling is not None:
         palyr = labelling.settings()
+        face = palyr.format().font().family()
+        if face is not None:
+            face = " \\'%s\\'," % face
         sv = palyr.scaleVisibility
         if sv:
             min = float(palyr.scaleMin)
