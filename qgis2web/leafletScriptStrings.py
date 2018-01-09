@@ -25,8 +25,8 @@ def jsonScript(layer):
 
 
 def scaleDependentLayerScript(layer, layerName, cluster):
-    min = layer.minimumScale()
-    max = layer.maximumScale()
+    max = layer.minimumScale()
+    min = layer.maximumScale()
     if cluster:
         layerType = "cluster"
     else:
@@ -354,7 +354,10 @@ def rasterScript(layer, safeLayerName):
     pt2 = layer.extent()
     crsSrc = layer.crs()
     crsDest = QgsCoordinateReferenceSystem(4326)
-    xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
+    try:
+        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
+    except:
+        xform = QgsCoordinateTransform(crsSrc, crsDest)
     pt3 = xform.transformBoundingBox(pt2)
     bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
                     pt3.xMinimum(), pt3.xMaximum()]
