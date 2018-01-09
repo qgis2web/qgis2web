@@ -158,10 +158,7 @@ def getLabels(layer, folder, sln):
 
 
 def getLabelFormat(layer):
-    if layer.customProperty("labeling/fontSize"):
-        size = float(layer.customProperty("labeling/fontSize")) * 1.3
-    else:
-        size = 10
+    size = 10
     italic = layer.customProperty("labeling/fontItalic")
     bold = layer.customProperty("labeling/fontWeight")
     r = layer.customProperty("labeling/textColorR")
@@ -176,6 +173,7 @@ def getLabelFormat(layer):
     if labelling is not None:
         palyr = labelling.settings()
         face = palyr.format().font().family()
+        size = palyr.format().font().pointSize() * 1.3
         if face is not None:
             face = " \\'%s\\'," % face
         sv = palyr.scaleVisibility
