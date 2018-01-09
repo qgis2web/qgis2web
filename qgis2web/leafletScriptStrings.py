@@ -416,7 +416,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
             safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
             lyrCount -= 1
             if i.type() == QgsMapLayer.VectorLayer:
-                testDump = i.rendererV2().dump()
+                testDump = i.renderer().dump()
                 if (clustered and
                         i.geometryType() == QGis.Point):
                     new_layer = "'" + legends[safeLayerName].replace("'", "\'")
