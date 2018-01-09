@@ -252,10 +252,15 @@ def bounds(iface, useCanvas, layers, matchCRS):
         canvas = iface.mapCanvas()
         canvasCrs = canvas.mapSettings().destinationCrs()
         if not matchCRS:
-            transform = QgsCoordinateTransform(canvasCrs,
-                                               QgsCoordinateReferenceSystem(
-                                                   "EPSG:3857"),
-                                               QgsProject.instance())
+            try:
+                transform = QgsCoordinateTransform(canvasCrs,
+                    QgsCoordinateReferenceSystem(
+                        "EPSG:3857"),
+                    QgsProject.instance())
+            except:
+                transform = QgsCoordinateTransform(canvasCrs,
+                    QgsCoordinateReferenceSystem(
+                        "EPSG:3857"))
             try:
                 extent = transform.transformBoundingBox(canvas.extent())
             except QgsCsException:
@@ -268,8 +273,11 @@ def bounds(iface, useCanvas, layers, matchCRS):
         for layer in layers:
             if not matchCRS:
                 epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
-                transform = QgsCoordinateTransform(layer.crs(), epsg3857,
-                                                   QgsProject.instance())
+                try:
+                    transform = QgsCoordinateTransform(layer.crs(), epsg3857,
+                                                       QgsProject.instance())
+                except:
+                    transform = QgsCoordinateTransform(layer.crs(), epsg3857)
                 try:
                     layerExtent = transform.transformBoundingBox(
                         layer.extent())

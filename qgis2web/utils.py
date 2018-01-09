@@ -144,7 +144,11 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
         extent = canvas.extent()
         canvasCRS = canvas.mapSettings().destinationCrs()
         layerCRS = layer.crs()
-        transform = QgsCoordinateTransform(canvasCRS, layerCRS)
+        try:
+            transform = QgsCoordinateTransform(canvasCRS, layerCRS,
+                                               QgsProject.instance())
+        except:
+            transform = QgsCoordinateTransform(canvasCRS, layerCRS)
         projectedExtent = transform.transformBoundingBox(extent)
         request = QgsFeatureRequest(projectedExtent)
         request.setFlags(QgsFeatureRequest.ExactIntersect)
@@ -293,7 +297,11 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         # Extent of the layer in EPSG:3857
         crsSrc = layer.crs()
         crsDest = QgsCoordinateReferenceSystem(3857)
-        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
+        try:
+            xform = QgsCoordinateTransform(crsSrc, crsDest,
+                                           QgsProject.instance())
+        except:
+            xform = QgsCoordinateTransform(crsSrc, crsDest)
         extentRep = xform.transformBoundingBox(layer.extent())
 
         extentRepNew = ','.join([unicode(extentRep.xMinimum()),
