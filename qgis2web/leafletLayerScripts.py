@@ -341,7 +341,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
             classes = renderer.categories()
         elif isinstance(renderer, QgsGraduatedSymbolRenderer):
             classes = renderer.ranges()
-        elif isinstance(renderer, QgsRuleBasedRendererV2):
+        elif isinstance(renderer, QgsRuleBasedRenderer):
             classes = renderer.rootRule().children()
         legend = layer.name().replace("'", "\\'") + "<br />"
         legend += "<table>"

@@ -1660,7 +1660,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
-        iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         control_file = open(
             get_test_data_path(
@@ -1702,7 +1702,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
-        iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         # Export to web map
         writer = OpenLayersWriter()
@@ -2750,6 +2750,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             result.replace(
                 'file://', ''))
         test_style_output = test_style_file.read()
+        test_style_file.close()
         test_output = test_style_output
 
         self.assertEqual(
@@ -2973,6 +2974,7 @@ class qgis2web_WriterTest(unittest.TestCase):
             result.replace(
                 'file://', ''))
         test_style_output = test_style_file.read()
+        test_style_file.close()
         test_output = test_style_output
 
         self.assertEqual(
@@ -3366,7 +3368,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:27700")
-        iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         # Export to web map
         writer = LeafletWriter()
