@@ -12,9 +12,12 @@ import os
 import unittest
 import logging
 import configparser
+from qgis.testing import unittest, start_app
 
 LOGGER = logging.getLogger('QGIS')
 print("test_init")
+
+start_app()
 
 class TestInit(unittest.TestCase):
     """Test that the plugin init is usable for QGIS.
