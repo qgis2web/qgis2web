@@ -288,7 +288,7 @@ def bounds(iface, useCanvas, layers, matchCRS):
             else:
                 extent.combineExtentWith(layerExtent)
 
-    if extent == None:
+    if extent is None:
         extent = QgsRectangle(-20026376.39, -20048966.10,
                               20026376.39, 20048966.10)
 
