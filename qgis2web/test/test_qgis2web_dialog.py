@@ -33,6 +33,7 @@ from qgis2web.leafletWriter import LeafletWriter
 from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
 from qgis2web.configparams import (getDefaultParams)
 from qgis.testing import unittest, start_app
+from qgis.testing.mocked import get_iface
 
 from qgis2web.maindialog import MainDialog
 
@@ -47,12 +48,13 @@ class qgis2web_classDialogTest(unittest.TestCase):
     def setUp(self):
         """Runs before each test"""
         QgsProject.instance().clear()
-        self.dialog = MainDialog(IFACE)
+        self.iface = get_iface()
+        self.dialog = MainDialog(self.iface)
         self.setTemplate('canvas-size')
 
     def tearDown(self):
         """Runs after each test"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         # self.dialog.ol3.click()
         self.dialog = None
         QgsProject.instance().clear()
