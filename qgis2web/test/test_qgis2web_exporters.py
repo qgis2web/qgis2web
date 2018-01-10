@@ -47,7 +47,8 @@ from qgis2web.exporter import (FolderExporter,
                                EXPORTER_REGISTRY)
 from qgis2web.writer import (WriterResult)
 
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+from qgis.testing import unittest, start_app
+start_app()
 
 TEST_PORT = 3232
 FTP_FOLDER = ''
