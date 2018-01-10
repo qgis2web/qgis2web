@@ -104,17 +104,17 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.close()
 
     def test01_preview_default(self):
         """Preview default - no data (OL3)"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.buttonPreview.click()
 
     def test02_toggle_format(self):
         """ test fetching current writer type"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.leaflet.click()
         self.assertEqual(self.dialog.currentMapFormat(), LeafletWriter.type())
         self.dialog.ol3.click()
@@ -123,7 +123,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test03_toggle_format_factory(self):
         """ test fetching factory for current writer type"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.leaflet.click()
         self.assertEqual(self.dialog.getWriterFactory(), LeafletWriter)
         self.dialog.ol3.click()
@@ -131,29 +131,29 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
     def test04_toggle_Leaflet(self):
         """Toggle to Leaflet - no data"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.leaflet.click()
 
     def test05_preview_Leaflet(self):
         """Preview Leaflet - no data"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.leaflet.click()
         self.dialog.buttonPreview.click()
 
     def test06_toggle_OL3(self):
         """Toggle to OL3 - no data"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.ol3.click()
 
     def test07_preview_OL3(self):
         """Preview OL3 - no data"""
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.ol3.click()
         self.dialog.buttonPreview.click()
 
 #    def test08_export_OL3(self):
 #        """Export OL3 - no data"""
-#        self.dialog = MainDialog(IFACE)
+#        self.dialog = MainDialog(self.iface)
 #        self.dialog.ol3.click()
 #        self.dialog.buttonExport.click()
 
@@ -169,7 +169,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -201,7 +201,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -231,7 +231,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -262,7 +262,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -291,7 +291,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -324,7 +324,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -356,7 +356,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -389,7 +389,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -420,7 +420,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -453,7 +453,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -486,7 +486,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -515,7 +515,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -548,7 +548,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -578,7 +578,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -612,7 +612,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -643,7 +643,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -677,7 +677,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -709,7 +709,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -740,7 +740,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -772,7 +772,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems("Extent",
                                                (Qt.MatchExactly |
@@ -803,7 +803,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 "Extent", (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -835,7 +835,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems("Extent",
                                                (Qt.MatchExactly |
@@ -866,7 +866,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems("Extent",
                                                (Qt.MatchExactly |
@@ -898,7 +898,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems("Extent",
                                                (Qt.MatchExactly |
@@ -930,7 +930,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems("Extent",
                                                (Qt.MatchExactly |
@@ -962,7 +962,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems("Extent",
                                                (Qt.MatchExactly |
@@ -993,7 +993,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
 
         # Ensure the OpenLayers 3 option is selected
         self.dialog.ol3.click()
@@ -1029,7 +1029,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        dialog = MainDialog(IFACE)
+        dialog = MainDialog(self.iface)
 
         # Ensure the OpenLayers 3 option is selected
         dialog.ol3.click()
@@ -1049,7 +1049,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        dialog = MainDialog(IFACE)
+        dialog = MainDialog(self.iface)
 
         # Ensure the OpenLayers 3 option is selected
         dialog.ol3.click()
@@ -1079,7 +1079,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1122,7 +1122,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         control_output = control_file.read()
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1160,7 +1160,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1202,7 +1202,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1244,7 +1244,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1283,7 +1283,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1322,7 +1322,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1361,7 +1361,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1401,7 +1401,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1440,7 +1440,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1479,10 +1479,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
-        IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1520,10 +1520,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
-        IFACE.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1561,7 +1561,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1603,7 +1603,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1640,7 +1640,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1678,7 +1678,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1715,7 +1715,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1753,7 +1753,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1793,7 +1793,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1833,7 +1833,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1872,7 +1872,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1911,7 +1911,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -1956,7 +1956,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2001,7 +2001,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2038,7 +2038,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2077,7 +2077,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2117,7 +2117,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2156,7 +2156,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2196,7 +2196,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2235,7 +2235,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2276,7 +2276,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2308,7 +2308,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Export to web map
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2340,7 +2340,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2372,7 +2372,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2403,7 +2403,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2432,7 +2432,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2465,7 +2465,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2498,7 +2498,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2531,7 +2531,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2564,7 +2564,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2593,7 +2593,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2622,7 +2622,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2653,7 +2653,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2687,7 +2687,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2720,7 +2720,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2753,7 +2753,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2786,7 +2786,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2819,7 +2819,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2853,7 +2853,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
@@ -2894,7 +2894,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         lyrGroup.addChildNode( cloned_layer)
         root.removeChildNode(root.children()[0])
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
@@ -2934,7 +2934,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         lyrGroup.addChildNode( cloned_layer)
         root.removeChildNode(root.children()[0])
 
-        self.dialog = MainDialog(IFACE)
+        self.dialog = MainDialog(self.iface)
         self.dialog.paramsTreeOL.itemWidget(
             self.dialog.paramsTreeOL.findItems(
                 'Extent',
