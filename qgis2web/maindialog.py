@@ -157,12 +157,17 @@ class MainDialog(QDialog, Ui_MainDialog):
                               "README.md")
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
-        lines = open(readme, 'r').readlines()
-        with open(helpText, 'w') as helpFile:
-            for ct, line in enumerate(lines):
-                if ct > 4:
-                    helpFile.write(line)
-            helpFile.close()
+        try:
+            lines = open(readme, 'r').readlines()
+            with open(helpText, 'w') as helpFile:
+                for ct, line in enumerate(lines):
+                    if ct > 4:
+                        helpFile.write(line)
+                helpFile.close()
+        except:
+            with open(helpText, 'w') as helpFile:
+                helpFile.write("")
+                helpFile.close()
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
         if webkit_available:
             self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
