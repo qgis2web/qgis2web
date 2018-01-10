@@ -21,6 +21,7 @@ from qgis.core import (
 
 from qgis.testing import unittest, start_app
 
+print("test_qgis_environment")
 start_app()
 
 

@@ -36,6 +36,7 @@ from qgis.testing import unittest, start_app
 
 from qgis2web.maindialog import MainDialog
 
+print("test_qgis2web_dialog")
 start_app()
 
 

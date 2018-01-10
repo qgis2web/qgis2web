@@ -30,6 +30,7 @@ from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_lay
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
 
+print("test_qgis2web_writers")
 start_app()
 
 

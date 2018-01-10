@@ -48,6 +48,7 @@ from qgis2web.exporter import (FolderExporter,
 from qgis2web.writer import (WriterResult)
 
 from qgis.testing import unittest, start_app
+print("test_qgis2web_exporters")
 start_app()
 
 TEST_PORT = 3232

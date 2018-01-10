@@ -31,6 +31,7 @@ from qgis2web.leafletWriter import (LeafletWriter)
 from qgis2web.configparams import (getDefaultParams)
 from qgis.testing import unittest, start_app
 
+print("test_qgis2web_writerRegistry")
 start_app()
 
 

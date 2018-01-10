@@ -14,7 +14,7 @@ import logging
 import configparser
 
 LOGGER = logging.getLogger('QGIS')
-
+print("test_init")
 
 class TestInit(unittest.TestCase):
     """Test that the plugin init is usable for QGIS.
