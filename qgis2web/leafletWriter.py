@@ -220,7 +220,7 @@ class LeafletWriter(Writer):
             crsDest = QgsCoordinateReferenceSystem(4326)
             try:
                 xform = QgsCoordinateTransform(crsSrc, crsDest,
-                                           QgsProject.instance())
+                                               QgsProject.instance())
             except:
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
             pt1 = xform.transformBoundingBox(pt0)
