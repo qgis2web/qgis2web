@@ -290,7 +290,7 @@ new ol.layer.Tile({{
 }})"""
     }
     basemaps = {k: v.format(**{'title': k, 'attr': basemapAttributions[k]})
-                for k, v in basemaps.iteritems()}
+                for k, v in basemaps.items()}
     return basemaps
 
 
