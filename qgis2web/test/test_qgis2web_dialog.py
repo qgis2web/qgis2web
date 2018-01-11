@@ -1120,6 +1120,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
             get_test_data_path(
                 'control', 'ol3_scalebar.js'), 'r')
         control_output = control_file.read()
+        control_file.close()
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
@@ -1479,7 +1480,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
-        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().setDestinationCrs(crs)
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
@@ -1520,7 +1521,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         QgsProject.instance().addMapLayer(layer)
         crs = QgsCoordinateReferenceSystem("EPSG:2964")
-        self.iface.mapCanvas().mapRenderer().setDestinationCrs(crs)
+        self.iface.mapCanvas().setDestinationCrs(crs)
 
         # Export to web map
         self.dialog = MainDialog(self.iface)

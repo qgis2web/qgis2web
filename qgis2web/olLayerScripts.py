@@ -583,7 +583,7 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
            maxResolution, info):
     layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
     url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
-    metadata = layer.metadata()
+    metadata = layer.htmlMetadata()
     needle = "<tr><td>%s</td><td>(.+?)</td>" % (
         QCoreApplication.translate("QgsWmsProvider",
                                    "WMS Version"))
