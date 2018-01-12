@@ -155,19 +155,18 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonExport.clicked.connect(self.saveMap)
         readme = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                               "README.md")
+        if readme == "/usr/src/qgis2web/README.md":
+            readme = "/usr/src/qgis2web/qgis2web/README.md"
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
-        try:
-            lines = open(readme, 'r').readlines()
-            with open(helpText, 'w') as helpFile:
-                for ct, line in enumerate(lines):
-                    if ct > 4:
-                        helpFile.write(line)
-                helpFile.close()
-        except:
-            with open(helpText, 'w') as helpFile:
-                helpFile.write("")
-                helpFile.close()
+        if helpText == "/usr/src/qgis2web/helpFile.md":
+            helpText = "/usr/src/qgis2web/qgis2web/helpFile.md"
+        lines = open(readme, 'r').readlines()
+        with open(helpText, 'w') as helpFile:
+            for ct, line in enumerate(lines):
+                if ct > 4:
+                    helpFile.write(line)
+            helpFile.close()
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
         if webkit_available:
             self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
