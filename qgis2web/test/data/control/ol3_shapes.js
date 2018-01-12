@@ -82,7 +82,7 @@ case 'BIG LAKE':
                     return [ new ol.style.Style({
         text: new ol.style.Text({
         rotation: 0 * Math.PI/180,
-        text: '|',  stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0})}),
+        text: '│',  stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill, placement)
     })];
