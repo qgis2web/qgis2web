@@ -154,15 +154,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
         print(os.path.dirname(os.path.realpath(__file__)))
-        readme = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                              "README.md")
-        if readme == "/usr/src/qgis2web/README.md":
-            readme = "./README.md"
-        helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                "helpFile.md")
-        if helpText == "/usr/src/qgis2web/helpFile.md":
-            helpText = "/usr/src/qgis2web/qgis2web/helpFile.md"
-        lines = open(readme, 'r').readlines()
+        readme = "./README.md"
+        helpText = "./helpFile.md"
+        with open(readme, "r") as readMeFile:
+            lines = readMeFile.readlines()
+            readMeFile.close()
         with open(helpText, 'w') as helpFile:
             for ct, line in enumerate(lines):
                 if ct > 4:
