@@ -153,17 +153,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
-        print(os.path.dirname(os.path.realpath(__file__)))
-        readme = "./README.md"
-        helpText = "./helpFile.md"
-        with open(readme, "r") as readMeFile:
-            lines = readMeFile.readlines()
-            readMeFile.close()
-        with open(helpText, 'w') as helpFile:
-            for ct, line in enumerate(lines):
-                if ct > 4:
-                    helpFile.write(line)
-            helpFile.close()
+        helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                "helpFile.md")
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
         if webkit_available:
             self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
