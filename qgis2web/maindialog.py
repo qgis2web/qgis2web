@@ -153,10 +153,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
+        print(os.path.dirname(os.path.realpath(__file__)))
         readme = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                               "README.md")
         if readme == "/usr/src/qgis2web/README.md":
-            readme = "/usr/src/qgis2web/qgis2web/README.md"
+            readme = "./README.md"
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
         if helpText == "/usr/src/qgis2web/helpFile.md":
