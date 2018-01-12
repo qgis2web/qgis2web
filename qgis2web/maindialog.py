@@ -155,6 +155,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonExport.clicked.connect(self.saveMap)
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
+        if helpText == "/usr/src/qgis2web/helpFile.md":
+            helpText = "/usr/src/qgis2web/qgis2web/helpFile.md"
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
         if webkit_available:
             self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
