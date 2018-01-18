@@ -57,7 +57,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         shadows = ""
         renderer = layer.renderer()
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
-        fields = layer.pendingFields()
+        fields = layer.fields()
         renderer.startRender(renderContext, fields)
         for feat in layer.getFeatures():
             if isinstance(renderer, QgsCategorizedSymbolRenderer):
@@ -270,7 +270,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
 def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
     if vts is not None:
         return "", ""
-    fields = layer.pendingFields()
+    fields = layer.fields()
     field_names = popup.keys()
     field_vals = popup.values()
     html_prov = False

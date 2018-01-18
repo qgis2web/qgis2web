@@ -104,7 +104,7 @@ def getUsedFields(layer):
 
 
 def writeTmpLayer(layer, restrictToExtent, iface, extent):
-    fields = layer.pendingFields()
+    fields = layer.fields()
     usedFields = []
     for count, field in enumerate(fields):
         fieldIndex = fields.indexFromName(unicode(field.name()))
@@ -126,11 +126,11 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
     if crs.isValid():
         uri += '?crs=' + crs.authid()
     for field in usedFields:
-        fieldIndex = layer.pendingFields().indexFromName(unicode(
-            layer.pendingFields().field(field).name()))
+        fieldIndex = layer.fields().indexFromName(unicode(
+            layer.fields().field(field).name()))
         editorWidget = layer.editorWidgetSetup(fieldIndex).type()
-        fieldType = layer.pendingFields().field(field).type()
-        fieldName = layer.pendingFields().field(field).name()
+        fieldType = layer.fields().field(field).type()
+        fieldName = layer.fields().field(field).name()
         if (editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
         fieldType = "double" if (fieldType == QVariant.Double or
@@ -212,7 +212,7 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
                     line = removeSpaces(line)
                 f.write(line)
     os.remove(tmpPath)
-    fields = layer.pendingFields()
+    fields = layer.fields()
     for field in fields:
         exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
 
@@ -223,7 +223,7 @@ def add25dAttributes(cleanLayer, layer, canvas):
                             QgsField("wallColor", QVariant.String),
                             QgsField("roofColor", QVariant.String)])
     cleanLayer.updateFields()
-    fields = cleanLayer.pendingFields()
+    fields = cleanLayer.fields()
     renderer = layer.renderer()
     renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
     feats = layer.getFeatures()
@@ -431,7 +431,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
             symbols.append(rule.symbol())
     else:
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
-        fields = layer.pendingFields()
+        fields = layer.fields()
         if restrictToExtent and extent == "Canvas extent":
             request = QgsFeatureRequest(iface.mapCanvas().extent())
             request.setFlags(QgsFeatureRequest.ExactIntersect)
@@ -521,7 +521,7 @@ def replaceInTemplate(template, values):
 
 
 def exportImages(layer, field, layerFileName):
-    field_index = layer.pendingFields().indexFromName(field)
+    field_index = layer.fields().indexFromName(field)
 
     widget = layer.editorWidgetSetup(field_index).type()
     if widget != 'Photo':
@@ -552,7 +552,7 @@ def exportImages(layer, field, layerFileName):
 
 
 def handleHiddenField(layer, field):
-    fieldIndex = layer.pendingFields().indexFromName(field)
+    fieldIndex = layer.fields().indexFromName(field)
     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
     if (editorWidget == 'Hidden'):
         fieldName = "q2wHide_" + field

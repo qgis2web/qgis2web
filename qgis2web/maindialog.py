@@ -377,7 +377,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 options = []
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for f in fields:
                     fieldIndex = fields.indexFromName(unicode(f.name()))
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
@@ -681,7 +681,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Popup fields")
             options = []
-            fields = self.layer.pendingFields()
+            fields = self.layer.fields()
             for f in fields:
                 fieldIndex = fields.indexFromName(unicode(f.name()))
                 editorWidget = layer.editorWidgetSetup(fieldIndex).type()

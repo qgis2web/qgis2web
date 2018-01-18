@@ -188,7 +188,7 @@ def build25d(canvas, layer, count):
     shadows = ""
     renderer = layer.renderer()
     renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
-    fields = layer.pendingFields()
+    fields = layer.fields()
     renderer.startRender(renderContext, fields)
     for feat in layer.getFeatures():
         if isinstance(renderer, QgsCategorizedSymbolRenderer):
@@ -310,7 +310,7 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
 
 
 def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
-    fieldList = layer.pendingFields()
+    fieldList = layer.fields()
     aliasFields = ""
     imageFields = ""
     labelFields = ""
@@ -479,7 +479,7 @@ def getHeatmap(layer, renderer):
         hmRamp += "'" + stop.color.name() + "', "
     hmRamp += "'" + hmEnd + "']"
     hmWeight = renderer.weightExpression()
-    fields = layer.pendingFields()
+    fields = layer.fields()
     hmWeightId = fields.indexFromName(hmWeight)
     hmWeightMax = layer.maximumValue(hmWeightId)
     return (pointLayerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
