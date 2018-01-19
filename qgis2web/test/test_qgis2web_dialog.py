@@ -181,8 +181,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         writer = self.dialog.createWriter()
         self.assertTrue(isinstance(writer, LeafletWriter))
         expected_params = self.defaultParams()
-        print(writer.params)
-        print(expected_params)
         self.assertEqual(writer.params, expected_params)
         self.assertEqual(writer.groups, {})
         self.assertEqual(writer.layers, [layer])
