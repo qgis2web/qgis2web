@@ -226,19 +226,19 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
             labeltext += ");"
             if vts is None:
                 labeltext = """
-            var i = 0;
-            layer_%s.eachLayer(function(layer) {
-                var context = {
-                    feature: layer.feature,
-                    variables: {}
-                };
-                layer%s
-                labels.push(layer);
-                totalMarkers += 1;
-                  layer.added = true;
-                  addLabel(layer, i);
-                  i++;
-            });""" % (safeLayerName, labeltext)
+        var i = 0;
+        layer_%s.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer%s
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });""" % (safeLayerName, labeltext)
             else:
                 if palyr.isExpression and palyr.enabled:
                     labelVal = f
