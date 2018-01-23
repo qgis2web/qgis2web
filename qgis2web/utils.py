@@ -433,7 +433,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
         renderContext = QgsRenderContext.fromMapSettings(canvas.mapSettings())
         fields = layer.fields()
         if restrictToExtent and extent == "Canvas extent":
-            request = QgsFeatureRequest(iface.mapCanvas().extent())
+            request = QgsFeatureRequest(canvas.extent())
             request.setFlags(QgsFeatureRequest.ExactIntersect)
             features = layer.getFeatures(request)
         else:

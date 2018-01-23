@@ -411,7 +411,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     if isinstance(renderer, QgsSingleSymbolRenderer):
         layerCode += '''
                 title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
-            });''' % {"icon": layerName, "name": layer.name()}
+            });''' % {"icon": layerName,
+                      "name": layer.name().replace("'", "\\'")}
     elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         layerCode += getLegend(renderer.categories(), layer, layerName)
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
