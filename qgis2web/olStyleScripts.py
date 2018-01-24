@@ -140,7 +140,7 @@ def getLabels(layer, folder, sln):
                     js = js.strip()
                     labelText = js
                 else:
-                    fieldIndex = layer.pendingFields().indexFromName(
+                    fieldIndex = layer.fields().indexFromName(
                         labelField)
                     editFormConfig = layer.editFormConfig()
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
