@@ -317,21 +317,22 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
         try:
-            processing.runalg("gdalogr:warpreproject")
+            processing.algorithmHelp("gdal:warpreproject")
         except:
             pass
         sys.stdout = old_stdout
 
         params = {
             "INPUT": piped_file,
-            "SOURCE_SRS": layer.crs().authid(),
-            "DEST_SRS": "EPSG:3857",
-            "NO_DATA": "",
-            "TR": 0,
-            "METHOD": 2,
-            "RAST_EXT": extentRepNew,
+            "SOURCE_CRS": layer.crs().authid(),
+            "TARGET_CRS": "EPSG:3857",
+            "NODATA": 0,
+            "TARGET_RESOLUTION": 0,
+            "RESAMPLING": 2,
+            "TARGET_EXTENT": extentRepNew,
             "EXT_CRS": "EPSG:3857",
-            "RTYPE": 0,
+            "TARGET_EXTENT_CRS": "EPSG:3857",
+            "DATA_TYPE": 0,
             "COMPRESS": 4,
             "JPEGCOMPRESSION": 75,
             "ZLEVEL": 6,
@@ -339,6 +340,8 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
             "TILED": False,
             "BIGTIFF": 0,
             "TFW": False,
+            "MULTITHREADING": False,
+            "COPY_SUBDATASETS": False,
             "EXTRA": "",
             "OUTPUT": piped_3857
         }
@@ -346,38 +349,39 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         warpArgs = {}
 
         lines = mystdout.getvalue()
-        for count, line in enumerate(lines.split("\n\t")):
-            if count != 0 and line != " ":
+        for count, line in enumerate(lines.split("\n")):
+            if count != 0 and ":" in line:
                 try:
-                    k = line.split(" ")[0]
+                    k = line.split(":")[0]
                     warpArgs[k] = params[k]
                 except:
                     pass
 
         try:
-            procRtn = processing.runalg("gdalogr:warpreproject", warpArgs)
+            processing.run("gdal:warpreproject", warpArgs)
         except:
             shutil.copyfile(piped_file, piped_3857)
 
         try:
-            processing.runalg("gdal:translate", {"INPUT": piped_3857,
-                                                 "OUTSIZE": 100,
-                                                 "OUTSIZE_PERC": True,
-                                                 "NO_DATA": "",
-                                                 "EXPAND": 0,
-                                                 "SRS": "",
-                                                 "PROJWIN": extentRepNew,
-                                                 "SDS": False,
-                                                 "RTYPE": 5,
-                                                 "COMPRESS": 4,
-                                                 "JPEGCOMPRESSION": 75,
-                                                 "ZLEVEL": 6,
-                                                 "PREDICTOR": 1,
-                                                 "TILED": False,
-                                                 "BIGTIFF": 0,
-                                                 "TFW": False,
-                                                 "EXTRA": "",
-                                                 "OUTPUT": out_raster})
+            processing.run("gdal:translate", {"INPUT": piped_3857,
+                                              "OUTSIZE": 100,
+                                              "OUTSIZE_PERC": True,
+                                              "NODATA": 0,
+                                              "EXPAND": 0,
+                                              "TARGET_CRS": "",
+                                              "PROJWIN": extentRepNew,
+                                              "SDS": False,
+                                              "DATA_TYPE": 5,
+                                              "COMPRESS": 4,
+                                              "JPEGCOMPRESSION": 75,
+                                              "ZLEVEL": 6,
+                                              "PREDICTOR": 1,
+                                              "TILED": False,
+                                              "BIGTIFF": 0,
+                                              "TFW": False,
+                                              "COPY_SUBDATASETS": False,
+                                              "OPTIONS": "",
+                                              "OUTPUT": out_raster})
         except:
             shutil.copyfile(piped_3857, out_raster)
     else:
@@ -388,12 +392,12 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         processing.run("gdal:translate", {"INPUT": piped_file,
                                           "OUTSIZE": 100,
                                           "OUTSIZE_PERC": True,
-                                          "NO_DATA": "",
+                                          "NODATA": 0,
                                           "EXPAND": 0,
-                                          "SRS": "",
+                                          "TARGET_CRS": "",
                                           "PROJWIN": srcExtent,
                                           "SDS": False,
-                                          "RTYPE": 5,
+                                          "DATA_TYPE": 5,
                                           "COMPRESS": 4,
                                           "JPEGCOMPRESSION": 75,
                                           "ZLEVEL": 6,
@@ -401,7 +405,8 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                                           "TILED": False,
                                           "BIGTIFF": 0,
                                           "TFW": False,
-                                          "EXTRA": "",
+                                          "COPY_SUBDATASETS": False,
+                                          "OPTIONS": "",
                                           "OUTPUT": out_raster})
 
 
