@@ -22,7 +22,7 @@ from qgis.core import Qgis
 from qgis.PyQt.QtCore import (Qt)
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsApplication, QgsProcessingRegistry
+from qgis.core import QgsApplication
 
 import sip
 import os

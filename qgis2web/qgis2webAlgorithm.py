@@ -24,9 +24,15 @@
 from numbers import Number
 from collections import OrderedDict
 import traceback
-from qgis.core import (QgsProject,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingProvider,
+                       QgsProject,
                        QgsMapLayer,
                        QgsVectorLayer,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
                        QgsMessageLog)
 from qgis.utils import iface
 
@@ -55,16 +61,34 @@ class exportProject(QgsProcessingAlgorithm):
     All Processing algorithms should extend the GeoAlgorithm class.
     """
 
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
+
+    def id(self):
+        """This is the name that will appear on the toolbox group.
+
+        It is also used to create the command line name of all the
+        algorithms from this provider.
+        """
+        return 'Export project'
+
+    def name(self):
+        """This is the provired full name.
+        """
+        return 'exportProject'
+
+    def displayName(self):
+        """This is the provired full name.
+        """
+        return 'Export project'
+
+    def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
 
-        # The name that the user will see in the toolbox
-        self.name = 'Export project'
-
         # The branch of the toolbox under which the algorithm will appear
-        self.group = 'Export to webmap'
+        # self.group = 'Export to webmap'
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
@@ -143,9 +167,15 @@ class exportLayer(QgsProcessingAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
 
+    def __init__(self):
+        super().__init__()
+
+    def name(self):
+        return "exportLayer"
+
     def addParams(self):
         # The branch of the toolbox under which the algorithm will appear
-        self.group = 'Export to webmap'
+        # self.group = 'Export to webmap'
 
         self.addParameter(ParameterString("MAP_FORMAT", "Map format",
                                           "OpenLayers"))
@@ -241,25 +271,46 @@ class exportVector(exportLayer):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
+
+    def id(self):
+        """This is the name that will appear on the toolbox group.
+
+        It is also used to create the command line name of all the
+        algorithms from this provider.
+        """
+        return 'Export vector layer'
+
+    def name(self):
+        """This is the provired full name.
+        """
+        return 'exportVectorLayer'
+
+    def displayName(self):
+        """This is the provired full name.
+        """
+        return 'Export vector layer'
+
+    def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
 
-        # The name that the user will see in the toolbox
-        self.name = 'Export vector layer'
-
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input vector layer'),
-                                          ParameterVector.VECTOR_TYPE_ANY,
-                                          False))
+        self.addParameter(QgsProcessingParameterVectorLayer(
+            self.INPUT_LAYER,
+            'Input vector layer',
+            [QgsProcessing.TypeVectorAnyGeometry],
+            False))
 
-        self.addParameter(ParameterBoolean("CLUSTER", "Cluster", False))
-        self.addParameter(ParameterString("POPUP", "Popup field headers", ""))
-
-        self.addParams()
+        self.addParameter(QgsProcessingParameterBoolean("CLUSTER",
+                                                        "Cluster",
+                                                        False))
+        self.addParameter(QgsProcessingParameterString("POPUP",
+                                                       "Popup field headers",
+                                                       ""))
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
@@ -357,21 +408,39 @@ class exportRaster(exportLayer):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
+
+    def id(self):
+        """This is the name that will appear on the toolbox group.
+
+        It is also used to create the command line name of all the
+        algorithms from this provider.
+        """
+        return 'Export raster layer'
+
+    def name(self):
+        """This is the provired full name.
+        """
+        return 'exportRasterLayer'
+
+    def displayName(self):
+        """This is the provired full name.
+        """
+        return 'Export raster layer'
+
+    def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
 
-        # The name that the user will see in the toolbox
-        self.name = 'Export raster layer'
-
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterRaster(self.INPUT_LAYER,
-                                          self.tr('Input raster layer'),
-                                          False))
+        self.addParameter(QgsProcessingParameterRasterLayer(
+            self.INPUT_LAYER,
+            'Input raster layer',
+            False))
 
-        self.addParams()
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""

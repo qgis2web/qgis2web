@@ -36,31 +36,11 @@ __revision__ = '$Format:%H$'
 
 class qgis2webProvider(QgsProcessingProvider):
 
-    MY_DUMMY_SETTING = 'MY_DUMMY_SETTING'
-
     def __init__(self):
         QgsProcessingProvider.__init__(self)
 
         # Deactivate provider by default
         self.activate = False
-
-        # Load algorithms
-        self.alglist = [exportProject(), exportVector(), exportRaster()]
-        for alg in self.alglist:
-            alg.provider = self
-
-    def initializeSettings(self):
-        """In this method we add settings needed to configure our
-        provider.
-
-        Do not forget to call the parent method, since it takes care
-        or automatically adding a setting for activating or
-        deactivating the algorithms in the provider.
-        """
-        QgsProcessingProvider.initializeSettings(self)
-        # ProcessingConfig.addSetting(Setting('Example algorithms',
-        #     qgis2webProvider.MY_DUMMY_SETTING,
-        #     'Example setting', 'Default value'))
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore
@@ -88,6 +68,11 @@ class qgis2webProvider(QgsProcessingProvider):
         """
         return QgsProcessingProvider.icon(self)
 
+    def load(self):
+        self.refreshAlgorithms()
+        return True
+
+
     def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.
 
@@ -102,4 +87,7 @@ class qgis2webProvider(QgsProcessingProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        self.algs = self.alglist
+
+        self.alglist = [exportProject(), exportVector(), exportRaster()]
+        for alg in self.alglist:
+            self.addAlgorithm(alg)
