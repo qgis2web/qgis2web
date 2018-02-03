@@ -82,6 +82,12 @@ class exportProject(QgsProcessingAlgorithm):
         """
         return 'Export project'
 
+    def group(self):
+        return "qgis2web"
+
+    def groupId(self):
+        return "qgis2web"
+
     def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
@@ -90,7 +96,7 @@ class exportProject(QgsProcessingAlgorithm):
         # The branch of the toolbox under which the algorithm will appear
         # self.group = 'Export to webmap'
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, parameters, context, progress):
         """Here is where the processing itself takes place."""
 
         writer = WRITER_REGISTRY.createWriterFromProject()
@@ -292,6 +298,12 @@ class exportVector(exportLayer):
         """
         return 'Export vector layer'
 
+    def group(self):
+        return "qgis2web"
+
+    def groupId(self):
+        return "qgis2web"
+
     def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
@@ -428,6 +440,12 @@ class exportRaster(exportLayer):
         """This is the provired full name.
         """
         return 'Export raster layer'
+
+    def group(self):
+        return "qgis2web"
+
+    def groupId(self):
+        return "qgis2web"
 
     def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
