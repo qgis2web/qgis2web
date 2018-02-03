@@ -72,7 +72,6 @@ class qgis2webProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
         return True
 
-
     def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.
 

@@ -459,7 +459,6 @@ class exportRaster(exportLayer):
             'Input raster layer',
             False))
 
-
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
 
