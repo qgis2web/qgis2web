@@ -163,6 +163,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.devConsole.setFixedHeight(0)
             self.devConsole.setObjectName("devConsole")
             self.devConsole.setPage(self.preview.page())
+            self.devConsole.hide()
             self.right_layout.insertWidget(1, self.devConsole)
         self.filter = devToggleFilter()
         self.installEventFilter(self.filter)
@@ -570,7 +571,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 cluster[::-1],
                 getFeatureInfo[::-1])
 
-    def closeEvent(self, event):
+    def reject(self):
         self.saveParameters()
         (layers, groups, popup, visible,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
@@ -590,6 +591,15 @@ class MainDialog(QDialog, Ui_MainDialog):
                              self.closeFeedbackOnSuccess.checkState())
         QSettings().setValue("qgis2web/previewFeatureLimit",
                              self.previewFeatureLimit.text())
+
+        QDialog.close(self)
+
+    def closeEvent(self, event):
+        if self.devConsole or self.devConsole.isVisible() and self.preview:
+            del self.devConsole
+            del self.preview
+
+        self.reject()
         event.accept()
 
 
