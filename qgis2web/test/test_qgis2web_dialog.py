@@ -37,7 +37,6 @@ from qgis.testing.mocked import get_iface
 
 from qgis2web.maindialog import MainDialog
 
-print("test_qgis2web_dialog")
 start_app()
 
 
