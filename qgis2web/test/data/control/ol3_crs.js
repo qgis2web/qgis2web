@@ -12,8 +12,8 @@ jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new 
                 style: style_airports_0,
                 title: '<img src="styles/legend/airports_0.png" /> airports'
             });
-
 lyr_airports_0.setVisible(true);
+
 var layersList = [lyr_airports_0];
 lyr_airports_0.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
 lyr_airports_0.set('fieldImages', {'ID': '', 'fk_region': '', 'ELEV': '', 'NAME': '', 'USE': '', });

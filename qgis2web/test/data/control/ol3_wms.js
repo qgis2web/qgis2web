@@ -14,6 +14,6 @@ var lyr_wms_0 = new ol.layer.Tile({
                             
                           });
               wms_layers.push([lyr_wms_0, 0]);
-
 lyr_wms_0.setVisible(true);
+
 var layersList = [lyr_wms_0];
