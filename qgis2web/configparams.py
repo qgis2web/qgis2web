@@ -94,35 +94,8 @@ def getDefaultParams():
                     settings[param] = value[-1]
                 else:
                     settings[param] = value[0]
-    params['Appearance']['Base layer'] = []
     params['Appearance']['Search layer'] = None
     return params
-
-
-baselayers = (
-    "OSM",
-    "OSM B&W",
-    "Stamen Toner",
-    "OSM DE",
-    "OSM HOT",
-    "Thunderforest Cycle",
-    "Thunderforest Transport",
-    "Thunderforest Landscape",
-    "Thunderforest Outdoors",
-    "OpenMapSurfer Roads",
-    "OpenMapSurfer adminb",
-    "OpenMapSurfer roadsg",
-    "Stamen Terrain",
-    "Stamen Terrain background",
-    "Stamen Watercolor",
-    "OpenWeatherMap Clouds",
-    "OpenWeatherMap Precipitation",
-    "OpenWeatherMap Rain",
-    "OpenWeatherMap Pressure",
-    "OpenWeatherMap Wind",
-    "OpenWeatherMap Temp",
-    "OpenWeatherMap Snow"
-),
 
 specificParams = {
 }

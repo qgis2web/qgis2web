@@ -13,7 +13,6 @@ from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform)
 from qgis2web.utils import safeName, is25d, BLEND_MODES
-from qgis2web.basemaps import basemapOL
 qms = False
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
@@ -32,8 +31,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                          iface, restrictToExtent, extent, bounds, authid):
 
     canvas = iface.mapCanvas()
-    basemapList = settings["Appearance"]["Base layer"]
-    baseLayer = getBasemaps(basemapList)
     layerVars = ""
     layer_names_id = {}
     vtLayers = []
@@ -56,7 +53,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
     usedGroups = []
     (group_list, no_group_list,
-     usedGroups) = getGroups(canvas, layers, basemapList, restrictToExtent,
+     usedGroups) = getGroups(canvas, layers, [], restrictToExtent,
                              extent, groupedLayers)
     layersList = []
     currentVT = ""
@@ -83,8 +80,6 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
             f.write("""ol.proj.get("%s").setExtent(%s);
 """ % (authid, bounds))
         f.write("""var wms_layers = [];\n""")
-        if basemapList:
-            f.write(baseLayer + "\n")
         f.write(layerVars + "\n")
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
@@ -171,19 +166,6 @@ def getAttribution(layer):
     return layerAttr
 
 
-def getBasemaps(basemapList):
-    basemaps = [basemapOL()[item] for _, item in enumerate(basemapList)]
-    if len(basemapList) > 1:
-        baseGroup = "Base maps"
-    else:
-        baseGroup = ""
-    baseLayer = """var baseLayer = new ol.layer.Group({
-    'title': '%s',
-    layers: [%s\n]
-});""" % (baseGroup, ','.join(basemaps))
-    return baseLayer
-
-
 def build25d(canvas, layer, count):
     shadows = ""
     renderer = layer.renderer()
@@ -260,7 +242,7 @@ def buildGroups(groups, qms, layer_names_id):
 
 
 def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
-    mapLayers = ["baseLayer"]
+    mapLayers = []
     layerObjs = []
     osmb = ""
     for count, layer in enumerate(layers):

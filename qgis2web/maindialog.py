@@ -61,7 +61,6 @@ import logging
 
 from . import utils
 from qgis2web.configparams import (getParams,
-                                   baselayers,
                                    specificParams,
                                    specificOptions)
 from qgis2web.olwriter import OpenLayersWriter
@@ -131,7 +130,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateConfigParams(self)
         self.populate_layers_and_groups(self)
         self.populateLayerSearch()
-        self.populateBasemaps()
 
         writer = WRITER_REGISTRY.createWriterFromProject()
         self.setStateToWriter(writer)
@@ -445,7 +443,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         """
         self.selectMapFormat(writer)
         self.setStateToParams(writer.params)
-        self.setStateForBasemaps(writer.params["Appearance"]["Base layer"])
 
     def setStateToParams(self, params):
         """
@@ -455,32 +452,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             for param, item in settings.items():
                 value = params[group][param]
                 item.setValue(value)
-
-    def setStateForBasemaps(self, basemaps):
-        """
-        Sets the dialog state to match the specified basemaps
-        """
-        for i in range(self.basemaps.count()):
-            self.basemaps.item(i).setSelected(False)
-
-        for basemap in basemaps:
-            try:
-                self.basemaps.findItems(basemap,
-                                        (Qt.MatchExactly))[0].setSelected(True)
-            except:
-                pass
-
-    def populateBasemaps(self):
-        """
-        Adds entries for all known basemaps to the dialog
-        """
-        multiSelect = QAbstractItemView.ExtendedSelection
-        self.basemaps.setSelectionMode(multiSelect)
-        attrFields = []
-        for i in range(len(baselayers)):
-            for key in baselayers[i]:
-                attrFields.append(key)
-        self.basemaps.addItems(attrFields)
 
     def selectMapFormat(self, writer):
         """
@@ -507,8 +478,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                     parameters["Appearance"]["Search layer"] = (
                         self.layer_search_combo.itemData(
                             self.layer_search_combo.currentIndex()))
-        basemaps = [i.text() for i in self.basemaps.selectedItems()]
-        parameters["Appearance"]["Base layer"] = basemaps
         return parameters
 
     def saveParameters(self):

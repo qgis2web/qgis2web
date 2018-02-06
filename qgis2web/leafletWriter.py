@@ -46,7 +46,6 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            extentScript,
                                            rasterScript,
                                            wmsScript,
-                                           basemapsScript,
                                            scaleDependentLayerScript,
                                            addressSearchScript,
                                            endHTMLscript,
@@ -134,7 +133,6 @@ class LeafletWriter(Writer):
         minZoom = params["Scale/Zoom"]["Min zoom level"]
         maxZoom = params["Scale/Zoom"]["Max zoom level"]
         restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
-        basemapList = params["Appearance"]["Base layer"]
         matchCRS = params["Appearance"]["Match project CRS"]
         addressSearch = params["Appearance"]["Add address search"]
         locate = params["Appearance"]["Geolocate user"]
@@ -239,13 +237,8 @@ class LeafletWriter(Writer):
         middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
                             minZoom, bounds, locate)
         middle += featureGroupsScript()
-        if (len(basemapList) == 0 or matchCRS):
-            basemapText = ""
-        else:
-            basemapText = basemapsScript(basemapList, maxZoom)
         extentCode = extentScript(extent, restrictToExtent)
         new_src += middle
-        new_src += basemapText
         new_src += extentCode
 
         for count, layer in enumerate(layer_list):
@@ -330,7 +323,7 @@ class LeafletWriter(Writer):
                 params["Appearance"]["Add layers list"] != "" and
                 params["Appearance"]["Add layers list"] != "None"):
             new_src += addLayersList(
-                basemapList, matchCRS, layer_list, cluster, legends,
+                [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
