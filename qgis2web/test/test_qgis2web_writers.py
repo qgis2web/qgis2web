@@ -48,6 +48,7 @@ def isLtrRepo():
 class qgis2web_WriterTest(unittest.TestCase):
 
     """Test writers"""
+    maxDiff = None
 
     def setUp(self):
         """Runs before each test"""
