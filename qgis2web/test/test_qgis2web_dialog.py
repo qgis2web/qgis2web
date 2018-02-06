@@ -1021,54 +1021,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                           ])
         self.assertEqual(writer.json, [False])
 
-    def test37_OL3_base_layers_have_type_base(self):
-        """Dialog test: OL3   Ensure base layers have a type property with a value of 'base'"""
-
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        layer = load_layer(layer_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        dialog = MainDialog(self.iface)
-
-        # Ensure the OpenLayers 3 option is selected
-        dialog.ol3.click()
-
-        # Select a base map
-        dialog.basemaps.item(0).setSelected(True)
-
-        writer = dialog.createWriter()
-        self.assertTrue(isinstance(writer, OpenLayersWriter))
-        self.assertEqual(writer.params['Appearance']['Base layer'], ['OSM'])
-
-    def test39_OL3_base_group_only_included_when_base_map_selected(self):
-        """Dialog test: OL3   Only include the 'Base maps' group when +1 base maps are selected"""
-
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        layer = load_layer(layer_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        dialog = MainDialog(self.iface)
-
-        # Ensure the OpenLayers 3 option is selected
-        dialog.ol3.click()
-
-        # Ensure no base maps are selected
-        for i in range(dialog.basemaps.count()):
-            dialog.basemaps.item(i).setSelected(False)
-
-        writer = dialog.createWriter()
-        self.assertTrue(isinstance(writer, OpenLayersWriter))
-        self.assertEqual(len(writer.params['Appearance']['Base layer']), 0)
-
-        # Select a base map
-        dialog.basemaps.item(0).setSelected(True)
-
-        writer = dialog.createWriter()
-        self.assertTrue(isinstance(writer, OpenLayersWriter))
-        self.assertEqual(writer.params['Appearance']['Base layer'], ['OSM'])
-
     def test40_Leaflet_scalebar(self):
         """Dialog test: Leaflet  scale bar"""
         layer_path = get_test_data_path('layer', 'airports.shp')

@@ -61,16 +61,6 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         self.assertEqual(
             WRITER_REGISTRY.getWriterFactoryFromProject(), OpenLayersWriter)
 
-    def test03_SaveRestoreBasemapsFromProject(self):
-        """Test saving and restoring enabled basemaps from project"""
-        self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(),[])
-        WRITER_REGISTRY.saveBasemapsToProject(['a','b c d'])
-        self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(),['a','b c d'])
-
-        # no existing settings
-        QgsProject.instance().removeEntry("qgis2web", "/")
-        self.assertEqual(WRITER_REGISTRY.getBasemapsFromProject(), [])
-
     def test04_SanitiseKey(self):
         """Test sanitising param key for storage"""
         self.assertEqual(WRITER_REGISTRY.sanitiseKey('a'),'a')
@@ -111,7 +101,6 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         writer.params['Data export']['Minify GeoJSON files'] = False
         writer.params['Data export']['Precision'] = '4'
         writer.params['Data export']['Mapping library location'] = 'CDN'
-        writer.params['Appearance']['Base layer'] = ['a','b','c']
 
         WRITER_REGISTRY.saveWriterToProject(writer)
 

@@ -1152,68 +1152,6 @@ class qgis2web_WriterTest(unittest.TestCase):
         test_layers_output = read_output(result, 'layers/layers.js')
         assert """title: '<img src="styles/legend/airports_0.png" /> airports'""" in test_layers_output
 
-    def test37_OL3_base_layers_have_type_base(self):
-        """OL3 Ensure base layers have a type property with a value of 'base'"""
-
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        layer = load_layer(layer_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        # Export to web map
-        writer = OpenLayersWriter()
-        writer.params = self.defaultParams()
-        writer.params['Appearance']['Base layer'] = ['OSM']
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'),
-             (u'objtype', u'no label')])
-        ]
-        writer.json = [False]
-        writer.getFeatureInfo = [False]
-
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        test_layers_output = read_output(result, 'layers/layers.js')
-        assert "'type': 'base'" in test_layers_output
-
-    def test39_OL3_base_group_only_included_when_base_map_selected(self):
-        """OL3 Only include the 'Base maps' group when +1 base maps are selected"""
-
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        layer = load_layer(layer_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        # no base maps
-        writer = OpenLayersWriter()
-        writer.params = self.defaultParams()
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'),
-             (u'objtype', u'no label')])
-        ]
-        writer.json = [False]
-        writer.getFeatureInfo = [False]
-
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        test_layers_output = read_output(result, 'layers/layers.js')
-        assert "new ol.layer.Group" not in test_layers_output
-
-        # with base maps
-        writer.params['Appearance']['Base layer'] = ['OSM']
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        test_layers_output = read_output(result, 'layers/layers.js')
-        assert "new ol.layer.Group" in test_layers_output
-
     def test40_Leaflet_scalebar(self):
         """Leaflet scale bar"""
         layer_path = get_test_data_path('layer', 'airports.shp')
