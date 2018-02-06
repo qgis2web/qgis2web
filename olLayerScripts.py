@@ -68,7 +68,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     fieldLabels = ""
     blend_mode = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and vts is None and
                 not isinstance(layer.rendererV2(), QgsHeatmapRenderer) and
@@ -110,7 +110,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
         hmRamp = ""
         hmWeight = 0
         hmWeightMax = 0
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         if vts is not None:
             if vts not in vtLayers:
                 vtLayers.append(vts)
@@ -222,7 +222,7 @@ def getVisibility(mapLayers, layers, visible):
     visibility = ""
     currentVT = ""
     for layer, layerObj, v in zip(mapLayers[1:], layers, visible):
-        vts = layerObj.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layerObj.customProperty("VectorTilesReader/vector_tile_url")
         if vts is None or vts != currentVT:
             if vts is not None:
                 lname = "lyr_%s" % safeName(vts)
@@ -241,7 +241,7 @@ def buildGroups(groups, qms, layer_names_id):
     for group, groupLayers in groups.iteritems():
         groupLayerObjs = ""
         for layer in groupLayers:
-            vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+            vts = layer.customProperty("VectorTilesReader/vector_tile_url")
             if qms:
                 if isinstance(layer, TileLayer):
                     continue
@@ -280,7 +280,7 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
     usedGroups = []
     currentVT = ""
     for count, layer in enumerate(layers):
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         if (vts is not None and vts != currentVT):
             no_group_list.append("lyr_" + safeName(vts))
             currentVT = vts
@@ -445,6 +445,7 @@ def isCluster(cluster, renderer):
 
 
 def getVT(json_url):
+    print json_url
     sln = safeName(json_url)
     key = json_url.split("?")[1]
     json = TileJSON(json_url)

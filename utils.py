@@ -172,7 +172,7 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
     for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
                                                             popupField)):
         sln = safeName(layer.name()) + "_" + unicode(count)
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         if (layer.type() == layer.VectorLayer and vts is None and
                 (layer.providerType() != "WFS" or encode2json)):
             feedback.showFeedback('Exporting %s to JSON...' % layer.name())
@@ -412,7 +412,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
         return False
     if layer.geometryType() != QGis.Polygon:
         return False
-    vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+    vts = layer.customProperty("VectorTilesReader/vector_tile_url")
     if vts is not None:
         return False
     renderer = layer.rendererV2()
