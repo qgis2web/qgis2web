@@ -13,9 +13,6 @@ from qgis.core import (QgsProject,
                        QgsMessageLog,
                        Qgis)
 from qgis2web.utils import scaleToZoom, safeName
-from qgis2web.basemaps import basemapLeaflet, basemapAttributions
-
-basemapAddresses = basemapLeaflet()
 
 
 def jsonScript(layer):
@@ -162,22 +159,6 @@ def featureGroupsScript():
     featureGroups = """
         var bounds_group = new L.featureGroup([]);"""
     return featureGroups
-
-
-def basemapsScript(basemapList, maxZoom):
-    basemaps = ""
-    for count, basemap in enumerate(basemapList):
-        bmText = basemapAddresses[basemap]
-        bmAttr = basemapAttributions[basemap]
-        basemaps += """
-        var basemap{count} = L.tileLayer('{basemap}', {{
-            attribution: '{attribution}',
-            maxZoom: {maxZoom}
-        }});
-        basemap{count}.addTo(map);""".format(count=count, basemap=bmText,
-                                             attribution=bmAttr,
-                                             maxZoom=maxZoom)
-    return basemaps
 
 
 def extentScript(extent, restrictToExtent):
