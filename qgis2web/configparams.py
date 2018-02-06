@@ -97,6 +97,7 @@ def getDefaultParams():
     params['Appearance']['Search layer'] = None
     return params
 
+
 specificParams = {
 }
 
