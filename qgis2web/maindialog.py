@@ -35,6 +35,7 @@ from qgis.core import (QgsWkbTypes,
 from PyQt5.QtCore import (QObject,
                           QSettings,
                           pyqtSignal,
+                          pyqtSlot,
                           QUrl,
                           QByteArray,
                           QEvent,
@@ -164,8 +165,13 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.devConsole.hide()
             self.right_layout.insertWidget(1, self.devConsole)
         self.filter = devToggleFilter()
+        self.filter.devToggle.connect(self.showHideDevConsole)
         self.installEventFilter(self.filter)
         self.setModal(False)
+
+    @pyqtSlot(bool)
+    def showHideDevConsole(self, visible):
+        self.devConsole.setVisible(visible)
 
     def changeFormat(self):
         self.autoUpdatePreview()
@@ -573,13 +579,13 @@ class MainDialog(QDialog, Ui_MainDialog):
 
 
 class devToggleFilter(QObject):
-    devToggle = pyqtSignal()
+    devToggle = pyqtSignal(bool)
 
     def eventFilter(self, obj, event):
         try:
             if event.type() == QEvent.KeyPress:
                 if event.key() == Qt.Key_F12:
-                    self.devToggle.emit()
+                    self.devToggle.emit(not obj.devConsole.isVisible())
                     if obj.devConsole.height() != 0:
                         obj.devConsole.setFixedHeight(0)
                     else:
