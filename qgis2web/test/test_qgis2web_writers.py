@@ -62,7 +62,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     def defaultParams(self):
         return {'Data export': {
             'Mapping library location': 'Local',
-                             'Minify GeoJSON files': False,
+                             'Minify GeoJSON files': True,
                              'Exporter': 'Export to folder',
                              'Precision': 'maintain',
                              'Use debug libraries': False},
