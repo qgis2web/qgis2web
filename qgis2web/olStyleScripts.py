@@ -6,7 +6,8 @@ import math
 import xml.etree.ElementTree
 import traceback
 from PyQt5.QtCore import QDir, QSize
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (QgsApplication,
+                       QgsVectorLayer,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
@@ -17,8 +18,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsSymbolLayerUtils,
-                       QgsMessageLog)
+                       QgsSymbolLayerUtils)
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
 
@@ -81,8 +81,9 @@ def exportStyles(layers, folder, clustered):
                 style = "''"
         except Exception as e:
             style = ""
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
+            QgsApplication.messageLog().logMessage(traceback.format_exc(),
+                                                   "qgis2web",
+                                                   level=Qgis.Critical)
 
         if vts is None:
             path = os.path.join(stylesFolder, sln + "_style.js")
