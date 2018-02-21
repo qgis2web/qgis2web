@@ -6,7 +6,8 @@ import math
 import xml.etree.ElementTree
 import traceback
 from PyQt5.QtCore import QDir, QSize
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsVectorLayer,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
