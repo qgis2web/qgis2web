@@ -15,5 +15,4 @@ jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new 
                 title: 'airports'
             });
 
-lyr_airports_0.setVisible(true);
 var layersList = [lyr_airports_0];

@@ -15,7 +15,6 @@ var group_group1 = new ol.layer.Group({
                                 layers: [lyr_airports_0,],
                                 title: "group1"});
 
-lyr_airports_0.setVisible(true);
 var layersList = [group_group1];
 lyr_airports_0.set('fieldAliases', {'ID': 'ID', 'fk_region': 'fk_region', 'ELEV': 'ELEV', 'NAME': 'NAME', 'USE': 'USE', });
 lyr_airports_0.set('fieldImages', {'ID': '', 'fk_region': '', 'ELEV': '', 'NAME': '', 'USE': '', });

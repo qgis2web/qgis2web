@@ -34,5 +34,4 @@ var wms_layers = [];
                             
                           });
 
-lyr_wms_0.setVisible(true);
 var layersList = [lyr_wms_0];
