@@ -467,6 +467,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                 style = "image: %s" % style
         elif isinstance(sl, QgsSvgMarkerSymbolLayer):
             print(sl.path())
+            print(__file__)
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             svg = xml.etree.ElementTree.parse(sl.path()).getroot()
             svgWidth = svg.attrib["width"]
