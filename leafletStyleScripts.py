@@ -37,6 +37,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.categories()[0].symbol()
         slCount = symbol.symbolLayerCount()
+        patterns = ""
         if slCount < 1:
             slCount = 1
         for sl in xrange(slCount):
@@ -48,6 +49,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
                                              layer_alpha, sln, sl, cnt)
+                patterns += pattern
                 if (cat.value() is not None and cat.value() != "" and
                         not isinstance(cat.value(), QPyNullVariant)):
                     style += """
@@ -58,13 +60,14 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 style += """
                     return %s
                     break;""" % styleCode
-            style += """
+            style = patterns + style + """
             }
         }"""
     elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
         slCount = symbol.symbolLayerCount()
+        patterns = ""
         if slCount < 1:
             slCount = 1
         for sl in xrange(slCount):
@@ -74,6 +77,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
                                              layer_alpha, sln, sl, cnt)
+                patterns += pattern
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
@@ -82,7 +86,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 style = style % {"a": classAttr, "l": ran.lowerValue(),
                                  "u": ran.upperValue(),
                                  "s": styleCode}
-            style += """
+            style = patterns + style + """
         }"""
     elif isinstance(renderer, QgsRuleBasedRendererV2):
         symbol = renderer.rootRule().children()[0].symbol()

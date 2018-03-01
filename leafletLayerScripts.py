@@ -119,7 +119,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                     outputProjectFileName, useShapes)
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
                                      safeLayerName)
-        print safeLayerName
         legends[safeLayerName] = legend
         (new_obj, wfsLayers,
          useMultiStyle) = getLayer(layer, renderer, safeLayerName,
