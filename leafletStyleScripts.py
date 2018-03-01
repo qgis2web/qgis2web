@@ -27,7 +27,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         for sl in xrange(slCount):
             (styleCode, markerType, useMapUnits,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
-                                         layer_alpha, sln, sl)
+                                         layer_alpha, sln, sl, 0)
             style += pattern
             style += """
         function style_%s_%s() {
@@ -44,10 +44,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         function style_%s_%s(feature) {
             switch(String(feature.properties['%s'])) {""" % (sln, sl,
                                                              classAttr)
-            for cat in renderer.categories():
+            for cnt, cat in enumerate(renderer.categories()):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
-                                             layer_alpha, sln, sl)
+                                             layer_alpha, sln, sl, cnt)
                 if (cat.value() is not None and cat.value() != "" and
                         not isinstance(cat.value(), QPyNullVariant)):
                     style += """
@@ -70,10 +70,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         for sl in xrange(slCount):
             style += """
         function style_%s_%s(feature) {""" % (sln, sl)
-            for ran in renderer.ranges():
+            for cnt, ran in enumerate(renderer.ranges()):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
-                                             layer_alpha, sln, sl)
+                                             layer_alpha, sln, sl, cnt)
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
@@ -111,11 +111,13 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             expFile = os.path.join(outputProjectFilename, "js",
                                    "qgis2web_expressions.js")
             ifelse = "if"
+            patterns = ""
             for count, rule in enumerate(rules):
                 if rule.symbol().symbolLayer(sl) is not None:
                     (styleCode, markerType, useMapUnits,
                      pattern) = getSymbolAsStyle(rule.symbol(), markerFolder,
-                                                 layer_alpha, sln, sl)
+                                                 layer_alpha, sln, sl, count)
+                    patterns += pattern
                     name = "".join((sln, "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -132,7 +134,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             if js == "":
                 js = """
                 if (false) {}"""
-            style += template % (pattern, sln, js, elsejs)
+            style += template % (patterns, sln, js, elsejs)
     else:
         useMapUnits = False
         style = ""
@@ -141,7 +143,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     return style, markerType, useMapUnits, useShapes
 
 
-def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
+def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl, cat):
     markerType = None
     pattern = ""
     styles = []
@@ -243,7 +245,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
         color = sl.color().name()
         angle = 360 - sl.lineAngle()
         pattern = """
-        var pattern_%s_%d = new L.StripePattern({
+        var pattern_%s_%d_%d = new L.StripePattern({
             weight: %s,
             spaceWeight: %s,
             color: '%s',
@@ -251,12 +253,12 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl):
             spaceOpacity: 0,
             angle: %d
         });
-        pattern_%s_%d.addTo(map);""" % (sln, slc, weight, spaceWeight,
-                                        color, alpha, angle, sln, slc)
+        pattern_%s_%d_%d.addTo(map);""" % (sln, slc, cat, weight, spaceWeight,
+                                        color, alpha, angle, sln, slc, cat)
         style = """
                 stroke: false,
                 fillOpacity: 1,
-                fillPattern: pattern_%s_%d""" % (sln, slc)
+                fillPattern: pattern_%s_%d_%d""" % (sln, slc, cat)
         useMapUnits = False
     else:
         markerType = "circleMarker"
