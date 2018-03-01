@@ -37,6 +37,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.categories()[0].symbol()
         slCount = symbol.symbolLayerCount()
+        patterns = ""
         if slCount < 1:
             slCount = 1
         for sl in range(slCount):
@@ -48,6 +49,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
                                              layer_alpha, sln, sl, useMapUnits)
+                patterns += pattern
                 if (cat.value() is not None and cat.value() != ""):
                     style += """
                 case '%s':""" % unicode(cat.value()).replace("'", "\\'")
@@ -57,13 +59,14 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 style += """
                     return %s
                     break;""" % styleCode
-            style += """
+            style = patterns + style + """
             }
         }"""
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
         slCount = symbol.symbolLayerCount()
+        patterns = ""
         if slCount < 1:
             slCount = 1
         for sl in range(slCount):
@@ -73,6 +76,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
                                              layer_alpha, sln, sl, useMapUnits)
+                patterns += pattern
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
@@ -81,16 +85,18 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 style = style % {"a": classAttr, "l": ran.lowerValue(),
                                  "u": ran.upperValue(),
                                  "s": styleCode}
-            style += """
+            style = patterns + style + """
         }"""
     elif isinstance(renderer, QgsRuleBasedRenderer):
         symbol = renderer.rootRule().children()[0].symbol()
         slCount = symbol.symbolLayerCount()
+        patterns = ""
         if slCount < 1:
             slCount = 1
         for sl in range(slCount):
             template = """
-        %sfunction style_%s_{sl}(feature) {{
+        %s
+        function style_%s_{sl}(feature) {{
             var context = {{
                 feature: feature,
                 variables: {{}}
@@ -115,6 +121,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                      pattern) = getSymbolAsStyle(rule.symbol(), markerFolder,
                                                  layer_alpha, sln, sl,
                                                  useMapUnits)
+                    patterns += pattern
                     name = "".join((sln, "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -131,7 +138,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             if js == "":
                 js = """
                 if (false) {}"""
-            style += template % (pattern, sln, js, elsejs)
+            style += template % (patterns, sln, js, elsejs)
     else:
         useMapUnits = False
         style = ""
