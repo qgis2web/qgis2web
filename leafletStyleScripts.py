@@ -91,6 +91,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             slCount = 1
         for sl in xrange(slCount):
             template = """
+        %s
         function style_%s_{sl}(feature) {{
             var context = {{
                 feature: feature,
@@ -128,7 +129,10 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 """ % (ifelse, name, styleCode)
                     js = js.strip()
                     ifelse = "else if"
-            style += template % (sln, js, elsejs)
+            if js == "":
+                js = """
+                if (false) {}"""
+            style += template % (pattern, sln, js, elsejs)
     else:
         useMapUnits = False
         style = ""
