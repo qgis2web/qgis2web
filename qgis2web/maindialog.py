@@ -345,16 +345,21 @@ class MainDialog(QDialog, Ui_MainDialog):
             layer = tree_layer.layer()
             if (layer.type() != QgsMapLayer.PluginLayer and
                     layer.customProperty("ol_layer_type") is None):
-                if layer.type() == QgsMapLayer.VectorLayer:
-                    testDump = layer.renderer().dump()
-                layer_parent = tree_layer.parent()
-                if layer_parent.parent() is None:
-                    item = TreeLayerItem(self.iface, layer,
-                                         self.layersTree, dlg)
-                    self.layers_item.addChild(item)
-                else:
-                    if layer_parent not in tree_groups:
-                        tree_groups.append(layer_parent)
+                try:
+                    if layer.type() == QgsMapLayer.VectorLayer:
+                        testDump = layer.renderer().dump()
+                    layer_parent = tree_layer.parent()
+                    if layer_parent.parent() is None:
+                        item = TreeLayerItem(self.iface, layer,
+                                             self.layersTree, dlg)
+                        self.layers_item.addChild(item)
+                    else:
+                        if layer_parent not in tree_groups:
+                            tree_groups.append(layer_parent)
+                except:
+                    QgsMessageLog.logMessage(traceback.format_exc(),
+                                             "qgis2web",
+                                             level=QgsMessageLog.CRITICAL)
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
