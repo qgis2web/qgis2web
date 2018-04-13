@@ -501,6 +501,11 @@ def getGrid(project):
         symbol = strokeDict["symbol"]
         layer = symbol["layer"]
         props = layer["prop"]
+        linecap = 0
+        linejoin = 0
+        width = 1
+        color = "#000000"
+        dashed = "no"
         for prop in props:
             if prop["@k"] == "line_color":
                 color = "'rgba(%s)'" % prop["@v"]
