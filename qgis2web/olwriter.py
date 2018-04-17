@@ -208,7 +208,7 @@ class OpenLayersWriter(Writer):
                 htmlTemplate = "basic"
             templateOutput = replaceInTemplate(
                 htmlTemplate + ".html", values)
-            templateOutput = re.sub('\n[\s_]+\n', '\n', templateOutput)
+            templateOutput = re.sub(r'\n[\s_]+\n', '\n', templateOutput)
             f.write(templateOutput)
         values = {"@GEOLOCATEHEAD@": geolocateHead,
                   "@BOUNDS@": mapbounds,

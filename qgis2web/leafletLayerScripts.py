@@ -307,7 +307,7 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
             if (editorWidget == 'Photo'):
                 row += "'<img src=\"images/' + "
                 row += "String(feature.properties['" + unicode(field)
-                row += "']).replace(/[\\\/:]/g, '_').trim()"
+                row += r"']).replace(/[\\\/:]/g, '_').trim()"
                 row += " + '\">' : '') + '"
             else:
                 row += "Autolinker.link("
@@ -646,7 +646,7 @@ def getWFSScriptTag(layer, layerName):
         layerSource += wfsTypename
         layerSource += "&SRSNAME="
         layerSource += wfsSRS
-    scriptTag = re.sub('SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
+    scriptTag = re.sub(r'SRSNAME\=EPSG\:\d+', 'SRSNAME=EPSG:4326', layerSource)
     scriptTag += "&outputFormat=text%2Fjavascript&format_options=callback%3A"
     scriptTag += "get" + layerName + "Json"
     return scriptTag

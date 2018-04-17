@@ -225,7 +225,7 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                          QSize(iconSize,
                                                                iconSize))
-    safeLabel = re.sub('[\W_]+', '', catr.label()) + unicode(cnt)
+    safeLabel = re.sub(r'[\W_]+', '', catr.label()) + unicode(cnt)
     legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                  layerName + "_" + safeLabel + ".png"))
     catLegend += """<tr><td style="text-align: center;"><img src="legend/"""

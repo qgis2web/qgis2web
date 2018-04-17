@@ -342,7 +342,7 @@ class LeafletWriter(Writer):
         labelList = []
         for count, layer in enumerate(layer_list):
             vts = layer.customProperty("VectorTilesReader/vector_tile_source")
-            safeLayerName = re.sub('[\W_]+', '',
+            safeLayerName = re.sub(r'[\W_]+', '',
                                    layer.name()) + "_" + unicode(count)
             if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
                 labelling = layer.labeling()

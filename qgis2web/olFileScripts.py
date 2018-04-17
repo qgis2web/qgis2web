@@ -102,7 +102,7 @@ def writeScriptIncludes(layers, json, matchCRS):
                     layerSource += "&SRSNAME="
                     layerSource += wfsSRS
                 if not matchCRS:
-                    layerSource = re.sub('SRSNAME\=EPSG\:\d+',
+                    layerSource = re.sub(r'SRSNAME\=EPSG\:\d+',
                                          'SRSNAME=EPSG:3857',
                                          layerSource)
                 layerSource += "&outputFormat=text%2Fjavascript&"
