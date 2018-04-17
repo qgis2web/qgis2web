@@ -24,7 +24,8 @@ import webbrowser
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
                        QgsProject,
                        QgsMapLayer,
                        QgsVectorLayer,
@@ -359,7 +360,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 except:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
-                                             level=QgsMessageLog.CRITICAL)
+                                             level=Qgis.Critical)
 
         for tree_group in tree_groups:
             group_name = tree_group.name()
