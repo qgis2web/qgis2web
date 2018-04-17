@@ -238,7 +238,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
 
     with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)
-        base = re.sub('\n[\s_]+\n', '\n', base)
+        base = re.sub(r'\n[\s_]+\n', '\n', base)
         f.write(unicode(base))
         f.close()
     feedback.completeStep()
