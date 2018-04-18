@@ -313,7 +313,7 @@ class LeafletWriter(Writer):
         new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
         if title != "":
-            titleStart = unicode(titleSubScript(title).decode("utf-8"))
+            titleStart = unicode(titleSubScript(title))
             new_src += unicode(titleStart)
         if addressSearch:
             address_text = addressSearchScript()
