@@ -178,7 +178,7 @@ class LeafletWriter(Writer):
                                                       popup, cluster):
             rawLayerName = layer.name()
             safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
-            vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+            vts = layer.customProperty("VectorTilesReader/vector_tile_url")
             if layer.providerType() != 'WFS' or jsonEncode is True:
                 if layer.type() == QgsMapLayer.VectorLayer and vts is None:
                     feedback.showFeedback('Exporting %s to JSON...' %
@@ -341,7 +341,7 @@ class LeafletWriter(Writer):
                                  params["Appearance"]["Search layer"])
         labelList = []
         for count, layer in enumerate(layer_list):
-            vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+            vts = layer.customProperty("VectorTilesReader/vector_tile_url")
             safeLayerName = re.sub(r'[\W_]+', '',
                                    layer.name()) + "_" + unicode(count)
             if (layer.type() == QgsMapLayer.VectorLayer and vts is None):

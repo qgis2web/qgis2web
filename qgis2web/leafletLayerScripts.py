@@ -38,7 +38,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      restrictToExtent, extent, feedback, labelCode, vtLabels,
                      vtStyles, useMultiStyle, useHeat, useVT, useShapes,
                      useOSMB):
-    vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+    vts = layer.customProperty("VectorTilesReader/vector_tile_url")
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
@@ -462,7 +462,7 @@ def VTLayer(json_url):
     vtJS = """
         var layer_%s = L.vectorGrid.protobuf("%s", {
             rendererFactory: L.svg.tile,
-            onEachFeature: label_%s,
+            //onEachFeature: label_%s,
             vectorTileLayerStyles: style_%s
         });""" % (sln, key_url, sln, styleSuffix)
     return vtJS
