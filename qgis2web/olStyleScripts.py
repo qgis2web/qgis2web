@@ -37,7 +37,7 @@ def exportStyles(layers, folder, clustered):
             continue
         pattern = ""
         setPattern = ""
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         labelText = getLabels(layer, folder, sln)
         defs = "var size = 0;\nvar placement = 'point';"
         try:
@@ -548,7 +548,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         if style != "":
             style += ","
         ts = ""
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         if vts is None:
             ts = """
         text: createTextStyle(feature, resolution, labelText, labelFont,

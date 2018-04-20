@@ -79,7 +79,7 @@ def writeScriptIncludes(layers, json, matchCRS):
     wfsVars = ""
     styleVars = ""
     for count, (layer, encode2json) in enumerate(zip(layers, json)):
-        vts = layer.customProperty("VectorTilesReader/vector_tile_source")
+        vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         sln = safeName(layer.name()) + "_" + unicode(count)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() != "WFS" or encode2json:
