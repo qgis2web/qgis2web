@@ -205,7 +205,7 @@ class OpenLayersWriter(Writer):
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = htmlTemplate
             if htmlTemplate == "":
-                htmlTemplate = "basic"
+                htmlTemplate = "full-screen"
             templateOutput = replaceInTemplate(
                 htmlTemplate + ".html", values)
             templateOutput = re.sub(r'\n[\s_]+\n', '\n', templateOutput)
