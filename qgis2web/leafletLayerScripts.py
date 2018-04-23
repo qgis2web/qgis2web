@@ -238,7 +238,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
               layer.added = true;
               addLabel(layer, i);
               i++;
-        });""" % (safeName(vts), labeltext)
+        });""" % (safeLayerName, labeltext)
             else:
                 if palyr.isExpression and palyr.enabled:
                     labelVal = f
@@ -462,6 +462,7 @@ def VTLayer(json_url):
     vtJS = """
         var layer_%s = L.vectorGrid.protobuf("%s", {
             rendererFactory: L.svg.tile,
+            //onEachFeature: label_%s,
             vectorTileLayerStyles: style_%s
         });""" % (sln, key_url, sln, styleSuffix)
     return vtJS
