@@ -24,7 +24,8 @@
 from numbers import Number
 from collections import OrderedDict
 import traceback
-from qgis.core import (QgsProcessing,
+from qgis.core import (Qgis,
+                       QgsProcessing,
                        QgsProcessingProvider,
                        QgsProject,
                        QgsMapLayer,
@@ -48,7 +49,22 @@ from .configparams import getDefaultParams
 defaultParams = getDefaultParams()
 
 
-class exportProject(QgsProcessingAlgorithm):
+class qgis2webAlgorithm(QgsProcessingAlgorithm):
+
+    def __init__(self):
+        super().__init__()
+
+    def createInstance(self):
+        return type(self)()
+
+    def group(self):
+        return "Export webmap"
+
+    def groupId(self):
+        return "exportWebmap"
+
+
+class exportProject(qgis2webAlgorithm):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
     layer that are selected.
@@ -61,17 +77,6 @@ class exportProject(QgsProcessingAlgorithm):
     All Processing algorithms should extend the GeoAlgorithm class.
     """
 
-    def __init__(self):
-        super().__init__()
-
-    def id(self):
-        """This is the name that will appear on the toolbox group.
-
-        It is also used to create the command line name of all the
-        algorithms from this provider.
-        """
-        return 'Export project'
-
     def name(self):
         """This is the provired full name.
         """
@@ -81,12 +86,6 @@ class exportProject(QgsProcessingAlgorithm):
         """This is the provired full name.
         """
         return 'Export project'
-
-    def group(self):
-        return "qgis2web"
-
-    def groupId(self):
-        return "qgis2web"
 
     def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
@@ -106,6 +105,7 @@ class exportProject(QgsProcessingAlgorithm):
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
+        return {}   
 
     def getLayersAndGroups(self):
         root_node = QgsProject.instance().layerTreeRoot()
@@ -119,11 +119,11 @@ class exportProject(QgsProcessingAlgorithm):
                     root_node.findLayer(layer.id()).isVisible()):
                 try:
                     if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.rendererV2().dump()
+                        testDump = layer.renderer().dump()
                     layers.append(layer)
                     layerPopups = []
                     if layer.type() == QgsMapLayer.VectorLayer:
-                        for field in layer.pendingFields():
+                        for field in layer.fields():
                             fieldList = []
                             k = field.name()
                             cProp = "qgis2web/popup/" + field.name()
@@ -135,7 +135,7 @@ class exportProject(QgsProcessingAlgorithm):
                 except:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
-                                             level=QgsMessageLog.CRITICAL)
+                                             level=Qgis.Critical)
 
         visible = []
         json = []
@@ -153,7 +153,7 @@ class exportProject(QgsProcessingAlgorithm):
                 cluster[::-1])
 
 
-class exportLayer(QgsProcessingAlgorithm):
+class exportLayer(qgis2webAlgorithm):
     """This is an example algorithm that takes a vector layer and
     creates a new one just with just those features of the input
     layer that are selected.
@@ -172,9 +172,6 @@ class exportLayer(QgsProcessingAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
-
-    def __init__(self):
-        super().__init__()
 
     def name(self):
         return "exportLayer"
@@ -277,17 +274,6 @@ class exportVector(exportLayer):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    def __init__(self):
-        super().__init__()
-
-    def id(self):
-        """This is the name that will appear on the toolbox group.
-
-        It is also used to create the command line name of all the
-        algorithms from this provider.
-        """
-        return 'Export vector layer'
-
     def name(self):
         """This is the provired full name.
         """
@@ -297,12 +283,6 @@ class exportVector(exportLayer):
         """This is the provired full name.
         """
         return 'Export vector layer'
-
-    def group(self):
-        return "qgis2web"
-
-    def groupId(self):
-        return "qgis2web"
 
     def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
@@ -368,6 +348,8 @@ class exportVector(exportLayer):
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
 
+        return {}   
+
     def shortHelp(self):
         return self._formatHelp("""
             <p>Export the selected vector layer as a webmap</p>
@@ -420,17 +402,6 @@ class exportRaster(exportLayer):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    def __init__(self):
-        super().__init__()
-
-    def id(self):
-        """This is the name that will appear on the toolbox group.
-
-        It is also used to create the command line name of all the
-        algorithms from this provider.
-        """
-        return 'Export raster layer'
-
     def name(self):
         """This is the provired full name.
         """
@@ -440,12 +411,6 @@ class exportRaster(exportLayer):
         """This is the provired full name.
         """
         return 'Export raster layer'
-
-    def group(self):
-        return "qgis2web"
-
-    def groupId(self):
-        return "qgis2web"
 
     def initAlgorithm(self, config=None):
         """Here we define the inputs and output of the algorithm, along
@@ -486,6 +451,8 @@ class exportRaster(exportLayer):
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
+
+        return {}   
 
     def shortHelp(self):
         return self._formatHelp("""
