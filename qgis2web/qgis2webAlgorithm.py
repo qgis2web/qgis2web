@@ -105,7 +105,7 @@ class exportProject(qgis2webAlgorithm):
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
-        return {}   
+        return {}
 
     def getLayersAndGroups(self):
         root_node = QgsProject.instance().layerTreeRoot()
@@ -175,23 +175,6 @@ class exportLayer(qgis2webAlgorithm):
 
     def name(self):
         return "exportLayer"
-
-    def addParams(self):
-        # The branch of the toolbox under which the algorithm will appear
-        # self.group = 'Export to webmap'
-
-        self.addParameter(ParameterString("MAP_FORMAT", "Map format",
-                                          "OpenLayers"))
-        self.addParameter(ParameterBoolean("VISIBLE", "Visible", True))
-
-        for group, settings in defaultParams.iteritems():
-            for param, value in settings.iteritems():
-                if isinstance(value, bool):
-                    self.addParameter(ParameterBoolean(param, param, value))
-                elif isinstance(value, Number):
-                    self.addParameter(ParameterNumber(param, param, value))
-                elif isinstance(value, basestring):
-                    self.addParameter(ParameterString(param, param, value))
 
     def getInputs(self):
         inputExporter = self.getParameterValue("Exporter")
@@ -348,7 +331,7 @@ class exportVector(exportLayer):
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
 
-        return {}   
+        return {}
 
     def shortHelp(self):
         return self._formatHelp("""
@@ -452,7 +435,7 @@ class exportRaster(exportLayer):
         write_folder = exporter.exportDirectory()
         writer.write(iface, write_folder)
 
-        return {}   
+        return {}
 
     def shortHelp(self):
         return self._formatHelp("""
