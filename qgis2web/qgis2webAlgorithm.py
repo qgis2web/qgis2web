@@ -291,8 +291,8 @@ class exportVector(exportLayer):
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
         inputLayer = self.parameterAsVectorLayer(parameters,
-                                                    self.INPUT_LAYER,
-                                                    context)
+                                                 self.INPUT_LAYER,
+                                                 context)
         # inputLayer = dataobjects.getObjectFromUri(inputFilename)
         inputVisible = self.parameterAsBool(parameters, "VISIBLE", context)
         inputCluster = self.parameterAsBool(parameters, "CLUSTER", context)
@@ -409,29 +409,38 @@ class exportRaster(exportLayer):
             'Input raster layer',
             optional=False))
 
-    def processAlgorithm(self, progress):
+        self.addParameter(QgsProcessingParameterBoolean(
+            "GETFEATUREINFO",
+            "Enable GetFeatureInfo"))
+
+    def processAlgorithm(self, parameters, context, feedback):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
-        inputFilename = self.getParameterValue(self.INPUT_LAYER)
-        inputLayer = dataobjects.getObjectFromUri(inputFilename)
-        inputVisible = self.getParameterValue("VISIBLE")
+        inputLayer = self.parameterAsRasterLayer(parameters,
+                                                 self.INPUT_LAYER,
+                                                 context)
+        inputVisible = self.parameterAsBool(parameters, "VISIBLE", context)
+        inputGetFeatureInfo = self.parameterAsBool(parameters,
+                                                   "GETFEATUREINFO",
+                                                   context)
 
-        inputParams = self.getInputs()
+        inputParams = self.getInputs(parameters, context)
 
-        inputMapFormat = self.getParameterValue("MAP_FORMAT")
+        inputMapFormat = self.parameterAsString(parameters,
+                                                "MAP_FORMAT",
+                                                context)
         writer = self.getWriter(inputMapFormat)
 
         writer.params = defaultParams
         self.writerParams(writer, inputParams)
-        writer.params["Appearance"][
-            "Base layer"] = WRITER_REGISTRY.getBasemapsFromProject()
         writer.layers = [inputLayer]
         writer.groups = {}
         writer.popup = [False]
         writer.visible = [inputVisible]
         writer.json = [False]
+        writer.getFeatureInfo = [inputGetFeatureInfo]
         writer.cluster = [False]
         exporter = EXPORTER_REGISTRY.createFromProject()
         write_folder = exporter.exportDirectory()
