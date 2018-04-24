@@ -177,23 +177,57 @@ class exportLayer(qgis2webAlgorithm):
         return "exportLayer"
 
     def getInputs(self, parameters, context):
-        inputExporter = self.parameterAsString(parameters, "Exporter", context)
-        inputLib = self.parameterAsString(parameters, "Mapping library location", context)
-        inputJSON = self.parameterAsBool(parameters, "Minify GeoJSON files", context)
-        inputPrecision = self.parameterAsString(parameters, "Precision", context)
-        inputExtent = self.parameterAsString(parameters, "Extent", context)
-        inputMaxZoom = self.parameterAsInt(parameters, "Max zoom level", context)
-        inputMinZoom = self.parameterAsInt(parameters, "Min zoom level", context)
-        inputRestrict = self.parameterAsBool(parameters, "Restrict to extent", context)
-        inputAddress = self.parameterAsBool(parameters, "Add address search", context)
-        inputLayersList = self.parameterAsBool(parameters, "Add layers list", context)
-        inputGeolocate = self.parameterAsBool(parameters, "Geolocate user", context)
-        inputHighlight = self.parameterAsBool(parameters, "Highlight on hover", context)
-        inputLayerSearch = self.parameterAsString(parameters, "Layer search", context)
-        inputCRS = self.parameterAsBool(parameters, "Match project CRS", context)
-        inputMeasure = self.parameterAsString(parameters, "Measure tool", context)
-        inputHover = self.parameterAsBool(parameters, "Show popups on hover", context)
-        inputTemplate = self.parameterAsString(parameters, "Template", context)
+        inputExporter = self.parameterAsString(parameters,
+                                               "Exporter",
+                                               context)
+        inputLib = self.parameterAsString(parameters,
+                                          "Mapping library location",
+                                          context)
+        inputJSON = self.parameterAsBool(parameters,
+                                         "Minify GeoJSON files",
+                                         context)
+        inputPrecision = self.parameterAsString(parameters,
+                                                "Precision",
+                                                context)
+        inputExtent = self.parameterAsString(parameters,
+                                             "Extent",
+                                             context)
+        inputMaxZoom = self.parameterAsInt(parameters,
+                                           "Max zoom level",
+                                           context)
+        inputMinZoom = self.parameterAsInt(parameters,
+                                           "Min zoom level",
+                                           context)
+        inputRestrict = self.parameterAsBool(parameters,
+                                             "Restrict to extent",
+                                             context)
+        inputAddress = self.parameterAsBool(parameters,
+                                            "Add address search",
+                                            context)
+        inputLayersList = self.parameterAsBool(parameters,
+                                               "Add layers list",
+                                               context)
+        inputGeolocate = self.parameterAsBool(parameters,
+                                              "Geolocate user",
+                                              context)
+        inputHighlight = self.parameterAsBool(parameters,
+                                              "Highlight on hover",
+                                              context)
+        inputLayerSearch = self.parameterAsString(parameters,
+                                                  "Layer search",
+                                                  context)
+        inputCRS = self.parameterAsBool(parameters,
+                                        "Match project CRS",
+                                        context)
+        inputMeasure = self.parameterAsString(parameters,
+                                              "Measure tool",
+                                              context)
+        inputHover = self.parameterAsBool(parameters,
+                                          "Show popups on hover",
+                                          context)
+        inputTemplate = self.parameterAsString(parameters,
+                                               "Template",
+                                               context)
         return (inputExporter,
                 inputLib,
                 inputJSON,
