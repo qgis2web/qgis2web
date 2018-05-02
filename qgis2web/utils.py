@@ -203,7 +203,7 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
     QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8", crs,
                                             'GeoJson', 0,
                                             layerOptions=options)
-    with open(path, "w") as f:
+    with open(path, mode="w", encoding="utf8") as f:
         f.write("var %s = " % ("json_" + sln))
         with open(tmpPath, encoding="utf8") as tmpFile:
             for line in tmpFile:
