@@ -32,6 +32,7 @@ from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
                        QgsMessageLog)
@@ -314,10 +315,54 @@ class exportVector(exportLayer):
             [QgsProcessing.TypeVectorAnyGeometry],
             optional=False))
 
+        self.addParameter(QgsProcessingParameterBoolean("VISIBLE",
+                                                        "Visible"))
         self.addParameter(QgsProcessingParameterBoolean("CLUSTER",
                                                         "Cluster"))
         self.addParameter(QgsProcessingParameterString("POPUP",
                                                        "Popup field headers"))
+        self.addParameter(QgsProcessingParameterString("EXPORTER",
+                                                       "Exporter"))
+        self.addParameter(QgsProcessingParameterString(
+            "LIBLOC", "Mapping library location"))
+        self.addParameter(QgsProcessingParameterBoolean(
+            "MINIFY", "Minify GeoJSON files"))
+        self.addParameter(QgsProcessingParameterString(
+            "PRECISION", "Precision", defaultValue="maintain"))
+        self.addParameter(QgsProcessingParameterString("EXTENT",
+                                                       "Extent"))
+        self.addParameter(QgsProcessingParameterNumber("MAXZOOM",
+                                                       "Max zoom level",
+                                                       minValue=1,
+                                                       maxValue=28,
+                                                       defaultValue=28
+                                                       ))
+        self.addParameter(QgsProcessingParameterNumber("MINZOOM",
+                                                       "Min zoom level",
+                                                       minValue=1,
+                                                       maxValue=28,
+                                                       defaultValue=1
+                                                       ))
+        self.addParameter(QgsProcessingParameterBoolean("RESTRICT",
+                                                        "Restrict to extent"))
+        self.addParameter(QgsProcessingParameterBoolean("ADDRESS",
+                                                        "Add address search"))
+        self.addParameter(QgsProcessingParameterBoolean("LAYERSLIST",
+                                                        "Add layers list"))
+        self.addParameter(QgsProcessingParameterBoolean("GEOLOCATE",
+                                                        "Geolocate user"))
+        self.addParameter(QgsProcessingParameterBoolean("HIGHLIGHT",
+                                                        "Highlight on hover"))
+        self.addParameter(QgsProcessingParameterString("SEARCH",
+                                                       "Layer search"))
+        self.addParameter(QgsProcessingParameterBoolean("CRS",
+                                                        "Match project CRS"))
+        self.addParameter(QgsProcessingParameterString("MEASURE",
+                                                       "Measure tool"))
+        self.addParameter(QgsProcessingParameterBoolean(
+            "POPUPSHOVER", "Show popups on hover"))
+        self.addParameter(QgsProcessingParameterString("TEMPLATE",
+                                                       "Template"))
 
     def processAlgorithm(self, parameters, context, feedback):
         """Here is where the processing itself takes place."""
