@@ -205,7 +205,7 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
                                             layerOptions=options)
     with open(path, "w") as f:
         f.write("var %s = " % ("json_" + sln))
-        with open(tmpPath, "r") as tmpFile:
+        with open(tmpPath, encoding="utf8") as tmpFile:
             for line in tmpFile:
                 if minify:
                     line = line.strip("\n\t ")
