@@ -1,8 +1,8 @@
 var createTextStyle = function(feature, resolution, labelText, labelFont,
                                labelFill, placement) {
 
-    if (feature.hide) {
-        return new ol.style.Text(); 
+    if (feature.hide || !labelText) {
+        return; 
     } 
 
     var textStyle = new ol.style.Text({
