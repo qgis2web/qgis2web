@@ -4,7 +4,6 @@ dist: trusty
 
 env:
   - QGIS_REPO=http://qgis.org/debian-ltr
-  - QGIS_REPO=http://qgis.org/debian
 
 addons: 
   apt: 
