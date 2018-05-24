@@ -501,6 +501,12 @@ def getGrid(project):
         symbol = strokeDict["symbol"]
         layer = symbol["layer"]
         props = layer["prop"]
+        lineunits = "px"
+        linecap = 0
+        linejoin = 0
+        width = 1
+        color = "#000000"
+        dashed = "no"
         for prop in props:
             if prop["@k"] == "line_color":
                 color = "'rgba(%s)'" % prop["@v"]
@@ -512,7 +518,8 @@ def getGrid(project):
                 linecap = prop["@v"]
             if prop["@k"] == "joinstyle":
                 linejoin = prop["@v"]
-        strokeStyle = getStrokeStyle(color, dashed, width, linecap, linejoin)
+        strokeStyle, _ = getStrokeStyle(color, dashed, width, lineunits,
+                                        linecap, linejoin)
         strokeStyle = strokeStyle.replace("stroke:", "strokeStyle:")
         grid = """
     var gcl = new ol.Graticule({%s});
