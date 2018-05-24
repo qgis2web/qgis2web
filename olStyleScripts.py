@@ -265,7 +265,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
         (symbolstyle, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(ran.symbol(), stylesFolder,
                                          layer_alpha, renderer, sln, layer)
-        ranges.append("""%sif (value >= %f && value <= %f) {
+        ranges.append("""%sif (value > %f && value <= %f) {
             style = %s
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
                             symbolstyle))
