@@ -38,10 +38,10 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
     else:
         cssAddress = """<link rel="stylesheet" """
         cssAddress += 'href="http://cdnjs.cloudflare.com/ajax/libs/openlayers/'
-        cssAddress += """4.4.2/ol.css">"""
+        cssAddress += """4.6.5/ol.css">"""
         jsAddress += """
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
-        jsAddress += """4.4.2/ol.js"></script>"""
+        jsAddress += """4.6.5/ol.js"></script>"""
     if layerSearch != "None" and layerSearch != "":
         cssAddress += """
         <link rel="stylesheet" type="text/css" href="resources/horsey.min.css">
