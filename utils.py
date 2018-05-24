@@ -53,6 +53,7 @@ ALL_ATTRIBUTES = 1
 TYPE_MAP = {
     QGis.WKBPoint: 'Point',
     QGis.WKBPoint25D: 'Point',
+    QgsWkbTypes.LineStringM: 'LineString',
     QGis.WKBLineString: 'LineString',
     QGis.WKBLineString25D: 'LineString',
     QgsWKBTypes.LineStringZM: 'LineString',
