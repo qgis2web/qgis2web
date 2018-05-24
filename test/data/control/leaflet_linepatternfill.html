@@ -67,7 +67,7 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        var pattern_lakes_0_0 = new L.StripePattern({
+        var pattern_lakes_0_0_0 = new L.StripePattern({
             weight: 5.0,
             spaceWeight: 2.0,
             color: '#374cce',
@@ -75,13 +75,13 @@
             spaceOpacity: 0,
             angle: 315
         });
-        pattern_lakes_0_0.addTo(map);
+        pattern_lakes_0_0_0.addTo(map);
         function style_lakes_0_0() {
             return {
                 pane: 'pane_lakes_0',
                 stroke: false,
                 fillOpacity: 1,
-                fillPattern: pattern_lakes_0_0
+                fillPattern: pattern_lakes_0_0_0
             }
         }
         map.createPane('pane_lakes_0');
