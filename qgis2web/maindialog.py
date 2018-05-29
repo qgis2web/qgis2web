@@ -70,18 +70,21 @@ from qgis2web.leafletWriter import LeafletWriter
 from qgis2web.writerRegistry import (WRITER_REGISTRY)
 from qgis2web.exporter import (EXPORTER_REGISTRY)
 from qgis2web.feedbackDialog import FeedbackDialog
-from qgis2web.ui_maindialog import Ui_MainDialog
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 webkit_available = True
 
+FORM_CLASS, _ = loadUiType(os.path.join(
+    os.path.dirname(__file__), 'ui_maindialog.ui'))
 
-class MainDialog(QDialog, Ui_MainDialog):
+
+class MainDialog(QDialog, FORM_CLASS):
 
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
-    def __init__(self, iface):
+    def __init__(self, iface, parent=None):
+        super(MainDialog, self).__init__(parent)
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
@@ -98,6 +101,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry",
                                         QByteArray(), type=QByteArray))
 
+        self.verticalLayout_2.addStretch()
+        self.horizontalLayout_6.addStretch()
         if stgs.value("qgis2web/previewOnStartup", Qt.Checked) == Qt.Checked:
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:

@@ -220,22 +220,19 @@
          <widget class="QWidget" name="verticalLayoutWidget_2">
           <layout class="QVBoxLayout" name="right_layout">
            <item>
-            <widget class="QWebView" name="preview">
+            <widget class="QWebView" name="preview" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="url">
+             <property name="url" stdset="0">
               <url>
                <string>about:blank</string>
               </url>
              </property>
             </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="basemaps"/>
            </item>
           </layout>
          </widget>
@@ -248,15 +245,59 @@
        <string>Settings</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item alignment="Qt::AlignTop">
-        <widget class="QCheckBox" name="previewOnStartup">
-         <property name="text">
-          <string>Preview on startup</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="previewOnStartup">
+           <property name="text">
+            <string>Preview on startup</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="closeFeedbackOnSuccess">
+           <property name="text">
+            <string>Close feedback on success</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetFixedSize</enum>
+           </property>
+           <item>
+            <widget class="QLabel" name="previewFeatureLimitLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Preview feature limit per layer: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="previewFeatureLimit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
