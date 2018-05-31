@@ -92,6 +92,8 @@ def getDefaultParams():
             if isinstance(value, tuple):
                 if param == 'Max zoom level':
                     settings[param] = value[-1]
+                elif param == 'Template':
+                    settings[param] = value[1]
                 else:
                     settings[param] = value[0]
     params['Appearance']['Search layer'] = None
