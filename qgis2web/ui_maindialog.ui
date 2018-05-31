@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
-    <height>647</height>
+    <width>790</width>
+    <height>441</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,15 +18,134 @@
     <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
-   <item alignment="Qt::AlignTop">
+   <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="minimumSize">
+      <size>
+       <width>400</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="autoFillBackground">
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab_layers_and_groups">
+      <attribute name="title">
+       <string>Layers and Groups</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <item>
+          <widget class="QTreeWidget" name="layersTree">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>false</bool>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <attribute name="headerVisible">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="headerDefaultSectionSize">
+            <number>200</number>
+           </attribute>
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>2</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_appearance">
+      <attribute name="title">
+       <string>Appearance</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_15">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QTreeWidget" name="paramsTreeOL">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="autoScroll">
+            <bool>false</bool>
+           </property>
+           <attribute name="headerVisible">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="headerCascadingSectionResizes">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="headerDefaultSectionSize">
+            <number>200</number>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Setting</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Value</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_export">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -50,38 +169,14 @@
          </property>
          <widget class="QWidget" name="layoutWidget">
           <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>6</number>
+           </property>
            <item>
             <widget class="QSplitter" name="splitter">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
-             <widget class="QTreeWidget" name="layersTree">
-              <property name="minimumSize">
-               <size>
-                <width>400</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <attribute name="headerVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="headerDefaultSectionSize">
-               <number>200</number>
-              </attribute>
-              <column>
-               <property name="text">
-                <string notr="true">1</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </column>
-             </widget>
              <widget class="QWidget" name="widget" native="true">
               <property name="minimumSize">
                <size>
@@ -97,50 +192,12 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTreeWidget" name="paramsTreeOL">
-                 <property name="minimumSize">
-                  <size>
-                   <width>300</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Sunken</enum>
-                 </property>
-                 <property name="horizontalScrollBarPolicy">
-                  <enum>Qt::ScrollBarAlwaysOff</enum>
-                 </property>
-                 <property name="autoScroll">
-                  <bool>false</bool>
-                 </property>
-                 <attribute name="headerVisible">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerCascadingSectionResizes">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>200</number>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>Setting</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Value</string>
-                  </property>
-                 </column>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <property name="bottomMargin">
+                <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0">
+                 <property name="spacing">
                   <number>6</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
                  </property>
                  <item>
                   <spacer name="horizontalSpacer">
@@ -217,30 +274,11 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="verticalLayoutWidget_2">
-          <layout class="QVBoxLayout" name="right_layout">
-           <item>
-            <widget class="QWebView" name="preview" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="url" stdset="0">
-              <url>
-               <string>about:blank</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="tab_settings">
       <attribute name="title">
        <string>Settings</string>
       </attribute>
@@ -300,8 +338,9 @@
         </layout>
        </item>
       </layout>
+      <zorder>previewFeatureLimitLabel</zorder>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tab_help">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(255, 255, 255);</string>
       </property>
@@ -333,6 +372,25 @@
       </layout>
      </widget>
     </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="right_layout">
+     <item>
+      <widget class="QWebView" name="preview" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="url" stdset="0">
+        <url>
+         <string>about:blank</string>
+        </url>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
