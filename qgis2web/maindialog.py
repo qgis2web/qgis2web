@@ -161,13 +161,13 @@ class MainDialog(QDialog, FORM_CLASS):
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
-        if webkit_available:
-            self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
-            self.devConsole.setFixedHeight(0)
-            self.devConsole.setObjectName("devConsole")
-            self.devConsole.setPage(self.preview.page())
-            self.devConsole.hide()
-            self.right_layout.insertWidget(1, self.devConsole)
+        # if webkit_available:
+        #     self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
+        #     self.devConsole.setFixedHeight(0)
+        #     self.devConsole.setObjectName("devConsole")
+        #     self.devConsole.setPage(self.preview.page())
+        #     self.devConsole.hide()
+        #     self.right_layout.insertWidget(1, self.devConsole)
         self.filter = devToggleFilter()
         self.filter.devToggle.connect(self.showHideDevConsole)
         self.installEventFilter(self.filter)
