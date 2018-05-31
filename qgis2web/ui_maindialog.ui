@@ -192,7 +192,7 @@
                 <number>0</number>
                </property>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0">
+                <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">
                  <property name="spacing">
                   <number>6</number>
                  </property>
@@ -236,23 +236,6 @@
                    <attribute name="buttonGroup">
                     <string notr="true">mapFormat</string>
                    </attribute>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="buttonPreview">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>24</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Update preview</string>
-                   </property>
-                   <property name="icon">
-                    <iconset>
-                     <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
-                   </property>
                   </widget>
                  </item>
                  <item>
@@ -387,6 +370,23 @@
         <url>
          <string>about:blank</string>
         </url>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonPreview">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Update preview</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
        </property>
       </widget>
      </item>
