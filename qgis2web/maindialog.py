@@ -115,7 +115,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.previewFeatureLimit.setText(
             stgs.value("qgis2web/previewFeatureLimit", "1000"))
 
-        self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.appearanceParams.setSelectionMode(QAbstractItemView.SingleSelection)
         self.preview = None
         if webkit_available:
             widget = QWebView()
@@ -247,7 +247,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
-            treeParam = self.paramsTreeOL.findItems(param,
+            treeParam = self.appearanceParams.findItems(param,
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))[0]
             if currentWriter == OpenLayersWriter:
@@ -412,28 +412,48 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateConfigParams(self, dlg):
         """ Populates the dialog with option items and widgets """
         self.items = defaultdict(dict)
-        tree = dlg.paramsTreeOL
+        tree = dlg.appearanceParams
 
         configure_export_action = QAction('...', self)
         configure_export_action.triggered.connect(self.configureExporter)
 
         params = getParams(configure_exporter_action=configure_export_action)
         for group, settings in params.items():
-            item = QTreeWidgetItem()
-            item.setText(0, group)
-            for param, value in settings.items():
-                subitem = self.createOptionItem(tree_widget=tree,
-                                                parent_item=item,
-                                                parameter=param,
-                                                default_value=value)
-                item.addChild(subitem)
-                self.items[group][param] = subitem
-            self.paramsTreeOL.addTopLevelItem(item)
-            item.sortChildren(0, Qt.AscendingOrder)
-        self.paramsTreeOL.expandAll()
-        self.paramsTreeOL.resizeColumnToContents(0)
-        self.paramsTreeOL.resizeColumnToContents(1)
+            if group != "Data export":
+                item = QTreeWidgetItem()
+                item.setText(0, group)
+                for param, value in settings.items():
+                    subitem = self.createOptionItem(tree_widget=tree,
+                                                    parent_item=item,
+                                                    parameter=param,
+                                                    default_value=value)
+                    item.addChild(subitem)
+                    self.items[group][param] = subitem
+                self.appearanceParams.addTopLevelItem(item)
+                item.sortChildren(0, Qt.AscendingOrder)
+        self.appearanceParams.expandAll()
+        self.appearanceParams.resizeColumnToContents(0)
+        self.appearanceParams.resizeColumnToContents(1)
         self.layer_search_combo.removeItem(1)
+
+        # configure export params in separate tab
+        exportTree = dlg.exportParams
+        for group, settings in params.items():
+            if group == "Data export":
+                item = QTreeWidgetItem()
+                item.setText(0, group)
+                for param, value in settings.items():
+                    subitem = self.createOptionItem(tree_widget=exportTree,
+                                                    parent_item=item,
+                                                    parameter=param,
+                                                    default_value=value)
+                    item.addChild(subitem)
+                    self.items[group][param] = subitem
+                self.exportParams.addTopLevelItem(item)
+                item.sortChildren(0, Qt.AscendingOrder)
+        self.exportParams.expandAll()
+        self.exportParams.resizeColumnToContents(0)
+        self.exportParams.resizeColumnToContents(1)
 
     def createOptionItem(self, tree_widget, parent_item,
                          parameter, default_value):

@@ -62,8 +62,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """
         Set template to match desired control output
         """
-        combo = self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        combo = self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Template',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1)
@@ -168,8 +168,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -200,8 +200,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 #        QgsProject.instance().addMapLayer(layer)
 
 #        self.dialog = MainDialog(self.iface)
-#        self.dialog.paramsTreeOL.itemWidget(
-#            self.dialog.paramsTreeOL.findItems(
+#        self.dialog.appearanceParams.itemWidget(
+#            self.dialog.appearanceParams.findItems(
 #                'Extent',
 #                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
 #                1).setCurrentIndex(1)
@@ -230,8 +230,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -261,8 +261,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -290,8 +290,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -323,8 +323,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -355,8 +355,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -388,8 +388,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -419,8 +419,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -452,8 +452,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -485,8 +485,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -514,8 +514,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -547,8 +547,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -577,8 +577,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -611,8 +611,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -642,8 +642,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -676,8 +676,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -708,8 +708,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -739,8 +739,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -771,8 +771,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems("Extent",
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems("Extent",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -802,8 +802,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 "Extent", (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -834,8 +834,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems("Extent",
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems("Extent",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -865,8 +865,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems("Extent",
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems("Extent",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -897,8 +897,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems("Extent",
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems("Extent",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -929,8 +929,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems("Extent",
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems("Extent",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -961,8 +961,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems("Extent",
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems("Extent",
                                                (Qt.MatchExactly |
                                                 Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -997,8 +997,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog.ol3.click()
 
         # Change the 'Add layers list' dropdown
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Add layers list',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1030,8 +1030,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1074,8 +1074,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1112,15 +1112,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Set the 'Measure tool' combo
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Measure tool',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1154,16 +1154,16 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
 
         # Set the 'Measure tool' combo
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Measure tool',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1196,8 +1196,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1235,8 +1235,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1274,8 +1274,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1313,8 +1313,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1353,8 +1353,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1392,8 +1392,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1434,8 +1434,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1475,8 +1475,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1513,15 +1513,15 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
 
         # Change the 'Add layers list' dropdown
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Add layers list',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1555,8 +1555,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1592,8 +1592,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1630,8 +1630,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1667,8 +1667,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1705,8 +1705,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1745,8 +1745,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1785,8 +1785,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1824,8 +1824,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1863,8 +1863,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1908,8 +1908,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -1953,8 +1953,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(0)
@@ -1990,8 +1990,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2029,8 +2029,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2069,8 +2069,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2108,8 +2108,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2148,8 +2148,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2187,8 +2187,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2228,8 +2228,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2260,8 +2260,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # Export to web map
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2292,8 +2292,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2324,8 +2324,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2355,8 +2355,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2384,8 +2384,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2417,8 +2417,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2450,8 +2450,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2483,8 +2483,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2516,8 +2516,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2545,8 +2545,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2574,8 +2574,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2605,8 +2605,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2639,8 +2639,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2672,8 +2672,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2705,8 +2705,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2738,8 +2738,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2771,8 +2771,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2805,8 +2805,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
@@ -2846,8 +2846,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         root.removeChildNode(root.children()[0])
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
@@ -2886,8 +2886,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         root.removeChildNode(root.children()[0])
 
         self.dialog = MainDialog(self.iface)
-        self.dialog.paramsTreeOL.itemWidget(
-            self.dialog.paramsTreeOL.findItems(
+        self.dialog.appearanceParams.itemWidget(
+            self.dialog.appearanceParams.findItems(
                 'Extent',
                         (Qt.MatchExactly | Qt.MatchRecursive))[0],
                 1).setCurrentIndex(1)
