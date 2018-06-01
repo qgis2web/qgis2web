@@ -434,12 +434,11 @@ def scaleBar(placement):
 
 def addressSearchScript():
     addressSearch = """
-        var osmGeocoder = new L.Control.OSMGeocoder({
-            collapsed: false,
-            position: 'topright',
-            text: 'Search',
-        });
-        osmGeocoder.addTo(map);"""
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search'
+        }).addTo(map);"""
     return addressSearch
 
 

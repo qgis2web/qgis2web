@@ -51,10 +51,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
             shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     if address:
-        shutil.copyfile(jsDir + 'Control.OSMGeocoder.js',
-                        jsStore + 'Control.OSMGeocoder.js')
-        shutil.copyfile(cssDir + 'Control.OSMGeocoder.css',
-                        cssStore + 'Control.OSMGeocoder.css')
+        shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
+                        jsStore + 'leaflet-control-geocoder.Geocoder.js')
+        shutil.copyfile(cssDir + 'leaflet-control-geocoder.Geocoder.css',
+                        cssStore + 'leaflet-control-geocoder.Geocoder.css')
     if locate:
         shutil.copyfile(jsDir + 'L.Control.Locate.min.js',
                         jsStore + 'L.Control.Locate.min.js')
@@ -169,9 +169,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         layerSearchJS = ""
     if address:
         addressCSS = """
-        <link rel="stylesheet" href="css/Control.OSMGeocoder.css">"""
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">"""
         addressJS = """
-        <script src="js/Control.OSMGeocoder.js"></script>"""
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>"""
     else:
         addressCSS = ""
         addressJS = ""
@@ -285,23 +285,26 @@ def writeCSS(cssStore, backgroundColor, feedback, colorAccent):
                         border: 0px;
                     }}  
                     }}
+                    
                     .fa, .leaflet-container, a {{
                         color: white !important;        
                     }}
                     
-                    .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-touch .leaflet-bar a:last-child {{
+                    .leaflet-control-zoom-in, .leaflet-control-zoom-out,
+                    .leaflet-touch .leaflet-bar a:last-child,
+                    .leaflet-touch .leaflet-control-geocoder-icon {{
                         background-color: {} !important; 
+                        border-radius: 0px !important;
                     }}
                     
                     .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {{
                         border: 3px solid rgba(255,255,255,.4) !important;
                     }}
                     
-                    .leaflet-touch .leaflet-bar a {{
-                        width: 21px;
-                        height: 21px;
-                        line-height: 21px;
+                    .leaflet-control-attribution a {{
+                        color: #0078A8 !important;
                     }}
+
                          
             """.format(colorAccent)
         f_css.write(text)
