@@ -53,6 +53,17 @@ th, td {
     font-size: 100%;
 }
 
+.layer-switcher .panel {
+    //border: 4px solid rgba(0,60,136,.5) !important;
+    //border-radius: 4px !important;
+}
+
+.layer-switcher {
+    top: 0.5em;
+    right: 0.5em;
+    text-align: left;
+}
+
 #popup-content>ul>li:nth-child(even) {
     background-color: #eee;
 }

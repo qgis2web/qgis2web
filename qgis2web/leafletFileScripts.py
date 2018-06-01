@@ -244,45 +244,66 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     feedback.completeStep()
 
 
-def writeCSS(cssStore, backgroundColor, feedback):
+def writeCSS(cssStore, backgroundColor, feedback, colorAccent):
     feedback.showFeedback("Writing CSS...")
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
-#map {
-    background-color: """ + backgroundColor + """
-}
-th {
-    text-align: left;
-    vertical-align: top;
-}
-.info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-.info h2 {
-    margin: 0 0 5px;
-    color: #777;
-}
-.leaflet-container {
-    background: #fff;
-    padding-right: 10px;
-}
-.leaflet-popup-content {
-    width:auto !important;
-    padding-right:10px;
-}
-.leaflet-tooltip {
-    background: none;
-    box-shadow: none;
-    border: none;
-}
-.leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
-    border: 0px;
-}"""
+                    #map {{
+                        background-color: """ + backgroundColor + """
+                    }}
+                    
+                    th {{
+                        text-align: left;
+                        vertical-align: top;
+                    }}
+                    .info {{
+                        padding: 6px 8px;
+                        font: 14px/16px Arial, Helvetica, sans-serif;
+                        background: white;
+                        background: rgba(255,255,255,0.8);
+                        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+                        border-radius: 5px;
+                    }}
+                    .info h2 {{
+                        margin: 0 0 5px;
+                        color: #777;
+                    }}
+                    .leaflet-container {{
+                        background: #fff;
+                        padding-right: 10px;
+                    }}
+                    .leaflet-popup-content {{
+                        width:auto !important;
+                        padding-right:10px;
+                    }}
+                    .leaflet-tooltip {{
+                        background: none;
+                        box-shadow: none;
+                        border: none;
+                    }}
+                    .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {{
+                        border: 0px;
+                    }}  
+                    }}
+                    .fa, .leaflet-container, a {{
+                        color: white !important;        
+                    }}
+                    
+                    .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-touch .leaflet-bar a:last-child {{
+                        background-color: {} !important; 
+                    }}
+                    
+                    .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {{
+                        border: 3px solid rgba(255,255,255,.4) !important;
+                    }}
+                    
+                    .leaflet-touch .leaflet-bar a {{
+                        width: 21px;
+                        height: 21px;
+                        line-height: 21px;
+                    }}
+                         
+            """.format(colorAccent)
         f_css.write(text)
         f_css.close()
     feedback.completeStep()

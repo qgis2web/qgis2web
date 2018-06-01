@@ -55,7 +55,6 @@ from PyQt5.QtWidgets import (QAction,
 from PyQt5.QtNetwork import QNetworkAccessManager
 from PyQt5.uic import loadUiType
 from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
-
 from qgis.PyQt.QtWebKit import QWebSettings
 
 import traceback

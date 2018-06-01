@@ -123,6 +123,7 @@ class OpenLayersWriter(Writer):
         layerSearch = unicode(settings["Appearance"]["Layer search"])
         searchLayer = settings["Appearance"]["Search layer"]
         mapLibLocn = settings["Data export"]["Mapping library location"]
+        accent = settings["Appearance"]["Color Accent"]
 
         writeFiles(folder, restrictToExtent, feedback, debugLibs)
         exportLayers(iface, layers, folder, precision, optimize,
@@ -146,7 +147,7 @@ class OpenLayersWriter(Writer):
         controls = getControls(project, measureTool, geolocateUser)
         layersList = getLayersList(addLayersList)
         pageTitle = project.title()
-        backgroundColor = getBackground(mapSettings)
+        backgroundColor = getBackground(mapSettings, accent)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
@@ -322,14 +323,23 @@ layerSwitcher.showPanel();
     return layersList
 
 
-def getBackground(mapSettings):
+def getBackground(mapSettings, colorAccent):
     return """
         <style>
         html, body {{
             background-color: {bgcol};
         }}
+        
+        .ol-control button {{
+            background-color: {accent};
+        }}
+                
+        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
+            background-color: rgba(255,255,255,.4) !important;
+            padding: 3px !important;
+        }}
         </style>
-""".format(bgcol=mapSettings.backgroundColor().name())
+""".format(bgcol=mapSettings.backgroundColor().name(), accent=colorAccent)
 
 
 def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):

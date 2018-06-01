@@ -141,6 +141,7 @@ class LeafletWriter(Writer):
         layerSearch = params["Appearance"]["Layer search"]
         popupsOnHover = params["Appearance"]["Show popups on hover"]
         template = params["Appearance"]["Template"]
+        accent = params["Appearance"]["Color Accent"]
 
         usedFields = [ALL_ATTRIBUTES] * len(popup)
 
@@ -153,7 +154,7 @@ class LeafletWriter(Writer):
                                                    canvas, mapLibLocation,
                                                    addressSearch, locate,
                                                    debugLibs)
-        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback)
+        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback, accent)
 
         wfsLayers = ""
         labelCode = ""

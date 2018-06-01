@@ -51,7 +51,8 @@ def getParams(configure_exporter_action=None):
             "Show popups on hover": False,
             "Highlight on hover": False,
             "Geolocate user": False,
-            "Template": getTemplates()
+            "Template": getTemplates(),
+            "Color Accent": ("grey", "red", "green", "blue")
         },
         "Data export": {
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
