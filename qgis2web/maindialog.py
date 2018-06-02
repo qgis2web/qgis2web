@@ -70,6 +70,8 @@ from qgis2web.writerRegistry import (WRITER_REGISTRY)
 from qgis2web.exporter import (EXPORTER_REGISTRY)
 from qgis2web.feedbackDialog import FeedbackDialog
 
+from qgis.gui import QgsColorButton
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 webkit_available = True
 
@@ -507,11 +509,15 @@ class MainDialog(QDialog, FORM_CLASS):
         parameters = defaultdict(dict)
         for group, settings in self.items.items():
             for param, item in settings.items():
-                parameters[group][param] = item.value()
-                if param == "Layer search":
-                    parameters["Appearance"]["Search layer"] = (
-                        self.layer_search_combo.itemData(
-                            self.layer_search_combo.currentIndex()))
+                if param == 'Color Accent':
+                    parameters[group][param] = item._value.color().name()
+                else:
+                    parameters[group][param] = item.value()
+                    if param == "Layer search":
+                        parameters["Appearance"]["Search layer"] = (
+                            self.layer_search_combo.itemData(
+                                self.layer_search_combo.currentIndex()))
+
         return parameters
 
     def saveParameters(self):
@@ -790,7 +796,9 @@ class TreeSettingItem(QTreeWidgetItem):
         self.setText(0, name)
         widget = None
 
-        if isinstance(value, bool):
+        if isinstance(value, QgsColorButton):
+            widget = value
+        elif isinstance(value, bool):
             if value:
                 self.setCheckState(1, Qt.Checked)
             else:

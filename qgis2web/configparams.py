@@ -20,7 +20,7 @@ import os
 import shutil
 from qgis2web.utils import tempFolder
 from qgis2web.exporter import EXPORTER_REGISTRY
-
+from qgis.gui import QgsColorButton
 
 def getTemplates():
     src = os.path.join(os.path.dirname(__file__), "templates")
@@ -41,6 +41,9 @@ def getTemplates():
 
 
 def getParams(configure_exporter_action=None):
+
+    accentColor = QgsColorButton()
+
     params = {
         "Appearance": {
             "Add layers list": ("None", "Collapsed", "Expanded"),
@@ -52,7 +55,7 @@ def getParams(configure_exporter_action=None):
             "Highlight on hover": False,
             "Geolocate user": False,
             "Template": getTemplates(),
-            "Color Accent": ("grey", "red", "green", "blue")
+            "Color Accent": accentColor
         },
         "Data export": {
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
