@@ -509,7 +509,7 @@ class MainDialog(QDialog, FORM_CLASS):
         parameters = defaultdict(dict)
         for group, settings in self.items.items():
             for param, item in settings.items():
-                if param == 'Color Accent':
+                if param in ('Widget Icon', 'Widget Background'):
                     parameters[group][param] = item._value.color().name()
                 else:
                     parameters[group][param] = item.value()

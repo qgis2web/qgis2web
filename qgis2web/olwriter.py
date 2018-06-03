@@ -123,7 +123,8 @@ class OpenLayersWriter(Writer):
         layerSearch = unicode(settings["Appearance"]["Layer search"])
         searchLayer = settings["Appearance"]["Search layer"]
         mapLibLocn = settings["Data export"]["Mapping library location"]
-        accent = settings["Appearance"]["Color Accent"]
+        widgetAccent = settings["Appearance"]["Widget Icon"]
+        widgetBackground = settings["Appearance"]["Widget Background"]
 
         writeFiles(folder, restrictToExtent, feedback, debugLibs)
         exportLayers(iface, layers, folder, precision, optimize,
@@ -147,7 +148,7 @@ class OpenLayersWriter(Writer):
         controls = getControls(project, measureTool, geolocateUser)
         layersList = getLayersList(addLayersList)
         pageTitle = project.title()
-        backgroundColor = getBackground(mapSettings, accent)
+        backgroundColor = getBackground(mapSettings, widgetAccent, widgetBackground)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
@@ -323,7 +324,7 @@ layerSwitcher.showPanel();
     return layersList
 
 
-def getBackground(mapSettings, colorAccent):
+def getBackground(mapSettings, widgetAccent, widgetBackground):
     return """
         <style>
         html, body {{
@@ -331,7 +332,8 @@ def getBackground(mapSettings, colorAccent):
         }}
         
         .ol-control button {{
-            background-color: {accent};
+            background-color: {widgetBackground};
+            color: {widgetAccent};
         }}
                 
         .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
@@ -339,7 +341,7 @@ def getBackground(mapSettings, colorAccent):
             padding: 3px !important;
         }}
         </style>
-""".format(bgcol=mapSettings.backgroundColor().name(), accent=colorAccent)
+""".format(bgcol=mapSettings.backgroundColor().name(), widgetBackground=widgetBackground, widgetAccent=widgetAccent)
 
 
 def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
