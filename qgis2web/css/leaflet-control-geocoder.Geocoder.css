@@ -46,7 +46,7 @@
 	height: 26px;
 	border: none;
 	background-color: white;
-	background-image: url(images/geocoder.png);
+	//background-image: url(images/geocoder.png);
 	background-repeat: no-repeat;
 	background-position: center;
 	cursor: pointer;

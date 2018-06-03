@@ -439,8 +439,8 @@ def addressSearchScript():
             position: 'topleft',
             text: 'Search'
         }).addTo(map);
-        
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0].className += ' fa fa-search';
+                 
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0].className += ' fa fa-search'; 
         """
     return addressSearch
 
