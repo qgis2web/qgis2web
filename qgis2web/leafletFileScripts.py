@@ -25,6 +25,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     os.makedirs(cssStore)
     cssStore += os.sep
     cssDir = pluginDir + os.sep + 'css' + os.sep
+    fontDir = pluginDir + os.sep + 'webfonts' + os.sep
+    fontStore = os.path.join(outputProjectFileName, 'webfonts')
+    os.makedirs(fontStore)
+    fontStore += os.sep
     markerStore = os.path.join(outputProjectFileName, 'markers')
     os.makedirs(markerStore)
     shutil.copyfile(jsDir + 'qgis2web_expressions.js',
@@ -73,6 +77,15 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js',
                     jsStore + 'leaflet.rotatedMarker.js')
+
+    # copy icons
+    shutil.copyfile(cssDir + 'fontawesome-all.min.css',
+                    cssStore + 'fontawesome-all.min.css')
+    shutil.copyfile(fontDir + 'fa-solid-900.woff2',
+                    fontStore + 'fa-solid-900.woff2')
+    shutil.copyfile(fontDir + 'fa-solid-900.ttf',
+                    fontStore + 'fa-solid-900.ttf')
+
     if len(cluster_set):
         shutil.copyfile(jsDir + 'leaflet.markercluster.js',
                         jsStore + 'leaflet.markercluster.js')
@@ -127,11 +140,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress = '<script src="http://'
         jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
     if locate:
-        cssAddress += '<link rel="stylesheet" href='
-        cssAddress += '"https://use.fontawesome.com/releases/'
-        cssAddress += 'v5.0.13/css/all.css"'
-        cssAddress += 'integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"'
-        cssAddress += 'crossorigin="anonymous">'
+        # cssAddress += '<link rel="stylesheet" href='
+        # cssAddress += '"https://use.fontawesome.com/releases/'
+        # cssAddress += 'v5.0.13/css/all.css"'
+        # cssAddress += 'integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"'
+        # cssAddress += 'crossorigin="anonymous">'
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
@@ -154,6 +167,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
+    extracss += '<link rel="stylesheet" href="css/fontawesome-all.min.css">'
     if useCluster:
         clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">"""
