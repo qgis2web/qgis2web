@@ -305,6 +305,12 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     .leaflet-control-attribution a {
                         color: #0078A8 !important;
                     }
+                    
+                    .leaflet-control-scale-line {
+                        border: 2px solid """ + widgetBackground + """ !important;
+                        border-top: none !important;
+                        color: """ + widgetBackground + """ !important;
+                    }
                                              
             """
         f_css.write(text)

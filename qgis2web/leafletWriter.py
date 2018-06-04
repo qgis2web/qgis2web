@@ -328,9 +328,10 @@ class LeafletWriter(Writer):
                 [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-            placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
-            placement = PLACEMENT[placement]
-            end = scaleBar(placement)
+            #placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
+            #placement = PLACEMENT[placement]
+            #end = scaleBar(placement)
+            end = scaleBar()
         else:
             end = ''
         layerType = "layer"

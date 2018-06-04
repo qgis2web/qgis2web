@@ -424,9 +424,8 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
     return layersList
 
 
-def scaleBar(placement):
-        scaleBar = """
-        L.control.scale({position: '%s', """ % placement
+def scaleBar():
+        scaleBar = "L.control.scale({position: 'bottomleft', "
         scaleBar += "maxWidth: 100, metric: true, imperial: false, "
         scaleBar += "updateWhenIdle: false}).addTo(map);"
         return scaleBar

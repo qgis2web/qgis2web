@@ -340,6 +340,18 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
             background-color: rgba(255,255,255,.4) !important;
             padding: 3px !important;
         }}
+        
+        .ol-scale-line {{
+            background: none !important;
+        }}
+        
+        .ol-scale-line-inner {{
+            border: 2px solid {widgetBackground} !important;
+            border-top: none !important;
+            background: rgba(255, 255, 255, 0.5) !important;
+            color: {widgetBackground} !important;
+        }}
+        
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name(), widgetBackground=widgetBackground, widgetAccent=widgetAccent)
 
