@@ -382,6 +382,10 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                         text-align: center;
                         text-indent: 0%;
                     }
+                    
+                    .leaflet-control-layers-toggle {
+                        background-color: """ + widgetBackground + """ !important;
+                    }
                                              
             """
         print(widgetAccent)
