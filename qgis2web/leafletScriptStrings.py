@@ -137,6 +137,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
     if measure != "None":
         if measure == "Imperial":
             options = """{
+            position: 'topleft',
             primaryLengthUnit: 'feet',
             secondaryLengthUnit: 'miles',
             primaryAreaUnit: 'sqfeet',
@@ -144,6 +145,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         }"""
         else:
             options = """{
+            position: 'topleft',
             primaryLengthUnit: 'meters',
             secondaryLengthUnit: 'kilometers',
             primaryAreaUnit: 'sqmeters',
@@ -151,7 +153,11 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         }"""
         map += """
         var measureControl = new L.Control.Measure(%s);
-        measureControl.addTo(map);""" % options
+        measureControl.addTo(map);
+        
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        """ % options
     return map
 
 

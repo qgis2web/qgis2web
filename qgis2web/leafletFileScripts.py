@@ -127,9 +127,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress = '<script src="http://'
         jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
     if locate:
-        cssAddress += '<link rel="stylesheet" '
-        cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
-        cssAddress += '4.6.1/css/font-awesome.min.css">'
+        cssAddress += '<link rel="stylesheet" href='
+        cssAddress += '"https://use.fontawesome.com/releases/'
+        cssAddress += 'v5.0.13/css/all.css"'
+        cssAddress += 'integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"'
+        cssAddress += 'crossorigin="anonymous">'
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
@@ -293,7 +295,8 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     .leaflet-control-zoom-in, .leaflet-control-zoom-out,
                     .leaflet-touch .leaflet-bar a:last-child,
                     .leaflet-touch .leaflet-control-geocoder-icon,
-                    .leaflet-control-search .search-button {
+                    .leaflet-control-search .search-button,
+                     .leaflet-control-measure {
                         background-color: """ + widgetBackground + """ !important; 
                         border-radius: 0px !important;
                         color: """ + widgetAccent + """ !important;
@@ -301,7 +304,8 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     
                     .leaflet-touch .leaflet-control-layers,
                     .leaflet-touch .leaflet-bar,
-                    .leaflet-control-search {
+                    .leaflet-control-search,
+                    .leaflet-control-measure {
                         border: 3px solid rgba(255,255,255,.4) !important;
                     }
                     
@@ -316,7 +320,8 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     }
                     
                     .leaflet-control-search .search-button,
-                    .leaflet-container .leaflet-control-search{
+                    .leaflet-container .leaflet-control-search,
+                    .leaflet-control-measure {
                         box-shadow: none !important;
                     }
                     
@@ -328,13 +333,40 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                         line-height: 30px !important;
                     }
                     
-                    .leaflet-container .leaflet-control-search {
+                    .leaflet-control-measure .leaflet-control {
+                        width: 30px !important;
+                        height: 30px !important;
+                    }
+                    
+                    .leaflet-container .leaflet-control-search{
                         background: none !important;    
                     }
                      
                     .leaflet-control-search .search-input {
                         margin: 0px 0px 0px 0px !important;
                         height: 30px !important;
+                    }
+                    
+                    .leaflet-control-measure {
+                        background: none!important;
+                        border-radius: 4px !important;
+                    }
+                    
+                    .leaflet-control-measure .leaflet-control-measure-interaction {
+                        background-color: """ + widgetBackground + """ !important;
+                    }
+                    
+                    .leaflet-touch .leaflet-control-measure .leaflet-control-measure-toggle,
+                    .leaflet-touch .leaflet-control-measure .leaflet-control-measure-toggle:hover {
+                        width: 30px !important;
+                        height: 30px !important;
+                        border-radius: 0px !important;
+                        background-color: """ + widgetBackground + """ !important;
+                        color: """ + widgetAccent + """ !important;
+                        font-size: 13px;
+                        line-height: 30px;
+                        text-align: center;
+                        text-indent: 0%;
                     }
                                              
             """
