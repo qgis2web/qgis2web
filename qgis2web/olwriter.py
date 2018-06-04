@@ -349,7 +349,7 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
             border: 2px solid {widgetBackground} !important;
             border-top: none !important;
             background: rgba(255, 255, 255, 0.5) !important;
-            color: {widgetBackground} !important;
+            color: black !important;
         }}
         
         </style>
@@ -416,10 +416,10 @@ def getCSS(geocode, geolocateUser, controlCount):
             height: 21px!important;
         }
         </style>""" % geocodePos
-    if geolocateUser:
-        extracss += """
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
-        extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
+    #if geolocateUser:
+        #extracss += """
+        #<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
+        #extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
     return (extracss, controlCount)
 
 

@@ -330,7 +330,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     .leaflet-control-scale-line {
                         border: 2px solid """ + widgetBackground + """ !important;
                         border-top: none !important;
-                        color: """ + widgetBackground + """ !important;
+                        color: black !important;
                     }
                     
                     .leaflet-control-search .search-button,
@@ -384,6 +384,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     }
                                              
             """
+        print(widgetAccent)
         f_css.write(text)
         f_css.close()
     feedback.completeStep()
