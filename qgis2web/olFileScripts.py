@@ -62,8 +62,9 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
       map: map
     }});
 
-    map.addControl(searchLayer);""".format(layer=searchLayer,
-                                           field=searchVals[1])
+    map.addControl(searchLayer);
+    document.getElementsByClassName('search-layer')[0].getElementsByTagName('button')[0].className += ' fa fa-binoculars'; 
+    """.format(layer=searchLayer, field=searchVals[1])
         controlCount = controlCount + 1
     else:
         layerSearch = ""
