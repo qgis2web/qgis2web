@@ -512,7 +512,11 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             layer: {searchLayer},
             initial: false,
             hideMarkerOnCollapse: true,
-            propertyName: '{field}'}}));""".format(searchLayer=searchLayer,
+            propertyName: '{field}'}}));
+            
+        document.getElementsByClassName('search-button')[0].className += ' fa fa-binoculars'; 
+            
+            """.format(searchLayer=searchLayer,
                                                    field=searchVals[1])
     if useHeat:
         endHTML += """

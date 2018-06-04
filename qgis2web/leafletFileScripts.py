@@ -292,13 +292,16 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     
                     .leaflet-control-zoom-in, .leaflet-control-zoom-out,
                     .leaflet-touch .leaflet-bar a:last-child,
-                    .leaflet-touch .leaflet-control-geocoder-icon {
+                    .leaflet-touch .leaflet-control-geocoder-icon,
+                    .leaflet-control-search .search-button {
                         background-color: """ + widgetBackground + """ !important; 
                         border-radius: 0px !important;
                         color: """ + widgetAccent + """ !important;
                     }
                     
-                    .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+                    .leaflet-touch .leaflet-control-layers,
+                    .leaflet-touch .leaflet-bar,
+                    .leaflet-control-search {
                         border: 3px solid rgba(255,255,255,.4) !important;
                     }
                     
@@ -310,6 +313,28 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                         border: 2px solid """ + widgetBackground + """ !important;
                         border-top: none !important;
                         color: """ + widgetBackground + """ !important;
+                    }
+                    
+                    .leaflet-control-search .search-button,
+                    .leaflet-container .leaflet-control-search{
+                        box-shadow: none !important;
+                    }
+                    
+                    .leaflet-control-search .search-button {
+                        width: 30px !important;
+                        height: 30px !important;
+                        font-size: 13px !important;
+                        text-align: center !important;
+                        line-height: 30px !important;
+                    }
+                    
+                    .leaflet-container .leaflet-control-search {
+                        background: none !important;    
+                    }
+                     
+                    .leaflet-control-search .search-input {
+                        margin: 0px 0px 0px 0px !important;
+                        height: 30px !important;
                     }
                                              
             """
