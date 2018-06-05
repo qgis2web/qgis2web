@@ -311,38 +311,38 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                         ])
         self.assertEqual(writer.json, [False])
 
-    def test14_Leaflet_wfs_poly_single(self):
-        """Dialog test: Leaflet  WFS polygon single"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = get_test_data_path('style', 'polygon_single.qml')
-        control_path = get_test_data_path(
-            'control', 'leaflet_wfs_polygon_single.html')
-        layer = load_wfs_layer(layer_url, 'polygon')
-        layer.loadNamedStyle(layer_style)
+    # def test14_Leaflet_wfs_poly_single(self):
+        # """Dialog test: Leaflet  WFS polygon single"""
+        # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        # layer_style = get_test_data_path('style', 'polygon_single.qml')
+        # control_path = get_test_data_path(
+            # 'control', 'leaflet_wfs_polygon_single.html')
+        # layer = load_wfs_layer(layer_url, 'polygon')
+        # layer.loadNamedStyle(layer_style)
 
-        QgsProject.instance().addMapLayer(layer)
+        # QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
+        # self.dialog = MainDialog(self.iface)
+        # self.dialog.appearanceParams.itemWidget(
+            # self.dialog.appearanceParams.findItems(
+                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                # 1).setCurrentIndex(1)
+        # self.setTemplate('full-screen')
+        # self.dialog.leaflet.click()
 
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup, [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
-                                        ])
-        self.assertEqual(writer.json, [False])
+        # writer = self.dialog.createWriter()
+        # self.assertTrue(isinstance(writer, LeafletWriter))
+        # expected_params = self.defaultParams()
+        # self.assertEqual(writer.params, expected_params)
+        # self.assertEqual(writer.groups, {})
+        # self.assertEqual(writer.layers, [layer])
+        # self.assertEqual(writer.visible, [True])
+        # self.assertEqual(writer.cluster, [False])
+        # self.assertEqual(writer.popup, [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
+                                        # ])
+        # self.assertEqual(writer.json, [False])
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Dialog test: Leaflet  JSON point categorized"""
@@ -377,37 +377,37 @@ class qgis2web_classDialogTest(unittest.TestCase):
              ('USE', 'no label')])])
         self.assertEqual(writer.json, [False])
 
-    def test16_Leaflet_wfs_pnt_categorized(self):
-        """Dialog test: Leaflet  WFS point categorized"""
-        layer_url = (
-            'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = get_test_data_path('style', 'wfs_point_categorized.qml')
-        control_path = get_test_data_path(
-            'control', 'leaflet_wfs_point_categorized.html')
-        layer = load_wfs_layer(layer_url, 'point')
-        layer.loadNamedStyle(layer_style)
+    # def test16_Leaflet_wfs_pnt_categorized(self):
+        # """Dialog test: Leaflet  WFS point categorized"""
+        # layer_url = (
+            # 'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        # layer_style = get_test_data_path('style', 'wfs_point_categorized.qml')
+        # control_path = get_test_data_path(
+            # 'control', 'leaflet_wfs_point_categorized.html')
+        # layer = load_wfs_layer(layer_url, 'point')
+        # layer.loadNamedStyle(layer_style)
 
-        QgsProject.instance().addMapLayer(layer)
+        # QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
+        # self.dialog = MainDialog(self.iface)
+        # self.dialog.appearanceParams.itemWidget(
+            # self.dialog.appearanceParams.findItems(
+                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                # 1).setCurrentIndex(1)
+        # self.setTemplate('full-screen')
+        # self.dialog.leaflet.click()
 
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup, [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                                        ])
-        self.assertEqual(writer.json, [False])
+        # writer = self.dialog.createWriter()
+        # self.assertTrue(isinstance(writer, LeafletWriter))
+        # expected_params = self.defaultParams()
+        # self.assertEqual(writer.params, expected_params)
+        # self.assertEqual(writer.groups, {})
+        # self.assertEqual(writer.layers, [layer])
+        # self.assertEqual(writer.visible, [True])
+        # self.assertEqual(writer.cluster, [False])
+        # self.assertEqual(writer.popup, [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
+                                        # ])
+        # self.assertEqual(writer.json, [False])
 
     def test17_Leaflet_json_line_categorized(self):
         """Dialog test: Leaflet  JSON line categorized"""
@@ -475,36 +475,36 @@ class qgis2web_classDialogTest(unittest.TestCase):
                               (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])])
         self.assertEqual(writer.json, [False])
 
-    def test20_Leaflet_wfs_poly_categorized(self):
-        """Dialog test: Leaflet  WFS polygon categorized"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = get_test_data_path('style', 'wfs_polygon_categorized.qml')
-        layer = load_wfs_layer(layer_url, 'polygon')
-        layer.loadNamedStyle(layer_style)
+    # def test20_Leaflet_wfs_poly_categorized(self):
+        # """Dialog test: Leaflet  WFS polygon categorized"""
+        # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        # layer_style = get_test_data_path('style', 'wfs_polygon_categorized.qml')
+        # layer = load_wfs_layer(layer_url, 'polygon')
+        # layer.loadNamedStyle(layer_style)
 
-        QgsProject.instance().addMapLayer(layer)
+        # QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
+        # self.dialog = MainDialog(self.iface)
+        # self.dialog.appearanceParams.itemWidget(
+            # self.dialog.appearanceParams.findItems(
+                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                # 1).setCurrentIndex(1)
+        # self.setTemplate('full-screen')
+        # self.dialog.leaflet.click()
+        # writer = self.dialog.createWriter()
+        # self.assertTrue(isinstance(writer, LeafletWriter))
+        # expected_params = self.defaultParams()
+        # self.assertEqual(writer.params, expected_params)
+        # self.assertEqual(writer.groups, {})
+        # self.assertEqual(writer.layers, [layer])
+        # self.assertEqual(writer.visible, [True])
+        # self.assertEqual(writer.cluster, [False])
+        # self.assertEqual(writer.popup,
+                         # [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
+                          # ])
+        # self.assertEqual(writer.json, [False])
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Dialog test: Leaflet  JSON point graduated"""
@@ -538,36 +538,36 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    def test22_Leaflet_wfs_pnt_graduated(self):
-        """Dialog test: Leaflet  WFS point graduated"""
-        layer_url = (
-            'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
-        layer_style = get_test_data_path('style', 'wfs_point_graduated.qml')
-        layer = load_wfs_layer(layer_url, 'point')
-        layer.loadNamedStyle(layer_style)
+    # def test22_Leaflet_wfs_pnt_graduated(self):
+        # """Dialog test: Leaflet  WFS point graduated"""
+        # layer_url = (
+            # 'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        # layer_style = get_test_data_path('style', 'wfs_point_graduated.qml')
+        # layer = load_wfs_layer(layer_url, 'point')
+        # layer.loadNamedStyle(layer_style)
 
-        QgsProject.instance().addMapLayer(layer)
+        # QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
+        # self.dialog = MainDialog(self.iface)
+        # self.dialog.appearanceParams.itemWidget(
+            # self.dialog.appearanceParams.findItems(
+                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                # 1).setCurrentIndex(1)
+        # self.setTemplate('full-screen')
+        # self.dialog.leaflet.click()
 
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
+        # writer = self.dialog.createWriter()
+        # self.assertTrue(isinstance(writer, LeafletWriter))
+        # expected_params = self.defaultParams()
+        # self.assertEqual(writer.params, expected_params)
+        # self.assertEqual(writer.groups, {})
+        # self.assertEqual(writer.layers, [layer])
+        # self.assertEqual(writer.visible, [True])
+        # self.assertEqual(writer.cluster, [False])
+        # self.assertEqual(writer.popup,
+                         # [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
+                          # ])
+        # self.assertEqual(writer.json, [False])
 
     def test23_Leaflet_json_line_graduated(self):
         """Dialog test: Leaflet  JSON line graduated"""
@@ -601,38 +601,38 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    def test24_Leaflet_wfs_line_graduated(self):
-        """Dialog test: Leaflet  WFS line graduated"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=broads_inspire:centreline&SRSNAME=EPSG:27700')
-        layer_style = get_test_data_path('style', 'wfs_line_graduated.qml')
-        layer = load_wfs_layer(layer_url, 'centreline')
-        layer.loadNamedStyle(layer_style)
+    # def test24_Leaflet_wfs_line_graduated(self):
+        # """Dialog test: Leaflet  WFS line graduated"""
+        # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     # '=broads_inspire:centreline&SRSNAME=EPSG:27700')
+        # layer_style = get_test_data_path('style', 'wfs_line_graduated.qml')
+        # layer = load_wfs_layer(layer_url, 'centreline')
+        # layer.loadNamedStyle(layer_style)
 
-        QgsProject.instance().addMapLayer(layer)
+        # QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
+        # self.dialog = MainDialog(self.iface)
+        # self.dialog.appearanceParams.itemWidget(
+            # self.dialog.appearanceParams.findItems(
+                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                # 1).setCurrentIndex(1)
+        # self.setTemplate('full-screen')
+        # self.dialog.leaflet.click()
 
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-                          ]
-                         )
-        self.assertEqual(writer.json, [False])
+        # writer = self.dialog.createWriter()
+        # self.assertTrue(isinstance(writer, LeafletWriter))
+        # expected_params = self.defaultParams()
+        # self.assertEqual(writer.params, expected_params)
+        # self.assertEqual(writer.groups, {})
+        # self.assertEqual(writer.layers, [layer])
+        # self.assertEqual(writer.visible, [True])
+        # self.assertEqual(writer.cluster, [False])
+        # self.assertEqual(writer.popup,
+                         # [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
+                          # ]
+                         # )
+        # self.assertEqual(writer.json, [False])
 
     def test25_Leaflet_json_poly_graduated(self):
         """Dialog test: Leaflet  JSON polygon graduated"""
@@ -666,39 +666,39 @@ class qgis2web_classDialogTest(unittest.TestCase):
                          )
         self.assertEqual(writer.json, [False])
 
-    def test26_Leaflet_wfs_poly_graduated(self):
-        """Dialog test: Leaflet  WFS polygon graduated"""
-        layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
-        layer_style = get_test_data_path('style', 'wfs_polygon_graduated.qml')
-        layer = load_wfs_layer(layer_url, 'polygon')
-        layer.loadNamedStyle(layer_style)
+    # def test26_Leaflet_wfs_poly_graduated(self):
+        # """Dialog test: Leaflet  WFS polygon graduated"""
+        # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
+                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        # layer_style = get_test_data_path('style', 'wfs_polygon_graduated.qml')
+        # layer = load_wfs_layer(layer_url, 'polygon')
+        # layer.loadNamedStyle(layer_style)
 
-        QgsProject.instance().addMapLayer(layer)
+        # QgsProject.instance().addMapLayer(layer)
 
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-        self.dialog.leaflet.click()
+        # self.dialog = MainDialog(self.iface)
+        # self.dialog.appearanceParams.itemWidget(
+            # self.dialog.appearanceParams.findItems(
+                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+                # 1).setCurrentIndex(1)
+        # self.setTemplate('full-screen')
+        # self.dialog.leaflet.click()
 
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict(
-                          [(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'),
-                           (u'area_ha', u'no label'), (u'web_page', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
+        # writer = self.dialog.createWriter()
+        # self.assertTrue(isinstance(writer, LeafletWriter))
+        # expected_params = self.defaultParams()
+        # self.assertEqual(writer.params, expected_params)
+        # self.assertEqual(writer.groups, {})
+        # self.assertEqual(writer.layers, [layer])
+        # self.assertEqual(writer.visible, [True])
+        # self.assertEqual(writer.cluster, [False])
+        # self.assertEqual(writer.popup,
+                         # [OrderedDict(
+                          # [(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'),
+                           # (u'area_ha', u'no label'), (u'web_page', u'no label')])
+                          # ])
+        # self.assertEqual(writer.json, [False])
 
     def test27_OL3_pnt_single(self):
         """Dialog test: OL3   point single"""
