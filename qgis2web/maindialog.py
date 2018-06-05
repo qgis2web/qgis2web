@@ -130,6 +130,8 @@ class MainDialog(QDialog, FORM_CLASS):
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(
                 QWebSettings.DeveloperExtrasEnabled, True)
+            self.preview.settings().setAttribute(
+                QWebSettings.DnsPrefetchEnabled, True)
         else:
             widget = QTextBrowser()
             widget.setText(self.tr('Preview is not available since QtWebKit '

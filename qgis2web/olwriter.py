@@ -30,6 +30,7 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication
 from qgis2web.olFileScripts import (writeFiles,
                                     writeHTMLstart,
+                                    writeLayerSearch,
                                     writeScriptIncludes)
 from qgis2web.olLayerScripts import writeLayersAndGroups
 from qgis2web.olScriptStrings import (measureScript,
@@ -38,6 +39,7 @@ from qgis2web.olScriptStrings import (measureScript,
                                       measureUnitMetricScript,
                                       measureUnitFeetScript,
                                       measureStyleScript,
+                                      layerSearchStyleScript,
                                       geolocation,
                                       geolocateStyle,
                                       geolocationHead,
@@ -136,10 +138,8 @@ class OpenLayersWriter(Writer):
                                     getFeatureInfo, iface, restrictToExtent,
                                     extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
-        (jsAddress, cssAddress, layerSearch,
-         controlCount) = writeHTMLstart(settings, controlCount, osmb,
-                                        mapLibLocn, layerSearch, searchLayer,
-                                        feedback, debugLibs)
+        (jsAddress, cssAddress, controlCount) = writeHTMLstart(settings, controlCount, osmb,
+                                                mapLibLocn, feedback, debugLibs)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
@@ -166,7 +166,9 @@ class OpenLayersWriter(Writer):
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
         m2px = getM2px(mapUnitsLayers)
-        (extracss, controlCount) = getCSS(geocode, geolocateUser, controlCount)
+        (extracss, controlCount) = getCSS(geocode, geolocateUser, layerSearch, controlCount)
+        (jsAddress, cssAddress, layerSearch, controlCount) = writeLayerSearch(cssAddress, jsAddress, controlCount,
+                                                                              layerSearch, searchLayer, feedback)
         ol3layerswitcher = getLayerSwitcher()
         ol3popup = getPopup()
         ol3qgis2webjs = getJS(osmb)
@@ -332,8 +334,9 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
         }}
         
         .ol-control button {{
-            background-color: {widgetBackground};
-            color: {widgetAccent};
+            background-color: {widgetBackground} !important;
+            color: {widgetAccent} !important;
+            border-radius: 0px !important;
         }}
                 
         .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
@@ -398,7 +401,7 @@ def getMeasure(measureTool, controlCount):
             controlCount)
 
 
-def getCSS(geocode, geolocateUser, controlCount):
+def getCSS(geocode, geolocateUser, layerSearch, controlCount):
     extracss = """
         <link rel="stylesheet" """
     extracss += """href="./resources/ol3-layerswitcher.css">
@@ -406,20 +409,40 @@ def getCSS(geocode, geolocateUser, controlCount):
     extracss += """href="./resources/qgis2web.css">"""
     if geocode:
         geocodePos = 65 + (controlCount * 35)
+        touchPos = 80 + (controlCount * 50)
+        controlCount += 1
         extracss += """
-        <style>
+        <style>     
         .ol-geocoder.gcd-gl-container {
             top: %dpx!important;
+            left: .5em!important;
+            width: 2.1em!important;
+            height: 2.1em!important;
         }
+        
+        .ol-geocoder .gcd-gl-container{
+            width: 2.1em!important;
+            height: 2.1em!important;
+        }
+        
+        .ol-geocoder .gcd-gl-control{
+            width: 2.1em!important;
+        }
+                        
+        .ol-touch .ol-geocoder.gcd-gl-container{
+            top: %dpx!important;
+        }
+        
         .ol-geocoder .gcd-gl-btn {
-            width: 21px!important;
-            height: 21px!important;
-        }
-        </style>""" % geocodePos
-    #if geolocateUser:
-        #extracss += """
-        #<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
-        #extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
+            width: 1.375em!important;
+            height: 1.375em!important;
+            top: .225em!important;
+            background-image: none!important;
+        }   
+        </style>""" % (geocodePos, touchPos)
+    if layerSearch:
+        (layerSearchStyle, controlCount) = layerSearchStyleScript(controlCount)
+        extracss += layerSearchStyle
     return (extracss, controlCount)
 
 

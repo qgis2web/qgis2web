@@ -11,6 +11,16 @@ def writeFiles(folder, restrictToExtent, feedback, debugLibs):
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
     dst = os.path.join(folder, "resources")
+    # copy icons
+    fontDir = os.path.dirname(__file__) + os.sep + 'webfonts' + os.sep
+    fontStore = os.path.join(folder, 'webfonts')
+    os.makedirs(fontStore)
+    fontStore += os.sep
+    shutil.copyfile(fontDir + 'fa-solid-900.woff2',
+                    fontStore + 'fa-solid-900.woff2')
+    shutil.copyfile(fontDir + 'fa-solid-900.ttf',
+                    fontStore + 'fa-solid-900.ttf')
+    # copy the rest
     if not os.path.exists(dst):
         shutil.copytree(os.path.join(os.path.dirname(__file__),
                                      "resources"),
@@ -22,8 +32,7 @@ def writeFiles(folder, restrictToExtent, feedback, debugLibs):
     feedback.completeStep()
 
 
-def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
-                   layerSearch, searchLayer, feedback, debugLibs):
+def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback, debugLibs):
     feedback.showFeedback("Writing HTML...")
     jsAddress = """<script src="resources/polyfills.js"></script>
         <script src="./resources/functions.js"></script>"""
@@ -42,6 +51,17 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
         jsAddress += """
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
         jsAddress += """4.6.5/ol.js"></script>"""
+    # load the fonts
+    cssAddress += '<link rel="stylesheet" href="resources/fontawesome-all.min.css">'
+    if osmb != "":
+        jsAddress += """
+        <script src="resources/OSMBuildings-OL3.js"></script>"""
+    feedback.completeStep()
+    return (jsAddress, cssAddress, controlCount)
+
+
+def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch, searchLayer, feedback):
+    feedback.showFeedback("Writing Layer Search...")
     if layerSearch != "None" and layerSearch != "":
         cssAddress += """
         <link rel="stylesheet" type="text/css" href="resources/horsey.min.css">
@@ -68,9 +88,6 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn,
         controlCount = controlCount + 1
     else:
         layerSearch = ""
-    if osmb != "":
-        jsAddress += """
-        <script src="resources/OSMBuildings-OL3.js"></script>"""
     feedback.completeStep()
     return (jsAddress, cssAddress, layerSearch, controlCount)
 
