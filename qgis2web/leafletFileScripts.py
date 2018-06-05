@@ -307,7 +307,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground
                     }
                     
                     .leaflet-control-zoom-in, .leaflet-control-zoom-out,
-                    .leaflet-touch .leaflet-bar a:last-child,
+                    .leaflet-control-locate a,
                     .leaflet-touch .leaflet-control-geocoder-icon,
                     .leaflet-control-search .search-button,
                      .leaflet-control-measure {
