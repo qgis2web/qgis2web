@@ -55,7 +55,6 @@ from PyQt5.QtWidgets import (QAction,
 from PyQt5.QtNetwork import QNetworkAccessManager
 from PyQt5.uic import loadUiType
 from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
-
 from qgis.PyQt.QtWebKit import QWebSettings
 
 import traceback
@@ -70,6 +69,8 @@ from qgis2web.leafletWriter import LeafletWriter
 from qgis2web.writerRegistry import (WRITER_REGISTRY)
 from qgis2web.exporter import (EXPORTER_REGISTRY)
 from qgis2web.feedbackDialog import FeedbackDialog
+
+from qgis.gui import QgsColorButton
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 webkit_available = True
@@ -115,7 +116,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.previewFeatureLimit.setText(
             stgs.value("qgis2web/previewFeatureLimit", "1000"))
 
-        self.paramsTreeOL.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.appearanceParams.setSelectionMode(QAbstractItemView.SingleSelection)
         self.preview = None
         if webkit_available:
             widget = QWebView()
@@ -129,6 +130,8 @@ class MainDialog(QDialog, FORM_CLASS):
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
             self.preview.settings().setAttribute(
                 QWebSettings.DeveloperExtrasEnabled, True)
+            self.preview.settings().setAttribute(
+                QWebSettings.DnsPrefetchEnabled, True)
         else:
             widget = QTextBrowser()
             widget.setText(self.tr('Preview is not available since QtWebKit '
@@ -161,13 +164,13 @@ class MainDialog(QDialog, FORM_CLASS):
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
-        # if webkit_available:
-        #     self.devConsole = QWebInspector(self.verticalLayoutWidget_2)
-        #     self.devConsole.setFixedHeight(0)
-        #     self.devConsole.setObjectName("devConsole")
-        #     self.devConsole.setPage(self.preview.page())
-        #     self.devConsole.hide()
-        #     self.right_layout.insertWidget(1, self.devConsole)
+        if webkit_available:
+             self.devConsole = QWebInspector(self.preview)
+             self.devConsole.setFixedHeight(0)
+             self.devConsole.setObjectName("devConsole")
+             self.devConsole.setPage(self.preview.page())
+             self.devConsole.hide()
+             self.right_layout.insertWidget(1, self.devConsole)
         self.filter = devToggleFilter()
         self.filter.devToggle.connect(self.showHideDevConsole)
         self.installEventFilter(self.filter)
@@ -247,7 +250,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
-            treeParam = self.paramsTreeOL.findItems(param,
+            treeParam = self.appearanceParams.findItems(param,
                                                     (Qt.MatchExactly |
                                                      Qt.MatchRecursive))[0]
             if currentWriter == OpenLayersWriter:
@@ -412,28 +415,48 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateConfigParams(self, dlg):
         """ Populates the dialog with option items and widgets """
         self.items = defaultdict(dict)
-        tree = dlg.paramsTreeOL
+        tree = dlg.appearanceParams
 
         configure_export_action = QAction('...', self)
         configure_export_action.triggered.connect(self.configureExporter)
 
         params = getParams(configure_exporter_action=configure_export_action)
         for group, settings in params.items():
-            item = QTreeWidgetItem()
-            item.setText(0, group)
-            for param, value in settings.items():
-                subitem = self.createOptionItem(tree_widget=tree,
-                                                parent_item=item,
-                                                parameter=param,
-                                                default_value=value)
-                item.addChild(subitem)
-                self.items[group][param] = subitem
-            self.paramsTreeOL.addTopLevelItem(item)
-            item.sortChildren(0, Qt.AscendingOrder)
-        self.paramsTreeOL.expandAll()
-        self.paramsTreeOL.resizeColumnToContents(0)
-        self.paramsTreeOL.resizeColumnToContents(1)
+            if group != "Data export":
+                item = QTreeWidgetItem()
+                item.setText(0, group)
+                for param, value in settings.items():
+                    subitem = self.createOptionItem(tree_widget=tree,
+                                                    parent_item=item,
+                                                    parameter=param,
+                                                    default_value=value)
+                    item.addChild(subitem)
+                    self.items[group][param] = subitem
+                self.appearanceParams.addTopLevelItem(item)
+                item.sortChildren(0, Qt.AscendingOrder)
+        self.appearanceParams.expandAll()
+        self.appearanceParams.resizeColumnToContents(0)
+        self.appearanceParams.resizeColumnToContents(1)
         self.layer_search_combo.removeItem(1)
+
+        # configure export params in separate tab
+        exportTree = dlg.exportParams
+        for group, settings in params.items():
+            if group == "Data export":
+                item = QTreeWidgetItem()
+                item.setText(0, group)
+                for param, value in settings.items():
+                    subitem = self.createOptionItem(tree_widget=exportTree,
+                                                    parent_item=item,
+                                                    parameter=param,
+                                                    default_value=value)
+                    item.addChild(subitem)
+                    self.items[group][param] = subitem
+                self.exportParams.addTopLevelItem(item)
+                item.sortChildren(0, Qt.AscendingOrder)
+        self.exportParams.expandAll()
+        self.exportParams.resizeColumnToContents(0)
+        self.exportParams.resizeColumnToContents(1)
 
     def createOptionItem(self, tree_widget, parent_item,
                          parameter, default_value):
@@ -488,11 +511,15 @@ class MainDialog(QDialog, FORM_CLASS):
         parameters = defaultdict(dict)
         for group, settings in self.items.items():
             for param, item in settings.items():
-                parameters[group][param] = item.value()
-                if param == "Layer search":
-                    parameters["Appearance"]["Search layer"] = (
-                        self.layer_search_combo.itemData(
-                            self.layer_search_combo.currentIndex()))
+                if param in ('Widget Icon', 'Widget Background'):
+                    parameters[group][param] = item._value.color().name()
+                else:
+                    parameters[group][param] = item.value()
+                    if param == "Layer search":
+                        parameters["Appearance"]["Search layer"] = (
+                            self.layer_search_combo.itemData(
+                                self.layer_search_combo.currentIndex()))
+
         return parameters
 
     def saveParameters(self):
@@ -771,7 +798,9 @@ class TreeSettingItem(QTreeWidgetItem):
         self.setText(0, name)
         widget = None
 
-        if isinstance(value, bool):
+        if isinstance(value, QgsColorButton):
+            widget = value
+        elif isinstance(value, bool):
             if value:
                 self.setCheckState(1, Qt.Checked)
             else:

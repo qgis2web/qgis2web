@@ -11,7 +11,7 @@ measureControl = function(opt_options) {
   var options = opt_options || {};
 
   var button = document.createElement('button');
-  button.innerHTML = '<img src="resources/measure-control.png" />';
+  button.className += ' fas fa-ruler ';
 
   var this_ = this;
   var handleMeasure = function(e) {
@@ -361,6 +361,22 @@ def measureStyleScript(controlCount):
     return measureStyle
 
 
+def layerSearchStyleScript(controlCount):
+    pos = 65 + (controlCount * 35)
+    touchPos = 80 + (controlCount * 50)
+    layerSearchStyle = """
+<style>
+.search-layer {
+  top: %(pos)dpx;
+  left: .5em;
+}
+.ol-touch .search-layer {
+  top: %(touchPos)dpx;
+}
+</style>""" % {"pos": pos, "touchPos": touchPos}
+    return (layerSearchStyle, controlCount)
+
+
 def geolocation(geolocate):
     if geolocate:
         return """
@@ -488,7 +504,10 @@ var geocoder = new Geocoder('nominatim', {
   limit: 5,
   keepOpen: true
 });
-map.addControl(geocoder);"""
+map.addControl(geocoder);
+
+document.getElementsByClassName('gcd-gl-btn')[0].className += ' fa fa-search';
+"""
     else:
         return ""
 

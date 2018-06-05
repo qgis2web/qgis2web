@@ -25,6 +25,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     os.makedirs(cssStore)
     cssStore += os.sep
     cssDir = pluginDir + os.sep + 'css' + os.sep
+    fontDir = pluginDir + os.sep + 'webfonts' + os.sep
+    fontStore = os.path.join(outputProjectFileName, 'webfonts')
+    os.makedirs(fontStore)
+    fontStore += os.sep
     markerStore = os.path.join(outputProjectFileName, 'markers')
     os.makedirs(markerStore)
     shutil.copyfile(jsDir + 'qgis2web_expressions.js',
@@ -51,10 +55,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
             shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
         shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     if address:
-        shutil.copyfile(jsDir + 'Control.OSMGeocoder.js',
-                        jsStore + 'Control.OSMGeocoder.js')
-        shutil.copyfile(cssDir + 'Control.OSMGeocoder.css',
-                        cssStore + 'Control.OSMGeocoder.css')
+        shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
+                        jsStore + 'leaflet-control-geocoder.Geocoder.js')
+        shutil.copyfile(cssDir + 'leaflet-control-geocoder.Geocoder.css',
+                        cssStore + 'leaflet-control-geocoder.Geocoder.css')
     if locate:
         shutil.copyfile(jsDir + 'L.Control.Locate.min.js',
                         jsStore + 'L.Control.Locate.min.js')
@@ -73,6 +77,15 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
     shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js',
                     jsStore + 'leaflet.rotatedMarker.js')
+
+    # copy icons
+    shutil.copyfile(cssDir + 'fontawesome-all.min.css',
+                    cssStore + 'fontawesome-all.min.css')
+    shutil.copyfile(fontDir + 'fa-solid-900.woff2',
+                    fontStore + 'fa-solid-900.woff2')
+    shutil.copyfile(fontDir + 'fa-solid-900.ttf',
+                    fontStore + 'fa-solid-900.ttf')
+
     if len(cluster_set):
         shutil.copyfile(jsDir + 'leaflet.markercluster.js',
                         jsStore + 'leaflet.markercluster.js')
@@ -127,9 +140,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress = '<script src="http://'
         jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
     if locate:
-        cssAddress += '<link rel="stylesheet" '
-        cssAddress += 'href="http://maxcdn.bootstrapcdn.com/font-awesome/'
-        cssAddress += '4.6.1/css/font-awesome.min.css">'
+        # cssAddress += '<link rel="stylesheet" href='
+        # cssAddress += '"https://use.fontawesome.com/releases/'
+        # cssAddress += 'v5.0.13/css/all.css"'
+        # cssAddress += 'integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"'
+        # cssAddress += 'crossorigin="anonymous">'
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
         jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
@@ -152,6 +167,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
+    extracss += '<link rel="stylesheet" href="css/fontawesome-all.min.css">'
     if useCluster:
         clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">"""
@@ -169,9 +185,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         layerSearchJS = ""
     if address:
         addressCSS = """
-        <link rel="stylesheet" href="css/Control.OSMGeocoder.css">"""
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">"""
         addressJS = """
-        <script src="js/Control.OSMGeocoder.js"></script>"""
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>"""
     else:
         addressCSS = ""
         addressJS = ""
@@ -244,45 +260,135 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     feedback.completeStep()
 
 
-def writeCSS(cssStore, backgroundColor, feedback):
+def writeCSS(cssStore, backgroundColor, feedback, widgetAccent, widgetBackground):
     feedback.showFeedback("Writing CSS...")
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
-#map {
-    background-color: """ + backgroundColor + """
-}
-th {
-    text-align: left;
-    vertical-align: top;
-}
-.info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-.info h2 {
-    margin: 0 0 5px;
-    color: #777;
-}
-.leaflet-container {
-    background: #fff;
-    padding-right: 10px;
-}
-.leaflet-popup-content {
-    width:auto !important;
-    padding-right:10px;
-}
-.leaflet-tooltip {
-    background: none;
-    box-shadow: none;
-    border: none;
-}
-.leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
-    border: 0px;
-}"""
+                    #map {
+                        background-color: """ + backgroundColor + """
+                    }
+                    
+                    th {
+                        text-align: left;
+                        vertical-align: top;
+                    }
+                    .info {
+                        padding: 6px 8px;
+                        font: 14px/16px Arial, Helvetica, sans-serif;
+                        background: white;
+                        background: rgba(255,255,255,0.8);
+                        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+                        border-radius: 5px;
+                    }
+                    .info h2 {
+                        margin: 0 0 5px;
+                        color: #777;
+                    }
+                    .leaflet-container {
+                        background: #fff;
+                        padding-right: 10px;
+                    }
+                    .leaflet-popup-content {
+                        width:auto !important;
+                        padding-right:10px;
+                    }
+                    .leaflet-tooltip {
+                        background: none;
+                        box-shadow: none;
+                        border: none;
+                    }
+                    .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
+                        border: 0px;
+                    }  
+                    }
+                    
+                    .fa, .leaflet-container, a {
+                        color: """ + widgetAccent + """ !important;        
+                    }
+                    
+                    .leaflet-control-zoom-in, .leaflet-control-zoom-out,
+                    .leaflet-control-locate a,
+                    .leaflet-touch .leaflet-control-geocoder-icon,
+                    .leaflet-control-search .search-button,
+                     .leaflet-control-measure {
+                        background-color: """ + widgetBackground + """ !important; 
+                        border-radius: 0px !important;
+                        color: """ + widgetAccent + """ !important;
+                    }
+                    
+                    .leaflet-touch .leaflet-control-layers,
+                    .leaflet-touch .leaflet-bar,
+                    .leaflet-control-search,
+                    .leaflet-control-measure {
+                        border: 3px solid rgba(255,255,255,.4) !important;
+                    }
+                    
+                    .leaflet-control-attribution a {
+                        color: #0078A8 !important;
+                    }
+                    
+                    .leaflet-control-scale-line {
+                        border: 2px solid """ + widgetBackground + """ !important;
+                        border-top: none !important;
+                        color: black !important;
+                    }
+                    
+                    .leaflet-control-search .search-button,
+                    .leaflet-container .leaflet-control-search,
+                    .leaflet-control-measure {
+                        box-shadow: none !important;
+                    }
+                    
+                    .leaflet-control-search .search-button {
+                        width: 30px !important;
+                        height: 30px !important;
+                        font-size: 13px !important;
+                        text-align: center !important;
+                        line-height: 30px !important;
+                    }
+                    
+                    .leaflet-control-measure .leaflet-control {
+                        width: 30px !important;
+                        height: 30px !important;
+                    }
+                    
+                    .leaflet-container .leaflet-control-search{
+                        background: none !important;    
+                    }
+                     
+                    .leaflet-control-search .search-input {
+                        margin: 0px 0px 0px 0px !important;
+                        height: 30px !important;
+                    }
+                    
+                    .leaflet-control-measure {
+                        background: none!important;
+                        border-radius: 4px !important;
+                    }
+                    
+                    .leaflet-control-measure .leaflet-control-measure-interaction {
+                        background-color: """ + widgetBackground + """ !important;
+                    }
+                    
+                    .leaflet-touch .leaflet-control-measure .leaflet-control-measure-toggle,
+                    .leaflet-touch .leaflet-control-measure .leaflet-control-measure-toggle:hover {
+                        width: 30px !important;
+                        height: 30px !important;
+                        border-radius: 0px !important;
+                        background-color: """ + widgetBackground + """ !important;
+                        color: """ + widgetAccent + """ !important;
+                        font-size: 13px;
+                        line-height: 30px;
+                        text-align: center;
+                        text-indent: 0%;
+                    }
+                    
+                    .leaflet-control-layers-toggle {
+                        background-color: """ + widgetBackground + """ !important;
+                    }
+                                             
+            """
+        print(widgetAccent)
         f_css.write(text)
         f_css.close()
     feedback.completeStep()

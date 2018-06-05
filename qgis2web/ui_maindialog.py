@@ -83,18 +83,18 @@ class Ui_MainDialog(object):
         self.verticalLayout_5.setSpacing(6)
         self.verticalLayout_5.setMargin(0)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
-        self.paramsTreeOL = QtWidgets.QTreeWidget(self.widget)
-        self.paramsTreeOL.setMinimumSize(QtCore.QSize(300, 0))
-        self.paramsTreeOL.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.paramsTreeOL.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.paramsTreeOL.setHorizontalScrollBarPolicy(
+        self.appearanceParams = QtWidgets.QTreeWidget(self.widget)
+        self.appearanceParams.setMinimumSize(QtCore.QSize(300, 0))
+        self.appearanceParams.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.appearanceParams.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.appearanceParams.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.paramsTreeOL.setAutoScroll(False)
-        self.paramsTreeOL.setObjectName(_fromUtf8("paramsTreeOL"))
-        self.paramsTreeOL.header().setVisible(False)
-        self.paramsTreeOL.header().setCascadingSectionResizes(False)
-        self.paramsTreeOL.header().setDefaultSectionSize(200)
-        self.verticalLayout_5.addWidget(self.paramsTreeOL)
+        self.appearanceParams.setAutoScroll(False)
+        self.appearanceParams.setObjectName(_fromUtf8("appearanceParams"))
+        self.appearanceParams.header().setVisible(False)
+        self.appearanceParams.header().setCascadingSectionResizes(False)
+        self.appearanceParams.header().setDefaultSectionSize(200)
+        self.verticalLayout_5.addWidget(self.appearanceParams)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
@@ -184,9 +184,9 @@ class Ui_MainDialog(object):
                                              None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog", "2",
                                              None))
-        self.paramsTreeOL.headerItem().setText(0, _translate("MainDialog",
+        self.appearanceParams.headerItem().setText(0, _translate("MainDialog",
                                                              "Setting", None))
-        self.paramsTreeOL.headerItem().setText(1, _translate("MainDialog",
+        self.appearanceParams.headerItem().setText(1, _translate("MainDialog",
                                                              "Value", None))
         self.ol3.setText(_translate("MainDialog", "OpenLayers", None))
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))

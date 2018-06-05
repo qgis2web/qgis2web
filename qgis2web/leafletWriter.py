@@ -141,6 +141,8 @@ class LeafletWriter(Writer):
         layerSearch = params["Appearance"]["Layer search"]
         popupsOnHover = params["Appearance"]["Show popups on hover"]
         template = params["Appearance"]["Template"]
+        widgetAccent = params["Appearance"]["Widget Icon"]
+        widgetBackground = params["Appearance"]["Widget Background"]
 
         usedFields = [ALL_ATTRIBUTES] * len(popup)
 
@@ -153,7 +155,7 @@ class LeafletWriter(Writer):
                                                    canvas, mapLibLocation,
                                                    addressSearch, locate,
                                                    debugLibs)
-        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback)
+        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback, widgetAccent, widgetBackground)
 
         wfsLayers = ""
         labelCode = ""
@@ -326,9 +328,10 @@ class LeafletWriter(Writer):
                 [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-            placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
-            placement = PLACEMENT[placement]
-            end = scaleBar(placement)
+            #placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
+            #placement = PLACEMENT[placement]
+            #end = scaleBar(placement)
+            end = scaleBar()
         else:
             end = ''
         layerType = "layer"

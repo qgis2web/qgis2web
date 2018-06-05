@@ -30,6 +30,7 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication
 from qgis2web.olFileScripts import (writeFiles,
                                     writeHTMLstart,
+                                    writeLayerSearch,
                                     writeScriptIncludes)
 from qgis2web.olLayerScripts import writeLayersAndGroups
 from qgis2web.olScriptStrings import (measureScript,
@@ -38,6 +39,7 @@ from qgis2web.olScriptStrings import (measureScript,
                                       measureUnitMetricScript,
                                       measureUnitFeetScript,
                                       measureStyleScript,
+                                      layerSearchStyleScript,
                                       geolocation,
                                       geolocateStyle,
                                       geolocationHead,
@@ -123,6 +125,8 @@ class OpenLayersWriter(Writer):
         layerSearch = unicode(settings["Appearance"]["Layer search"])
         searchLayer = settings["Appearance"]["Search layer"]
         mapLibLocn = settings["Data export"]["Mapping library location"]
+        widgetAccent = settings["Appearance"]["Widget Icon"]
+        widgetBackground = settings["Appearance"]["Widget Background"]
 
         writeFiles(folder, restrictToExtent, feedback, debugLibs)
         exportLayers(iface, layers, folder, precision, optimize,
@@ -134,10 +138,8 @@ class OpenLayersWriter(Writer):
                                     getFeatureInfo, iface, restrictToExtent,
                                     extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
-        (jsAddress, cssAddress, layerSearch,
-         controlCount) = writeHTMLstart(settings, controlCount, osmb,
-                                        mapLibLocn, layerSearch, searchLayer,
-                                        feedback, debugLibs)
+        (jsAddress, cssAddress, controlCount) = writeHTMLstart(settings, controlCount, osmb,
+                                                mapLibLocn, feedback, debugLibs)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
@@ -146,7 +148,7 @@ class OpenLayersWriter(Writer):
         controls = getControls(project, measureTool, geolocateUser)
         layersList = getLayersList(addLayersList)
         pageTitle = project.title()
-        backgroundColor = getBackground(mapSettings)
+        backgroundColor = getBackground(mapSettings, widgetAccent, widgetBackground)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
@@ -164,7 +166,9 @@ class OpenLayersWriter(Writer):
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
         m2px = getM2px(mapUnitsLayers)
-        (extracss, controlCount) = getCSS(geocode, geolocateUser, controlCount)
+        (extracss, controlCount) = getCSS(geocode, geolocateUser, layerSearch, controlCount)
+        (jsAddress, cssAddress, layerSearch, controlCount) = writeLayerSearch(cssAddress, jsAddress, controlCount,
+                                                                              layerSearch, searchLayer, feedback)
         ol3layerswitcher = getLayerSwitcher()
         ol3popup = getPopup()
         ol3qgis2webjs = getJS(osmb)
@@ -322,14 +326,37 @@ layerSwitcher.showPanel();
     return layersList
 
 
-def getBackground(mapSettings):
+def getBackground(mapSettings, widgetAccent, widgetBackground):
     return """
         <style>
         html, body {{
             background-color: {bgcol};
         }}
+        
+        .ol-control button {{
+            background-color: {widgetBackground} !important;
+            color: {widgetAccent} !important;
+            border-radius: 0px !important;
+        }}
+                
+        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
+            background-color: rgba(255,255,255,.4) !important;
+            padding: 3px !important;
+        }}
+        
+        .ol-scale-line {{
+            background: none !important;
+        }}
+        
+        .ol-scale-line-inner {{
+            border: 2px solid {widgetBackground} !important;
+            border-top: none !important;
+            background: rgba(255, 255, 255, 0.5) !important;
+            color: black !important;
+        }}
+        
         </style>
-""".format(bgcol=mapSettings.backgroundColor().name())
+""".format(bgcol=mapSettings.backgroundColor().name(), widgetBackground=widgetBackground, widgetAccent=widgetAccent)
 
 
 def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
@@ -374,7 +401,7 @@ def getMeasure(measureTool, controlCount):
             controlCount)
 
 
-def getCSS(geocode, geolocateUser, controlCount):
+def getCSS(geocode, geolocateUser, layerSearch, controlCount):
     extracss = """
         <link rel="stylesheet" """
     extracss += """href="./resources/ol3-layerswitcher.css">
@@ -382,20 +409,40 @@ def getCSS(geocode, geolocateUser, controlCount):
     extracss += """href="./resources/qgis2web.css">"""
     if geocode:
         geocodePos = 65 + (controlCount * 35)
+        touchPos = 80 + (controlCount * 50)
+        controlCount += 1
         extracss += """
-        <style>
+        <style>     
         .ol-geocoder.gcd-gl-container {
             top: %dpx!important;
+            left: .5em!important;
+            width: 2.1em!important;
+            height: 2.1em!important;
         }
+        
+        .ol-geocoder .gcd-gl-container{
+            width: 2.1em!important;
+            height: 2.1em!important;
+        }
+        
+        .ol-geocoder .gcd-gl-control{
+            width: 2.1em!important;
+        }
+                        
+        .ol-touch .ol-geocoder.gcd-gl-container{
+            top: %dpx!important;
+        }
+        
         .ol-geocoder .gcd-gl-btn {
-            width: 21px!important;
-            height: 21px!important;
-        }
-        </style>""" % geocodePos
-    if geolocateUser:
-        extracss += """
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/"""
-        extracss += """font-awesome/4.6.3/css/font-awesome.min.css">"""
+            width: 1.375em!important;
+            height: 1.375em!important;
+            top: .225em!important;
+            background-image: none!important;
+        }   
+        </style>""" % (geocodePos, touchPos)
+    if layerSearch:
+        (layerSearchStyle, controlCount) = layerSearchStyleScript(controlCount)
+        extracss += layerSearchStyle
     return (extracss, controlCount)
 
 

@@ -20,7 +20,8 @@ import os
 import shutil
 from qgis2web.utils import tempFolder
 from qgis2web.exporter import EXPORTER_REGISTRY
-
+from qgis.gui import QgsColorButton
+from PyQt5.QtGui import QColor
 
 def getTemplates():
     src = os.path.join(os.path.dirname(__file__), "templates")
@@ -41,6 +42,12 @@ def getTemplates():
 
 
 def getParams(configure_exporter_action=None):
+
+    accentColor = QgsColorButton()
+    accentColor.setColor(QColor(255, 255, 255))
+    backgroundColor = QgsColorButton()
+    backgroundColor.setColor(QColor(0, 0, 0))
+
     params = {
         "Appearance": {
             "Add layers list": ("None", "Collapsed", "Expanded"),
@@ -51,7 +58,9 @@ def getParams(configure_exporter_action=None):
             "Show popups on hover": False,
             "Highlight on hover": False,
             "Geolocate user": False,
-            "Template": getTemplates()
+            "Template": getTemplates(),
+            "Widget Icon": accentColor,
+            "Widget Background": backgroundColor
         },
         "Data export": {
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
@@ -92,6 +101,8 @@ def getDefaultParams():
             if isinstance(value, tuple):
                 if param == 'Max zoom level':
                     settings[param] = value[-1]
+                elif param == 'Template':
+                    settings[param] = value[1]
                 else:
                     settings[param] = value[0]
     params['Appearance']['Search layer'] = None

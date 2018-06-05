@@ -137,6 +137,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
     if measure != "None":
         if measure == "Imperial":
             options = """{
+            position: 'topleft',
             primaryLengthUnit: 'feet',
             secondaryLengthUnit: 'miles',
             primaryAreaUnit: 'sqfeet',
@@ -144,6 +145,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         }"""
         else:
             options = """{
+            position: 'topleft',
             primaryLengthUnit: 'meters',
             secondaryLengthUnit: 'kilometers',
             primaryAreaUnit: 'sqmeters',
@@ -151,7 +153,11 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         }"""
         map += """
         var measureControl = new L.Control.Measure(%s);
-        measureControl.addTo(map);""" % options
+        measureControl.addTo(map);
+        
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        """ % options
     return map
 
 
@@ -424,9 +430,8 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
     return layersList
 
 
-def scaleBar(placement):
-        scaleBar = """
-        L.control.scale({position: '%s', """ % placement
+def scaleBar():
+        scaleBar = "L.control.scale({position: 'bottomleft', "
         scaleBar += "maxWidth: 100, metric: true, imperial: false, "
         scaleBar += "updateWhenIdle: false}).addTo(map);"
         return scaleBar
@@ -434,12 +439,16 @@ def scaleBar(placement):
 
 def addressSearchScript():
     addressSearch = """
-        var osmGeocoder = new L.Control.OSMGeocoder({
-            collapsed: false,
-            position: 'topright',
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
             text: 'Search',
-        });
-        osmGeocoder.addTo(map);"""
+            title: 'Testing'
+        }).addTo(map);
+                 
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0].className += ' fa fa-search'; 
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0].title += 'Search for a place'; 
+        """
     return addressSearch
 
 
@@ -511,7 +520,11 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             layer: {searchLayer},
             initial: false,
             hideMarkerOnCollapse: true,
-            propertyName: '{field}'}}));""".format(searchLayer=searchLayer,
+            propertyName: '{field}'}}));
+            
+        document.getElementsByClassName('search-button')[0].className += ' fa fa-binoculars'; 
+            
+            """.format(searchLayer=searchLayer,
                                                    field=searchVals[1])
     if useHeat:
         endHTML += """
