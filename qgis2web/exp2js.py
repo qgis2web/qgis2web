@@ -96,7 +96,7 @@ def walkExpression(node, mapLib):
 
 def handle_condition(node, mapLib):
     global condtioncounts
-    subexps = re.findall("WHEN(\s+.*?\s+)THEN(\s+.*?\s+)", node.dump())
+    subexps = re.findall(r"WHEN(\s+.*?\s+)THEN(\s+.*?\s+)", node.dump())
     QgsMessageLog.logMessage(subexps, "qgis2web", level=QgsMessageLog.INFO)
     count = 1;
     js = ""
@@ -119,7 +119,7 @@ def handle_condition(node, mapLib):
 
     elsejs = "null"
     if "ELSE" in node.dump():
-        elseexps = re.findall("ELSE(\s+.*?\s+)END", node.dump())
+        elseexps = re.findall(r"ELSE(\s+.*?\s+)END", node.dump())
         elsestr = elseexps[0].strip()
         exp =  QgsExpression(elsestr)
         elsejs = walkExpression(exp.rootNode(), mapLib)
@@ -241,12 +241,12 @@ def render_examples():
     if not os.path.exists("examples"):
         os.mkdir("examples")
 
-    with open("examples\qgsfunctions.js", "w") as f:
+    with open(r"examples\qgsfunctions.js", "w") as f:
         # Write out the functions first.
         funcs = gen_func_stubs()
         f.write(funcs)
 
-    with open("examples\qgsexpression.js", "w") as f:
+    with open(r"examples\qgsexpression.js", "w") as f:
         exp = "(1 + 1) * 3 + 5"
         render_example(exp)
         exp = "NOT @myvar = format('some string %1 %2', 'Hello', 'World')"
