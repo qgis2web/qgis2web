@@ -57,7 +57,6 @@ from qgis2web.feedbackDialog import Feedback
 
 
 class OpenLayersWriter(Writer):
-
     """
     Writer for creation of web maps based on the OpenLayers
     JavaScript library.
@@ -138,8 +137,10 @@ class OpenLayersWriter(Writer):
                                     getFeatureInfo, iface, restrictToExtent,
                                     extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
-        (jsAddress, cssAddress, controlCount) = writeHTMLstart(settings, controlCount, osmb,
-                                                mapLibLocn, feedback, debugLibs)
+        (jsAddress,
+         cssAddress, controlCount) = writeHTMLstart(settings, controlCount,
+                                                    osmb, mapLibLocn, feedback,
+                                                    debugLibs)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
@@ -148,7 +149,8 @@ class OpenLayersWriter(Writer):
         controls = getControls(project, measureTool, geolocateUser)
         layersList = getLayersList(addLayersList)
         pageTitle = project.title()
-        backgroundColor = getBackground(mapSettings, widgetAccent, widgetBackground)
+        backgroundColor = getBackground(mapSettings, widgetAccent,
+                                        widgetBackground)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
                                                        controlCount)
         backgroundColor += geolocateCode
@@ -166,9 +168,13 @@ class OpenLayersWriter(Writer):
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
         m2px = getM2px(mapUnitsLayers)
-        (extracss, controlCount) = getCSS(geocode, geolocateUser, layerSearch, controlCount)
-        (jsAddress, cssAddress, layerSearch, controlCount) = writeLayerSearch(cssAddress, jsAddress, controlCount,
-                                                                              layerSearch, searchLayer, feedback)
+        (extracss, controlCount) = getCSS(geocode, geolocateUser, layerSearch,
+                                          controlCount)
+        (jsAddress, cssAddress,
+         layerSearch, controlCount) = writeLayerSearch(cssAddress, jsAddress,
+                                                       controlCount,
+                                                       layerSearch,
+                                                       searchLayer, feedback)
         ol3layerswitcher = getLayerSwitcher()
         ol3popup = getPopup()
         ol3qgis2webjs = getJS(osmb)
@@ -332,31 +338,28 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
         html, body {{
             background-color: {bgcol};
         }}
-        
         .ol-control button {{
             background-color: {widgetBackground} !important;
             color: {widgetAccent} !important;
             border-radius: 0px !important;
-        }}
-                
+        }}       
         .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
             background-color: rgba(255,255,255,.4) !important;
             padding: 3px !important;
         }}
-        
         .ol-scale-line {{
             background: none !important;
         }}
-        
         .ol-scale-line-inner {{
             border: 2px solid {widgetBackground} !important;
             border-top: none !important;
             background: rgba(255, 255, 255, 0.5) !important;
             color: black !important;
         }}
-        
         </style>
-""".format(bgcol=mapSettings.backgroundColor().name(), widgetBackground=widgetBackground, widgetAccent=widgetAccent)
+""".format(bgcol=mapSettings.backgroundColor().name(),
+           widgetBackground=widgetBackground,
+           widgetAccent=widgetAccent)
 
 
 def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
@@ -419,25 +422,20 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
             width: 2.1em!important;
             height: 2.1em!important;
         }
-        
         .ol-geocoder .gcd-gl-container{
             width: 2.1em!important;
             height: 2.1em!important;
         }
-        
         .ol-geocoder .gcd-gl-control{
             width: 2.1em!important;
         }
-        
         .ol-geocoder .gcd-gl-expanded {
             width: 15.625em!important;
             height: 2.1875em;
-        }
-                        
+        }               
         .ol-touch .ol-geocoder.gcd-gl-container{
             top: %dpx!important;
         }
-        
         .ol-geocoder .gcd-gl-btn {
             width: 1.375em!important;
             height: 1.375em!important;

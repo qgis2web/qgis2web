@@ -80,7 +80,6 @@ FORM_CLASS, _ = loadUiType(os.path.join(
 
 
 class MainDialog(QDialog, FORM_CLASS):
-
     """The main dialog of QGIS2Web plugin."""
     items = {}
 
@@ -116,7 +115,8 @@ class MainDialog(QDialog, FORM_CLASS):
         self.previewFeatureLimit.setText(
             stgs.value("qgis2web/previewFeatureLimit", "1000"))
 
-        self.appearanceParams.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.appearanceParams.setSelectionMode(
+            QAbstractItemView.SingleSelection)
         self.preview = None
         if webkit_available:
             widget = QWebView()
@@ -165,12 +165,12 @@ class MainDialog(QDialog, FORM_CLASS):
                                 "helpFile.md")
         self.helpField.setSource(QUrl.fromLocalFile(helpText))
         if webkit_available:
-             self.devConsole = QWebInspector(self.preview)
-             self.devConsole.setFixedHeight(0)
-             self.devConsole.setObjectName("devConsole")
-             self.devConsole.setPage(self.preview.page())
-             self.devConsole.hide()
-             self.right_layout.insertWidget(1, self.devConsole)
+            self.devConsole = QWebInspector(self.preview)
+            self.devConsole.setFixedHeight(0)
+            self.devConsole.setObjectName("devConsole")
+            self.devConsole.setPage(self.preview.page())
+            self.devConsole.hide()
+            self.right_layout.insertWidget(1, self.devConsole)
         self.filter = devToggleFilter()
         self.filter.devToggle.connect(self.showHideDevConsole)
         self.installEventFilter(self.filter)
@@ -251,8 +251,8 @@ class MainDialog(QDialog, FORM_CLASS):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
             treeParam = self.appearanceParams.findItems(param,
-                                                    (Qt.MatchExactly |
-                                                     Qt.MatchRecursive))[0]
+                                                        (Qt.MatchExactly |
+                                                         Qt.MatchRecursive))[0]
             if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
@@ -859,6 +859,7 @@ class WebPage(QWebPage):
     Makes it possible to use a Python logger to print javascript
     console messages
     """
+
     def __init__(self, logger=None, parent=None):
         super(WebPage, self).__init__(parent)
 
@@ -875,7 +876,6 @@ class WebPage(QWebPage):
 
 class jsException(Exception):
     def __init__(self, message, errors):
-
         # Call the base class constructor with the parameters it needs
         super(jsException, self).__init__(message)
 

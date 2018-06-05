@@ -32,7 +32,8 @@ def writeFiles(folder, restrictToExtent, feedback, debugLibs):
     feedback.completeStep()
 
 
-def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback, debugLibs):
+def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback,
+                   debugLibs):
     feedback.showFeedback("Writing HTML...")
     jsAddress = """<script src="resources/polyfills.js"></script>
         <script src="./resources/functions.js"></script>"""
@@ -52,7 +53,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback, debugLibs
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
         jsAddress += """4.6.5/ol.js"></script>"""
     # load the fonts
-    cssAddress += '<link rel="stylesheet" href="resources/fontawesome-all.min.css">'
+    cssAddress += '<link rel="stylesheet" href="resources/' \
+                  'fontawesome-all.min.css">'
     if osmb != "":
         jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
@@ -60,7 +62,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback, debugLibs
     return (jsAddress, cssAddress, controlCount)
 
 
-def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch, searchLayer, feedback):
+def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
+                     searchLayer, feedback):
     feedback.showFeedback("Writing Layer Search...")
     if layerSearch != "None" and layerSearch != "":
         cssAddress += """
@@ -83,7 +86,9 @@ def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch, searchLay
     }});
 
     map.addControl(searchLayer);
-    document.getElementsByClassName('search-layer')[0].getElementsByTagName('button')[0].className += ' fa fa-binoculars'; 
+    document.getElementsByClassName('search-layer')[0]
+    .getElementsByTagName('button')[0].className += 
+    ' fa fa-binoculars'; 
     """.format(layer=searchLayer, field=searchVals[1])
         controlCount = controlCount + 1
     else:

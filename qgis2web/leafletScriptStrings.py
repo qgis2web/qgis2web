@@ -154,9 +154,10 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         map += """
         var measureControl = new L.Control.Measure(%s);
         measureControl.addTo(map);
-        
-        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
-        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
         """ % options
     return map
 
@@ -431,10 +432,10 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
 
 
 def scaleBar():
-        scaleBar = "L.control.scale({position: 'bottomleft', "
-        scaleBar += "maxWidth: 100, metric: true, imperial: false, "
-        scaleBar += "updateWhenIdle: false}).addTo(map);"
-        return scaleBar
+    scaleBar = "L.control.scale({position: 'bottomleft', "
+    scaleBar += "maxWidth: 100, metric: true, imperial: false, "
+    scaleBar += "updateWhenIdle: false}).addTo(map);"
+    return scaleBar
 
 
 def addressSearchScript():
@@ -445,9 +446,10 @@ def addressSearchScript():
             text: 'Search',
             title: 'Testing'
         }).addTo(map);
-                 
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0].className += ' fa fa-search'; 
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0].title += 'Search for a place'; 
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search'; 
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place'; 
         """
     return addressSearch
 
@@ -522,10 +524,11 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));
             
-        document.getElementsByClassName('search-button')[0].className += ' fa fa-binoculars'; 
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars'; 
             
             """.format(searchLayer=searchLayer,
-                                                   field=searchVals[1])
+                       field=searchVals[1])
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {

@@ -66,7 +66,6 @@ from qgis2web.feedbackDialog import Feedback
 
 
 class LeafletWriter(Writer):
-
     """
     Writer for creation of web maps based on the Leaflet
     JavaScript library.
@@ -155,7 +154,8 @@ class LeafletWriter(Writer):
                                                    canvas, mapLibLocation,
                                                    addressSearch, locate,
                                                    debugLibs)
-        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback, widgetAccent, widgetBackground)
+        writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
+                 widgetAccent, widgetBackground)
 
         wfsLayers = ""
         labelCode = ""
@@ -189,7 +189,7 @@ class LeafletWriter(Writer):
                                  restrictToExtent, iface, extent, precision,
                                  exp_crs, minify)
                     jsons += jsonScript(safeLayerName)
-                    scaleDependentLabels =\
+                    scaleDependentLabels = \
                         scaleDependentLabelScript(layer, safeLayerName)
                     labelVisibility += scaleDependentLabels
                     feedback.completeStep()
@@ -328,9 +328,9 @@ class LeafletWriter(Writer):
                 [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-            #placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
-            #placement = PLACEMENT[placement]
-            #end = scaleBar(placement)
+            # placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
+            # placement = PLACEMENT[placement]
+            # end = scaleBar(placement)
             end = scaleBar()
         else:
             end = ''
