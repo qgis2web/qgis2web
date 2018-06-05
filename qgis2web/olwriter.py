@@ -428,6 +428,11 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
         .ol-geocoder .gcd-gl-control{
             width: 2.1em!important;
         }
+        
+        .ol-geocoder .gcd-gl-expanded {
+            width: 15.625em!important;
+            height: 2.1875em;
+        }
                         
         .ol-touch .ol-geocoder.gcd-gl-container{
             top: %dpx!important;
