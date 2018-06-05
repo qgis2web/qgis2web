@@ -23,6 +23,7 @@ from qgis2web.exporter import EXPORTER_REGISTRY
 from qgis.gui import QgsColorButton
 from PyQt5.QtGui import QColor
 
+
 def getTemplates():
     src = os.path.join(os.path.dirname(__file__), "templates")
     dst = os.path.join(QgsApplication.qgisSettingsDirPath(), "qgis2web",

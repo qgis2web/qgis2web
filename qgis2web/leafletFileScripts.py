@@ -263,7 +263,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         text = """
         #map {
             background-color: """ + backgroundColor + """
-        } 
+        }
         th {
             text-align: left;
             vertical-align: top;
@@ -295,17 +295,17 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
             border: 0px;
-        }  
+        }
         }
         .fa, .leaflet-container, a {
-            color: """ + widgetAccent + """ !important;        
+            color: """ + widgetAccent + """ !important;
         }
         .leaflet-control-zoom-in, .leaflet-control-zoom-out,
         .leaflet-control-locate a,
         .leaflet-touch .leaflet-control-geocoder-icon,
         .leaflet-control-search .search-button,
          .leaflet-control-measure {
-            background-color: """ + widgetBackground + """ !important; 
+            background-color: """ + widgetBackground + """ !important;
             border-radius: 0px !important;
             color: """ + widgetAccent + """ !important;
         }
@@ -340,7 +340,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             height: 30px !important;
         }
         .leaflet-container .leaflet-control-search{
-            background: none !important;    
+            background: none !important;
         }
         .leaflet-control-search .search-input {
             margin: 0px 0px 0px 0px !important;
@@ -353,9 +353,9 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         .leaflet-control-measure .leaflet-control-measure-interaction {
             background-color: """ + widgetBackground + """ !important;
         }
-        .leaflet-touch .leaflet-control-measure 
+        .leaflet-touch .leaflet-control-measure
         .leaflet-control-measure-toggle,
-        .leaflet-touch .leaflet-control-measure 
+        .leaflet-touch .leaflet-control-measure
         .leaflet-control-measure-toggle:hover {
             width: 30px !important;
             height: 30px !important;

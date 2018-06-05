@@ -87,8 +87,8 @@ def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
 
     map.addControl(searchLayer);
     document.getElementsByClassName('search-layer')[0]
-    .getElementsByTagName('button')[0].className += 
-    ' fa fa-binoculars'; 
+    .getElementsByTagName('button')[0].className +=
+    ' fa fa-binoculars';
     """.format(layer=searchLayer, field=searchVals[1])
         controlCount = controlCount + 1
     else:

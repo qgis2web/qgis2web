@@ -447,9 +447,9 @@ def addressSearchScript():
             title: 'Testing'
         }).addTo(map);
         document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .className += ' fa fa-search'; 
+        .className += ' fa fa-search';
         document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .title += 'Search for a place'; 
+        .title += 'Search for a place';
         """
     return addressSearch
 
@@ -523,10 +523,8 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
             initial: false,
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));
-            
         document.getElementsByClassName('search-button')[0].className +=
-         ' fa fa-binoculars'; 
-            
+         ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
     if useHeat:

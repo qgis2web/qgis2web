@@ -342,7 +342,7 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
             background-color: {widgetBackground} !important;
             color: {widgetAccent} !important;
             border-radius: 0px !important;
-        }}       
+        }}
         .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
             background-color: rgba(255,255,255,.4) !important;
             padding: 3px !important;
@@ -415,7 +415,7 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
         touchPos = 80 + (controlCount * 50)
         controlCount += 1
         extracss += """
-        <style>     
+        <style>
         .ol-geocoder.gcd-gl-container {
             top: %dpx!important;
             left: .5em!important;
@@ -432,7 +432,7 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
         .ol-geocoder .gcd-gl-expanded {
             width: 15.625em!important;
             height: 2.1875em;
-        }               
+        }
         .ol-touch .ol-geocoder.gcd-gl-container{
             top: %dpx!important;
         }
@@ -441,7 +441,7 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
             height: 1.375em!important;
             top: .225em!important;
             background-image: none!important;
-        }   
+        }
         </style>""" % (geocodePos, touchPos)
     if layerSearch:
         (layerSearchStyle, controlCount) = layerSearchStyleScript(controlCount)
