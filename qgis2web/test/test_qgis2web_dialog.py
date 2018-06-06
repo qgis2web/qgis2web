@@ -85,7 +85,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Appearance': {
                 'Add address search': False,
                 'Geolocate user': False,
-                'Search layer': None,
+                'Layer search': None,
                 'Add layers list': 'None',
                 'Measure tool': 'None',
                 'Match project CRS': False,
