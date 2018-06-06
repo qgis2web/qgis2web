@@ -370,7 +370,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         .leaflet-control-layers-toggle {
             background-color: """ + widgetBackground + """ !important;
         }"""
-        print(widgetAccent)
         f_css.write(text)
         f_css.close()
     feedback.completeStep()
