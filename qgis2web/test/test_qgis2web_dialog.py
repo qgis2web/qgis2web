@@ -92,6 +92,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Template': 'full-screen',
                 'Widget Background': '#ffffff',
                 'Widget Icon': '#000000',
+                'Layer search': 'None',
                 'Highlight on hover': False,
                 'Show popups on hover': False
         }}
