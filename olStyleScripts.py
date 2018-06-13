@@ -525,7 +525,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             fill = getFillStyle(fillColor, props)
             if fill != "":
                 symbolStyles.append(fill)
-            style = ",".join(symbolStyles)
+            style = ", ".join(symbolStyles)
         elif isinstance(sl, QgsLinePatternFillSymbolLayer):
             weight = sl.subSymbol().width()
             spaceWeight = sl.distance()
