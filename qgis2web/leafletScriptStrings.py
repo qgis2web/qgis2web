@@ -11,7 +11,8 @@ from qgis.core import (QgsProject,
                        QgsSvgMarkerSymbolLayer,
                        QgsSymbolLayerUtils,
                        QgsMessageLog,
-                       Qgis)
+                       Qgis,
+                       QgsWkbTypes)
 from qgis2web.utils import scaleToZoom, safeName
 
 
@@ -409,7 +410,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
             if i.type() == QgsMapLayer.VectorLayer:
                 testDump = i.renderer().dump()
                 if (clustered and
-                        i.geometryType() == QGis.Point):
+                        i.geometryType() == QgsWkbTypes.PointGeometry):
                     new_layer = "'" + legends[safeLayerName].replace("'", "\'")
                     new_layer += "': cluster_""" + safeLayerName + ","
                 else:
@@ -422,7 +423,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 layersList += new_layer
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
+                                     level=Qgis.Critical)
     controlEnd = "}"
     if collapsed:
         controlEnd += ",{collapsed:false}"
