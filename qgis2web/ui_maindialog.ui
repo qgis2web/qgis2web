@@ -403,33 +403,10 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="right_layout">
-     <item>
-      <widget class="QWebView" name="preview" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="url" stdset="0">
-        <url>
-         <string>about:blank</string>
-        </url>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <layout class="QVBoxLayout" name="right_layout"/>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
  <buttongroups>
