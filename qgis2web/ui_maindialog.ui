@@ -53,7 +53,7 @@
               <enum>QFrame::StyledPanel</enum>
              </property>
              <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
+              <enum>Qt::ScrollBarAsNeeded</enum>
              </property>
              <property name="alternatingRowColors">
               <bool>false</bool>
@@ -422,8 +422,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>tabWidget</zorder>
  </widget>
  <customwidgets>
   <customwidget>
