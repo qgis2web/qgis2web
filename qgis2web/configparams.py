@@ -45,9 +45,9 @@ def getTemplates():
 def getParams(configure_exporter_action=None):
 
     accentColor = QgsColorButton()
-    accentColor.setColor(QColor(255, 255, 255))
+    accentColor.setColor(QColor(0, 0, 0))
     backgroundColor = QgsColorButton()
-    backgroundColor.setColor(QColor(0, 0, 0))
+    backgroundColor.setColor(QColor(248, 248, 248))
 
     params = {
         "Appearance": {
