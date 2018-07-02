@@ -90,8 +90,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',
-                'Widget Background': '#000000',
-                'Widget Icon': '#ffffff',
+                'Widget Background': '#f8f8f8',
+                'Widget Icon': '#000000',
                 'Layer search': 'None',
                 'Highlight on hover': False,
                 'Show popups on hover': False
