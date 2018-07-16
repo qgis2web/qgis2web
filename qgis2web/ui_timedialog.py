@@ -428,7 +428,7 @@ class Button(QPushButton):
             if os.path.isdir("C:\\TEMP\\qgis2web"):
                 dir = "C:\\TEMP\\qgis2web"
         # print dir
-        root, dirs, files = os.walk(dir).next()
+        root, dirs, files = next(os.walk(dir))
         latest_subdir = max((os.path.getctime(os.path.join(root, f)), f) for f in dirs)
         
         index = os.path.join(dir, latest_subdir[1], 'index.html')
