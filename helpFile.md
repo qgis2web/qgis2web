@@ -1,8 +1,3 @@
-[![GitHub version](https://badge.fury.io/gh/tomchadwin%2Fqgis2web.svg)](https://badge.fury.io/gh/tomchadwin%2Fqgis2web)
-[![Build Status](https://travis-ci.org/tomchadwin/qgis2web.svg?branch=master)](https://travis-ci.org/tomchadwin/qgis2web)
-[![Coverage Status](https://coveralls.io/repos/github/tomchadwin/qgis2web/badge.svg?branch=master)](https://coveralls.io/github/tomchadwin/qgis2web?branch=master)
-[![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
 <p>QGIS plugin to export your project to an OpenLayers or Leaflet webmap. No
 server-side software required.</p>
@@ -213,6 +208,3 @@ software:</p>
     <li>Leaflet.pattern, by @teastman</li>
     <li>Leaflet.VectorGrid, by @IvanSanchez</li>
 </ul>
-
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/tomchadwin/qgis2web.svg)](https://greenkeeper.io/)

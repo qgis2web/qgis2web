@@ -1,42 +1,27 @@
-language: generic
-sudo: required
-dist: trusty
+language: python
+python:
+  - 3.5
 
-env:
-  - QGIS_REPO=http://qgis.org/debian-ltr
-  - QGIS_REPO=http://qgis.org/debian
-  - QGIS_REPO=http://qgis.org/debian-nightly
-
-addons: 
-  apt: 
-    packages: 
-      - python-software-properties 
-
--before_install:
-  - sudo apt-get -qq -y update
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
 
 install:
-  - sudo add-apt-repository ${QGIS_REPO}
-  - sudo apt-get update
-  - sudo apt-get install -y --force-yes qgis python-qgis xvfb
-  - sudo pip install --upgrade pip
-  - sudo pip install coverage
-  - sudo pip install nose
-  - sudo pip install --upgrade pep8
-  - sudo pip install --upgrade pylint
-  - sudo pip install python-coveralls
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
 
-before_script:
-  - echo "Build starting on " `date`
-  - export QGIS_PREFIX_PATH=/usr
-  - export PYTHONPATH=${QGIS_PREFIX_PATH}/share/qgis/python/:${QGIS_PREFIX_PATH}/share/qgis/python/plugins:`pwd`
-  - echo "PYTHONPATH:" $PYTHONPATH
-  - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
+jobs:
+  include:
+    - stage: test
+      env:
+        QGIS_TEST_VERSION="latest"
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+    - stage: test
+      env:
+        QGIS_TEST_VERSION="release-3_0"
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
-script:
-  - pep8 --exclude=test,exp2js.py,ui*.py ./
-  - make pylint
-  - QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --with-coverage --verbose --cover-package=qgis2web --cover-package=maindialog --cover-package=utils --cover-package=configparams --cover-package=olwriter --cover-package=leafletWriter  --cover-package=olScriptStrings --cover-package=basemaps --cover-package=leafletFileScripts --cover-package=leafletLayerScripts --cover-package=leafletScriptStrings --cover-package=leafletStyleScripts --cover-package=exporter --cover-package=writerRegistry --cover-package=writer
 after_success:
   - coveralls
 
