@@ -98,12 +98,16 @@
         });
         bounds_group.addLayer(layer_airports_0);
         map.addLayer(layer_airports_0);
-        var osmGeocoder = new L.Control.OSMGeocoder({
-            collapsed: false,
-            position: 'topright',
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
             text: 'Search',
-        });
-        osmGeocoder.addTo(map);
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
         setBounds();
         </script>
     </body>
