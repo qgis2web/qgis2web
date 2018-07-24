@@ -53,7 +53,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
     usedGroups = []
     (group_list, no_group_list,
-     usedGroups) = getGroups(canvas, layers, [], restrictToExtent,
+     usedGroups) = getGroups(canvas, layers, restrictToExtent,
                              extent, groupedLayers)
     layersList = []
     currentVT = ""
@@ -256,21 +256,31 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
     return (mapLayers, layerObjs, osmb)
 
 
-def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
-              groupedLayers):
-    group_list = ["baseLayer"] if len(basemapList) else []
+def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
+    group_list = []
     no_group_list = []
     usedGroups = []
     currentVT = ""
     for count, layer in enumerate(layers):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-        if (vts is not None and vts != currentVT):
-            no_group_list.append("lyr_" + safeName(vts))
-            currentVT = vts
-        try:
-            if is25d(layer, canvas, restrictToExtent, extent):
-                pass
-            else:
+        if (vts is not None):
+            if (vts != currentVT):
+                no_group_list.append("lyr_" + safeName(vts))
+                currentVT = vts
+        else:
+            try:
+                if is25d(layer, canvas, restrictToExtent, extent):
+                    pass
+                else:
+                    if layer.id() in groupedLayers:
+                        groupName = groupedLayers[layer.id()]
+                        if groupName not in usedGroups:
+                            group_list.append("group_" + safeName(groupName))
+                            usedGroups.append(groupName)
+                    else:
+                        no_group_list.append("lyr_" + safeName(layer.name()) +
+                                             "_" + unicode(count))
+            except:
                 if layer.id() in groupedLayers:
                     groupName = groupedLayers[layer.id()]
                     if groupName not in usedGroups:
@@ -279,15 +289,6 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
                 else:
                     no_group_list.append("lyr_" + safeName(layer.name()) +
                                          "_" + unicode(count))
-        except:
-            if layer.id() in groupedLayers:
-                groupName = groupedLayers[layer.id()]
-                if groupName not in usedGroups:
-                    group_list.append("group_" + safeName(groupName))
-                    usedGroups.append(groupName)
-            else:
-                no_group_list.append("lyr_" + safeName(layer.name()) +
-                                     "_" + unicode(count))
     return (group_list, no_group_list, usedGroups)
 
 
