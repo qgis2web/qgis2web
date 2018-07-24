@@ -429,7 +429,10 @@ def isCluster(cluster, renderer):
 
 def getVT(json_url):
     sln = safeName(json_url)
-    key = json_url.split("?")[1]
+    try:
+        key = json_url.split("?")[1]
+    except:
+        key = ""
     json = TileJSON(json_url)
     json.load()
     tile_url = json.tiles()[0].split("?")[0]
