@@ -97,7 +97,8 @@ var style_%(name)s = %(style)s;
                         {"defs": defs, "pattern": pattern, "name": sln,
                          "style": style, "setPattern": setPattern})
         elif style != "" and style != "''":
-            new_vtStyle = "if (feature.get('layer') == "
+            new_vtStyle = defs
+            new_vtStyle += "if (feature.get('layer') == "
             new_vtStyle += """'%s' && feature.getGeometry().getType() == '%s'){
             return %s(feature, resolution);
         }""" % (
