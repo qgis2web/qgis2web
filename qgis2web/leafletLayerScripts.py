@@ -204,7 +204,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
             styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % (
                 fontFamily)
             styleEnd = " + '</div>'"
-            if palyr.isExpression and palyr.enabled:
+            if palyr.isExpression:
                 exprFilename = os.path.join(outputProjectFileName, "js",
                                             "qgis2web_expressions.js")
                 name = compile_to_file(palyr.getLabelExpression(),
@@ -240,7 +240,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
               i++;
         });""" % (safeLayerName, labeltext)
             else:
-                if palyr.isExpression and palyr.enabled:
+                if palyr.isExpression:
                     labelVal = f
                 else:
                     labelVal = "feature.properties['%s']" % palyr.fieldName
@@ -453,7 +453,10 @@ def heatmapLayer(layer, safeLayerName, renderer):
 
 def VTLayer(json_url):
     sln = safeName(json_url)
-    key = json_url.split("?")[1]
+    try:
+        key = json_url.split("?")[1]
+    except:
+        key = ""
     json = TileJSON(json_url)
     json.load()
     tile_url = json.tiles()[0].split("?")[0]
