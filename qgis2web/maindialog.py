@@ -210,7 +210,6 @@ class MainDialog(QDialog, FORM_CLASS):
         elif self.mapFormat.checkedButton() == self.leaflet:
             return LeafletWriter
         elif self.mapFormat.checkedButton() == self.mapbox:
-            print("mapbox")
             return MapboxWriter
 
     def createWriter(self):
