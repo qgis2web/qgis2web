@@ -27,6 +27,7 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateTransform,
                        QgsMapLayer,
                        QgsMessageLog)
+import codecs
 import traceback
 from PyQt5.QtCore import (Qt,
                           QObject)
@@ -169,6 +170,8 @@ class MapboxWriter(Writer):
         useWMS = False
         useWMTS = False
         useRaster = False
+        vtSources = []
+        vtLayers = []
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -258,17 +261,20 @@ class MapboxWriter(Writer):
                  useHeat,
                  useVT,
                  useShapes,
-                 useOSMB) = writeVectorLayer(layer, safeLayerName,
-                                             usedFields[count], highlight,
-                                             popupsOnHover, popup[count],
-                                             outputProjectFileName,
-                                             wfsLayers, cluster[count],
-                                             visible[count], json[count],
-                                             legends, new_src, canvas, count,
-                                             restrictToExtent, extent,
-                                             feedback, labelCode, vtLabels,
-                                             vtStyles, useMultiStyle, useHeat,
-                                             useVT, useShapes, useOSMB)
+                 useOSMB,
+                 vtSources,
+                 vtLayers) = writeVectorLayer(layer, safeLayerName,
+                                              usedFields[count], highlight,
+                                              popupsOnHover, popup[count],
+                                              outputProjectFileName,
+                                              wfsLayers, cluster[count],
+                                              visible[count], json[count],
+                                              legends, new_src, canvas, count,
+                                              restrictToExtent, extent,
+                                              feedback, labelCode, vtLabels,
+                                              vtStyles, useMultiStyle,
+                                              useHeat, useVT, useShapes,
+                                              useOSMB, vtSources, vtLayers)
                 if useMapUnits:
                     mapUnitLayers.append(safeLayerName)
             elif layer.type() == QgsMapLayer.RasterLayer:
@@ -289,6 +295,40 @@ class MapboxWriter(Writer):
                     new_obj += """
         map.addLayer(overlay_""" + safeLayerName + """);"""
                 new_src += new_obj
+        values = {"@MAPBOX_SOURCES@": ",".join(vtSources),
+                  "@MAPBOX_LAYERS@": ",".join(vtLayers)}
+        s = """
+var styleJSON = {
+    "version": 8,
+    "name": "OS Outdoor",
+
+    "center": [
+        -1.445462913521851,
+        50.924985957591986
+    ],
+    "zoom": 13.822550415023533,
+    "bearing": -1.393608084872767,
+    "pitch": 0,
+    "light": {
+        "intensity": 0.2
+    },
+    "sources": {%s},
+    "sprite": "https://s3-eu-west-1.amazonaws.com/tiles.os.uk/styles/open-zoomstack-outdoor/sprites",
+    "glyphs": "https://s3-eu-west-1.amazonaws.com/tiles.os.uk/fonts/{fontstack}/{range}.pbf",
+    "layers": [%s],
+    "created": "2018-05-11T11:38:48.884Z",
+    "id": "cjh1w236f0tj22sl87sm547vt",
+    "modified": "2018-05-26T21:01:47.000Z",
+    "owner": "Ordnance Survey",
+    "visibility": "public",
+    "draft": false
+}""" % (",".join(vtSources), ",".join(vtLayers))
+        mbStore = os.path.join(outputProjectFileName, 'mapbox')
+        os.makedirs(mbStore)
+        with codecs.open(os.path.join(mbStore, "style.js"),
+                         'w', encoding='utf-8') as f:
+            f.write(unicode(s))
+            f.close()
         the_src = new_src
         new_src = jsons + """
         <script>"""
