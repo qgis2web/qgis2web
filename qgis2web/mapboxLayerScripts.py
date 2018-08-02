@@ -29,7 +29,7 @@ except:
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import (writeTmpLayer, removeSpaces, exportImages, is25d,
                             safeName, handleHiddenField, add25dAttributes,
-                            BLEND_MODES, TYPE_MAP)
+                            BLEND_MODES, TYPE_MAP, MB_TYPE_MAP)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
@@ -100,15 +100,16 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             new_obj = VTLayer(vts)
             vtStyles[vts] = {}
             addVT = True
+        geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
+        mbGeom = MB_TYPE_MAP[geom]
         vtLayers.append("""
         {
             "id": "%s",
-            "type": "fill",
+            "type": "%s",
             "source": "%s",
             "source-layer": "%s",
-            "layout": {},
-            
-        }""" % (layer.name(), safeName(vts), layer.name()))
+            "layout": {}
+        }""" % (layer.name(), mbGeom, safeName(vts), layer.name()))
         vtStyle = vtStyles[vts]
         (style, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
@@ -117,7 +118,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]
         isLayer = False
-        geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
         if geom == "Point":
             index = 0
             isLayer = True

@@ -171,7 +171,15 @@ class MapboxWriter(Writer):
         useWMTS = False
         useRaster = False
         vtSources = []
-        vtLayers = []
+        vtLayers = ["""
+        {
+            "id": "background",
+            "type": "background",
+            "layout": {},
+            "paint": {
+                "background-color": "#ffffff"
+            }
+        }"""]
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -398,16 +406,26 @@ var styleJSON = {
                              labelVisibility, searchLayer, useHeat, useRaster,
                              labelsList, mapUnitLayers)
         new_src += end
-        try:
-            writeHTMLstart(outputIndex, title, cluster, addressSearch,
-                           measure, matchCRS, layerSearch, canvas,
-                           mapLibLocation, locate, new_src, template, feedback,
-                           debugLibs, useMultiStyle, useHeat, useShapes,
-                           useOSMB, useWMS, useWMTS, useVT)
-        except Exception as e:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
-            QApplication.restoreOverrideCursor()
-        finally:
-            QApplication.restoreOverrideCursor()
+        new_src = """
+<script>
+var map = new mapboxgl.Map({
+ container: 'map',
+ style: styleJSON,
+ center: [-1.485, 53.567],
+ zoom: 4
+});
+map.addControl(new mapboxgl.NavigationControl());
+</script>"""
+        # try:
+        writeHTMLstart(outputIndex, title, cluster, addressSearch,
+                       measure, matchCRS, layerSearch, canvas,
+                       mapLibLocation, locate, new_src, template, feedback,
+                       debugLibs, useMultiStyle, useHeat, useShapes,
+                       useOSMB, useWMS, useWMTS, useVT)
+        # except Exception as e:
+        #     QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+        #                              level=QgsMessageLog.CRITICAL)
+        #     QApplication.restoreOverrideCursor()
+        # finally:
+        #     QApplication.restoreOverrideCursor()
         return outputIndex

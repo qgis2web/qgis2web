@@ -141,31 +141,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress = '<script src="https://'
         jsAddress += 'api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js">'
         jsAddress += '</script>'
-    jsAddress += '<script src="style.js"></script>'
-    if locate:
-        cssAddress += '<link rel="stylesheet" '
-        cssAddress += 'href="css/L.Control.Locate.min.css">'
-        jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
-    if useMultiStyle:
-        jsAddress += """
-        <script src="js/multi-style-layer.js"></script>"""
-    if useHeat:
-        jsAddress += """
-        <script src="js/leaflet-heat.js"></script>"""
-    if useVT:
-        jsAddress += """
-        <script src="js/Leaflet.VectorGrid.js"></script>"""
-    if useShapes:
-        jsAddress += """
-        <script src="js/leaflet-svg-shape-markers.min.js"></script>"""
-    jsAddress += """
-        <script src="js/leaflet.rotatedMarker.js"></script>
-        <script src="js/leaflet.pattern.js"></script>"""
-    if useOSMB:
-        jsAddress += """
-        <script src="js/OSMBuildings-Leaflet.js"></script>"""
+    jsAddress += '<script src="mapbox/style.js"></script>'
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
-    extracss += '<link rel="stylesheet" href="css/fontawesome-all.min.css">'
     if useCluster:
         clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">"""
@@ -198,11 +175,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         measureCSS = ""
         measureJS = ""
-    extraJS = """<script src="js/leaflet-hash.js"></script>
-        <script src="js/Autolinker.min.js"></script>
-        <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.min.js"></script>
-        <script src="js/labels.js"></script>"""
+    extraJS = ""
     if useWMS:
         extraJS += """
         <script src="js/leaflet.wms.js"></script>"""
