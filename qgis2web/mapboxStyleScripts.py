@@ -28,11 +28,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             (styleCode, markerType, useMapUnits,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
                                          layer_alpha, sln, sl, useMapUnits)
-            style += pattern
-            style += """
-        function style_%s_%s() {
-            return %s
-        }""" % (sln, sl, styleCode)
+            style = styleCode
     elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.categories()[0].symbol()
@@ -62,6 +58,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             style = patterns + style + """
             }
         }"""
+        style = ""
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
@@ -87,6 +84,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                                  "s": styleCode}
             style = patterns + style + """
         }"""
+        style = ""
     elif isinstance(renderer, QgsRuleBasedRenderer):
         symbol = renderer.rootRule().children()[0].symbol()
         slCount = symbol.symbolLayerCount()
@@ -139,6 +137,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 js = """
                 if (false) {}"""
             style += template % (patterns, sln, js, elsejs)
+        style = ""
     else:
         useMapUnits = False
         style = ""
@@ -190,6 +189,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
                 markerType = "shapeMarker"
         except:
             markerType = "circleMarker"
+        style = ""
     elif isinstance(sl, QgsSvgMarkerSymbolLayer):
         path = os.path.join(markerFolder, os.path.basename(sl.path()))
         svgSize = sl.size() * 3.8
@@ -209,6 +209,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
         icon: %s""" % (rot, getIcon("markers/" + os.path.basename(sl.path()),
                                     svgSize))
         markerType = "marker"
+        style = ""
     elif isinstance(sl, QgsSimpleLineSymbolLayer):
         color = getRGBAColor(props["line_color"], alpha)
         line_width = props["line_width"]
@@ -221,8 +222,6 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
         style, useMapUnits = getStrokeStyle(color, line_style, line_width,
                                             line_units, lineCap, lineJoin,
                                             useMapUnits)
-        style += """
-                fillOpacity: 0,"""
     elif isinstance(sl, QgsSimpleFillSymbolLayer):
         fillColor = getRGBAColor(props["color"], alpha)
 
@@ -243,8 +242,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
                                                   lineCap, lineJoin,
                                                   useMapUnits)
 
-        style = ('''%s %s''' %
-                 (strokeStyle, getFillStyle(fillColor, props)))
+        style = getFillStyle(fillColor, props)
     elif isinstance(sl, QgsLinePatternFillSymbolLayer):
         weight = sl.subSymbol().width()
         spaceWeight = sl.distance()
@@ -265,13 +263,12 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
                 stroke: false,
                 fillOpacity: 1,
                 fillPattern: pattern_%s_%d""" % (sln, slc)
+        style = ""
     else:
         markerType = "circleMarker"
         style = ""
         useMapUnits = False
-    return ("""{
-                pane: 'pane_%s',%s
-            }""" % (sln, style), markerType, useMapUnits, pattern)
+    return (style, markerType, useMapUnits, pattern)
 
 
 def getMarker(color, borderColor, borderWidth, borderUnits, size, sizeUnits,
@@ -331,27 +328,17 @@ def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
         if linejoin == 64:
             joinString = "bevel"
         strokeString = """
-                opacity: 1,
-                color: %s,
-                dashArray: '%s',""" % (color, dash)
-        strokeString += """
-                lineCap: '%s',
-                lineJoin: '%s',
-                weight: %s,""" % (capString, joinString, width)
+                "line-color": %s""" % (color)
     else:
-        strokeString = """
-                stroke: false,"""
+        strokeString = ""
     return strokeString, useMapUnits
 
 
 def getFillStyle(color, props):
     try:
         if props["style"] == "no":
-            return """
-                fillOpacity: 0,"""
+            return ""
     except:
         pass
     return """
-                fill: true,
-                fillOpacity: 1,
-                fillColor: %s,""" % color
+                "fill-color": %s""" % color
