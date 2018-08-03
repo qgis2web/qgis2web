@@ -60,7 +60,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             style = patterns + style + """
             }
         }"""
-        style = ""
+        style = styleCode
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         classAttr = handleHiddenField(layer, renderer.classAttribute())
         symbol = renderer.ranges()[0].symbol()
@@ -184,7 +184,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
                 pass
         style, useMapUnits = getMarker(color, borderColor, borderWidth,
                                        borderUnits, size, sizeUnits, props,
-                                       lineStyle, shape)
+                                       lineStyle, shape, renderer)
         try:
             if shape == 8 or shape == "circle":
                 markerType = "circleMarker"
@@ -275,7 +275,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
 
 
 def getMarker(color, borderColor, borderWidth, borderUnits, size, sizeUnits,
-              props, lineStyle, shape):
+              props, lineStyle, shape, renderer):
     useMapUnits = False
     strokeStyle, useMapUnits = getStrokeStyle(borderColor, lineStyle,
                                               borderWidth, borderUnits, 0, 0,
@@ -345,37 +345,29 @@ def getFillStyle(renderer, color, props):
         pass
 
         
-    if isinstance(renderer, QgsCategorizedSymbolRenderer):
-        classAttr = handleHiddenField(layer, renderer.classAttribute())
-        symbol = renderer.categories()[0].symbol()
-        slCount = symbol.symbolLayerCount()
-        patterns = ""
-        if slCount < 1:
-            slCount = 1
-        for sl in range(slCount):
-            style += """
-        function style_%s_%s(feature) {
-            switch(String(feature.properties['%s'])) {""" % (sln, sl,
-                                                             classAttr)
-            for cat in renderer.categories():
-                (styleCode, markerType, useMapUnits,
-                 pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
-                                             layer_alpha, sln, sl, useMapUnits,
-                                             renderer)
-                patterns += pattern
-                if (cat.value() is not None and cat.value() != ""):
-                    style += """
-                case '%s':""" % unicode(cat.value()).replace("'", "\\'")
-                else:
-                    style += """
-                default:"""
-                style += """
-                    return %s
-                    break;""" % styleCode
-            style = patterns + style + """
-            }
-        }"""
-        
+    if isinstance(renderer, QgsSingleSymbolRenderer):
+        symbol = renderer.symbol()
+        fillcolor = symbol.color().name()
+        color = '"%s"' % fillcolor
+
+    elif isinstance(renderer, QgsCategorizedSymbolRenderer):
+        print("cat")
+        classAttr = renderer.classAttribute()
+        catStyles = []
+        for cat in renderer.categories():
+            catStyles.append('"%s"' % unicode(cat.value()).replace('"', '\\"'))
+            catStyles.append('"%s"' % cat.symbol().color().name())
+        color = """[
+                    "match",
+                    [
+                        "get",
+                        "%s"
+                    ],
+                    %s,
+                    "#ffffff"
+                ]""" % (classAttr, ",".join(catStyles))
+        print(color)
+         
         
         
     return """
