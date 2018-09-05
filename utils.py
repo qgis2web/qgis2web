@@ -58,6 +58,7 @@ TYPE_MAP = {
     QGis.WKBLineString25D: 'LineString',
     QgsWKBTypes.LineStringZM: 'LineString',
     QGis.WKBPolygon: 'Polygon',
+    QgsWKBTypes.PolygonZM: 'Polygon',
     QGis.WKBPolygon25D: 'Polygon',
     QGis.WKBMultiPoint: 'MultiPoint',
     QGis.WKBMultiPoint25D: 'MultiPoint',
