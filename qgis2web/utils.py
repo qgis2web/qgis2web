@@ -57,6 +57,7 @@ TYPE_MAP = {
     QgsWkbTypes.LineStringM: 'LineString',
     QgsWkbTypes.LineString25D: 'LineString',
     QgsWkbTypes.Polygon: 'Polygon',
+    QgsWkbTypes.PolygonZM: 'Polygon',
     QgsWkbTypes.Polygon25D: 'Polygon',
     QgsWkbTypes.MultiPoint: 'MultiPoint',
     QgsWkbTypes.MultiPoint25D: 'MultiPoint',
