@@ -62,6 +62,7 @@ def exportStyles(layers, folder, clustered):
                  useMapUnits) = ruleBased(renderer, folder, stylesFolder,
                                           layer_alpha, sln, layer)
             else:
+                value = "''"
                 style = """
     var style = [ new ol.style.Style({
         text: createTextStyle(feature, resolution, labelText, labelFont,
