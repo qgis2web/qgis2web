@@ -19,7 +19,7 @@
 set -e
 
 pushd /usr/src
-apt-get -y install python3-pip gdal-bin python-gdal python3-gdal
+apt-get -y install python3-pip
 python3 -m pip install --upgrade pip
 python3 -m pip install coverage
 python3 -m pip install nose
