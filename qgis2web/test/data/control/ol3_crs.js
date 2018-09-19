@@ -4,7 +4,7 @@ var format_airports_0 = new ol.format.GeoJSON();
 var features_airports_0 = format_airports_0.readFeatures(json_airports_0, 
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:2964'});
 var jsonSource_airports_0 = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '<a href=""></a>'})],
+    attributions: '<a href=""></a>',
 });
 jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new ol.layer.Vector({
                 declutter: true,
