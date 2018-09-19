@@ -19,7 +19,7 @@
 set -e
 
 pushd /usr/src
-apt-get -y install python3-pip
+apt-get -y install python3-pip gdal-bin python-gdal python3-gdal
 python3 -m pip install --upgrade pip
 python3 -m pip install coverage
 python3 -m pip install nose
@@ -30,8 +30,6 @@ python3 -m pip install pylint
 python3 -m pip install python-coveralls
 python3 -m pip install Twisted
 python3 -m pip install future
-
-sudo apt install gdal-bin python-gdal python3-gdal
 
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
 
