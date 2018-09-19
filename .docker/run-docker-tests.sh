@@ -31,6 +31,8 @@ python3 -m pip install python-coveralls
 python3 -m pip install Twisted
 python3 -m pip install future
 
+sudo apt install gdal-bin python-gdal python3-gdal
+
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
 
 pycodestyle --exclude=test,resources*.py,exp2js.py,ui*.py,xmltodict.py ./ --format=pylint --ignore=E722,W504
