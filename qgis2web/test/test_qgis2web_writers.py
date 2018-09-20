@@ -62,8 +62,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     def defaultParams(self):
         return {'Data export': {'Minify GeoJSON files': True,
                                 'Exporter': 'Export to folder',
-                                'Precision': 'maintain',
-                                'Use debug libraries': False},
+                                'Precision': 'maintain'},
                 'Scale/Zoom': {'Min zoom level': '1',
                                'Restrict to extent': False,
                                'Extent': 'Fit to layers extent',
