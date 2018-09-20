@@ -60,12 +60,10 @@ class qgis2web_WriterTest(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def defaultParams(self):
-        return {'Data export': {
-            'Mapping library location': 'Local',
-                             'Minify GeoJSON files': True,
-                             'Exporter': 'Export to folder',
-                             'Precision': 'maintain',
-                             'Use debug libraries': False},
+        return {'Data export': {'Minify GeoJSON files': True,
+                                'Exporter': 'Export to folder',
+                                'Precision': 'maintain',
+                                'Use debug libraries': False},
                 'Scale/Zoom': {'Min zoom level': '1',
                                'Restrict to extent': False,
                                'Extent': 'Fit to layers extent',
@@ -1952,87 +1950,6 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         # Open the test file
         test_output = read_output(result, 'layers/airports_0.js')
-
-        # Compare with control file
-        self.assertEqual(
-            test_output, control_output, diff(control_output, test_output))
-
-    def test64_Leaflet_cdn(self):
-        """Leaflet CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        control_file = open(
-            get_test_data_path(
-                'control', 'leaflet_cdn.html'), 'r')
-        control_output = control_file.read()
-        control_file.close()
-
-        # Export to web map
-        writer = LeafletWriter()
-        writer.params = self.defaultParams()
-        writer.params['Data export']['Mapping library location'] = 'CDN'
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-             (u'NAME', u'no label'), (u'USE', u'no label')])
-        ]
-        writer.json = [False]
-
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        # Open the test file
-        test_file = open(result)
-        test_output = test_file.read()
-        test_file.close()
-
-        # Compare with control file
-        self.assertEqual(
-            test_output, control_output, diff(control_output, test_output))
-
-    def test65_OL3_cdn(self):
-        """OL3 CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        control_file = open(
-            get_test_data_path(
-                'control', 'ol3_cdn.html'), 'r')
-        control_output = control_file.read()
-        control_file.close()
-
-        # Export to web map
-        writer = OpenLayersWriter()
-        writer.params = self.defaultParams()
-        writer.params['Data export']['Mapping library location'] = 'CDN'
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-             (u'NAME', u'no label'), (u'USE', u'no label')])
-        ]
-        writer.json = [False]
-        writer.getFeatureInfo = [False]
-
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        # Open the test file
-        test_file = open(result)
-        test_output = test_file.read()
-        test_file.close()
 
         # Compare with control file
         self.assertEqual(

@@ -72,12 +72,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         combo.setCurrentIndex(index)
 
     def defaultParams(self):
-        return {'Data export': {
-            'Mapping library location': 'Local',
-                             'Minify GeoJSON files': True,
-                             'Exporter': 'Export to folder',
-                             'Precision': 'maintain',
-                             'Use debug libraries': False},
+        return {'Data export': {'Minify GeoJSON files': True,
+                                'Exporter': 'Export to folder',
+                                'Precision': 'maintain',
+                                'Use debug libraries': False},
                 'Scale/Zoom': {'Min zoom level': '1',
                                'Restrict to extent': False,
                                'Extent': 'Fit to layers extent',
@@ -1776,84 +1774,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                           ])
         self.assertEqual(writer.json, [False])
 
-    def test64_Leaflet_cdn(self):
-        """Dialog test: Leaflet  CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-
-        # Set 'Mapping library location' combo to 'CDN'
-        self.dialog.items['Data export'].get(
-            'Mapping library location').combo.setCurrentIndex(1)
-        self.dialog.leaflet.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        expected_params['Data export']['Mapping library location'] = 'CDN'
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict(
-                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                              (u'NAME', u'no label'), (u'USE', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
-
-    def test65_OL3_cdn(self):
-        """Dialog test: OL3   CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-
-        # Set 'Mapping library location' combo to 'CDN'
-        self.dialog.items['Data export'].get(
-            'Mapping library location').combo.setCurrentIndex(1)
-        self.dialog.ol3.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, OpenLayersWriter))
-        expected_params = self.defaultParams()
-        expected_params['Data export']['Mapping library location'] = 'CDN'
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict(
-                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                              (u'NAME', u'no label'), (u'USE', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
-
     def test67_leaflet_minify(self):
         """Dialog test: Leaflet  minify"""
         layer_path = get_test_data_path('layer', 'airports.shp')
@@ -2919,7 +2839,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         params['Appearance']['Add layers list'] = 'Collapsed'
         params['Data export']['Minify GeoJSON files'] = False
         params['Data export']['Precision'] = '4'
-        params['Data export']['Mapping library location'] = 'CDN'
         self.dialog.setStateToParams(params)
 
         writer = self.dialog.createWriter()
@@ -2933,7 +2852,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.params['Data export']['Minify GeoJSON files'] = False
         writer.params['Data export']['Precision'] = '4'
-        writer.params['Data export']['Mapping library location'] = 'CDN'
 
         self.dialog.setStateToWriter(writer)
 
