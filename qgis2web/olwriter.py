@@ -108,7 +108,6 @@ class OpenLayersWriter(Writer):
         matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
-        debugLibs = settings["Data export"]["Use debug libraries"]
         extent = settings["Scale/Zoom"]["Extent"]
         mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
         fullextent = bounds(iface, False, layers, matchCRS)
@@ -127,7 +126,7 @@ class OpenLayersWriter(Writer):
         widgetAccent = settings["Appearance"]["Widget Icon"]
         widgetBackground = settings["Appearance"]["Widget Background"]
 
-        writeFiles(folder, restrictToExtent, feedback, debugLibs)
+        writeFiles(folder, restrictToExtent, feedback)
         exportLayers(iface, layers, folder, precision, optimize,
                      popup, json, restrictToExtent, extent, feedback, matchCRS)
         mapUnitsLayers = exportStyles(layers, folder, clustered)
@@ -139,8 +138,7 @@ class OpenLayersWriter(Writer):
                                     mapSettings.destinationCrs().authid())
         (jsAddress,
          cssAddress, controlCount) = writeHTMLstart(settings, controlCount,
-                                                    osmb, mapLibLocn, feedback,
-                                                    debugLibs)
+                                                    osmb, mapLibLocn, feedback)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
