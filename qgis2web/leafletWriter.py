@@ -127,7 +127,6 @@ class LeafletWriter(Writer):
         mapLibLocation = params["Data export"]["Mapping library location"]
         minify = params["Data export"]["Minify GeoJSON files"]
         precision = params["Data export"]["Precision"]
-        debugLibs = params["Data export"]["Use debug libraries"]
         extent = params["Scale/Zoom"]["Extent"]
         minZoom = params["Scale/Zoom"]["Min zoom level"]
         maxZoom = params["Scale/Zoom"]["Max zoom level"]
@@ -152,8 +151,7 @@ class LeafletWriter(Writer):
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
                                                    canvas, mapLibLocation,
-                                                   addressSearch, locate,
-                                                   debugLibs)
+                                                   addressSearch, locate)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
                  widgetAccent, widgetBackground)
 
@@ -362,8 +360,8 @@ class LeafletWriter(Writer):
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
                            measure, matchCRS, layerSearch, canvas,
                            mapLibLocation, locate, new_src, template, feedback,
-                           debugLibs, useMultiStyle, useHeat, useShapes,
-                           useOSMB, useWMS, useWMTS, useVT)
+                           useMultiStyle, useHeat, useShapes, useOSMB, useWMS,
+                           useWMTS, useVT)
         except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=QgsMessageLog.CRITICAL)
