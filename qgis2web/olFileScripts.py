@@ -34,7 +34,7 @@ def writeHTMLstart(settings, controlCount, osmb, feedback):
         <script src="./resources/functions.js"></script>"""
     cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
     jsAddress += """
-    <script src="./resources/ol.js"></script>"""
+        <script src="./resources/ol.js"></script>"""
     cssAddress += """
         <link rel="stylesheet" href="resources/fontawesome-all.min.css">"""
     if osmb != "":
