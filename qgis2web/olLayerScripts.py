@@ -333,7 +333,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
 def getWFS(layer, layerName, layerAttr, cluster, minResolution, maxResolution):
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
     format: format_%(n)s
 });''' % {"n": layerName, "layerAttr": layerAttr}
     if cluster:
@@ -367,7 +367,7 @@ def getJSON(layerName, crsConvert, layerAttr, cluster, pointLayerType,
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
 });
 jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                                     "crs": crsConvert,
@@ -512,7 +512,7 @@ def getXYZ(layerName, opacity, minResolution, maxResolution,
             %s
             %s
             source: new ol.source.XYZ({
-    attributions: [new ol.Attribution({html: '%s'})],
+    attributions: '%s',
                 url: '%s'
             })
         });""" % (layerName, layerName, opacity, minResolution, maxResolution,
@@ -539,7 +539,7 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
     var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.WMTS(({
                               url: "%(url)s",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
                                 "layer": "%(layerId)s",
                                 "TILED": "true",
              matrixSet: 'EPSG:3857',
@@ -582,7 +582,7 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
     return '''var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
                               url: "%(url)s",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
                               params: {
                                 "LAYERS": "%(layers)s",
                                 "TILED": "true",
@@ -627,7 +627,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
                             %(maxRes)s
                             source: new ol.source.ImageStatic({
                                url: "./layers/%(n)s.png",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
                                 projection: '%(mapCRS)s',
                                 alwaysInRange: true,
                                 imageExtent: %(extent)s

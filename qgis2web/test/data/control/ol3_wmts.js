@@ -13,7 +13,7 @@ var wms_layers = [];
     var lyr_wms_0 = new ol.layer.Tile({
                             source: new ol.source.WMTS(({
                               url: "http://wmts.nlsc.gov.tw/wmts",
-    attributions: [new ol.Attribution({html: '<a href=""></a>'})],
+    attributions: '<a href=""></a>',
                                 "layer": "EMAP8",
                                 "TILED": "true",
              matrixSet: 'EPSG:3857',

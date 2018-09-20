@@ -6,7 +6,7 @@ from qgis.core import QgsDataSourceUri
 from qgis2web.utils import safeName
 
 
-def writeFiles(folder, restrictToExtent, feedback, debugLibs):
+def writeFiles(folder, restrictToExtent, feedback):
     feedback.showFeedback("Exporting libraries...")
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
@@ -25,25 +25,16 @@ def writeFiles(folder, restrictToExtent, feedback, debugLibs):
         shutil.copytree(os.path.join(os.path.dirname(__file__),
                                      "resources"),
                         dst)
-    if debugLibs:
-        shutil.copyfile(os.path.join(os.path.dirname(__file__),
-                                     "js", "ol-debug.js"),
-                        os.path.join(dst, "ol-debug.js"))
     feedback.completeStep()
 
 
-def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback,
-                   debugLibs):
+def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback):
     feedback.showFeedback("Writing HTML...")
     jsAddress = """<script src="resources/polyfills.js"></script>
         <script src="./resources/functions.js"></script>"""
     if mapLibLocn == "Local":
         cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
-        if debugLibs:
-            jsAddress += """
-        <script src="./resources/ol-debug.js"></script>"""
-        else:
-            jsAddress += """
+        jsAddress += """
         <script src="./resources/ol.js"></script>"""
     else:
         cssAddress = """<link rel="stylesheet" """
@@ -53,8 +44,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback,
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
         jsAddress += """4.6.5/ol.js"></script>"""
     # load the fonts
-    cssAddress += '<link rel="stylesheet" href="resources/' \
-                  'fontawesome-all.min.css">'
+    cssAddress += """
+        <link rel="stylesheet" href="resources/fontawesome-all.min.css">"""
     if osmb != "":
         jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""

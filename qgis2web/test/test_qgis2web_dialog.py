@@ -2435,8 +2435,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])])
+            [('ID', 'header label'), ('fk_region', 'header label'), ('ELEV', 'header label'), ('NAME', 'header label'),
+             ('USE', 'header label')])])
         self.assertEqual(writer.json, [False])
 
     def test85_OL3_rulebased(self):
@@ -2468,8 +2468,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])])
+            [('ID', 'header label'), ('fk_region', 'header label'), ('ELEV', 'header label'), ('NAME', 'header label'),
+             ('USE', 'header label')])])
         self.assertEqual(writer.json, [False])
 
     def test86_Leaflet_labels(self):
@@ -2501,8 +2501,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])])
+            [('ID', 'header label'), ('fk_region', 'header label'), ('ELEV', 'header label'), ('NAME', 'header label'),
+             ('USE', 'header label')])])
         self.assertEqual(writer.json, [False])
 
     def test87_OL3_labels(self):
@@ -2534,8 +2534,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
         self.assertEqual(writer.popup, [OrderedDict(
-            [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
-             ('USE', 'no label')])])
+            [('ID', 'header label'), ('fk_region', 'header label'), ('ELEV', 'header label'), ('NAME', 'header label'),
+             ('USE', 'header label')])])
         self.assertEqual(writer.json, [False])
 
     # def test88_OL3_WMTS(self):
@@ -2657,7 +2657,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.layers, [layer])
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'inline label'), (u'NAMES', u'no label'), (u'AREA_MI', u'inline label'), (u'xlabel', u'inline label'), (u'ylabel', u'inline label'), (u'rotation', u'inline label')])
                                         ])
         self.assertEqual(writer.json, [False])
 
@@ -2690,7 +2690,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.assertEqual(writer.layers, [layer])
         self.assertEqual(writer.visible, [True])
         self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
+        self.assertEqual(writer.popup, [OrderedDict([(u'cat', u'inline label'), (u'NAMES', u'no label'), (u'AREA_MI', u'inline label'), (u'xlabel', u'inline label'), (u'ylabel', u'inline label'), (u'rotation', u'inline label')])
                                         ])
         self.assertEqual(writer.json, [False])
 

@@ -385,9 +385,11 @@ def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
                                         symbol, useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
+        layerAttr = ""
         attrText = layer.attribution()
         attrUrl = layer.attributionUrl()
-        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+        if attrText != "":
+            layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
         (new_obj,
          useMultiStyle) = buildPointJSON(symbol, safeLayerName, usedFields,
                                          markerType, layerAttr, useMultiStyle)
@@ -404,9 +406,11 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers, symbol,
                                            useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
+        layerAttr = ""
         attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
         attrUrl = layer.attributionUrl()
-        layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
+        if attrText != "":
+            layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
         new_obj, useMultiStyle = buildNonPointJSON(safeLayerName, usedFields,
                                                    layerAttr, symbol,
                                                    useMultiStyle)
@@ -518,9 +522,11 @@ def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
 
 
 def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol, useMultiStyle):
+    layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     p2ls = ""
     slCount = symbol.symbolLayerCount()
@@ -597,9 +603,11 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
 
 
 def buildNonPointWFS(layerName, layer, symbol, useMultiStyle):
+    layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     styles = ""
     slCount = symbol.symbolLayerCount()
