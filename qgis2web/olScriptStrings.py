@@ -477,8 +477,7 @@ def geolocateStyle(geolocate, controlCount):
 def geocodeLinks(geocode):
     if geocode:
         returnVal = """
-    <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.min.css" rel="stylesheet">"""
+    <link href="resources/ol3-geocoder.min.css" rel="stylesheet">"""
         return returnVal
     else:
         return ""
@@ -487,8 +486,7 @@ def geocodeLinks(geocode):
 def geocodeJS(geocode):
     if geocode:
         returnVal = """
-    <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.js"></script>"""
+    <script src="resources/ol3-geocoder.js"></script>"""
         return returnVal
     else:
         return ""
