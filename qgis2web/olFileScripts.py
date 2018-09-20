@@ -34,7 +34,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback):
         <script src="./resources/functions.js"></script>"""
     if mapLibLocn == "Local":
         cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
-        jsAddress += """<script src="./resources/ol.js"></script>"""
+        jsAddress += """
+        <script src="./resources/ol.js"></script>"""
     else:
         cssAddress = """<link rel="stylesheet" """
         cssAddress += 'href="http://cdnjs.cloudflare.com/ajax/libs/openlayers/'
@@ -43,8 +44,8 @@ def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback):
         <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
         jsAddress += """4.6.5/ol.js"></script>"""
     # load the fonts
-    cssAddress += '<link rel="stylesheet" href="resources/' \
-                  'fontawesome-all.min.css">'
+    cssAddress += """
+        <link rel="stylesheet" href="resources/fontawesome-all.min.css">"""
     if osmb != "":
         jsAddress += """
         <script src="resources/OSMBuildings-OL3.js"></script>"""
