@@ -122,7 +122,6 @@ class OpenLayersWriter(Writer):
         htmlTemplate = settings["Appearance"]["Template"]
         layerSearch = unicode(settings["Appearance"]["Layer search"])
         searchLayer = settings["Appearance"]["Search layer"]
-        mapLibLocn = settings["Data export"]["Mapping library location"]
         widgetAccent = settings["Appearance"]["Widget Icon"]
         widgetBackground = settings["Appearance"]["Widget Background"]
 
@@ -138,7 +137,7 @@ class OpenLayersWriter(Writer):
                                     mapSettings.destinationCrs().authid())
         (jsAddress,
          cssAddress, controlCount) = writeHTMLstart(settings, controlCount,
-                                                    osmb, mapLibLocn, feedback)
+                                                    osmb, feedback)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
