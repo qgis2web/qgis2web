@@ -134,7 +134,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
     map += "qgis2web</a>');"
     if locate:
         map += """
-        L.control.locate().addTo(map);"""
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""
     if measure != "None":
         if measure == "Imperial":
             options = """{
