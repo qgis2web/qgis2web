@@ -79,21 +79,24 @@ function categories_pipelines_0(feature, value, size, resolution, labelText,
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(161,121,229,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;
 case 'On Ground Surface':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(38,209,101,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;
 default:
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(239,120,50,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;}};
 
@@ -107,6 +110,8 @@ var style_pipelines_0 = function(feature, resolution){
     size = 0;
     var labelFont = "10px, sans-serif";
     var labelFill = "rgba(0, 0, 0, 1)";
+    var bufferColor = "";
+    var bufferWidth = 0;
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
