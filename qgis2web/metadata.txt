@@ -14,7 +14,7 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=3.2.0
+version=3.3.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -23,7 +23,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2018/07/20 3.2.0 Customizable widget colours (thanks, @paulds8!), Python 3 time (thanks, @shivareddyiirs!), LineStringZ/M (thanks, @boesiii!), disable intermittent tests, Leaflet cluster layers list, OL stroke: no pen, raw strings in exp2js
+changelog=2018/09/25 3.3.0 OpenLayers 5, vector tiles without API key, OL ungrouped vector tiles, OL categorized vector tiles, Leaflet labels, icon colour profiles, support polygonZM, Leaflet trailing attribution comma, update proj4js, unset "value" error, replace debug libs with source maps, remove CDN option, OL geocoder local, Leaflet reduce geolocate maxzoom, correct README, OL label buffer
+    2018/07/20 3.2.0 Customizable widget colours (thanks, @paulds8!), Python 3 time (thanks, @shivareddyiirs!), LineStringZ/M (thanks, @boesiii!), disable intermittent tests, Leaflet cluster layers list, OL stroke: no pen, raw strings in exp2js
     2018/05/18 3.1.1 Flickering OL markers (thanks, @ahocevar!), LinestringM, OL no-brush fill
     2018/05/02 3.1.0 OpenLayers 4.6.5, update Docker images, reinstate vector tiles, Unicode Leaflet title, vector export encoding error, further processing migration (WIP)
     2018/04/17 3.0.1 Leaflet else-only rules, patterns in rules, Leaflet cat/grad patterns, reinstate try: for testDump, OL grid, PEP8 compliance improved
