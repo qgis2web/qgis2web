@@ -204,7 +204,7 @@ osmb.set(json_{sln}_{count});""".format(shadows=shadows,
 def getVisibility(mapLayers, layers, visible):
     visibility = ""
     currentVT = ""
-    for layer, layerObj, v in zip(mapLayers[1:], layers, visible):
+    for layer, layerObj, v in zip(mapLayers, layers, visible):
         vts = layerObj.customProperty("VectorTilesReader/vector_tile_url")
         if vts is None or vts != currentVT:
             if vts is not None:
