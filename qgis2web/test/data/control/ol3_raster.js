@@ -13,5 +13,5 @@ var lyr_test_0 = new ol.layer.Image({
                             })
                         });
 
-
+lyr_test_0.setVisible(true);
 var layersList = [lyr_test_0];
