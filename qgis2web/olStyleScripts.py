@@ -226,7 +226,8 @@ def categorized(defs, sln, layer, renderer, legendFolder, stylesFolder,
     cluster = False
     defs += """
 function categories_%s(feature, value, size, resolution, labelText,
-                       labelFont, labelFill, bufferColor, bufferWidth) {
+                       labelFont, labelFill, bufferColor, bufferWidth,
+                       placement) {
                 switch(value.toString()) {""" % sln
     cats = []
     useAnyMapUnits = False
@@ -253,7 +254,7 @@ function categories_%s(feature, value, size, resolution, labelText,
     style = """
 var style = categories_%s(feature, value, size, resolution, labelText,
                           labelFont, labelFill, bufferColor,
-                          bufferWidth)""" % sln
+                          bufferWidth, placement)""" % sln
     value = getValue(layer, renderer)
     return (style, pattern, setPattern, value, defs, useAnyMapUnits)
 

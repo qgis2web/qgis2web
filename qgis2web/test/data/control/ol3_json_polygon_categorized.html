@@ -74,7 +74,8 @@
 var size = 0;
 var placement = 'point';
 function categories_lakes_0(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
+                       labelFont, labelFill, bufferColor, bufferWidth,
+                       placement) {
                 switch(value.toString()) {case 'Becharof Lake':
                     return [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}),fill: new ol.style.Fill({color: 'rgba(89,109,204,1.0)'}),
@@ -225,7 +226,8 @@ var style_lakes_0 = function(feature, resolution){
     }
     
 var style = categories_lakes_0(feature, value, size, resolution, labelText,
-                          labelFont, labelFill);
+                          labelFont, labelFill, bufferColor,
+                          bufferWidth, placement);
 
     return style;
 };

@@ -1,7 +1,8 @@
 var size = 0;
 var placement = 'point';
 function categories_airports_0(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
+                       labelFont, labelFill, bufferColor, bufferWidth,
+                       placement) {
                 switch(value.toString()) {case 'ALLEN AAF':
                     return [ new ol.style.Style({
         image: new ol.style.RegularShape({radius: 4.0 + size, points: 4,
@@ -722,7 +723,8 @@ var style_airports_0 = function(feature, resolution){
     }
     
 var style = categories_airports_0(feature, value, size, resolution, labelText,
-                          labelFont, labelFill);
+                          labelFont, labelFill, bufferColor,
+                          bufferWidth, placement);
 
     return style;
 };
