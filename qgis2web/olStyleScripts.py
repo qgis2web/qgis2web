@@ -188,8 +188,8 @@ def getLabelFormat(layer):
             face = " \\'%s\\'," % face
         sv = palyr.scaleVisibility
         if sv:
-            min = float(palyr.MinScale)
-            max = float(palyr.MaxScale)
+            min = float(palyr.minimumScale)
+            max = float(palyr.maximumScale)
             if min != 0:
                 min = 1 / ((1 / min) * 39.37 * 90.7)
             max = 1 / ((1 / max) * 39.37 * 90.7)
