@@ -193,8 +193,8 @@ def getLabelFormat(layer):
             if min != 0:
                 min = 1 / ((1 / min) * 39.37 * 90.7)
             max = 1 / ((1 / max) * 39.37 * 90.7)
-            labelRes = " && resolution > %(min)d " % {"min": min}
-            labelRes += "&& resolution < %(max)d" % {"max": max}
+            labelRes = " && resolution > %(min)d " % {"min": max}
+            labelRes += "&& resolution < %(max)d" % {"max": min}
         else:
             labelRes = ""
         labelBuffer = labelFormat.buffer()

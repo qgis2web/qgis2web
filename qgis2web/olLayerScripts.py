@@ -152,10 +152,10 @@ def getScaleRes(layer):
     if layer.hasScaleBasedVisibility():
         if layer.minimumScale() != 0:
             minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
-            minResolution = "\nminResolution:%s,\n" % unicode(minRes)
+            minResolution = "\nmaxResolution:%s,\n" % unicode(minRes)
         if layer.maximumScale() != 0:
             maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
-            maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
+            maxResolution = "minResolution:%s,\n" % unicode(maxRes)
     return (minResolution, maxResolution)
 
 
