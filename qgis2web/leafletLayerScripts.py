@@ -204,7 +204,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
             styleStart += "font-family: \\'%s\\', sans-serif;\">' + " % (
                 fontFamily)
             styleEnd = " + '</div>'"
-            if palyr.isExpression and palyr.enabled:
+            if palyr.isExpression:
                 exprFilename = os.path.join(outputProjectFileName, "js",
                                             "qgis2web_expressions.js")
                 name = compile_to_file(palyr.getLabelExpression(),
@@ -240,7 +240,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
               i++;
         });""" % (safeLayerName, labeltext)
             else:
-                if palyr.isExpression and palyr.enabled:
+                if palyr.isExpression:
                     labelVal = f
                 else:
                     labelVal = "feature.properties['%s']" % palyr.fieldName
@@ -385,9 +385,11 @@ def pointLayer(layer, safeLayerName, cluster, usedFields, json, wfsLayers,
                                         symbol, useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
+        layerAttr = ""
         attrText = layer.attribution()
         attrUrl = layer.attributionUrl()
-        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+        if attrText != "":
+            layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
         (new_obj,
          useMultiStyle) = buildPointJSON(symbol, safeLayerName, usedFields,
                                          markerType, layerAttr, useMultiStyle)
@@ -404,9 +406,11 @@ def nonPointLayer(layer, safeLayerName, usedFields, json, wfsLayers, symbol,
                                            useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
+        layerAttr = ""
         attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
         attrUrl = layer.attributionUrl()
-        layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
+        if attrText != "":
+            layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
         new_obj, useMultiStyle = buildNonPointJSON(safeLayerName, usedFields,
                                                    layerAttr, symbol,
                                                    useMultiStyle)
@@ -453,7 +457,10 @@ def heatmapLayer(layer, safeLayerName, renderer):
 
 def VTLayer(json_url):
     sln = safeName(json_url)
-    key = json_url.split("?")[1]
+    try:
+        key = json_url.split("?")[1]
+    except:
+        key = ""
     json = TileJSON(json_url)
     json.load()
     tile_url = json.tiles()[0].split("?")[0]
@@ -515,9 +522,11 @@ def buildPointJSON(symbol, sln, usedFields, markerType, layerAttr,
 
 
 def buildPointWFS(p2lf, layerName, layer, cluster_set, symbol, useMultiStyle):
+    layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     p2ls = ""
     slCount = symbol.symbolLayerCount()
@@ -594,9 +603,11 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, symbol, useMultiStyle):
 
 
 def buildNonPointWFS(layerName, layer, symbol, useMultiStyle):
+    layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     styles = ""
     slCount = symbol.symbolLayerCount()

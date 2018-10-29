@@ -66,9 +66,7 @@ def getParams(configure_exporter_action=None):
         "Data export": {
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
                           "9", "10", "11", "12", "13", "14", "15"),
-            "Minify GeoJSON files": True,
-            "Mapping library location": ("Local", "CDN"),
-            "Use debug libraries": False
+            "Minify GeoJSON files": True
         },
         "Scale/Zoom": {
             "Extent": ("Canvas extent", "Fit to layers extent"),

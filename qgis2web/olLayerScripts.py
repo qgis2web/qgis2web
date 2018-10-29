@@ -53,7 +53,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 
     usedGroups = []
     (group_list, no_group_list,
-     usedGroups) = getGroups(canvas, layers, [], restrictToExtent,
+     usedGroups) = getGroups(canvas, layers, restrictToExtent,
                              extent, groupedLayers)
     layersList = []
     currentVT = ""
@@ -152,10 +152,10 @@ def getScaleRes(layer):
     if layer.hasScaleBasedVisibility():
         if layer.minimumScale() != 0:
             minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
-            minResolution = "\nminResolution:%s,\n" % unicode(minRes)
+            minResolution = "\nmaxResolution:%s,\n" % unicode(minRes)
         if layer.maximumScale() != 0:
             maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
-            maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
+            maxResolution = "minResolution:%s,\n" % unicode(maxRes)
     return (minResolution, maxResolution)
 
 
@@ -204,7 +204,7 @@ osmb.set(json_{sln}_{count});""".format(shadows=shadows,
 def getVisibility(mapLayers, layers, visible):
     visibility = ""
     currentVT = ""
-    for layer, layerObj, v in zip(mapLayers[1:], layers, visible):
+    for layer, layerObj, v in zip(mapLayers, layers, visible):
         vts = layerObj.customProperty("VectorTilesReader/vector_tile_url")
         if vts is None or vts != currentVT:
             if vts is not None:
@@ -256,21 +256,31 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
     return (mapLayers, layerObjs, osmb)
 
 
-def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
-              groupedLayers):
-    group_list = ["baseLayer"] if len(basemapList) else []
+def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
+    group_list = []
     no_group_list = []
     usedGroups = []
     currentVT = ""
     for count, layer in enumerate(layers):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-        if (vts is not None and vts != currentVT):
-            no_group_list.append("lyr_" + safeName(vts))
-            currentVT = vts
-        try:
-            if is25d(layer, canvas, restrictToExtent, extent):
-                pass
-            else:
+        if (vts is not None):
+            if (vts != currentVT):
+                no_group_list.append("lyr_" + safeName(vts))
+                currentVT = vts
+        else:
+            try:
+                if is25d(layer, canvas, restrictToExtent, extent):
+                    pass
+                else:
+                    if layer.id() in groupedLayers:
+                        groupName = groupedLayers[layer.id()]
+                        if groupName not in usedGroups:
+                            group_list.append("group_" + safeName(groupName))
+                            usedGroups.append(groupName)
+                    else:
+                        no_group_list.append("lyr_" + safeName(layer.name()) +
+                                             "_" + unicode(count))
+            except:
                 if layer.id() in groupedLayers:
                     groupName = groupedLayers[layer.id()]
                     if groupName not in usedGroups:
@@ -279,15 +289,6 @@ def getGroups(canvas, layers, basemapList, restrictToExtent, extent,
                 else:
                     no_group_list.append("lyr_" + safeName(layer.name()) +
                                          "_" + unicode(count))
-        except:
-            if layer.id() in groupedLayers:
-                groupName = groupedLayers[layer.id()]
-                if groupName not in usedGroups:
-                    group_list.append("group_" + safeName(groupName))
-                    usedGroups.append(groupName)
-            else:
-                no_group_list.append("lyr_" + safeName(layer.name()) +
-                                     "_" + unicode(count))
     return (group_list, no_group_list, usedGroups)
 
 
@@ -332,7 +333,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
 def getWFS(layer, layerName, layerAttr, cluster, minResolution, maxResolution):
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
     format: format_%(n)s
 });''' % {"n": layerName, "layerAttr": layerAttr}
     if cluster:
@@ -366,7 +367,7 @@ def getJSON(layerName, crsConvert, layerAttr, cluster, pointLayerType,
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
 });
 jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                                     "crs": crsConvert,
@@ -429,7 +430,10 @@ def isCluster(cluster, renderer):
 
 def getVT(json_url):
     sln = safeName(json_url)
-    key = json_url.split("?")[1]
+    try:
+        key = json_url.split("?")[1]
+    except:
+        key = ""
     json = TileJSON(json_url)
     json.load()
     tile_url = json.tiles()[0].split("?")[0]
@@ -508,7 +512,7 @@ def getXYZ(layerName, opacity, minResolution, maxResolution,
             %s
             %s
             source: new ol.source.XYZ({
-    attributions: [new ol.Attribution({html: '%s'})],
+    attributions: '%s',
                 url: '%s'
             })
         });""" % (layerName, layerName, opacity, minResolution, maxResolution,
@@ -535,7 +539,7 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
     var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.WMTS(({
                               url: "%(url)s",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
                                 "layer": "%(layerId)s",
                                 "TILED": "true",
              matrixSet: 'EPSG:3857',
@@ -578,7 +582,7 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
     return '''var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
                               url: "%(url)s",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
                               params: {
                                 "LAYERS": "%(layers)s",
                                 "TILED": "true",
@@ -623,7 +627,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
                             %(maxRes)s
                             source: new ol.source.ImageStatic({
                                url: "./layers/%(n)s.png",
-    attributions: [new ol.Attribution({html: '%(layerAttr)s'})],
+    attributions: '%(layerAttr)s',
                                 projection: '%(mapCRS)s',
                                 alwaysInRange: true,
                                 imageExtent: %(extent)s

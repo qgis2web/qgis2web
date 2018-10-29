@@ -62,10 +62,11 @@ def exportStyles(layers, folder, clustered):
                  useMapUnits) = ruleBased(renderer, folder, stylesFolder,
                                           layer_alpha, sln, layer)
             else:
+                value = "''"
                 style = """
     var style = [ new ol.style.Style({
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor, bufferWidth)
     })];"""
                 useMapUnits = False
             if useMapUnits:
@@ -73,11 +74,13 @@ def exportStyles(layers, folder, clustered):
                     mapUnitLayers.append(sln)
                 else:
                     mapUnitLayers.append(safeName(vts))
-            (labelRes, size, face, color) = getLabelFormat(layer)
+            (labelRes, size, face, color,
+             bufferColor, bufferWidth) = getLabelFormat(layer)
             if style != "":
                 geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
                 style = getStyle(style, cluster, labelRes, labelText,
-                                 sln, size, face, color, value, geom)
+                                 sln, size, face, color, bufferColor,
+                                 bufferWidth, value, geom)
             else:
                 style = "''"
         except Exception as e:
@@ -97,7 +100,8 @@ var style_%(name)s = %(style)s;
                         {"defs": defs, "pattern": pattern, "name": sln,
                          "style": style, "setPattern": setPattern})
         elif style != "" and style != "''":
-            new_vtStyle = "if (feature.get('layer') == "
+            new_vtStyle = defs
+            new_vtStyle += "if (feature.get('layer') == "
             new_vtStyle += """'%s' && feature.getGeometry().getType() == '%s'){
             return %s(feature, resolution);
         }""" % (
@@ -166,6 +170,8 @@ def getLabelFormat(layer):
     r = layer.customProperty("labeling/textColorR")
     g = layer.customProperty("labeling/textColorG")
     b = layer.customProperty("labeling/textColorB")
+    bufferColor = ""
+    bufferWidth = 0
     if (r or g or b) is None:
         color = "rgba(0, 0, 0, 1)"
     else:
@@ -174,36 +180,31 @@ def getLabelFormat(layer):
     face = ","
     if labelling is not None:
         palyr = labelling.settings()
-        face = palyr.format().font().family()
-        size = palyr.format().font().pointSize() * 1.3
+        labelFormat = palyr.format()
+        labelFont = labelFormat.font()
+        face = labelFont.family()
+        size = labelFont.pointSize() * 1.3
         if face is not None:
             face = " \\'%s\\'," % face
         sv = palyr.scaleVisibility
         if sv:
-            min = float(palyr.scaleMin)
-            max = float(palyr.scaleMax)
+            min = float(palyr.minimumScale)
+            max = float(palyr.maximumScale)
             if min != 0:
                 min = 1 / ((1 / min) * 39.37 * 90.7)
             max = 1 / ((1 / max) * 39.37 * 90.7)
-            labelRes = " && resolution > %(min)d " % {"min": min}
-            labelRes += "&& resolution < %(max)d" % {"max": max}
+            labelRes = " && resolution > %(min)d " % {"min": max}
+            labelRes += "&& resolution < %(max)d" % {"max": min}
         else:
             labelRes = ""
-        buffer = palyr.BufferDraw
+        labelBuffer = labelFormat.buffer()
+        buffer = labelBuffer.enabled()
         if buffer:
-            bufferColor = palyr.BufferColor
-            bufferWidth = palyr.BufferSize
-            stroke = """
-                  stroke: new ol.style.Stroke({
-                    color: "%s",
-                    width: %d
-                  }),""" % (bufferColor, bufferWidth)
-        else:
-            stroke = ""
+            bufferColor = labelBuffer.color().name()
+            bufferWidth = labelBuffer.size()
     else:
         labelRes = ""
-        stroke = ""
-    return (labelRes, size, face, color)
+    return (labelRes, size, face, color, bufferColor, bufferWidth)
 
 
 def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
@@ -225,7 +226,8 @@ def categorized(defs, sln, layer, renderer, legendFolder, stylesFolder,
     cluster = False
     defs += """
 function categories_%s(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
+                       labelFont, labelFill, bufferColor, bufferWidth,
+                       placement) {
                 switch(value.toString()) {""" % sln
     cats = []
     useAnyMapUnits = False
@@ -251,7 +253,8 @@ function categories_%s(feature, value, size, resolution, labelText,
     defs += "\n".join(cats) + "}};"
     style = """
 var style = categories_%s(feature, value, size, resolution, labelText,
-                          labelFont, labelFill)""" % sln
+                          labelFont, labelFill, bufferColor,
+                          bufferWidth, placement)""" % sln
     value = getValue(layer, renderer)
     return (style, pattern, setPattern, value, defs, useAnyMapUnits)
 
@@ -336,8 +339,8 @@ def getValue(layer, renderer):
     return value
 
 
-def getStyle(style, cluster, labelRes, labelText,
-             sln, size, face, color, value, geom):
+def getStyle(style, cluster, labelRes, labelText, sln, size,
+             face, color, bufferColor, bufferWidth, value, geom):
     placement = "point"
     if geom == "LineString":
         placement = "line"
@@ -354,6 +357,8 @@ def getStyle(style, cluster, labelRes, labelText,
         this_style += '''var clusteredFeatures = feature.get("features");
     var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
+    var bufferColor = "%(bufferColor)s";
+    var bufferWidth = %(bufferWidth)s;
     size = clusteredFeatures.length;
     var textAlign = "center";
     var offsetX = 0;
@@ -373,11 +378,14 @@ def getStyle(style, cluster, labelRes, labelText,
     }
     %(style)s;\n''' % {"style": style, "labelRes": labelRes,
                        "label": labelText, "size": size, "face": face,
-                       "labelFill": color}
+                       "labelFill": color, "bufferColor": bufferColor,
+                       "bufferWidth": bufferWidth}
     else:
         this_style += '''size = 0;
     var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
+    var bufferColor = "%(bufferColor)s";
+    var bufferWidth = %(bufferWidth)s;
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
@@ -387,7 +395,8 @@ def getStyle(style, cluster, labelRes, labelText,
     }
     %(style)s;\n''' % {"style": style, "placement": placement,
                        "labelRes": labelRes, "label": labelText, "size": size,
-                       "face": face, "labelFill": color}
+                       "face": face, "labelFill": color,
+                       "bufferColor": bufferColor, "bufferWidth": bufferWidth}
 
     this_style += '''
     return style;
@@ -556,7 +565,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         if vts is None:
             ts = """
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)"""
+                              labelFill, placement, bufferColor,
+                              bufferWidth)"""
         styles[k] = '''new ol.style.Style({
         %s%s
     })''' % (style, ts)

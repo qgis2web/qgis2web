@@ -6,7 +6,7 @@ measureControl = function(opt_options) {
   var options = opt_options || {};
 
   var button = document.createElement('button');
-  button.innerHTML = '<img src="resources/measure-control.png" />';
+  button.className += ' fas fa-ruler ';
 
   var this_ = this;
   var handleMeasure = function(e) {

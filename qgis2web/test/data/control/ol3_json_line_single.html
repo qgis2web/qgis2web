@@ -6,12 +6,40 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="./resources/ol.css"><link rel="stylesheet" href="resources/fontawesome-all.min.css">
+        <link rel="stylesheet" href="./resources/ol.css">
+        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
         <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
         <link rel="stylesheet" href="./resources/qgis2web.css">
+<style>
+.search-layer {
+  top: 65px;
+  left: .5em;
+}
+.ol-touch .search-layer {
+  top: 80px;
+}
+</style>
         <style>
         html, body {
             background-color: #ffffff;
+        }
+        .ol-control button {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            border-radius: 0px !important;
+        }
+        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {
+            background-color: rgba(255,255,255,.4) !important;
+            padding: 3px !important;
+        }
+        .ol-scale-line {
+            background: none !important;
+        }
+        .ol-scale-line-inner {
+            border: 2px solid #000000 !important;
+            border-top: none !important;
+            background: rgba(255, 255, 255, 0.5) !important;
+            color: black !important;
         }
         </style>
         <style>
@@ -56,6 +84,8 @@ var style_pipelines_0 = function(feature, resolution){
     size = 0;
     var labelFont = "10px, sans-serif";
     var labelFill = "rgba(0, 0, 0, 1)";
+    var bufferColor = "";
+    var bufferWidth = 0;
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
@@ -66,7 +96,8 @@ var style_pipelines_0 = function(feature, resolution){
     var style = [ new ol.style.Style({
         stroke: new ol.style.Stroke({color: 'rgba(242,66,72,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 0}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
 
     return style;

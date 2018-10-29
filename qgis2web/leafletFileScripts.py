@@ -9,7 +9,7 @@ from qgis2web.utils import replaceInTemplate
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                          cluster_set, measure, matchCRS, layerSearch, canvas,
-                         mapLibLocation, address, locate, debugLibs):
+                         address, locate):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -47,13 +47,9 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'labelgun.min.js')
     shutil.copyfile(jsDir + 'labels.js',
                     jsStore + 'labels.js')
-    if mapLibLocation == "Local":
-        if debugLibs:
-            shutil.copyfile(jsDir + 'leaflet-src.js',
-                            jsStore + 'leaflet-src.js')
-        else:
-            shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
-        shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
+    shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
+    shutil.copyfile(jsDir + 'leaflet.js.map', jsStore + 'leaflet.js.map')
+    shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     if address:
         shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
                         jsStore + 'leaflet-control-geocoder.Geocoder.js')
@@ -116,9 +112,9 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, layerSearch, canvas, mapLibLocation, locate,
-                   qgis2webJS, template, feedback, debugLibs, useMultiStyle,
-                   useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT):
+                   matchCRS, layerSearch, canvas, locate, qgis2webJS, template,
+                   feedback, useMultiStyle, useHeat, useShapes, useOSMB,
+                   useWMS, useWMTS, useVT):
     useCluster = False
     for cluster in cluster_set:
         if cluster:
@@ -128,17 +124,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         pass
     else:
         webpage_name = unicode(webpage_name)
-    if mapLibLocation == "Local":
-        cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
-        if debugLibs:
-            jsAddress = '<script src="js/leaflet-src.js"></script>'
-        else:
-            jsAddress = '<script src="js/leaflet.js"></script>'
-    else:
-        cssAddress = '<link rel="stylesheet" href='
-        cssAddress += '"http://unpkg.com/leaflet@1.0.3/dist/leaflet.css">'
-        jsAddress = '<script src="http://'
-        jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
+    cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
+    jsAddress = '<script src="js/leaflet.js"></script>'
     if locate:
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
