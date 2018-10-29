@@ -100,7 +100,7 @@ TYPE_MAP = {
     QgsWkbTypes.MultiLineString25D: 'MultiLineString',
     QgsWkbTypes.MultiPolygon: 'MultiPolygon',
     QgsWkbTypes.MultiPolygon25D: 'MultiPolygon',
-    QgsWkbTypes.MultiPolygonZM: 'MultiPolygon'
+    QgsWkbTypes.MultiPolygonZM: 'MultiPolygon',
     QgsWkbTypes.MultiPolygonM: 'MultiPolygon'}
 
 BLEND_MODES = {
