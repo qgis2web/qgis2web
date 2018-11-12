@@ -129,9 +129,11 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
     map += """
         var hash = new L.Hash(map);"""
     map += """
-        map.attributionControl.addAttribution('<a href="""
+        map.attributionControl.setPrefix('<a href="""
     map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
-    map += "qgis2web</a>');"
+    map += """qgis2web</a> &middot; """
+    map += """<a href="http://leafletjs.com" title="A JS library """
+    map += """for interactive maps">Leaflet</a>');"""
     if locate:
         map += """
         L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""
