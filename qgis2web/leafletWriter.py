@@ -284,7 +284,7 @@ class LeafletWriter(Writer):
                     feedback.completeStep()
                 if visible[count]:
                     new_obj += """
-        map.addLayer(overlay_""" + safeLayerName + """);"""
+        map.addLayer(layer_""" + safeLayerName + """);"""
                 new_src += new_obj
         the_src = new_src
         new_src = jsons + """

@@ -290,10 +290,10 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
     opacity = layer.renderer().opacity()
     if 'type' in d and d['type'][0] == "xyz":
         wms = """
-        var overlay_{safeLayerName} = L.tileLayer('{url}', {{
+        var layer_{safeLayerName} = L.tileLayer('{url}', {{
             opacity: {opacity}
         }});
-        overlay_{safeLayerName}.addTo(map);""".format(
+        layer_{safeLayerName}.addTo(map);""".format(
             opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
     elif 'tileMatrixSet' in d:
         useWMTS = True
@@ -304,7 +304,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         wmts_style = d['styles'][0]
         wmts_tileMatrixSet = d['tileMatrixSet'][0]
         wms = """
-        var overlay_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
+        var layer_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
             layer: '{wmts_layer}',
             tilematrixSet: '{wmts_tileMatrixSet}',
             format: '{wmts_format}',
@@ -327,7 +327,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
             getFeatureInfo = """,
             identify: false,"""
         wms = """
-        var overlay_%s = L.WMS.layer("%s", "%s", {
+        var layer_%s = L.WMS.layer("%s", "%s", {
             format: '%s',
             uppercase: true,
             transparent: true,
@@ -359,12 +359,12 @@ def rasterScript(layer, safeLayerName):
     raster = """
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};
-        var overlay_{safeLayerName} = """.format(safeLayerName=safeLayerName,
+        var layer_{safeLayerName} = """.format(safeLayerName=safeLayerName,
                                                  out_raster=out_raster,
                                                  bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
-        bounds_group.addLayer(overlay_{safeLayerName});""".format(
+        bounds_group.addLayer(layer_{safeLayerName});""".format(
         safeLayerName=safeLayerName)
     return raster
 
@@ -421,7 +421,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 layersList += new_layer
             elif i.type() == QgsMapLayer.RasterLayer:
                 new_layer = '"' + rawLayerName.replace("'", "\'") + '"'
-                new_layer += ": overlay_" + safeLayerName + ""","""
+                new_layer += ": layer_" + safeLayerName + ""","""
                 layersList += new_layer
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
