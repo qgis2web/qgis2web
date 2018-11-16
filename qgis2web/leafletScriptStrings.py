@@ -360,8 +360,8 @@ def rasterScript(layer, safeLayerName):
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};
         var layer_{safeLayerName} = """.format(safeLayerName=safeLayerName,
-                                                 out_raster=out_raster,
-                                                 bounds=bounds)
+                                               out_raster=out_raster,
+                                               bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
         bounds_group.addLayer(layer_{safeLayerName});""".format(
