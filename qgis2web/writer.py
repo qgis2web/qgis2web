@@ -56,7 +56,7 @@ class Writer(object):
         # json content
         self.json = None
         # queryable WMS
-        self.getFeatureInfo = None
+        self.getFeatureInfo = []
         # configuration dictionary (TODO - standardise
         # between writers!)
         self.params = {}
