@@ -1,4 +1,4 @@
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsExpressionNode
 import re
 import json
 
@@ -74,23 +74,21 @@ function %s(context) {
 
 
 def walkExpression(node, mapLib):
-    try:
-        if node.nodeType() == QgsExpression.ntBinaryOperator:
-            jsExp = handle_binary(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntUnaryOperator:
-            jsExp = handle_unary(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntInOperator:
-            jsExp = handle_in(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntFunction:
-            jsExp = handle_function(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntLiteral:
-            jsExp = handle_literal(node)
-        elif node.nodeType() == QgsExpression.ntColumnRef:
-            jsExp = handle_columnRef(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntCondition:
-            jsExp = handle_condition(node,mapLib)
-    except:
-        jsExp = "true"
+    if node.nodeType() == QgsExpressionNode.ntBinaryOperator:
+        print(1)
+        jsExp = handle_binary(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntUnaryOperator:
+        jsExp = handle_unary(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntInOperator:
+        jsExp = handle_in(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntFunction:
+        jsExp = handle_function(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntLiteral:
+        jsExp = handle_literal(node)
+    elif node.nodeType() == QgsExpressionNode.ntColumnRef:
+        jsExp = handle_columnRef(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntCondition:
+        jsExp = handle_condition(node,mapLib)
     return jsExp
 
 
