@@ -293,7 +293,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
             opacity: {opacity}
         }});
-        layer_{safeLayerName}.addTo(map);""".format(
+        layer_{safeLayerName};""".format(
             opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
     elif 'tileMatrixSet' in d:
         useWMTS = True
