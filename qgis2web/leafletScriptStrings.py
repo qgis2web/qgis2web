@@ -288,13 +288,20 @@ def clusterScript(safeLayerName):
 def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
+    attr = ""
+    attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
+    attrUrl = layer.attributionUrl()
+    if attrText != "":
+        attr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
     if 'type' in d and d['type'][0] == "xyz":
         wms = """
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
-            opacity: {opacity}
+            opacity: {opacity},
+            attribution: '{attr}',
         }});
         layer_{safeLayerName};""".format(
-            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
+            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0],
+            attr=attr)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
@@ -312,11 +319,12 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
             uppercase: true,
             transparent: true,
             continuousWorld : true,
-            opacity: {opacity}
+            opacity: {opacity},
+            attribution: '{attr}',
         }});""".format(safeLayerName=safeLayerName, wmts_url=wmts_url,
                        wmts_layer=wmts_layer, wmts_format=wmts_format,
                        wmts_tileMatrixSet=wmts_tileMatrixSet,
-                       wmts_style=wmts_style, opacity=opacity)
+                       wmts_style=wmts_style, opacity=opacity, attr=attr)
     else:
         useWMS = True
         wms_url = d['url'][0]
@@ -334,9 +342,10 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
             continuousWorld : true,
             tiled: true,
             info_format: 'text/html',
-            opacity: %d%s
+            opacity: %d%s,
+            attribution: '%s',
         });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity,
-                  getFeatureInfo)
+                  getFeatureInfo, attr)
     return wms, useWMS, useWMTS
 
 
