@@ -335,7 +335,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName):
         legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                      safeLayerName + ".png"))
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
-        legend += layer.name()
+        legend += layer.name().replace("'", "\\'")
     else:
         if isinstance(renderer, QgsCategorizedSymbolRenderer):
             classes = renderer.categories()
