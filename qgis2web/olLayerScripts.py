@@ -95,6 +95,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
                       restrictToExtent, extent, count, vtLayers):
     (minResolution, maxResolution) = getScaleRes(layer)
     layerName = safeName(layer.name()) + "_" + unicode(count)
+    rawName = layer.name()
     layerAttr = getAttribution(layer)
     if layer.type() == layer.VectorLayer and not is25d(layer,
                                                        iface.mapCanvas(),
@@ -133,7 +134,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
             opacity = layer.renderer().opacity()
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
-                return getXYZ(layerName, opacity, minResolution,
+                return getXYZ(layerName, rawName, opacity, minResolution,
                               maxResolution, layerAttr, d["url"][0]), vtLayers
             elif "tileMatrixSet" in d:
                 return getWMTS(layer, d, layerAttr, layerName, opacity,
@@ -502,7 +503,7 @@ def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
     return layerCode
 
 
-def getXYZ(layerName, opacity, minResolution, maxResolution,
+def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
            layerAttr, url):
     return """
         var lyr_%s = new ol.layer.Tile({
@@ -515,7 +516,7 @@ def getXYZ(layerName, opacity, minResolution, maxResolution,
     attributions: '%s',
                 url: '%s'
             })
-        });""" % (layerName, layerName, opacity, minResolution, maxResolution,
+        });""" % (layerName, rawName, opacity, minResolution, maxResolution,
                   layerAttr, url)
 
 
