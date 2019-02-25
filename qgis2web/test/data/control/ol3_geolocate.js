@@ -336,7 +336,7 @@ var onSingleClick = function(evt) {
     var viewProjection = map.getView().getProjection();
     var viewResolution = map.getView().getResolution();
     for (i = 0; i < wms_layers.length; i++) {
-        if (wms_layers[i][1]) {
+        if (wms_layers[i][1] && wms_layers[i][0].getVisible()) {
             var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
                 evt.coordinate, viewResolution, viewProjection,
                 {
