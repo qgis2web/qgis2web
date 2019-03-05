@@ -167,7 +167,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
     labeltext = ""
     f = ''
     labelling = layer.labeling()
-    if labelling is not None:
+    if labelling is not None and layer.labelsEnabled():
         palyr = labelling.settings()
         if palyr and palyr.fieldName and palyr.fieldName != "":
             props = palyr.dataDefinedProperties()

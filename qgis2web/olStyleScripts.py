@@ -130,7 +130,7 @@ var style_%(name)s = function(feature, resolution) {
 
 def getLabels(layer, folder, sln):
     labelling = layer.labeling()
-    if labelling is not None:
+    if labelling is not None and layer.labelsEnabled():
         palyr = labelling.settings()
         if palyr and palyr.fieldName and palyr.fieldName != "":
             labelField = palyr.fieldName
@@ -477,12 +477,18 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         elif isinstance(sl, QgsSvgMarkerSymbolLayer):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             svg = xml.etree.ElementTree.parse(sl.path()).getroot()
-            svgWidth = svg.attrib["width"]
-            svgWidth = re.sub("px", "", svgWidth)
-            svgWidth = re.sub("mm", "", svgWidth)
-            svgHeight = svg.attrib["height"]
-            svgHeight = re.sub("px", "", svgHeight)
-            svgHeight = re.sub("mm", "", svgHeight)
+            try:
+                svgWidth = svg.attrib["width"]
+                svgWidth = re.sub("px", "", svgWidth)
+                svgWidth = re.sub("mm", "", svgWidth)
+            except:
+                svgWidth = "5"
+            try:
+                svgHeight = svg.attrib["height"]
+                svgHeight = re.sub("px", "", svgHeight)
+                svgHeight = re.sub("mm", "", svgHeight)
+            except:
+                svgHeight = "5"
             if symbol.dataDefinedAngle().isActive():
                 if symbol.dataDefinedAngle().useExpression():
                     rot = "0"
