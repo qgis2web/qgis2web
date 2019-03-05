@@ -334,7 +334,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         getFeatureInfo = ""
         if not identify:
             getFeatureInfo = """,
-            identify: false,"""
+            identify: false"""
         wms = """
         var layer_%s = L.WMS.layer("%s", "%s", {
             format: '%s',
