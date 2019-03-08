@@ -157,6 +157,7 @@ class MainDialog(QDialog, FORM_CLASS):
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
             self.buttonPreview.setDisabled(True)
+        QgsProject.instance().cleared.connect(self.reject)
         self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
@@ -586,12 +587,16 @@ class MainDialog(QDialog, FORM_CLASS):
         self.saveParameters()
         (layers, groups, popup, visible,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
-        for layer, pop, vis in zip(layers, popup, visible):
-            attrDict = {}
-            for attr in pop:
-                attrDict['attr'] = pop[attr]
-                layer.setCustomProperty("qgis2web/popup/" + attr, pop[attr])
-            layer.setCustomProperty("qgis2web/Visible", vis)
+        try:
+            for layer, pop, vis in zip(layers, popup, visible):
+                attrDict = {}
+                for attr in pop:
+                    attrDict['attr'] = pop[attr]
+                    layer.setCustomProperty("qgis2web/popup/" + attr,
+                                            pop[attr])
+                layer.setCustomProperty("qgis2web/Visible", vis)
+        except:
+            pass
 
         QSettings().setValue(
             "qgis2web/MainDialogGeometry", self.saveGeometry())
