@@ -29,6 +29,8 @@ ol.inherits(geolocateControl, ol.control.Control);
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
+var sketch;
+
 closer.onclick = function() {
     container.style.display = 'none';
     closer.blur();
@@ -250,6 +252,9 @@ var onPointerMove = function(evt) {
 
 var onSingleClick = function(evt) {
     if (doHover) {
+        return;
+    }
+    if (sketch) {
         return;
     }
     var pixel = map.getEventPixel(evt.originalEvent);

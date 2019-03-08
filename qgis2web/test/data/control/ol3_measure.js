@@ -40,6 +40,8 @@ ol.inherits(measureControl, ol.control.Control);
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
+var sketch;
+
 closer.onclick = function() {
     container.style.display = 'none';
     closer.blur();
@@ -263,6 +265,9 @@ var onSingleClick = function(evt) {
     if (doHover) {
         return;
     }
+    if (sketch) {
+        return;
+    }
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
     var popupField;
@@ -402,8 +407,6 @@ map.on('singleclick', function(evt) {
  * Currently drawn feature.
  * @type {ol.Feature}
  */
-var sketch;
-
 
 /**
  * The help tooltip element.
@@ -563,7 +566,6 @@ function createMeasureTooltip() {
 }
 
 
-var wgs84Sphere = new ol.Sphere(6378137);
 
 /**
  * format length output
@@ -578,7 +580,7 @@ var formatLength = function(line) {
   for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
       var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
-      length += wgs84Sphere.haversineDistance(c1, c2);
+      length += ol.sphere.getDistance(c1, c2);
     }
   var output;
   if (length > 100) {
