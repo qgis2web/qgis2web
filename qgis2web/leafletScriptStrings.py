@@ -305,7 +305,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
-        wmts_url = wmts_url.replace("?request=getcapabilities", "")
+        wmts_url = wmts_url.replace("request=getcapabilities", "")
         wmts_layer = d['layers'][0]
         wmts_format = d['format'][0]
         wmts_crs = d['crs'][0]
