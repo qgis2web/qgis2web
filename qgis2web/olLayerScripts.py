@@ -67,6 +67,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     blend_mode = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
+        print(vts)
         sln = safeName(layer.name()) + "_" + unicode(count)
         if (layer.type() == layer.VectorLayer and vts is None and
                 not isinstance(layer.renderer(), QgsHeatmapRenderer) and
@@ -310,7 +311,8 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
         fieldIndex = fieldList.indexFromName(unicode(f.name()))
         aliasFields += "'%(field)s': '%(alias)s', " % (
             {"field": f.name(),
-             "alias": layer.attributeDisplayName(fieldIndex)})
+             "alias": layer.attributeDisplayName(fieldIndex).replace("'",
+                                                                     "\\'")})
         widget = layer.editorWidgetSetup(fieldIndex).type()
         imageFields += "'%(field)s': '%(image)s', " % (
             {"field": f.name(),
