@@ -14,7 +14,7 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=3.5.0
+version=3.6.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -23,7 +23,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2019/02/12 3.5.0 Correct QGIS3 template location in README, fix processing arguments (thanks, @shivareddyiirs!), fix expressions, handle apostrophe in Leaflet layers list, Leaflet XYZ visibility, fix OL layers list XYZ title, add Leaflet WMS(T)/XYZ attribution
+changelog=2019/03/19 3.6.0 Leaflet 1.4.0, OL 5.3.0, remove WMTS GetCapabilities from Leaflet GetTile requests, Leaflet multiple WMS without GetFeatureInfo, disabled labels, close dialog on project close, OL measure, OL apostrophes in field alias
+    2019/02/12 3.5.0 Correct QGIS3 template location in README, fix processing arguments (thanks, @shivareddyiirs!), fix expressions, handle apostrophe in Leaflet layers list, Leaflet XYZ visibility, fix OL layers list XYZ title, add Leaflet WMS(T)/XYZ attribution
     2018/11/16 3.4.0 Support many more geometry types (thanks @boesiii!), move Leaflet qgis2web attribution to prefix, Leaflet raster scale-dependent visibility, correct 3.3.1 changelog in metadata.txt
     2018/10/15 3.3.1 OL layer visibility, OL categorized label buffer, OL categorized label placement, OL scale-dependency
     2018/09/25 3.3.0 OpenLayers 5, vector tiles without API key, OL ungrouped vector tiles, OL categorized vector tiles, Leaflet labels, icon colour profiles, support polygonZM, Leaflet trailing attribution comma, update proj4js, unset "value" error, replace debug libs with source maps, remove CDN option, OL geocoder local, Leaflet reduce geolocate maxzoom, correct README, OL label buffer
