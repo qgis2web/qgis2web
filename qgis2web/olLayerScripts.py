@@ -310,7 +310,8 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
         fieldIndex = fieldList.indexFromName(unicode(f.name()))
         aliasFields += "'%(field)s': '%(alias)s', " % (
             {"field": f.name(),
-             "alias": layer.attributeDisplayName(fieldIndex)})
+             "alias": layer.attributeDisplayName(fieldIndex).replace("'",
+                                                                     "\\'")})
         widget = layer.editorWidgetSetup(fieldIndex).type()
         imageFields += "'%(field)s': '%(image)s', " % (
             {"field": f.name(),
