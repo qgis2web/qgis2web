@@ -309,7 +309,7 @@ var onSingleClick = function(evt) {
     } else {
         popupText += '</ul>';
     }
-
+    
     var viewProjection = map.getView().getProjection();
     var viewResolution = map.getView().getResolution();
     for (i = 0; i < wms_layers.length; i++) {
