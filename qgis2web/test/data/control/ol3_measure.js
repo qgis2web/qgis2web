@@ -134,7 +134,7 @@ var onPointerMove = function(evt) {
             return;
         }
         var doPopup = false;
-        if (count == 1) {
+        if (count == count) {
             for (k in layer.get('fieldImages')) {
                 if (layer.get('fieldImages')[k] != "Hidden") {
                     doPopup = true;
@@ -144,9 +144,9 @@ var onPointerMove = function(evt) {
             currentLayer = layer;
             clusteredFeatures = feature.get("features");
             var clusterFeature;
+            popupText = '<ul>';
             if (typeof clusteredFeatures !== "undefined") {
                 if (doPopup) {
-                    popupText = '<ul>';
                     for(var n=0; n<clusteredFeatures.length; n++) {
                         clusterFeature = clusteredFeatures[n];
                         currentFeatureKeys = clusterFeature.getKeys();
@@ -172,12 +172,11 @@ var onPointerMove = function(evt) {
                         } 
                         popupText = popupText + '</table></li>';    
                     }
-                    popupText = popupText + '</ul>';
                 }
             } else {
                 currentFeatureKeys = currentFeature.getKeys();
                 if (doPopup) {
-                    popupText = '<table>';
+                    popupText += '<li><table>';
                     for (var i=0; i<currentFeatureKeys.length; i++) {
                         if (currentFeatureKeys[i] != 'geometry') {
                             popupField = '';
@@ -197,9 +196,10 @@ var onPointerMove = function(evt) {
                             popupText = popupText + '<tr>' + popupField + '</tr>';
                         }
                     }
-                    popupText = popupText + '</table>';
+                    popupText = popupText + '</table></li>';
                 }
             }
+            popupText = popupText + '</ul>';
         }
         count++;
     });
