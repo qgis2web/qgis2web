@@ -83,12 +83,11 @@ var onPointerMove = function(evt) {
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
     var popupField;
-    var popupText = '';
     var currentFeature;
     var currentLayer;
     var currentFeatureKeys;
-    var count = 1;
     var clusteredFeatures;
+    var popupText = '<ul>';
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         // We only care about features from layers in the layersList, ignore
         // any other layers which the map might contain such as the vector
@@ -97,54 +96,26 @@ var onPointerMove = function(evt) {
             return;
         }
         var doPopup = false;
-        if (count == count) {
-            for (k in layer.get('fieldImages')) {
-                if (layer.get('fieldImages')[k] != "Hidden") {
-                    doPopup = true;
-                }
+        for (k in layer.get('fieldImages')) {
+            if (layer.get('fieldImages')[k] != "Hidden") {
+                doPopup = true;
             }
-            currentFeature = feature;
-            currentLayer = layer;
-            clusteredFeatures = feature.get("features");
-            var clusterFeature;
-            popupText = '<ul>';
-            if (typeof clusteredFeatures !== "undefined") {
-                if (doPopup) {
-                    for(var n=0; n<clusteredFeatures.length; n++) {
-                        clusterFeature = clusteredFeatures[n];
-                        currentFeatureKeys = clusterFeature.getKeys();
-                        popupText = popupText + '<li><table>'
-                        for (var i=0; i<currentFeatureKeys.length; i++) {
-                            if (currentFeatureKeys[i] != 'geometry') {
-                                popupField = '';
-                                if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
-                                } else {
-                                    popupField += '<td colspan="2">';
-                                }
-                                if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
-                                    popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
-                                }
-                                if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
-                                } else {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
-                                }
-                                popupText = popupText + '<tr>' + popupField + '</tr>';
-                            }
-                        } 
-                        popupText = popupText + '</table></li>';    
-                    }
-                }
-            } else {
-                currentFeatureKeys = currentFeature.getKeys();
-                if (doPopup) {
-                    popupText += '<li><table>';
+        }
+        currentFeature = feature;
+        currentLayer = layer;
+        clusteredFeatures = feature.get("features");
+        var clusterFeature;
+        if (typeof clusteredFeatures !== "undefined") {
+            if (doPopup) {
+                for(var n=0; n<clusteredFeatures.length; n++) {
+                    clusterFeature = clusteredFeatures[n];
+                    currentFeatureKeys = clusterFeature.getKeys();
+                    popupText += '<li><table>'
                     for (var i=0; i<currentFeatureKeys.length; i++) {
                         if (currentFeatureKeys[i] != 'geometry') {
                             popupField = '';
                             if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
+                            popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
                             } else {
                                 popupField += '<td colspan="2">';
                             }
@@ -152,20 +123,48 @@ var onPointerMove = function(evt) {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
                             if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
+                                popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                             } else {
-                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
+                                popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                             }
-                            popupText = popupText + '<tr>' + popupField + '</tr>';
+                            popupText += '<tr>' + popupField + '</tr>';
                         }
-                    }
-                    popupText = popupText + '</table></li>';
+                    } 
+                    popupText += '</table></li>';    
                 }
             }
-            popupText = popupText + '</ul>';
+        } else {
+            currentFeatureKeys = currentFeature.getKeys();
+            if (doPopup) {
+                popupText += '<li><table>';
+                for (var i=0; i<currentFeatureKeys.length; i++) {
+                    if (currentFeatureKeys[i] != 'geometry') {
+                        popupField = '';
+                        if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
+                            popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
+                        } else {
+                            popupField += '<td colspan="2">';
+                        }
+                        if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
+                            popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
+                        }
+                        if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
+                            popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
+                        } else {
+                            popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
+                        }
+                        popupText += '<tr>' + popupField + '</tr>';
+                    }
+                }
+                popupText += '</table></li>';
+            }
         }
-        count++;
     });
+    if (popupText == '<ul>') {
+        popupText = '';
+    } else {
+        popupText += '</ul>';
+    }
 
     if (doHighlight) {
         if (currentFeature !== highlight) {
@@ -181,7 +180,7 @@ var onPointerMove = function(evt) {
                     highlightStyle = new ol.style.Style({
                         image: new ol.style.Circle({
                             fill: new ol.style.Fill({
-                                color: "#ffff00"
+                                color: "@HIGHLIGHTFILL@"
                             }),
                             radius: radius
                         })
@@ -192,7 +191,7 @@ var onPointerMove = function(evt) {
 
                     highlightStyle = new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: '#ffff00',
+                            color: '@HIGHLIGHTFILL@',
                             lineDash: null,
                             width: featureWidth
                         })
@@ -201,7 +200,7 @@ var onPointerMove = function(evt) {
                 } else {
                     highlightStyle = new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: '#ffff00'
+                            color: '@HIGHLIGHTFILL@'
                         })
                     })
                 }
@@ -234,62 +233,32 @@ var onSingleClick = function(evt) {
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
     var popupField;
-    var popupText = '';
     var currentFeature;
     var currentFeatureKeys;
-    var count = 1;
     var clusteredFeatures;
+    var popupText = '<ul>';
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         if (feature instanceof ol.Feature) {
             var doPopup = false;
-            if (count == 1) {
-                for (k in layer.get('fieldImages')) {
-                    if (layer.get('fieldImages')[k] != "Hidden") {
-                        doPopup = true;
-                    }
+            for (k in layer.get('fieldImages')) {
+                if (layer.get('fieldImages')[k] != "Hidden") {
+                    doPopup = true;
                 }
-                currentFeature = feature;
-                clusteredFeatures = feature.get("features");
-                var clusterFeature;
-                if (typeof clusteredFeatures !== "undefined") {
-                    if (doPopup) {
-                        popupText = '<ul>';
-                        for(var n=0; n<clusteredFeatures.length; n++) {
-                            clusterFeature = clusteredFeatures[n];
-                            currentFeatureKeys = clusterFeature.getKeys();
-                            popupText = popupText + '<li><table>'
-                            for (var i=0; i<currentFeatureKeys.length; i++) {
-                                if (currentFeatureKeys[i] != 'geometry') {
-                                    popupField = '';
-                                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                    popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
-                                    } else {
-                                        popupField += '<td colspan="2">';
-                                    }
-                                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
-                                        popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
-                                    }
-                                    if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                        popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
-                                    } else {
-                                        popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
-                                    }
-                                    popupText = popupText + '<tr>' + popupField + '</tr>';
-                                }
-                            } 
-                            popupText = popupText + '</table></li>';    
-                        }
-                        popupText = popupText + '</ul>';
-                    }
-                } else {
-                    currentFeatureKeys = currentFeature.getKeys();
-                    if (doPopup) {
-                        popupText = '<table>';
+            }
+            currentFeature = feature;
+            clusteredFeatures = feature.get("features");
+            var clusterFeature;
+            if (typeof clusteredFeatures !== "undefined") {
+                if (doPopup) {
+                    for(var n=0; n<clusteredFeatures.length; n++) {
+                        clusterFeature = clusteredFeatures[n];
+                        currentFeatureKeys = clusterFeature.getKeys();
+                        popupText += '<li><table>'
                         for (var i=0; i<currentFeatureKeys.length; i++) {
                             if (currentFeatureKeys[i] != 'geometry') {
                                 popupField = '';
                                 if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                    popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
+                                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
                                 } else {
                                     popupField += '<td colspan="2">';
                                 }
@@ -297,20 +266,49 @@ var onSingleClick = function(evt) {
                                     popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                                 }
                                 if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                    popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
+                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                                 } else {
-                                    popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
+                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                                 }
-                                popupText = popupText + '<tr>' + popupField + '</tr>';
+                                popupText += '<tr>' + popupField + '</tr>';
                             }
-                        }
-                        popupText = popupText + '</table>';
+                        } 
+                        popupText += '</table></li>';    
                     }
                 }
+            } else {
+                currentFeatureKeys = currentFeature.getKeys();
+                if (doPopup) {
+                    popupText += '<li><table>';
+                    for (var i=0; i<currentFeatureKeys.length; i++) {
+                        if (currentFeatureKeys[i] != 'geometry') {
+                            popupField = '';
+                            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
+                                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
+                            } else {
+                                popupField += '<td colspan="2">';
+                            }
+                            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
+                                popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
+                            }
+                            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
+                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
+                            } else {
+                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
+                            }
+                            popupText += '<tr>' + popupField + '</tr>';
+                        }
+                    }
+                    popupText += '</table>';
+                }
             }
-            count++;
         }
     });
+    if (popupText == '<ul>') {
+        popupText = '';
+    } else {
+        popupText += '</ul>';
+    }
 
     var viewProjection = map.getView().getProjection();
     var viewResolution = map.getView().getResolution();
