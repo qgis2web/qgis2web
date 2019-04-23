@@ -217,7 +217,7 @@ function fnc_maximum(values, context) {
 function fnc_sum(values, context) {
     let total = 0;
     values.forEach(function(element) {
-    let val = Number(element)
+    let val = Number(element);
     if (isNaN(val)) { val = 0 }
       total = total+val;
     });
