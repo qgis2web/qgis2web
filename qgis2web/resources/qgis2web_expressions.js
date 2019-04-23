@@ -87,7 +87,7 @@ function fnc_log(values, context) {
 };
 
 function fnc_round(values, context) {
-    return false;
+    return Math.round(values[0]);
 };
 
 function fnc_rand(values, context) {
@@ -131,11 +131,11 @@ function fnc_scale_exp(values, context) {
 };
 
 function fnc_floor(values, context) {
-    return false;
+    return Math.floor(values[0]);
 };
 
 function fnc_ceil(values, context) {
-    return false;
+    return Math.ceil(values[0]);
 };
 
 function fnc_pi(values, context) {
@@ -143,15 +143,19 @@ function fnc_pi(values, context) {
 };
 
 function fnc_to_int(values, context) {
-    return false;
+    var intVal = parseInt(values[0],10);
+    if ( isNaN(intVal) ) { return false }
+    return intVal;
 };
 
 function fnc_to_real(values, context) {
-    return false;
+    var realVal = parseFloat(values[0]);
+    if ( isNaN(realVal) ) { return false }
+    return realVal;
 };
 
 function fnc_to_string(values, context) {
-    return false;
+    return String(values[0]);
 };
 
 function fnc_to_datetime(values, context) {
@@ -187,15 +191,19 @@ function fnc_relation_aggregate(values, context) {
 };
 
 function fnc_count(values, context) {
-    return false;
+    return values.length;
 };
 
 function fnc_count_distinct(values, context) {
-    return false;
+    return new Set(values).size;
 };
 
 function fnc_count_missing(values, context) {
-    return false;
+    let counter = 0;
+    values.forEach(function(element) {
+        if (element === null) { counter++; };
+    });
+    return counter;
 };
 
 function fnc_minimum(values, context) {
@@ -207,7 +215,13 @@ function fnc_maximum(values, context) {
 };
 
 function fnc_sum(values, context) {
-    return false;
+    let total = 0;
+    values.forEach(function(element) {
+    let val = Number(element)
+    if (isNaN(val)) { val = 0 }
+      total = total+val;
+    });
+  	return total;
 };
 
 function fnc_mean(values, context) {
@@ -247,11 +261,23 @@ function fnc_iqr(values, context) {
 };
 
 function fnc_min_length(values, context) {
-    return false;
+    let lastValue = null;
+    let minLength = null;
+    values.filter(function(item){ return item !== null }).forEach(function(item) {
+    value = String(item);
+        if (value.length > 0 && minLength === null) { minLength = value.length }
+        else if (value.length < minLength ) { minLength = value.length }; 
+        lastValue = value;
+    });
+    return minLength;
 };
 
 function fnc_max_length(values, context) {
-    return false;
+    let size = null;
+    values.filter(function(item){ return item !== null }).forEach(function(item) {
+    if (item.toString().length > size) { size = item.toString().length }
+    });
+  	return size;
 };
 
 function fnc_concatenate(values, context) {
