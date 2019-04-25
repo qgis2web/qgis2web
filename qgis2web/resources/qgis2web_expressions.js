@@ -307,22 +307,24 @@ function fnc_day_of_week(values, context) {
 };
 
 function fnc_lower(values, context) {
+    if ( typeof values[0] != "string" ) { return false; } 
     return values[0].toLowerCase();
 };
 
 function fnc_upper(values, context) {
+    if ( typeof values[0] != "string" ) { return false; } 
     return values[0].toUpperCase();
 };
 
 function fnc_title(values, context) {
-    if ( values[0] === null ) { return false; }
+    if ( typeof values[0] != "string" ) { return false; }
     return values[0].toLowerCase().split(' ').map(function(word) {
     return (word.charAt(0).toUpperCase() + word.slice(1));
   }).join(' ');
 };
 
 function fnc_trim(values, context) {
-    if ( values[0] === null ) { return false; }
+    if ( typeof values[0] != "string" ) { return false; } 
     return String(values[0]).trim();
 };
 
