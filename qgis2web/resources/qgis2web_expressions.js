@@ -345,7 +345,7 @@ function fnc_soundex(values, context) {
 };
 
 function fnc_char(values, context) {
-    return false;
+    if ( isNaN(values[0]) || !values[0]) { return null; } return String.fromCodePoint(values[0]);
 };
 
 function fnc_wordwrap(values, context) {
@@ -361,23 +361,27 @@ function fnc_replace(values, context) {
 };
 
 function fnc_regexp_replace(values, context) {
-    return false;
+    if (!values[0]) { return null } return String(values[0]).replace(RegExp(values[1]),values[2]);
 };
 
 function fnc_regexp_substr(values, context) {
-    return false;
+    if ( !values[0] ) { return null; }
+    return String(values[0]).match(RegExp(values[1]))[0];
 };
 
 function fnc_substr(values, context) {
-    return false;
+    var length = values[2]
+    if ( !values[0] || isNaN(values[1])) { return false; }
+    return String(values[0]).substr(values[1], length);
 };
 
 function fnc_concat(values, context) {
-    return false;
+    return values.join(''); 
 };
 
 function fnc_strpos(values, context) {
-    return false;
+   if (!values[0] || !values[1]) {return null}
+   return String(values[0]).indexOf(String(values[1]))+1;
 };
 
 function fnc_left(values, context) {
