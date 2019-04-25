@@ -361,7 +361,7 @@ function fnc_replace(values, context) {
 };
 
 function fnc_regexp_replace(values, context) {
-    if (!values[0]) { return null } return String(values[0]).replace(RegExp(values[1]),values[2]);
+    if ( !values[0] ) { return null; } return String(values[0]).replace(RegExp(values[1]),values[2]);
 };
 
 function fnc_regexp_substr(values, context) {
