@@ -80,7 +80,7 @@ class _DictSAXHandler(object):
         i = full_name.rfind(self.namespace_separator)
         if i == -1:
             return full_name
-        namespace, name = full_name[:i], full_name[i+1:]
+        namespace, name = full_name[:i], full_name[i + 1:]
         short_namespace = self.namespaces.get(namespace, namespace)
         if not short_namespace:
             return name
@@ -107,7 +107,7 @@ class _DictSAXHandler(object):
             if self.xml_attribs:
                 attr_entries = []
                 for key, value in attrs.items():
-                    key = self.attr_prefix+self._build_name(key)
+                    key = self.attr_prefix + self._build_name(key)
                     if self.postprocessor:
                         entry = self.postprocessor(self.path, key, value)
                     else:
@@ -363,9 +363,7 @@ def _emit(key, value, content_handler,
         if result is None:
             return
         key, value = result
-    if (not hasattr(value, '__iter__')
-            or isinstance(value, _basestring)
-            or isinstance(value, dict)):
+    if (not hasattr(value, '__iter__') or isinstance(value, _basestring) or isinstance(value, dict)):
         value = [value]
     for index, v in enumerate(value):
         if full_document and depth == 0 and index > 0:
@@ -403,7 +401,7 @@ def _emit(key, value, content_handler,
             content_handler.ignorableWhitespace(newl)
         for child_key, child_value in children:
             _emit(child_key, child_value, content_handler,
-                  attr_prefix, cdata_key, depth+1, preprocessor,
+                  attr_prefix, cdata_key, depth + 1, preprocessor,
                   pretty, newl, indent, namespaces=namespaces,
                   namespace_separator=namespace_separator)
         if cdata is not None:
@@ -457,6 +455,7 @@ def unparse(input_dict, output=None, encoding='utf-8', full_document=True,
             pass
         return value
 
+
 if __name__ == '__main__':  # pragma: no cover
     import sys
     import marshal
@@ -469,7 +468,6 @@ if __name__ == '__main__':  # pragma: no cover
 
     (item_depth,) = sys.argv[1:]
     item_depth = int(item_depth)
-
 
     def handle_item(path, item):
         marshal.dump((path, item), stdout)

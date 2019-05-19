@@ -5,11 +5,8 @@ import codecs
 import math
 import xml.etree.ElementTree
 import traceback
-from PyQt5.QtCore import QDir, QSize
-from qgis.core import (Qgis,
-                       QgsApplication,
-                       QgsVectorLayer,
-                       QgsSingleSymbolRenderer,
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRuleBasedRenderer,
@@ -24,7 +21,7 @@ from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
 
 
-def exportStyles(layers, folder, clustered):
+def exportStyles(layers, folder, clustered, feedback):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
     legendFolder = os.path.join(stylesFolder, "legend")
@@ -32,7 +29,7 @@ def exportStyles(layers, folder, clustered):
     vtStyles = {}
     mapUnitLayers = []
     for count, (layer, cluster) in enumerate(zip(layers, clustered)):
-        sln = safeName(layer.name()) + "_" + unicode(count)
+        sln = safeName(layer.name()) + "_" + str(count)
         if layer.type() != layer.VectorLayer:
             continue
         pattern = ""
@@ -40,27 +37,29 @@ def exportStyles(layers, folder, clustered):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         labelText = getLabels(layer, folder, sln)
         defs = "var size = 0;\nvar placement = 'point';"
+
+        renderer = layer.renderer()
+        layer_alpha = layer.opacity()
+
         try:
-            renderer = layer.renderer()
-            layer_alpha = layer.opacity()
             if isinstance(renderer, QgsSingleSymbolRenderer):
                 (style, pattern, setPattern, value,
                  useMapUnits) = singleSymbol(renderer, stylesFolder,
                                              layer_alpha, sln, legendFolder,
-                                             layer)
+                                             layer, feedback)
             elif isinstance(renderer, QgsCategorizedSymbolRenderer):
                 (style, pattern, setPattern, value, defs,
                  useMapUnits) = categorized(defs, sln, layer, renderer,
                                             legendFolder, stylesFolder,
-                                            layer_alpha)
+                                            layer_alpha, feedback)
             elif isinstance(renderer, QgsGraduatedSymbolRenderer):
                 (style, pattern, setPattern, value,
                  useMapUnits) = graduated(layer, renderer, legendFolder, sln,
-                                          stylesFolder, layer_alpha)
+                                          stylesFolder, layer_alpha, feedback)
             elif isinstance(renderer, QgsRuleBasedRenderer):
                 (style, pattern, setPattern, value,
                  useMapUnits) = ruleBased(renderer, folder, stylesFolder,
-                                          layer_alpha, sln, layer)
+                                          layer_alpha, sln, layer, feedback)
             else:
                 value = "''"
                 style = """
@@ -69,6 +68,7 @@ def exportStyles(layers, folder, clustered):
                               labelFill, placement, bufferColor, bufferWidth)
     })];"""
                 useMapUnits = False
+
             if useMapUnits:
                 if vts is None:
                     mapUnitLayers.append(sln)
@@ -83,11 +83,9 @@ def exportStyles(layers, folder, clustered):
                                  bufferWidth, value, geom)
             else:
                 style = "''"
-        except Exception as e:
-            style = ""
-            QgsApplication.messageLog().logMessage(traceback.format_exc(),
-                                                   "qgis2web",
-                                                   level=Qgis.Critical)
+        except Exception:
+            style = "''"
+            feedback.showFeedback("Exception in layer {} with renderer {}: <span style=\"color: red\">{}</span>".format(layer.id(), renderer.dump(), traceback.format_exc()))
 
         if vts is None:
             path = os.path.join(stylesFolder, sln + "_style.js")
@@ -111,7 +109,7 @@ var style_%(name)s = %(style)s;
                 old_vtStyles = vtStyles[vts]
                 new_vtStyles = """%s
                 %s""" % (old_vtStyles, new_vtStyle)
-            except:
+            except Exception:
                 new_vtStyles = new_vtStyle
             vtStyles[vts] = new_vtStyles
     for k, v in vtStyles.items():
@@ -135,7 +133,7 @@ def getLabels(layer, folder, sln):
         if palyr and palyr.fieldName and palyr.fieldName != "":
             labelField = palyr.fieldName
             if labelField != "":
-                if unicode(layer.customProperty(
+                if str(layer.customProperty(
                         "labeling/isExpression")).lower() == "true":
                     exprFilename = os.path.join(folder, "resources",
                                                 "qgis2web_expressions.js")
@@ -148,7 +146,7 @@ def getLabels(layer, folder, sln):
                 else:
                     fieldIndex = layer.fields().indexFromName(
                         labelField)
-                    editFormConfig = layer.editFormConfig()
+                    # editFormConfig = layer.editFormConfig()
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if (editorWidget == 'Hidden'):
                         labelField = "q2wHide_" + labelField
@@ -165,8 +163,8 @@ def getLabels(layer, folder, sln):
 
 def getLabelFormat(layer):
     size = 10
-    italic = layer.customProperty("labeling/fontItalic")
-    bold = layer.customProperty("labeling/fontWeight")
+    # italic = layer.customProperty("labeling/fontItalic")
+    # bold = layer.customProperty("labeling/fontWeight")
     r = layer.customProperty("labeling/textColorR")
     g = layer.customProperty("labeling/textColorG")
     b = layer.customProperty("labeling/textColorB")
@@ -208,11 +206,11 @@ def getLabelFormat(layer):
 
 
 def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
-                 layer):
+                 layer, feedback):
     symbol = renderer.symbol()
     (style, pattern, setPattern,
      useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
-                                     layer_alpha, renderer, sln, layer)
+                                     layer_alpha, renderer, sln, layer, feedback)
     style = "var style = " + style
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
         symbol, QSize(16, 16))
@@ -222,8 +220,8 @@ def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
 
 
 def categorized(defs, sln, layer, renderer, legendFolder, stylesFolder,
-                layer_alpha):
-    cluster = False
+                layer_alpha, feedback):
+    # cluster = False
     defs += """
 function categories_%s(feature, value, size, resolution, labelText,
                        labelFont, labelFill, bufferColor, bufferWidth,
@@ -235,15 +233,14 @@ function categories_%s(feature, value, size, resolution, labelText,
         legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(cat.symbol(),
                                                              QSize(16, 16))
         legendIcon.save(os.path.join(legendFolder,
-                                     sln + "_" + unicode(cnt) + ".png"))
+                                     sln + "_" + str(cnt) + ".png"))
         if (cat.value() is not None and cat.value() != ""):
-            categoryStr = "case '%s':" % unicode(
-                cat.value()).replace("'", "\\'")
+            categoryStr = "case '%s':" % cat.value().replace("'", "\\'")
         else:
             categoryStr = "default:"
         (style, pattern, setPattern,
          useMapUnits) = (getSymbolAsStyle(cat.symbol(), stylesFolder,
-                                          layer_alpha, renderer, sln, layer))
+                                          layer_alpha, renderer, sln, layer, feedback))
         if useMapUnits:
             useAnyMapUnits = True
         categoryStr += '''
@@ -259,8 +256,8 @@ var style = categories_%s(feature, value, size, resolution, labelText,
     return (style, pattern, setPattern, value, defs, useAnyMapUnits)
 
 
-def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
-    cluster = False
+def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha, feedback):
+    # cluster = False
     ranges = []
     elseif = ""
     useAnyMapUnits = False
@@ -268,10 +265,10 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
         legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
             ran.symbol(), QSize(16, 16))
         legendIcon.save(os.path.join(
-            legendFolder, sln + "_" + unicode(cnt) + ".png"))
+            legendFolder, sln + "_" + str(cnt) + ".png"))
         (symbolstyle, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                         layer_alpha, renderer, sln, layer)
+                                         layer_alpha, renderer, sln, layer, feedback)
         ranges.append("""%sif (value >= %f && value <= %f) {
             style = %s
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
@@ -284,8 +281,8 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha):
     return (style, pattern, setPattern, value, useAnyMapUnits)
 
 
-def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer):
-    cluster = False
+def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer, feedback):
+    # cluster = False
     template = """
         function rules_%s(feature, value) {
             var context = {
@@ -304,16 +301,15 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer):
     js = ""
     root_rule = renderer.rootRule()
     rules = root_rule.children()
-    expFile = os.path.join(folder, "resources",
-                           "qgis2web_expressions.js")
+    expFile = os.path.join(folder, "resources", "qgis2web_expressions.js")
     ifelse = "if"
     useAnyMapUnits = False
     for count, rule in enumerate(rules):
         symbol = rule.symbol()
         (styleCode, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
-                                         layer_alpha, renderer, sln, layer)
-        name = "".join((sln, "rule", unicode(count)))
+                                         layer_alpha, renderer, sln, layer, feedback)
+        name = "".join((sln, "rule", str(count)))
         exp = rule.filterExpression()
         if rule.isElse():
             elsejs = styleCode
@@ -406,7 +402,7 @@ def getStyle(style, cluster, labelRes, labelText, sln, size,
 
 
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
-                     layer):
+                     layer, feedback):
     styles = {}
     useMapUnits = False
     if layer_transparency == 0:
@@ -423,11 +419,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
             sizeUnits = props["size_unit"]
+            size = None
             if sizeUnits != "MapUnit":
                 size = sl.size() * 2
             try:
                 shape = sl.shape()
-            except:
+            except Exception:
                 shape = sl.name()
             try:
                 if shape == 0 or shape == "square":
@@ -470,7 +467,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                     style, useMapUnits = getCircle(color, borderColor,
                                                    borderWidth, size, props)
                     style = "image: %s" % style
-            except:
+            except Exception:
                 style, useMapUnits = getCircle(color, borderColor, borderWidth,
                                                size, props)
                 style = "image: %s" % style
@@ -481,14 +478,16 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                 svgWidth = svg.attrib["width"]
                 svgWidth = re.sub("px", "", svgWidth)
                 svgWidth = re.sub("mm", "", svgWidth)
-            except:
+            except Exception:
                 svgWidth = "5"
+
             try:
                 svgHeight = svg.attrib["height"]
                 svgHeight = re.sub("px", "", svgHeight)
                 svgHeight = re.sub("mm", "", svgHeight)
-            except:
+            except Exception:
                 svgHeight = "5"
+
             if symbol.dataDefinedAngle().isActive():
                 if symbol.dataDefinedAngle().useExpression():
                     rot = "0"
@@ -497,7 +496,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                     rot += symbol.dataDefinedAngle().expressionOrField()
                     rot += ") * 0.0174533"
             else:
-                rot = unicode(sl.angle() * 0.0174533)
+                rot = str(sl.angle() * 0.0174533)
             shutil.copy(sl.path(), path)
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
@@ -509,7 +508,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             text: '%s',
             %s})""" % (char, getFillStyle(color, props))
         elif isinstance(sl, QgsSimpleLineSymbolLayer):
-
             color = getRGBAColor(props["line_color"], alpha)
             line_width = props["line_width"]
             line_style = props["line_style"]
@@ -530,7 +528,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             try:
                 lineCap = sl.penCapStyle()
                 lineJoin = sl.penJoinStyle()
-            except:
+            except Exception:
                 lineCap = 0
                 lineJoin = 0
 
@@ -559,7 +557,19 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
     fill_%s.setColor(stripe(%s, %s, %s, '%s'));""" % (sln, weight, spaceWeight,
                                                       angle, color)
         else:
+            color = getRGBAColor(props["color"], alpha)
+            sizeUnits = props["size_unit"]
+            props['outline_style'] = "no"
+            size = None
+            if sizeUnits != "MapUnit":
+                size = sl.size() * 2
+            style, useMapUnits = getCircle(color, None, None, size, props)
+
+            style = "image: %s" % style
+
+            feedback.showFeedback("Layer {}: replacing symbol layer <span style=\"color: red\">{}</span> with circle.".format(layer.id(), sl.layerType()))
             style = ""
+
         if renderer.usingSymbolLevels():
             k = sl.renderingPass()
         else:
@@ -663,11 +673,13 @@ def getStar(color, borderColor, borderWidth, size, props):
 def getCircle(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
+        useMapUnits = None
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0)
         stroke += ","
+
     return ("""new ol.style.Circle({radius: %s + size,
             %s %s})""" % (size, stroke, getFillStyle(color, props)),
             useMapUnits)
@@ -676,6 +688,7 @@ def getCircle(color, borderColor, borderWidth, size, props):
 def getCross(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
+        useMapUnits = None
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
@@ -689,6 +702,7 @@ def getCross(color, borderColor, borderWidth, size, props):
 def getCross2(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
+        useMapUnits = None
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
@@ -708,6 +722,7 @@ def getCross2(color, borderColor, borderWidth, size, props):
 def getLine(color, borderColor, borderWidth, size, props):
     if props['outline_style'] == "no":
         stroke = ""
+        useMapUnits = None
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
@@ -721,7 +736,7 @@ def getLine(color, borderColor, borderWidth, size, props):
 def getIcon(path, size, svgWidth, svgHeight, rot):
     size = math.floor(float(size) * 3.8)
     anchor = size / 2
-    scale = unicode(float(size) / float(svgWidth))
+    scale = str(float(size) / float(svgWidth))
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,
@@ -740,7 +755,7 @@ def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin):
     if dashed == "no":
         return ("", False)
     if line_units != "MapUnit":
-        width = unicode(int(float(width) * 3.8))
+        width = str(int(float(width) * 3.8))
         useMapUnits = False
     else:
         width = "m2px(%s)" % width
@@ -773,6 +788,7 @@ def getFillStyle(color, props):
     try:
         if props["style"] == "no":
             return ""
-    except:
+    except Exception:
         pass
+
     return "fill: new ol.style.Fill({color: %s})" % color

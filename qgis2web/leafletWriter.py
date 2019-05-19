@@ -21,17 +21,18 @@
  ***************************************************************************/
 """
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
+                       QgsWkbTypes,
                        QgsMessageLog)
 import traceback
-from PyQt5.QtCore import (Qt,
-                          QObject)
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QApplication
+from qgis.PyQt.QtCore import Qt, QObject
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication
 import os
 from datetime import datetime
 import re
@@ -57,7 +58,7 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            titleSubScript,
                                            getVTStyles,
                                            getVTLabels)
-from qgis2web.utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector,
+from qgis2web.utils import (ALL_ATTRIBUTES, exportVector,
                             exportRaster, safeName)
 from qgis2web.writer import (Writer,
                              WriterResult,
@@ -120,8 +121,7 @@ class LeafletWriter(Writer):
         title = project.title()
         pluginDir = os.path.dirname(os.path.realpath(__file__))
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
-        outputProjectFileName = os.path.join(outputProjectFileName,
-                                             'qgis2web_' + unicode(stamp))
+        outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + stamp)
         outputIndex = os.path.join(outputProjectFileName, 'index.html')
 
         minify = params["Data export"]["Minify GeoJSON files"]
@@ -176,7 +176,7 @@ class LeafletWriter(Writer):
         for layer, jsonEncode, eachPopup, clst in zip(layer_list, json,
                                                       popup, cluster):
             rawLayerName = layer.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
+            safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
             if layer.providerType() != 'WFS' or jsonEncode is True:
                 if layer.type() == QgsMapLayer.VectorLayer and vts is None:
@@ -218,15 +218,13 @@ class LeafletWriter(Writer):
             try:
                 xform = QgsCoordinateTransform(crsSrc, crsDest,
                                                QgsProject.instance())
-            except:
+            except Exception:
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
             pt1 = xform.transformBoundingBox(pt0)
-            bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
-                           pt1.xMinimum(), pt1.xMaximum()]
-            bounds = '[[' + unicode(pt1.yMinimum()) + ','
-            bounds += unicode(pt1.xMinimum()) + '],['
-            bounds += unicode(pt1.yMaximum()) + ','
-            bounds += unicode(pt1.xMaximum()) + ']]'
+            bounds = '[[' + str(pt1.yMinimum()) + ','
+            bounds += str(pt1.xMinimum()) + '],['
+            bounds += str(pt1.yMaximum()) + ','
+            bounds += str(pt1.xMaximum()) + ']]'
             if matchCRS and crsAuthId != 'EPSG:4326':
                 middle += crsScript(crsAuthId, crsProj4)
         else:
@@ -242,8 +240,8 @@ class LeafletWriter(Writer):
 
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(count)
-            if layer.type() == QgsMapLayer.VectorLayer:
+            safeLayerName = safeName(rawLayerName) + "_" + str(count)
+            if layer.type() == QgsMapLayer.VectorLayer and layer.wkbType() != QgsWkbTypes.NoGeometry:
                 (new_src,
                  legends,
                  wfsLayers,
@@ -312,15 +310,13 @@ class LeafletWriter(Writer):
         new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
         if title != "":
-            titleStart = unicode(titleSubScript(title))
-            new_src += unicode(titleStart)
+            titleStart = titleSubScript(title)
+            new_src += titleStart
         if addressSearch:
             address_text = addressSearchScript()
             new_src += address_text
 
-        if (params["Appearance"]["Add layers list"] and
-                params["Appearance"]["Add layers list"] != "" and
-                params["Appearance"]["Add layers list"] != "None"):
+        if params["Appearance"]["Add layers list"] and params["Appearance"]["Add layers list"] != "" and params["Appearance"]["Add layers list"] != "None":
             new_src += addLayersList(
                 [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
@@ -335,15 +331,14 @@ class LeafletWriter(Writer):
         try:
             if cluster[count]:
                 layerType = "cluster"
-        except:
+        except Exception:
             pass
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
         labelList = []
         for count, layer in enumerate(layer_list):
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-            safeLayerName = re.sub(r'[\W_]+', '',
-                                   layer.name()) + "_" + unicode(count)
+            safeLayerName = re.sub(r'[\W_]+', '', layer.name()) + "_" + str(count)
             if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
                 labelling = layer.labeling()
                 if labelling is not None:
@@ -360,10 +355,8 @@ class LeafletWriter(Writer):
                            measure, matchCRS, layerSearch, canvas,
                            locate, new_src, template, feedback, useMultiStyle,
                            useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT)
-        except Exception as e:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
-            QApplication.restoreOverrideCursor()
+        except Exception:
+            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web", level=Qgis.Critical)
         finally:
             QApplication.restoreOverrideCursor()
         return outputIndex

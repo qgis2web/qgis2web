@@ -18,8 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-from qgis.core import Qgis
-from qgis.PyQt.QtCore import (Qt)
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsApplication

@@ -1,7 +1,7 @@
 import re
 import os
 import shutil
-from PyQt5.QtCore import QDir
+from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsDataSourceUri
 from qgis2web.utils import safeName
 
@@ -85,7 +85,7 @@ def writeScriptIncludes(layers, json, matchCRS):
     styleVars = ""
     for count, (layer, encode2json) in enumerate(zip(layers, json)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-        sln = safeName(layer.name()) + "_" + unicode(count)
+        sln = safeName(layer.name()) + "_" + str(count)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() != "WFS" or encode2json:
                 if vts is None:
@@ -93,8 +93,7 @@ def writeScriptIncludes(layers, json, matchCRS):
                                     (sln + ".js"))
             else:
                 layerSource = layer.source()
-                if ("retrictToRequestBBOX" in layerSource or
-                        "restrictToRequestBBOX" in layerSource):
+                if "retrictToRequestBBOX" in layerSource or "restrictToRequestBBOX" in layerSource:
                     provider = layer.dataProvider()
                     uri = QgsDataSourceUri(provider.dataSourceUri())
                     wfsURL = uri.param("url")

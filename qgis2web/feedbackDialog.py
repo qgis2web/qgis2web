@@ -16,20 +16,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os
-from datetime import datetime
-import ftplib
-from PyQt5.uic import loadUiType
-
-from qgis.core import (QgsProject)
-from PyQt5.QtCore import (QObject,
-                          QCoreApplication)
-from PyQt5.QtWidgets import (QFileDialog,
-                             QInputDialog,
-                             QDialog,
-                             QLineEdit,
-                             QDialogButtonBox)
-from .utils import (tempFolder)
+from qgis.PyQt.QtCore import QObject, QCoreApplication
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from .ui_feedback_dialog import Ui_Feedback
 
 translator = QObject()

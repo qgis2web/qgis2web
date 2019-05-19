@@ -21,26 +21,23 @@
  ***************************************************************************/
 """
 
-from numbers import Number
 from collections import OrderedDict
 import traceback
 from qgis.core import (Qgis,
                        QgsProcessing,
-                       QgsProcessingProvider,
                        QgsProject,
                        QgsMapLayer,
-                       QgsVectorLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsWkbTypes)
 from qgis.utils import iface
 
 from qgis.core import QgsProcessingAlgorithm
-from qgis.core import QgsProcessingParameters
-from processing.tools import dataobjects
+# from processing.tools import dataobjects
 from .writerRegistry import (WRITER_REGISTRY)
 from .exporter import (EXPORTER_REGISTRY)
 from .olwriter import (OpenLayersWriter)
@@ -116,11 +113,10 @@ class exportProject(qgis2webAlgorithm):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if (layer.type() != QgsMapLayer.PluginLayer and
-                    root_node.findLayer(layer.id()).isVisible()):
+            if layer.type() != QgsMapLayer.PluginLayer and (layer.type() != QgsMapLayer.VectorLayer or layer.wbbType() != QgsWkbTypes.NoGeometry) and root_node.findLayer(layer.id()).isVisible():
                 try:
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.renderer().dump()
+                    # if layer.type() == QgsMapLayer.VectorLayer:
+                    #    testDump = layer.renderer().dump()
                     layers.append(layer)
                     layerPopups = []
                     if layer.type() == QgsMapLayer.VectorLayer:
@@ -133,7 +129,7 @@ class exportProject(qgis2webAlgorithm):
                             fieldList.append(v.strip())
                             layerPopups.append(tuple(fieldList))
                     popup.append(OrderedDict(layerPopups))
-                except:
+                except Exception:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
                                              level=Qgis.Critical)

@@ -23,7 +23,6 @@ __copyright__ = 'Copyright 2017, Nyall Dawson'
 import unittest
 import os
 import shutil
-import difflib
 
 from twisted.application import internet
 from twisted.cred import checkers, portal
@@ -35,19 +34,16 @@ from twisted.protocols import ftp
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
-from qgis.core import QgsProject
-from qgis.core import QgsVectorLayer, QgsCoordinateReferenceSystem
-from PyQt5 import QtCore, QtTest
 
 from qgis2web.utils import tempFolder
-from qgis2web.test.utilities import get_qgis_app, get_test_data_path, load_layer, load_wfs_layer
 from qgis2web.exporter import (FolderExporter,
                                FtpExporter,
                                FtpConfigurationDialog,
                                EXPORTER_REGISTRY)
 from qgis2web.writer import (WriterResult)
 
-from qgis.testing import unittest, start_app
+from qgis.testing import start_app
+
 print("test_qgis2web_exporters")
 start_app()
 
@@ -124,7 +120,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         """Runs after each test"""
         try:
             reactor.stop()
-        except:
+        except Exception:
             pass
 
     def test01_FolderExporterDefaultsToTemp(self):
@@ -231,7 +227,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         export_folder = e.exportDirectory()
         try:
             os.makedirs(export_folder)
-        except:
+        except Exception:
             self.assertTrue(False, 'could not create export directory')
         out_file = os.path.join(export_folder, 'index.html')
         with open(out_file, 'w') as i:
@@ -274,7 +270,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         export_folder = e.exportDirectory()
         try:
             os.makedirs(export_folder)
-        except:
+        except Exception:
             self.assertTrue(False, 'could not create export directory')
         out_file = os.path.join(export_folder, 'index.html')
         with open(out_file, 'w') as i:
@@ -282,7 +278,7 @@ class qgis2web_exporterTest(unittest.TestCase):
         sub_folder = os.path.join(export_folder, 'sub')
         try:
             os.makedirs(sub_folder)
-        except:
+        except Exception:
             self.assertTrue(False, 'could not create export directory')
         sub_folder_out_file = os.path.join(sub_folder, 'index.html')
         with open(sub_folder_out_file, 'w') as i:

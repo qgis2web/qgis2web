@@ -103,8 +103,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
         shutil.copyfile(cssDir + 'leaflet-measure.css',
                         cssStore + 'leaflet-measure.css')
     shutil.copytree(cssDir + 'images', cssStore + 'images')
-    if (matchCRS and
-            canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
+    if matchCRS and canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326':
         shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
         shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
     feedback.completeStep()
@@ -120,10 +119,6 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         if cluster:
             useCluster = True
     feedback.showFeedback("Writing HTML...")
-    if webpage_name == "":
-        pass
-    else:
-        webpage_name = unicode(webpage_name)
     cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
     jsAddress = '<script src="js/leaflet.js"></script>'
     if locate:
@@ -193,8 +188,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     if useWMTS:
         extraJS += """
         <script src="js/leaflet-tilelayer-wmts.js"></script>"""
-    if (matchCRS and
-            canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
+    if matchCRS and canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326':
         crsJS = """
         <script src="js/proj4.js"></script>
         <script src="js/proj4leaflet.js"></script>"""
@@ -219,8 +213,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_MEASUREJS@": measureJS,
               "@LEAFLET_CRSJS@": crsJS,
               "@QGIS2WEBJS@": qgis2webJS,
-              "@MAP_WIDTH@": unicode(canvasSize.width()) + "px",
-              "@MAP_HEIGHT@": unicode(canvasSize.height()) + "px",
+              "@MAP_WIDTH@": str(canvasSize.width()) + "px",
+              "@MAP_HEIGHT@": str(canvasSize.height()) + "px",
               "@EXP_JS@": exp_js,
               "@OL3_BACKGROUNDCOLOR@": "",
               "@OL3_STYLEVARS@": "",
@@ -238,7 +232,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)
         base = re.sub(r'\n[\s_]+\n', '\n', base)
-        f.write(unicode(base))
+        f.write(base)
         f.close()
     feedback.completeStep()
 
