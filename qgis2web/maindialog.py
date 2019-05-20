@@ -33,32 +33,30 @@ from qgis.core import (Qgis,
                        QgsMessageLog)
 
 # noinspection PyUnresolvedReferences
-from PyQt5.QtCore import (QObject,
-                          QSettings,
-                          pyqtSignal,
-                          pyqtSlot,
-                          QUrl,
-                          QByteArray,
-                          QEvent,
-                          Qt)
-from PyQt5.QtGui import (QIcon)
-from PyQt5.QtWidgets import (QAction,
-                             QAbstractItemView,
-                             QDialog,
-                             QHBoxLayout,
-                             QTreeWidgetItem,
-                             QComboBox,
-                             QCheckBox,
-                             QToolButton,
-                             QWidget,
-                             QTextBrowser)
-from PyQt5.QtNetwork import QNetworkAccessManager
-from PyQt5.uic import loadUiType
+from qgis.PyQt.QtCore import (QObject,
+                              QSettings,
+                              pyqtSignal,
+                              pyqtSlot,
+                              QUrl,
+                              QByteArray,
+                              QEvent,
+                              Qt)
+from qgis.PyQt.QtGui import (QIcon)
+from qgis.PyQt.QtWidgets import (QAction,
+                                 QAbstractItemView,
+                                 QDialog,
+                                 QHBoxLayout,
+                                 QTreeWidgetItem,
+                                 QComboBox,
+                                 QCheckBox,
+                                 QToolButton,
+                                 QWidget,
+                                 QTextBrowser)
+from qgis.PyQt.uic import loadUiType
 from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
 from qgis.PyQt.QtWebKit import QWebSettings
 
 import traceback
-import logging
 
 from . import utils
 from qgis2web.configparams import (getParams,
@@ -107,8 +105,7 @@ class MainDialog(QDialog, FORM_CLASS):
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:
             self.previewOnStartup.setCheckState(Qt.Unchecked)
-        if (stgs.value("qgis2web/closeFeedbackOnSuccess", Qt.Checked) ==
-                Qt.Checked):
+        if stgs.value("qgis2web/closeFeedbackOnSuccess", Qt.Checked) == Qt.Checked:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Checked)
         else:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Unchecked)
@@ -124,7 +121,7 @@ class MainDialog(QDialog, FORM_CLASS):
             try:
                 # if os.environ["TRAVIS"]:
                 self.preview.setPage(WebPage())
-            except:
+            except Exception:
                 print("Failed to set custom webpage")
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
@@ -191,7 +188,7 @@ class MainDialog(QDialog, FORM_CLASS):
             self.exporter = [
                 e for e in EXPORTER_REGISTRY.getExporters()
                 if e.name() == new_exporter_name][0]()
-        except:
+        except Exception:
             pass
 
     def currentMapFormat(self):
@@ -251,9 +248,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
-            treeParam = self.appearanceParams.findItems(param,
-                                                        (Qt.MatchExactly |
-                                                         Qt.MatchRecursive))[0]
+            treeParam = self.appearanceParams.findItems(param, Qt.MatchExactly | Qt.MatchRecursive)[0]
             if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
@@ -265,9 +260,7 @@ class MainDialog(QDialog, FORM_CLASS):
                 else:
                     treeParam.setDisabled(False)
         for option, value in specificOptions.items():
-            treeOptions = self.layersTree.findItems(option,
-                                                    (Qt.MatchExactly |
-                                                     Qt.MatchRecursive))
+            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly | Qt.MatchRecursive)
             for treeOption in treeOptions:
                 if currentWriter == OpenLayersWriter:
                     if value == "OL3":
@@ -338,8 +331,7 @@ class MainDialog(QDialog, FORM_CLASS):
         if self.closeFeedbackOnSuccess.checkState() == Qt.Checked:
             self.feedback.close()
         result = self.exporter.postProcess(results, feedback=self.feedback)
-        if result and (not os.environ.get('CI') and
-                       not os.environ.get('TRAVIS')):
+        if result and (not os.environ.get('CI') and not os.environ.get('TRAVIS')):
             webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def populate_layers_and_groups(self, dlg):
@@ -353,11 +345,10 @@ class MainDialog(QDialog, FORM_CLASS):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if (layer.type() != QgsMapLayer.PluginLayer and
-                    layer.customProperty("ol_layer_type") is None):
+            if (layer.type() != QgsMapLayer.PluginLayer and (layer.type() != QgsMapLayer.VectorLayer or layer.wkbType() != QgsWkbTypes.NoGeometry) and layer.customProperty("ol_layer_type") is None):
                 try:
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.renderer().dump()
+                    # if layer.type() == QgsMapLayer.VectorLayer:
+                    #    testDump = layer.renderer().dump()
                     layer_parent = tree_layer.parent()
                     if layer_parent.parent() is None:
                         item = TreeLayerItem(self.iface, layer,
@@ -366,7 +357,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     else:
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
-                except:
+                except Exception:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
                                              level=Qgis.Critical)
@@ -397,18 +388,18 @@ class MainDialog(QDialog, FORM_CLASS):
                 options = []
                 fields = layer.fields()
                 for f in fields:
-                    fieldIndex = fields.indexFromName(unicode(f.name()))
+                    fieldIndex = fields.indexFromName(f.name())
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if editorWidget == 'Hidden':
                         continue
-                    options.append(unicode(f.name()))
+                    options.append(f.name())
                 for option in options:
-                    displayStr = unicode(layer.name() + ": " + option)
+                    displayStr = layer.name() + ": " + option
                     self.layer_search_combo.insertItem(0, displayStr)
                     sln = utils.safeName(layer.name())
                     self.layer_search_combo.setItemData(
                         self.layer_search_combo.findText(displayStr),
-                        sln + "_" + unicode(count))
+                        sln + "_" + str(count))
 
     def configureExporter(self):
         self.exporter.configure()
@@ -595,7 +586,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     layer.setCustomProperty("qgis2web/popup/" + attr,
                                             pop[attr])
                 layer.setCustomProperty("qgis2web/Visible", vis)
-        except:
+        except Exception:
             pass
 
         QSettings().setValue(
@@ -632,7 +623,7 @@ class devToggleFilter(QObject):
                     else:
                         obj.devConsole.setFixedHeight(168)
                     return True
-        except:
+        except Exception:
             pass
         return False
 
@@ -678,7 +669,7 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
         vis = layer.customProperty("qgis2web/Visible", True)
-        if (vis == 0 or unicode(vis).lower() == "false"):
+        if vis == 0 or str(vis).lower() == "false":
             self.visibleCheck.setChecked(False)
         else:
             self.visibleCheck.setChecked(True)
@@ -709,7 +700,7 @@ class TreeLayerItem(QTreeWidgetItem):
             options = []
             fields = self.layer.fields()
             for f in fields:
-                fieldIndex = fields.indexFromName(unicode(f.name()))
+                fieldIndex = fields.indexFromName(f.name())
                 editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                 if editorWidget == 'Hidden':
                     continue
@@ -763,21 +754,21 @@ class TreeLayerItem(QTreeWidgetItem):
     def json(self):
         try:
             return self.jsonCheck.isChecked()
-        except:
+        except Exception:
             return False
 
     @property
     def cluster(self):
         try:
             return self.clusterCheck.isChecked()
-        except:
+        except Exception:
             return False
 
     @property
     def getFeatureInfo(self):
         try:
             return self.getFeatureInfoCheck.isChecked()
-        except:
+        except Exception:
             return False
 
     def changeJSON(self, isJSON):
@@ -846,7 +837,7 @@ class TreeSettingItem(QTreeWidgetItem):
             if index != -1:
                 self.combo.setCurrentIndex(index)
         else:
-            self.setText(1, unicode(value))
+            self.setText(1, str(value))
 
     def value(self):
         if isinstance(self._value, bool):

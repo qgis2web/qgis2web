@@ -2,14 +2,13 @@ import re
 import os
 import traceback
 from urllib.parse import parse_qs
-from PyQt5.QtCore import QSize
+from qgis.PyQt.QtCore import QSize
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
-                       QgsPalLayerSettings,
-                       QgsSvgMarkerSymbolLayer,
                        QgsSymbolLayerUtils,
+                       QgsSvgMarkerSymbolLayer,
                        QgsMessageLog,
                        Qgis,
                        QgsWkbTypes)
@@ -121,8 +120,8 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
             continuousWorld: false,
             worldCopyJump: false, """
     map += """
-            zoomControl:true, maxZoom:""" + unicode(maxZoom)
-    map += """, minZoom:""" + unicode(minZoom) + """
+            zoomControl:true, maxZoom:""" + str(maxZoom)
+    map += """, minZoom:""" + str(minZoom) + """
         })"""
     if extent == "Canvas extent":
         map += """.fitBounds(""" + bounds + """);"""
@@ -230,12 +229,12 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     try:
         iconSize = (symbol.size() * 4) + 5
-    except:
+    except Exception:
         iconSize = 16
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                          QSize(iconSize,
                                                                iconSize))
-    safeLabel = re.sub(r'[\W_]+', '', catr.label()) + unicode(cnt)
+    safeLabel = re.sub(r'[\W_]+', '', catr.label()) + str(cnt)
     legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                  layerName + "_" + safeLabel + ".png"))
     catLegend += """<tr><td style="text-align: center;"><img src="legend/"""
@@ -246,14 +245,15 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
 
 def pointToLayerFunction(safeLayerName, sl):
     try:
-        if isinstance(sl, QgsSvgMarkerSymbolLayerV2):
+        if isinstance(sl, QgsSvgMarkerSymbolLayer):
             markerType = "marker"
         elif sl.shape() == 8:
             markerType = "circleMarker"
         else:
             markerType = "shapeMarker"
-    except:
+    except Exception:
         markerType = "circleMarker"
+
     pointToLayerFunction = """
         function pointToLayer_{safeLayerName}_{sl}(feature, latlng) {{
             var context = {{
@@ -308,7 +308,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         wmts_url = wmts_url.replace("request=getcapabilities", "")
         wmts_layer = d['layers'][0]
         wmts_format = d['format'][0]
-        wmts_crs = d['crs'][0]
+        # wmts_crs = d['crs'][0]
         wmts_style = d['styles'][0]
         wmts_tileMatrixSet = d['tileMatrixSet'][0]
         wms = """
@@ -357,15 +357,13 @@ def rasterScript(layer, safeLayerName):
     crsDest = QgsCoordinateReferenceSystem(4326)
     try:
         xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
-    except:
+    except Exception:
         xform = QgsCoordinateTransform(crsSrc, crsDest)
     pt3 = xform.transformBoundingBox(pt2)
-    bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
-                    pt3.xMinimum(), pt3.xMaximum()]
-    bounds = '[[' + unicode(pt3.yMinimum()) + ','
-    bounds += unicode(pt3.xMinimum()) + '],['
-    bounds += unicode(pt3.yMaximum()) + ','
-    bounds += unicode(pt3.xMaximum()) + ']]'
+    bounds = '[[' + str(pt3.yMinimum()) + ','
+    bounds += str(pt3.xMinimum()) + '],['
+    bounds += str(pt3.yMaximum()) + ','
+    bounds += str(pt3.xMaximum()) + ']]'
     raster = """
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};
@@ -405,8 +403,8 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
         controlStart = """
         var baseMaps = {"""
         for count, basemap in enumerate(basemapList):
-            controlStart += comma + "'" + unicode(basemap)
-            controlStart += "': basemap" + unicode(count)
+            controlStart += comma + "'" + str(basemap)
+            controlStart += "': basemap" + str(count)
             comma = ", "
         controlStart += "};"
     controlStart += """
@@ -417,12 +415,11 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
+            safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             lyrCount -= 1
             if i.type() == QgsMapLayer.VectorLayer:
-                testDump = i.renderer().dump()
-                if (clustered and
-                        i.geometryType() == QgsWkbTypes.PointGeometry):
+                # testDump = i.renderer().dump()
+                if clustered and i.geometryType() == QgsWkbTypes.PointGeometry:
                     new_layer = "'" + legends[safeLayerName].replace("'", "\'")
                     new_layer += "': cluster_""" + safeLayerName + ","
                 else:
@@ -433,7 +430,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 new_layer = '"' + rawLayerName.replace("'", "\'") + '"'
                 new_layer += ": layer_" + safeLayerName + ""","""
                 layersList += new_layer
-        except:
+        except Exception:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=Qgis.Critical)
     controlEnd = "}"

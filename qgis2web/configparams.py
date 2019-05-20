@@ -18,10 +18,9 @@
 from qgis.core import QgsApplication
 import os
 import shutil
-from qgis2web.utils import tempFolder
 from qgis2web.exporter import EXPORTER_REGISTRY
 from qgis.gui import QgsColorButton
-from PyQt5.QtGui import QColor
+from qgis.PyQt.QtGui import QColor
 
 
 def getTemplates():

@@ -3,7 +3,7 @@ import os
 import codecs
 from urllib.parse import parse_qs
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProject,
                        QgsRenderContext,
                        QgsSingleSymbolRenderer,
@@ -11,19 +11,21 @@ from qgis.core import (QgsProject,
                        QgsGraduatedSymbolRenderer,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform)
+                       QgsCoordinateTransform,
+                       QgsWkbTypes)
 from qgis2web.utils import safeName, is25d, BLEND_MODES
-qms = False
+
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
     vt_enabled = True
-except:
+except ImportError:
     vt_enabled = False
+
 try:
     from quick_map_services.py_tiled_layer.tilelayer import TileLayer
     qms = True
-except:
-    pass
+except ImportError:
+    qms = False
 
 
 def writeLayersAndGroups(layers, groups, visible, folder, popup,
@@ -45,7 +47,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
              vtLayers) = layerToJavascript(iface, layer, encode2json, matchCRS,
                                            cluster, info, restrictToExtent,
                                            extent, count, vtLayers)
-            layerVars += "\n".join([layerVar])
+            layerVars += "\n" + "\n".join([layerVar])
     (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
     (mapLayers, layerObjs, osmb) = layersAnd25d(layers, canvas,
                                                 restrictToExtent, extent, qms)
@@ -56,7 +58,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
      usedGroups) = getGroups(canvas, layers, restrictToExtent,
                              extent, groupedLayers)
     layersList = []
-    currentVT = ""
+    # currentVT = ""
     for layer in (group_list + no_group_list):
         layersList.append(layer)
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
@@ -67,10 +69,8 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     blend_mode = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-        sln = safeName(layer.name()) + "_" + unicode(count)
-        if (layer.type() == layer.VectorLayer and vts is None and
-                not isinstance(layer.renderer(), QgsHeatmapRenderer) and
-                not is25d(layer, canvas, restrictToExtent, extent)):
+        sln = safeName(layer.name()) + "_" + str(count)
+        if (layer.type() == layer.VectorLayer and layer.wkbType() != QgsWkbTypes.NoGeometry and vts is None and not isinstance(layer.renderer(), QgsHeatmapRenderer) and not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
              blend_mode) = getPopups(layer, labels, sln, fieldLabels,
                                      fieldAliases, fieldImages)
@@ -94,7 +94,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
 def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
                       restrictToExtent, extent, count, vtLayers):
     (minResolution, maxResolution) = getScaleRes(layer)
-    layerName = safeName(layer.name()) + "_" + unicode(count)
+    layerName = safeName(layer.name()) + "_" + str(count)
     rawName = layer.name()
     layerAttr = getAttribution(layer)
     if layer.type() == layer.VectorLayer and not is25d(layer,
@@ -153,10 +153,10 @@ def getScaleRes(layer):
     if layer.hasScaleBasedVisibility():
         if layer.minimumScale() != 0:
             minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
-            minResolution = "\nmaxResolution:%s,\n" % unicode(minRes)
+            minResolution = "\nmaxResolution:%s,\n" % str(minRes)
         if layer.maximumScale() != 0:
             maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
-            maxResolution = "minResolution:%s,\n" % unicode(maxRes)
+            maxResolution = "minResolution:%s,\n" % str(maxRes)
     return (minResolution, maxResolution)
 
 
@@ -185,8 +185,7 @@ def build25d(canvas, layer, count):
             attrValue = feat.attribute(classAttribute)
             ranges = renderer.ranges()
             for range in ranges:
-                if (attrValue >= range.lowerValue() and
-                        attrValue <= range.upperValue()):
+                if attrValue >= range.lowerValue() and attrValue <= range.upperValue():
                     symbol = range.symbol().clone()
         else:
             symbol = renderer.symbolForFeature(feat, renderContext)
@@ -198,7 +197,7 @@ def build25d(canvas, layer, count):
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(json_{sln}_{count});""".format(shadows=shadows,
                                         sln=safeName(layer.name()),
-                                        count=unicode(count))
+                                        count=str(count))
     return osmb
 
 
@@ -213,7 +212,7 @@ def getVisibility(mapLayers, layers, visible):
             else:
                 lname = layer
             visibility += "\n".join(["%s.setVisible(%s);" % (
-                lname, unicode(v).lower())])
+                lname, str(v).lower())])
             if vts is not None:
                 currentVT = vts
     return visibility
@@ -231,8 +230,7 @@ def buildGroups(groups, qms, layer_names_id):
                     continue
             if vts is not None:
                 continue
-            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
-                               layer_names_id[layer.id()] + ",")
+            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" + layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 title: "%s"});\n''' %
@@ -251,8 +249,7 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
             osmb = build25d(canvas, layer, count)
         else:
             if (qms and not isinstance(layer, TileLayer)) or not qms:
-                mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
-                                 unicode(count))
+                mapLayers.append("lyr_" + safeName(layer.name()) + "_" + str(count))
                 layerObjs.append(layer)
     return (mapLayers, layerObjs, osmb)
 
@@ -272,24 +269,22 @@ def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
             try:
                 if is25d(layer, canvas, restrictToExtent, extent):
                     pass
+                elif layer.id() in groupedLayers:
+                    groupName = groupedLayers[layer.id()]
+                    if groupName not in usedGroups:
+                        group_list.append("group_" + safeName(groupName))
+                        usedGroups.append(groupName)
                 else:
-                    if layer.id() in groupedLayers:
-                        groupName = groupedLayers[layer.id()]
-                        if groupName not in usedGroups:
-                            group_list.append("group_" + safeName(groupName))
-                            usedGroups.append(groupName)
-                    else:
-                        no_group_list.append("lyr_" + safeName(layer.name()) +
-                                             "_" + unicode(count))
-            except:
+                    no_group_list.append("lyr_" + safeName(layer.name()) + "_" + str(count))
+            except Exception:
                 if layer.id() in groupedLayers:
                     groupName = groupedLayers[layer.id()]
                     if groupName not in usedGroups:
                         group_list.append("group_" + safeName(groupName))
                         usedGroups.append(groupName)
                 else:
-                    no_group_list.append("lyr_" + safeName(layer.name()) +
-                                         "_" + unicode(count))
+                    no_group_list.append("lyr_" + safeName(layer.name()) + "_" + str(count))
+
     return (group_list, no_group_list, usedGroups)
 
 
@@ -307,7 +302,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
         {"name": sln}) + labelFields
     fieldLabels += labelFields
     for f in fieldList:
-        fieldIndex = fieldList.indexFromName(unicode(f.name()))
+        fieldIndex = fieldList.indexFromName(f.name())
         aliasFields += "'%(field)s': '%(alias)s', " % (
             {"field": f.name(),
              "alias": layer.attributeDisplayName(fieldIndex).replace("'",
@@ -379,7 +374,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
   distance: 10,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
-    layerCode += '''var lyr_%(n)s = new ol.layer.%(t)s({
+    layerCode += '''\nvar lyr_%(n)s = new ol.layer.%(t)s({
                 declutter: true,
                 source:''' % {"n": layerName, "t": pointLayerType}
     if cluster:
@@ -434,7 +429,7 @@ def getVT(json_url):
     sln = safeName(json_url)
     try:
         key = json_url.split("?")[1]
-    except:
+    except Exception:
         key = ""
     json = TileJSON(json_url)
     json.load()
@@ -610,9 +605,8 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
         crsDest = QgsCoordinateReferenceSystem(3857)
 
         try:
-            xform = QgsCoordinateTransform(crsSrc, crsDest,
-                                           QgsProject.instance())
-        except:
+            xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
+        except Exception:
             xform = QgsCoordinateTransform(crsSrc, crsDest)
         extentRep = xform.transformBoundingBox(layer.extent())
     else:

@@ -22,7 +22,6 @@
 """
 
 from qgis.core import QgsProcessingProvider
-from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from .qgis2webAlgorithm import exportProject, exportVector, exportRaster
 
 __author__ = 'Tom Chadwin'

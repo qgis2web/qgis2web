@@ -21,8 +21,8 @@ import re
 import shutil
 import sys
 from io import StringIO
-from PyQt5.QtCore import QDir, QVariant
-from PyQt5.QtGui import QPainter
+from qgis.PyQt.QtCore import QDir, QVariant
+from qgis.PyQt.QtGui import QPainter
 from qgis.core import (QgsApplication,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
@@ -41,8 +41,10 @@ from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
                        QgsRasterPipe,
-                       QgsWkbTypes)
-from qgis.core import (Qgs25DRenderer, QgsGeometryGeneratorSymbolLayer)
+                       QgsMessageLog,
+                       QgsWkbTypes,
+                       Qgs25DRenderer,
+                       QgsGeometryGeneratorSymbolLayer)
 from qgis.utils import Qgis
 import processing
 import tempfile
@@ -121,37 +123,39 @@ PLACEMENT = ['bottomleft', 'topleft', 'topright', 'bottomleft', 'bottomright']
 
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'qgis2web')
+    tempDir = os.path.join(QDir.tempPath(), 'qgis2web')
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 
-    return unicode(os.path.abspath(tempDir))
+    return os.path.abspath(tempDir)
 
 
 def getUsedFields(layer):
     fields = []
     try:
         fields.append(layer.renderer().classAttribute())
-    except:
+    except Exception:
         pass
-    labelsEnabled = unicode(
-        layer.customProperty("labeling/enabled")).lower() == "true"
+    labelsEnabled = layer.customProperty("labeling/enabled").lower() == "true"
     if labelsEnabled:
         fields.append(layer.customProperty("labeling/fieldName"))
     return fields
 
 
 def writeTmpLayer(layer, restrictToExtent, iface, extent):
+    if layer.wkbType() == QgsWkbTypes.NoGeometry:
+        return
+
     fields = layer.fields()
     usedFields = []
     for count, field in enumerate(fields):
-        fieldIndex = fields.indexFromName(unicode(field.name()))
+        fieldIndex = fields.indexFromName(field.name())
         editorWidget = layer.editorWidgetSetup(fieldIndex).type()
         addField = False
         try:
             if layer.renderer().classAttribute() == field.name():
                 addField = True
-        except:
+        except Exception:
             pass
         if layer.customProperty("labeling/fieldName") == field.name():
             addField = True
@@ -164,16 +168,15 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
     if crs.isValid():
         uri += '?crs=' + crs.authid()
     for field in usedFields:
-        fieldIndex = layer.fields().indexFromName(unicode(
-            layer.fields().field(field).name()))
+        fieldIndex = layer.fields().indexFromName(
+            layer.fields().field(field).name())
         editorWidget = layer.editorWidgetSetup(fieldIndex).type()
         fieldType = layer.fields().field(field).type()
         fieldName = layer.fields().field(field).name()
         if (editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
-        fieldType = "double" if (fieldType == QVariant.Double or
-                                 fieldType == QVariant.Int) else ("string")
-        uri += '&field=' + unicode(fieldName) + ":" + fieldType
+        fieldType = "double" if fieldType == QVariant.Double or fieldType == QVariant.Int else "string"
+        uri += '&field=' + fieldName + ":" + fieldType
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()
     outFeat = QgsFeature()
@@ -185,7 +188,7 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
         try:
             transform = QgsCoordinateTransform(canvasCRS, layerCRS,
                                                QgsProject.instance())
-        except:
+        except Exception:
             transform = QgsCoordinateTransform(canvasCRS, layerCRS)
         projectedExtent = transform.transformBoundingBox(extent)
         request = QgsFeatureRequest(projectedExtent)
@@ -210,17 +213,15 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
     QDir().mkpath(layersFolder)
     for count, (layer, encode2json, popup) in enumerate(zip(layers, json,
                                                             popupField)):
-        sln = safeName(layer.name()) + "_" + unicode(count)
+        sln = safeName(layer.name()) + "_" + str(count)
         vts = layer.customProperty("VectorTilesReader/vector_tile_source")
-        if (layer.type() == layer.VectorLayer and vts is None and
-                (layer.providerType() != "WFS" or encode2json)):
+        if layer.type() == layer.VectorLayer and vts is None and (layer.providerType() != "WFS" or encode2json):
             feedback.showFeedback('Exporting %s to JSON...' % layer.name())
             crs = QgsCoordinateReferenceSystem("EPSG:4326")
             exportVector(layer, sln, layersFolder, restrictToExtent,
                          iface, extent, precision, crs, optimize)
             feedback.completeStep()
-        elif (layer.type() == layer.RasterLayer and
-                layer.providerType() != "wms"):
+        elif layer.type() == layer.RasterLayer and layer.providerType() != "wms":
             feedback.showFeedback('Exporting %s as raster...' % layer.name())
             exportRaster(layer, count, layersFolder, feedback, iface, matchCRS)
             feedback.completeStep()
@@ -237,19 +238,24 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
     path = os.path.join(layersFolder, sln + ".js")
     options = []
     if precision != "maintain":
-        options.append("COORDINATE_PRECISION=" + unicode(precision))
-    QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8", crs,
-                                            'GeoJson', 0,
-                                            layerOptions=options)
-    with open(path, mode="w", encoding="utf8") as f:
-        f.write("var %s = " % ("json_" + sln))
-        with open(tmpPath, encoding="utf8") as tmpFile:
-            for line in tmpFile:
-                if minify:
-                    line = line.strip("\n\t ")
-                    line = removeSpaces(line)
-                f.write(line)
-    os.remove(tmpPath)
+        options.append("COORDINATE_PRECISION=" + str(precision))
+    e, err = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8",
+                                                     crs, 'GeoJson', 0,
+                                                     layerOptions=options)
+    if e == QgsVectorFileWriter.NoError:
+        with open(path, mode="w", encoding="utf8") as f:
+            f.write("var %s = " % ("json_" + sln))
+            with open(tmpPath, encoding="utf8") as tmpFile:
+                for line in tmpFile:
+                    if minify:
+                        line = line.strip("\n\t ")
+                        line = removeSpaces(line)
+                    f.write(line)
+        os.remove(tmpPath)
+    else:
+        QgsMessageLog.logMessage("Could not write json file {}: {}".format(tmpPath, err), "qgis2web", level=Qgis.Critical)
+        return
+
     fields = layer.fields()
     for field in fields:
         exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
@@ -287,8 +293,7 @@ def add25dAttributes(cleanLayer, layer, canvas):
             attrValue = feat.attribute(classAttribute)
             ranges = renderer.ranges()
             for range in ranges:
-                if (attrValue >= range.lowerValue() and
-                        attrValue <= range.upperValue()):
+                if attrValue >= range.lowerValue() and attrValue <= range.upperValue():
                     symbol = range.symbol().clone()
         else:
             symbol = renderer.symbolForFeature(feat, renderContext)
@@ -305,14 +310,13 @@ def add25dAttributes(cleanLayer, layer, canvas):
 
 def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     feedback.showFeedback("Exporting %s to PNG..." % layer.name())
-    name_ts = (safeName(layer.name()) + unicode(count) +
-               unicode(int(time.time())))
+    name_ts = safeName(layer.name()) + str(count) + str(int(time.time()))
 
     # We need to create a new file to export style
     piped_file = os.path.join(tempfile.gettempdir(), name_ts + '_piped.tif')
 
     piped_extent = layer.extent()
-    piped_width = layer.height()
+    # piped_width = layer.height()
     piped_height = layer.width()
     piped_crs = layer.crs()
     piped_renderer = layer.renderer()
@@ -327,8 +331,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     file_writer.writeRaster(pipe, piped_height, -1, piped_extent, piped_crs)
 
     # Export layer as PNG
-    out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" +
-                              unicode(count) + ".png")
+    out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" + str(count) + ".png")
 
     projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
     if not (matchCRS and layer.crs() == projectCRS):
@@ -338,25 +341,25 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         try:
             xform = QgsCoordinateTransform(crsSrc, crsDest,
                                            QgsProject.instance())
-        except:
+        except Exception:
             xform = QgsCoordinateTransform(crsSrc, crsDest)
         extentRep = xform.transformBoundingBox(layer.extent())
 
-        extentRepNew = ','.join([unicode(extentRep.xMinimum()),
-                                 unicode(extentRep.xMaximum()),
-                                 unicode(extentRep.yMinimum()),
-                                 unicode(extentRep.yMaximum())])
+        extentRepNew = ','.join([str(extentRep.xMinimum()),
+                                 str(extentRep.xMaximum()),
+                                 str(extentRep.yMinimum()),
+                                 str(extentRep.yMaximum())])
 
         # Reproject in 3857
         piped_3857 = os.path.join(tempfile.gettempdir(),
                                   name_ts + '_piped_3857.tif')
-        qgis_version = Qgis.QGIS_VERSION
+        # qgis_version = Qgis.QGIS_VERSION
 
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
         try:
             processing.algorithmHelp("gdal:warpreproject")
-        except:
+        except Exception:
             pass
         sys.stdout = old_stdout
 
@@ -392,12 +395,12 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                 try:
                     k = line.split(":")[0]
                     warpArgs[k] = params[k]
-                except:
+                except Exception:
                     pass
 
         try:
             processing.run("gdal:warpreproject", warpArgs)
-        except:
+        except Exception:
             shutil.copyfile(piped_file, piped_3857)
 
         try:
@@ -420,13 +423,13 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                                               "COPY_SUBDATASETS": False,
                                               "OPTIONS": "",
                                               "OUTPUT": out_raster})
-        except:
+        except Exception:
             shutil.copyfile(piped_3857, out_raster)
     else:
-        srcExtent = ','.join([unicode(piped_extent.xMinimum()),
-                              unicode(piped_extent.xMaximum()),
-                              unicode(piped_extent.yMinimum()),
-                              unicode(piped_extent.yMaximum())])
+        srcExtent = ','.join([str(piped_extent.xMinimum()),
+                              str(piped_extent.xMaximum()),
+                              str(piped_extent.yMinimum()),
+                              str(piped_extent.yMaximum())])
         processing.run("gdal:translate", {"INPUT": piped_file,
                                           "OUTSIZE": 100,
                                           "OUTSIZE_PERC": True,
@@ -489,8 +492,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
     for sym in symbols:
         sl1 = sym.symbolLayer(1)
         sl2 = sym.symbolLayer(2)
-        if (isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and
-                isinstance(sl2, QgsGeometryGeneratorSymbolLayer)):
+        if isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and isinstance(sl2, QgsGeometryGeneratorSymbolLayer):
             return True
     return False
 
@@ -575,7 +577,7 @@ def exportImages(layer, field, layerFileName):
 
     for feature in layer.getFeatures(fr):
         photo_file_name = feature.attribute(field)
-        if type(photo_file_name) is not unicode:
+        if type(photo_file_name) is not str:
             continue
 
         source_file_name = photo_file_name
@@ -590,7 +592,7 @@ def exportImages(layer, field, layerFileName):
 
         try:
             shutil.copyfile(source_file_name, photo_file_name)
-        except IOError as e:
+        except IOError:
             pass
 
 
@@ -607,4 +609,4 @@ def handleHiddenField(layer, field):
 def getRGBAColor(color, alpha):
     r, g, b, a = color.split(",")
     a = (float(a) / 255) * alpha
-    return "'rgba(%s)'" % ",".join([r, g, b, unicode(a)])
+    return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
