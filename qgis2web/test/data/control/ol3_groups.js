@@ -1,11 +1,13 @@
 var wms_layers = [];
+
 var format_airports_0 = new ol.format.GeoJSON();
 var features_airports_0 = format_airports_0.readFeatures(json_airports_0, 
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
 var jsonSource_airports_0 = new ol.source.Vector({
     attributions: '<a href=""></a>',
 });
-jsonSource_airports_0.addFeatures(features_airports_0);var lyr_airports_0 = new ol.layer.Vector({
+jsonSource_airports_0.addFeatures(features_airports_0);
+var lyr_airports_0 = new ol.layer.Vector({
                 declutter: true,
                 source:jsonSource_airports_0, 
                 style: style_airports_0,
