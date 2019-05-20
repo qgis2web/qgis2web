@@ -85,7 +85,10 @@ def exportStyles(layers, folder, clustered, feedback):
                 style = "''"
         except Exception:
             style = "''"
-            feedback.showFeedback("Exception in layer {} with renderer {}: <span style=\"color: red\">{}</span>".format(layer.id(), renderer.dump(), traceback.format_exc()))
+            feedback.showFeedback("""Exception in layer {} with renderer {}: 
+                <span style=\"color: red\">{}</span>""".format(layer.id(),
+                                                               renderer.dump(),
+                                  traceback.format_exc()))
 
         if vts is None:
             path = os.path.join(stylesFolder, sln + "_style.js")
@@ -210,7 +213,8 @@ def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
     symbol = renderer.symbol()
     (style, pattern, setPattern,
      useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
-                                     layer_alpha, renderer, sln, layer, feedback)
+                                     layer_alpha, renderer, sln, layer,
+                                     feedback)
     style = "var style = " + style
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
         symbol, QSize(16, 16))
@@ -240,7 +244,8 @@ function categories_%s(feature, value, size, resolution, labelText,
             categoryStr = "default:"
         (style, pattern, setPattern,
          useMapUnits) = (getSymbolAsStyle(cat.symbol(), stylesFolder,
-                                          layer_alpha, renderer, sln, layer, feedback))
+                                          layer_alpha, renderer, sln, layer,
+                                          feedback))
         if useMapUnits:
             useAnyMapUnits = True
         categoryStr += '''
@@ -256,7 +261,8 @@ var style = categories_%s(feature, value, size, resolution, labelText,
     return (style, pattern, setPattern, value, defs, useAnyMapUnits)
 
 
-def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha, feedback):
+def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
+              feedback):
     # cluster = False
     ranges = []
     elseif = ""
@@ -268,7 +274,8 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha, fee
             legendFolder, sln + "_" + str(cnt) + ".png"))
         (symbolstyle, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(ran.symbol(), stylesFolder,
-                                         layer_alpha, renderer, sln, layer, feedback)
+                                         layer_alpha, renderer, sln, layer,
+                                         feedback)
         ranges.append("""%sif (value >= %f && value <= %f) {
             style = %s
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
@@ -281,7 +288,8 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha, fee
     return (style, pattern, setPattern, value, useAnyMapUnits)
 
 
-def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer, feedback):
+def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer,
+              feedback):
     # cluster = False
     template = """
         function rules_%s(feature, value) {
@@ -307,8 +315,8 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer, feedback)
     for count, rule in enumerate(rules):
         symbol = rule.symbol()
         (styleCode, pattern, setPattern,
-         useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
-                                         layer_alpha, renderer, sln, layer, feedback)
+         useMapUnits) = getSymbolAsStyle(symbol, stylesFolder, layer_alpha,
+                                         renderer, sln, layer, feedback)
         name = "".join((sln, "rule", str(count)))
         exp = rule.filterExpression()
         if rule.isElse():
@@ -567,7 +575,10 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
 
             style = "image: %s" % style
 
-            feedback.showFeedback("Layer {}: replacing symbol layer <span style=\"color: red\">{}</span> with circle.".format(layer.id(), sl.layerType()))
+            feedback.showFeedback(
+                """Layer {}: replacing symbol layer 
+                <span style=\"color: red\">{}</span> with 
+                circle.""".format(layer.id(), sl.layerType()))
             style = ""
 
         if renderer.usingSymbolLevels():

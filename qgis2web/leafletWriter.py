@@ -121,7 +121,8 @@ class LeafletWriter(Writer):
         title = project.title()
         pluginDir = os.path.dirname(os.path.realpath(__file__))
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
-        outputProjectFileName = os.path.join(outputProjectFileName, 'qgis2web_' + stamp)
+        outputProjectFileName = os.path.join(outputProjectFileName,
+                                             'qgis2web_' + stamp)
         outputIndex = os.path.join(outputProjectFileName, 'index.html')
 
         minify = params["Data export"]["Minify GeoJSON files"]
@@ -241,7 +242,8 @@ class LeafletWriter(Writer):
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
             safeLayerName = safeName(rawLayerName) + "_" + str(count)
-            if layer.type() == QgsMapLayer.VectorLayer and layer.wkbType() != QgsWkbTypes.NoGeometry:
+            if (layer.type() == QgsMapLayer.VectorLayer and
+                    layer.wkbType() != QgsWkbTypes.NoGeometry):
                 (new_src,
                  legends,
                  wfsLayers,
@@ -316,7 +318,9 @@ class LeafletWriter(Writer):
             address_text = addressSearchScript()
             new_src += address_text
 
-        if params["Appearance"]["Add layers list"] and params["Appearance"]["Add layers list"] != "" and params["Appearance"]["Add layers list"] != "None":
+        if (params["Appearance"]["Add layers list"] and
+                params["Appearance"]["Add layers list"] != "" and
+                params["Appearance"]["Add layers list"] != "None"):
             new_src += addLayersList(
                 [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
@@ -338,7 +342,8 @@ class LeafletWriter(Writer):
         labelList = []
         for count, layer in enumerate(layer_list):
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-            safeLayerName = re.sub(r'[\W_]+', '', layer.name()) + "_" + str(count)
+            safeLayerName = re.sub(r'[\W_]+', '',
+                                   layer.name()) + "_" + str(count)
             if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
                 labelling = layer.labeling()
                 if labelling is not None:
@@ -356,7 +361,8 @@ class LeafletWriter(Writer):
                            locate, new_src, template, feedback, useMultiStyle,
                            useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT)
         except Exception:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web", level=Qgis.Critical)
+            QgsMessageLog.logMessage(traceback.format_exc(),
+                                     "qgis2web", level=Qgis.Critical)
         finally:
             QApplication.restoreOverrideCursor()
         return outputIndex

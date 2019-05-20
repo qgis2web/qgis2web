@@ -304,7 +304,8 @@ class FtpExporter(Exporter):
         try:
             ftp.login(self.username, password)
         except Exception:
-            feedback.setFatalError('Login failed for user {}!'.format(self.username))
+            feedback.setFatalError("""Login failed for 
+                                      user {}!""".format(self.username))
             return False
 
         feedback.showFeedback('Logged in to {}'.format(self.host))

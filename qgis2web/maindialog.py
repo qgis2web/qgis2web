@@ -105,7 +105,8 @@ class MainDialog(QDialog, FORM_CLASS):
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:
             self.previewOnStartup.setCheckState(Qt.Unchecked)
-        if stgs.value("qgis2web/closeFeedbackOnSuccess", Qt.Checked) == Qt.Checked:
+        if stgs.value("qgis2web/closeFeedbackOnSuccess",
+                      Qt.Checked) == Qt.Checked:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Checked)
         else:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Unchecked)
@@ -248,7 +249,8 @@ class MainDialog(QDialog, FORM_CLASS):
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
-            treeParam = self.appearanceParams.findItems(param, Qt.MatchExactly | Qt.MatchRecursive)[0]
+            treeParam = self.appearanceParams.findItems(
+                param, Qt.MatchExactly | Qt.MatchRecursive)[0]
             if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
@@ -260,7 +262,8 @@ class MainDialog(QDialog, FORM_CLASS):
                 else:
                     treeParam.setDisabled(False)
         for option, value in specificOptions.items():
-            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly | Qt.MatchRecursive)
+            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly |
+                                                            Qt.MatchRecursive)
             for treeOption in treeOptions:
                 if currentWriter == OpenLayersWriter:
                     if value == "OL3":
@@ -331,7 +334,8 @@ class MainDialog(QDialog, FORM_CLASS):
         if self.closeFeedbackOnSuccess.checkState() == Qt.Checked:
             self.feedback.close()
         result = self.exporter.postProcess(results, feedback=self.feedback)
-        if result and (not os.environ.get('CI') and not os.environ.get('TRAVIS')):
+        if result and (not os.environ.get('CI') and
+                       not os.environ.get('TRAVIS')):
             webbrowser.open_new_tab(self.exporter.destinationUrl())
 
     def populate_layers_and_groups(self, dlg):
@@ -345,7 +349,10 @@ class MainDialog(QDialog, FORM_CLASS):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if (layer.type() != QgsMapLayer.PluginLayer and (layer.type() != QgsMapLayer.VectorLayer or layer.wkbType() != QgsWkbTypes.NoGeometry) and layer.customProperty("ol_layer_type") is None):
+            if (layer.type() != QgsMapLayer.PluginLayer and
+                    (layer.type() != QgsMapLayer.VectorLayer or
+                     layer.wkbType() != QgsWkbTypes.NoGeometry) and
+                    layer.customProperty("ol_layer_type") is None):
                 try:
                     # if layer.type() == QgsMapLayer.VectorLayer:
                     #    testDump = layer.renderer().dump()

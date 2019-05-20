@@ -70,7 +70,11 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         sln = safeName(layer.name()) + "_" + str(count)
-        if (layer.type() == layer.VectorLayer and layer.wkbType() != QgsWkbTypes.NoGeometry and vts is None and not isinstance(layer.renderer(), QgsHeatmapRenderer) and not is25d(layer, canvas, restrictToExtent, extent)):
+        if (layer.type() == layer.VectorLayer and
+                layer.wkbType() != QgsWkbTypes.NoGeometry and
+                vts is None and
+                not isinstance(layer.renderer(), QgsHeatmapRenderer) and
+                not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
              blend_mode) = getPopups(layer, labels, sln, fieldLabels,
                                      fieldAliases, fieldImages)
@@ -185,7 +189,8 @@ def build25d(canvas, layer, count):
             attrValue = feat.attribute(classAttribute)
             ranges = renderer.ranges()
             for range in ranges:
-                if attrValue >= range.lowerValue() and attrValue <= range.upperValue():
+                if (attrValue >= range.lowerValue() and
+                        attrValue <= range.upperValue()):
                     symbol = range.symbol().clone()
         else:
             symbol = renderer.symbolForFeature(feat, renderContext)
@@ -230,7 +235,8 @@ def buildGroups(groups, qms, layer_names_id):
                     continue
             if vts is not None:
                 continue
-            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" + layer_names_id[layer.id()] + ",")
+            groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
+                               layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 title: "%s"});\n''' %
@@ -249,7 +255,8 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
             osmb = build25d(canvas, layer, count)
         else:
             if (qms and not isinstance(layer, TileLayer)) or not qms:
-                mapLayers.append("lyr_" + safeName(layer.name()) + "_" + str(count))
+                mapLayers.append("lyr_" + safeName(layer.name()) +
+                                 "_" + str(count))
                 layerObjs.append(layer)
     return (mapLayers, layerObjs, osmb)
 
@@ -275,7 +282,8 @@ def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
                         group_list.append("group_" + safeName(groupName))
                         usedGroups.append(groupName)
                 else:
-                    no_group_list.append("lyr_" + safeName(layer.name()) + "_" + str(count))
+                    no_group_list.append("lyr_" + safeName(layer.name()) +
+                                         "_" + str(count))
             except Exception:
                 if layer.id() in groupedLayers:
                     groupName = groupedLayers[layer.id()]
@@ -283,7 +291,8 @@ def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
                         group_list.append("group_" + safeName(groupName))
                         usedGroups.append(groupName)
                 else:
-                    no_group_list.append("lyr_" + safeName(layer.name()) + "_" + str(count))
+                    no_group_list.append("lyr_" + safeName(layer.name()) +
+                                         "_" + str(count))
 
     return (group_list, no_group_list, usedGroups)
 
@@ -605,7 +614,8 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
         crsDest = QgsCoordinateReferenceSystem(3857)
 
         try:
-            xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
+            xform = QgsCoordinateTransform(crsSrc, crsDest,
+                                           QgsProject.instance())
         except Exception:
             xform = QgsCoordinateTransform(crsSrc, crsDest)
         extentRep = xform.transformBoundingBox(layer.extent())

@@ -93,7 +93,8 @@ def writeScriptIncludes(layers, json, matchCRS):
                                     (sln + ".js"))
             else:
                 layerSource = layer.source()
-                if "retrictToRequestBBOX" in layerSource or "restrictToRequestBBOX" in layerSource:
+                if ("retrictToRequestBBOX" in layerSource or
+                        "restrictToRequestBBOX" in layerSource):
                     provider = layer.dataProvider()
                     uri = QgsDataSourceUri(provider.dataSourceUri())
                     wfsURL = uri.param("url")

@@ -13,7 +13,8 @@ from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import getRGBAColor, handleHiddenField
 
 
-def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes, feedback):
+def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
+                  feedback):
     markerType = None
     useMapUnits = False
     renderer = layer.renderer()
@@ -27,7 +28,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes, fe
         for sl in range(slCount):
             (styleCode, markerType, useMapUnits,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
-                                         layer_alpha, sln, sl, useMapUnits, feedback)
+                                         layer_alpha, sln, sl, useMapUnits,
+                                         feedback)
             style += pattern
             style += """
         function style_%s_%s() {
@@ -48,7 +50,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes, fe
             for cat in renderer.categories():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
-                                             layer_alpha, sln, sl, useMapUnits, feedback)
+                                             layer_alpha, sln, sl, useMapUnits,
+                                             feedback)
                 patterns += pattern
                 if (cat.value() is not None and cat.value() != ""):
                     style += """
@@ -75,7 +78,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes, fe
             for ran in renderer.ranges():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
-                                             layer_alpha, sln, sl, useMapUnits, feedback)
+                                             layer_alpha, sln, sl, useMapUnits,
+                                             feedback)
                 patterns += pattern
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
@@ -266,7 +270,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
                 fillOpacity: 1,
                 fillPattern: pattern_%s_%d""" % (sln, slc)
     else:
-        feedback.showFeedback("replacing symbol layer {} with circle".format(sl.layerType()))
+        feedback.showFeedback("""replacing symbol layer {}
+                                 with circle""".format(sl.layerType()))
         markerType = "circleMarker"
         style = ""
         useMapUnits = False

@@ -113,7 +113,9 @@ class WriterRegistry(object):
                 value = project.readNumEntry("qgis2web",
                                              key_string)[0]
         else:
-            if (isinstance(project.readEntry("qgis2web", key_string)[0], str) and project.readEntry("qgis2web", key_string)[0] != ""):
+            if (isinstance(project.readEntry("qgis2web",
+                                             key_string)[0], str) and
+                    project.readEntry("qgis2web", key_string)[0] != ""):
                 value = project.readEntry("qgis2web", key_string)[0]
 
         return value

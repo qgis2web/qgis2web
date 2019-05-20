@@ -175,7 +175,10 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
         fieldName = layer.fields().field(field).name()
         if (editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
-        fieldType = "double" if fieldType == QVariant.Double or fieldType == QVariant.Int else "string"
+        if fieldType == QVariant.Double or fieldType == QVariant.Int:
+            fieldType = "double"
+        else:
+            fieldType = "string"
         uri += '&field=' + fieldName + ":" + fieldType
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()
@@ -215,13 +218,15 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
                                                             popupField)):
         sln = safeName(layer.name()) + "_" + str(count)
         vts = layer.customProperty("VectorTilesReader/vector_tile_source")
-        if layer.type() == layer.VectorLayer and vts is None and (layer.providerType() != "WFS" or encode2json):
+        if (layer.type() == layer.VectorLayer and vts is None and
+                (layer.providerType() != "WFS" or encode2json)):
             feedback.showFeedback('Exporting %s to JSON...' % layer.name())
             crs = QgsCoordinateReferenceSystem("EPSG:4326")
             exportVector(layer, sln, layersFolder, restrictToExtent,
                          iface, extent, precision, crs, optimize)
             feedback.completeStep()
-        elif layer.type() == layer.RasterLayer and layer.providerType() != "wms":
+        elif (layer.type() == layer.RasterLayer and
+                layer.providerType() != "wms"):
             feedback.showFeedback('Exporting %s as raster...' % layer.name())
             exportRaster(layer, count, layersFolder, feedback, iface, matchCRS)
             feedback.completeStep()
@@ -239,9 +244,9 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
     options = []
     if precision != "maintain":
         options.append("COORDINATE_PRECISION=" + str(precision))
-    e, err = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8",
-                                                     crs, 'GeoJson', 0,
-                                                     layerOptions=options)
+    e, err = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
+                                                     "utf-8", crs, 'GeoJson',
+                                                     0, layerOptions=options)
     if e == QgsVectorFileWriter.NoError:
         with open(path, mode="w", encoding="utf8") as f:
             f.write("var %s = " % ("json_" + sln))
@@ -253,7 +258,10 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
                     f.write(line)
         os.remove(tmpPath)
     else:
-        QgsMessageLog.logMessage("Could not write json file {}: {}".format(tmpPath, err), "qgis2web", level=Qgis.Critical)
+        QgsMessageLog.logMessage(
+            "Could not write json file {}: {}".format(tmpPath, err),
+            "qgis2web",
+            level=Qgis.Critical)
         return
 
     fields = layer.fields()
@@ -293,7 +301,8 @@ def add25dAttributes(cleanLayer, layer, canvas):
             attrValue = feat.attribute(classAttribute)
             ranges = renderer.ranges()
             for range in ranges:
-                if attrValue >= range.lowerValue() and attrValue <= range.upperValue():
+                if (attrValue >= range.lowerValue() and
+                        attrValue <= range.upperValue()):
                     symbol = range.symbol().clone()
         else:
             symbol = renderer.symbolForFeature(feat, renderContext)
@@ -331,7 +340,9 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     file_writer.writeRaster(pipe, piped_height, -1, piped_extent, piped_crs)
 
     # Export layer as PNG
-    out_raster = os.path.join(layersFolder, safeName(layer.name()) + "_" + str(count) + ".png")
+    out_raster = os.path.join(layersFolder,
+                              safeName(layer.name()) + "_" +
+                                       str(count) + ".png")
 
     projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
     if not (matchCRS and layer.crs() == projectCRS):
@@ -492,7 +503,8 @@ def is25d(layer, canvas, restrictToExtent, extent):
     for sym in symbols:
         sl1 = sym.symbolLayer(1)
         sl2 = sym.symbolLayer(2)
-        if isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and isinstance(sl2, QgsGeometryGeneratorSymbolLayer):
+        if (isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and
+                isinstance(sl2, QgsGeometryGeneratorSymbolLayer)):
             return True
     return False
 

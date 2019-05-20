@@ -24,7 +24,8 @@ except ImportError:
     vt_enabled = False
 
 from qgis2web.exp2js import compile_to_file
-from qgis2web.utils import is25d, safeName, handleHiddenField, BLEND_MODES, TYPE_MAP
+from qgis2web.utils import (is25d, safeName, handleHiddenField, BLEND_MODES,
+                            TYPE_MAP)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
@@ -38,7 +39,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
     labeltext, vtLabels = getLabels(layer, safeLayerName,
-                                    outputProjectFileName, vts, vtLabels, feedback)
+                                    outputProjectFileName, vts, vtLabels,
+                                    feedback)
     labelCode += labeltext
     (new_pop, popFuncs) = getPopups(layer, safeLayerName, highlight,
                                     popupsOnHover, popup, vts, feedback)
@@ -69,7 +71,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 attrValue = feat.attribute(classAttribute)
                 ranges = renderer.ranges()
                 for range in ranges:
-                    if attrValue >= range.lowerValue() and attrValue <= range.upperValue():
+                    if (attrValue >= range.lowerValue() and
+                            attrValue <= range.upperValue()):
                         symbol = range.symbol().clone()
             else:
                 symbol = renderer.symbolForFeature(feat, renderContext)
@@ -159,7 +162,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             useMapUnits, useMultiStyle, useHeat, useVT, useShapes, useOSMB)
 
 
-def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels, feedback):
+def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
+              feedback):
     # label_exp = ''
     labeltext = ""
     f = ''
@@ -264,7 +268,8 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels, feedba
     return labeltext, vtLabels
 
 
-def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts, feedback):
+def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
+              feedback):
     if vts is not None:
         return "", ""
     fields = layer.fields()
@@ -340,7 +345,9 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
         elif isinstance(renderer, QgsRuleBasedRenderer):
             classes = renderer.rootRule().children()
         else:
-            feedback.showFeedback("Layer {}: legend for renderer {} not supported".format(layer.id(), renderer.type()))
+            feedback.showFeedback(
+                """Layer {}: legend for renderer {} 
+                 not supported""".format(layer.id(), renderer.type()))
 
         legend = layer.name().replace("'", "\\'") + "<br />"
         legend += "<table>"
@@ -644,7 +651,8 @@ def buildNonPointWFS(layerName, layer, symbol, useMultiStyle):
 
 def getWFSScriptTag(layer, layerName):
     layerSource = layer.source()
-    if "retrictToRequestBBOX" in layerSource or "restrictToRequestBBOX" in layerSource:
+    if ("retrictToRequestBBOX" in layerSource or
+            "restrictToRequestBBOX" in layerSource):
         provider = layer.dataProvider()
         uri = QgsDataSourceUri(provider.dataSourceUri())
         wfsURL = uri.param("url")

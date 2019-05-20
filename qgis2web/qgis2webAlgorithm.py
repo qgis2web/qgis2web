@@ -113,7 +113,10 @@ class exportProject(qgis2webAlgorithm):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if layer.type() != QgsMapLayer.PluginLayer and (layer.type() != QgsMapLayer.VectorLayer or layer.wbbType() != QgsWkbTypes.NoGeometry) and root_node.findLayer(layer.id()).isVisible():
+            if (layer.type() != QgsMapLayer.PluginLayer and
+                    (layer.type() != QgsMapLayer.VectorLayer or
+                     layer.wbbType() != QgsWkbTypes.NoGeometry) and
+                    root_node.findLayer(layer.id()).isVisible()):
                 try:
                     # if layer.type() == QgsMapLayer.VectorLayer:
                     #    testDump = layer.renderer().dump()
