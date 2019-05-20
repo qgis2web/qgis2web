@@ -346,7 +346,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
             classes = renderer.rootRule().children()
         else:
             feedback.showFeedback(
-                """Layer {}: legend for renderer {} 
+                """Layer {}: legend for renderer {}
                  not supported""".format(layer.id(), renderer.type()))
 
         legend = layer.name().replace("'", "\\'") + "<br />"

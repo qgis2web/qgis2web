@@ -263,7 +263,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     treeParam.setDisabled(False)
         for option, value in specificOptions.items():
             treeOptions = self.layersTree.findItems(option, Qt.MatchExactly |
-                                                            Qt.MatchRecursive)
+                                                    Qt.MatchRecursive)
             for treeOption in treeOptions:
                 if currentWriter == OpenLayersWriter:
                     if value == "OL3":

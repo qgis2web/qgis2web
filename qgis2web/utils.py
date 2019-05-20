@@ -342,7 +342,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     # Export layer as PNG
     out_raster = os.path.join(layersFolder,
                               safeName(layer.name()) + "_" +
-                                       str(count) + ".png")
+                              str(count) + ".png")
 
     projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
     if not (matchCRS and layer.crs() == projectCRS):

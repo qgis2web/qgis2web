@@ -85,7 +85,7 @@ def exportStyles(layers, folder, clustered, feedback):
                 style = "''"
         except Exception:
             style = "''"
-            feedback.showFeedback("""Exception in layer {} with renderer {}: 
+            feedback.showFeedback("""Exception in layer {} with renderer {}:
                 <span style=\"color: red\">{}</span>""".format(layer.id(),
                                                                renderer.dump(),
                                   traceback.format_exc()))
@@ -576,8 +576,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             style = "image: %s" % style
 
             feedback.showFeedback(
-                """Layer {}: replacing symbol layer 
-                <span style=\"color: red\">{}</span> with 
+                """Layer {}: replacing symbol layer
+                <span style=\"color: red\">{}</span> with
                 circle.""".format(layer.id(), sl.layerType()))
             style = ""
 
