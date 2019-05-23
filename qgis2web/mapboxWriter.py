@@ -302,6 +302,10 @@ class MapboxWriter(Writer):
                 new_src += new_obj
         values = {"@MAPBOX_SOURCES@": ",".join(vtSources),
                   "@MAPBOX_LAYERS@": ",".join(vtLayers)}
+        sprite = ("https://s3-eu-west-1.amazonaws.com/tiles.os.uk/styles/"
+                  "open-zoomstack-outdoor/sprites")
+        glyphs = ("https://s3-eu-west-1.amazonaws.com/tiles.os.uk/fonts/"
+                  "{fontstack}/{range}.pbf")
         s = """
 var styleJSON = {
     "version": 8,
@@ -318,8 +322,8 @@ var styleJSON = {
         "intensity": 0.2
     },
     "sources": {%s},
-    "sprite": "https://s3-eu-west-1.amazonaws.com/tiles.os.uk/styles/open-zoomstack-outdoor/sprites",
-    "glyphs": "https://s3-eu-west-1.amazonaws.com/tiles.os.uk/fonts/{fontstack}/{range}.pbf",
+    "sprite": "%s",
+    "glyphs": "%s",
     "layers": [%s],
     "created": "2018-05-11T11:38:48.884Z",
     "id": "cjh1w236f0tj22sl87sm547vt",
@@ -327,7 +331,7 @@ var styleJSON = {
     "owner": "Ordnance Survey",
     "visibility": "public",
     "draft": false
-}""" % (",".join(vtSources), ",".join(vtLayers))
+}""" % (",".join(vtSources), sprite, glyphs, ",".join(vtLayers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
         os.makedirs(mbStore)
         with codecs.open(os.path.join(mbStore, "style.js"),

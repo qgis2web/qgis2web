@@ -344,7 +344,6 @@ def getFillStyle(renderer, color, props):
     except:
         pass
 
-        
     if isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
         fillcolor = symbol.color().name()
@@ -367,8 +366,5 @@ def getFillStyle(renderer, color, props):
                     "#ffffff"
                 ]""" % (classAttr, ",".join(catStyles))
         print(color)
-         
-        
-        
     return """
                 "fill-color": %s""" % color
