@@ -84,6 +84,7 @@
         map.getPane('pane_airports_0').style['mix-blend-mode'] = 'normal';
         var layer_airports_0 = new L.geoJson(json_airports_0, {
             attribution: '',
+            interactive: true,
             pane: 'pane_airports_0',
             onEachFeature: pop_airports_0,
             pointToLayer: function (feature, latlng) {

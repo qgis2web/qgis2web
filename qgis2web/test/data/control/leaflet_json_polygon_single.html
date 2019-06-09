@@ -75,7 +75,7 @@
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(56,204,206,1.0)',
@@ -86,6 +86,7 @@
         map.getPane('pane_lakes_0').style['mix-blend-mode'] = 'normal';
         var layer_lakes_0 = new L.geoJson(json_lakes_0, {
             attribution: '',
+            interactive: true,
             pane: 'pane_lakes_0',
             onEachFeature: pop_lakes_0,
             style: style_lakes_0_0,
