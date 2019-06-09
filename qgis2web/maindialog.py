@@ -214,7 +214,7 @@ class MainDialog(QDialog, FORM_CLASS):
         """
         writer = self.getWriterFactory()()
         (writer.layers, writer.groups, writer.popup,
-         writer.visible, writer.json,
+         writer.visible, writer.interactive, writer.json,
          writer.cluster, writer.getFeatureInfo) = self.getLayersAndGroups()
         writer.params = self.getParameters()
         return writer
@@ -388,7 +388,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateLayerSearch(self):
         self.layer_search_combo.clear()
         self.layer_search_combo.addItem("None")
-        (layers, groups, popup, visible,
+        (layers, groups, popup, visible, interactive,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
@@ -533,6 +533,7 @@ class MainDialog(QDialog, FORM_CLASS):
         groups = {}
         popup = []
         visible = []
+        interactive = []
         json = []
         cluster = []
         getFeatureInfo = []
@@ -543,6 +544,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     layers.append(item.layer)
                     popup.append(item.popup)
                     visible.append(item.visible)
+                    interactive.append(item.interactive)
                     json.append(item.json)
                     cluster.append(item.cluster)
                     getFeatureInfo.append(item.getFeatureInfo)
@@ -559,6 +561,10 @@ class MainDialog(QDialog, FORM_CLASS):
                         visible.append(True)
                     else:
                         visible.append(False)
+                    if item.interactive:
+                        interactive.append(True)
+                    else:
+                        interactive.append(False)
                     if hasattr(item, "json") and item.json:
                         json.append(True)
                     else:
@@ -577,22 +583,24 @@ class MainDialog(QDialog, FORM_CLASS):
                 groups,
                 popup[::-1],
                 visible[::-1],
+                interactive[::-1],
                 json[::-1],
                 cluster[::-1],
                 getFeatureInfo[::-1])
 
     def reject(self):
         self.saveParameters()
-        (layers, groups, popup, visible,
+        (layers, groups, popup, visible, interactive,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         try:
-            for layer, pop, vis in zip(layers, popup, visible):
+            for layer, pop, vis, int in zip(layers, popup, visible, interactive):
                 attrDict = {}
                 for attr in pop:
                     attrDict['attr'] = pop[attr]
                     layer.setCustomProperty("qgis2web/popup/" + attr,
                                             pop[attr])
                 layer.setCustomProperty("qgis2web/Visible", vis)
+                layer.setCustomProperty("qgis2web/Interactive", int)
         except Exception:
             pass
 
@@ -652,10 +660,19 @@ class TreeGroupItem(QTreeWidgetItem):
         self.visibleItem.setText(0, "Layers visibility")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        self.interactiveItem = QTreeWidgetItem(self)
+        self.interactiveCheck = QCheckBox()
+        self.interactiveCheck.setChecked(True)
+        self.interactiveItem.setText(0, "Layers Interactivity")
+        self.addChild(self.interactiveItem)
+        tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
 
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
+    @property
+    def interactive(self):
+        return self.interactiveCheck.isChecked()
 
 
 class TreeLayerItem(QTreeWidgetItem):
@@ -683,6 +700,17 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        ##interactive:
+        self.interactiveItem = QTreeWidgetItem(self)
+        self.interactiveCheck = QCheckBox()
+        int = True
+        if int == 0 or str(int).lower() == "false":
+            self.interactiveCheck.setChecked(False)
+        else:
+            self.interactiveCheck.setChecked(True)
+        self.interactiveItem.setText(0, "Interactive")
+        self.addChild(self.interactiveItem)
+        tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() == 'WFS':
                 self.jsonItem = QTreeWidgetItem(self)
@@ -756,6 +784,10 @@ class TreeLayerItem(QTreeWidgetItem):
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
+
+    @property
+    def interactive(self):
+        return self.interactiveCheck.isChecked()
 
     @property
     def json(self):
