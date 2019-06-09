@@ -30,7 +30,8 @@ from qgis2web.utils import (is25d, safeName, handleHiddenField, BLEND_MODES,
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      popupsOnHover, popup, outputProjectFileName, wfsLayers,
-                     cluster, visible, interactive, json, legends, new_src, canvas, zIndex,
+                     cluster, visible, interactive, json, legends, new_src,
+                     canvas, zIndex,
                      restrictToExtent, extent, feedback, labelCode, vtLabels,
                      vtStyles, useMultiStyle, useHeat, useVT, useShapes,
                      useOSMB):
@@ -85,7 +86,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         osmb.set(json_{sln});""".format(shadows=shadows, sln=safeLayerName)
     elif isinstance(renderer, QgsHeatmapRenderer):
         useHeat = True
-        new_obj = heatmapLayer(layer, safeLayerName, interactive, renderer, feedback)
+        new_obj = heatmapLayer(layer, safeLayerName, interactive, renderer,
+                               feedback)
     elif vts is not None:
         useVT = True
         if vts in vtStyles:
@@ -360,25 +362,25 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
     return (legend, symbol)
 
 
-def getLayer(layer, renderer, safeLayerName, interactive, outputProjectFileName, usedFields,
-             legends, cluster, json, wfsLayers, markerType, useMultiStyle,
-             symbol, feedback):
+def getLayer(layer, renderer, safeLayerName, interactive, outputProjectFileName,
+             usedFields, legends, cluster, json, wfsLayers, markerType,
+             useMultiStyle, symbol, feedback):
     if layer.geometryType() == QgsWkbTypes.PointGeometry:
         (new_obj,
          wfsLayers,
-         useMultiStyle) = pointLayer(layer, safeLayerName, interactive, cluster, usedFields,
-                                     json, wfsLayers, markerType, symbol,
-                                     useMultiStyle, feedback)
+         useMultiStyle) = pointLayer(layer, safeLayerName, interactive, cluster,
+                                     usedFields, json, wfsLayers, markerType,
+                                     symbol, useMultiStyle, feedback)
     else:
         (new_obj, wfsLayers,
-         useMultiStyle) = nonPointLayer(layer, safeLayerName, interactive, usedFields,
-                                        json, wfsLayers, symbol, useMultiStyle,
-                                        feedback)
+         useMultiStyle) = nonPointLayer(layer, safeLayerName, interactive,
+                                        usedFields, json, wfsLayers, symbol,
+                                         useMultiStyle, feedback)
     return new_obj, legends, wfsLayers, useMultiStyle
 
 
-def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json, wfsLayers,
-               markerType, symbol, useMultiStyle, feedback):
+def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json,
+               wfsLayers, markerType, symbol, useMultiStyle, feedback):
     if layer.providerType() == 'WFS' and json is False:
         p2lf = ""
         slCount = symbol.symbolLayerCount()
@@ -388,8 +390,8 @@ def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json, wfs
             p2lf += pointToLayerFunction(safeLayerName, sl)
         (new_obj,
          scriptTag,
-         useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer, interactive,  cluster,
-                                        symbol, useMultiStyle)
+         useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer, interactive,
+                                        cluster, symbol, useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         layerAttr = ""
@@ -398,19 +400,20 @@ def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json, wfs
         if attrText != "":
             layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
         (new_obj,
-         useMultiStyle) = buildPointJSON(symbol, safeLayerName, usedFields, interactive,
-                                         markerType, layerAttr, useMultiStyle)
+         useMultiStyle) = buildPointJSON(symbol, safeLayerName, usedFields,
+                                         interactive, markerType, layerAttr,
+                                         useMultiStyle)
         if cluster:
             new_obj += clusterScript(safeLayerName)
     return new_obj, wfsLayers, useMultiStyle
 
 
-def nonPointLayer(layer, safeLayerName, interactive, usedFields, json, wfsLayers, symbol,
-                  useMultiStyle, feedback):
+def nonPointLayer(layer, safeLayerName, interactive, usedFields, json,
+                  wfsLayers, symbol, useMultiStyle, feedback):
     if layer.providerType() == 'WFS' and json is False:
         (new_obj, scriptTag,
-         useMultiStyle) = buildNonPointWFS(safeLayerName, layer, symbol, interactive,
-                                           useMultiStyle)
+         useMultiStyle) = buildNonPointWFS(safeLayerName, layer, symbol,
+                                           interactive, useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         layerAttr = ""
@@ -419,8 +422,8 @@ def nonPointLayer(layer, safeLayerName, interactive, usedFields, json, wfsLayers
         if attrText != "":
             layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
         new_obj, useMultiStyle = buildNonPointJSON(safeLayerName, usedFields,
-                                                   layerAttr, interactive, symbol,
-                                                   useMultiStyle)
+                                                   layerAttr, interactive,
+                                                   symbol, useMultiStyle)
     return new_obj, wfsLayers, useMultiStyle
 
 
@@ -458,8 +461,8 @@ def heatmapLayer(layer, safeLayerName, interactive, renderer, feedback):
             minOpacity: 1,
             gradient: %(hmRamp)s});
         """ % {"sln": safeLayerName, "hmWeight": hmWeight, "attr": layerAttr,
-               "int": str(interactive).lower(), "hmWeightMax": hmWeightMax, "hmRamp": hmRamp,
-               "hmRadius": hmRadius}
+               "int": str(interactive).lower(), "hmWeightMax": hmWeightMax,
+               "hmRamp": hmRamp, "hmRadius": hmRadius}
     return new_obj
 
 
@@ -525,12 +528,13 @@ def buildPointJSON(symbol, sln, usedFields,interactive, markerType, layerAttr,
     else:
         pointJSON += """
         }});"""
-    pointJSON = pointJSON.format(sln=sln, int=str(interactive).lower(), markerType=markerType,
-                                 attr=layerAttr)
+    pointJSON = pointJSON.format(sln=sln, int=str(interactive).lower(),
+                                 markerType=markerType, attr=layerAttr)
     return (pointJSON, useMultiStyle)
 
 
-def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol, useMultiStyle):
+def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol,
+                  useMultiStyle):
     layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
@@ -559,8 +563,8 @@ def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol, useM
             {p2lStart}{p2ls}{p2lEnd}
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName, multiStyle=multiStyle,
-                       layerAttr=layerAttr,int=str(interactive).lower(), p2lStart=p2lStart, p2ls=p2ls,
-                       p2lEnd=p2lEnd)
+                       layerAttr=layerAttr,int=str(interactive).lower(),
+                       p2lStart=p2lStart, p2ls=p2ls, p2lEnd=p2lEnd)
     if cluster_set:
         new_obj += """
         var cluster_{layerName} = """.format(layerName=layerName)
@@ -579,7 +583,8 @@ def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol, useM
     return new_obj, scriptTag, useMultiStyle
 
 
-def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol, useMultiStyle):
+def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
+                      useMultiStyle):
     if usedFields != 0:
         onEachFeature = u"""
             onEachFeature: pop_{safeName},""".format(safeName=safeName)
@@ -607,9 +612,9 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol, useM
             {styleStart}{styles}{styleEnd}
         }});"""
     new_obj = new_obj.format(safeName=safeName, multiStyle=multiStyle,
-                             attr=layerAttr, int=str(interactive).lower(), onEachFeature=onEachFeature,
-                             styleStart=styleStart, styles=styles,
-                             styleEnd=styleEnd)
+                             attr=layerAttr, int=str(interactive).lower(),
+                             onEachFeature=onEachFeature, styleStart=styleStart,
+                             styles=styles, styleEnd=styleEnd)
     return new_obj, useMultiStyle
 
 
@@ -646,8 +651,9 @@ def buildNonPointWFS(layerName, layer, symbol,interactive, useMultiStyle):
         function get{layerName}Json(geojson) {{
             layer_{layerName}"""
     new_obj = new_obj.format(layerName=layerName, multiStyle=multiStyle,
-                             attr=layerAttr, int=str(interactive).lower(), styleStart=styleStart,
-                             styles=styles, styleEnd=styleEnd)
+                             attr=layerAttr, int=str(interactive).lower(),
+                             styleStart=styleStart, styles=styles,
+                             styleEnd=styleEnd)
     new_obj += ".addData(geojson);"
     new_obj += """
         };"""

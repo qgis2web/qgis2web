@@ -593,7 +593,8 @@ class MainDialog(QDialog, FORM_CLASS):
         (layers, groups, popup, visible, interactive,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         try:
-            for layer, pop, vis, int in zip(layers, popup, visible, interactive):
+            for layer, pop, vis, int in zip(layers, popup, visible,
+            interactive):
                 attrDict = {}
                 for attr in pop:
                     attrDict['attr'] = pop[attr]
