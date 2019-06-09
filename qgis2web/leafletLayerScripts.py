@@ -457,7 +457,7 @@ def heatmapLayer(layer, safeLayerName, interactive, renderer, feedback):
                                       '%(hmWeight)s');
         var layer_%(sln)s = new L.heatLayer(%(sln)s_hm, {
             attribution: '%(attr)s',
-            interactive: %{int}s,
+            interactive: %(int)s,
             radius: %(hmRadius)d,
             max: %(hmWeightMax)d,
             minOpacity: 1,
