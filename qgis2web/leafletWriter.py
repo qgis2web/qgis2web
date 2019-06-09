@@ -260,12 +260,13 @@ class LeafletWriter(Writer):
                                              popupsOnHover, popup[count],
                                              outputProjectFileName,
                                              wfsLayers, cluster[count],
-                                             visible[count],interactive[count],
-                                             json[count], legends, new_src,
-                                             canvas, count, restrictToExtent,
-                                             extent, feedback, labelCode,
-                                             vtLabels, vtStyles, useMultiStyle,
-                                             useHeat, useVT, useShapes, useOSMB)
+                                             visible[count],
+                                             interactive[count], json[count],
+                                             legends, new_src, canvas, count,
+                                             restrictToExtent, extent,
+                                             feedback, labelCode, vtLabels,
+                                             vtStyles, useMultiStyle, useHeat,
+                                             useVT, useShapes, useOSMB)
                 if useMapUnits:
                     mapUnitLayers.append(safeLayerName)
             elif layer.type() == QgsMapLayer.RasterLayer:

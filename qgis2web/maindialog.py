@@ -594,7 +594,7 @@ class MainDialog(QDialog, FORM_CLASS):
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         try:
             for layer, pop, vis, int in zip(layers, popup, visible,
-            interactive):
+                                            interactive):
                 attrDict = {}
                 for attr in pop:
                     attrDict['attr'] = pop[attr]
@@ -671,6 +671,7 @@ class TreeGroupItem(QTreeWidgetItem):
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
+
     @property
     def interactive(self):
         return self.interactiveCheck.isChecked()
@@ -701,7 +702,6 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
-        ##interactive:
         self.interactiveItem = QTreeWidgetItem(self)
         self.interactiveCheck = QCheckBox()
         int = True

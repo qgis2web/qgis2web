@@ -362,20 +362,21 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
     return (legend, symbol)
 
 
-def getLayer(layer, renderer, safeLayerName, interactive, outputProjectFileName,
-             usedFields, legends, cluster, json, wfsLayers, markerType,
-             useMultiStyle, symbol, feedback):
+def getLayer(layer, renderer, safeLayerName, interactive,
+             outputProjectFileName, usedFields, legends, cluster, json, wfsLayers,
+             markerType, useMultiStyle, symbol, feedback):
     if layer.geometryType() == QgsWkbTypes.PointGeometry:
         (new_obj,
          wfsLayers,
-         useMultiStyle) = pointLayer(layer, safeLayerName, interactive, cluster,
-                                     usedFields, json, wfsLayers, markerType,
-                                     symbol, useMultiStyle, feedback)
+         useMultiStyle) = pointLayer(layer, safeLayerName, interactive,
+                                     cluster, usedFields, json, wfsLayers,
+                                     markerType, symbol, useMultiStyle,
+                                     feedback)
     else:
         (new_obj, wfsLayers,
          useMultiStyle) = nonPointLayer(layer, safeLayerName, interactive,
                                         usedFields, json, wfsLayers, symbol,
-                                         useMultiStyle, feedback)
+                                        useMultiStyle, feedback)
     return new_obj, legends, wfsLayers, useMultiStyle
 
 
@@ -390,8 +391,9 @@ def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json,
             p2lf += pointToLayerFunction(safeLayerName, sl)
         (new_obj,
          scriptTag,
-         useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer, interactive,
-                                        cluster, symbol, useMultiStyle)
+         useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer,
+                                        interactive, cluster, symbol,
+                                        useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
         layerAttr = ""
@@ -486,7 +488,7 @@ def VTLayer(json_url):
     return vtJS
 
 
-def buildPointJSON(symbol, sln, usedFields,interactive, markerType, layerAttr,
+def buildPointJSON(symbol, sln, usedFields, interactive, markerType, layerAttr,
                    useMultiStyle):
     slCount = symbol.symbolLayerCount()
     multiStyle = ""
@@ -563,7 +565,7 @@ def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol,
             {p2lStart}{p2ls}{p2lEnd}
             onEachFeature: pop_{layerName}
         }});""".format(layerName=layerName, multiStyle=multiStyle,
-                       layerAttr=layerAttr,int=str(interactive).lower(),
+                       layerAttr=layerAttr, int=str(interactive).lower(),
                        p2lStart=p2lStart, p2ls=p2ls, p2lEnd=p2lEnd)
     if cluster_set:
         new_obj += """
@@ -613,12 +615,13 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
         }});"""
     new_obj = new_obj.format(safeName=safeName, multiStyle=multiStyle,
                              attr=layerAttr, int=str(interactive).lower(),
-                             onEachFeature=onEachFeature, styleStart=styleStart,
-                             styles=styles, styleEnd=styleEnd)
+                             onEachFeature=onEachFeature,
+                             styleStart=styleStart, styles=styles,
+                             styleEnd=styleEnd)
     return new_obj, useMultiStyle
 
 
-def buildNonPointWFS(layerName, layer, symbol,interactive, useMultiStyle):
+def buildNonPointWFS(layerName, layer, symbol, interactive, useMultiStyle):
     layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
