@@ -363,8 +363,8 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
 
 
 def getLayer(layer, renderer, safeLayerName, interactive,
-             outputProjectFileName, usedFields, legends, cluster, json, wfsLayers,
-             markerType, useMultiStyle, symbol, feedback):
+             outputProjectFileName, usedFields, legends, cluster, json,
+             wfsLayers, markerType, useMultiStyle, symbol, feedback):
     if layer.geometryType() == QgsWkbTypes.PointGeometry:
         (new_obj,
          wfsLayers,
