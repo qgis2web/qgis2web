@@ -850,7 +850,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.layers = [layer]
         writer.visible = [True]
         writer.interactive = [True]
-        writer.cluster = [False]True]
+        writer.cluster = [False]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
