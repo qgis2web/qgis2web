@@ -14,6 +14,7 @@ var lyr_airports_0 = new ol.layer.Vector({
                 declutter: true,
                 source:cluster_airports_0, 
                 style: style_airports_0,
+                interactive: true,
                 title: '<img src="styles/legend/airports_0.png" /> airports'
             });
 

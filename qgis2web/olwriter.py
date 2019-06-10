@@ -83,6 +83,7 @@ class OpenLayersWriter(Writer):
                                          groups=self.groups,
                                          popup=self.popup,
                                          visible=self.visible,
+                                         interactive=self.interactive,
                                          json=self.json,
                                          clustered=self.cluster,
                                          getFeatureInfo=self.getFeatureInfo,
@@ -97,7 +98,8 @@ class OpenLayersWriter(Writer):
 
     @classmethod
     def writeOL(cls, iface, feedback, layers, groups, popup, visible,
-                json, clustered, getFeatureInfo, settings, folder):
+                interactive, json, clustered, getFeatureInfo, settings,
+                folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         mapSettings = iface.mapCanvas().mapSettings()
         controlCount = 0
@@ -129,10 +131,10 @@ class OpenLayersWriter(Writer):
                      popup, json, restrictToExtent, extent, feedback, matchCRS)
         mapUnitsLayers = exportStyles(layers, folder, clustered, feedback)
         mapUnitLayers = getMapUnitLayers(mapUnitsLayers)
-        osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
-                                    settings, json, matchCRS, clustered,
-                                    getFeatureInfo, iface, restrictToExtent,
-                                    extent, mapbounds,
+        osmb = writeLayersAndGroups(layers, groups, visible, interactive,
+                                    folder, popup, settings, json, matchCRS,
+                                    clustered, getFeatureInfo, iface,
+                                    restrictToExtent, extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
         (jsAddress,
          cssAddress, controlCount) = writeHTMLstart(settings, controlCount,
