@@ -602,3 +602,4 @@ var firstLayerAttribution = attributionList.getElementsByTagName('li')[0];
 var qgis2webAttribution = document.createElement('li');
 qgis2webAttribution.innerHTML = '<a href="https://github.com/tomchadwin/qgis2web">qgis2web</a>';
 attributionList.insertBefore(qgis2webAttribution, firstLayerAttribution);
+

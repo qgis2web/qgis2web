@@ -24,3 +24,4 @@ lyr_airports_0.set('fieldLabels', {'ID': 'no label', 'fk_region': 'no label', 'E
 lyr_airports_0.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
+
