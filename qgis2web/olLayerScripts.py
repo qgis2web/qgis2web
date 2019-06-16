@@ -565,7 +565,6 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
                 matrixIds: matrixIds_%(n)s
               }),
               style: '%(style)s',
-              interactive: %(int)s,
               wrapX: true,
                                 "VERSION": "1.0.0",
                             })),
@@ -578,8 +577,7 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
                                     "n": layerName, "name": layer.name(),
                                     "opacity": opacity, "style": style,
                                     "minRes": minResolution,
-                                    "maxRes": maxResolution,
-                                    "int": str(interactive).lower()}
+                                    "maxRes": maxResolution}
 
 
 def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
