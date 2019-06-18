@@ -99,8 +99,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             addVT = True
         vtStyle = vtStyles[vts]
         (style, markerType, useMapUnits,
-         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
-                                    outputProjectFileName, useShapes, feedback)
+         useShapes) = getLayerStyle(layer, safeLayerName, interactive,
+                                    markerFolder, outputProjectFileName,
+                                    useShapes, feedback)
         style = style.replace("feature.properties['", "feature.['")
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]
@@ -120,8 +121,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         style = ""
     else:
         (style, markerType, useMapUnits,
-         useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
-                                    outputProjectFileName, useShapes, feedback)
+         useShapes) = getLayerStyle(layer, safeLayerName, interactive,
+                                    markerFolder, outputProjectFileName,
+                                    useShapes, feedback)
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
                                      safeLayerName, feedback)
         legends[safeLayerName] = legend

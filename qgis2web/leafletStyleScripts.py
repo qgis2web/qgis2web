@@ -13,8 +13,8 @@ from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import getRGBAColor, handleHiddenField
 
 
-def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
-                  feedback):
+def getLayerStyle(layer, sln, interactivity, markerFolder,
+                  outputProjectFilename, useShapes, feedback):
     markerType = None
     useMapUnits = False
     renderer = layer.renderer()
@@ -28,8 +28,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
         for sl in range(slCount):
             (styleCode, markerType, useMapUnits,
              pattern) = getSymbolAsStyle(symbol, markerFolder,
-                                         layer_alpha, sln, sl, useMapUnits,
-                                         feedback)
+                                         layer_alpha, interactivity, sln, sl,
+                                         useMapUnits, feedback)
             style += pattern
             style += """
         function style_%s_%s() {
@@ -50,8 +50,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
             for cat in renderer.categories():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
-                                             layer_alpha, sln, sl, useMapUnits,
-                                             feedback)
+                                             layer_alpha, interactivity, sln,
+                                             sl, useMapUnits, feedback)
                 patterns += pattern
                 if (cat.value() is not None and cat.value() != ""):
                     style += """
@@ -78,8 +78,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
             for ran in renderer.ranges():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(ran.symbol(), markerFolder,
-                                             layer_alpha, sln, sl, useMapUnits,
-                                             feedback)
+                                             layer_alpha, interactivity, sln,
+                                             sl, useMapUnits, feedback)
                 patterns += pattern
                 style += """
             if (feature.properties['%(a)s'] >= %(l)f """
@@ -123,8 +123,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
                 if rule.symbol().symbolLayer(sl) is not None:
                     (styleCode, markerType, useMapUnits,
                      pattern) = getSymbolAsStyle(rule.symbol(), markerFolder,
-                                                 layer_alpha, sln, sl,
-                                                 useMapUnits, feedback)
+                                                 layer_alpha, interactivity,
+                                                 sln, sl, useMapUnits,
+                                                 feedback)
                     patterns += pattern
                     name = "".join((sln, "rule", str(count)))
                     exp = rule.filterExpression()
@@ -151,8 +152,9 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes,
     return style, markerType, useMapUnits, useShapes
 
 
-def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
-                     useMapUnits, feedback):
+def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
+                     sln, sl, useMapUnits, feedback):
+    interactive = str(interactivity).lower()
     markerType = None
     pattern = ""
     # styles = []
@@ -275,10 +277,12 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
         markerType = "circleMarker"
         style = ""
         useMapUnits = False
-
+    style += """
+                interactive: %s""" % interactive
     return ("""{
-                pane: 'pane_%s',%s
-            }""" % (sln, style), markerType, useMapUnits, pattern)
+                pane: 'pane_%s',%s,
+            }""" % (sln, style), markerType, useMapUnits,
+            pattern)
 
 
 def getMarker(color, borderColor, borderWidth, borderUnits, size, sizeUnits,
