@@ -658,13 +658,13 @@ class TreeGroupItem(QTreeWidgetItem):
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
         self.visibleCheck.setChecked(True)
-        self.visibleItem.setText(0, "Layers visibility")
+        self.visibleItem.setText(0, "Visibility")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
         self.interactiveItem = QTreeWidgetItem(self)
         self.interactiveCheck = QCheckBox()
         self.interactiveCheck.setChecked(True)
-        self.interactiveItem.setText(0, "Layers Interactivity")
+        self.interactiveItem.setText(0, "Popups")
         self.addChild(self.interactiveItem)
         tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
 
@@ -709,7 +709,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.interactiveCheck.setChecked(False)
         else:
             self.interactiveCheck.setChecked(True)
-        self.interactiveItem.setText(0, "Interactive")
+        self.interactiveItem.setText(0, "Popups")
         self.addChild(self.interactiveItem)
         tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
         if layer.type() == layer.VectorLayer:
