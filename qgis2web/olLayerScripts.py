@@ -40,7 +40,6 @@ def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
                 cluster, info) in enumerate(zip(layers, json, clustered,
                                                 getFeatureInfo)):
         layer_names_id[layer.id()] = str(count)
-        print(interactive[count])
         if is25d(layer, canvas, restrictToExtent, extent):
             pass
         else:
