@@ -81,6 +81,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(89,109,204,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Dall Lake':
@@ -95,6 +96,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(222,104,137,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Iliamna Lake':
@@ -109,6 +111,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(72,200,68,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Kenai Lake':
@@ -123,6 +126,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(72,145,209,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Lake Clark':
@@ -137,6 +141,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(228,78,230,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Lake George':
@@ -151,6 +156,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(232,205,47,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Lake Minchumina':
@@ -165,6 +171,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(228,146,137,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Lake Nerka':
@@ -179,6 +186,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(23,240,179,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Lower Ugashik Lake':
@@ -193,6 +201,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(202,62,153,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Naknek Lake':
@@ -207,6 +216,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(169,63,239,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Nunavakpak Lake':
@@ -221,6 +231,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(76,210,222,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Nuvakuk Lake':
@@ -235,6 +246,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(130,109,207,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Skilak Lake':
@@ -249,6 +261,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(90,207,131,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Teshekpuk Lake':
@@ -263,6 +276,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(192,220,90,1.0)',
+                interactive: true,
             }
                     break;
                 case 'Tustumena Lake':
@@ -277,6 +291,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(142,211,96,1.0)',
+                interactive: true,
             }
                     break;
                 default:
@@ -291,6 +306,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(203,127,61,1.0)',
+                interactive: true,
             }
                     break;
             }
@@ -300,6 +316,7 @@
         map.getPane('pane_lakes_0').style['mix-blend-mode'] = 'normal';
         var layer_lakes_0 = new L.geoJson(json_lakes_0, {
             attribution: '',
+            interactive: true,
             pane: 'pane_lakes_0',
             onEachFeature: pop_lakes_0,
             style: style_lakes_0_0,

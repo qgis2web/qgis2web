@@ -28,7 +28,7 @@ except ImportError:
     qms = False
 
 
-def writeLayersAndGroups(layers, groups, visible, folder, popup,
+def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
                          settings, json, matchCRS, clustered, getFeatureInfo,
                          iface, restrictToExtent, extent, bounds, authid):
 
@@ -40,13 +40,15 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
                 cluster, info) in enumerate(zip(layers, json, clustered,
                                                 getFeatureInfo)):
         layer_names_id[layer.id()] = str(count)
+        print(interactive[count])
         if is25d(layer, canvas, restrictToExtent, extent):
             pass
         else:
             (layerVar,
              vtLayers) = layerToJavascript(iface, layer, encode2json, matchCRS,
-                                           cluster, info, restrictToExtent,
-                                           extent, count, vtLayers)
+                                           interactive[count], cluster, info,
+                                           restrictToExtent, extent, count,
+                                           vtLayers)
             layerVars += "\n" + "\n".join([layerVar])
     (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
     (mapLayers, layerObjs, osmb) = layersAnd25d(layers, canvas,
@@ -95,8 +97,9 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     return osmb
 
 
-def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
-                      restrictToExtent, extent, count, vtLayers):
+def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
+                      cluster, info, restrictToExtent, extent, count,
+                      vtLayers):
     (minResolution, maxResolution) = getScaleRes(layer)
     layerName = safeName(layer.name()) + "_" + str(count)
     rawName = layer.name()
@@ -128,10 +131,10 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
             return getWFS(layer, layerName, layerAttr, cluster,
                           minResolution, maxResolution), vtLayers
         else:
-            return getJSON(layerName, crsConvert, layerAttr, cluster,
-                           pointLayerType, minResolution, maxResolution,
-                           hmRadius, hmRamp, hmWeight, hmWeightMax, renderer,
-                           layer), vtLayers
+            return getJSON(layerName, crsConvert, layerAttr, interactive,
+                           cluster, pointLayerType, minResolution,
+                           maxResolution, hmRadius, hmRamp, hmWeight,
+                           hmWeightMax, renderer, layer), vtLayers
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -336,7 +339,8 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     return (fieldLabels, fieldAliases, fieldImages, blend_mode)
 
 
-def getWFS(layer, layerName, layerAttr, cluster, minResolution, maxResolution):
+def getWFS(layer, layerName, layerAttr, interactive, cluster, minResolution,
+           maxResolution):
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
     attributions: '%(layerAttr)s',
@@ -356,20 +360,21 @@ var jsonSource_%(n)s = new ol.source.Vector({
         layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
     layerCode += '''%(min)s %(max)s
     style: style_%(n)s,
+    interactive: %(int)s,
     title: "%(name)s"
 });
 
 function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {"name": layer.name(), "n": layerName,
+}''' % {"name": layer.name(), "n": layerName, "int": str(interactive).lower(),
         "min": minResolution, "max": maxResolution}
     return layerCode
 
 
-def getJSON(layerName, crsConvert, layerAttr, cluster, pointLayerType,
-            minResolution, maxResolution, hmRadius, hmRamp, hmWeight,
-            hmWeightMax, renderer, layer):
+def getJSON(layerName, crsConvert, layerAttr, interactive, cluster,
+            pointLayerType, minResolution, maxResolution, hmRadius, hmRamp,
+            hmWeight, hmWeightMax, renderer, layer):
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector({
@@ -394,7 +399,9 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                           "max": maxResolution}
     if pointLayerType == "Vector":
         layerCode += '''
-                style: style_%(n)s,''' % {"n": layerName}
+                style: style_%(n)s,
+                interactive: %(int)s,''' % {"n": layerName,
+                                            "int": str(interactive).lower()}
     else:
         layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
     if isinstance(renderer, QgsSingleSymbolRenderer):
@@ -454,9 +461,10 @@ def getVT(json_url):
                 }),
                 tilePixelRatio: 8
             }),
-            style: style_%s
+            style: style_%s,
+            interarctive: %s
         });
-        """ % (sln, key_url, sln)
+        """ % (sln, key_url, sln, str(interactive).lower())
     return layerCode
 
 

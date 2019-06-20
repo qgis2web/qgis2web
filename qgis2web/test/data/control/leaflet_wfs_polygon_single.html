@@ -75,6 +75,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(193,125,222,1.0)',
+                interactive: true,
             }
         }
         map.createPane('pane_polygon_0');
@@ -82,6 +83,7 @@
         map.getPane('pane_polygon_0').style['mix-blend-mode'] = 'normal';
         var layer_polygon_0 = L.geoJson(null, {
             attribution: '',
+            interactive: true,
             style: style_polygon_0_0,
             pane: 'pane_polygon_0',
             onEachFeature: pop_polygon_0

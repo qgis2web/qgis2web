@@ -73,6 +73,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
                     break;
                 case 'On Ground Surface':
@@ -85,6 +86,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
                     break;
                 default:
@@ -97,6 +99,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
                     break;
             }
@@ -106,6 +109,7 @@
         map.getPane('pane_pipelines_0').style['mix-blend-mode'] = 'normal';
         var layer_pipelines_0 = new L.geoJson(json_pipelines_0, {
             attribution: '',
+            interactive: true,
             pane: 'pane_pipelines_0',
             onEachFeature: pop_pipelines_0,
             style: style_pipelines_0_0,

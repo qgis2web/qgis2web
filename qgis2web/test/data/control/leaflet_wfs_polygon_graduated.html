@@ -76,6 +76,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(247,251,255,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['area_ha'] >= 19.758000 && feature.properties['area_ha'] <= 36.836000 ) {
@@ -90,6 +91,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(200,221,240,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['area_ha'] >= 36.836000 && feature.properties['area_ha'] <= 53.914000 ) {
@@ -104,6 +106,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(115,179,216,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['area_ha'] >= 53.914000 && feature.properties['area_ha'] <= 70.992000 ) {
@@ -118,6 +121,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(40,121,185,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['area_ha'] >= 70.992000 && feature.properties['area_ha'] <= 88.070000 ) {
@@ -132,6 +136,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(8,48,107,1.0)',
+                interactive: true,
             }
             }
         }
@@ -140,6 +145,7 @@
         map.getPane('pane_polygon_0').style['mix-blend-mode'] = 'normal';
         var layer_polygon_0 = L.geoJson(null, {
             attribution: '',
+            interactive: true,
             style: style_polygon_0_0,
             pane: 'pane_polygon_0',
             onEachFeature: pop_polygon_0

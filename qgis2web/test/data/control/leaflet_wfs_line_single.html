@@ -91,6 +91,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
         }
         map.createPane('pane_centreline_0');
@@ -98,6 +99,7 @@
         map.getPane('pane_centreline_0').style['mix-blend-mode'] = 'normal';
         var layer_centreline_0 = L.geoJson(null, {
             attribution: '',
+            interactive: true,
             style: style_centreline_0_0,
             pane: 'pane_centreline_0',
             onEachFeature: pop_centreline_0

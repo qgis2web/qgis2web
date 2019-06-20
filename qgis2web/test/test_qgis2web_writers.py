@@ -93,6 +93,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.params = self.defaultParams()
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -116,6 +117,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.params = self.defaultParams()
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -150,6 +152,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -223,6 +226,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])
                         ]
@@ -291,6 +295,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -362,6 +367,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -431,6 +437,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -466,6 +473,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -537,6 +545,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -606,6 +615,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [
             OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])]
@@ -676,6 +686,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -749,6 +760,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -792,6 +804,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -836,6 +849,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
+        writer.cluster = [False]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -881,6 +896,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -926,6 +942,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -970,6 +987,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -1013,6 +1031,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1056,6 +1075,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -1099,6 +1119,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -1138,6 +1159,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -1175,6 +1197,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1219,6 +1242,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1260,6 +1284,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1294,6 +1319,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1352,6 +1378,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1386,6 +1413,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1443,6 +1471,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1477,6 +1506,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1521,6 +1551,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1556,6 +1587,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1603,6 +1635,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1639,6 +1672,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1699,6 +1733,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1738,6 +1773,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [False]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1772,6 +1808,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [False]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1816,6 +1853,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1849,6 +1887,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1890,6 +1929,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1930,6 +1970,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1972,6 +2013,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2012,6 +2054,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2050,6 +2093,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2083,6 +2127,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2124,6 +2169,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2163,6 +2209,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2204,6 +2251,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2243,6 +2291,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2284,6 +2333,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2315,6 +2365,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -2352,6 +2403,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -2392,6 +2444,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
@@ -2431,6 +2484,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
@@ -2475,6 +2529,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -2515,6 +2570,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -2627,6 +2683,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2662,6 +2719,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2702,6 +2760,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2737,6 +2796,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2854,6 +2914,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2889,6 +2950,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -2923,6 +2985,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -2957,6 +3020,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2995,6 +3059,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3038,6 +3103,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {'group1': [layer]}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [{}]
         writer.json = [False]
@@ -3071,6 +3137,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {'group1': [layer]}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [{}]
         writer.json = [False]
@@ -3113,6 +3180,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3153,6 +3221,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3197,6 +3266,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -3232,6 +3302,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
@@ -3255,7 +3326,46 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         # test for exported raster file
         assert os.path.exists(result.replace('index.html', 'data/test_0.png'))
+        
+    def test102_Leaflet_interactive(self):
+        """Leaflet interactive"""
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
+        QgsProject.instance().addMapLayer(layer)
+
+        control_file = open(
+            get_test_data_path(
+                'control', 'leaflet_interactive.html'), 'r')
+        control_output = control_file.read()
+        control_file.close()
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.interactive = [False]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+             (u'NAME', u'no label'), (u'USE', u'no label')])
+        ]
+        writer.json = [False]
+
+        result = writer.write(self.iface, tempFolder()).index_file
+
+        # Open the test file
+        test_file = open(result)
+        test_output = test_file.read()
+        test_file.close()
+
+        # Compare with control file
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the

@@ -86,7 +86,6 @@ class LeafletWriter(Writer):
     def write(self, iface, dest_folder, feedback=None):
         if not feedback:
             feedback = Feedback()
-
         feedback.showFeedback('Creating Leaflet map...')
         self.preview_file = self.writeLeaflet(
             iface,
@@ -94,6 +93,7 @@ class LeafletWriter(Writer):
             layer_list=self.layers,
             popup=self.popup,
             visible=self.visible,
+            interactive=self.interactive,
             json=self.json,
             cluster=self.cluster,
             getFeatureInfo=self.getFeatureInfo,
@@ -109,7 +109,7 @@ class LeafletWriter(Writer):
     @classmethod
     def writeLeaflet(
             cls, iface, feedback, folder,
-            layer_list, visible, cluster,
+            layer_list, visible, interactive, cluster,
             json, getFeatureInfo, params, popup):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -260,7 +260,8 @@ class LeafletWriter(Writer):
                                              popupsOnHover, popup[count],
                                              outputProjectFileName,
                                              wfsLayers, cluster[count],
-                                             visible[count], json[count],
+                                             visible[count],
+                                             interactive[count], json[count],
                                              legends, new_src, canvas, count,
                                              restrictToExtent, extent,
                                              feedback, labelCode, vtLabels,

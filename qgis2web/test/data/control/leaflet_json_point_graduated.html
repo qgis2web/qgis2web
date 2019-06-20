@@ -78,6 +78,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(247,251,255,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['ELEV'] >= 321.000000 && feature.properties['ELEV'] <= 633.000000 ) {
@@ -93,6 +94,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(199,220,239,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['ELEV'] >= 633.000000 && feature.properties['ELEV'] <= 945.000000 ) {
@@ -108,6 +110,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(114,178,215,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['ELEV'] >= 945.000000 && feature.properties['ELEV'] <= 1257.000000 ) {
@@ -123,6 +126,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(40,120,184,1.0)',
+                interactive: true,
             }
             }
             if (feature.properties['ELEV'] >= 1257.000000 && feature.properties['ELEV'] <= 1569.000000 ) {
@@ -138,6 +142,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(8,48,107,1.0)',
+                interactive: true,
             }
             }
         }
@@ -146,6 +151,7 @@
         map.getPane('pane_airports_0').style['mix-blend-mode'] = 'normal';
         var layer_airports_0 = new L.geoJson(json_airports_0, {
             attribution: '',
+            interactive: true,
             pane: 'pane_airports_0',
             onEachFeature: pop_airports_0,
             pointToLayer: function (feature, latlng) {
