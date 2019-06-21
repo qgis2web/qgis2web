@@ -441,7 +441,7 @@ def heatmapLayer(layer, safeLayerName, interactive, renderer, feedback):
     hmRadius = renderer.radius() * 2
     hmWeight = renderer.weightExpression()
     if hmWeight is not None and hmWeight != "":
-        hmWeightId = layer.fieldNameIndex(hmWeight)
+        hmWeightId = layer.fields().indexFromName(hmWeight)
         hmWeightMax = layer.maximumValue(hmWeightId)
     else:
         hmWeight = ""
