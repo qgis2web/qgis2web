@@ -254,13 +254,22 @@ class MainDialog(QDialog, FORM_CLASS):
             if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(True)
                 else:
                     treeParam.setDisabled(True)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(False)
+
             else:
                 if value == "OL3":
                     treeParam.setDisabled(True)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(False)
                 else:
                     treeParam.setDisabled(False)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(True)
         for option, value in specificOptions.items():
             treeOptions = self.layersTree.findItems(option, Qt.MatchExactly |
                                                     Qt.MatchRecursive)

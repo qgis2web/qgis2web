@@ -111,6 +111,7 @@ def getDefaultParams():
 
 
 specificParams = {
+    "Add abstract" : "leaflet"
 }
 
 specificOptions = {
