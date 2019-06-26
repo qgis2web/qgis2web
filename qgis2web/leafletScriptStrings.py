@@ -410,7 +410,8 @@ def titleSubScript(webmap_head, level, pos):
             };
             abstract.update = function () {
                 this._div.innerHTML = '""" % positionOpt
-        titleSub += webmap_head.replace("'", "\\'").replace("\n","<br />") + """';
+        titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
+        titleSub += """';
             };
             abstract.addTo(map);"""
 
