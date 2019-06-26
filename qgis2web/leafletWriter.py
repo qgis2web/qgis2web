@@ -119,6 +119,7 @@ class LeafletWriter(Writer):
         project = QgsProject.instance()
         mapSettings = canvas.mapSettings()
         title = project.title()
+        abstract = project.metadata().abstract()
         pluginDir = os.path.dirname(os.path.realpath(__file__))
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
         outputProjectFileName = os.path.join(outputProjectFileName,
@@ -133,6 +134,7 @@ class LeafletWriter(Writer):
         restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
         matchCRS = params["Appearance"]["Match project CRS"]
         addressSearch = params["Appearance"]["Add address search"]
+        abstractOptions = params["Appearance"]["Add abstract"]
         locate = params["Appearance"]["Geolocate user"]
         measure = params["Appearance"]["Measure tool"]
         highlight = params["Appearance"]["Highlight on hover"]
@@ -313,12 +315,14 @@ class LeafletWriter(Writer):
         new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
         if title != "":
-            titleStart = titleSubScript(title)
+            titleStart = titleSubScript(title, 1, "upper right")
             new_src += titleStart
+        if abstract != "":
+            abstractStart = titleSubScript(abstract, 2, abstractOptions)
+            new_src += abstractStart
         if addressSearch:
             address_text = addressSearchScript()
             new_src += address_text
-
         if (params["Appearance"]["Add layers list"] and
                 params["Appearance"]["Add layers list"] != "" and
                 params["Appearance"]["Add layers list"] != "None"):

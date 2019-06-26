@@ -377,19 +377,43 @@ def rasterScript(layer, safeLayerName):
     return raster
 
 
-def titleSubScript(webmap_head):
-    titleSub = """
-        var title = new L.Control();
-        title.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info');
-            this.update();
-            return this._div;
-        };
-        title.update = function () {
-            this._div.innerHTML = '<h2>"""
-    titleSub += webmap_head.replace("'", "\\'") + """</h2>';
-        };
-        title.addTo(map);"""
+def titleSubScript(webmap_head, level, pos):
+    if pos == "upper right":
+        positionOpt = u"{'position':'topright'}"
+    if pos == "lower right":
+        positionOpt = u"{'position':'bottomright'}"
+    if pos == "lower left":
+        positionOpt = u"{'position':'bottomleft'}"
+    if pos == "upper left":
+        positionOpt = u"{'position':'topleft'}"
+    titleSub = ""
+    if level == 1:
+        titleSub += """
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>"""
+        titleSub += webmap_head.replace("'", "\\'") + """</h2>';
+            };
+            title.addTo(map);"""
+    if level == 2 and pos != "None":
+        titleSub += """
+            var abstract = new L.Control(%s);
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            abstract.update = function () {
+                this._div.innerHTML = '""" % positionOpt
+        titleSub += webmap_head.replace("'", "\\'").replace("\n","<br />") + """';
+            };
+            abstract.addTo(map);"""
+
     return titleSub
 
 
