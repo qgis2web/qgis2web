@@ -300,7 +300,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             height: 30px !important;
             text-align: center !important;
             line-height: 30px !important;
-        }    
+        }
         .abstractUncollapsed {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
