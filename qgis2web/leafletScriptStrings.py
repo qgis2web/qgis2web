@@ -404,7 +404,7 @@ def titleSubScript(webmap_head, level, pos):
         titleSub += """
             var abstract = new L.Control(%s);
             abstract.onAdd = function (map) {
-                this._div = L.DomUtil.create('div', 
+                this._div = L.DomUtil.create('div',
                 'leaflet-control leaflet-bar abstract');
                 this._div.id = "abstract"
                 this._div.setAttribute("onmouseenter", "abstract.show()");

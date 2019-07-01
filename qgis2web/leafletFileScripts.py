@@ -294,14 +294,13 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .abstract {
             font: bold 18px 'Lucida Console', Monaco, monospace;
-        	text-indent: 1px;
+            text-indent: 1px;
             background: white;
             width: 30px !important;
             height: 30px !important;
             text-align: center !important;
             line-height: 30px !important;
-        }
-        
+        }    
         .abstractUncollapsed {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
