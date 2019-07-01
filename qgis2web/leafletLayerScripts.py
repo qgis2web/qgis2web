@@ -5,6 +5,7 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRuleBasedRenderer,
+                       QgsNullSymbolRenderer,
                        QgsHeatmapRenderer,
                        QgsSymbolLayerUtils,
                        QgsDataSourceUri,
@@ -341,6 +342,9 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
                                      safeLayerName + ".png"))
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
         legend += layer.name().replace("'", "\\'")
+    elif isinstance(renderer, QgsNullSymbolRenderer):
+        legend = ""
+        symbol = None
     else:
         if isinstance(renderer, QgsCategorizedSymbolRenderer):
             classes = renderer.categories()
@@ -492,7 +496,10 @@ def VTLayer(json_url):
 
 def buildPointJSON(symbol, sln, usedFields, interactive, markerType, layerAttr,
                    useMultiStyle):
-    slCount = symbol.symbolLayerCount()
+    if symbol:
+        slCount = symbol.symbolLayerCount()
+    else:
+        slCount = 0
     multiStyle = ""
     if slCount > 1:
         multiStyle = ".multiStyle"
@@ -595,7 +602,10 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
     else:
         onEachFeature = u""
     styles = u""
-    slCount = symbol.symbolLayerCount()
+    if symbol:
+        slCount = symbol.symbolLayerCount()
+    else:
+        slCount = 0
     multiStyle = u""
     styleStart = "style: "
     styleEnd = ""

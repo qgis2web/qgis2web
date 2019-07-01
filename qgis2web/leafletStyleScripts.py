@@ -4,6 +4,7 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRuleBasedRenderer,
+                       QgsNullSymbolRenderer,
                        QgsSimpleMarkerSymbolLayer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
@@ -20,7 +21,17 @@ def getLayerStyle(layer, sln, interactivity, markerFolder,
     renderer = layer.renderer()
     layer_alpha = layer.opacity()
     style = ""
-    if isinstance(renderer, QgsSingleSymbolRenderer):
+    if isinstance(renderer, QgsNullSymbolRenderer):
+        style += """
+        function style_%s_0() {
+            return {
+                fill: false,
+                stroke: false,
+                interactive: false
+            }
+        }""" % (sln)
+        markerType = "circleMarker"
+    elif isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
         slCount = symbol.symbolLayerCount()
         if slCount < 1:
@@ -146,7 +157,10 @@ def getLayerStyle(layer, sln, interactivity, markerFolder,
             style += template % (patterns, sln, js, elsejs)
     else:
         useMapUnits = False
-        style = ""
+        style = """
+        function style_%s_0() {
+            return {};
+        }""" % (sln)
     if markerType == "shapeMarker":
         useShapes = True
     return style, markerType, useMapUnits, useShapes

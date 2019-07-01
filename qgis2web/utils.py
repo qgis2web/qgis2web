@@ -38,6 +38,7 @@ from qgis.core import (QgsApplication,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRuleBasedRenderer,
+                       QgsNullSymbolRenderer,
                        QgsVectorFileWriter,
                        QgsRasterFileWriter,
                        QgsRasterPipe,
@@ -471,6 +472,8 @@ def is25d(layer, canvas, restrictToExtent, extent):
     if vts is not None:
         return False
     renderer = layer.renderer()
+    if isinstance(renderer, QgsNullSymbolRenderer):
+        return False
     if isinstance(renderer, Qgs25DRenderer):
         return True
     symbols = []
