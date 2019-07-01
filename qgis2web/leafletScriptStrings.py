@@ -404,7 +404,8 @@ def titleSubScript(webmap_head, level, pos):
         titleSub += """
             var abstract = new L.Control(%s);
             abstract.onAdd = function (map) {
-                this._div = L.DomUtil.create('div', 'info');
+                this._div = L.DomUtil.create('div', 
+                'leaflet-control leaflet-bar abstract');
                 this._div.id = "abstract"
                 this._div.setAttribute("onmouseenter", "abstract.show()");
                 this._div.setAttribute("onmouseleave", "abstract.hide()");
@@ -412,9 +413,13 @@ def titleSubScript(webmap_head, level, pos):
                 return this._div;
             };
             abstract.hide = function () {
-                this._div.innerHTML = '<img src="./css/images/info.png" />'
+                this._div.classList.remove("abstractUncollapsed");
+                this._div.classList.add("abstract");
+                this._div.innerHTML = 'i'
             }
             abstract.show = function () {
+                this._div.classList.remove("abstract");
+                this._div.classList.add("abstractUncollapsed");
                 this._div.innerHTML = '""" % positionOpt
         titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
         titleSub += """';
