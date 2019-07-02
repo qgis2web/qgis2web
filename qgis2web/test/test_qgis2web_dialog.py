@@ -72,6 +72,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                                'Max zoom level': '28'},
                 'Appearance': {
                 'Add address search': False,
+                'Add abstract': 'None',
                 'Geolocate user': False,
                 'Search layer': None,
                 'Add layers list': 'None',

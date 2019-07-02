@@ -72,6 +72,7 @@ class qgis2web_WriterTest(unittest.TestCase):
                 'Base layer': [],
                 'Search layer': None,
                 'Add layers list': 'None',
+                'Add abstract': 'None',
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',

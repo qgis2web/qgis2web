@@ -53,6 +53,8 @@ def getParams(configure_exporter_action=None):
             "Add layers list": ("None", "Collapsed", "Expanded"),
             "Match project CRS": False,
             "Add address search": False,
+            "Add abstract": ("None", "upper right", "lower right",
+                             "lower left", "upper left"),
             "Layer search": ("None", "placeholder"),
             "Measure tool": ("None", "Metric", "Imperial"),
             "Show popups on hover": False,
@@ -110,6 +112,7 @@ def getDefaultParams():
 
 
 specificParams = {
+    "Add abstract": "leaflet"
 }
 
 specificOptions = {

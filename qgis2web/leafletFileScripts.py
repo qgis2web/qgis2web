@@ -292,6 +292,24 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             border-radius: 0px !important;
             color: """ + widgetAccent + """ !important;
         }
+        .abstract {
+            font: bold 18px 'Lucida Console', Monaco, monospace;
+            text-indent: 1px;
+            background: white;
+            width: 30px !important;
+            height: 30px !important;
+            text-align: center !important;
+            line-height: 30px !important;
+        }
+        .abstractUncollapsed {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            max-width: 40%;
+        }
         .leaflet-touch .leaflet-control-layers,
         .leaflet-touch .leaflet-bar,
         .leaflet-control-search,
