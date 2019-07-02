@@ -295,17 +295,18 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         .abstract {
             font: bold 18px 'Lucida Console', Monaco, monospace;
             text-indent: 1px;
-            background: white;
+            background-color: """ + widgetBackground + """ !important;
             width: 30px !important;
+            color: """ + widgetAccent + """ !important;
             height: 30px !important;
             text-align: center !important;
             line-height: 30px !important;
         }
         .abstractUncollapsed {
             padding: 6px 8px;
-            font: 14px/16px Arial, Helvetica, sans-serif;
-            background: white;
-            background: rgba(255,255,255,0.8);
+            font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+            background-color:""" + widgetBackground + """ !important;
+            color: """ + widgetAccent + """ !important;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 5px;
             max-width: 40%;
