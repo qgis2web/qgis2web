@@ -131,8 +131,9 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         map.attributionControl.setPrefix('<a href="""
     map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
     map += """qgis2web</a> &middot; """
-    map += """<a href="http://leafletjs.com" title="A JS library """
-    map += """for interactive maps">Leaflet</a>');"""
+    map += """<a href="https://leafletjs.com" title="A JS library """
+    map += """for interactive maps">Leaflet</a> &middot; """
+    map += """<a href="https://qgis.org">QGIS</a>');"""
     if locate:
         map += """
         L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""
