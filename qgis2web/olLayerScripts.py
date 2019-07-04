@@ -169,7 +169,10 @@ def getScaleRes(layer):
 def getAttribution(layer):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        layerAttr = ' &middot; <a href="%s">%s</a>' % (attrUrl, attrText)
+    else:
+        layerAttr = " "
     return layerAttr
 
 
