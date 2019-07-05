@@ -358,7 +358,6 @@ map.addControl(geocoder);
 
 document.getElementsByClassName('gcd-gl-btn')[0].className += ' fa fa-search';
 
-
 map.on("rendercomplete", function(evt) {
     var attribution = document.getElementsByClassName('ol-attribution')[0];
     var attributionList = attribution.getElementsByTagName('ul')[0];

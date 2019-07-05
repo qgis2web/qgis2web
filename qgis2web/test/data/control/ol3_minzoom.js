@@ -347,7 +347,6 @@ map.on('singleclick', function(evt) {
 
 
 
-
 map.on("rendercomplete", function(evt) {
     var attribution = document.getElementsByClassName('ol-attribution')[0];
     var attributionList = attribution.getElementsByTagName('ul')[0];
