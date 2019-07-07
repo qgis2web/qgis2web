@@ -535,8 +535,9 @@ def getVTLabels(vtLabels):
     return labelString
 
 
-def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
-                  useHeat, useRaster, labelsList, mapUnitLayers):
+def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels, 
+                  searchLayer, useHeat, useRaster, labelsList, 
+                  mapUnitLayers):
     if labels == "":
         endHTML = ""
     else:
@@ -574,6 +575,58 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
          ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
+    filterNum = len(filterItems)
+    if filterNum != 0:
+        print("html writer")
+        print(filterItems)
+        endHTML += """
+                var mapDiv = document.getElementById('map');
+                var row = document.createElement('div');
+                row.className="row";
+                row.id="all";
+                row.style.height = "100%";
+                var col1 = document.createElement('div');
+                col1.className="col s9 m9 l9 xl9";
+                col1.id = "mapWindow";
+                col1.style.height = "100%";
+                col1.style.float = "left";
+                col1.style.width = "70%";
+                var col2 = document.createElement('div');
+                col2.className="col s3 m3 l3 xl3";
+                col2.id = "menu";
+                col2.style.height = "100%";
+                col2.style.float = "right";
+                col2.style.width = "30%";
+                mapDiv.parentNode.insertBefore(row, mapDiv);
+                document.getElementById("all").appendChild(col1);
+                document.getElementById("all").appendChild(col2);
+                col1.appendChild(mapDiv)
+                """
+    for item in range(0,filterNum):
+        itemName = filterItems[item]["name"]
+        if filterItems[item]["type"] == "str":
+            endHTML += """
+                var div_{name} = document.createElement('div');
+                div_{name}.id = "sel_{name}";
+                div_{name}.className= "input-field col s12";
+                document.getElementById("menu").appendChild(div_{name});
+                sel_{name} = document.createElement('select');
+                sel_{name}.multiple = true;
+                var {name}_options_str = "<option value='' disabled selected></option>";
+                """.format(name = itemName)
+            for entry in filterItems[item]["values"]:
+                endHTML += """
+                {name}_options_str  += '<option value="{e}">{e}</option>';
+                    """.format(e = entry, name = itemName)
+            endHTML += """
+                sel_%s.innerHTML = %s_options_str;
+                div_%s.appendChild(sel_%s);
+                document.addEventListener('DOMContentLoaded', function() {
+                var elems = document.querySelectorAll('select');
+                var instances = M.FormSelect.init(elems, {});
+              });
+                """ % (itemName, itemName, itemName, itemName, )
+    
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {

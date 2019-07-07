@@ -38,6 +38,7 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal,
                               pyqtSlot,
                               QUrl,
+                              QRect,
                               QByteArray,
                               QEvent,
                               Qt)
@@ -48,6 +49,7 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QHBoxLayout,
                                  QTreeWidgetItem,
                                  QComboBox,
+                                 QListWidget,
                                  QCheckBox,
                                  QToolButton,
                                  QWidget,
@@ -89,6 +91,7 @@ class MainDialog(QDialog, FORM_CLASS):
 
         self.previewUrl = None
         self.layer_search_combo = None
+        self.layer_filter_select = None
         self.exporter_combo = None
 
         self.feedback = FeedbackDialog(self)
@@ -138,6 +141,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.populateConfigParams(self)
         self.populate_layers_and_groups(self)
         self.populateLayerSearch()
+        self.populateAttrFilter()
 
         writer = WRITER_REGISTRY.createWriterFromProject()
         self.setStateToWriter(writer)
@@ -157,6 +161,7 @@ class MainDialog(QDialog, FORM_CLASS):
             self.buttonPreview.setDisabled(True)
         QgsProject.instance().cleared.connect(self.reject)
         self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
+        self.layersTree.model().dataChanged.connect(self.populateAttrFilter)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
@@ -416,6 +421,26 @@ class MainDialog(QDialog, FORM_CLASS):
                     self.layer_search_combo.setItemData(
                         self.layer_search_combo.findText(displayStr),
                         sln + "_" + str(count))
+    def populateAttrFilter(self):
+        self.layer_filter_select.clear()
+        #self.layer_filter_select.addItem("None")
+
+        (layers, groups, popup, visible, interactive,
+         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
+        options = []
+        for count, layer in enumerate(layers):
+            if layer.type() == layer.VectorLayer:
+                fields = layer.fields()
+                for f in fields:
+                    fieldIndex = fields.indexFromName(f.name())
+                    editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                    if editorWidget == 'Hidden':
+                        continue
+                    options.append(f.name() + ": " + f.typeName())
+        #cleanup of items in options
+        cleanOptions = list(set(options))
+        for option in cleanOptions:
+            self.layer_filter_select.insertItem(0, option)
 
     def configureExporter(self):
         self.exporter.configure()
@@ -446,6 +471,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.appearanceParams.resizeColumnToContents(0)
         self.appearanceParams.resizeColumnToContents(1)
         self.layer_search_combo.removeItem(1)
+        self.layer_filter_select.takeItem(1)
 
         # configure export params in separate tab
         exportTree = dlg.exportParams
@@ -478,6 +504,8 @@ class MainDialog(QDialog, FORM_CLASS):
                                   parameter, default_value, action)
         if parameter == 'Layer search':
             self.layer_search_combo = subitem.combo
+        if parameter == 'Attribute filter':
+            self.layer_filter_select = subitem.list
         elif parameter == 'Exporter':
             self.exporter_combo = subitem.combo
 
@@ -527,6 +555,9 @@ class MainDialog(QDialog, FORM_CLASS):
                         parameters["Appearance"]["Search layer"] = (
                             self.layer_search_combo.itemData(
                                 self.layer_search_combo.currentIndex()))
+                    if param == "Attribute filter":
+                        parameters["Appearance"]["Attribute filter"] = (
+                            self.layer_filter_select.selectedItems())
 
         return parameters
 
@@ -840,9 +871,9 @@ class TreeSettingItem(QTreeWidgetItem):
         self.name = name
         self._value = value
         self.combo = None
+        self.list = None
         self.setText(0, name)
         widget = None
-
         if isinstance(value, QgsColorButton):
             widget = value
         elif isinstance(value, bool):
@@ -856,6 +887,13 @@ class TreeSettingItem(QTreeWidgetItem):
             for option in value:
                 self.combo.addItem(option)
             widget = self.combo
+        elif isinstance(value, list):
+            self.list = QListWidget()
+            self.list.setSizeAdjustPolicy(0)
+            self.list.setSelectionMode(QListWidget.MultiSelection)
+            for option in value:
+                self.list.addItem(option)
+            widget = self.list
         else:
             self.setText(1, unicode(value))
 

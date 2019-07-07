@@ -81,6 +81,8 @@ class WriterRegistry(object):
         """
         for group, settings in params.items():
             for param, value in settings.items():
+                if param == "Attribute filter":
+                    continue
                 if isinstance(value, bool):
                     QgsProject.instance().writeEntryBool("qgis2web",
                                                          self.sanitiseKey(
