@@ -626,52 +626,77 @@ def getRGBAColor(color, alpha):
     a = (float(a) / 255) * alpha
     return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
 
+def boilType(fieldType):
+    if fieldType.lower() in ["boolean", "bool"]:
+        fType = "bool"
+    if fieldType.lower() in ["double", "real"]:
+        fType = "real"
+    #integers will be treted differently
+    if fieldType.lower() in ["integer", "integer64", "uint",
+                    "int", "longlong",
+                    "ulonglong"]:
+        fType = "int"
+    if fieldType.lower() in ["char", "string"]:
+        fType = "str"
+    if fieldType.lower() in ["date", "datetime"]:
+        fType = "date"
+    if fieldType.lower() in ["time"]:
+        fType = "time"    
+    return fType
+    
 def returnFilterValues(layer_list, fieldName, fieldType):
-    if fieldType.lower() == "bool" or fieldType.lower() == "boolean":
-        return {"name": fieldName, "type": "bool", "values": [True,False]}
+    if fieldType.lower() == "bool":
+        return {"name": fieldName, "type": fieldType, "values": [True,False]}
     filterValues = []
     fType = ""
     for layer in layer_list:
         if layer.type() == layer.VectorLayer:
             fields = layer.fields()
             for f in fields:
-                if f.typeName() == fieldType \
+                if boilType(f.typeName()) == fieldType \
                     and f.name() == fieldName:
                     iterator = layer.getFeatures()
                     for feature in iterator: 
                         if feature[fieldName] != None:
                             filterValues.append(feature[fieldName])
-                    if fieldType.lower() in ["double", "real"]:
-                        fType = "real"
-                    #integers will be treted differently
-                    if fieldType.lower() in ["integer", "integer64", "uint",
-                                    "int", "longlong",
-                                    "ulonglong"]:
-                        fType = "int"
-                    if fieldType.lower() in ["char", "string"]:
-                        fType = "str"
-                    if fieldType.lower() in ["date", "datetime"]:
-                        fType = "date"
-                    if fieldType.lower() in ["time"]:
-                        fType = "time"    
+                    # if fieldType.lower() in ["double", "real"]:
+                    #     fType = "real"
+                    # #integers will be treted differently
+                    # if fieldType.lower() in ["integer", "integer64", "uint",
+                    #                 "int", "longlong",
+                    #                 "ulonglong"]:
+                    #     fType = "int"
+                    # if fieldType.lower() in ["char", "string"]:
+                    #     fType = "str"
+                    # if fieldType.lower() in ["date", "datetime"]:
+                    #     fType = "date"
+                    # if fieldType.lower() in ["time"]:
+                    #     fType = "time"    
     if filterValues == []:
         return 
     #finalcleanup:
-    if fType == "str":
+    if fieldType == "str":
         #removing duplicates
         cleanFilterValues = list(dict.fromkeys(filterValues))
-    if fType == "int":
-         cleanFilterValues = [min(filterValues) if min(filterValues) >= 0 
+    if fieldType == "int":
+        cleanFilterValues = [min(filterValues) if min(filterValues) >= 0 
                               else 0, 
                               max(filterValues) if max(filterValues) >= 0 
                               else 0]
-    if fType in ["date", "time", "real"] :
-         cleanFilterValues = [min(filterValues), 
+        if cleanFilterValues[0] == cleanFilterValues[1]:
+            cleanFilterValues[1] = cleanFilterValues[0]+1 
+    if fieldType in ["date", "time", "real"] :
+        cleanFilterValues = [min(filterValues), 
                               max(filterValues)]
+        if cleanFilterValues[0] == cleanFilterValues[1]:
+            add = 1/10 * (cleanFilterValues[1] - cleanFilterValues[0])
+            cleanFilterValues[1] = cleanFilterValues[0] + add
+            
+        
     #cleanup:
     
     
-    return {"name": fieldName, "type": fType, "values": cleanFilterValues}
+    return {"name": fieldName, "type": fieldType, "values": cleanFilterValues}
     
     
     

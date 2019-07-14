@@ -439,7 +439,8 @@ class MainDialog(QDialog, FORM_CLASS):
                     if f.typeName().lower() in ["double", "real","char", "string", "integer", "integer64", "uint",
                                     "int", "longlong",
                                     "ulonglong"]:
-                        options.append(f.name() + ": " + f.typeName())
+                        options.append(f.name() + ": " + 
+                        utils.boilType(f.typeName()))
         #cleanup of items in options
         cleanOptions = list(set(options))
         for option in cleanOptions:

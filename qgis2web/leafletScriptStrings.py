@@ -575,10 +575,10 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
          ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
+    filterItems = sorted(filterItems, key=lambda k: k['type']) 
     filterNum = len(filterItems)
+    #filterItems = sorted(filterItems, key=lambda k: k['type']) 
     if filterNum != 0:
-        print("html writer")
-        print(filterItems)
         endHTML += """
         var mapDiv = document.getElementById('map');
         var row = document.createElement('div');
@@ -604,7 +604,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         var Filters = {"""
         filterList = []
         for item in range(0,filterNum):
-            filterList.append('"sel_' + filterItems[item]["name"] + '": "' + 
+            filterList.append('"' + filterItems[item]["name"] + '": "' + 
                          filterItems[item]["type"] + '"')
         endHTML += ",".join(filterList) + "};"
     #add filterFunc:
@@ -613,25 +613,46 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
               map.eachLayer(function(lyr){
                 if ("options" in lyr && "dataVar" in lyr["options"]){
                 features = this[lyr["options"]["dataVar"]].features.slice(0);
-                for (key in Filters){  
-                  var selection = [];
-                  for (option in Array.from(this[key].selectedOptions)){
-                    if (option != 0){
-                      selection.push(this[key].selectedOptions[option].value);
-                    }
-                  }
-                  try{
-                    if (key.split("_")[1] in features[0].properties){
-                      for (i = features.length - 1; i >= 0; --i){
-                        if (selection.indexOf(
-                          features[i].properties[key.split("_")[1]])<0 && selection.length>0) {
-                          features.splice(i,1);
+                try{
+                    for (key in Filters){
+                        if (Filters[key] == "str"){
+                          var selection = [];
+                          for (option in Array.from(this["sel_" + key].selectedOptions)){
+                            if (option != 0){
+                              selection.push(this["sel_"+key].selectedOptions[option].value);
+                            }
+                          }
+                          try{
+                            if (key in features[0].properties){
+                              for (i = features.length - 1; i >= 0; --i){
+                                if (selection.indexOf(
+                                  features[i].properties[key])<0 && selection.length>0) {
+                                  features.splice(i,1);
+                                }
+                              }
+                            }
+                          } catch(err){
+                          }
                         }
-                      }
+                        if (Filters[key] == "int" || Filters[key] == "real"){
+                            sliderVals = this["sel_" + key].noUiSlider.get();
+                            try{
+                             if (key in features[0].properties){
+                               for (i = features.length - 1; i >= 0; --i){
+                                   if (parseInt(features[i].properties[key]) < sliderVals[0]
+                                     || parseInt(features[i].properties[key]) > sliderVals[1]
+                                     ) {
+                                     features.splice(i,1);
+                                   }      
+                               }
+                             }
+                            } catch(err){
+                            }
+                        }
                     }
-                  } catch(err){
-                  }
-                  
+                }
+                catch(err){
+                
                 }
                 this[lyr["options"]["layerName"]].clearLayers();
                 this[lyr["options"]["layerName"]].addData(features);
@@ -647,6 +668,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             div_{name}.id = "sel_{name}";
             div_{name}.className= "input-field col s12";
             document.getElementById("menu").appendChild(div_{name});
+            
             sel_{name} = document.createElement('select');
             sel_{name}.multiple = true;
             var {name}_options_str = "<option value='' disabled selected></option>";
@@ -658,17 +680,76 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             {name}_options_str  += '<option value="{e}">{e}</option>';
                         """.format(e = entry, name = itemName)
                 endHTML += """
-            sel_%s.innerHTML = %s_options_str;
-            div_%s.appendChild(sel_%s);
-            var lab_%s = document.createElement('label');
-            lab_USE.innerHTML  = '%s';
-            div_USE.appendChild(lab_%s);
+            sel_{name}.innerHTML = {name}_options_str;
+            div_{name}.appendChild(sel_{name});""".format(name = itemName)
+                endHTML += """
+                var lab_{name} = document.createElement('div');
+                lab_{name}.innerHTML  = '{name}';
+                div_{name}.appendChild(lab_{name});""".format(name = itemName)
+                endHTML += """
             document.addEventListener('DOMContentLoaded', function() {
                 var elems = document.querySelectorAll('select');
                 var instances = M.FormSelect.init(elems, {});
             });
-                    """ % (itemName, itemName, itemName, itemName, itemName, 
-                           itemName, itemName)
+                    """
+            if filterItems[item]["type"] in ["int","real"]:
+                endHTML += """
+            var div_{name} = document.createElement("div");
+            div_{name}.id = "div_{name}";
+            div_{name}.className= "input-field col s12";
+            document.getElementById("menu").appendChild(div_{name});
+            var lab_{name} = document.createElement('div');
+            lab_{name}.innerHTML  = '{name}: <span id="val_{name}"></span>';
+            document.getElementById("menu").appendChild(lab_{name});
+            var sel_{name} = document.getElementById('div_{name}');
+            """ .format(name = itemName)
+                if filterItems[item]["type"] == "int":
+                    endHTML += """
+            noUiSlider.create(sel_%s, {
+                connect: true,
+                start: [ %s, %s],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: %s,
+                max: %s                
+                }
+            });
+            sel_%s.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_%s = document.getElementById('val_%s');
+            val_%s.innerHTML = values.join(' - ');
+                filterFunc()
+            });""" % (itemName, filterItems[item]["values"][0], 
+                   filterItems[item]["values"][1], 
+                   filterItems[item]["values"][0],
+                   filterItems[item]["values"][1],
+                   itemName, itemName, itemName, itemName)
+                else:
+                    endHTML += """
+            noUiSlider.create(sel_%s, {
+                connect: true,
+                start: [ %s, %s],
+                range: {
+                min: %s,
+                max: %s
+                }
+            });
+            sel_%s.noUiSlider.on('update', function (values) {
+            val_%s = document.getElementById('val_%s');
+            val_%s.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            """ % (itemName, filterItems[item]["values"][0], 
+                   filterItems[item]["values"][1], 
+                   filterItems[item]["values"][0],
+                   filterItems[item]["values"][1],
+                   itemName, itemName, itemName, itemName)
     
     if useHeat:
         endHTML += """

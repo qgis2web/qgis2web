@@ -103,6 +103,12 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                         jsStore + 'materialize.min.js')
         shutil.copyfile(cssDir + 'materialize.min.css',
                         cssStore + 'materialize.min.css')
+        shutil.copyfile(jsDir + 'nouislider.min.js',
+                        jsStore + 'nouislider.min.js')
+        shutil.copyfile(jsDir + 'wNumb.js',
+                        jsStore + 'wNumb.js')
+        shutil.copyfile(cssDir + 'nouislider.min.css',
+                        cssStore + 'nouislider.min.css')
     if measure != "None":
         shutil.copyfile(jsDir + 'leaflet-measure.js',
                         jsStore + 'leaflet-measure.js')
@@ -170,7 +176,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     if filterItems != []:
         layerFilterCSS = '<link rel="stylesheet" '
         layerFilterCSS += 'href="css/materialize.min.css">'
+        layerFilterCSS += '<link rel="stylesheet" '
+        layerFilterCSS += 'href="css/nouislider.min.css">'
         layerFilterJS = '<script src="js/materialize.min.js"></script>'
+        layerFilterJS += '<script src="js/nouislider.min.js"></script>'
+        layerFilterJS += '<script src="js/wNumb.js"></script>'
     else:
         layerFilterCSS = ""
         layerFilterJS = ""
@@ -278,13 +288,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             margin: 0 0 5px;
             color: #777;
         }
-<<<<<<< current
-=======
-        .abstract  {
-        	font: bold 18px 'Lucida Console', Monaco, monospace;
-        	text-indent: 1px;
-        }
->>>>>>> before discard
         .leaflet-container {
             background: #fff;
             padding-right: 10px;
