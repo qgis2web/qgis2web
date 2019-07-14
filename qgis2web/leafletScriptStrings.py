@@ -589,14 +589,10 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         col1.className="col s9 m9 l9 xl9";
         col1.id = "mapWindow";
         col1.style.height = "100%";
-        col1.style.float = "left";
-        col1.style.width = "70%";
         var col2 = document.createElement('div');
         col2.className="col s3 m3 l3 xl3";
         col2.id = "menu";
         col2.style.height = "100%";
-        col2.style.float = "right";
-        col2.style.width = "30%";
         mapDiv.parentNode.insertBefore(row, mapDiv);
         document.getElementById("all").appendChild(col1);
         document.getElementById("all").appendChild(col2);
