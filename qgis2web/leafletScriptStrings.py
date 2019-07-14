@@ -580,52 +580,95 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         print("html writer")
         print(filterItems)
         endHTML += """
-                var mapDiv = document.getElementById('map');
-                var row = document.createElement('div');
-                row.className="row";
-                row.id="all";
-                row.style.height = "100%";
-                var col1 = document.createElement('div');
-                col1.className="col s9 m9 l9 xl9";
-                col1.id = "mapWindow";
-                col1.style.height = "100%";
-                col1.style.float = "left";
-                col1.style.width = "70%";
-                var col2 = document.createElement('div');
-                col2.className="col s3 m3 l3 xl3";
-                col2.id = "menu";
-                col2.style.height = "100%";
-                col2.style.float = "right";
-                col2.style.width = "30%";
-                mapDiv.parentNode.insertBefore(row, mapDiv);
-                document.getElementById("all").appendChild(col1);
-                document.getElementById("all").appendChild(col2);
-                col1.appendChild(mapDiv)
-                """
-    for item in range(0,filterNum):
-        itemName = filterItems[item]["name"]
-        if filterItems[item]["type"] == "str":
-            endHTML += """
-                var div_{name} = document.createElement('div');
-                div_{name}.id = "sel_{name}";
-                div_{name}.className= "input-field col s12";
-                document.getElementById("menu").appendChild(div_{name});
-                sel_{name} = document.createElement('select');
-                sel_{name}.multiple = true;
-                var {name}_options_str = "<option value='' disabled selected></option>";
-                """.format(name = itemName)
-            for entry in filterItems[item]["values"]:
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col s9 m9 l9 xl9";
+        col1.id = "mapWindow";
+        col1.style.height = "100%";
+        col1.style.float = "left";
+        col1.style.width = "70%";
+        var col2 = document.createElement('div');
+        col2.className="col s3 m3 l3 xl3";
+        col2.id = "menu";
+        col2.style.height = "100%";
+        col2.style.float = "right";
+        col2.style.width = "30%";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"""
+        filterList = []
+        for item in range(0,filterNum):
+            filterList.append('"sel_' + filterItems[item]["name"] + '": "' + 
+                         filterItems[item]["type"] + '"')
+        endHTML += ",".join(filterList) + "};"
+    #add filterFunc:
+        endHTML += """
+            function filterFunc() {
+              map.eachLayer(function(lyr){
+                if ("options" in lyr && "dataVar" in lyr["options"]){
+                features = this[lyr["options"]["dataVar"]].features.slice(0);
+                for (key in Filters){  
+                  var selection = [];
+                  for (option in Array.from(this[key].selectedOptions)){
+                    if (option != 0){
+                      selection.push(this[key].selectedOptions[option].value);
+                    }
+                  }
+                  try{
+                    if (key.split("_")[1] in features[0].properties){
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (selection.indexOf(
+                          features[i].properties[key.split("_")[1]])<0 && selection.length>0) {
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                  
+                }
+                this[lyr["options"]["layerName"]].clearLayers();
+                this[lyr["options"]["layerName"]].addData(features);
+              }
+            })
+          }"""
+        for item in range(0,filterNum):
+
+            itemName = filterItems[item]["name"]
+            if filterItems[item]["type"] == "str":
                 endHTML += """
-                {name}_options_str  += '<option value="{e}">{e}</option>';
-                    """.format(e = entry, name = itemName)
-            endHTML += """
-                sel_%s.innerHTML = %s_options_str;
-                div_%s.appendChild(sel_%s);
-                document.addEventListener('DOMContentLoaded', function() {
+            var div_{name} = document.createElement('div');
+            div_{name}.id = "sel_{name}";
+            div_{name}.className= "input-field col s12";
+            document.getElementById("menu").appendChild(div_{name});
+            sel_{name} = document.createElement('select');
+            sel_{name}.multiple = true;
+            var {name}_options_str = "<option value='' disabled selected></option>";
+                    """.format(name = itemName)
+                endHTML += """
+            sel_%s.onchange = function(){filterFunc()};""" % itemName
+                for entry in filterItems[item]["values"]:
+                    endHTML += """
+            {name}_options_str  += '<option value="{e}">{e}</option>';
+                        """.format(e = entry, name = itemName)
+                endHTML += """
+            sel_%s.innerHTML = %s_options_str;
+            div_%s.appendChild(sel_%s);
+            var lab_%s = document.createElement('label');
+            lab_USE.innerHTML  = '%s';
+            div_USE.appendChild(lab_%s);
+            document.addEventListener('DOMContentLoaded', function() {
                 var elems = document.querySelectorAll('select');
                 var instances = M.FormSelect.init(elems, {});
-              });
-                """ % (itemName, itemName, itemName, itemName, )
+            });
+                    """ % (itemName, itemName, itemName, itemName, itemName, 
+                           itemName, itemName)
     
     if useHeat:
         endHTML += """

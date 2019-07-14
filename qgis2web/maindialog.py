@@ -436,7 +436,10 @@ class MainDialog(QDialog, FORM_CLASS):
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if editorWidget == 'Hidden':
                         continue
-                    options.append(f.name() + ": " + f.typeName())
+                    if f.typeName().lower() in ["double", "real","char", "string", "integer", "integer64", "uint",
+                                    "int", "longlong",
+                                    "ulonglong"]:
+                        options.append(f.name() + ": " + f.typeName())
         #cleanup of items in options
         cleanOptions = list(set(options))
         for option in cleanOptions:

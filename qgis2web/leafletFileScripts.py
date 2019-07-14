@@ -278,6 +278,13 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             margin: 0 0 5px;
             color: #777;
         }
+<<<<<<< current
+=======
+        .abstract  {
+        	font: bold 18px 'Lucida Console', Monaco, monospace;
+        	text-indent: 1px;
+        }
+>>>>>>> before discard
         .leaflet-container {
             background: #fff;
             padding-right: 10px;

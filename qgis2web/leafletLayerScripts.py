@@ -508,6 +508,8 @@ def buildPointJSON(symbol, sln, usedFields, interactive, markerType, layerAttr,
         var layer_{sln} = new L.geoJson%s(json_{sln}, {{
             attribution: '{attr}',
             interactive: {int},
+            dataVar: 'json_{sln}',
+            layerName: 'layer_{sln}',
             pane: 'pane_{sln}',""" % multiStyle
     if usedFields != 0:
         pointJSON += """
@@ -570,6 +572,8 @@ def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol,
         var layer_{layerName} = L.geoJson{multiStyle}(null, {{
             attribution: '{layerAttr}',
             interactive: {int},
+            dataVar: 'json_{layerName}',
+            layerName: 'layer_{layerName}',
             pane: 'pane_{layerName}',
             {p2lStart}{p2ls}{p2lEnd}
             onEachFeature: pop_{layerName}
@@ -622,6 +626,8 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
         var layer_{safeName} = new L.geoJson{multiStyle}(json_{safeName}, {{
             attribution: '{attr}',
             interactive: {int},
+            dataVar: 'json_{safeName}',
+            layerName: 'layer_{safeName}',
             pane: 'pane_{safeName}',{onEachFeature}
             {styleStart}{styles}{styleEnd}
         }});"""
@@ -658,6 +664,8 @@ def buildNonPointWFS(layerName, layer, symbol, interactive, useMultiStyle):
         var layer_{layerName} = L.geoJson{multiStyle}(null, {{
             attribution: '{attr}',
             interactive: {int},
+            dataVar: 'json_{layerName}',
+            layerName: 'layer_{layerName}',
             {styleStart}{styles}{styleEnd}
             pane: 'pane_{layerName}',
             onEachFeature: pop_{layerName}
