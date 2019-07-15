@@ -127,7 +127,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
             pointLayerType = "Vector"
         crsConvert = getCRS(iface, matchCRS)
         if layer.providerType() == "WFS" and not encode2json:
-            return getWFS(layer, layerName, layerAttr, cluster,
+            return getWFS(layer, layerName, layerAttr, interactive, cluster,
                           minResolution, maxResolution), vtLayers
         else:
             return getJSON(layerName, crsConvert, layerAttr, interactive,
