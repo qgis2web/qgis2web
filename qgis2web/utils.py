@@ -629,17 +629,20 @@ def getRGBAColor(color, alpha):
 def boilType(fieldType):
     if fieldType.lower() in ["boolean", "bool"]:
         fType = "bool"
-    if fieldType.lower() in ["double", "real"]:
+    if fieldType.lower() in ["double", "real", "decimal", "numeric"]:
         fType = "real"
     #integers will be treted differently
     if fieldType.lower() in ["integer", "integer64", "uint",
                     "int", "longlong",
                     "ulonglong"]:
         fType = "int"
-    if fieldType.lower() in ["char", "string"]:
+    if fieldType.lower() in ["char", "string", "text", "varchar", "nchar", 
+                             "nvarchar"]:
         fType = "str"
-    if fieldType.lower() in ["date", "datetime"]:
+    if fieldType.lower() in ["date"]:
         fType = "date"
+    if fieldType.lower() in ["datetime"]:
+        fType = "datetime"
     if fieldType.lower() in ["time"]:
         fType = "time"    
     return fType
@@ -658,20 +661,7 @@ def returnFilterValues(layer_list, fieldName, fieldType):
                     iterator = layer.getFeatures()
                     for feature in iterator: 
                         if feature[fieldName] != None:
-                            filterValues.append(feature[fieldName])
-                    # if fieldType.lower() in ["double", "real"]:
-                    #     fType = "real"
-                    # #integers will be treted differently
-                    # if fieldType.lower() in ["integer", "integer64", "uint",
-                    #                 "int", "longlong",
-                    #                 "ulonglong"]:
-                    #     fType = "int"
-                    # if fieldType.lower() in ["char", "string"]:
-                    #     fType = "str"
-                    # if fieldType.lower() in ["date", "datetime"]:
-                    #     fType = "date"
-                    # if fieldType.lower() in ["time"]:
-                    #     fType = "time"    
+                            filterValues.append(feature[fieldName]) 
     if filterValues == []:
         return 
     #finalcleanup:

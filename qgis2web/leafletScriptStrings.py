@@ -685,7 +685,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 endHTML += """
             document.addEventListener('DOMContentLoaded', function() {
                 var elems = document.querySelectorAll('select');
-                var instances = M.FormSelect.init(elems, {});
+                var instances = M.FormSelect.init(elems, {})
             });
                     """
             if filterItems[item]["type"] in ["int","real"]:
@@ -746,7 +746,67 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                    filterItems[item]["values"][0],
                    filterItems[item]["values"][1],
                    itemName, itemName, itemName, itemName)
-    
+            if filterItems[item]["type"] == "date":
+                startDate = ",".join([str(filterItems[item]["values"][0].year()),
+                          str(filterItems[item]["values"][0].month()+1),
+                          str(filterItems[item]["values"][0].day())])
+                endDate = ",".join([str(filterItems[item]["values"][1].year()),
+                            str(filterItems[item]["values"][1].month()+1),
+                          str(filterItems[item]["values"][1].day())])
+                          
+                endHTML += """
+            var lab_{name}_date1 = document.createElement('div');
+            lab_{name}_date1.innerHTML  = '{name} from: ';
+            document.getElementById("menu").appendChild(lab_{name}_date1);
+            var div_{name}_date1 = document.createElement("div");
+            div_{name}_date1.id = "div_{name}_date1";
+            div_{name}_date1.className= "input-field col s12";
+            document.getElementById("menu").appendChild(div_{name}_date1);
+            dat_{name}_date1 = document.createElement('input');
+            dat_{name}_date1.className = "datepicker";
+            dat_{name}_date1.id = "dat_{name}_date1";
+            div_{name}_date1.appendChild(dat_{name}_date1);""".format(
+                name = itemName)
+                print(filterItems[item]["values"][1].year(),
+                      filterItems[item]["values"][0].month())
+                endHTML += """
+            document.addEventListener('DOMContentLoaded', function() {
+              var options = {
+                  defaultDate: new Date(%s),
+                  setDefaultDate: true,
+                  minDate: new Date(%s)
+              };
+              var elems = document.getElementById("dat_%s_date1");
+              var instance = M.Datepicker.init(elems, options);
+              instance.setDate(new Date(%s));
+            });""" % (startDate, startDate, itemName, startDate)
+                endHTML += """
+            var lab_{name}_date2 = document.createElement('div');
+            lab_{name}_date2.innerHTML  = '{name} till: ';
+            document.getElementById("menu").appendChild(lab_{name}_date2);
+            var div_{name}_date2 = document.createElement("div");
+            div_{name}_date2.id = "div_{name}_date2";
+            div_{name}_date2.className= "input-field col s12";
+            document.getElementById("menu").appendChild(div_{name}_date2);
+            dat_{name}_date2 = document.createElement('input');
+            dat_{name}_date2.id = "dat_{name}_date2";
+            dat_{name}_date2.className = "datepicker";
+            div_{name}_date2.appendChild(dat_{name}_date2);""".format(
+                name = itemName)
+                endHTML += """
+            document.addEventListener('DOMContentLoaded', function() {
+              var options = {
+                  defaultDate: new Date(%s),
+                  setDefaultDate: true,
+                  maxDate: new Date(%s)
+              };
+              var elems = document.getElementById("dat_%s_date2");
+              var instance = M.Datepicker.init(elems, options);
+              instance.setDate(new Date(%s));
+            });""" % (endDate, endDate, itemName, endDate)
+                
+        endHTML += """
+              """
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {

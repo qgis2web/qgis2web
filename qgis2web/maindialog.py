@@ -436,13 +436,25 @@ class MainDialog(QDialog, FORM_CLASS):
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if editorWidget == 'Hidden':
                         continue
-                    if f.typeName().lower() in ["double", "real","char", "string", "integer", "integer64", "uint",
-                                    "int", "longlong",
-                                    "ulonglong"]:
-                        options.append(f.name() + ": " + 
-                        utils.boilType(f.typeName()))
+                    if utils.boilType(f.typeName()) in ["int", "str","real",
+                                                        "date"]:
+                        options.append([f.name() + ": " + 
+                        utils.boilType(f.typeName()), layer.name()])
+        preCleanOptions = {}
+        for entry in options:
+            if entry[0] not in list(preCleanOptions.keys()):
+                preCleanOptions[entry[0]] = ": " + entry[1]
+            else :
+                preCleanOptions[entry[0]] = "| ".join(
+                    [preCleanOptions[entry[0]], entry[1]])
+        print(preCleanOptions)
+        options = []
+        for key,value in preCleanOptions.items():
+            options.append(key + value)
+        print(options)
         #cleanup of items in options
         cleanOptions = list(set(options))
+        
         for option in cleanOptions:
             self.layer_filter_select.insertItem(0, option)
 
