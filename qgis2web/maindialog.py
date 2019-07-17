@@ -436,8 +436,8 @@ class MainDialog(QDialog, FORM_CLASS):
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if editorWidget == 'Hidden':
                         continue
-                    if utils.boilType(f.typeName()) in ["int", "str","real",
-                                                        "date"]:
+                    if utils.boilType(f.typeName()) in ["int", "str", "real",
+                                                        "date", "bool"]:
                         options.append([f.name() + ": " + 
                         utils.boilType(f.typeName()), layer.name()])
         preCleanOptions = {}
@@ -447,7 +447,6 @@ class MainDialog(QDialog, FORM_CLASS):
             else :
                 preCleanOptions[entry[0]] = "| ".join(
                     [preCleanOptions[entry[0]], entry[1]])
-        print(preCleanOptions)
         options = []
         for key,value in preCleanOptions.items():
             options.append(key + value)

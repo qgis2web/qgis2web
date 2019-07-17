@@ -575,6 +575,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
          ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
+    print(filterItems)
     filterItems = sorted(filterItems, key=lambda k: k['type']) 
     filterNum = len(filterItems)
     #filterItems = sorted(filterItems, key=lambda k: k['type']) 
@@ -605,13 +606,16 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         endHTML += ",".join(filterList) + "};"
     #add filterFunc:
         endHTML += """
+            //filter function checks every layer for the desired input and 
+            //removes the specific feature if it is not part of the filter set.
             function filterFunc() {
               map.eachLayer(function(lyr){
                 if ("options" in lyr && "dataVar" in lyr["options"]){
                 features = this[lyr["options"]["dataVar"]].features.slice(0);
                 try{
                     for (key in Filters){
-                        if (Filters[key] == "str"){
+                    console.log(Filters[key])
+                        if (Filters[key] == "str" || Filters[key] == "bool"){
                           var selection = [];
                           for (option in Array.from(this["sel_" + key].selectedOptions)){
                             if (option != 0){
@@ -645,10 +649,26 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                             } catch(err){
                             }
                         }
+                        if (Filters[key] == "date"){
+                            startdate = this["dat_" + key + "_date1"].value;
+                            enddate = this["dat_" + key + "_date2"].value;
+                            try{
+                             if (key in features[0].properties){
+                               for (i = features.length - 1; i >= 0; --i){
+                                    console.log()
+                                   if (features[i].properties[key] < startdate
+                                     || features[i].properties[key] > enddate
+                                     ) {
+                                     features.splice(i,1);
+                                   }      
+                               }
+                             }
+                            } catch(err){
+                            }
+                        }
                     }
                 }
                 catch(err){
-                
                 }
                 this[lyr["options"]["layerName"]].clearLayers();
                 this[lyr["options"]["layerName"]].addData(features);
@@ -658,7 +678,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         for item in range(0,filterNum):
 
             itemName = filterItems[item]["name"]
-            if filterItems[item]["type"] == "str":
+            if filterItems[item]["type"] in ["str", "bool"] :
                 endHTML += """
             var div_{name} = document.createElement('div');
             div_{name}.id = "sel_{name}";
@@ -741,27 +761,28 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             val_%s.innerHTML = values.join(' - ');
                 filterFunc()
             });
-            """ % (itemName, filterItems[item]["values"][0], 
+            """ % (itemName, filterItems[item]["values"][0],
                    filterItems[item]["values"][1], 
                    filterItems[item]["values"][0],
                    filterItems[item]["values"][1],
                    itemName, itemName, itemName, itemName)
             if filterItems[item]["type"] == "date":
                 startDate = ",".join([str(filterItems[item]["values"][0].year()),
-                          str(filterItems[item]["values"][0].month()+1),
+                          str(filterItems[item]["values"][0].month()-1),
                           str(filterItems[item]["values"][0].day())])
                 endDate = ",".join([str(filterItems[item]["values"][1].year()),
-                            str(filterItems[item]["values"][1].month()+1),
+                            str(filterItems[item]["values"][1].month()-1),
                           str(filterItems[item]["values"][1].day())])
-                          
+                print(startDate,endDate)
                 endHTML += """
-            var lab_{name}_date1 = document.createElement('div');
-            lab_{name}_date1.innerHTML  = '{name} from: ';
-            document.getElementById("menu").appendChild(lab_{name}_date1);
+            
             var div_{name}_date1 = document.createElement("div");
             div_{name}_date1.id = "div_{name}_date1";
             div_{name}_date1.className= "input-field col s12";
             document.getElementById("menu").appendChild(div_{name}_date1);
+            var lab_{name}_date1 = document.createElement('div');
+            lab_{name}_date1.innerHTML  = '{name} from';
+            document.getElementById("menu").appendChild(lab_{name}_date1);
             dat_{name}_date1 = document.createElement('input');
             dat_{name}_date1.className = "datepicker";
             dat_{name}_date1.id = "dat_{name}_date1";
@@ -774,20 +795,27 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
               var options = {
                   defaultDate: new Date(%s),
                   setDefaultDate: true,
+                  format: "yyyy-mm-dd",
                   minDate: new Date(%s)
               };
               var elems = document.getElementById("dat_%s_date1");
               var instance = M.Datepicker.init(elems, options);
               instance.setDate(new Date(%s));
-            });""" % (startDate, startDate, itemName, startDate)
+            });
+            dat_%s_date1.onchange = function(){filterFunc()};""" % (startDate, 
+                                                                    startDate, 
+                                                                    itemName, 
+                                                                    startDate,
+                                                                    itemName)
+                
                 endHTML += """
-            var lab_{name}_date2 = document.createElement('div');
-            lab_{name}_date2.innerHTML  = '{name} till: ';
-            document.getElementById("menu").appendChild(lab_{name}_date2);
             var div_{name}_date2 = document.createElement("div");
             div_{name}_date2.id = "div_{name}_date2";
             div_{name}_date2.className= "input-field col s12";
             document.getElementById("menu").appendChild(div_{name}_date2);
+            var lab_{name}_date2 = document.createElement('div');
+            lab_{name}_date2.innerHTML  = '{name} till';
+            document.getElementById("menu").appendChild(lab_{name}_date2);
             dat_{name}_date2 = document.createElement('input');
             dat_{name}_date2.id = "dat_{name}_date2";
             dat_{name}_date2.className = "datepicker";
@@ -798,15 +826,31 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
               var options = {
                   defaultDate: new Date(%s),
                   setDefaultDate: true,
+                  format: "yyyy-mm-dd",
                   maxDate: new Date(%s)
               };
               var elems = document.getElementById("dat_%s_date2");
               var instance = M.Datepicker.init(elems, options);
               instance.setDate(new Date(%s));
-            });""" % (endDate, endDate, itemName, endDate)
-                
-        endHTML += """
-              """
+            });
+            dat_%s_date2.onchange = function(){filterFunc()};""" % (endDate, 
+                                                                    endDate, 
+                                                                    itemName, 
+                                                                    endDate,
+                                                                    itemName)
+            #if filterItems[item]["type"] == "bool":
+            #    endHTML += """
+            #var boo_{name} = document.createElement('div');
+            #boo_{name}.id = "boo_{name}";
+            #boo_{name}.className = "switch";
+            #boo_{name}.innerHTML = '<label>False<input type="checkbox"><span class="lever"></span>True</label>';
+            #document.getElementById("menu").appendChild(boo_{name});
+            #var lab_{name}_boo = document.createElement('div');
+            #lab_{name}_boo.innerHTML  = '{name}';
+            #document.getElementById("menu").appendChild(lab_{name}_boo);
+            #""".format(name = itemName)
+            #    endHTML += """
+            #boo_%s.onchange = function(){filterFunc()};""" % (itemName)
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {
@@ -824,6 +868,30 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             getBounds: function () {
                 return this._bounds;
             }
+
+var toggleSlider = document.getElementById('slider-toggle');
+
+noUiSlider.create(toggleSlider, {
+    orientation: "vertical",
+    start: 0,
+    range: {
+        'min': [0, 1],
+        'max': 1
+    },
+    format: wNumb({
+        decimals: 0
+    })
+});
+
+toggleSlider.noUiSlider.on('update', function (values, handle) {
+    if (values[handle] === '1') {
+        toggleSlider.classList.add('off');
+    } else {
+        toggleSlider.classList.remove('off');
+    }
+});
+
+
         });"""
     if labelsList != "":
         endHTML += """

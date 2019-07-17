@@ -627,13 +627,15 @@ def getRGBAColor(color, alpha):
     return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
 
 def boilType(fieldType):
+    print(fieldType.lower())
+    fType = None
     if fieldType.lower() in ["boolean", "bool"]:
         fType = "bool"
     if fieldType.lower() in ["double", "real", "decimal", "numeric"]:
         fType = "real"
     #integers will be treted differently
     if fieldType.lower() in ["integer", "integer64", "uint",
-                    "int", "longlong",
+                    "int", "longlong", "int4",
                     "ulonglong"]:
         fType = "int"
     if fieldType.lower() in ["char", "string", "text", "varchar", "nchar", 
@@ -644,14 +646,13 @@ def boilType(fieldType):
     if fieldType.lower() in ["datetime"]:
         fType = "datetime"
     if fieldType.lower() in ["time"]:
-        fType = "time"    
+        fType = "time"
     return fType
     
 def returnFilterValues(layer_list, fieldName, fieldType):
     if fieldType.lower() == "bool":
-        return {"name": fieldName, "type": fieldType, "values": [True,False]}
+        return {"name": fieldName, "type": fieldType, "values": ["true","false"]}
     filterValues = []
-    fType = ""
     for layer in layer_list:
         if layer.type() == layer.VectorLayer:
             fields = layer.fields()
