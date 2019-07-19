@@ -437,7 +437,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     if editorWidget == 'Hidden':
                         continue
                     if utils.boilType(f.typeName()) in ["int", "str", "real",
-                                                        "date", "bool"]:
+                                                        "date", "bool", "time"]:
                         options.append([f.name() + ": " + 
                         utils.boilType(f.typeName()), layer.name()])
         preCleanOptions = {}
