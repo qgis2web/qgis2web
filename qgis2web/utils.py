@@ -627,7 +627,6 @@ def getRGBAColor(color, alpha):
     return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
 
 def boilType(fieldType):
-    print(fieldType.lower())
     fType = None
     if fieldType.lower() in ["boolean", "bool"]:
         fType = "bool"
@@ -643,7 +642,7 @@ def boilType(fieldType):
         fType = "str"
     if fieldType.lower() in ["date"]:
         fType = "date"
-    if fieldType.lower() in ["datetime"]:
+    if fieldType.lower() in ["datetime", "timestamp"]:
         fType = "datetime"
     if fieldType.lower() in ["time"]:
         fType = "time"
@@ -676,7 +675,7 @@ def returnFilterValues(layer_list, fieldName, fieldType):
                               else 0]
         if cleanFilterValues[0] == cleanFilterValues[1]:
             cleanFilterValues[1] = cleanFilterValues[0]+1 
-    if fieldType in ["date", "time", "real"] :
+    if fieldType in ["date", "time", "real", "datetime"] :
         cleanFilterValues = [min(filterValues), 
                               max(filterValues)]
         if cleanFilterValues[0] == cleanFilterValues[1]:

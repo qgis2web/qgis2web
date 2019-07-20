@@ -575,7 +575,6 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
          ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
-    print(filterItems)
     filterItems = sorted(filterItems, key=lambda k: k['type']) 
     filterNum = len(filterItems)
     #filterItems = sorted(filterItems, key=lambda k: k['type']) 
@@ -587,13 +586,15 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         row.id="all";
         row.style.height = "100%";
         var col1 = document.createElement('div');
-        col1.className="col s9 m9 l9 xl9";
+        col1.className="col9";
         col1.id = "mapWindow";
-        col1.style.height = "100%";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
         var col2 = document.createElement('div');
-        col2.className="col s3 m3 l3 xl3";
+        col2.className="col3";
         col2.id = "menu";
-        col2.style.height = "100%";
+        col2.style.display = "inline-block";
         mapDiv.parentNode.insertBefore(row, mapDiv);
         document.getElementById("all").appendChild(col1);
         document.getElementById("all").appendChild(col2);
@@ -614,13 +615,11 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 features = this[lyr["options"]["dataVar"]].features.slice(0);
                 try{
                     for (key in Filters){
-                    console.log(Filters[key])
                         if (Filters[key] == "str" || Filters[key] == "bool"){
                           var selection = [];
                           for (option in Array.from(this["sel_" + key].selectedOptions)){
-                            if (option != 0){
                               selection.push(this["sel_"+key].selectedOptions[option].value);
-                            }
+                            
                           }
                           try{
                             if (key in features[0].properties){
@@ -649,13 +648,13 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                             } catch(err){
                             }
                         }
-                        if (Filters[key] == "date"){
-                            startdate = this["dat_" + key + "_date1"].value;
-                            enddate = this["dat_" + key + "_date2"].value;
+                        if (Filters[key] == "date" || Filters[key] == "datetime"){
+                            startdate = this["dat_" + key + "_date1"].value.replace(" ", "T");
+                            enddate = this["dat_" + key + "_date2"].value.replace(" ", "T");
                             try{
-                             if (key in features[0].properties){
+                            if (key in features[0].properties){
+                            
                                for (i = features.length - 1; i >= 0; --i){
-                                    console.log()
                                    if (features[i].properties[key] < startdate
                                      || features[i].properties[key] > enddate
                                      ) {
@@ -680,14 +679,14 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             itemName = filterItems[item]["name"]
             if filterItems[item]["type"] in ["str", "bool"] :
                 endHTML += """
+            document.getElementById("menu").appendChild(document.createElement("div"));
             var div_{name} = document.createElement('div');
             div_{name}.id = "sel_{name}";
-            div_{name}.className= "input-field col s12";
+            div_{name}.className= "filterselect";
             document.getElementById("menu").appendChild(div_{name});
-            
             sel_{name} = document.createElement('select');
             sel_{name}.multiple = true;
-            var {name}_options_str = "<option value='' disabled selected></option>";
+            var {name}_options_str = "<option value='' unselected></option>";
                     """.format(name = itemName)
                 endHTML += """
             sel_%s.onchange = function(){filterFunc()};""" % itemName
@@ -700,22 +699,21 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             div_{name}.appendChild(sel_{name});""".format(name = itemName)
                 endHTML += """
                 var lab_{name} = document.createElement('div');
-                lab_{name}.innerHTML  = '{name}';
+                lab_{name}.innerHTML = '{name}';
+                lab_{name}.className = 'filterLabel';
                 div_{name}.appendChild(lab_{name});""".format(name = itemName)
                 endHTML += """
-            document.addEventListener('DOMContentLoaded', function() {
-                var elems = document.querySelectorAll('select');
-                var instances = M.FormSelect.init(elems, {})
-            });
                     """
             if filterItems[item]["type"] in ["int","real"]:
                 endHTML += """
+            document.getElementById("menu").appendChild(document.createElement("div"));
             var div_{name} = document.createElement("div");
             div_{name}.id = "div_{name}";
-            div_{name}.className= "input-field col s12";
+            div_{name}.className = "slider";
             document.getElementById("menu").appendChild(div_{name});
-            var lab_{name} = document.createElement('div');
+            var lab_{name} = document.createElement('p');
             lab_{name}.innerHTML  = '{name}: <span id="val_{name}"></span>';
+            lab_{name}.className = 'slider';
             document.getElementById("menu").appendChild(lab_{name});
             var sel_{name} = document.getElementById('div_{name}');
             """ .format(name = itemName)
@@ -766,78 +764,86 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                    filterItems[item]["values"][0],
                    filterItems[item]["values"][1],
                    itemName, itemName, itemName, itemName)
-            if filterItems[item]["type"] == "date":
-                startDate = ",".join([str(filterItems[item]["values"][0].year()),
-                          str(filterItems[item]["values"][0].month()-1),
-                          str(filterItems[item]["values"][0].day())])
-                endDate = ",".join([str(filterItems[item]["values"][1].year()),
-                            str(filterItems[item]["values"][1].month()-1),
-                          str(filterItems[item]["values"][1].day())])
-                print(startDate,endDate)
+            if filterItems[item]["type"] in ["date", "time", "datetime"]:
+                if filterItems[item]["type"] == "datetime":
+                    startDate = filterItems[item]["values"][0]
+                    endDate = filterItems[item]["values"][1]
+                if filterItems[item]["type"] == "date":
+                    startDate = filterItems[item]["values"][0].toString("yyyy-MM-dd")
+                    endDate = filterItems[item]["values"][1].toString("yyyy-MM-dd")
                 endHTML += """
-            
+            document.getElementById("menu").appendChild(document.createElement("div"));
             var div_{name}_date1 = document.createElement("div");
             div_{name}_date1.id = "div_{name}_date1";
-            div_{name}_date1.className= "input-field col s12";
+            div_{name}_date1.className= "filterselect";
             document.getElementById("menu").appendChild(div_{name}_date1);
-            var lab_{name}_date1 = document.createElement('div');
-            lab_{name}_date1.innerHTML  = '{name} from';
-            document.getElementById("menu").appendChild(lab_{name}_date1);
             dat_{name}_date1 = document.createElement('input');
-            dat_{name}_date1.className = "datepicker";
+            dat_{name}_date1.type = "text";
             dat_{name}_date1.id = "dat_{name}_date1";
-            div_{name}_date1.appendChild(dat_{name}_date1);""".format(
+            div_{name}_date1.appendChild(dat_{name}_date1);
+            var lab_{name}_date1 = document.createElement('p');
+            lab_{name}_date1.innerHTML  = '{name} from';
+            document.getElementById("div_{name}_date1").appendChild(lab_{name}_date1);""".format(
                 name = itemName)
-                print(filterItems[item]["values"][1].year(),
-                      filterItems[item]["values"][0].month())
                 endHTML += """
-            document.addEventListener('DOMContentLoaded', function() {
-              var options = {
-                  defaultDate: new Date(%s),
-                  setDefaultDate: true,
-                  format: "yyyy-mm-dd",
-                  minDate: new Date(%s)
-              };
-              var elems = document.getElementById("dat_%s_date1");
-              var instance = M.Datepicker.init(elems, options);
-              instance.setDate(new Date(%s));
+            document.addEventListener("DOMContentLoaded", function(){
+                tail.DateTime("#dat_%s_date1", {
+                today: false,
+                weekStart: 1,
+                closeButton: true,
+                stayOpen: true,
+                timeStepMinutes:1,
+                timeStepSeconds: 1
+                }).selectDate(%s,%s-1,%s,%s,%s,%s);
+                tail.DateTime("#dat_%s_date1").reload() 
+                """ % (itemName,
+                       startDate.toString("yyyy"),
+                       startDate.toString("M"),
+                       startDate.toString("d"),
+                       startDate.toString("h"),
+                       startDate.toString("m"),
+                       startDate.toString("s"),
+                       itemName)
+                endHTML += """
+                tail.DateTime("#dat_%s_date2", {
+                today: false,
+                weekStart: 1,
+                closeButton: true,
+                stayOpen: true,
+                timeStepMinutes:1,
+                timeStepSeconds: 1
+                }).selectDate(%s,%s-1,%s,%s,%s,%s);
+                tail.DateTime("#dat_%s_date2").reload()
+                dat_%s_date1.onchange = function(){filterFunc()};
+                dat_%s_date2.onchange = function(){filterFunc()};
             });
-            dat_%s_date1.onchange = function(){filterFunc()};""" % (startDate, 
-                                                                    startDate, 
-                                                                    itemName, 
-                                                                    startDate,
-                                                                    itemName)
+            """ % (itemName,
+                   endDate.toString("yyyy"),
+                   endDate.toString("M"),
+                   endDate.toString("d"),
+                   endDate.toString("h"),
+                   endDate.toString("m"),
+                   endDate.toString("s"),
+                   itemName,
+                   itemName,
+                   itemName)
                 
                 endHTML += """
+                
             var div_{name}_date2 = document.createElement("div");
             div_{name}_date2.id = "div_{name}_date2";
-            div_{name}_date2.className= "input-field col s12";
+            div_{name}_date2.className= "filterselect";
             document.getElementById("menu").appendChild(div_{name}_date2);
-            var lab_{name}_date2 = document.createElement('div');
-            lab_{name}_date2.innerHTML  = '{name} till';
-            document.getElementById("menu").appendChild(lab_{name}_date2);
             dat_{name}_date2 = document.createElement('input');
+            dat_{name}_date2.type = "text";
             dat_{name}_date2.id = "dat_{name}_date2";
-            dat_{name}_date2.className = "datepicker";
-            div_{name}_date2.appendChild(dat_{name}_date2);""".format(
+            div_{name}_date2.appendChild(dat_{name}_date2);
+            var lab_{name}_date2 = document.createElement('p');
+            lab_{name}_date2.innerHTML  = '{name} till';
+            document.getElementById("div_{name}_date2").appendChild(lab_{name}_date2);""".format(
                 name = itemName)
-                endHTML += """
-            document.addEventListener('DOMContentLoaded', function() {
-              var options = {
-                  defaultDate: new Date(%s),
-                  setDefaultDate: true,
-                  format: "yyyy-mm-dd",
-                  maxDate: new Date(%s)
-              };
-              var elems = document.getElementById("dat_%s_date2");
-              var instance = M.Datepicker.init(elems, options);
-              instance.setDate(new Date(%s));
-            });
-            dat_%s_date2.onchange = function(){filterFunc()};""" % (endDate, 
-                                                                    endDate, 
-                                                                    itemName, 
-                                                                    endDate,
-                                                                    itemName)
+                #endHTML += """
+            #//dat_%s_date2.onchange = function(){filterFunc()};""" % (itemName)
             #if filterItems[item]["type"] == "bool":
             #    endHTML += """
             #var boo_{name} = document.createElement('div');
@@ -868,30 +874,6 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             getBounds: function () {
                 return this._bounds;
             }
-
-var toggleSlider = document.getElementById('slider-toggle');
-
-noUiSlider.create(toggleSlider, {
-    orientation: "vertical",
-    start: 0,
-    range: {
-        'min': [0, 1],
-        'max': 1
-    },
-    format: wNumb({
-        decimals: 0
-    })
-});
-
-toggleSlider.noUiSlider.on('update', function (values, handle) {
-    if (values[handle] === '1') {
-        toggleSlider.classList.add('off');
-    } else {
-        toggleSlider.classList.remove('off');
-    }
-});
-
-
         });"""
     if labelsList != "":
         endHTML += """

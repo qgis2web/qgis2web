@@ -98,11 +98,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     else:
         os.makedirs(imageStore)
     if filterItems != []:
-        
-        shutil.copyfile(jsDir + 'materialize.min.js',
-                        jsStore + 'materialize.min.js')
-        shutil.copyfile(cssDir + 'materialize.min.css',
-                        cssStore + 'materialize.min.css')
+        shutil.copyfile(jsDir + 'tailDT.js',
+                        jsStore + 'tailDT.js')
+        shutil.copyfile(cssDir + 'filter.css',
+                        cssStore + 'filter.css')
         shutil.copyfile(jsDir + 'nouislider.min.js',
                         jsStore + 'nouislider.min.js')
         shutil.copyfile(jsDir + 'wNumb.js',
@@ -175,11 +174,11 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         layerSearchJS = ""
     if filterItems != []:
         layerFilterCSS = '<link rel="stylesheet" '
-        layerFilterCSS += 'href="css/materialize.min.css">'
+        layerFilterCSS += 'href="css/filter.css">\n'
         layerFilterCSS += '<link rel="stylesheet" '
         layerFilterCSS += 'href="css/nouislider.min.css">'
-        layerFilterJS = '<script src="js/materialize.min.js"></script>'
-        layerFilterJS += '<script src="js/nouislider.min.js"></script>'
+        layerFilterJS = '<script src="js/tailDT.js"></script>\n'
+        layerFilterJS += '<script src="js/nouislider.min.js"></script>\n'
         layerFilterJS += '<script src="js/wNumb.js"></script>'
     else:
         layerFilterCSS = ""
