@@ -814,6 +814,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 timeStepSeconds: 1
                 }).selectDate(%s,%s-1,%s,%s,%s,%s);
                 tail.DateTime("#dat_%s_date2").reload()
+                filterFunc()
                 dat_%s_date1.onchange = function(){filterFunc()};
                 dat_%s_date2.onchange = function(){filterFunc()};
             });
