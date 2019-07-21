@@ -642,7 +642,7 @@ def boilType(fieldType):
         fType = "str"
     if fieldType.lower() in ["date"]:
         fType = "date"
-    if fieldType.lower() in ["datetime", "timestamp"]:
+    if fieldType.lower() in ["datetime", "timestamp", "timestamp without time zone"]:
         fType = "datetime"
     if fieldType.lower() in ["time"]:
         fType = "time"

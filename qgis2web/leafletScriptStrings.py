@@ -617,8 +617,8 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     for (key in Filters){
                         if (Filters[key] == "str" || Filters[key] == "bool"){
                           var selection = [];
-                          for (option in Array.from(this["sel_" + key].selectedOptions)){
-                              selection.push(this["sel_"+key].selectedOptions[option].value);
+                          for (option in Array.from(document.getElementById("sel_" + key).selectedOptions)){
+                              selection.push(document.getElementById("sel_"+key).selectedOptions[option].value);
                             
                           }
                           try{
@@ -634,7 +634,8 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                           }
                         }
                         if (Filters[key] == "int" || Filters[key] == "real"){
-                            sliderVals = this["sel_" + key].noUiSlider.get();
+                            
+                            sliderVals =  document.getElementById("div_" + key).noUiSlider.get();
                             try{
                              if (key in features[0].properties){
                                for (i = features.length - 1; i >= 0; --i){
@@ -648,12 +649,12 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                             } catch(err){
                             }
                         }
-                        if (Filters[key] == "date" || Filters[key] == "datetime"){
-                            startdate = this["dat_" + key + "_date1"].value.replace(" ", "T");
-                            enddate = this["dat_" + key + "_date2"].value.replace(" ", "T");
+                        if (Filters[key] == "date" || Filters[key] == "datetime" || Filters[key] == "time"){
                             try{
                             if (key in features[0].properties){
-                            
+                                HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                                startdate = document.getElementById("dat_" + HTMLkey + "_date1").value.replace(" ", "T");
+                                enddate = document.getElementById("dat_" + HTMLkey + "_date2").value.replace(" ", "T");
                                for (i = features.length - 1; i >= 0; --i){
                                    if (features[i].properties[key] < startdate
                                      || features[i].properties[key] > enddate
@@ -680,184 +681,217 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             if filterItems[item]["type"] in ["str", "bool"] :
                 endHTML += """
             document.getElementById("menu").appendChild(document.createElement("div"));
-            var div_{name} = document.createElement('div');
-            div_{name}.id = "sel_{name}";
-            div_{name}.className= "filterselect";
-            document.getElementById("menu").appendChild(div_{name});
-            sel_{name} = document.createElement('select');
-            sel_{name}.multiple = true;
-            var {name}_options_str = "<option value='' unselected></option>";
-                    """.format(name = itemName)
-                endHTML += """
-            sel_%s.onchange = function(){filterFunc()};""" % itemName
+            var div_{nameS} = document.createElement('div');
+            div_{nameS}.id = "div_{name}";
+            div_{nameS}.className= "filterselect";
+            document.getElementById("menu").appendChild(div_{nameS});
+            sel_{nameS} = document.createElement('select');
+            sel_{nameS}.multiple = true;
+            sel_{nameS}.id = "sel_{name}";
+            var {nameS}_options_str = "<option value='' unselected></option>";
+            sel_{nameS}.onchange = function(){{filterFunc()}};
+            """.format(name = itemName, nameS = safeName(itemName))
                 for entry in filterItems[item]["values"]:
                     endHTML += """
-            {name}_options_str  += '<option value="{e}">{e}</option>';
-                        """.format(e = entry, name = itemName)
+            {nameS}_options_str  += '<option value="{e}">{e}</option>';
+                        """.format(e = entry, name = itemName,
+                                   nameS = safeName(itemName))
                 endHTML += """
-            sel_{name}.innerHTML = {name}_options_str;
-            div_{name}.appendChild(sel_{name});""".format(name = itemName)
-                endHTML += """
-                var lab_{name} = document.createElement('div');
-                lab_{name}.innerHTML = '{name}';
-                lab_{name}.className = 'filterLabel';
-                div_{name}.appendChild(lab_{name});""".format(name = itemName)
-                endHTML += """
-                    """
+            sel_{nameS}.innerHTML = {nameS}_options_str;
+            div_{nameS}.appendChild(sel_{nameS});
+            var lab_{nameS} = document.createElement('div');
+            lab_{nameS}.innerHTML = '{name}';
+            lab_{nameS}.className = 'filterLabel';
+            div_{nameS}.appendChild(lab_{nameS});
+                """.format(name = itemName, nameS = safeName(itemName))
             if filterItems[item]["type"] in ["int","real"]:
                 endHTML += """
             document.getElementById("menu").appendChild(document.createElement("div"));
-            var div_{name} = document.createElement("div");
-            div_{name}.id = "div_{name}";
-            div_{name}.className = "slider";
-            document.getElementById("menu").appendChild(div_{name});
-            var lab_{name} = document.createElement('p');
-            lab_{name}.innerHTML  = '{name}: <span id="val_{name}"></span>';
-            lab_{name}.className = 'slider';
-            document.getElementById("menu").appendChild(lab_{name});
-            var sel_{name} = document.getElementById('div_{name}');
-            """ .format(name = itemName)
+            var div_{nameS} = document.createElement("div");
+            div_{nameS}.id = "div_{name}";
+            div_{nameS}.className = "slider";
+            document.getElementById("menu").appendChild(div_{nameS});
+            var lab_{nameS} = document.createElement('p');
+            lab_{nameS}.innerHTML  = '{name}: <span id="val_{name}"></span>';
+            lab_{nameS}.className = 'slider';
+            document.getElementById("menu").appendChild(lab_{nameS});
+            var sel_{nameS} = document.getElementById('div_{name}');
+            """ .format(name = itemName, nameS = safeName(itemName))
                 if filterItems[item]["type"] == "int":
                     endHTML += """
-            noUiSlider.create(sel_%s, {
+            noUiSlider.create(sel_{nameS}, {{
                 connect: true,
-                start: [ %s, %s],
+                start: [{min}, {max}],
                 step: 1,
-                format: wNumb({
+                format: wNumb({{
                     decimals: 0,
-                    }),
-                range: {
-                min: %s,
-                max: %s                
-                }
-            });
-            sel_%s.noUiSlider.on('update', function (values) {
+                    }}),
+                range: {{
+                min: {min},
+                max: {max}                
+                }}
+            }});
+            sel_{nameS}.noUiSlider.on('update', function (values) {{
             filterVals =[];
-            for (value in values){
+            for (value in values){{
             filterVals.push(parseInt(value))
-            }
-            val_%s = document.getElementById('val_%s');
-            val_%s.innerHTML = values.join(' - ');
+            }}
+            val_{nameS} = document.getElementById('val_{name}');
+            val_{nameS}.innerHTML = values.join(' - ');
                 filterFunc()
-            });""" % (itemName, filterItems[item]["values"][0], 
-                   filterItems[item]["values"][1], 
-                   filterItems[item]["values"][0],
-                   filterItems[item]["values"][1],
-                   itemName, itemName, itemName, itemName)
+            }});""".format(name = itemName, nameS = safeName(itemName), 
+                    min = filterItems[item]["values"][0], 
+                   max = filterItems[item]["values"][1])
                 else:
                     endHTML += """
-            noUiSlider.create(sel_%s, {
+            noUiSlider.create(sel_{nameS}, {{
                 connect: true,
-                start: [ %s, %s],
-                range: {
-                min: %s,
-                max: %s
-                }
-            });
-            sel_%s.noUiSlider.on('update', function (values) {
-            val_%s = document.getElementById('val_%s');
-            val_%s.innerHTML = values.join(' - ');
+                start: [{min}, {max}],
+                range: {{
+                min: {min},
+                max: {max}
+                }}
+            }});
+            sel_{nameS}.noUiSlider.on('update', function (values) {{
+            val_{nameS} = document.getElementById('val_{name}');
+            val_{nameS}.innerHTML = values.join(' - ');
                 filterFunc()
-            });
-            """ % (itemName, filterItems[item]["values"][0],
-                   filterItems[item]["values"][1], 
-                   filterItems[item]["values"][0],
-                   filterItems[item]["values"][1],
-                   itemName, itemName, itemName, itemName)
+            }});
+            """.format(name = itemName, nameS = safeName(itemName), 
+                    min = filterItems[item]["values"][0], 
+                   max = filterItems[item]["values"][1])
             if filterItems[item]["type"] in ["date", "time", "datetime"]:
-                if filterItems[item]["type"] == "datetime":
-                    startDate = filterItems[item]["values"][0]
-                    endDate = filterItems[item]["values"][1]
+                startDate = filterItems[item]["values"][0]
+                endDate = filterItems[item]["values"][1]
+                d = "'YYYY-mm-dd'"
+                t = "'HH:ii:ss'"
+                Y1 = startDate.toString("yyyy")
+                M1 = startDate.toString("M")
+                D1 = startDate.toString("d")
+                hh1 = startDate.toString("h")
+                mm1 = startDate.toString("m")
+                ss1 = startDate.toString("s")
+                Y2 = endDate.toString("yyyy")
+                M2 = endDate.toString("M")
+                D2 = endDate.toString("d")
+                hh2 = endDate.toString("h")
+                mm2 = endDate.toString("m")
+                ss2 = endDate.toString("s")
+                
+                
                 if filterItems[item]["type"] == "date":
-                    startDate = filterItems[item]["values"][0].toString("yyyy-MM-dd")
-                    endDate = filterItems[item]["values"][1].toString("yyyy-MM-dd")
+                    d = "'YYYY-mm-dd'"
+                    t = "false"
+                    hh1 = 0
+                    mm1 = 0
+                    ss1 = 0
+                    hh2 = 0
+                    mm2 = 0
+                    ss2 = 0
+                    ds = startDate.toMSecsSinceEpoch()
+                    de = endDate.toMSecsSinceEpoch()
+                if filterItems[item]["type"] == "datetime":
+                    ds = startDate.toMSecsSinceEpoch()
+                    de = endDate.toMSecsSinceEpoch()
+                if filterItems[item]["type"] == "time":
+                    t = "'HH:ii:ss'"
+                    d = "false"
+                    Y1 = 0
+                    M1 = 1
+                    D1 = 0
+                    Y2 = 0
+                    M2 = 1
+                    D2 = 0
+                    ds =  "null"
+                    de = "null"
                 endHTML += """
             document.getElementById("menu").appendChild(document.createElement("div"));
-            var div_{name}_date1 = document.createElement("div");
-            div_{name}_date1.id = "div_{name}_date1";
-            div_{name}_date1.className= "filterselect";
-            document.getElementById("menu").appendChild(div_{name}_date1);
-            dat_{name}_date1 = document.createElement('input');
-            dat_{name}_date1.type = "text";
-            dat_{name}_date1.id = "dat_{name}_date1";
-            div_{name}_date1.appendChild(dat_{name}_date1);
-            var lab_{name}_date1 = document.createElement('p');
-            lab_{name}_date1.innerHTML  = '{name} from';
-            document.getElementById("div_{name}_date1").appendChild(lab_{name}_date1);""".format(
-                name = itemName)
+            var div_{nameS}_date1 = document.createElement("div");
+            div_{nameS}_date1.id = "div_{nameS}_date1";
+            div_{nameS}_date1.className= "filterselect";
+            document.getElementById("menu").appendChild(div_{nameS}_date1);
+            dat_{nameS}_date1 = document.createElement('input');
+            dat_{nameS}_date1.type = "text";
+            dat_{nameS}_date1.id = "dat_{nameS}_date1";
+            div_{nameS}_date1.appendChild(dat_{nameS}_date1);
+            var lab_{nameS}_date1 = document.createElement('p');
+            lab_{nameS}_date1.innerHTML  = '{name} from';
+            document.getElementById("div_{nameS}_date1").appendChild(lab_{nameS}_date1);
+            document.addEventListener("DOMContentLoaded", function(){{
+                tail.DateTime("#dat_{nameS}_date1", {{
+                    dateStart: {ds},
+                    dateEnd: {de},  
+                    dateFormat: {d},
+                    timeFormat: {t},
+                    today: false,
+                    weekStart: 1,
+                    position: "left",
+                    closeButton: true,
+                    stayOpen: true,
+                    timeStepMinutes:1,
+                    timeStepSeconds: 1
+                }}).selectDate({Y1},{M1}-1,{D1},{hh1},{mm1},{ss1});
+                tail.DateTime("#dat_{nameS}_date1").reload() 
+                """.format(
+                    name = itemName,
+                    nameS = safeName(itemName),
+                    de = de,
+                    ds = ds,
+                    d = d,
+                    t = t,
+                    Y1 = Y1,
+                    M1 = M1,
+                    D1 = D1,
+                    hh1 = hh1,
+                    mm1 = mm1,
+                    ss1 = ss1
+                )
                 endHTML += """
-            document.addEventListener("DOMContentLoaded", function(){
-                tail.DateTime("#dat_%s_date1", {
-                today: false,
-                weekStart: 1,
-                closeButton: true,
-                stayOpen: true,
-                timeStepMinutes:1,
-                timeStepSeconds: 1
-                }).selectDate(%s,%s-1,%s,%s,%s,%s);
-                tail.DateTime("#dat_%s_date1").reload() 
-                """ % (itemName,
-                       startDate.toString("yyyy"),
-                       startDate.toString("M"),
-                       startDate.toString("d"),
-                       startDate.toString("h"),
-                       startDate.toString("m"),
-                       startDate.toString("s"),
-                       itemName)
-                endHTML += """
-                tail.DateTime("#dat_%s_date2", {
-                today: false,
-                weekStart: 1,
-                closeButton: true,
-                stayOpen: true,
-                timeStepMinutes:1,
-                timeStepSeconds: 1
-                }).selectDate(%s,%s-1,%s,%s,%s,%s);
-                tail.DateTime("#dat_%s_date2").reload()
+                tail.DateTime("#dat_{nameS}_date2", {{
+                    dateStart: {ds},
+                    dateEnd: {de},  
+                    dateFormat: {d},
+                    timeFormat: {t},
+                    today: false,
+                    weekStart: 1,
+                    position: "left",
+                    closeButton: true,
+                    stayOpen: true,
+                    timeStepMinutes:1,
+                    timeStepSeconds: 1
+                }}).selectDate({Y2},{M2}-1,{D2},{hh2},{mm2},{ss2});
+                tail.DateTime("#dat_{nameS}_date2").reload() 
                 filterFunc()
-                dat_%s_date1.onchange = function(){filterFunc()};
-                dat_%s_date2.onchange = function(){filterFunc()};
-            });
-            """ % (itemName,
-                   endDate.toString("yyyy"),
-                   endDate.toString("M"),
-                   endDate.toString("d"),
-                   endDate.toString("h"),
-                   endDate.toString("m"),
-                   endDate.toString("s"),
-                   itemName,
-                   itemName,
-                   itemName)
-                
+                dat_{nameS}_date1.onchange = function(){{filterFunc()}};
+                dat_{nameS}_date2.onchange = function(){{filterFunc()}};
+            }});
+            """.format(
+                name = itemName,
+                nameS = safeName(itemName),
+                de = de,
+                ds = ds,
+                d = d,
+                t = t,
+                Y2 = Y2,
+                M2 = M2,
+                D2 = D2,
+                hh2 = hh2,
+                mm2 = mm2,
+                ss2 = ss2
+            )
                 endHTML += """
-                
-            var div_{name}_date2 = document.createElement("div");
-            div_{name}_date2.id = "div_{name}_date2";
-            div_{name}_date2.className= "filterselect";
-            document.getElementById("menu").appendChild(div_{name}_date2);
-            dat_{name}_date2 = document.createElement('input');
-            dat_{name}_date2.type = "text";
-            dat_{name}_date2.id = "dat_{name}_date2";
-            div_{name}_date2.appendChild(dat_{name}_date2);
-            var lab_{name}_date2 = document.createElement('p');
-            lab_{name}_date2.innerHTML  = '{name} till';
-            document.getElementById("div_{name}_date2").appendChild(lab_{name}_date2);""".format(
-                name = itemName)
-                #endHTML += """
-            #//dat_%s_date2.onchange = function(){filterFunc()};""" % (itemName)
-            #if filterItems[item]["type"] == "bool":
-            #    endHTML += """
-            #var boo_{name} = document.createElement('div');
-            #boo_{name}.id = "boo_{name}";
-            #boo_{name}.className = "switch";
-            #boo_{name}.innerHTML = '<label>False<input type="checkbox"><span class="lever"></span>True</label>';
-            #document.getElementById("menu").appendChild(boo_{name});
-            #var lab_{name}_boo = document.createElement('div');
-            #lab_{name}_boo.innerHTML  = '{name}';
-            #document.getElementById("menu").appendChild(lab_{name}_boo);
-            #""".format(name = itemName)
-            #    endHTML += """
-            #boo_%s.onchange = function(){filterFunc()};""" % (itemName)
+            var div_{nameS}_date2 = document.createElement("div");
+            div_{nameS}_date2.id = "div_{nameS}_date2";
+            div_{nameS}_date2.className= "filterselect";
+            document.getElementById("menu").appendChild(div_{nameS}_date2);
+            dat_{nameS}_date2 = document.createElement('input');
+            dat_{nameS}_date2.type = "text";
+            dat_{nameS}_date2.id = "dat_{nameS}_date2";
+            div_{nameS}_date2.appendChild(dat_{nameS}_date2);
+            var lab_{nameS}_date2 = document.createElement('p');
+            lab_{nameS}_date2.innerHTML  = '{name} till';
+            document.getElementById("div_{nameS}_date2").appendChild(lab_{nameS}_date2);""".format(
+                name = itemName, nameS = safeName(itemName))
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {
