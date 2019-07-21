@@ -153,7 +153,7 @@ class LeafletWriter(Writer):
                                                    outputProjectFileName,
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
-                                                   layerFilter, canvas, 
+                                                   layerFilter, canvas,
                                                    addressSearch, locate)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
                  widgetAccent, widgetBackground)
@@ -345,24 +345,13 @@ class LeafletWriter(Writer):
             pass
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
-        
         filterItems = []
         for item in params["Appearance"]["Attribute filter"]:
-            filterItem = returnFilterValues(layer_list, 
-                                                  item.text().split(": ")[0],
-                                                  item.text().split(": ")[1])
+            filterItem = returnFilterValues(layer_list,
+                                            item.text().split(": ")[0],
+                                            item.text().split(": ")[1])
             if filterItem:
                 filterItems.append(filterItem)
-            
-                        #construct the list:
-                            #integers:
-                            
-                        # print(f.typeName())
-                        # fieldIndex = fields.indexFromName(f.name())
-                        # editorWidget = layer.editorWidgetSetup(fieldIndex).type()
-                        # if editorWidget == 'Hidden':
-                        #     continue
-                        # options.append(f.name() + ": " + f.typeName())
         labelList = []
         for count, layer in enumerate(layer_list):
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")

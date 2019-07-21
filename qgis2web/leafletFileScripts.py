@@ -123,8 +123,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, layerSearch, filterItems, canvas, locate, 
-                   qgis2webJS, template, feedback, useMultiStyle, useHeat, 
+                   matchCRS, layerSearch, filterItems, canvas, locate,
+                   qgis2webJS, template, feedback, useMultiStyle, useHeat,
                    useShapes, useOSMB, useWMS, useWMTS, useVT):
     useCluster = False
     for cluster in cluster_set:

@@ -421,10 +421,9 @@ class MainDialog(QDialog, FORM_CLASS):
                     self.layer_search_combo.setItemData(
                         self.layer_search_combo.findText(displayStr),
                         sln + "_" + str(count))
+
     def populateAttrFilter(self):
         self.layer_filter_select.clear()
-        #self.layer_filter_select.addItem("None")
-
         (layers, groups, popup, visible, interactive,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         options = []
@@ -437,23 +436,22 @@ class MainDialog(QDialog, FORM_CLASS):
                     if editorWidget == 'Hidden':
                         continue
                     if utils.boilType(f.typeName()) in ["int", "str", "real",
-                                                        "date", "bool", 
+                                                        "date", "bool",
                                                         "time", "datetime"]:
-                        options.append([f.name() + ": " + 
-                        utils.boilType(f.typeName()), layer.name()])
+                        options.append([f.name() + ": " +
+                                        utils.boilType(f.typeName()),
+                                        layer.name()])
         preCleanOptions = {}
         for entry in options:
             if entry[0] not in list(preCleanOptions.keys()):
                 preCleanOptions[entry[0]] = ": " + entry[1]
-            else :
+            else:
                 preCleanOptions[entry[0]] = "| ".join(
                     [preCleanOptions[entry[0]], entry[1]])
         options = []
-        for key,value in preCleanOptions.items():
+        for key, value in preCleanOptions.items():
             options.append(key + value)
-        #cleanup of items in options
         cleanOptions = list(set(options))
-        
         for option in cleanOptions:
             self.layer_filter_select.insertItem(0, option)
 
