@@ -1,4 +1,4 @@
-ARG QGIS_TEST_VERSION=release-3_0
+ARG QGIS_TEST_VERSION=release-3_4
 FROM  qgis/qgis:${QGIS_TEST_VERSION}
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
