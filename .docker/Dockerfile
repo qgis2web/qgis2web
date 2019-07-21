@@ -1,4 +1,4 @@
-ARG QGIS_TEST_VERSION=3.4.10
+ARG QGIS_TEST_VERSION=latest-ltr
 FROM  qgis/qgis:${QGIS_TEST_VERSION}
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
