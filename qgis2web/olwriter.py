@@ -202,12 +202,14 @@ class OpenLayersWriter(Writer):
                   "@EXP_JS@": exp_js,
                   "@LEAFLET_ADDRESSCSS@": "",
                   "@LEAFLET_MEASURECSS@": "",
+                  "@LEAFLET_LAYERFILTERCSS@": "",
                   "@LEAFLET_EXTRAJS@": "",
                   "@LEAFLET_ADDRESSJS@": "",
                   "@LEAFLET_MEASUREJS@": "",
                   "@LEAFLET_CRSJS@": "",
                   "@LEAFLET_LAYERSEARCHCSS@": "",
                   "@LEAFLET_LAYERSEARCHJS@": "",
+                  "@LEAFLET_LAYERFILTERJS@": "",
                   "@LEAFLET_CLUSTERCSS@": "",
                   "@LEAFLET_CLUSTERJS@": ""}
         with open(os.path.join(folder, "index.html"), "w") as f:
