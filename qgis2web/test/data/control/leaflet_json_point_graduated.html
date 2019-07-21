@@ -152,6 +152,8 @@
         var layer_airports_0 = new L.geoJson(json_airports_0, {
             attribution: '',
             interactive: true,
+            dataVar: 'json_airports_0',
+            layerName: 'layer_airports_0',
             pane: 'pane_airports_0',
             onEachFeature: pop_airports_0,
             pointToLayer: function (feature, latlng) {

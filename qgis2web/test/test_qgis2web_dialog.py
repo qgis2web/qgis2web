@@ -76,6 +76,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
                 'Geolocate user': False,
                 'Search layer': None,
                 'Add layers list': 'None',
+                'Attribute filter': [],
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',
