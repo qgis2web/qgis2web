@@ -870,7 +870,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             dat_{nameS}_date2.id = "dat_{nameS}_date2";
             div_{nameS}_date2.appendChild(dat_{nameS}_date2);
             var lab_{nameS}_date2 = document.createElement('p');
-            lab_{nameS}_date2.innerHTML  = '{name} till';
+            lab_{nameS}_date2.innerHTML  = '{name} to';
             document.getElementById("div_{nameS}_date2")
               .appendChild(lab_{nameS}_date2);
             """.format(name=itemName, nameS=safeName(itemName))
