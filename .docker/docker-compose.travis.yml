@@ -3,8 +3,6 @@ services:
   qgis:
     build:
       context: .
-      args:
-        - QGIS_TEST_VERSION
     tty: true
     volumes:
       - ${TRAVIS_BUILD_DIR}:/usr/src
