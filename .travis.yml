@@ -13,7 +13,7 @@ env:
     - QGIS_TEST_VERSION="release-3_4"
 
 install:
-  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
+  - docker build --build-arg QGIS_TEST_VERSION=$QGIS_TEST_VERSION  .docker
 
 script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
