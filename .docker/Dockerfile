@@ -1,5 +1,6 @@
 ARG QGIS_TEST_VERSION
 FROM  qgis/qgis:$QGIS_TEST_VERSION
+ARG QGIS_TEST_VERSION
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN apt-get update && \
