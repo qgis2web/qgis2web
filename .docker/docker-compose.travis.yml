@@ -2,6 +2,8 @@ version: '3'
 services:
   qgis:
     build: .
+      args:
+        QGIS_TEST_VERSION: latest
     tty: true
     volumes:
       - ${TRAVIS_BUILD_DIR}:/usr/src
