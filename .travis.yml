@@ -12,10 +12,10 @@ jobs:
   include:
     - stage: test
       install: docker build --build-arg QGIS_TEST_VERSION=latest  .docker
-      script: docker-compose -f .docker/docker-compose.travis.yml --QGIS_TEST_VERSION latest run qgis /usr/src/.docker/run-docker-tests.sh
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh QGIS_TEST_VERSION=latest
     - stage: test
       install: docker build --build-arg QGIS_TEST_VERSION=release-3_4  .docker
-      script: docker-compose -f .docker/docker-compose.travis.yml --QGIS_TEST_VERSION=release-3_4 run qgis /usr/src/.docker/run-docker-tests.sh
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh QGIS_TEST_VERSION=release-3_4
 
 after_success:
   - coveralls
