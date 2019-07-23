@@ -11,15 +11,15 @@ before_install:
 jobs:
   include:
     - stage: test
-      env:
-        QGIS_TEST_VERSION="latest"
-      install: docker build --build-arg QGIS_TEST_VERSION=latest  .docker
-      script: env $QGIS_TEST_VERSION docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+      env: QGIS_TEST_VERSION="latest"
+      before-install: echo "ARG QGIS_TEST_VERSION ${QGIS_TEST_VERSION}" >> Dockerfile
+      install: docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
     - stage: test
-      env:
-        QGIS_TEST_VERSION="release-3_4"
-      install: docker build --build-arg QGIS_TEST_VERSION=release-3_4  .docker
-      script: env $QGIS_TEST_VERSION docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+      env: QGIS_TEST_VERSION="release-3_4"
+      before-install: echo "ARG QGIS_TEST_VERSION ${QGIS_TEST_VERSION}" >> Dockerfile
+      install: docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
 after_success:
   - coveralls
