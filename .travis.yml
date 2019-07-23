@@ -13,12 +13,12 @@ jobs:
     - stage: test
       env:
         QGIS_TEST_VERSION="latest"
-      install: docker build --build-arg QGIS_TEST_VERSION="latest"  .docker
+      install: docker build --build-arg QGIS_TEST_VERSION=latest  .docker
       script: env $QGIS_TEST_VERSION docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
     - stage: test
       env:
         QGIS_TEST_VERSION="release-3_4"
-      install: docker build --build-arg QGIS_TEST_VERSION="release-3_4"  .docker
+      install: docker build --build-arg QGIS_TEST_VERSION=release-3_4  .docker
       script: env $QGIS_TEST_VERSION docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
 after_success:
