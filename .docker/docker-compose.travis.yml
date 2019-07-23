@@ -1,8 +1,7 @@
-version: '3.7'
+version: '3'
 services:
   qgis:
-    build:
-      context: .
+    build: .
     tty: true
     volumes:
       - ${TRAVIS_BUILD_DIR}:/usr/src
