@@ -2,7 +2,7 @@ version: '3'
 services:
   qgis:
     build:
-      context: .
+      context: ..
       dockerfile: ./.docker/Dockerfile
       args:
         QGIS_TEST_VERSION: ${QGIS_TEST_VERSION}
