@@ -118,7 +118,7 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Include list of layers (with legend icons, where possible)</dd>
     <dt>Add measure tool</dt>
         <dd>Include interactive measuring widget</dd>
-    <dt>Attribute filter"</dt>
+    <dt>Attribute filter</dt>
         <dd>Every supported field of all layers are listed as well as the type and layers they occur in. Selected attributes will be used to filter the webmap and all layers that contain the attribute with the same name.</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
