@@ -8,8 +8,8 @@ from qgis2web.utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
-                         cluster_set, measure, matchCRS, layerSearch, canvas,
-                         address, locate):
+                         cluster_set, measure, matchCRS, layerSearch,
+                         filterItems, canvas, address, locate):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -97,6 +97,17 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
         shutil.copytree(imageDir, imageStore)
     else:
         os.makedirs(imageStore)
+    if filterItems != []:
+        shutil.copyfile(jsDir + 'tailDT.js',
+                        jsStore + 'tailDT.js')
+        shutil.copyfile(cssDir + 'filter.css',
+                        cssStore + 'filter.css')
+        shutil.copyfile(jsDir + 'nouislider.min.js',
+                        jsStore + 'nouislider.min.js')
+        shutil.copyfile(jsDir + 'wNumb.js',
+                        jsStore + 'wNumb.js')
+        shutil.copyfile(cssDir + 'nouislider.min.css',
+                        cssStore + 'nouislider.min.css')
     if measure != "None":
         shutil.copyfile(jsDir + 'leaflet-measure.js',
                         jsStore + 'leaflet-measure.js')
@@ -112,9 +123,9 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, layerSearch, canvas, locate, qgis2webJS, template,
-                   feedback, useMultiStyle, useHeat, useShapes, useOSMB,
-                   useWMS, useWMTS, useVT):
+                   matchCRS, layerSearch, filterItems, canvas, locate,
+                   qgis2webJS, template, feedback, useMultiStyle, useHeat,
+                   useShapes, useOSMB, useWMS, useWMTS, useVT):
     useCluster = False
     for cluster in cluster_set:
         if cluster:
@@ -161,6 +172,17 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         layerSearchCSS = ""
         layerSearchJS = ""
+    if filterItems != []:
+        layerFilterCSS = '<link rel="stylesheet" '
+        layerFilterCSS += 'href="css/filter.css">\n'
+        layerFilterCSS += '<link rel="stylesheet" '
+        layerFilterCSS += 'href="css/nouislider.min.css">'
+        layerFilterJS = '<script src="js/tailDT.js"></script>\n'
+        layerFilterJS += '<script src="js/nouislider.min.js"></script>\n'
+        layerFilterJS += '<script src="js/wNumb.js"></script>'
+    else:
+        layerFilterCSS = ""
+        layerFilterJS = ""
     if address:
         addressCSS = """
         <link rel="stylesheet" href="css/"""
@@ -208,6 +230,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_CLUSTERJS@": clusterJS,
               "@LEAFLET_LAYERSEARCHCSS@": layerSearchCSS,
               "@LEAFLET_LAYERSEARCHJS@": layerSearchJS,
+              "@LEAFLET_LAYERFILTERCSS@": layerFilterCSS,
+              "@LEAFLET_LAYERFILTERJS@": layerFilterJS,
               "@LEAFLET_ADDRESSCSS@": addressCSS,
               "@LEAFLET_MEASURECSS@": measureCSS,
               "@LEAFLET_EXTRAJS@": extraJS,

@@ -59,7 +59,7 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            getVTStyles,
                                            getVTLabels)
 from qgis2web.utils import (ALL_ATTRIBUTES, exportVector,
-                            exportRaster, safeName)
+                            exportRaster, safeName, returnFilterValues)
 from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
@@ -139,6 +139,7 @@ class LeafletWriter(Writer):
         measure = params["Appearance"]["Measure tool"]
         highlight = params["Appearance"]["Highlight on hover"]
         layerSearch = params["Appearance"]["Layer search"]
+        layerFilter = params["Appearance"]["Attribute filter"]
         popupsOnHover = params["Appearance"]["Show popups on hover"]
         template = params["Appearance"]["Template"]
         widgetAccent = params["Appearance"]["Widget Icon"]
@@ -152,8 +153,8 @@ class LeafletWriter(Writer):
                                                    outputProjectFileName,
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
-                                                   canvas, addressSearch,
-                                                   locate)
+                                                   layerFilter, canvas,
+                                                   addressSearch, locate)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
                  widgetAccent, widgetBackground)
 
@@ -344,6 +345,13 @@ class LeafletWriter(Writer):
             pass
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
+        filterItems = []
+        for item in params["Appearance"]["Attribute filter"]:
+            filterItem = returnFilterValues(layer_list,
+                                            item.text().split(": ")[0],
+                                            item.text().split(": ")[1])
+            if filterItem:
+                filterItems.append(filterItem)
         labelList = []
         for count, layer in enumerate(layer_list):
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
@@ -355,13 +363,13 @@ class LeafletWriter(Writer):
                     if palyr.fieldName and palyr.fieldName != "":
                         labelList.append("layer_%s" % safeLayerName)
         labelsList = ",".join(labelList)
-        end += endHTMLscript(wfsLayers, layerSearch, labelCode,
-                             labelVisibility, searchLayer, useHeat, useRaster,
-                             labelsList, mapUnitLayers)
+        end += endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode,
+                             labelVisibility, searchLayer, useHeat,
+                             useRaster, labelsList, mapUnitLayers)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
-                           measure, matchCRS, layerSearch, canvas,
+                           measure, matchCRS, layerSearch, filterItems, canvas,
                            locate, new_src, template, feedback, useMultiStyle,
                            useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT)
         except Exception:

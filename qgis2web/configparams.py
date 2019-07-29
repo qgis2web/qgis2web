@@ -56,6 +56,7 @@ def getParams(configure_exporter_action=None):
             "Add abstract": ("None", "upper right", "lower right",
                              "lower left", "upper left"),
             "Layer search": ("None", "placeholder"),
+            "Attribute filter": ["None", "placeholder2"],
             "Measure tool": ("None", "Metric", "Imperial"),
             "Show popups on hover": False,
             "Highlight on hover": False,
@@ -105,14 +106,21 @@ def getDefaultParams():
                     settings[param] = value[1]
                 else:
                     settings[param] = value[0]
+            if isinstance(value, list):
+                if param == 'Attribute filter':
+                    settings[param] = value[0]
+                else:
+                    settings[param] = value[0]
             if param in ('Widget Icon', 'Widget Background'):
                 settings[param] = value.color().name()
     params['Appearance']['Search layer'] = None
+    params['Appearance']['Attribute filter'] = []
     return params
 
 
 specificParams = {
-    "Add abstract": "leaflet"
+    "Add abstract": "leaflet",
+    "Attribute filter": "leaflet"
 }
 
 specificOptions = {

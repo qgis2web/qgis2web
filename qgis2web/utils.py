@@ -625,3 +625,61 @@ def getRGBAColor(color, alpha):
     r, g, b, a = color.split(",")
     a = (float(a) / 255) * alpha
     return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
+
+
+def boilType(fieldType):
+    fType = None
+    if fieldType.lower() in ["boolean", "bool"]:
+        fType = "bool"
+    if fieldType.lower() in ["double", "real", "decimal", "numeric"]:
+        fType = "real"
+    if fieldType.lower() in ["integer", "integer64", "uint",
+                             "int", "longlong", "int4", "ulonglong"]:
+        fType = "int"
+    if fieldType.lower() in ["char", "string", "text", "varchar", "nchar",
+                             "nvarchar"]:
+        fType = "str"
+    if fieldType.lower() in ["date"]:
+        fType = "date"
+    if fieldType.lower() in ["datetime", "timestamp",
+                             "timestamp without time zone"]:
+        fType = "datetime"
+    if fieldType.lower() in ["time"]:
+        fType = "time"
+    return fType
+
+
+def returnFilterValues(layer_list, fieldName, fieldType):
+    if fieldType.lower() == "bool":
+        return {"name": fieldName, "type": fieldType,
+                "values": ["true", "false"]}
+    filterValues = []
+    for layer in layer_list:
+        if layer.type() == layer.VectorLayer:
+            fields = layer.fields()
+            for f in fields:
+                if boilType(f.typeName()) == fieldType:
+                    if f.name() == fieldName:
+                        iterator = layer.getFeatures()
+                        for feature in iterator:
+                            if feature[fieldName] is not None:
+                                filterValues.append(feature[fieldName])
+    if filterValues == []:
+        return
+    if fieldType == "str":
+        cleanFilterValues = list(dict.fromkeys(filterValues))
+    if fieldType == "int":
+        cleanFilterValues = [min(filterValues) if min(filterValues) >= 0
+                             else 0,
+                             max(filterValues) if max(filterValues) >= 0
+                             else 0]
+        if cleanFilterValues[0] == cleanFilterValues[1]:
+            cleanFilterValues[1] = cleanFilterValues[0] + 1
+    if fieldType in ["date", "time", "real", "datetime"]:
+        cleanFilterValues = [min(filterValues),
+                             max(filterValues)]
+        if cleanFilterValues[0] == cleanFilterValues[1]:
+            if fieldType == "real":
+                add = 1 / 10 * (cleanFilterValues[1] - cleanFilterValues[0])
+                cleanFilterValues[1] = cleanFilterValues[0] + add
+    return {"name": fieldName, "type": fieldType, "values": cleanFilterValues}
