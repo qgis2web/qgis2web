@@ -111,7 +111,7 @@ the output code to achieve what qgis2web cannot.</p>
 <h4>Appearance</h4>
 <dl>
     <dt>Add abstract</dt>
-        <dd>This will push the abtract form the projects metadata into the webmap as a collapsible info box. Supported in leaflet only</dd> 
+        <dd>This will push the abtract from the projects metadata (field abstract) into the webmap as a collapsible info box. Supported in leaflet only</dd> 
     <dt>Add address search</dt>
         <dd>Add field to allow searching for locations (geocode)</dd>
     <dt>Add layers list</dt>
