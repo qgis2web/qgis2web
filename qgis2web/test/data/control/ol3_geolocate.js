@@ -411,8 +411,6 @@ var geolocateOverlay = new ol.layer.Vector({
 geolocation.setTracking(true);
 
 
-
-
 var attributionComplete = false;
 map.on("rendercomplete", function(evt) {
     if (!attributionComplete) {

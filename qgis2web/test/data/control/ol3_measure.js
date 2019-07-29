@@ -595,7 +595,6 @@ addInteraction();
 
 
 
-
 var attributionComplete = false;
 map.on("rendercomplete", function(evt) {
     if (!attributionComplete) {
