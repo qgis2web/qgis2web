@@ -681,6 +681,7 @@ class MainDialog(QDialog, FORM_CLASS):
         except Exception:
             pass
 
+
 class devToggleFilter(QObject):
     devToggle = pyqtSignal(bool)
 
