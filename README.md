@@ -58,6 +58,7 @@ the output code to achieve what qgis2web cannot.</p>
         export</li>
     <li>only a single 2.5d layer will render per map</li>
     <li>2.5d layers only appear when zoomed in to building scales</li>
+    <li>attribute filters and abstract export only works in leaflet based webmaps</li>
 </ul>
 
 <h3>Layer options</h3>
