@@ -1,26 +1,24 @@
 language: python
 python:
   - 3.5
-
+services:
+  - docker
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt-get update
   - sudo apt-get -y install docker-ce
 
-install:
-  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
-
-jobs:
+matrix:
   include:
-    - stage: test
-      env:
+  - name: "QGIS latest"
+    env:
         QGIS_TEST_VERSION="latest"
-      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
-    - stage: test
-      env:
+    script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+  - name: "QGIS LTR"
+    env:
         QGIS_TEST_VERSION="release-3_4"
-      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+    script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
 
 after_success:
   - coveralls

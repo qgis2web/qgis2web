@@ -671,13 +671,15 @@ class MainDialog(QDialog, FORM_CLASS):
         QDialog.close(self)
 
     def closeEvent(self, event):
-        if self.devConsole or self.devConsole.isVisible() and self.preview:
-            del self.devConsole
-            del self.preview
+        try:
+            if self.devConsole or self.devConsole.isVisible() and self.preview:
+                del self.devConsole
+                del self.preview
 
-        self.reject()
-        event.accept()
-
+            self.reject()
+            event.accept()
+        except Exception:
+            pass
 
 class devToggleFilter(QObject):
     devToggle = pyqtSignal(bool)

@@ -63,7 +63,9 @@ the output code to achieve what qgis2web cannot.</p>
 <h3>Layer options</h3>
 <dl>
     <dt>Popup fields</dt>
-        <dd>Specify how each field will be labelled in popups</dd> 
+        <dd>Specify how each field will be labelled in popups</dd>
+    <dt>Popups</dt>
+        <dd>Specify, whether or not a layer shows a popup on a click. If not, the layer is not even clickable</dd>
     <dt>Visible</dt>
         <dd>Select whether the layer will be visible on map load. This only
             determines visibility - the layer will be loaded regardless of this
@@ -107,6 +109,8 @@ the output code to achieve what qgis2web cannot.</p>
 
 <h4>Appearance</h4>
 <dl>
+    <dt>Add abstract</dt>
+        <dd>This will push the abtract form the projects metadata into the webmap as a collapsible info box. Supported in leaflet only</dd> 
     <dt>Add address search</dt>
         <dd>Add field to allow searching for locations (geocode)</dd>
     <dt>Add layers list</dt>
