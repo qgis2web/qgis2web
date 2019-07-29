@@ -53,6 +53,7 @@ the output code to achieve what qgis2web cannot.</p>
         export</li>
     <li>only a single 2.5d layer will render per map</li>
     <li>2.5d layers only appear when zoomed in to building scales</li>
+    <li>Attribute filters and abstract export are currently limited to leaflet exports</li>
 </ul>
 
 <h3>Layer options</h3>
@@ -112,6 +113,8 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Include list of layers (with legend icons, where possible)</dd>
     <dt>Add measure tool</dt>
         <dd>Include interactive measuring widget</dd>
+    <dt>Attribute filter</dt>
+        <dd>Every supported field of all layers are listed as well as the type and layers they occur in. Selected attributes will be used to filter the webmap and all layers that contain the attribute with the same name.</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
     <dt>Highlight on hover</dt>
