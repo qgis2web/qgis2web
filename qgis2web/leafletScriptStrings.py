@@ -634,7 +634,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     } catch(err){
                   }
                 }
-                if (Filters[key] == "int" || Filters[key] == "real"){
+                if (Filters[key] == "int"){
                   sliderVals =  document.getElementById(
                     "div_" + key).noUiSlider.get();
                   try{
@@ -643,6 +643,23 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                       if (parseInt(features[i].properties[key])
                           < sliderVals[0]
                           || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + key).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
                           > sliderVals[1]){
                             features.splice(i,1);
                           }
@@ -682,6 +699,12 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         for item in range(0, filterNum):
             itemName = filterItems[item]["name"]
             if filterItems[item]["type"] in ["str", "bool"]:
+                selSize = 2
+                if filterItems[item]["type"] == "str":
+                    if len(filterItems[item]["values"]) > 10:
+                        selSize = 10
+                    else:
+                        selSize = len(filterItems[item]["values"])
                 endHTML += """
             document.getElementById("menu").appendChild(
                 document.createElement("div"));
@@ -691,10 +714,11 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             document.getElementById("menu").appendChild(div_{nameS});
             sel_{nameS} = document.createElement('select');
             sel_{nameS}.multiple = true;
+            sel_{nameS}.size = {s};
             sel_{nameS}.id = "sel_{name}";
             var {nameS}_options_str = "<option value='' unselected></option>";
             sel_{nameS}.onchange = function(){{filterFunc()}};
-            """.format(name=itemName, nameS=safeName(itemName))
+            """.format(name=itemName, nameS=safeName(itemName), s=selSize)
                 for entry in filterItems[item]["values"]:
                     endHTML += """
             {nameS}_options_str  += '<option value="{e}">{e}</option>';

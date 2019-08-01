@@ -668,6 +668,7 @@ def returnFilterValues(layer_list, fieldName, fieldType):
         return
     if fieldType == "str":
         cleanFilterValues = list(dict.fromkeys(filterValues))
+        cleanFilterValues.sort()
     if fieldType == "int":
         cleanFilterValues = [min(filterValues) if min(filterValues) >= 0
                              else 0,
