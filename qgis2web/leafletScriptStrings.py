@@ -634,7 +634,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     } catch(err){
                   }
                 }
-                if (Filters[key] == "int" || Filters[key] == "real"){
+                if (Filters[key] == "int"){
                   sliderVals =  document.getElementById(
                     "div_" + key).noUiSlider.get();
                   try{
@@ -643,6 +643,23 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                       if (parseInt(features[i].properties[key])
                           < sliderVals[0]
                           || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + key).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
                           > sliderVals[1]){
                             features.splice(i,1);
                           }
