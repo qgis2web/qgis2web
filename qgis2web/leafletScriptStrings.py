@@ -699,6 +699,12 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
         for item in range(0, filterNum):
             itemName = filterItems[item]["name"]
             if filterItems[item]["type"] in ["str", "bool"]:
+                selSize = 2
+                if filterItems[item]["type"] == "str":
+                    if len(filterItems[item]["values"]) > 10:
+                        selSize = 10
+                    else:
+                        selSize = len(filterItems[item]["values"])
                 endHTML += """
             document.getElementById("menu").appendChild(
                 document.createElement("div"));
@@ -708,10 +714,11 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             document.getElementById("menu").appendChild(div_{nameS});
             sel_{nameS} = document.createElement('select');
             sel_{nameS}.multiple = true;
+            sel_{nameS}.size = {s};
             sel_{nameS}.id = "sel_{name}";
             var {nameS}_options_str = "<option value='' unselected></option>";
             sel_{nameS}.onchange = function(){{filterFunc()}};
-            """.format(name=itemName, nameS=safeName(itemName))
+            """.format(name=itemName, nameS=safeName(itemName), s=selSize)
                 for entry in filterItems[item]["values"]:
                     endHTML += """
             {nameS}_options_str  += '<option value="{e}">{e}</option>';
