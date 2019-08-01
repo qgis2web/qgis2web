@@ -613,13 +613,10 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
               for (key in Filters){
                 if (Filters[key] == "str" || Filters[key] == "bool"){
                   var selection = [];
-                  for (option in Array.from(
-                    document.getElementById(
-                      "sel_" + key).selectedOptions)){
-                    selection.push(
-                      document.getElementById("sel_"+key)
-                      .selectedOptions[option].value);
-                    }
+                  var options = document.getElementById("sel_" + key).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
                     try{
                       if (key in features[0].properties){
                         for (i = features.length - 1;
