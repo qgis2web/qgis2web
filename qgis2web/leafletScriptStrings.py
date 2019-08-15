@@ -407,21 +407,34 @@ def titleSubScript(webmap_head, level, pos):
             abstract.onAdd = function (map) {
                 this._div = L.DomUtil.create('div',
                 'leaflet-control leaflet-bar abstract');
-                this._div.id = "abstract"
-                this._div.setAttribute("onmouseenter", "abstract.show()");
-                this._div.setAttribute("onmouseleave", "abstract.hide()");
-                this.hide();
-                return this._div;
-            };
-            abstract.hide = function () {
-                this._div.classList.remove("abstractUncollapsed");
-                this._div.classList.add("abstract");
-                this._div.innerHTML = 'i'
-            }
-            abstract.show = function () {
-                this._div.classList.remove("abstract");
-                this._div.classList.add("abstractUncollapsed");
-                this._div.innerHTML = '""" % positionOpt
+                this._div.id = 'abstract'""" % positionOpt
+        if len(webmap_head) > 240:
+            titleSub += """
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = '""" 
+        else:
+            titleSub += """
+                    
+                    abstract.show();
+                    return this._div;
+                };
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = '"""
+            
         titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
         titleSub += """';
             };
