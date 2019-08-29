@@ -17,6 +17,7 @@ var overlayPopup = new ol.Overlay({
 var expandedAttribution = new ol.control.Attribution({
     collapsible: false
 });
+@MapTitle@
 
 var map = new ol.Map({
     controls: ol.control.defaults({attribution:false}).extend([

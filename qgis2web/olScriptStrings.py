@@ -571,3 +571,27 @@ map.getView().on('change:resolution', function(evt){
 %s
 });""" % lyrScripts
     return mapUnitLayers
+
+
+def getTitle(projectTitle, abstract):
+    titleJS = ""
+    if projectTitle != "":
+        titleJS += """
+window.app = {{}};
+var app = window.app;
+app.MapTitle = function(opt_options) {{
+    var options = opt_options || {{}};
+    var this_ = this;
+    var mapTitle = document.createElement('div');
+    mapTitle.className = "ol-title ol-unselectable ol-control";
+    mapTitle.innerHTML = "{}" ;
+    ol.control.Control.call(this, {{
+      element: mapTitle,
+      target: options.target
+    }});
+}};
+ol.inherits(app.MapTitle, ol.control.Control);
+""".format(projectTitle)
+    if abstract != "":
+        titleJS += ""
+    return titleJS

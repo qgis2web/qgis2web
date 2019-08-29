@@ -47,7 +47,8 @@ from qgis2web.olScriptStrings import (measureScript,
                                       geocodeScript,
                                       getGrid,
                                       getM2px,
-                                      getMapUnitLayers)
+                                      getMapUnitLayers,
+                                      getTitle)
 from qgis2web.olStyleScripts import exportStyles
 from qgis2web.writer import (Writer,
                              WriterResult,
@@ -144,9 +145,11 @@ class OpenLayersWriter(Writer):
         popupLayers = "popupLayers = [%s];" % ",".join(
             ['1' for field in popup])
         project = QgsProject.instance()
-        controls = getControls(project, measureTool, geolocateUser)
-        layersList = getLayersList(addLayersList)
         pageTitle = project.title()
+        abstract = project.metadata().abstract()
+        mapTitles = getTitle(pageTitle, abstract) 
+        controls = getControls(project, measureTool, geolocateUser, mapTitles)
+        layersList = getLayersList(addLayersList)
         backgroundColor = getBackground(mapSettings, widgetAccent,
                                         widgetBackground)
         (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
@@ -167,7 +170,7 @@ class OpenLayersWriter(Writer):
         geocodingScript = geocodeScript(geocode)
         m2px = getM2px(mapUnitsLayers)
         (extracss, controlCount) = getCSS(geocode, geolocateUser, layerSearch,
-                                          controlCount)
+                                          controlCount, mapTitles)
         (jsAddress, cssAddress,
          layerSearch, controlCount) = writeLayerSearch(cssAddress, jsAddress,
                                                        controlCount,
@@ -221,6 +224,7 @@ class OpenLayersWriter(Writer):
             templateOutput = re.sub(r'\n[\s_]+\n', '\n', templateOutput)
             f.write(templateOutput)
         values = {"@GEOLOCATEHEAD@": geolocateHead,
+                  "@MapTitle@": mapTitles,
                   "@BOUNDS@": mapbounds,
                   "@CONTROLS@": ",".join(controls),
                   "@LAYERSLIST@": layersList,
@@ -308,7 +312,7 @@ def bounds(iface, useCanvas, layers, matchCRS):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def getControls(project, measureTool, geolocateUser):
+def getControls(project, measureTool, geolocateUser, mapTitles):
     controls = ['expandedAttribution']
     if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
         controls.append("new ol.control.ScaleLine({})")
@@ -316,6 +320,8 @@ def getControls(project, measureTool, geolocateUser):
         controls.append('new measureControl()')
     if geolocateUser:
         controls.append('new geolocateControl()')
+    if mapTitles != "":
+        controls.append('new app.MapTitle()')
     return controls
 
 
@@ -406,7 +412,7 @@ def getMeasure(measureTool, controlCount):
             controlCount)
 
 
-def getCSS(geocode, geolocateUser, layerSearch, controlCount):
+def getCSS(geocode, geolocateUser, layerSearch, controlCount, mapTitles):
     extracss = """
         <link rel="stylesheet" """
     extracss += """href="./resources/ol3-layerswitcher.css">
@@ -448,6 +454,16 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
     if layerSearch:
         (layerSearchStyle, controlCount) = layerSearchStyleScript(controlCount)
         extracss += layerSearchStyle
+    if mapTitles != "":
+        extracss += """
+            <style>
+            .ol-title {
+                font-size: large;
+                color: #666;
+                top: .5em;
+                right: .5em;
+            }
+            </style>"""
     return (extracss, controlCount)
 
 
