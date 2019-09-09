@@ -286,7 +286,7 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
+def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom, maxZoom):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     attr = ""
@@ -299,10 +299,15 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
             opacity: {opacity},
             attribution: '{attr}',
+            minZoom: {minZoom},
+            maxZoom: {maxZoom},
+            minNativeZoom: {minNativeZoom},
+            maxNativeZoom: {maxNativeZoom}
         }});
         layer_{safeLayerName};""".format(
             opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0],
-            attr=attr)
+            attr=attr, minNativeZoom=d['zmin'][0], maxNativeZoom=d['zmax'][0],
+            minZoom=minZoom, maxZoom=maxZoom)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
@@ -423,10 +428,10 @@ def titleSubScript(webmap_head, level, pos):
                 abstract.show = function () {
                     this._div.classList.remove("abstract");
                     this._div.classList.add("abstractUncollapsed");
-                    this._div.innerHTML = '""" 
+                    this._div.innerHTML = '"""
         else:
             titleSub += """
-                    
+
                     abstract.show();
                     return this._div;
                 };
@@ -434,7 +439,7 @@ def titleSubScript(webmap_head, level, pos):
                     this._div.classList.remove("abstract");
                     this._div.classList.add("abstractUncollapsed");
                     this._div.innerHTML = '"""
-            
+
         titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
         titleSub += """';
             };
