@@ -286,7 +286,8 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom, maxZoom):
+def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
+              maxZoom):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     attr = ""
