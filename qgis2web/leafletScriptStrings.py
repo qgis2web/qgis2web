@@ -423,10 +423,10 @@ def titleSubScript(webmap_head, level, pos):
                 abstract.show = function () {
                     this._div.classList.remove("abstract");
                     this._div.classList.add("abstractUncollapsed");
-                    this._div.innerHTML = '""" 
+                    this._div.innerHTML = '"""
         else:
             titleSub += """
-                    
+
                     abstract.show();
                     return this._div;
                 };
@@ -434,7 +434,7 @@ def titleSubScript(webmap_head, level, pos):
                     this._div.classList.remove("abstract");
                     this._div.classList.add("abstractUncollapsed");
                     this._div.innerHTML = '"""
-            
+
         titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
         titleSub += """';
             };
