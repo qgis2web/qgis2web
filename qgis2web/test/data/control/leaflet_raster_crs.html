@@ -43,7 +43,7 @@
             zoomControl:true, maxZoom:28, minZoom:1
         })
         var hash = new L.Hash(map);
-        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
@@ -52,9 +52,9 @@
         }
         var img_test_0 = 'data/test_0.png';
         var img_bounds_test_0 = [[54.97056462575153,-2.110901948055512],[54.97956776501248,-2.0952621209424374]];
-        var overlay_test_0 = new L.imageOverlay(img_test_0, img_bounds_test_0);
-        bounds_group.addLayer(overlay_test_0);
-        map.addLayer(overlay_test_0);
+        var layer_test_0 = new L.imageOverlay(img_test_0, img_bounds_test_0);
+        bounds_group.addLayer(layer_test_0);
+        map.addLayer(layer_test_0);
         setBounds();
         L.ImageOverlay.include({
             getBounds: function () {

@@ -36,7 +36,7 @@
             zoomControl:true, maxZoom:28, minZoom:1
         })
         var hash = new L.Hash(map);
-        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
@@ -72,6 +72,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['cat'] >= 8.400000 && feature.properties['cat'] <= 15.800000 ) {
@@ -84,6 +85,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['cat'] >= 15.800000 && feature.properties['cat'] <= 23.200000 ) {
@@ -96,6 +98,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['cat'] >= 23.200000 && feature.properties['cat'] <= 30.600000 ) {
@@ -108,6 +111,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['cat'] >= 30.600000 && feature.properties['cat'] <= 38.000000 ) {
@@ -120,6 +124,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
         }
@@ -128,6 +133,9 @@
         map.getPane('pane_pipelines_0').style['mix-blend-mode'] = 'normal';
         var layer_pipelines_0 = new L.geoJson(json_pipelines_0, {
             attribution: '',
+            interactive: true,
+            dataVar: 'json_pipelines_0',
+            layerName: 'layer_pipelines_0',
             pane: 'pane_pipelines_0',
             onEachFeature: pop_pipelines_0,
             style: style_pipelines_0_0,

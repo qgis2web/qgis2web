@@ -8,8 +8,8 @@ from qgis2web.utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
-                         cluster_set, measure, matchCRS, layerSearch, canvas,
-                         mapLibLocation, address, locate):
+                         cluster_set, measure, matchCRS, layerSearch,
+                         filterItems, canvas, address, locate):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -47,10 +47,9 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'labelgun.min.js')
     shutil.copyfile(jsDir + 'labels.js',
                     jsStore + 'labels.js')
-    if mapLibLocation == "Local":
-        shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
-        shutil.copyfile(jsDir + 'leaflet.js.map', jsStore + 'leaflet.js.map')
-        shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
+    shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
+    shutil.copyfile(jsDir + 'leaflet.js.map', jsStore + 'leaflet.js.map')
+    shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
     if address:
         shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
                         jsStore + 'leaflet-control-geocoder.Geocoder.js')
@@ -98,6 +97,17 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
         shutil.copytree(imageDir, imageStore)
     else:
         os.makedirs(imageStore)
+    if filterItems != []:
+        shutil.copyfile(jsDir + 'tailDT.js',
+                        jsStore + 'tailDT.js')
+        shutil.copyfile(cssDir + 'filter.css',
+                        cssStore + 'filter.css')
+        shutil.copyfile(jsDir + 'nouislider.min.js',
+                        jsStore + 'nouislider.min.js')
+        shutil.copyfile(jsDir + 'wNumb.js',
+                        jsStore + 'wNumb.js')
+        shutil.copyfile(cssDir + 'nouislider.min.css',
+                        cssStore + 'nouislider.min.css')
     if measure != "None":
         shutil.copyfile(jsDir + 'leaflet-measure.js',
                         jsStore + 'leaflet-measure.js')
@@ -113,7 +123,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, layerSearch, canvas, mapLibLocation, locate,
+                   matchCRS, layerSearch, filterItems, canvas, locate,
                    qgis2webJS, template, feedback, useMultiStyle, useHeat,
                    useShapes, useOSMB, useWMS, useWMTS, useVT):
     useCluster = False
@@ -121,18 +131,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         if cluster:
             useCluster = True
     feedback.showFeedback("Writing HTML...")
-    if webpage_name == "":
-        pass
-    else:
-        webpage_name = unicode(webpage_name)
-    if mapLibLocation == "Local":
-        cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
-        jsAddress = '<script src="js/leaflet.js"></script>'
-    else:
-        cssAddress = '<link rel="stylesheet" href='
-        cssAddress += '"http://unpkg.com/leaflet@1.0.3/dist/leaflet.css">'
-        jsAddress = '<script src="http://'
-        jsAddress += 'unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>'
+    cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
+    jsAddress = '<script src="js/leaflet.js"></script>'
     if locate:
         cssAddress += '<link rel="stylesheet" '
         cssAddress += 'href="css/L.Control.Locate.min.css">'
@@ -172,6 +172,17 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         layerSearchCSS = ""
         layerSearchJS = ""
+    if filterItems != []:
+        layerFilterCSS = '<link rel="stylesheet" '
+        layerFilterCSS += 'href="css/filter.css">\n'
+        layerFilterCSS += '<link rel="stylesheet" '
+        layerFilterCSS += 'href="css/nouislider.min.css">'
+        layerFilterJS = '<script src="js/tailDT.js"></script>\n'
+        layerFilterJS += '<script src="js/nouislider.min.js"></script>\n'
+        layerFilterJS += '<script src="js/wNumb.js"></script>'
+    else:
+        layerFilterCSS = ""
+        layerFilterJS = ""
     if address:
         addressCSS = """
         <link rel="stylesheet" href="css/"""
@@ -219,6 +230,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_CLUSTERJS@": clusterJS,
               "@LEAFLET_LAYERSEARCHCSS@": layerSearchCSS,
               "@LEAFLET_LAYERSEARCHJS@": layerSearchJS,
+              "@LEAFLET_LAYERFILTERCSS@": layerFilterCSS,
+              "@LEAFLET_LAYERFILTERJS@": layerFilterJS,
               "@LEAFLET_ADDRESSCSS@": addressCSS,
               "@LEAFLET_MEASURECSS@": measureCSS,
               "@LEAFLET_EXTRAJS@": extraJS,
@@ -226,8 +239,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_MEASUREJS@": measureJS,
               "@LEAFLET_CRSJS@": crsJS,
               "@QGIS2WEBJS@": qgis2webJS,
-              "@MAP_WIDTH@": unicode(canvasSize.width()) + "px",
-              "@MAP_HEIGHT@": unicode(canvasSize.height()) + "px",
+              "@MAP_WIDTH@": str(canvasSize.width()) + "px",
+              "@MAP_HEIGHT@": str(canvasSize.height()) + "px",
               "@EXP_JS@": exp_js,
               "@OL3_BACKGROUNDCOLOR@": "",
               "@OL3_STYLEVARS@": "",
@@ -245,7 +258,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)
         base = re.sub(r'\n[\s_]+\n', '\n', base)
-        f.write(unicode(base))
+        f.write(base)
         f.close()
     feedback.completeStep()
 
@@ -279,7 +292,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             padding-right: 10px;
         }
         .leaflet-popup-content {
-            width:auto !important;
+            width:auto;
             padding-right:10px;
         }
         .leaflet-tooltip {
@@ -302,6 +315,25 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             background-color: """ + widgetBackground + """ !important;
             border-radius: 0px !important;
             color: """ + widgetAccent + """ !important;
+        }
+        .abstract {
+            font: bold 18px 'Lucida Console', Monaco, monospace;
+            text-indent: 1px;
+            background-color: """ + widgetBackground + """ !important;
+            width: 30px !important;
+            color: """ + widgetAccent + """ !important;
+            height: 30px !important;
+            text-align: center !important;
+            line-height: 30px !important;
+        }
+        .abstractUncollapsed {
+            padding: 6px 8px;
+            font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+            background-color:""" + widgetBackground + """ !important;
+            color: """ + widgetAccent + """ !important;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            max-width: 40%;
         }
         .leaflet-touch .leaflet-control-layers,
         .leaflet-touch .leaflet-bar,

@@ -83,7 +83,6 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         # no ints in config yet!
         # params['Test']['test int'] = 5
         params['Data export']['Precision'] = '4'
-        params['Data export']['Mapping library location'] = 'CDN'
         # no strings in config yet!
         # params['Test']['test string'] ='test'
 
@@ -100,7 +99,6 @@ class qgis2web_writerRegistryTest(unittest.TestCase):
         writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.params['Data export']['Minify GeoJSON files'] = False
         writer.params['Data export']['Precision'] = '4'
-        writer.params['Data export']['Mapping library location'] = 'CDN'
 
         WRITER_REGISTRY.saveWriterToProject(writer)
 

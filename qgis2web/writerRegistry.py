@@ -16,12 +16,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from qgis.core import (QgsProject)
-from PyQt5.QtCore import (QObject)
+from qgis.core import QgsProject
+from qgis.PyQt.QtCore import QObject
 
-from qgis2web.olwriter import (OpenLayersWriter)
-from qgis2web.leafletWriter import (LeafletWriter)
-from qgis2web.configparams import (getDefaultParams)
+from qgis2web.olwriter import OpenLayersWriter
+from qgis2web.leafletWriter import LeafletWriter
+from qgis2web.configparams import getDefaultParams
 
 translator = QObject()
 
@@ -62,7 +62,7 @@ class WriterRegistry(object):
                 if type.lower() == w.type().lower():
                     return w
 
-        except:
+        except Exception:
             pass
 
         return OpenLayersWriter  # default to OpenLayersWriter
@@ -81,6 +81,8 @@ class WriterRegistry(object):
         """
         for group, settings in params.items():
             for param, value in settings.items():
+                if param == "Attribute filter":
+                    continue
                 if isinstance(value, bool):
                     QgsProject.instance().writeEntryBool("qgis2web",
                                                          self.sanitiseKey(
@@ -114,12 +116,9 @@ class WriterRegistry(object):
                                              key_string)[0]
         else:
             if (isinstance(project.readEntry("qgis2web",
-                                             key_string)[0],
-                           basestring) and
-               project.readEntry("qgis2web",
-               key_string)[0] != ""):
-                value = project.readEntry(
-                    "qgis2web", key_string)[0]
+                                             key_string)[0], str) and
+                    project.readEntry("qgis2web", key_string)[0] != ""):
+                value = project.readEntry("qgis2web", key_string)[0]
 
         return value
 

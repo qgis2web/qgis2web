@@ -1,7 +1,7 @@
 import re
 import os
 import shutil
-from PyQt5.QtCore import QDir
+from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsDataSourceUri
 from qgis2web.utils import safeName
 
@@ -28,22 +28,13 @@ def writeFiles(folder, restrictToExtent, feedback):
     feedback.completeStep()
 
 
-def writeHTMLstart(settings, controlCount, osmb, mapLibLocn, feedback):
+def writeHTMLstart(settings, controlCount, osmb, feedback):
     feedback.showFeedback("Writing HTML...")
     jsAddress = """<script src="resources/polyfills.js"></script>
         <script src="./resources/functions.js"></script>"""
-    if mapLibLocn == "Local":
-        cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
-        jsAddress += """
+    cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
+    jsAddress += """
         <script src="./resources/ol.js"></script>"""
-    else:
-        cssAddress = """<link rel="stylesheet" """
-        cssAddress += 'href="http://cdnjs.cloudflare.com/ajax/libs/openlayers/'
-        cssAddress += """4.6.5/ol.css">"""
-        jsAddress += """
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/"""
-        jsAddress += """4.6.5/ol.js"></script>"""
-    # load the fonts
     cssAddress += """
         <link rel="stylesheet" href="resources/fontawesome-all.min.css">"""
     if osmb != "":
@@ -94,7 +85,7 @@ def writeScriptIncludes(layers, json, matchCRS):
     styleVars = ""
     for count, (layer, encode2json) in enumerate(zip(layers, json)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-        sln = safeName(layer.name()) + "_" + unicode(count)
+        sln = safeName(layer.name()) + "_" + str(count)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() != "WFS" or encode2json:
                 if vts is None:

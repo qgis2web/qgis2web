@@ -2,14 +2,13 @@ import re
 import os
 import traceback
 from urllib.parse import parse_qs
-from PyQt5.QtCore import QSize
+from qgis.PyQt.QtCore import QSize
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
-                       QgsPalLayerSettings,
-                       QgsSvgMarkerSymbolLayer,
                        QgsSymbolLayerUtils,
+                       QgsSvgMarkerSymbolLayer,
                        QgsMessageLog,
                        Qgis,
                        QgsWkbTypes)
@@ -121,20 +120,23 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
             continuousWorld: false,
             worldCopyJump: false, """
     map += """
-            zoomControl:true, maxZoom:""" + unicode(maxZoom)
-    map += """, minZoom:""" + unicode(minZoom) + """
+            zoomControl:true, maxZoom:""" + str(maxZoom)
+    map += """, minZoom:""" + str(minZoom) + """
         })"""
     if extent == "Canvas extent":
         map += """.fitBounds(""" + bounds + """);"""
     map += """
         var hash = new L.Hash(map);"""
     map += """
-        map.attributionControl.addAttribution('<a href="""
+        map.attributionControl.setPrefix('<a href="""
     map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
-    map += "qgis2web</a>');"
+    map += """qgis2web</a> &middot; """
+    map += """<a href="https://leafletjs.com" title="A JS library """
+    map += """for interactive maps">Leaflet</a> &middot; """
+    map += """<a href="https://qgis.org">QGIS</a>');"""
     if locate:
         map += """
-        L.control.locate().addTo(map);"""
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""
     if measure != "None":
         if measure == "Imperial":
             options = """{
@@ -228,12 +230,12 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     try:
         iconSize = (symbol.size() * 4) + 5
-    except:
+    except Exception:
         iconSize = 16
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                          QSize(iconSize,
                                                                iconSize))
-    safeLabel = re.sub(r'[\W_]+', '', catr.label()) + unicode(cnt)
+    safeLabel = re.sub(r'[\W_]+', '', catr.label()) + str(cnt)
     legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                  layerName + "_" + safeLabel + ".png"))
     catLegend += """<tr><td style="text-align: center;"><img src="legend/"""
@@ -244,14 +246,15 @@ def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
 
 def pointToLayerFunction(safeLayerName, sl):
     try:
-        if isinstance(sl, QgsSvgMarkerSymbolLayerV2):
+        if isinstance(sl, QgsSvgMarkerSymbolLayer):
             markerType = "marker"
         elif sl.shape() == 8:
             markerType = "circleMarker"
         else:
             markerType = "shapeMarker"
-    except:
+    except Exception:
         markerType = "circleMarker"
+
     pointToLayerFunction = """
         function pointToLayer_{safeLayerName}_{sl}(feature, latlng) {{
             var context = {{
@@ -286,23 +289,31 @@ def clusterScript(safeLayerName):
 def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
+    attr = ""
+    attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
+    attrUrl = layer.attributionUrl()
+    if attrText != "":
+        attr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
     if 'type' in d and d['type'][0] == "xyz":
         wms = """
-        var overlay_{safeLayerName} = L.tileLayer('{url}', {{
-            opacity: {opacity}
+        var layer_{safeLayerName} = L.tileLayer('{url}', {{
+            opacity: {opacity},
+            attribution: '{attr}',
         }});
-        overlay_{safeLayerName}.addTo(map);""".format(
-            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
+        layer_{safeLayerName};""".format(
+            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0],
+            attr=attr)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
+        wmts_url = wmts_url.replace("request=getcapabilities", "")
         wmts_layer = d['layers'][0]
         wmts_format = d['format'][0]
-        wmts_crs = d['crs'][0]
+        # wmts_crs = d['crs'][0]
         wmts_style = d['styles'][0]
         wmts_tileMatrixSet = d['tileMatrixSet'][0]
         wms = """
-        var overlay_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
+        var layer_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
             layer: '{wmts_layer}',
             tilematrixSet: '{wmts_tileMatrixSet}',
             format: '{wmts_format}',
@@ -310,11 +321,12 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
             uppercase: true,
             transparent: true,
             continuousWorld : true,
-            opacity: {opacity}
+            opacity: {opacity},
+            attribution: '{attr}',
         }});""".format(safeLayerName=safeLayerName, wmts_url=wmts_url,
                        wmts_layer=wmts_layer, wmts_format=wmts_format,
                        wmts_tileMatrixSet=wmts_tileMatrixSet,
-                       wmts_style=wmts_style, opacity=opacity)
+                       wmts_style=wmts_style, opacity=opacity, attr=attr)
     else:
         useWMS = True
         wms_url = d['url'][0]
@@ -323,18 +335,19 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         getFeatureInfo = ""
         if not identify:
             getFeatureInfo = """,
-            identify: false,"""
+            identify: false"""
         wms = """
-        var overlay_%s = L.WMS.layer("%s", "%s", {
+        var layer_%s = L.WMS.layer("%s", "%s", {
             format: '%s',
             uppercase: true,
             transparent: true,
             continuousWorld : true,
             tiled: true,
             info_format: 'text/html',
-            opacity: %d%s
+            opacity: %d%s,
+            attribution: '%s',
         });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity,
-                  getFeatureInfo)
+                  getFeatureInfo, attr)
     return wms, useWMS, useWMTS
 
 
@@ -345,41 +358,88 @@ def rasterScript(layer, safeLayerName):
     crsDest = QgsCoordinateReferenceSystem(4326)
     try:
         xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
-    except:
+    except Exception:
         xform = QgsCoordinateTransform(crsSrc, crsDest)
     pt3 = xform.transformBoundingBox(pt2)
-    bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
-                    pt3.xMinimum(), pt3.xMaximum()]
-    bounds = '[[' + unicode(pt3.yMinimum()) + ','
-    bounds += unicode(pt3.xMinimum()) + '],['
-    bounds += unicode(pt3.yMaximum()) + ','
-    bounds += unicode(pt3.xMaximum()) + ']]'
+    bounds = '[[' + str(pt3.yMinimum()) + ','
+    bounds += str(pt3.xMinimum()) + '],['
+    bounds += str(pt3.yMaximum()) + ','
+    bounds += str(pt3.xMaximum()) + ']]'
     raster = """
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};
-        var overlay_{safeLayerName} = """.format(safeLayerName=safeLayerName,
-                                                 out_raster=out_raster,
-                                                 bounds=bounds)
+        var layer_{safeLayerName} = """.format(safeLayerName=safeLayerName,
+                                               out_raster=out_raster,
+                                               bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName}, img_bounds_{safeLayerName});
-        bounds_group.addLayer(overlay_{safeLayerName});""".format(
+        bounds_group.addLayer(layer_{safeLayerName});""".format(
         safeLayerName=safeLayerName)
     return raster
 
 
-def titleSubScript(webmap_head):
-    titleSub = """
-        var title = new L.Control();
-        title.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info');
-            this.update();
-            return this._div;
-        };
-        title.update = function () {
-            this._div.innerHTML = '<h2>"""
-    titleSub += webmap_head.replace("'", "\\'") + """</h2>';
-        };
-        title.addTo(map);"""
+def titleSubScript(webmap_head, level, pos):
+    if pos == "upper right":
+        positionOpt = u"{'position':'topright'}"
+    if pos == "lower right":
+        positionOpt = u"{'position':'bottomright'}"
+    if pos == "lower left":
+        positionOpt = u"{'position':'bottomleft'}"
+    if pos == "upper left":
+        positionOpt = u"{'position':'topleft'}"
+    titleSub = ""
+    if level == 1:
+        titleSub += """
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>"""
+        titleSub += webmap_head.replace("'", "\\'") + """</h2>';
+            };
+            title.addTo(map);"""
+    if level == 2 and pos != "None":
+        titleSub += """
+            var abstract = new L.Control(%s);
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control leaflet-bar abstract');
+                this._div.id = 'abstract'""" % positionOpt
+        if len(webmap_head) > 240:
+            titleSub += """
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = '"""
+        else:
+            titleSub += """
+
+                    abstract.show();
+                    return this._div;
+                };
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = '"""
+
+        titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
+        titleSub += """';
+            };
+            abstract.addTo(map);"""
+
     return titleSub
 
 
@@ -393,8 +453,8 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
         controlStart = """
         var baseMaps = {"""
         for count, basemap in enumerate(basemapList):
-            controlStart += comma + "'" + unicode(basemap)
-            controlStart += "': basemap" + unicode(count)
+            controlStart += comma + "'" + str(basemap)
+            controlStart += "': basemap" + str(count)
             comma = ", "
         controlStart += "};"
     controlStart += """
@@ -405,12 +465,11 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
+            safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             lyrCount -= 1
             if i.type() == QgsMapLayer.VectorLayer:
-                testDump = i.renderer().dump()
-                if (clustered and
-                        i.geometryType() == QgsWkbTypes.PointGeometry):
+                # testDump = i.renderer().dump()
+                if clustered and i.geometryType() == QgsWkbTypes.PointGeometry:
                     new_layer = "'" + legends[safeLayerName].replace("'", "\'")
                     new_layer += "': cluster_""" + safeLayerName + ","
                 else:
@@ -419,9 +478,9 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 layersList += new_layer
             elif i.type() == QgsMapLayer.RasterLayer:
                 new_layer = '"' + rawLayerName.replace("'", "\'") + '"'
-                new_layer += ": overlay_" + safeLayerName + ""","""
+                new_layer += ": layer_" + safeLayerName + ""","""
                 layersList += new_layer
-        except:
+        except Exception:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
                                      level=Qgis.Critical)
     controlEnd = "}"
@@ -489,8 +548,9 @@ def getVTLabels(vtLabels):
     return labelString
 
 
-def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
-                  useHeat, useRaster, labelsList, mapUnitLayers):
+def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
+                  searchLayer, useHeat, useRaster, labelsList,
+                  mapUnitLayers):
     if labels == "":
         endHTML = ""
     else:
@@ -528,6 +588,326 @@ def endHTMLscript(wfsLayers, layerSearch, labelCode, labels, searchLayer,
          ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
+    filterItems = sorted(filterItems, key=lambda k: k['type'])
+    filterNum = len(filterItems)
+    if filterNum != 0:
+        endHTML += """
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"""
+        filterList = []
+        for item in range(0, filterNum):
+            filterList.append('"' + filterItems[item]["name"] + '": "' +
+                              filterItems[item]["type"] + '"')
+        endHTML += ",".join(filterList) + "};"
+        endHTML += """
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + key).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + key).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + key).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }"""
+        for item in range(0, filterNum):
+            itemName = filterItems[item]["name"]
+            if filterItems[item]["type"] in ["str", "bool"]:
+                selSize = 2
+                if filterItems[item]["type"] == "str":
+                    if len(filterItems[item]["values"]) > 10:
+                        selSize = 10
+                    else:
+                        selSize = len(filterItems[item]["values"])
+                endHTML += """
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_{nameS} = document.createElement('div');
+            div_{nameS}.id = "div_{name}";
+            div_{nameS}.className= "filterselect";
+            document.getElementById("menu").appendChild(div_{nameS});
+            sel_{nameS} = document.createElement('select');
+            sel_{nameS}.multiple = true;
+            sel_{nameS}.size = {s};
+            sel_{nameS}.id = "sel_{name}";
+            var {nameS}_options_str = "<option value='' unselected></option>";
+            sel_{nameS}.onchange = function(){{filterFunc()}};
+            """.format(name=itemName, nameS=safeName(itemName), s=selSize)
+                for entry in filterItems[item]["values"]:
+                    endHTML += """
+            {nameS}_options_str  += '<option value="{e}">{e}</option>';
+                        """.format(e=entry, name=itemName,
+                                   nameS=safeName(itemName))
+                endHTML += """
+            sel_{nameS}.innerHTML = {nameS}_options_str;
+            div_{nameS}.appendChild(sel_{nameS});
+            var lab_{nameS} = document.createElement('div');
+            lab_{nameS}.innerHTML = '{name}';
+            lab_{nameS}.className = 'filterLabel';
+            div_{nameS}.appendChild(lab_{nameS});
+                """.format(name=itemName, nameS=safeName(itemName))
+            if filterItems[item]["type"] in ["int", "real"]:
+                endHTML += """
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_{nameS} = document.createElement("div");
+            div_{nameS}.id = "div_{name}";
+            div_{nameS}.className = "slider";
+            document.getElementById("menu").appendChild(div_{nameS});
+            var lab_{nameS} = document.createElement('p');
+            lab_{nameS}.innerHTML  = '{name}: <span id="val_{name}"></span>';
+            lab_{nameS}.className = 'slider';
+            document.getElementById("menu").appendChild(lab_{nameS});
+            var sel_{nameS} = document.getElementById('div_{name}');
+            """ .format(name=itemName, nameS=safeName(itemName))
+                if filterItems[item]["type"] == "int":
+                    endHTML += """
+            noUiSlider.create(sel_{nameS}, {{
+                connect: true,
+                start: [{min}, {max}],
+                step: 1,
+                format: wNumb({{
+                    decimals: 0,
+                    }}),
+                range: {{
+                min: {min},
+                max: {max}
+                }}
+            }});
+            sel_{nameS}.noUiSlider.on('update', function (values) {{
+            filterVals =[];
+            for (value in values){{
+            filterVals.push(parseInt(value))
+            }}
+            val_{nameS} = document.getElementById('val_{name}');
+            val_{nameS}.innerHTML = values.join(' - ');
+                filterFunc()
+            }});""".format(name=itemName, nameS=safeName(itemName),
+                           min=filterItems[item]["values"][0],
+                           max=filterItems[item]["values"][1])
+                else:
+                    endHTML += """
+            noUiSlider.create(sel_{nameS}, {{
+                connect: true,
+                start: [{min}, {max}],
+                range: {{
+                min: {min},
+                max: {max}
+                }}
+            }});
+            sel_{nameS}.noUiSlider.on('update', function (values) {{
+            val_{nameS} = document.getElementById('val_{name}');
+            val_{nameS}.innerHTML = values.join(' - ');
+                filterFunc()
+            }});
+            """.format(name=itemName, nameS=safeName(itemName),
+                       min=filterItems[item]["values"][0],
+                       max=filterItems[item]["values"][1])
+            if filterItems[item]["type"] in ["date", "time", "datetime"]:
+                startDate = filterItems[item]["values"][0]
+                endDate = filterItems[item]["values"][1]
+                d = "'YYYY-mm-dd'"
+                t = "'HH:ii:ss'"
+                Y1 = startDate.toString("yyyy")
+                M1 = startDate.toString("M")
+                D1 = startDate.toString("d")
+                hh1 = startDate.toString("h")
+                mm1 = startDate.toString("m")
+                ss1 = startDate.toString("s")
+                Y2 = endDate.toString("yyyy")
+                M2 = endDate.toString("M")
+                D2 = endDate.toString("d")
+                hh2 = endDate.toString("h")
+                mm2 = endDate.toString("m")
+                ss2 = endDate.toString("s")
+                if filterItems[item]["type"] == "date":
+                    t = "false"
+                    hh1 = 0
+                    mm1 = 0
+                    ss1 = 0
+                    hh2 = 0
+                    mm2 = 0
+                    ss2 = 0
+                    ds = startDate.toMSecsSinceEpoch()
+                    de = endDate.toMSecsSinceEpoch()
+                if filterItems[item]["type"] == "datetime":
+                    ds = startDate.toMSecsSinceEpoch()
+                    de = endDate.toMSecsSinceEpoch()
+                if filterItems[item]["type"] == "time":
+                    d = "false"
+                    Y1 = 0
+                    M1 = 1
+                    D1 = 0
+                    Y2 = 0
+                    M2 = 1
+                    D2 = 0
+                    ds = "null"
+                    de = "null"
+                endHTML += """
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_{nameS}_date1 = document.createElement("div");
+            div_{nameS}_date1.id = "div_{nameS}_date1";
+            div_{nameS}_date1.className= "filterselect";
+            document.getElementById("menu").appendChild(div_{nameS}_date1);
+            dat_{nameS}_date1 = document.createElement('input');
+            dat_{nameS}_date1.type = "text";
+            dat_{nameS}_date1.id = "dat_{nameS}_date1";
+            div_{nameS}_date1.appendChild(dat_{nameS}_date1);
+            var lab_{nameS}_date1 = document.createElement('p');
+            lab_{nameS}_date1.innerHTML  = '{name} from';
+            document.getElementById("div_{nameS}_date1").appendChild(
+                lab_{nameS}_date1);
+            document.addEventListener("DOMContentLoaded", function(){{
+                tail.DateTime("#dat_{nameS}_date1", {{
+                    dateStart: {ds},
+                    dateEnd: {de},
+                    dateFormat: {d},
+                    timeFormat: {t},
+                    today: false,
+                    weekStart: 1,
+                    position: "left",
+                    closeButton: true,
+                    stayOpen: true,
+                    timeStepMinutes:1,
+                    timeStepSeconds: 1
+                }}).selectDate({Y1},{M1}-1,{D1},{hh1},{mm1},{ss1});
+                tail.DateTime("#dat_{nameS}_date1").reload()
+                """.format(name=itemName, nameS=safeName(itemName), de=de,
+                           ds=ds, d=d, t=t, Y1=Y1, M1=M1, D1=D1, hh1=hh1,
+                           mm1=mm1, ss1=ss1)
+                endHTML += """
+                tail.DateTime("#dat_{nameS}_date2", {{
+                    dateStart: {ds},
+                    dateEnd: {de},
+                    dateFormat: {d},
+                    timeFormat: {t},
+                    today: false,
+                    weekStart: 1,
+                    position: "left",
+                    closeButton: true,
+                    stayOpen: true,
+                    timeStepMinutes:1,
+                    timeStepSeconds: 1
+                }}).selectDate({Y2},{M2}-1,{D2},{hh2},{mm2},{ss2});
+                tail.DateTime("#dat_{nameS}_date2").reload()
+                filterFunc()
+                dat_{nameS}_date1.onchange = function(){{filterFunc()}};
+                dat_{nameS}_date2.onchange = function(){{filterFunc()}};
+            }});
+            """.format(name=itemName, nameS=safeName(itemName), de=de, ds=ds,
+                       d=d, t=t, Y2=Y2, M2=M2, D2=D2, hh2=hh2, mm2=mm2,
+                       ss2=ss2)
+                endHTML += """
+            var div_{nameS}_date2 = document.createElement("div");
+            div_{nameS}_date2.id = "div_{nameS}_date2";
+            div_{nameS}_date2.className= "filterselect";
+            document.getElementById("menu").appendChild(div_{nameS}_date2);
+            dat_{nameS}_date2 = document.createElement('input');
+            dat_{nameS}_date2.type = "text";
+            dat_{nameS}_date2.id = "dat_{nameS}_date2";
+            div_{nameS}_date2.appendChild(dat_{nameS}_date2);
+            var lab_{nameS}_date2 = document.createElement('p');
+            lab_{nameS}_date2.innerHTML  = '{name} till';
+            document.getElementById("div_{nameS}_date2")
+              .appendChild(lab_{nameS}_date2);
+            """.format(name=itemName, nameS=safeName(itemName))
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {

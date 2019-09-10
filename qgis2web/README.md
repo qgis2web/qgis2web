@@ -58,12 +58,15 @@ the output code to achieve what qgis2web cannot.</p>
         export</li>
     <li>only a single 2.5d layer will render per map</li>
     <li>2.5d layers only appear when zoomed in to building scales</li>
+    <li>attribute filters and abstract export only works in leaflet based webmaps</li>
 </ul>
 
 <h3>Layer options</h3>
 <dl>
     <dt>Popup fields</dt>
-        <dd>Specify how each field will be labelled in popups</dd> 
+        <dd>Specify how each field will be labelled in popups</dd>
+    dt>Popups</dt>
+        <dd>Specify, whether or not a layer shows a popup on a click. If not, the layer is not even clickable</dd>
     <dt>Visible</dt>
         <dd>Select whether the layer will be visible on map load. This only
             determines visibility - the layer will be loaded regardless of this
@@ -107,12 +110,16 @@ the output code to achieve what qgis2web cannot.</p>
 
 <h4>Appearance</h4>
 <dl>
+    <dt>Add abstract</dt>
+        <dd>This will push the abtract from the projects metadata (field abstract) into the webmap as a collapsible info box. Supported in leaflet only</dd>
     <dt>Add address search</dt>
         <dd>Add field to allow searching for locations (geocode)</dd>
     <dt>Add layers list</dt>
         <dd>Include list of layers (with legend icons, where possible)</dd>
     <dt>Add measure tool</dt>
         <dd>Include interactive measuring widget</dd>
+    <dt>Attribute filter</dt>
+        <dd>Every supported field of all layers are listed as well as the type and layers they occur in. Selected attributes will be used to filter the webmap and all layers that contain the attribute with the same name.</dd>
     <dt>Geolocate user</dt>
         <dd>Show user's location on map</dd>
     <dt>Highlight on hover</dt>
@@ -126,7 +133,8 @@ the output code to achieve what qgis2web cannot.</p>
         <dd>Show popups when mouse hovers over features</dd>
     <dt>Template</dt>
         <dd>Select HTML template for webmap - add your own templates to the
-            /qgis2web/templates directory in your .qgis2 folder</dd>
+            /qgis2web/templates directory in your current QGIS3 profile 
+            folder</dd>
 </dl>
 
 <h2>Reporting bugs</h2>

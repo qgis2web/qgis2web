@@ -16,7 +16,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from PyQt5.QtCore import (QObject)
+from qgis.PyQt.QtCore import QObject
 
 translator = QObject()
 
@@ -49,6 +49,8 @@ class Writer(object):
         self.layers = []
         # list of whether each layer is visible
         self.visible = []
+        # list of whether each layer is interactive
+        self.interactive = []
         # list of whether each layer should be clustered
         self.cluster = []
         # popup content
@@ -56,7 +58,7 @@ class Writer(object):
         # json content
         self.json = None
         # queryable WMS
-        self.getFeatureInfo = None
+        self.getFeatureInfo = []
         # configuration dictionary (TODO - standardise
         # between writers!)
         self.params = {}

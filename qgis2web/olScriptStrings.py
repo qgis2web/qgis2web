@@ -76,8 +76,6 @@ def measureScript():
  * Currently drawn feature.
  * @type {ol.Feature}
  */
-var sketch;
-
 
 /**
  * The help tooltip element.
@@ -246,8 +244,6 @@ def measureUnitFeetScript():
     return feet_length
 }
 
-var wgs84Sphere = new ol.Sphere(6378137);
-
 /**
  * format length output
  * @param {ol.geom.LineString} line
@@ -261,7 +257,7 @@ var formatLength = function(line) {
   for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
       var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
-      length += wgs84Sphere.haversineDistance(c1, c2);
+      length += ol.sphere.getDistance(c1, c2);
     }
     feet_length = convertToFeet(length)
 
@@ -280,8 +276,7 @@ addInteraction();
 
 
 def measureUnitMetricScript():
-    measureUnitMetric = """var wgs84Sphere = new ol.Sphere(6378137);
-
+    measureUnitMetric = """
 /**
  * format length output
  * @param {ol.geom.LineString} line
@@ -295,7 +290,7 @@ var formatLength = function(line) {
   for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
       var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
-      length += wgs84Sphere.haversineDistance(c1, c2);
+      length += ol.sphere.getDistance(c1, c2);
     }
   var output;
   if (length > 100) {
@@ -477,8 +472,7 @@ def geolocateStyle(geolocate, controlCount):
 def geocodeLinks(geocode):
     if geocode:
         returnVal = """
-    <link href="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.min.css" rel="stylesheet">"""
+        <link href="resources/ol3-geocoder.min.css" rel="stylesheet">"""
         return returnVal
     else:
         return ""
@@ -487,8 +481,7 @@ def geocodeLinks(geocode):
 def geocodeJS(geocode):
     if geocode:
         returnVal = """
-    <script src="http://cdn.jsdelivr.net/openlayers.geocoder/latest/"""
-        returnVal += """ol3-geocoder.js"></script>"""
+        <script src="resources/ol3-geocoder.js"></script>"""
         return returnVal
     else:
         return ""

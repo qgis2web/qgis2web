@@ -74,13 +74,15 @@
 var size = 0;
 var placement = 'point';
 function categories_airports_0(feature, value, size, resolution, labelText,
-                       labelFont, labelFill) {
+                       labelFont, labelFill, bufferColor, bufferWidth,
+                       placement) {
                 switch(value.toString()) {case 'Civilian/Public':
                     return [ new ol.style.Style({
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(222,26,193,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;
 case 'Joint Military/Civilian':
@@ -88,7 +90,8 @@ case 'Joint Military/Civilian':
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(112,117,206,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;
 case 'Military':
@@ -96,7 +99,8 @@ case 'Military':
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(215,134,93,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;
 case 'Other':
@@ -104,7 +108,8 @@ case 'Other':
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(122,222,41,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;
 default:
@@ -112,7 +117,8 @@ default:
         image: new ol.style.Circle({radius: 4.0 + size,
             stroke: new ol.style.Stroke({color: 'rgba(0,0,0,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0}), fill: new ol.style.Fill({color: 'rgba(86,218,185,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
-                              labelFill, placement)
+                              labelFill, placement, bufferColor,
+                              bufferWidth)
     })];
                     break;}};
 
@@ -126,6 +132,8 @@ var style_airports_0 = function(feature, resolution){
     size = 0;
     var labelFont = "10px, sans-serif";
     var labelFill = "rgba(0, 0, 0, 1)";
+    var bufferColor = "";
+    var bufferWidth = 0;
     var textAlign = "left";
     var offsetX = 8;
     var offsetY = 3;
@@ -135,7 +143,8 @@ var style_airports_0 = function(feature, resolution){
     }
     
 var style = categories_airports_0(feature, value, size, resolution, labelText,
-                          labelFont, labelFill);
+                          labelFont, labelFill, bufferColor,
+                          bufferWidth, placement);
 
     return style;
 };

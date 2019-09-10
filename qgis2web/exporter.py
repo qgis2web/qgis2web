@@ -20,15 +20,10 @@ import os
 from datetime import datetime
 import ftplib
 
-from qgis.core import (QgsProject)
-from PyQt5.QtCore import (QObject,
-                          QCoreApplication)
-from PyQt5.QtWidgets import (QFileDialog,
-                             QInputDialog,
-                             QDialog,
-                             QLineEdit)
-from PyQt5.uic import loadUiType
-from .utils import (tempFolder)
+from qgis.core import QgsProject
+from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtWidgets import QFileDialog, QInputDialog, QDialog, QLineEdit
+from .utils import tempFolder
 from .feedbackDialog import Feedback
 
 from .ui_ftp_configuration import Ui_FtpConfiguration
@@ -182,7 +177,7 @@ class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
         try:
             port_number = int(port)
             self.portSpinBox.setValue(port_number)
-        except:
+        except Exception:
             pass
 
     def setUsername(self, username):
@@ -241,8 +236,7 @@ class FtpExporter(Exporter):
 
     def newTempFolder(self, base):
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
-        return os.path.join(base,
-                            'qgis2web_' + unicode(stamp))
+        return os.path.join(base, 'qgis2web_' + stamp)
 
     @classmethod
     def type(cls):
@@ -297,7 +291,7 @@ class FtpExporter(Exporter):
         ftp = ftplib.FTP()
         try:
             ftp.connect(self.host, self.port)
-        except:
+        except Exception:
             feedback.setFatalError('Could not connect to server!')
             return False
 
@@ -309,9 +303,9 @@ class FtpExporter(Exporter):
 
         try:
             ftp.login(self.username, password)
-        except:
-            feedback.setFatalError(
-                'Login failed for user {}!'.format(self.username))
+        except Exception:
+            feedback.setFatalError("""Login failed for
+                                      user {}!""".format(self.username))
             return False
 
         feedback.showFeedback('Logged in to {}'.format(self.host))
@@ -325,7 +319,7 @@ class FtpExporter(Exporter):
                 return
             try:
                 ftp.cwd(p)
-            except:
+            except Exception:
                 parent, base = os.path.split(p)
                 cwd_and_create(parent)
                 if base:
@@ -361,7 +355,7 @@ class FtpExporter(Exporter):
                     feedback.showFeedback('Creating folder {}'.format(f))
                     try:
                         ftp.mkd(f)
-                    except:
+                    except Exception:
                         pass
                     ftp.cwd(f)
                     if not uploadPath(current_path):
@@ -445,7 +439,7 @@ class ExporterRegistry(QObject):
         if ok and type:
             try:
                 exporter = self.exporters[type]()
-            except:
+            except Exception:
                 pass
 
         if not exporter:

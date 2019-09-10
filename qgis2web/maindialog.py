@@ -33,32 +33,32 @@ from qgis.core import (Qgis,
                        QgsMessageLog)
 
 # noinspection PyUnresolvedReferences
-from PyQt5.QtCore import (QObject,
-                          QSettings,
-                          pyqtSignal,
-                          pyqtSlot,
-                          QUrl,
-                          QByteArray,
-                          QEvent,
-                          Qt)
-from PyQt5.QtGui import (QIcon)
-from PyQt5.QtWidgets import (QAction,
-                             QAbstractItemView,
-                             QDialog,
-                             QHBoxLayout,
-                             QTreeWidgetItem,
-                             QComboBox,
-                             QCheckBox,
-                             QToolButton,
-                             QWidget,
-                             QTextBrowser)
-from PyQt5.QtNetwork import QNetworkAccessManager
-from PyQt5.uic import loadUiType
+from qgis.PyQt.QtCore import (QObject,
+                              QSettings,
+                              pyqtSignal,
+                              pyqtSlot,
+                              QUrl,
+                              QRect,
+                              QByteArray,
+                              QEvent,
+                              Qt)
+from qgis.PyQt.QtGui import (QIcon)
+from qgis.PyQt.QtWidgets import (QAction,
+                                 QAbstractItemView,
+                                 QDialog,
+                                 QHBoxLayout,
+                                 QTreeWidgetItem,
+                                 QComboBox,
+                                 QListWidget,
+                                 QCheckBox,
+                                 QToolButton,
+                                 QWidget,
+                                 QTextBrowser)
+from qgis.PyQt.uic import loadUiType
 from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
 from qgis.PyQt.QtWebKit import QWebSettings
 
 import traceback
-import logging
 
 from . import utils
 from qgis2web.configparams import (getParams,
@@ -92,6 +92,7 @@ class MainDialog(QDialog, FORM_CLASS):
 
         self.previewUrl = None
         self.layer_search_combo = None
+        self.layer_filter_select = None
         self.exporter_combo = None
 
         self.feedback = FeedbackDialog(self)
@@ -108,8 +109,8 @@ class MainDialog(QDialog, FORM_CLASS):
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:
             self.previewOnStartup.setCheckState(Qt.Unchecked)
-        if (stgs.value("qgis2web/closeFeedbackOnSuccess", Qt.Checked) ==
-                Qt.Checked):
+        if stgs.value("qgis2web/closeFeedbackOnSuccess",
+                      Qt.Checked) == Qt.Checked:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Checked)
         else:
             self.closeFeedbackOnSuccess.setCheckState(Qt.Unchecked)
@@ -125,7 +126,7 @@ class MainDialog(QDialog, FORM_CLASS):
             try:
                 # if os.environ["TRAVIS"]:
                 self.preview.setPage(WebPage())
-            except:
+            except Exception:
                 print("Failed to set custom webpage")
             webview = self.preview.page()
             webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
@@ -141,6 +142,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.populateConfigParams(self)
         self.populate_layers_and_groups(self)
         self.populateLayerSearch()
+        self.populateAttrFilter()
 
         writer = WRITER_REGISTRY.createWriterFromProject()
         self.setStateToWriter(writer)
@@ -158,7 +160,9 @@ class MainDialog(QDialog, FORM_CLASS):
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
             self.buttonPreview.setDisabled(True)
+        QgsProject.instance().cleared.connect(self.reject)
         self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
+        self.layersTree.model().dataChanged.connect(self.populateAttrFilter)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
         self.mapbox.clicked.connect(self.changeFormat)
@@ -192,7 +196,7 @@ class MainDialog(QDialog, FORM_CLASS):
             self.exporter = [
                 e for e in EXPORTER_REGISTRY.getExporters()
                 if e.name() == new_exporter_name][0]()
-        except:
+        except Exception:
             pass
 
     def currentMapFormat(self):
@@ -219,7 +223,7 @@ class MainDialog(QDialog, FORM_CLASS):
         """
         writer = self.getWriterFactory()()
         (writer.layers, writer.groups, writer.popup,
-         writer.visible, writer.json,
+         writer.visible, writer.interactive, writer.json,
          writer.cluster, writer.getFeatureInfo) = self.getLayersAndGroups()
         writer.params = self.getParameters()
         return writer
@@ -254,23 +258,30 @@ class MainDialog(QDialog, FORM_CLASS):
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
-            treeParam = self.appearanceParams.findItems(param,
-                                                        (Qt.MatchExactly |
-                                                         Qt.MatchRecursive))[0]
+            treeParam = self.appearanceParams.findItems(
+                param, Qt.MatchExactly | Qt.MatchRecursive)[0]
             if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(True)
                 else:
                     treeParam.setDisabled(True)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(False)
+
             else:
                 if value == "OL3":
                     treeParam.setDisabled(True)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(False)
                 else:
                     treeParam.setDisabled(False)
+                    if treeParam.combo:
+                        treeParam.combo.setEnabled(True)
         for option, value in specificOptions.items():
-            treeOptions = self.layersTree.findItems(option,
-                                                    (Qt.MatchExactly |
-                                                     Qt.MatchRecursive))
+            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly |
+                                                    Qt.MatchRecursive)
             for treeOption in treeOptions:
                 if currentWriter == OpenLayersWriter:
                     if value == "OL3":
@@ -357,10 +368,12 @@ class MainDialog(QDialog, FORM_CLASS):
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
             if (layer.type() != QgsMapLayer.PluginLayer and
+                    (layer.type() != QgsMapLayer.VectorLayer or
+                     layer.wkbType() != QgsWkbTypes.NoGeometry) and
                     layer.customProperty("ol_layer_type") is None):
                 try:
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        testDump = layer.renderer().dump()
+                    # if layer.type() == QgsMapLayer.VectorLayer:
+                    #    testDump = layer.renderer().dump()
                     layer_parent = tree_layer.parent()
                     if layer_parent.parent() is None:
                         item = TreeLayerItem(self.iface, layer,
@@ -369,7 +382,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     else:
                         if layer_parent not in tree_groups:
                             tree_groups.append(layer_parent)
-                except:
+                except Exception:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
                                              level=Qgis.Critical)
@@ -393,25 +406,58 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateLayerSearch(self):
         self.layer_search_combo.clear()
         self.layer_search_combo.addItem("None")
-        (layers, groups, popup, visible,
+        (layers, groups, popup, visible, interactive,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 options = []
                 fields = layer.fields()
                 for f in fields:
-                    fieldIndex = fields.indexFromName(unicode(f.name()))
+                    fieldIndex = fields.indexFromName(f.name())
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if editorWidget == 'Hidden':
                         continue
-                    options.append(unicode(f.name()))
+                    options.append(f.name())
                 for option in options:
-                    displayStr = unicode(layer.name() + ": " + option)
+                    displayStr = layer.name() + ": " + option
                     self.layer_search_combo.insertItem(0, displayStr)
                     sln = utils.safeName(layer.name())
                     self.layer_search_combo.setItemData(
                         self.layer_search_combo.findText(displayStr),
-                        sln + "_" + unicode(count))
+                        sln + "_" + str(count))
+
+    def populateAttrFilter(self):
+        self.layer_filter_select.clear()
+        (layers, groups, popup, visible, interactive,
+         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
+        options = []
+        for count, layer in enumerate(layers):
+            if layer.type() == layer.VectorLayer:
+                fields = layer.fields()
+                for f in fields:
+                    fieldIndex = fields.indexFromName(f.name())
+                    editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                    if editorWidget == 'Hidden':
+                        continue
+                    if utils.boilType(f.typeName()) in ["int", "str", "real",
+                                                        "date", "bool",
+                                                        "time", "datetime"]:
+                        options.append([f.name() + ": " +
+                                        utils.boilType(f.typeName()),
+                                        layer.name()])
+        preCleanOptions = {}
+        for entry in options:
+            if entry[0] not in list(preCleanOptions.keys()):
+                preCleanOptions[entry[0]] = ": " + entry[1]
+            else:
+                preCleanOptions[entry[0]] = "| ".join(
+                    [preCleanOptions[entry[0]], entry[1]])
+        options = []
+        for key, value in preCleanOptions.items():
+            options.append(key + value)
+        cleanOptions = list(set(options))
+        for option in cleanOptions:
+            self.layer_filter_select.insertItem(0, option)
 
     def configureExporter(self):
         self.exporter.configure()
@@ -442,6 +488,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.appearanceParams.resizeColumnToContents(0)
         self.appearanceParams.resizeColumnToContents(1)
         self.layer_search_combo.removeItem(1)
+        self.layer_filter_select.takeItem(1)
 
         # configure export params in separate tab
         exportTree = dlg.exportParams
@@ -474,6 +521,8 @@ class MainDialog(QDialog, FORM_CLASS):
                                   parameter, default_value, action)
         if parameter == 'Layer search':
             self.layer_search_combo = subitem.combo
+        if parameter == 'Attribute filter':
+            self.layer_filter_select = subitem.list
         elif parameter == 'Exporter':
             self.exporter_combo = subitem.combo
 
@@ -524,6 +573,9 @@ class MainDialog(QDialog, FORM_CLASS):
                         parameters["Appearance"]["Search layer"] = (
                             self.layer_search_combo.itemData(
                                 self.layer_search_combo.currentIndex()))
+                    if param == "Attribute filter":
+                        parameters["Appearance"]["Attribute filter"] = (
+                            self.layer_filter_select.selectedItems())
 
         return parameters
 
@@ -539,6 +591,7 @@ class MainDialog(QDialog, FORM_CLASS):
         groups = {}
         popup = []
         visible = []
+        interactive = []
         json = []
         cluster = []
         getFeatureInfo = []
@@ -549,6 +602,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     layers.append(item.layer)
                     popup.append(item.popup)
                     visible.append(item.visible)
+                    interactive.append(item.interactive)
                     json.append(item.json)
                     cluster.append(item.cluster)
                     getFeatureInfo.append(item.getFeatureInfo)
@@ -565,6 +619,10 @@ class MainDialog(QDialog, FORM_CLASS):
                         visible.append(True)
                     else:
                         visible.append(False)
+                    if item.interactive:
+                        interactive.append(True)
+                    else:
+                        interactive.append(False)
                     if hasattr(item, "json") and item.json:
                         json.append(True)
                     else:
@@ -583,20 +641,27 @@ class MainDialog(QDialog, FORM_CLASS):
                 groups,
                 popup[::-1],
                 visible[::-1],
+                interactive[::-1],
                 json[::-1],
                 cluster[::-1],
                 getFeatureInfo[::-1])
 
     def reject(self):
         self.saveParameters()
-        (layers, groups, popup, visible,
+        (layers, groups, popup, visible, interactive,
          json, cluster, getFeatureInfo) = self.getLayersAndGroups()
-        for layer, pop, vis in zip(layers, popup, visible):
-            attrDict = {}
-            for attr in pop:
-                attrDict['attr'] = pop[attr]
-                layer.setCustomProperty("qgis2web/popup/" + attr, pop[attr])
-            layer.setCustomProperty("qgis2web/Visible", vis)
+        try:
+            for layer, pop, vis, int in zip(layers, popup, visible,
+                                            interactive):
+                attrDict = {}
+                for attr in pop:
+                    attrDict['attr'] = pop[attr]
+                    layer.setCustomProperty("qgis2web/popup/" + attr,
+                                            pop[attr])
+                layer.setCustomProperty("qgis2web/Visible", vis)
+                layer.setCustomProperty("qgis2web/Interactive", int)
+        except Exception:
+            pass
 
         QSettings().setValue(
             "qgis2web/MainDialogGeometry", self.saveGeometry())
@@ -611,12 +676,15 @@ class MainDialog(QDialog, FORM_CLASS):
         QDialog.close(self)
 
     def closeEvent(self, event):
-        if self.devConsole or self.devConsole.isVisible() and self.preview:
-            del self.devConsole
-            del self.preview
+        try:
+            if self.devConsole or self.devConsole.isVisible() and self.preview:
+                del self.devConsole
+                del self.preview
 
-        self.reject()
-        event.accept()
+            self.reject()
+            event.accept()
+        except Exception:
+            pass
 
 
 class devToggleFilter(QObject):
@@ -632,7 +700,7 @@ class devToggleFilter(QObject):
                     else:
                         obj.devConsole.setFixedHeight(168)
                     return True
-        except:
+        except Exception:
             pass
         return False
 
@@ -651,13 +719,23 @@ class TreeGroupItem(QTreeWidgetItem):
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
         self.visibleCheck.setChecked(True)
-        self.visibleItem.setText(0, "Layers visibility")
+        self.visibleItem.setText(0, "Visibility")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        self.interactiveItem = QTreeWidgetItem(self)
+        self.interactiveCheck = QCheckBox()
+        self.interactiveCheck.setChecked(True)
+        self.interactiveItem.setText(0, "Popups")
+        self.addChild(self.interactiveItem)
+        tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
 
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
+
+    @property
+    def interactive(self):
+        return self.interactiveCheck.isChecked()
 
 
 class TreeLayerItem(QTreeWidgetItem):
@@ -678,13 +756,23 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
         vis = layer.customProperty("qgis2web/Visible", True)
-        if (vis == 0 or unicode(vis).lower() == "false"):
+        if vis == 0 or str(vis).lower() == "false":
             self.visibleCheck.setChecked(False)
         else:
             self.visibleCheck.setChecked(True)
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        self.interactiveItem = QTreeWidgetItem(self)
+        self.interactiveCheck = QCheckBox()
+        int = True
+        if int == 0 or str(int).lower() == "false":
+            self.interactiveCheck.setChecked(False)
+        else:
+            self.interactiveCheck.setChecked(True)
+        self.interactiveItem.setText(0, "Popups")
+        self.addChild(self.interactiveItem)
+        tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
         if layer.type() == layer.VectorLayer:
             if layer.providerType() == 'WFS':
                 self.jsonItem = QTreeWidgetItem(self)
@@ -709,7 +797,7 @@ class TreeLayerItem(QTreeWidgetItem):
             options = []
             fields = self.layer.fields()
             for f in fields:
-                fieldIndex = fields.indexFromName(unicode(f.name()))
+                fieldIndex = fields.indexFromName(f.name())
                 editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                 if editorWidget == 'Hidden':
                     continue
@@ -760,24 +848,28 @@ class TreeLayerItem(QTreeWidgetItem):
         return self.visibleCheck.isChecked()
 
     @property
+    def interactive(self):
+        return self.interactiveCheck.isChecked()
+
+    @property
     def json(self):
         try:
             return self.jsonCheck.isChecked()
-        except:
+        except Exception:
             return False
 
     @property
     def cluster(self):
         try:
             return self.clusterCheck.isChecked()
-        except:
+        except Exception:
             return False
 
     @property
     def getFeatureInfo(self):
         try:
             return self.getFeatureInfoCheck.isChecked()
-        except:
+        except Exception:
             return False
 
     def changeJSON(self, isJSON):
@@ -800,9 +892,9 @@ class TreeSettingItem(QTreeWidgetItem):
         self.name = name
         self._value = value
         self.combo = None
+        self.list = None
         self.setText(0, name)
         widget = None
-
         if isinstance(value, QgsColorButton):
             widget = value
         elif isinstance(value, bool):
@@ -816,6 +908,13 @@ class TreeSettingItem(QTreeWidgetItem):
             for option in value:
                 self.combo.addItem(option)
             widget = self.combo
+        elif isinstance(value, list):
+            self.list = QListWidget()
+            self.list.setSizeAdjustPolicy(0)
+            self.list.setSelectionMode(QListWidget.MultiSelection)
+            for option in value:
+                self.list.addItem(option)
+            widget = self.list
         else:
             self.setText(1, unicode(value))
 
@@ -846,7 +945,7 @@ class TreeSettingItem(QTreeWidgetItem):
             if index != -1:
                 self.combo.setCurrentIndex(index)
         else:
-            self.setText(1, unicode(value))
+            self.setText(1, str(value))
 
     def value(self):
         if isinstance(self._value, bool):

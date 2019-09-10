@@ -1,4 +1,4 @@
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsExpressionNode, QgsMessageLog, Qgis
 import re
 import json
 
@@ -13,6 +13,7 @@ binary_ops = [
 ]
 
 unary_ops = ["!", "-"]
+
 
 def gen_func_stubs():
     """
@@ -51,8 +52,8 @@ def exp2func(expstr, name=None, mapLib=None):
     if name is None:
         import random
         import string
-        name = ''.join(random.choice(string.ascii_lowercase) for _ in range(4))
-    name += "_eval_expression"
+        name = 'exp_' + ''.join(random.choice(string.ascii_lowercase) for _ in range(4))
+    name = "exp_" + name + "_eval_expression"
     temp = """
 function %s(context) {
     // %s
@@ -72,39 +73,37 @@ function %s(context) {
     return temp, name, exp.dump()
 
 
-
 def walkExpression(node, mapLib):
-    try:
-        if node.nodeType() == QgsExpression.ntBinaryOperator:
-            jsExp = handle_binary(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntUnaryOperator:
-            jsExp = handle_unary(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntInOperator:
-            jsExp = handle_in(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntFunction:
-            jsExp = handle_function(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntLiteral:
-            jsExp = handle_literal(node)
-        elif node.nodeType() == QgsExpression.ntColumnRef:
-            jsExp = handle_columnRef(node, mapLib)
-        elif node.nodeType() == QgsExpression.ntCondition:
-            jsExp = handle_condition(node,mapLib)
-    except:
-        jsExp = "true"
+    if node is None:
+        jsExp = "null"
+    elif node.nodeType() == QgsExpressionNode.ntBinaryOperator:
+        jsExp = handle_binary(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntUnaryOperator:
+        jsExp = handle_unary(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntInOperator:
+        jsExp = handle_in(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntFunction:
+        jsExp = handle_function(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntLiteral:
+        jsExp = handle_literal(node)
+    elif node.nodeType() == QgsExpressionNode.ntColumnRef:
+        jsExp = handle_columnRef(node, mapLib)
+    elif node.nodeType() == QgsExpressionNode.ntCondition:
+        jsExp = handle_condition(node, mapLib)
     return jsExp
 
 
 def handle_condition(node, mapLib):
     global condtioncounts
     subexps = re.findall(r"WHEN(\s+.*?\s+)THEN(\s+.*?\s+)", node.dump())
-    QgsMessageLog.logMessage(subexps, "qgis2web", level=QgsMessageLog.INFO)
-    count = 1;
+    QgsMessageLog.logMessage(subexps, "qgis2web", level=Qgis.Info)
+    count = 1
     js = ""
     for sub in subexps:
         when = sub[0].strip()
         then = sub[1].strip()
-        QgsMessageLog.logMessage(then, "qgis2web", level=QgsMessageLog.INFO)
-        whenpart =  QgsExpression(when)
+        QgsMessageLog.logMessage(then, "qgis2web", level=Qgis.Info)
+        whenpart = QgsExpression(when)
         thenpart = QgsExpression(then)
         whenjs = walkExpression(whenpart.rootNode(), mapLib)
         thenjs = walkExpression(thenpart.rootNode(), mapLib)
@@ -121,7 +120,7 @@ def handle_condition(node, mapLib):
     if "ELSE" in node.dump():
         elseexps = re.findall(r"ELSE(\s+.*?\s+)END", node.dump())
         elsestr = elseexps[0].strip()
-        exp =  QgsExpression(elsestr)
+        exp = QgsExpression(elsestr)
         elsejs = walkExpression(exp.rootNode(), mapLib)
     funcname = "_CASE()"
     temp = """function %s {
@@ -132,6 +131,7 @@ def handle_condition(node, mapLib):
     };""" % (funcname, js, elsejs)
     whenfunctions.append(temp)
     return funcname
+
 
 def handle_binary(node, mapLib):
     op = node.op()
@@ -187,10 +187,10 @@ def handle_literal(node):
     quote = ""
     if val is None:
         val = "null"
-    elif isinstance(val, basestring):
+    elif isinstance(val, str):
         quote = "'"
         val = val.replace("\n", "\\n")
-    return "%s%s%s" % (quote, unicode(val), quote)
+    return "%s%s%s" % (quote, str(val), quote)
 
 
 def handle_function(node, mapLib):
@@ -282,6 +282,7 @@ def compile_to_file(exp, name=None, mapLib=None, filename="expressions.js"):
         f.write(functionjs)
 
     return name
+
 
 if __name__ == "__main__":
     render_examples()

@@ -3,7 +3,7 @@ import os
 import codecs
 from urllib.parse import parse_qs
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProject,
                        QgsRenderContext,
                        QgsSingleSymbolRenderer,
@@ -11,22 +11,24 @@ from qgis.core import (QgsProject,
                        QgsGraduatedSymbolRenderer,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform)
+                       QgsCoordinateTransform,
+                       QgsWkbTypes)
 from qgis2web.utils import safeName, is25d, BLEND_MODES
-qms = False
+
 try:
     from vector_tiles_reader.util.tile_json import TileJSON
     vt_enabled = True
-except:
+except ImportError:
     vt_enabled = False
+
 try:
     from quick_map_services.py_tiled_layer.tilelayer import TileLayer
     qms = True
-except:
-    pass
+except ImportError:
+    qms = False
 
 
-def writeLayersAndGroups(layers, groups, visible, folder, popup,
+def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
                          settings, json, matchCRS, clustered, getFeatureInfo,
                          iface, restrictToExtent, extent, bounds, authid):
 
@@ -43,9 +45,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
         else:
             (layerVar,
              vtLayers) = layerToJavascript(iface, layer, encode2json, matchCRS,
-                                           cluster, info, restrictToExtent,
-                                           extent, count, vtLayers)
-            layerVars += "\n".join([layerVar])
+                                           interactive[count], cluster, info,
+                                           restrictToExtent, extent, count,
+                                           vtLayers)
+            layerVars += "\n" + "\n".join([layerVar])
     (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
     (mapLayers, layerObjs, osmb) = layersAnd25d(layers, canvas,
                                                 restrictToExtent, extent, qms)
@@ -56,7 +59,7 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
      usedGroups) = getGroups(canvas, layers, restrictToExtent,
                              extent, groupedLayers)
     layersList = []
-    currentVT = ""
+    # currentVT = ""
     for layer in (group_list + no_group_list):
         layersList.append(layer)
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
@@ -67,8 +70,10 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     blend_mode = ""
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-        sln = safeName(layer.name()) + "_" + unicode(count)
-        if (layer.type() == layer.VectorLayer and vts is None and
+        sln = safeName(layer.name()) + "_" + str(count)
+        if (layer.type() == layer.VectorLayer and
+                layer.wkbType() != QgsWkbTypes.NoGeometry and
+                vts is None and
                 not isinstance(layer.renderer(), QgsHeatmapRenderer) and
                 not is25d(layer, canvas, restrictToExtent, extent)):
             (fieldLabels, fieldAliases, fieldImages,
@@ -91,10 +96,12 @@ def writeLayersAndGroups(layers, groups, visible, folder, popup,
     return osmb
 
 
-def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
-                      restrictToExtent, extent, count, vtLayers):
+def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
+                      cluster, info, restrictToExtent, extent, count,
+                      vtLayers):
     (minResolution, maxResolution) = getScaleRes(layer)
-    layerName = safeName(layer.name()) + "_" + unicode(count)
+    layerName = safeName(layer.name()) + "_" + str(count)
+    rawName = layer.name()
     layerAttr = getAttribution(layer)
     if layer.type() == layer.VectorLayer and not is25d(layer,
                                                        iface.mapCanvas(),
@@ -120,20 +127,20 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, cluster, info,
             pointLayerType = "Vector"
         crsConvert = getCRS(iface, matchCRS)
         if layer.providerType() == "WFS" and not encode2json:
-            return getWFS(layer, layerName, layerAttr, cluster,
+            return getWFS(layer, layerName, layerAttr, interactive, cluster,
                           minResolution, maxResolution), vtLayers
         else:
-            return getJSON(layerName, crsConvert, layerAttr, cluster,
-                           pointLayerType, minResolution, maxResolution,
-                           hmRadius, hmRamp, hmWeight, hmWeightMax, renderer,
-                           layer), vtLayers
+            return getJSON(layerName, crsConvert, layerAttr, interactive,
+                           cluster, pointLayerType, minResolution,
+                           maxResolution, hmRadius, hmRamp, hmWeight,
+                           hmWeightMax, renderer, layer), vtLayers
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
             opacity = layer.renderer().opacity()
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
-                return getXYZ(layerName, opacity, minResolution,
+                return getXYZ(layerName, rawName, opacity, minResolution,
                               maxResolution, layerAttr, d["url"][0]), vtLayers
             elif "tileMatrixSet" in d:
                 return getWMTS(layer, d, layerAttr, layerName, opacity,
@@ -152,17 +159,20 @@ def getScaleRes(layer):
     if layer.hasScaleBasedVisibility():
         if layer.minimumScale() != 0:
             minRes = 1 / ((1 / layer.minimumScale()) * 39.37 * 90.7)
-            minResolution = "\nminResolution:%s,\n" % unicode(minRes)
+            minResolution = "\nmaxResolution:%s,\n" % str(minRes)
         if layer.maximumScale() != 0:
             maxRes = 1 / ((1 / layer.maximumScale()) * 39.37 * 90.7)
-            maxResolution = "maxResolution:%s,\n" % unicode(maxRes)
+            maxResolution = "minResolution:%s,\n" % str(maxRes)
     return (minResolution, maxResolution)
 
 
 def getAttribution(layer):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
-    layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
+    if attrText != "":
+        layerAttr = ' &middot; <a href="%s">%s</a>' % (attrUrl, attrText)
+    else:
+        layerAttr = " "
     return layerAttr
 
 
@@ -197,14 +207,14 @@ def build25d(canvas, layer, count):
 var osmb = new OSMBuildings(map).date(new Date({shadows}));
 osmb.set(json_{sln}_{count});""".format(shadows=shadows,
                                         sln=safeName(layer.name()),
-                                        count=unicode(count))
+                                        count=str(count))
     return osmb
 
 
 def getVisibility(mapLayers, layers, visible):
     visibility = ""
     currentVT = ""
-    for layer, layerObj, v in zip(mapLayers[1:], layers, visible):
+    for layer, layerObj, v in zip(mapLayers, layers, visible):
         vts = layerObj.customProperty("VectorTilesReader/vector_tile_url")
         if vts is None or vts != currentVT:
             if vts is not None:
@@ -212,7 +222,7 @@ def getVisibility(mapLayers, layers, visible):
             else:
                 lname = layer
             visibility += "\n".join(["%s.setVisible(%s);" % (
-                lname, unicode(v).lower())])
+                lname, str(v).lower())])
             if vts is not None:
                 currentVT = vts
     return visibility
@@ -250,8 +260,8 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
             osmb = build25d(canvas, layer, count)
         else:
             if (qms and not isinstance(layer, TileLayer)) or not qms:
-                mapLayers.append("lyr_" + safeName(layer.name()) + "_" +
-                                 unicode(count))
+                mapLayers.append("lyr_" + safeName(layer.name()) +
+                                 "_" + str(count))
                 layerObjs.append(layer)
     return (mapLayers, layerObjs, osmb)
 
@@ -271,16 +281,15 @@ def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
             try:
                 if is25d(layer, canvas, restrictToExtent, extent):
                     pass
+                elif layer.id() in groupedLayers:
+                    groupName = groupedLayers[layer.id()]
+                    if groupName not in usedGroups:
+                        group_list.append("group_" + safeName(groupName))
+                        usedGroups.append(groupName)
                 else:
-                    if layer.id() in groupedLayers:
-                        groupName = groupedLayers[layer.id()]
-                        if groupName not in usedGroups:
-                            group_list.append("group_" + safeName(groupName))
-                            usedGroups.append(groupName)
-                    else:
-                        no_group_list.append("lyr_" + safeName(layer.name()) +
-                                             "_" + unicode(count))
-            except:
+                    no_group_list.append("lyr_" + safeName(layer.name()) +
+                                         "_" + str(count))
+            except Exception:
                 if layer.id() in groupedLayers:
                     groupName = groupedLayers[layer.id()]
                     if groupName not in usedGroups:
@@ -288,7 +297,8 @@ def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
                         usedGroups.append(groupName)
                 else:
                     no_group_list.append("lyr_" + safeName(layer.name()) +
-                                         "_" + unicode(count))
+                                         "_" + str(count))
+
     return (group_list, no_group_list, usedGroups)
 
 
@@ -306,10 +316,11 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
         {"name": sln}) + labelFields
     fieldLabels += labelFields
     for f in fieldList:
-        fieldIndex = fieldList.indexFromName(unicode(f.name()))
+        fieldIndex = fieldList.indexFromName(f.name())
         aliasFields += "'%(field)s': '%(alias)s', " % (
             {"field": f.name(),
-             "alias": layer.attributeDisplayName(fieldIndex)})
+             "alias": layer.attributeDisplayName(fieldIndex).replace("'",
+                                                                     "\\'")})
         widget = layer.editorWidgetSetup(fieldIndex).type()
         imageFields += "'%(field)s': '%(image)s', " % (
             {"field": f.name(),
@@ -330,7 +341,8 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     return (fieldLabels, fieldAliases, fieldImages, blend_mode)
 
 
-def getWFS(layer, layerName, layerAttr, cluster, minResolution, maxResolution):
+def getWFS(layer, layerName, layerAttr, interactive, cluster, minResolution,
+           maxResolution):
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var jsonSource_%(n)s = new ol.source.Vector({
     attributions: '%(layerAttr)s',
@@ -350,20 +362,21 @@ var jsonSource_%(n)s = new ol.source.Vector({
         layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
     layerCode += '''%(min)s %(max)s
     style: style_%(n)s,
+    interactive: %(int)s,
     title: "%(name)s"
 });
 
 function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {"name": layer.name(), "n": layerName,
+}''' % {"name": layer.name(), "n": layerName, "int": str(interactive).lower(),
         "min": minResolution, "max": maxResolution}
     return layerCode
 
 
-def getJSON(layerName, crsConvert, layerAttr, cluster, pointLayerType,
-            minResolution, maxResolution, hmRadius, hmRamp, hmWeight,
-            hmWeightMax, renderer, layer):
+def getJSON(layerName, crsConvert, layerAttr, interactive, cluster,
+            pointLayerType, minResolution, maxResolution, hmRadius, hmRamp,
+            hmWeight, hmWeightMax, renderer, layer):
     layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
 var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
 var jsonSource_%(n)s = new ol.source.Vector({
@@ -377,7 +390,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
   distance: 10,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
-    layerCode += '''var lyr_%(n)s = new ol.layer.%(t)s({
+    layerCode += '''\nvar lyr_%(n)s = new ol.layer.%(t)s({
                 declutter: true,
                 source:''' % {"n": layerName, "t": pointLayerType}
     if cluster:
@@ -388,7 +401,9 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                           "max": maxResolution}
     if pointLayerType == "Vector":
         layerCode += '''
-                style: style_%(n)s,''' % {"n": layerName}
+                style: style_%(n)s,
+                interactive: %(int)s,''' % {"n": layerName,
+                                            "int": str(interactive).lower()}
     else:
         layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
     if isinstance(renderer, QgsSingleSymbolRenderer):
@@ -432,7 +447,7 @@ def getVT(json_url):
     sln = safeName(json_url)
     try:
         key = json_url.split("?")[1]
-    except:
+    except Exception:
         key = ""
     json = TileJSON(json_url)
     json.load()
@@ -448,9 +463,10 @@ def getVT(json_url):
                 }),
                 tilePixelRatio: 8
             }),
-            style: style_%s
+            style: style_%s,
+            interarctive: %s
         });
-        """ % (sln, key_url, sln)
+        """ % (sln, key_url, sln, str(interactive).lower())
     return layerCode
 
 
@@ -502,7 +518,7 @@ def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
     return layerCode
 
 
-def getXYZ(layerName, opacity, minResolution, maxResolution,
+def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
            layerAttr, url):
     return """
         var lyr_%s = new ol.layer.Tile({
@@ -515,7 +531,7 @@ def getXYZ(layerName, opacity, minResolution, maxResolution,
     attributions: '%s',
                 url: '%s'
             })
-        });""" % (layerName, layerName, opacity, minResolution, maxResolution,
+        });""" % (layerName, rawName, opacity, minResolution, maxResolution,
                   layerAttr, url)
 
 
@@ -610,7 +626,7 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
         try:
             xform = QgsCoordinateTransform(crsSrc, crsDest,
                                            QgsProject.instance())
-        except:
+        except Exception:
             xform = QgsCoordinateTransform(crsSrc, crsDest)
         extentRep = xform.transformBoundingBox(layer.extent())
     else:

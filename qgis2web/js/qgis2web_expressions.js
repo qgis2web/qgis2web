@@ -88,7 +88,7 @@ function fnc_ln(values, context) {
 };
 
 function fnc_log10(values, context) {
-    return Math.LN10(values[0]);
+    return Math.log10(values[0]);
 };
 
 function fnc_log(values, context) {

@@ -12,25 +12,19 @@ __author__ = 'tom.chadwin@nnpa.org.uk'
 __date__ = '2015-03-26'
 __copyright__ = 'Copyright 2015, Riccardo Klinger / Geolicious'
 
-import os
 import difflib
-import time
 from collections import OrderedDict
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
-from qgis.core import QgsProject
 from qgis.core import QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem
-from PyQt5 import QtCore, QtTest
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QListWidgetItem)
-from osgeo import gdal
-from PyQt5.QtWidgets import QDialogButtonBox, QDialog
+from qgis.PyQt import QtCore
+from qgis.PyQt.QtCore import Qt
 
 from qgis2web.olwriter import OpenLayersWriter
 from qgis2web.leafletWriter import LeafletWriter
-from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from qgis2web.test.utilities import get_test_data_path, load_layer
 from qgis2web.configparams import (getDefaultParams)
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
@@ -63,30 +57,26 @@ class qgis2web_classDialogTest(unittest.TestCase):
         Set template to match desired control output
         """
         combo = self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Template',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1)
+            self.dialog.appearanceParams.findItems('Template', (Qt.MatchExactly | Qt.MatchRecursive))[0], 1)
 
         index = combo.findText(template_name)
         combo.setCurrentIndex(index)
 
     def defaultParams(self):
-        return {'Data export': {
-            'Mapping library location': 'Local',
-                             'Minify GeoJSON files': True,
-                             'Exporter': 'Export to folder',
-                             'Precision': 'maintain',
-                             'Use debug libraries': False},
+        return {'Data export': {'Minify GeoJSON files': True,
+                                'Exporter': 'Export to folder',
+                                'Precision': 'maintain'},
                 'Scale/Zoom': {'Min zoom level': '1',
                                'Restrict to extent': False,
                                'Extent': 'Fit to layers extent',
                                'Max zoom level': '28'},
                 'Appearance': {
                 'Add address search': False,
+                'Add abstract': 'None',
                 'Geolocate user': False,
                 'Search layer': None,
                 'Add layers list': 'None',
+                'Attribute filter': [],
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',
@@ -171,10 +161,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # Export to web map
         self.dialog = MainDialog(self.iface)
         self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+            self.dialog.appearanceParams.findItems('Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0], 1).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -233,9 +220,8 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(self.iface)
         self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+            self.dialog.appearanceParams.findItems('Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0], 1
+        ).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -294,8 +280,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(self.iface)
         self.dialog.appearanceParams.itemWidget(
             self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                'Extent',
+                (Qt.MatchExactly | Qt.MatchRecursive)
+            )[0],
+            1
+        ).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -314,11 +303,11 @@ class qgis2web_classDialogTest(unittest.TestCase):
     # def test14_Leaflet_wfs_poly_single(self):
         # """Dialog test: Leaflet  WFS polygon single"""
         # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        #              'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+        #              '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         # layer_style = get_test_data_path('style', 'polygon_single.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_polygon_single.html')
+        #     'control', 'leaflet_wfs_polygon_single.html')
         # layer = load_wfs_layer(layer_url, 'polygon')
         # layer.loadNamedStyle(layer_style)
 
@@ -326,9 +315,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # self.dialog = MainDialog(self.iface)
         # self.dialog.appearanceParams.itemWidget(
-            # self.dialog.appearanceParams.findItems(
-                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                # 1).setCurrentIndex(1)
+        #     self.dialog.appearanceParams.findItems(
+        #         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+        #         1).setCurrentIndex(1)
         # self.setTemplate('full-screen')
         # self.dialog.leaflet.click()
 
@@ -341,15 +330,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # self.assertEqual(writer.visible, [True])
         # self.assertEqual(writer.cluster, [False])
         # self.assertEqual(writer.popup, [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
-                                        # ])
+        #                                 ])
         # self.assertEqual(writer.json, [False])
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Dialog test: Leaflet  JSON point categorized"""
         layer_path = get_test_data_path('layer', 'airports.shp')
         style_path = get_test_data_path('style', 'airports_categorized.qml')
-        control_path = get_test_data_path(
-            'control', 'leaflet_json_point_categorized.html')
+        # control_path = get_test_data_path('control', 'leaflet_json_point_categorized.html')
 
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
@@ -358,9 +346,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         self.dialog = MainDialog(self.iface)
         self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+            self.dialog.appearanceParams.findItems('Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+            1
+        ).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -380,10 +368,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
     # def test16_Leaflet_wfs_pnt_categorized(self):
         # """Dialog test: Leaflet  WFS point categorized"""
         # layer_url = (
-            # 'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        #     'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         # layer_style = get_test_data_path('style', 'wfs_point_categorized.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_point_categorized.html')
+        #     'control', 'leaflet_wfs_point_categorized.html')
         # layer = load_wfs_layer(layer_url, 'point')
         # layer.loadNamedStyle(layer_style)
 
@@ -391,9 +379,9 @@ class qgis2web_classDialogTest(unittest.TestCase):
 
         # self.dialog = MainDialog(self.iface)
         # self.dialog.appearanceParams.itemWidget(
-            # self.dialog.appearanceParams.findItems(
-                # 'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                # 1).setCurrentIndex(1)
+        #     self.dialog.appearanceParams.findItems(
+        #         'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
+        #         1).setCurrentIndex(1)
         # self.setTemplate('full-screen')
         # self.dialog.leaflet.click()
 
@@ -406,15 +394,14 @@ class qgis2web_classDialogTest(unittest.TestCase):
         # self.assertEqual(writer.visible, [True])
         # self.assertEqual(writer.cluster, [False])
         # self.assertEqual(writer.popup, [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                                        # ])
+        #                                 ])
         # self.assertEqual(writer.json, [False])
 
     def test17_Leaflet_json_line_categorized(self):
         """Dialog test: Leaflet  JSON line categorized"""
         layer_path = get_test_data_path('layer', 'pipelines.shp')
         style_path = get_test_data_path('style', 'pipelines_categorized.qml')
-        control_path = get_test_data_path(
-            'control', 'leaflet_json_line_categorized.html')
+        # control_path = get_test_data_path('control', 'leaflet_json_line_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -423,8 +410,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(self.iface)
         self.dialog.appearanceParams.itemWidget(
             self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive)
+            )[0],
+            1
+        ).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -446,8 +435,7 @@ class qgis2web_classDialogTest(unittest.TestCase):
         """Dialog test: Leaflet  JSON polygon categorized"""
         layer_path = get_test_data_path('layer', 'lakes.shp')
         style_path = get_test_data_path('style', 'lakes_categorized.qml')
-        control_path = get_test_data_path(
-            'control', 'leaflet_json_polygon_categorized.html')
+        # control_path = get_test_data_path('control', 'leaflet_json_polygon_categorized.html')
         layer = load_layer(layer_path)
         layer.loadNamedStyle(style_path)
 
@@ -456,8 +444,10 @@ class qgis2web_classDialogTest(unittest.TestCase):
         self.dialog = MainDialog(self.iface)
         self.dialog.appearanceParams.itemWidget(
             self.dialog.appearanceParams.findItems(
-                'Extent', (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
+                'Extent', (Qt.MatchExactly | Qt.MatchRecursive)
+            )[0],
+            1
+        ).setCurrentIndex(1)
         self.setTemplate('full-screen')
         self.dialog.leaflet.click()
 
@@ -1776,84 +1766,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
                           ])
         self.assertEqual(writer.json, [False])
 
-    def test64_Leaflet_cdn(self):
-        """Dialog test: Leaflet  CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-
-        # Set 'Mapping library location' combo to 'CDN'
-        self.dialog.items['Data export'].get(
-            'Mapping library location').combo.setCurrentIndex(1)
-        self.dialog.leaflet.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, LeafletWriter))
-        expected_params = self.defaultParams()
-        expected_params['Data export']['Mapping library location'] = 'CDN'
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict(
-                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                              (u'NAME', u'no label'), (u'USE', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
-
-    def test65_OL3_cdn(self):
-        """Dialog test: OL3   CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        # Export to web map
-        self.dialog = MainDialog(self.iface)
-        self.dialog.appearanceParams.itemWidget(
-            self.dialog.appearanceParams.findItems(
-                'Extent',
-                        (Qt.MatchExactly | Qt.MatchRecursive))[0],
-                1).setCurrentIndex(1)
-        self.setTemplate('full-screen')
-
-        # Set 'Mapping library location' combo to 'CDN'
-        self.dialog.items['Data export'].get(
-            'Mapping library location').combo.setCurrentIndex(1)
-        self.dialog.ol3.click()
-
-        writer = self.dialog.createWriter()
-        self.assertTrue(isinstance(writer, OpenLayersWriter))
-        expected_params = self.defaultParams()
-        expected_params['Data export']['Mapping library location'] = 'CDN'
-        self.assertEqual(writer.params, expected_params)
-        self.assertEqual(writer.groups, {})
-        self.assertEqual(writer.layers, [layer])
-        self.assertEqual(writer.visible, [True])
-        self.assertEqual(writer.cluster, [False])
-        self.assertEqual(writer.popup,
-                         [OrderedDict(
-                             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-                              (u'NAME', u'no label'), (u'USE', u'no label')])
-                          ])
-        self.assertEqual(writer.json, [False])
-
     def test67_leaflet_minify(self):
         """Dialog test: Leaflet  minify"""
         layer_path = get_test_data_path('layer', 'airports.shp')
@@ -2919,7 +2831,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         params['Appearance']['Add layers list'] = 'Collapsed'
         params['Data export']['Minify GeoJSON files'] = False
         params['Data export']['Precision'] = '4'
-        params['Data export']['Mapping library location'] = 'CDN'
         self.dialog.setStateToParams(params)
 
         writer = self.dialog.createWriter()
@@ -2933,7 +2844,6 @@ class qgis2web_classDialogTest(unittest.TestCase):
         writer.params['Appearance']['Add layers list'] = 'Collapsed'
         writer.params['Data export']['Minify GeoJSON files'] = False
         writer.params['Data export']['Precision'] = '4'
-        writer.params['Data export']['Mapping library location'] = 'CDN'
 
         self.dialog.setStateToWriter(writer)
 

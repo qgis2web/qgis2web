@@ -20,13 +20,12 @@ from collections import OrderedDict
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem
-from PyQt5.QtCore import *
 from qgis2web.olwriter import OpenLayersWriter
 from qgis2web.leafletWriter import LeafletWriter
 from qgis2web.utils import tempFolder
 
 from osgeo import gdal
-from qgis2web.test.utilities import get_test_data_path, load_layer, load_wfs_layer, load_wms_layer
+from qgis2web.test.utilities import get_test_data_path, load_layer
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
 
@@ -60,12 +59,9 @@ class qgis2web_WriterTest(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def defaultParams(self):
-        return {'Data export': {
-            'Mapping library location': 'Local',
-                             'Minify GeoJSON files': True,
-                             'Exporter': 'Export to folder',
-                             'Precision': 'maintain',
-                             'Use debug libraries': False},
+        return {'Data export': {'Minify GeoJSON files': True,
+                                'Exporter': 'Export to folder',
+                                'Precision': 'maintain'},
                 'Scale/Zoom': {'Min zoom level': '1',
                                'Restrict to extent': False,
                                'Extent': 'Fit to layers extent',
@@ -76,6 +72,8 @@ class qgis2web_WriterTest(unittest.TestCase):
                 'Base layer': [],
                 'Search layer': None,
                 'Add layers list': 'None',
+                'Attribute filter': [],
+                'Add abstract': 'None',
                 'Measure tool': 'None',
                 'Match project CRS': False,
                 'Template': 'full-screen',
@@ -97,6 +95,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.params = self.defaultParams()
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -106,7 +105,7 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         result = writer.write(self.iface, tempFolder())
         self.assertTrue(result.index_file)
-        self.assertTrue(len(result.files)>1)
+        self.assertTrue(len(result.files) > 1)
         self.assertTrue(result.folder)
 
     def test02_OpenLayersWriterResults(self):
@@ -120,6 +119,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.params = self.defaultParams()
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -144,8 +144,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
-            get_test_data_path(
-                'control', 'leaflet_json_point_single.html'), 'r')
+            get_test_data_path('control', 'leaflet_json_point_single.html'), 'r')
         control_output = control_file.read()
         control_file.close()
 
@@ -155,6 +154,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -175,7 +175,7 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test10_Leaflet_wfs_pnt_single(self):
         # """Leaflet WFS point single"""
         # layer_url = (
-            # 'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        #     'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         # layer_style = get_test_data_path('style', 'point_single.qml')
         # layer = load_wfs_layer(layer_url, 'point')
         # layer.loadNamedStyle(layer_style)
@@ -183,7 +183,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # QgsProject.instance().addMapLayer(layer)
 
         # control_file = open(
-            # get_test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
+        #     get_test_data_path('control', 'leaflet_wfs_point_single.html'), 'r')
         # control_output = control_file.read()
         # control_file.close()
 
@@ -195,7 +195,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -206,7 +206,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test11_Leaflet_json_line_single(self):
         """Leaflet JSON line single"""
@@ -228,6 +228,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])
                         ]
@@ -244,8 +245,8 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test12_Leaflet_wfs_line_single(self):
         # """Leaflet WFS line single"""
         # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     # '=broads_inspire:centreline&SRSNAME=EPSG:27700')
+        #              'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+        #              '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         # layer_style = get_test_data_path('style', 'line_single.qml')
         # layer = load_wfs_layer(layer_url, 'centreline')
         # layer.loadNamedStyle(layer_style)
@@ -253,7 +254,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # QgsProject.instance().addMapLayer(layer)
 
         # control_file = open(
-            # get_test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
+        #     get_test_data_path('control', 'leaflet_wfs_line_single.html'), 'r')
         # control_output = control_file.read()
         # control_file.close()
 
@@ -265,7 +266,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -274,7 +275,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test13_Leaflet_json_poly_single(self):
         """Leaflet JSON polygon single"""
@@ -286,16 +287,17 @@ class qgis2web_WriterTest(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         control_file = open(
-            get_test_data_path(
-                'control', 'leaflet_json_polygon_single.html'), 'r')
+            get_test_data_path('control', 'leaflet_json_polygon_single.html'), 'r')
         control_output = control_file.read()
         control_file.close()
+
         # Export to web map
         writer = LeafletWriter()
         writer.params = self.defaultParams()
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -312,11 +314,11 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test14_Leaflet_wfs_poly_single(self):
         # """Leaflet WFS polygon single"""
         # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        #              'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+        #              '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         # layer_style = get_test_data_path('style', 'polygon_single.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_polygon_single.html')
+        #     'control', 'leaflet_wfs_polygon_single.html')
         # layer = load_wfs_layer(layer_url, 'polygon')
         # layer.loadNamedStyle(layer_style)
 
@@ -334,7 +336,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -343,7 +345,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test15_Leaflet_json_pnt_categorized(self):
         """Leaflet JSON point categorized"""
@@ -367,6 +369,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -383,10 +386,10 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test16_Leaflet_wfs_pnt_categorized(self):
         # """Leaflet WFS point categorized"""
         # layer_url = (
-            # 'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        #     'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         # layer_style = get_test_data_path('style', 'wfs_point_categorized.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_point_categorized.html')
+        #     'control', 'leaflet_wfs_point_categorized.html')
         # layer = load_wfs_layer(layer_url, 'point')
         # layer.loadNamedStyle(layer_style)
 
@@ -395,6 +398,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # control_file = open(control_path, 'r')
         # control_output = control_file.read()
         # control_file.close()
+
         # # Export to web map
         # writer = LeafletWriter()
         # writer.params = self.defaultParams()
@@ -403,7 +407,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -412,7 +416,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test17_Leaflet_json_line_categorized(self):
         """Leaflet JSON line categorized"""
@@ -435,6 +439,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -470,6 +475,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -487,11 +493,11 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test20_Leaflet_wfs_poly_categorized(self):
         # """Leaflet WFS polygon categorized"""
         # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        #              'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+        #              '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         # layer_style = get_test_data_path('style', 'wfs_polygon_categorized.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_polygon_categorized.html')
+        #     'control', 'leaflet_wfs_polygon_categorized.html')
         # layer = load_wfs_layer(layer_url, 'polygon')
         # layer.loadNamedStyle(layer_style)
 
@@ -509,7 +515,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'name', u'no label'), (u'details', u'no label'), (
-            # u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])]
+        #     u'date', u'no label'), (u'area_ha', u'no label'), (u'web_page', u'no label')])]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -518,7 +524,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test21_Leaflet_json_pnt_graduated(self):
         """Leaflet JSON point graduated"""
@@ -541,6 +547,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -557,10 +564,10 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test22_Leaflet_wfs_pnt_graduated(self):
         # """Leaflet WFS point graduated"""
         # layer_url = (
-            # 'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
+        #     'http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=dnpa_inspire:tpo_points&SRSNAME=EPSG:27700&BBOX=233720,53549,297567,96689')
         # layer_style = get_test_data_path('style', 'wfs_point_graduated.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_point_graduated.html')
+        #     'control', 'leaflet_wfs_point_graduated.html')
         # layer = load_wfs_layer(layer_url, 'point')
         # layer.loadNamedStyle(layer_style)
 
@@ -578,7 +585,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -587,7 +594,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test23_Leaflet_json_line_graduated(self):
         """Leaflet JSON line graduated"""
@@ -610,6 +617,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [
             OrderedDict([(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'), (u'F_CODEDESC', u'no label')])]
@@ -626,11 +634,11 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test24_Leaflet_wfs_line_graduated(self):
         # """Leaflet WFS line graduated"""
         # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     # '=broads_inspire:centreline&SRSNAME=EPSG:27700')
+        #              'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+        #              '=broads_inspire:centreline&SRSNAME=EPSG:27700')
         # layer_style = get_test_data_path('style', 'wfs_line_graduated.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_line_graduated.html')
+        #     'control', 'leaflet_wfs_line_graduated.html')
         # layer = load_wfs_layer(layer_url, 'centreline')
         # layer.loadNamedStyle(layer_style)
 
@@ -648,7 +656,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'objecttype', u'no label'), (u'name', u'no label'), (u'navigable', u'no label'), (u'responsibleparty', u'no label'), (u'broad', u'no label'), (u'from_', u'no label'), (u'to_', u'no label'), (u'reachid', u'no label'), (u'globalid', u'no label'), (u'route', u'no label'), (u'shape_stlength__', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
@@ -657,7 +665,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_file.close()
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test25_Leaflet_json_poly_graduated(self):
         """Leaflet JSON polygon graduated"""
@@ -680,6 +688,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -698,11 +707,11 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test26_Leaflet_wfs_poly_graduated(self):
         # """Leaflet WFS polygon graduated"""
         # layer_url = ('http://balleter.nationalparks.gov.uk/geoserver/wfs?'
-                     # 'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
-                     # '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
+        #              'SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME'
+        #              '=dnpa_inspire:con_areas&SRSNAME=EPSG:27700')
         # layer_style = get_test_data_path('style', 'wfs_polygon_graduated.qml')
         # control_path = get_test_data_path(
-            # 'control', 'leaflet_wfs_polygon_graduated.html')
+        #     'control', 'leaflet_wfs_polygon_graduated.html')
         # layer = load_wfs_layer(layer_url, 'polygon')
         # layer.loadNamedStyle(layer_style)
 
@@ -720,8 +729,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict(
-            # [(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'),
-             # (u'area_ha', u'no label'), (u'web_page', u'no label')])
+        #     [(u'name', u'no label'), (u'details', u'no label'), (u'date', u'no label'),
+        #      (u'area_ha', u'no label'), (u'web_page', u'no label')])
         # ]
         # writer.json = [False]
 
@@ -730,7 +739,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # test_output = test_file.read()
         # test_file.close()
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test27_OL3_pnt_single(self):
         """OL3 point single"""
@@ -753,6 +762,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -796,6 +806,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -840,6 +851,8 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
+        writer.cluster = [False]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -885,6 +898,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -930,6 +944,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -974,6 +989,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -1017,6 +1033,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1060,6 +1077,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'LOCDESC', u'no label'), (u'F_CODE', u'no label'),
@@ -1103,6 +1121,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -1142,6 +1161,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -1179,6 +1199,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1223,6 +1244,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1264,6 +1286,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1298,6 +1321,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1356,6 +1380,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1390,6 +1415,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1447,6 +1473,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1481,6 +1508,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1525,6 +1553,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1560,6 +1589,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1607,6 +1637,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1643,6 +1674,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1703,6 +1735,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1742,6 +1775,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [False]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1776,6 +1810,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [False]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1820,6 +1855,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1853,6 +1889,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1894,6 +1931,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1934,6 +1972,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [True]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -1952,87 +1991,6 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         # Open the test file
         test_output = read_output(result, 'layers/airports_0.js')
-
-        # Compare with control file
-        self.assertEqual(
-            test_output, control_output, diff(control_output, test_output))
-
-    def test64_Leaflet_cdn(self):
-        """Leaflet CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        control_file = open(
-            get_test_data_path(
-                'control', 'leaflet_cdn.html'), 'r')
-        control_output = control_file.read()
-        control_file.close()
-
-        # Export to web map
-        writer = LeafletWriter()
-        writer.params = self.defaultParams()
-        writer.params['Data export']['Mapping library location'] = 'CDN'
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-             (u'NAME', u'no label'), (u'USE', u'no label')])
-        ]
-        writer.json = [False]
-
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        # Open the test file
-        test_file = open(result)
-        test_output = test_file.read()
-        test_file.close()
-
-        # Compare with control file
-        self.assertEqual(
-            test_output, control_output, diff(control_output, test_output))
-
-    def test65_OL3_cdn(self):
-        """OL3 CDN"""
-        layer_path = get_test_data_path('layer', 'airports.shp')
-        style_path = get_test_data_path('style', 'airports_single.qml')
-        layer = load_layer(layer_path)
-        layer.loadNamedStyle(style_path)
-
-        QgsProject.instance().addMapLayer(layer)
-
-        control_file = open(
-            get_test_data_path(
-                'control', 'ol3_cdn.html'), 'r')
-        control_output = control_file.read()
-        control_file.close()
-
-        # Export to web map
-        writer = OpenLayersWriter()
-        writer.params = self.defaultParams()
-        writer.params['Data export']['Mapping library location'] = 'CDN'
-        writer.groups = {}
-        writer.layers = [layer]
-        writer.visible = [True]
-        writer.cluster = [False]
-        writer.popup = [OrderedDict(
-            [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
-             (u'NAME', u'no label'), (u'USE', u'no label')])
-        ]
-        writer.json = [False]
-        writer.getFeatureInfo = [False]
-
-        result = writer.write(self.iface, tempFolder()).index_file
-
-        # Open the test file
-        test_file = open(result)
-        test_output = test_file.read()
-        test_file.close()
 
         # Compare with control file
         self.assertEqual(
@@ -2057,6 +2015,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2097,6 +2056,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2135,6 +2095,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2168,6 +2129,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2209,6 +2171,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2248,6 +2211,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2289,6 +2253,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2328,6 +2293,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2369,6 +2335,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
@@ -2400,6 +2367,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -2437,6 +2405,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -2477,6 +2446,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
@@ -2516,6 +2486,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
@@ -2560,6 +2531,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -2600,6 +2572,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'), (u'NAME', u'no label'), (u'USE', u'no label')])
                         ]
@@ -2616,13 +2589,13 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test83_OL3_WMS(self):
         # """OL3 WMS"""
         # layer_url = (
-            # 'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
+        #     'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         # layer = load_wms_layer(layer_url, 'wms')
 
         # QgsProject.instance().addMapLayer(layer)
 
         # control_file = open(
-            # get_test_data_path('control', 'ol3_wms.js'), 'r')
+        #     get_test_data_path('control', 'ol3_wms.js'), 'r')
         # control_output = control_file.read()
         # control_file.close()
 
@@ -2634,7 +2607,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
         # writer.getFeatureInfo = [False]
 
@@ -2642,30 +2615,30 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         # # Open the test file
         # test_style_file = open(
-            # result.replace(
-                # 'file://', '').replace(
-                    # 'index.html', 'layers/layers.js'))
+        #     result.replace(
+        #         'file://', '').replace(
+        #             'index.html', 'layers/layers.js'))
         # test_style_output = test_style_file.read()
         # test_style_file.close()
         # test_output = test_style_output
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     # def test84_Leaflet_WMS(self):
         # """Leaflet WMS"""
         # layer_url = (
-            # 'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
+        #     'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=all&featureCount=10&format=image/png&layers=GBR_BGS_625k_BLT&styles=&url=http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?')
         # layer = load_wms_layer(layer_url, 'wms')
 
         # QgsProject.instance().addMapLayer(layer)
 
         # control_file = open(
-            # get_test_data_path('control', 'leaflet_wms.html'), 'r')
+        #     get_test_data_path('control', 'leaflet_wms.html'), 'r')
         # control_output = control_file.read()
         # control_file.close()
 
-        # # Export to web map
+        #   Export to web map
         # writer = LeafletWriter()
         # writer.params = self.defaultParams()
         # writer.groups = {}
@@ -2673,22 +2646,22 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
         # writer.getFeatureInfo = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
 
-        # # Open the test file
+        #   Open the test file
         # test_style_file = open(
-            # result.replace(
-                # 'file://', ''))
+        #     result.replace(
+        #         'file://', ''))
         # test_style_output = test_style_file.read()
         # test_style_file.close()
         # test_output = test_style_output
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test85_Leaflet_rulebased(self):
         """Leaflet rule-based"""
@@ -2712,6 +2685,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2747,6 +2721,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2787,6 +2762,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2822,6 +2798,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2843,17 +2820,17 @@ class qgis2web_WriterTest(unittest.TestCase):
     # def test89_OL3_WMTS(self):
         # """OL3 WMTS"""
         # layer_url = (
-            # 'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
+        #     'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
         # layer = load_wms_layer(layer_url, 'wms')
 
         # QgsProject.instance().addMapLayer(layer)
 
         # control_file = open(
-            # get_test_data_path('control', 'ol3_wmts.js'), 'r')
+        #     get_test_data_path('control', 'ol3_wmts.js'), 'r')
         # control_output = control_file.read()
         # control_file.close()
 
-        # # Export to web map
+        #   Export to web map
         # writer = OpenLayersWriter()
         # writer.params = self.defaultParams()
         # writer.groups = {}
@@ -2861,38 +2838,38 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
         # writer.getFeatureInfo = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
 
-        # # Open the test file
+        #   Open the test file
         # test_style_file = open(
-            # result.replace(
-                # 'file://', '').replace(
-                    # 'index.html', 'layers/layers.js'))
+        #     result.replace(
+        #         'file://', '').replace(
+        #             'index.html', 'layers/layers.js'))
         # test_style_output = test_style_file.read()
         # test_style_file.close()
         # test_output = test_style_output
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     # def test90_Leaflet_WMTS(self):
         # """Leaflet WMTS"""
         # layer_url = (
-            # 'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
+        #     'contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=EMAP8&styles=default&tileMatrixSet=GoogleMapsCompatible&url=http://wmts.nlsc.gov.tw/wmts')
         # layer = load_wms_layer(layer_url, 'wms')
 
         # QgsProject.instance().addMapLayer(layer)
 
         # control_file = open(
-            # get_test_data_path('control', 'leaflet_wmts.html'), 'r')
+        #     get_test_data_path('control', 'leaflet_wmts.html'), 'r')
         # control_output = control_file.read()
         # control_file.close()
 
-        # # Export to web map
+        #   Export to web map
         # writer = LeafletWriter()
         # writer.params = self.defaultParams()
         # writer.groups = {}
@@ -2900,22 +2877,22 @@ class qgis2web_WriterTest(unittest.TestCase):
         # writer.visible = [True]
         # writer.cluster = [False]
         # writer.popup = [OrderedDict([(u'ref', u'no label'), (u'tpo_name', u'no label'), (u'area_ha', u'no label'), (u'digitised', u'no label'), (u'objtype', u'no label')])
-                        # ]
+        #                 ]
         # writer.json = [False]
         # writer.getFeatureInfo = [False]
 
         # result = writer.write(self.iface, tempFolder()).index_file
 
-        # # Open the test file
+        #   Open the test file
         # test_style_file = open(
-            # result.replace(
-                # 'file://', ''))
+        #     result.replace(
+        #         'file://', ''))
         # test_style_output = test_style_file.read()
         # test_style_file.close()
         # test_output = test_style_output
 
         # self.assertEqual(
-            # test_output, control_output, diff(control_output, test_output))
+        #     test_output, control_output, diff(control_output, test_output))
 
     def test91_Leaflet_scaledependent(self):
         """Leaflet scale-dependent"""
@@ -2939,6 +2916,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -2974,6 +2952,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -3008,6 +2987,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict([(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'), (u'xlabel', u'no label'), (u'ylabel', u'no label'), (u'rotation', u'no label')])
                         ]
@@ -3042,6 +3022,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3080,6 +3061,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3123,6 +3105,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {'group1': [layer]}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [{}]
         writer.json = [False]
@@ -3156,6 +3139,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {'group1': [layer]}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [{}]
         writer.json = [False]
@@ -3198,6 +3182,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3238,6 +3223,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [('ID', 'no label'), ('fk_region', 'no label'), ('ELEV', 'no label'), ('NAME', 'no label'),
@@ -3282,6 +3268,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict(
             [(u'cat', u'no label'), (u'NAMES', u'no label'), (u'AREA_MI', u'no label'),
@@ -3317,6 +3304,7 @@ class qgis2web_WriterTest(unittest.TestCase):
         writer.groups = {}
         writer.layers = [layer]
         writer.visible = [True]
+        writer.interactive = [True]
         writer.cluster = [False]
         writer.popup = [OrderedDict()]
         writer.json = [False]
@@ -3340,7 +3328,46 @@ class qgis2web_WriterTest(unittest.TestCase):
 
         # test for exported raster file
         assert os.path.exists(result.replace('index.html', 'data/test_0.png'))
+        
+    def test102_Leaflet_interactive(self):
+        """Leaflet interactive"""
+        layer_path = get_test_data_path('layer', 'airports.shp')
+        style_path = get_test_data_path('style', 'airports_single.qml')
+        layer = load_layer(layer_path)
+        layer.loadNamedStyle(style_path)
 
+        QgsProject.instance().addMapLayer(layer)
+
+        control_file = open(
+            get_test_data_path(
+                'control', 'leaflet_interactive.html'), 'r')
+        control_output = control_file.read()
+        control_file.close()
+
+        # Export to web map
+        writer = LeafletWriter()
+        writer.params = self.defaultParams()
+        writer.groups = {}
+        writer.layers = [layer]
+        writer.visible = [True]
+        writer.interactive = [False]
+        writer.cluster = [False]
+        writer.popup = [OrderedDict(
+            [(u'ID', u'no label'), (u'fk_region', u'no label'), (u'ELEV', u'no label'),
+             (u'NAME', u'no label'), (u'USE', u'no label')])
+        ]
+        writer.json = [False]
+
+        result = writer.write(self.iface, tempFolder()).index_file
+
+        # Open the test file
+        test_file = open(result)
+        test_output = test_file.read()
+        test_file.close()
+
+        # Compare with control file
+        self.assertEqual(
+            test_output, control_output, diff(control_output, test_output))
 
 def read_output(url, path):
     """ Given a url for the index.html file of a preview or export and the

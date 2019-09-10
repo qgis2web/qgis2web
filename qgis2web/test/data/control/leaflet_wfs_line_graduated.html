@@ -35,7 +35,7 @@
             zoomControl:true, maxZoom:28, minZoom:1
         })
         var hash = new L.Hash(map);
-        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
@@ -92,6 +92,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['shape_stlength__'] >= 3445.788026 && feature.properties['shape_stlength__'] <= 6868.736173 ) {
@@ -104,6 +105,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['shape_stlength__'] >= 6868.736173 && feature.properties['shape_stlength__'] <= 10291.684319 ) {
@@ -116,6 +118,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['shape_stlength__'] >= 10291.684319 && feature.properties['shape_stlength__'] <= 13714.632466 ) {
@@ -128,6 +131,7 @@
                 lineJoin: 'bevel',
                 weight: 1.0,
                 fillOpacity: 0,
+                interactive: true,
             }
             }
             if (feature.properties['shape_stlength__'] >= 13714.632466 && feature.properties['shape_stlength__'] <= 17137.580613 ) {
@@ -148,6 +152,7 @@
         map.getPane('pane_centreline_0').style['mix-blend-mode'] = 'normal';
         var layer_centreline_0 = L.geoJson(null, {
             attribution: '',
+            interactive: true,
             style: style_centreline_0_0,
             pane: 'pane_centreline_0',
             onEachFeature: pop_centreline_0

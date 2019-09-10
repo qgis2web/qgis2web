@@ -36,7 +36,7 @@
             zoomControl:true, maxZoom:28, minZoom:1
         })
         var hash = new L.Hash(map);
-        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
@@ -69,7 +69,7 @@
                 variables: {}
             };
             // Start of if blocks and style check logic
-            if (airports_0rule0_eval_expression(context)) {
+            if (exp_airports_0rule0_eval_expression(context)) {
                   return {
                 pane: 'pane_airports_0',
                 radius: 4.0,
@@ -82,6 +82,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(220,157,175,1.0)',
+                interactive: true,
             };
                 }
             else {
@@ -97,6 +98,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(39,147,25,1.0)',
+                interactive: true,
             };
             }
         }
@@ -105,6 +107,9 @@
         map.getPane('pane_airports_0').style['mix-blend-mode'] = 'normal';
         var layer_airports_0 = new L.geoJson(json_airports_0, {
             attribution: '',
+            interactive: true,
+            dataVar: 'json_airports_0',
+            layerName: 'layer_airports_0',
             pane: 'pane_airports_0',
             onEachFeature: pop_airports_0,
             pointToLayer: function (feature, latlng) {

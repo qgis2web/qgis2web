@@ -18,10 +18,9 @@
 from qgis.core import QgsApplication
 import os
 import shutil
-from qgis2web.utils import tempFolder
 from qgis2web.exporter import EXPORTER_REGISTRY
 from qgis.gui import QgsColorButton
-from PyQt5.QtGui import QColor
+from qgis.PyQt.QtGui import QColor
 
 
 def getTemplates():
@@ -54,7 +53,10 @@ def getParams(configure_exporter_action=None):
             "Add layers list": ("None", "Collapsed", "Expanded"),
             "Match project CRS": False,
             "Add address search": False,
+            "Add abstract": ("None", "upper right", "lower right",
+                             "lower left", "upper left"),
             "Layer search": ("None", "placeholder"),
+            "Attribute filter": ["None", "placeholder2"],
             "Measure tool": ("None", "Metric", "Imperial"),
             "Show popups on hover": False,
             "Highlight on hover": False,
@@ -66,9 +68,7 @@ def getParams(configure_exporter_action=None):
         "Data export": {
             "Precision": ("maintain", "1", "2", "3", "4", "5", "6", "7", "8",
                           "9", "10", "11", "12", "13", "14", "15"),
-            "Minify GeoJSON files": True,
-            "Mapping library location": ("Local", "CDN"),
-            "Use debug libraries": False
+            "Minify GeoJSON files": True
         },
         "Scale/Zoom": {
             "Extent": ("Canvas extent", "Fit to layers extent"),
@@ -106,13 +106,21 @@ def getDefaultParams():
                     settings[param] = value[1]
                 else:
                     settings[param] = value[0]
+            if isinstance(value, list):
+                if param == 'Attribute filter':
+                    settings[param] = value[0]
+                else:
+                    settings[param] = value[0]
             if param in ('Widget Icon', 'Widget Background'):
                 settings[param] = value.color().name()
     params['Appearance']['Search layer'] = None
+    params['Appearance']['Attribute filter'] = []
     return params
 
 
 specificParams = {
+    "Add abstract": "leaflet",
+    "Attribute filter": "leaflet"
 }
 
 specificOptions = {

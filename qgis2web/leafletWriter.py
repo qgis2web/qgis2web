@@ -21,17 +21,18 @@
  ***************************************************************************/
 """
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsMapLayer,
+                       QgsWkbTypes,
                        QgsMessageLog)
 import traceback
-from PyQt5.QtCore import (Qt,
-                          QObject)
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QApplication
+from qgis.PyQt.QtCore import Qt, QObject
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication
 import os
 from datetime import datetime
 import re
@@ -57,8 +58,8 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            titleSubScript,
                                            getVTStyles,
                                            getVTLabels)
-from qgis2web.utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector,
-                            exportRaster, safeName)
+from qgis2web.utils import (ALL_ATTRIBUTES, exportVector,
+                            exportRaster, safeName, returnFilterValues)
 from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
@@ -85,7 +86,6 @@ class LeafletWriter(Writer):
     def write(self, iface, dest_folder, feedback=None):
         if not feedback:
             feedback = Feedback()
-
         feedback.showFeedback('Creating Leaflet map...')
         self.preview_file = self.writeLeaflet(
             iface,
@@ -93,6 +93,7 @@ class LeafletWriter(Writer):
             layer_list=self.layers,
             popup=self.popup,
             visible=self.visible,
+            interactive=self.interactive,
             json=self.json,
             cluster=self.cluster,
             getFeatureInfo=self.getFeatureInfo,
@@ -108,7 +109,7 @@ class LeafletWriter(Writer):
     @classmethod
     def writeLeaflet(
             cls, iface, feedback, folder,
-            layer_list, visible, cluster,
+            layer_list, visible, interactive, cluster,
             json, getFeatureInfo, params, popup):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -118,13 +119,13 @@ class LeafletWriter(Writer):
         project = QgsProject.instance()
         mapSettings = canvas.mapSettings()
         title = project.title()
+        abstract = project.metadata().abstract()
         pluginDir = os.path.dirname(os.path.realpath(__file__))
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
         outputProjectFileName = os.path.join(outputProjectFileName,
-                                             'qgis2web_' + unicode(stamp))
+                                             'qgis2web_' + stamp)
         outputIndex = os.path.join(outputProjectFileName, 'index.html')
 
-        mapLibLocation = params["Data export"]["Mapping library location"]
         minify = params["Data export"]["Minify GeoJSON files"]
         precision = params["Data export"]["Precision"]
         extent = params["Scale/Zoom"]["Extent"]
@@ -133,10 +134,12 @@ class LeafletWriter(Writer):
         restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
         matchCRS = params["Appearance"]["Match project CRS"]
         addressSearch = params["Appearance"]["Add address search"]
+        abstractOptions = params["Appearance"]["Add abstract"]
         locate = params["Appearance"]["Geolocate user"]
         measure = params["Appearance"]["Measure tool"]
         highlight = params["Appearance"]["Highlight on hover"]
         layerSearch = params["Appearance"]["Layer search"]
+        layerFilter = params["Appearance"]["Attribute filter"]
         popupsOnHover = params["Appearance"]["Show popups on hover"]
         template = params["Appearance"]["Template"]
         widgetAccent = params["Appearance"]["Widget Icon"]
@@ -150,7 +153,7 @@ class LeafletWriter(Writer):
                                                    outputProjectFileName,
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
-                                                   canvas, mapLibLocation,
+                                                   layerFilter, canvas,
                                                    addressSearch, locate)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
                  widgetAccent, widgetBackground)
@@ -177,7 +180,7 @@ class LeafletWriter(Writer):
         for layer, jsonEncode, eachPopup, clst in zip(layer_list, json,
                                                       popup, cluster):
             rawLayerName = layer.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
+            safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
             if layer.providerType() != 'WFS' or jsonEncode is True:
                 if layer.type() == QgsMapLayer.VectorLayer and vts is None:
@@ -219,15 +222,13 @@ class LeafletWriter(Writer):
             try:
                 xform = QgsCoordinateTransform(crsSrc, crsDest,
                                                QgsProject.instance())
-            except:
+            except Exception:
                 xform = QgsCoordinateTransform(crsSrc, crsDest)
             pt1 = xform.transformBoundingBox(pt0)
-            bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
-                           pt1.xMinimum(), pt1.xMaximum()]
-            bounds = '[[' + unicode(pt1.yMinimum()) + ','
-            bounds += unicode(pt1.xMinimum()) + '],['
-            bounds += unicode(pt1.yMaximum()) + ','
-            bounds += unicode(pt1.xMaximum()) + ']]'
+            bounds = '[[' + str(pt1.yMinimum()) + ','
+            bounds += str(pt1.xMinimum()) + '],['
+            bounds += str(pt1.yMaximum()) + ','
+            bounds += str(pt1.xMaximum()) + ']]'
             if matchCRS and crsAuthId != 'EPSG:4326':
                 middle += crsScript(crsAuthId, crsProj4)
         else:
@@ -243,8 +244,9 @@ class LeafletWriter(Writer):
 
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(count)
-            if layer.type() == QgsMapLayer.VectorLayer:
+            safeLayerName = safeName(rawLayerName) + "_" + str(count)
+            if (layer.type() == QgsMapLayer.VectorLayer and
+                    layer.wkbType() != QgsWkbTypes.NoGeometry):
                 (new_src,
                  legends,
                  wfsLayers,
@@ -261,7 +263,8 @@ class LeafletWriter(Writer):
                                              popupsOnHover, popup[count],
                                              outputProjectFileName,
                                              wfsLayers, cluster[count],
-                                             visible[count], json[count],
+                                             visible[count],
+                                             interactive[count], json[count],
                                              legends, new_src, canvas, count,
                                              restrictToExtent, extent,
                                              feedback, labelCode, vtLabels,
@@ -285,7 +288,7 @@ class LeafletWriter(Writer):
                     feedback.completeStep()
                 if visible[count]:
                     new_obj += """
-        map.addLayer(overlay_""" + safeLayerName + """);"""
+        map.addLayer(layer_""" + safeLayerName + """);"""
                 new_src += new_obj
         the_src = new_src
         new_src = jsons + """
@@ -313,12 +316,14 @@ class LeafletWriter(Writer):
         new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
         if title != "":
-            titleStart = unicode(titleSubScript(title))
-            new_src += unicode(titleStart)
+            titleStart = titleSubScript(title, 1, "upper right")
+            new_src += titleStart
+        if abstract != "":
+            abstractStart = titleSubScript(abstract, 2, abstractOptions)
+            new_src += abstractStart
         if addressSearch:
             address_text = addressSearchScript()
             new_src += address_text
-
         if (params["Appearance"]["Add layers list"] and
                 params["Appearance"]["Add layers list"] != "" and
                 params["Appearance"]["Add layers list"] != "None"):
@@ -336,15 +341,21 @@ class LeafletWriter(Writer):
         try:
             if cluster[count]:
                 layerType = "cluster"
-        except:
+        except Exception:
             pass
         searchLayer = "%s_%s" % (layerType,
                                  params["Appearance"]["Search layer"])
+        filterItems = []
+        for item in params["Appearance"]["Attribute filter"]:
+            filterItem = returnFilterValues(layer_list,
+                                            item.text().split(": ")[0],
+                                            item.text().split(": ")[1])
+            if filterItem:
+                filterItems.append(filterItem)
         labelList = []
         for count, layer in enumerate(layer_list):
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-            safeLayerName = re.sub(r'[\W_]+', '',
-                                   layer.name()) + "_" + unicode(count)
+            safeLayerName = safeName(layer.name()) + "_" + str(count)
             if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
                 labelling = layer.labeling()
                 if labelling is not None:
@@ -352,20 +363,18 @@ class LeafletWriter(Writer):
                     if palyr.fieldName and palyr.fieldName != "":
                         labelList.append("layer_%s" % safeLayerName)
         labelsList = ",".join(labelList)
-        end += endHTMLscript(wfsLayers, layerSearch, labelCode,
-                             labelVisibility, searchLayer, useHeat, useRaster,
-                             labelsList, mapUnitLayers)
+        end += endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode,
+                             labelVisibility, searchLayer, useHeat,
+                             useRaster, labelsList, mapUnitLayers)
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
-                           measure, matchCRS, layerSearch, canvas,
-                           mapLibLocation, locate, new_src, template, feedback,
-                           useMultiStyle, useHeat, useShapes, useOSMB, useWMS,
-                           useWMTS, useVT)
-        except Exception as e:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=QgsMessageLog.CRITICAL)
-            QApplication.restoreOverrideCursor()
+                           measure, matchCRS, layerSearch, filterItems, canvas,
+                           locate, new_src, template, feedback, useMultiStyle,
+                           useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT)
+        except Exception:
+            QgsMessageLog.logMessage(traceback.format_exc(),
+                                     "qgis2web", level=Qgis.Critical)
         finally:
             QApplication.restoreOverrideCursor()
         return outputIndex

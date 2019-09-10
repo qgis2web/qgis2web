@@ -23,11 +23,10 @@ from qgis.core import (QgsProject,
                        QgsCoordinateTransform,
                        QgsRectangle,
                        QgsCsException)
-from qgis2web.utils import (exportLayers, replaceInTemplate)
-from qgis.utils import iface
-from PyQt5.QtCore import Qt, QObject
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QApplication
+from qgis.PyQt.QtCore import Qt, QObject
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication
+from qgis2web.utils import exportLayers, replaceInTemplate
 from qgis2web.olFileScripts import (writeFiles,
                                     writeHTMLstart,
                                     writeLayerSearch,
@@ -84,6 +83,7 @@ class OpenLayersWriter(Writer):
                                          groups=self.groups,
                                          popup=self.popup,
                                          visible=self.visible,
+                                         interactive=self.interactive,
                                          json=self.json,
                                          clustered=self.cluster,
                                          getFeatureInfo=self.getFeatureInfo,
@@ -98,12 +98,13 @@ class OpenLayersWriter(Writer):
 
     @classmethod
     def writeOL(cls, iface, feedback, layers, groups, popup, visible,
-                json, clustered, getFeatureInfo, settings, folder):
+                interactive, json, clustered, getFeatureInfo, settings,
+                folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         mapSettings = iface.mapCanvas().mapSettings()
         controlCount = 0
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
-        folder = os.path.join(folder, 'qgis2web_' + unicode(stamp))
+        folder = os.path.join(folder, 'qgis2web_' + stamp)
         restrictToExtent = settings["Scale/Zoom"]["Restrict to extent"]
         matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
@@ -120,25 +121,24 @@ class OpenLayersWriter(Writer):
         measureTool = settings["Appearance"]["Measure tool"]
         addLayersList = settings["Appearance"]["Add layers list"]
         htmlTemplate = settings["Appearance"]["Template"]
-        layerSearch = unicode(settings["Appearance"]["Layer search"])
+        layerSearch = settings["Appearance"]["Layer search"]
         searchLayer = settings["Appearance"]["Search layer"]
-        mapLibLocn = settings["Data export"]["Mapping library location"]
         widgetAccent = settings["Appearance"]["Widget Icon"]
         widgetBackground = settings["Appearance"]["Widget Background"]
 
         writeFiles(folder, restrictToExtent, feedback)
         exportLayers(iface, layers, folder, precision, optimize,
                      popup, json, restrictToExtent, extent, feedback, matchCRS)
-        mapUnitsLayers = exportStyles(layers, folder, clustered)
+        mapUnitsLayers = exportStyles(layers, folder, clustered, feedback)
         mapUnitLayers = getMapUnitLayers(mapUnitsLayers)
-        osmb = writeLayersAndGroups(layers, groups, visible, folder, popup,
-                                    settings, json, matchCRS, clustered,
-                                    getFeatureInfo, iface, restrictToExtent,
-                                    extent, mapbounds,
+        osmb = writeLayersAndGroups(layers, groups, visible, interactive,
+                                    folder, popup, settings, json, matchCRS,
+                                    clustered, getFeatureInfo, iface,
+                                    restrictToExtent, extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
         (jsAddress,
          cssAddress, controlCount) = writeHTMLstart(settings, controlCount,
-                                                    osmb, mapLibLocn, feedback)
+                                                    osmb, feedback)
         (geojsonVars, wfsVars, styleVars) = writeScriptIncludes(layers,
                                                                 json, matchCRS)
         popupLayers = "popupLayers = [%s];" % ",".join(
@@ -153,8 +153,8 @@ class OpenLayersWriter(Writer):
                                                        controlCount)
         backgroundColor += geolocateCode
         mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
-        onHover = unicode(popupsOnHover).lower()
-        highlight = unicode(highlightFeatures).lower()
+        onHover = str(popupsOnHover).lower()
+        highlight = str(highlightFeatures).lower()
         highlightFill = mapSettings.selectionColor().name()
         (proj, proj4, view) = getCRSView(mapextent, fullextent, maxZoom,
                                          minZoom, matchCRS, mapSettings)
@@ -184,8 +184,8 @@ class OpenLayersWriter(Writer):
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
                   "@JSADDRESS@": jsAddress,
-                  "@MAP_WIDTH@": unicode(mapSize.width()) + "px",
-                  "@MAP_HEIGHT@": unicode(mapSize.height()) + "px",
+                  "@MAP_WIDTH@": str(mapSize.width()) + "px",
+                  "@MAP_HEIGHT@": str(mapSize.height()) + "px",
                   "@OL3_STYLEVARS@": styleVars,
                   "@OL3_BACKGROUNDCOLOR@": backgroundColor,
                   "@OL3_POPUP@": ol3popup,
@@ -202,12 +202,14 @@ class OpenLayersWriter(Writer):
                   "@EXP_JS@": exp_js,
                   "@LEAFLET_ADDRESSCSS@": "",
                   "@LEAFLET_MEASURECSS@": "",
+                  "@LEAFLET_LAYERFILTERCSS@": "",
                   "@LEAFLET_EXTRAJS@": "",
                   "@LEAFLET_ADDRESSJS@": "",
                   "@LEAFLET_MEASUREJS@": "",
                   "@LEAFLET_CRSJS@": "",
                   "@LEAFLET_LAYERSEARCHCSS@": "",
                   "@LEAFLET_LAYERSEARCHJS@": "",
+                  "@LEAFLET_LAYERFILTERJS@": "",
                   "@LEAFLET_CLUSTERCSS@": "",
                   "@LEAFLET_CLUSTERJS@": ""}
         with open(os.path.join(folder, "index.html"), "w") as f:
@@ -264,8 +266,9 @@ def bounds(iface, useCanvas, layers, matchCRS):
             try:
                 transform = QgsCoordinateTransform(canvasCrs, epsg3857,
                                                    QgsProject.instance())
-            except:
+            except Exception:
                 transform = QgsCoordinateTransform(canvasCrs, epsg3857)
+
             try:
                 extent = transform.transformBoundingBox(canvas.extent())
             except QgsCsException:
@@ -281,8 +284,9 @@ def bounds(iface, useCanvas, layers, matchCRS):
                 try:
                     transform = QgsCoordinateTransform(layer.crs(), epsg3857,
                                                        QgsProject.instance())
-                except:
+                except Exception:
                     transform = QgsCoordinateTransform(layer.crs(), epsg3857)
+
                 try:
                     layerExtent = transform.transformBoundingBox(
                         layer.extent())

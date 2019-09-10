@@ -36,14 +36,14 @@
             zoomControl:true, maxZoom:28, minZoom:1
         })
         var hash = new L.Hash(map);
-        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        var overlay_wms_0 = L.WMS.layer("http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?", "GBR_BGS_625k_BLT", {
+        var layer_wms_0 = L.WMS.layer("http://ogc.bgs.ac.uk/cgi-bin/BGS_Bedrock_and_Superficial_Geology/wms?", "GBR_BGS_625k_BLT", {
             format: 'image/png',
             uppercase: true,
             transparent: true,
@@ -53,7 +53,7 @@
             opacity: 1,
             identify: false,
         });
-        map.addLayer(overlay_wms_0);
+        map.addLayer(layer_wms_0);
         setBounds();
         </script>
     </body>
