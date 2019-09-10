@@ -286,7 +286,8 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
+def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
+              maxZoom):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     attr = ""
@@ -299,10 +300,15 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
             opacity: {opacity},
             attribution: '{attr}',
+            minZoom: {minZoom},
+            maxZoom: {maxZoom},
+            minNativeZoom: {minNativeZoom},
+            maxNativeZoom: {maxNativeZoom}
         }});
         layer_{safeLayerName};""".format(
             opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0],
-            attr=attr)
+            attr=attr, minNativeZoom=d['zmin'][0], maxNativeZoom=d['zmax'][0],
+            minZoom=minZoom, maxZoom=maxZoom)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
