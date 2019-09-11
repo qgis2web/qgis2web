@@ -33,79 +33,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     os.makedirs(markerStore)
     shutil.copyfile(jsDir + 'qgis2web_expressions.js',
                     jsStore + 'qgis2web_expressions.js')
-    shutil.copyfile(jsDir + 'leaflet.wms.js',
-                    jsStore + 'leaflet.wms.js')
-    shutil.copyfile(jsDir + 'leaflet-tilelayer-wmts.js',
-                    jsStore + 'leaflet-tilelayer-wmts.js')
-    shutil.copyfile(jsDir + 'leaflet-svg-shape-markers.min.js',
-                    jsStore + 'leaflet-svg-shape-markers.min.js')
-    shutil.copyfile(jsDir + 'leaflet.pattern.js',
-                    jsStore + 'leaflet.pattern.js')
-    shutil.copyfile(jsDir + 'rbush.min.js',
-                    jsStore + 'rbush.min.js')
-    shutil.copyfile(jsDir + 'labelgun.min.js',
-                    jsStore + 'labelgun.min.js')
-    shutil.copyfile(jsDir + 'labels.js',
-                    jsStore + 'labels.js')
-    shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
-    shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
-    if address:
-        shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
-                        jsStore + 'leaflet-control-geocoder.Geocoder.js')
-        shutil.copyfile(cssDir + 'leaflet-control-geocoder.Geocoder.css',
-                        cssStore + 'leaflet-control-geocoder.Geocoder.css')
-    if locate:
-        shutil.copyfile(jsDir + 'L.Control.Locate.min.js',
-                        jsStore + 'L.Control.Locate.min.js')
-        shutil.copyfile(cssDir + 'L.Control.Locate.min.css',
-                        cssStore + 'L.Control.Locate.min.css')
-    shutil.copyfile(jsDir + 'multi-style-layer.js',
-                    jsStore + 'multi-style-layer.js')
-    shutil.copyfile(jsDir + 'Autolinker.min.js',
-                    jsStore + 'Autolinker.min.js')
-    shutil.copyfile(jsDir + 'OSMBuildings-Leaflet.js',
-                    jsStore + 'OSMBuildings-Leaflet.js')
-    shutil.copyfile(jsDir + 'leaflet-heat.js',
-                    jsStore + 'leaflet-heat.js')
-    shutil.copyfile(jsDir + 'Leaflet.VectorGrid.js',
-                    jsStore + 'Leaflet.VectorGrid.js')
-    shutil.copyfile(jsDir + 'leaflet-hash.js', jsStore + 'leaflet-hash.js')
-    shutil.copyfile(jsDir + 'leaflet.rotatedMarker.js',
-                    jsStore + 'leaflet.rotatedMarker.js')
 
-    # copy icons
-    shutil.copyfile(cssDir + 'fontawesome-all.min.css',
-                    cssStore + 'fontawesome-all.min.css')
-    shutil.copyfile(fontDir + 'fa-solid-900.woff2',
-                    fontStore + 'fa-solid-900.woff2')
-    shutil.copyfile(fontDir + 'fa-solid-900.ttf',
-                    fontStore + 'fa-solid-900.ttf')
-
-    if len(cluster_set):
-        shutil.copyfile(jsDir + 'leaflet.markercluster.js',
-                        jsStore + 'leaflet.markercluster.js')
-        shutil.copyfile(cssDir + 'MarkerCluster.css',
-                        cssStore + 'MarkerCluster.css')
-        shutil.copyfile(cssDir + 'MarkerCluster.Default.css',
-                        cssStore + 'MarkerCluster.Default.css')
-    if layerSearch != "None":
-        shutil.copyfile(jsDir + 'leaflet-search.js',
-                        jsStore + 'leaflet-search.js')
-        shutil.copyfile(cssDir + 'leaflet-search.css',
-                        cssStore + 'leaflet-search.css')
-        shutil.copytree(imageDir, imageStore)
-    else:
-        os.makedirs(imageStore)
-    if measure != "None":
-        shutil.copyfile(jsDir + 'leaflet-measure.js',
-                        jsStore + 'leaflet-measure.js')
-        shutil.copyfile(cssDir + 'leaflet-measure.css',
-                        cssStore + 'leaflet-measure.css')
     shutil.copytree(cssDir + 'images', cssStore + 'images')
-    if (matchCRS and
-            canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
-        shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
-        shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
     feedback.completeStep()
     return dataStore, cssStore
 
@@ -124,10 +53,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         webpage_name = unicode(webpage_name)
     cssAddress = '<link rel="stylesheet" href='
-    cssAddress += '"https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/'
+    cssAddress += '"https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/'
     cssAddress += 'mapbox-gl.css">'
     jsAddress = '<script src="https://'
-    jsAddress += 'api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js">'
+    jsAddress += 'api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/mapbox-gl.js">'
     jsAddress += '</script>'
     jsAddress += '<script src="mapbox/style.js"></script>'
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
@@ -195,6 +124,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_ADDRESSJS@": addressJS,
               "@LEAFLET_MEASUREJS@": measureJS,
               "@LEAFLET_CRSJS@": crsJS,
+              "@LEAFLET_LAYERFILTERCSS@": "",
+              "@LEAFLET_LAYERFILTERJS@": "",
               "@QGIS2WEBJS@": qgis2webJS,
               "@MAP_WIDTH@": unicode(canvasSize.width()) + "px",
               "@MAP_HEIGHT@": unicode(canvasSize.height()) + "px",

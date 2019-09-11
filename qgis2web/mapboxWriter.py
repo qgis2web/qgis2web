@@ -407,16 +407,27 @@ var styleJSON = {
                              labelVisibility, searchLayer, useHeat, useRaster,
                              labelsList, mapUnitLayers)
         new_src += end
+        pt0 = canvas.extent()
+        crsDest = QgsCoordinateReferenceSystem(4326)
+        try:
+            xform = QgsCoordinateTransform(crsSrc, crsDest,
+                                           QgsProject.instance())
+        except Exception:
+            xform = QgsCoordinateTransform(crsSrc, crsDest)
+        pt1 = xform.transformBoundingBox(pt0)
+        bounds = 'new mapboxgl.LngLatBounds(new mapboxgl.LngLat(' + str(pt1.xMinimum()) + ','
+        bounds += str(pt1.yMinimum()) + '),new mapboxgl.LngLat('
+        bounds += str(pt1.xMaximum()) + ','
+        bounds += str(pt1.yMaximum()) + '))'
         new_src = """
 <script>
 var map = new mapboxgl.Map({
  container: 'map',
  style: styleJSON,
- center: [-1.485, 53.567],
- zoom: 4
+ bounds: %s
 });
 map.addControl(new mapboxgl.NavigationControl());
-</script>"""
+</script>""" % bounds
         # try:
         writeHTMLstart(outputIndex, title, cluster, addressSearch,
                        measure, matchCRS, layerSearch, canvas,
