@@ -52,11 +52,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         pass
     else:
         webpage_name = unicode(webpage_name)
-    cssAddress = '<link rel="stylesheet" href='
-    cssAddress += '"https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/'
-    cssAddress += 'mapbox-gl.css">'
-    jsAddress = '<script src="https://'
-    jsAddress += 'api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/mapbox-gl.js">'
+    cssAddress = '<link rel="stylesheet" href="mapbox/mapbox-gl.css">'
+    jsAddress = '<script src="mapbox/mapbox-gl.js">'
     jsAddress += '</script>'
     jsAddress += '<script src="mapbox/style.js"></script>'
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'

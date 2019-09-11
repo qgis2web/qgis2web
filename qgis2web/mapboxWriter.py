@@ -28,6 +28,7 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMessageLog)
 import codecs
+import shutil
 import traceback
 from PyQt5.QtCore import (Qt,
                           QObject)
@@ -331,7 +332,10 @@ var styleJSON = {
     "draft": false
 }""" % (",".join(vtSources), sprite, glyphs, ",".join(vtLayers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
-        os.makedirs(mbStore)
+        if not os.path.exists(mbStore):
+            shutil.copytree(os.path.join(os.path.dirname(__file__),
+                                         "mapbox"),
+                            mbStore)
         with codecs.open(os.path.join(mbStore, "style.js"),
                          'w', encoding='utf-8') as f:
             f.write(unicode(s))
