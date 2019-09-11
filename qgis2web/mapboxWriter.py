@@ -59,7 +59,7 @@ from qgis2web.mapboxScriptStrings import (jsonScript,
                                           getVTStyles,
                                           getVTLabels)
 from qgis2web.utils import (ALL_ATTRIBUTES, PLACEMENT, exportVector,
-                            exportRaster, safeName)
+                            exportRaster, safeName, scaleToZoom)
 from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
@@ -315,8 +315,6 @@ var styleJSON = {
         -1.445462913521851,
         50.924985957591986
     ],
-    "zoom": 13.822550415023533,
-    "bearing": -1.393608084872767,
     "pitch": 0,
     "light": {
         "intensity": 0.2
@@ -407,27 +405,29 @@ var styleJSON = {
                              labelVisibility, searchLayer, useHeat, useRaster,
                              labelsList, mapUnitLayers)
         new_src += end
-        pt0 = canvas.extent()
+        pt0 = canvas.center()
         crsDest = QgsCoordinateReferenceSystem(4326)
         try:
             xform = QgsCoordinateTransform(crsSrc, crsDest,
                                            QgsProject.instance())
         except Exception:
             xform = QgsCoordinateTransform(crsSrc, crsDest)
-        pt1 = xform.transformBoundingBox(pt0)
-        bounds = 'new mapboxgl.LngLatBounds(new mapboxgl.LngLat(' + str(pt1.xMinimum()) + ','
-        bounds += str(pt1.yMinimum()) + '),new mapboxgl.LngLat('
-        bounds += str(pt1.xMaximum()) + ','
-        bounds += str(pt1.yMaximum()) + '))'
+        pt1 = xform.transform(pt0)
+        center = '[' + str(pt1.x()) + ','
+        center += str(pt1.y()) + ']'
+        bearing = 360 - canvas.rotation()
+        zoom = scaleToZoom(canvas.scale())
         new_src = """
 <script>
 var map = new mapboxgl.Map({
  container: 'map',
  style: styleJSON,
- bounds: %s
+ center: %s,
+ zoom: %s,
+ bearing: %s
 });
 map.addControl(new mapboxgl.NavigationControl());
-</script>""" % bounds
+</script>""" % (center, zoom, bearing)
         # try:
         writeHTMLstart(outputIndex, title, cluster, addressSearch,
                        measure, matchCRS, layerSearch, canvas,
