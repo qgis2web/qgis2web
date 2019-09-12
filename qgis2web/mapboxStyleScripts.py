@@ -334,7 +334,8 @@ def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
         if linejoin == 64:
             joinString = "bevel"
         strokeString = """
-                "line-color": %s""" % (color)
+                "line-color": %s,
+                "line-width": %s""" % (color, width)
     else:
         strokeString = ""
     return strokeString, useMapUnits
