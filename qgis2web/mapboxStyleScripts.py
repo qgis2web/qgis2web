@@ -370,6 +370,10 @@ def getFillStyle(renderer, color, props):
 
 
 def getCategorizedValues(property, classAttr, categories, type):
+    if type == COLOR:
+        defaultVal = '["rgba", 0,0,0,0]'
+    elif type == NUMERIC:
+        defaultVal = 0
     catStyles = []
     for cat in categories:
         value = cat.value()
