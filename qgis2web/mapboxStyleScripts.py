@@ -12,6 +12,9 @@ from qgis.core import (QgsSingleSymbolRenderer,
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import getRGBAColor, handleHiddenField
 
+COLOR = 1
+NUMERIC = 2
+
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     markerType = None
@@ -347,24 +350,48 @@ def getFillStyle(renderer, color, props):
     if isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
         fillcolor = symbol.color().name()
-        color = '"%s"' % fillcolor
+        fill = '"%s"' % fillcolor
+        strokeColor = symbol.symbolLayer(0).strokeColor().name()
+        stroke = '"%s"' % strokeColor
 
     elif isinstance(renderer, QgsCategorizedSymbolRenderer):
-        print("cat")
         classAttr = renderer.classAttribute()
-        catStyles = []
-        for cat in renderer.categories():
-            catStyles.append('"%s"' % unicode(cat.value()).replace('"', '\\"'))
-            catStyles.append('"%s"' % cat.symbol().color().name())
-        color = """[
-                    "match",
-                    [
-                        "get",
-                        "%s"
-                    ],
-                    %s,
-                    "#ffffff"
-                ]""" % (classAttr, ",".join(catStyles))
-        print(color)
+        categories = renderer.categories()
+        fill = getCategorizedValues("color", classAttr, categories, COLOR)
+        stroke = getCategorizedValues("outline_color", classAttr, categories,
+                                      COLOR)
     return """
-                "fill-color": %s""" % color
+                "fill-color": %s,
+                "fill-outline-color": %s""" % (fill, stroke)
+
+
+def getCategorizedValues(property, classAttr, categories, type):
+    catStyles = []
+    for cat in categories:
+        value = cat.value()
+        symbol = cat.symbol()
+        props = symbol.symbolLayer(0).properties()
+        props[property]
+        catStyles.append('"%s"' % unicode(value).replace('"', '\\"'))
+        val = props[property]
+        if type == COLOR:
+            typedVal = getColor(val)
+        elif type == NUMERIC:
+            typedVal = val
+        catStyles.append(typedVal)
+    style = """[
+                "match",
+                [
+                    "get",
+                    "%s"
+                ],
+                %s,
+                "#ffffff"
+            ]""" % (classAttr, ",".join(catStyles))
+    return style
+
+
+def getColor(color):
+    r, g, b, a = color.split(",")
+    a = (float(a) / 255)
+    return '["rgba", %s]' % ",".join([r, g, b, str(a)])
