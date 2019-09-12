@@ -4,6 +4,8 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRuleBasedRenderer,
+                       QgsLineSymbol,
+                       QgsFillSymbol,
                        QgsSimpleMarkerSymbolLayer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
@@ -227,7 +229,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
 
         style, useMapUnits = getStrokeStyle(color, line_style, line_width,
                                             line_units, lineCap, lineJoin,
-                                            useMapUnits)
+                                            useMapUnits, props, renderer)
     elif isinstance(sl, QgsSimpleFillSymbolLayer):
         fillColor = getRGBAColor(props["color"], alpha)
 
@@ -246,7 +248,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
         strokeStyle, useMapUnits = getStrokeStyle(borderColor, borderStyle,
                                                   borderWidth, line_units,
                                                   lineCap, lineJoin,
-                                                  useMapUnits)
+                                                  useMapUnits, props, renderer)
 
         style = getFillStyle(renderer, fillColor, props)
     elif isinstance(sl, QgsLinePatternFillSymbolLayer):
@@ -282,7 +284,7 @@ def getMarker(color, borderColor, borderWidth, borderUnits, size, sizeUnits,
     useMapUnits = False
     strokeStyle, useMapUnits = getStrokeStyle(borderColor, lineStyle,
                                               borderWidth, borderUnits, 0, 0,
-                                              useMapUnits)
+                                              useMapUnits, props, renderer)
     if sizeUnits == "MapUnit":
         useMapUnits = True
         size = "geoStyle(%s)" % size
@@ -311,33 +313,34 @@ def getIcon(path, svgSize):
 
 
 def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
-                   useMapUnits):
-    if dashed != "no":
-        width = round(float(width) * 3.8, 0)
-        if width == 0:
-            width = 1
-        if units == "MapUnit":
-            useMapUnits = True
-            width = "geoStyle(%s)" % width
-        dash = dashed.replace("dash", "10,5")
-        dash = dash.replace("dot", "1,5")
-        dash = dash.replace("solid", "")
-        dash = dash.replace(" ", ",")
-        capString = "round"
-        if linecap == 0:
-            capString = "butt"
-        if linecap == 16:
-            capString = "square"
-        joinString = "round"
-        if linejoin == 0:
-            joinString = "miter"
-        if linejoin == 64:
-            joinString = "bevel"
-        strokeString = """
-                "line-color": %s,
-                "line-width": %s""" % (color, width)
-    else:
-        strokeString = ""
+                   useMapUnits, props, renderer):
+    if isinstance(renderer, QgsSingleSymbolRenderer):
+        if isinstance(renderer.symbol().symbolLayer(0),
+                      QgsSimpleFillSymbolLayer):
+            color = getColor(props["outline_color"])
+            line_width = props["outline_width"]
+        elif isinstance(renderer.symbol().symbolLayer(0),
+                        QgsSimpleLineSymbolLayer):
+            color = getColor(props["line_color"])
+            line_width = props["line_width"]
+        lineColor = color
+        lineWidth = width
+    elif isinstance(renderer, QgsCategorizedSymbolRenderer):
+        if isinstance(renderer.categories()[0].symbol(), QgsFillSymbol):
+            colorProp = "outline_color"
+            widthProp = "outline_width"
+        elif isinstance(renderer.categories()[0].symbol(), QgsLineSymbol):
+            colorProp = "line_color"
+            widthProp = "line_width"
+        classAttr = renderer.classAttribute()
+        categories = renderer.categories()
+        lineColor = getCategorizedValues(colorProp, classAttr, categories,
+                                         COLOR)
+        lineWidth = getCategorizedValues(widthProp, classAttr, categories,
+                                      NUMERIC)
+    strokeString = """
+            "line-color": %s,
+            "line-width": %s""" % (lineColor, lineWidth)
     return strokeString, useMapUnits
 
 
@@ -372,14 +375,17 @@ def getCategorizedValues(property, classAttr, categories, type):
         value = cat.value()
         symbol = cat.symbol()
         props = symbol.symbolLayer(0).properties()
-        props[property]
-        catStyles.append('"%s"' % unicode(value).replace('"', '\\"'))
+        if value:
+            catStyles.append('"%s"' % unicode(value).replace('"', '\\"'))
         val = props[property]
         if type == COLOR:
             typedVal = getColor(val)
         elif type == NUMERIC:
             typedVal = val
-        catStyles.append(typedVal)
+        if value:
+            catStyles.append(typedVal)
+        else:
+            defaultVal = typedVal
     style = """[
                 "match",
                 [
@@ -387,8 +393,8 @@ def getCategorizedValues(property, classAttr, categories, type):
                     "%s"
                 ],
                 %s,
-                "#ffffff"
-            ]""" % (classAttr, ",".join(catStyles))
+                %s
+            ]""" % (classAttr, ",".join(catStyles), defaultVal)
     return style
 
 
