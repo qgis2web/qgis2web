@@ -7,6 +7,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsGraduatedSymbolRenderer,
                        QgsRuleBasedRenderer,
                        QgsHeatmapRenderer,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsSimpleLineSymbolLayer,
+                       QgsSimpleFillSymbolLayer,
                        QgsSymbolLayerUtils,
                        QgsDataSourceUri,
                        QgsRenderContext,
@@ -144,13 +147,20 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    outputProjectFileName, usedFields, legends,
                                    cluster, json, wfsLayers, markerType,
                                    useMultiStyle, symbol)
+        sl = layer.renderer().symbol().symbolLayer(0)
+        if isinstance(sl, QgsSimpleMarkerSymbolLayer):
+            lType = "circle"
+        elif isinstance(sl, QgsSimpleLineSymbolLayer):
+            lType = "line"
+        elif isinstance(sl, QgsSimpleFillSymbolLayer):
+            lType = "fill"
         vLayers.append("""
         {
             "id": "lyr_%s",
-            "type": "fill",
+            "type": "%s",
             "source": "%s"
         }
-""" % (safeLayerName, safeLayerName))
+""" % (safeLayerName, lType, safeLayerName))
     blend = BLEND_MODES[layer.blendMode()]
     if vts is None:
         new_obj = u"""{style}
