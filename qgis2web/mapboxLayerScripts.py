@@ -158,9 +158,11 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         {
             "id": "lyr_%s",
             "type": "%s",
-            "source": "%s"
+            "source": "%s",
+            "layout": {%s},
+            "paint": {%s}
         }
-""" % (safeLayerName, lType, safeLayerName))
+""" % (safeLayerName, lType, safeLayerName, layout, paint))
     blend = BLEND_MODES[layer.blendMode()]
     if vts is None:
         new_obj = u"""{style}
