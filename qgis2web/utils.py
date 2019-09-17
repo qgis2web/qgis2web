@@ -107,7 +107,7 @@ TYPE_MAP = {
     QgsWkbTypes.MultiPolygonM: 'MultiPolygon'}
 
 MB_TYPE_MAP = {
-    'Point': 'circle',
+    'Point': 'symbol',
     'LineString': 'line',
     'Polygon': 'fill'}
 

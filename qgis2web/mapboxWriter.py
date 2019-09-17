@@ -305,8 +305,8 @@ class MapboxWriter(Writer):
                   "@MAPBOX_LAYERS@": ",".join(vtLayers)}
         sprite = ("https://s3-eu-west-1.amazonaws.com/tiles.os.uk/styles/"
                   "open-zoomstack-outdoor/sprites")
-        glyphs = ("https://s3-eu-west-1.amazonaws.com/tiles.os.uk/fonts/"
-                  "{fontstack}/{range}.pbf")
+        glyphs = ("https://glfonts.lukasmartinelli.ch/fonts/{fontstack}/"
+                  "{range}.pbf")
         s = """
 var styleJSON = {
     "version": 8,

@@ -102,7 +102,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             addVT = True
         geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
         mbGeom = MB_TYPE_MAP[geom]
-        (style, markerType, useMapUnits,
+        (layout, paint, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         vtLayers.append("""
@@ -111,11 +111,12 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             "type": "%s",
             "source": "%s",
             "source-layer": "%s",
-            "layout": {},
+            "layout": {%s},
             "paint": {%s}
-        }""" % (layer.name(), mbGeom, safeName(vts), layer.name(), style))
+        }""" % (layer.name(), mbGeom, safeName(vts), layer.name(), layout,
+                paint))
         vtStyle = vtStyles[vts]
-        style = style.replace("feature.properties['", "feature.['")
+        style = paint.replace("feature.properties['", "feature.['")
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]
         isLayer = False
@@ -132,7 +133,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             vtStyles[vts][layer.name()][index] = style
         style = ""
     else:
-        (style, markerType, useMapUnits,
+        (layout, paint, markerType, useMapUnits,
          useShapes) = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
