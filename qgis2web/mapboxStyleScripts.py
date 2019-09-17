@@ -165,6 +165,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
     markerType = None
     pattern = ""
     styles = []
+    layout = ""
+    paint = ""
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
