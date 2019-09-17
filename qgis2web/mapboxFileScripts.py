@@ -53,9 +53,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         webpage_name = unicode(webpage_name)
     cssAddress = '<link rel="stylesheet" href="mapbox/mapbox-gl.css">'
-    jsAddress = '<script src="mapbox/mapbox-gl.js">'
+    jsAddress = '<script src="./mapbox/mapbox-gl.js">'
     jsAddress += '</script>'
-    jsAddress += '<script src="mapbox/style.js"></script>'
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
     if useCluster:
         clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">

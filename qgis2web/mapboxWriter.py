@@ -178,10 +178,12 @@ class MapboxWriter(Writer):
                 "background-color": "#ffffff"
             }
         }"""]
+        vLayers = []
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
         jsons = ""
+        sources = []
         crs = QgsCoordinateReferenceSystem.EpsgCrsId
         exp_crs = QgsCoordinateReferenceSystem(4326, crs)
         lyrCount = 0
@@ -198,6 +200,12 @@ class MapboxWriter(Writer):
                                  restrictToExtent, iface, extent, precision,
                                  exp_crs, minify)
                     jsons += jsonScript(safeLayerName)
+                    sources.append("""
+        "%s": {
+            "type": "geojson",
+            "data": json_%s
+        }
+                    """ % (safeLayerName, safeLayerName))
                     scaleDependentLabels = \
                         scaleDependentLabelScript(layer, safeLayerName)
                     labelVisibility += scaleDependentLabels
@@ -269,7 +277,8 @@ class MapboxWriter(Writer):
                  useShapes,
                  useOSMB,
                  vtSources,
-                 vtLayers) = writeVectorLayer(layer, safeLayerName,
+                 vtLayers,
+                 vLayers) = writeVectorLayer(layer, safeLayerName,
                                               usedFields[count], highlight,
                                               popupsOnHover, popup[count],
                                               outputProjectFileName,
@@ -280,7 +289,8 @@ class MapboxWriter(Writer):
                                               feedback, labelCode, vtLabels,
                                               vtStyles, useMultiStyle,
                                               useHeat, useVT, useShapes,
-                                              useOSMB, vtSources, vtLayers)
+                                              useOSMB, vtSources, vtLayers,
+                                              vLayers)
                 if useMapUnits:
                     mapUnitLayers.append(safeLayerName)
             elif layer.type() == QgsMapLayer.RasterLayer:
@@ -330,7 +340,8 @@ var styleJSON = {
     "owner": "Ordnance Survey",
     "visibility": "public",
     "draft": false
-}""" % (",".join(vtSources), sprite, glyphs, ",".join(vtLayers))
+}""" % (",".join(vtSources + sources), sprite, glyphs,
+        ",".join(vtLayers + vLayers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
         if not os.path.exists(mbStore):
             shutil.copytree(os.path.join(os.path.dirname(__file__),
@@ -421,7 +432,8 @@ var styleJSON = {
         center += str(pt1.y()) + ']'
         bearing = 360 - canvas.rotation()
         zoom = scaleToZoom(canvas.scale())
-        new_src = """
+        new_src = jsons + """
+<script src="./mapbox/style.js"></script>
 <script>
 var map = new mapboxgl.Map({
  container: 'map',
