@@ -16,7 +16,7 @@ from qgis.core import (QgsProject,
 from qgis2web.utils import safeName, is25d, BLEND_MODES
 
 try:
-    from vector_tiles_reader.util.tile_json import TileJSON
+    from vector_tiles_reader.plugin.util.tile_json import TileJSON
     vt_enabled = True
 except ImportError:
     vt_enabled = False
@@ -464,9 +464,9 @@ def getVT(json_url):
                 tilePixelRatio: 8
             }),
             style: style_%s,
-            interarctive: %s
+            interactive: %s
         });
-        """ % (sln, key_url, sln, str(interactive).lower())
+        """ % (sln, key_url, sln, "false")
     return layerCode
 
 

@@ -19,7 +19,7 @@ from qgis2web.leafletScriptStrings import (popupScript,
                                            clusterScript,
                                            iconLegend)
 try:
-    from vector_tiles_reader.util.tile_json import TileJSON
+    from vector_tiles_reader.plugin.util.tile_json import TileJSON
     vt_enabled = True
 except ImportError:
     vt_enabled = False
