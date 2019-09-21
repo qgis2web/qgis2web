@@ -504,11 +504,16 @@ def is25d(layer, canvas, restrictToExtent, extent):
             symbols.append(symbol)
         renderer.stopRender(renderContext)
     for sym in symbols:
-        sl1 = sym.symbolLayer(1)
-        sl2 = sym.symbolLayer(2)
+        try:
+            sl1 = sym.symbolLayer(1)
+            sl2 = sym.symbolLayer(2)
+        except IndexError:
+            return False
+
         if (isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and
                 isinstance(sl2, QgsGeometryGeneratorSymbolLayer)):
             return True
+
     return False
 
 
