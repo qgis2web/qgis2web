@@ -106,6 +106,11 @@ TYPE_MAP = {
     QgsWkbTypes.MultiPolygonZM: 'MultiPolygon',
     QgsWkbTypes.MultiPolygonM: 'MultiPolygon'}
 
+MB_TYPE_MAP = {
+    'Point': 'symbol',
+    'LineString': 'line',
+    'Polygon': 'fill'}
+
 BLEND_MODES = {
     QPainter.CompositionMode_SourceOver: 'normal',
     QPainter.CompositionMode_Multiply: 'multiply',

@@ -313,7 +313,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0,0">
        <property name="spacing">
         <number>6</number>
        </property>
@@ -364,6 +364,16 @@
          </property>
          <property name="checked">
           <bool>true</bool>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">mapFormat</string>
+         </attribute>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="mapbox">
+         <property name="text">
+          <string>Mapbox</string>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">mapFormat</string>

@@ -1,0 +1,36 @@
+language: python
+python:
+  - 3.5
+
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+
+install:
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
+
+jobs:
+  include:
+    - stage: test
+      env:
+        QGIS_TEST_VERSION="latest"
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+    - stage: test
+      env:
+        QGIS_TEST_VERSION="release-3_0"
+      script: docker-compose -f .docker/docker-compose.travis.yml run qgis /usr/src/.docker/run-docker-tests.sh
+
+after_success:
+  - coveralls
+
+notifications:
+  email:
+    - tom.chadwin@nnpa.org.uk
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/5278d2ea8e892b8f3c32
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
