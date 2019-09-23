@@ -20,6 +20,11 @@ import json
 COLOR = 1
 NUMERIC = 2
 
+defaultPropVal = {
+    "fill-opacity": 1,
+    "fill-color": "#ffffff"
+}
+
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     layout = ""
@@ -29,25 +34,31 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     styleJSON = mapboxStyle[0]
     style = json.loads(styleJSON)
     styleProps = {}
-    for layer in style["layers"]:
-        if "filter" in layer[0]:
+    elseAdded = False
+    for eachLayer in style["layers"]:
+        layer = eachLayer[0]
+        if "filter" in layer:
             if len(styleProps) == 0:
-                for prop in layer[0]["paint"]:
+                for prop in layer["paint"]:
                     styleProps[prop] = ["case",
-                                        layer[0]["filter"],
-                                        layer[0]["paint"][prop]]
+                                        layer["filter"],
+                                        layer["paint"][prop]]
             else:
-                for prop in layer[0]["paint"]:
-                    styleProps[prop].append(layer[0]["filter"])
-                    styleProps[prop].append(layer[0]["paint"][prop])
-            layer[0].pop("filter")
+                for prop in layer["paint"]:
+                    styleProps[prop].append(layer["filter"])
+                    styleProps[prop].append(layer["paint"][prop])
+            layer.pop("filter")
         else:
             if len(styleProps) > 0:
-                for prop in layer[0]["paint"]:
-                    styleProps[prop].append(layer[0]["paint"][prop])
+                for prop in layer["paint"]:
+                    styleProps[prop].append(layer["paint"][prop])
+            elseAdded = True
                 
     if len(styleProps) > 0:
         style["layers"][0][0]["paint"] = styleProps
+        for prop in styleProps:
+            if len(styleProps[prop]) % 2 == 1:
+                styleProps[prop].append(defaultPropVal[prop])
         
     mblayer = style["layers"][0][0]
     return mblayer
