@@ -105,21 +105,22 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             addVT = True
         geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
         mbGeom = MB_TYPE_MAP[geom]
-        (layout, paint, markerType, filter) = getLayerStyle(layer, safeLayerName, markerFolder,
+        mblayer = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
+        markerType = mblayer["type"]
+        layout = ""
+        paint = mblayer["paint"]
         vtLayers.append("""
         {
-            "id": "%s",
+            "id": "lyr_%s",
             "type": "%s",
             "source": "%s",
             "source-layer": "%s",
-            "filter": "%s",
             "layout": {%s},
             "paint": %s
-        }""" % (layer.name(), mbGeom, safeName(vts), layer.name(), filter,
-                layout, paint))
+        }
+""" % (safeLayerName, markerType, safeName(vts), layer.name(), layout, paint))
         vtStyle = vtStyles[vts]
-        style = paint.replace("feature.properties['", "feature.['")
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]
         isLayer = False
@@ -148,7 +149,6 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    cluster, json, wfsLayers, markerType,
                                    useMultiStyle, symbol)
         layout = ""
-        filter = ""
         type = mblayer["type"]
         # layout = mblayer["layout"]
         paint = mblayer["paint"]
