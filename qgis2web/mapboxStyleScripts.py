@@ -21,6 +21,14 @@ COLOR = 1
 NUMERIC = 2
 
 defaultPropVal = {
+    "circle-opacity": 1,
+    "circle-radius": 1,
+    "circle-stroke-width": 1,
+    "circle-stroke-color": "#000000",
+    "circle-color": "#ffffff",
+    "line-opacity": 1,
+    "line-width": 1,
+    "line-color": "#ffffff",
     "fill-opacity": 1,
     "fill-color": "#ffffff"
 }
