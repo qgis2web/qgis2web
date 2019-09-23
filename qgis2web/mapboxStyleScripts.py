@@ -28,8 +28,29 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     mapboxStyle = layerStyleAsMapbox(layer)
     styleJSON = mapboxStyle[0]
     style = json.loads(styleJSON)
-    mblayers = style["layers"]
-    return mblayers
+    styleProps = {}
+    for layer in style["layers"]:
+        if "filter" in layer[0]:
+            if len(styleProps) == 0:
+                for prop in layer[0]["paint"]:
+                    styleProps[prop] = ["case",
+                                        layer[0]["filter"],
+                                        layer[0]["paint"][prop]]
+            else:
+                for prop in layer[0]["paint"]:
+                    styleProps[prop].append(layer[0]["filter"])
+                    styleProps[prop].append(layer[0]["paint"][prop])
+            layer[0].pop("filter")
+        else:
+            if len(styleProps) > 0:
+                for prop in layer[0]["paint"]:
+                    styleProps[prop].append(layer[0]["paint"][prop])
+                
+    if len(styleProps) > 0:
+        style["layers"][0][0]["paint"] = styleProps
+        
+    mblayer = style["layers"][0][0]
+    return mblayer
 
 
 def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,

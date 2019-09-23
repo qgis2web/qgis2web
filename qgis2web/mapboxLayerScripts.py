@@ -136,10 +136,9 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             vtStyles[vts][layer.name()][index] = style
         style = ""
     else:
-        mblayers = getLayerStyle(layer, safeLayerName, markerFolder,
+        mblayer = getLayerStyle(layer, safeLayerName, markerFolder,
                                  outputProjectFileName, useShapes)
-        print(mblayers)
-        markerType = mblayers[0][0]["type"]
+        markerType = mblayer["type"]
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
                                      safeLayerName)
         legends[safeLayerName] = legend
@@ -148,28 +147,20 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    outputProjectFileName, usedFields, legends,
                                    cluster, json, wfsLayers, markerType,
                                    useMultiStyle, symbol)
-        for count, mblayer in enumerate(mblayers):
-            print(mblayer)
-            layout = ""
-            filter = ""
-            name = "%s_%d" % (safeLayerName, count)
-            type = mblayer[0]["type"]
-            try:
-                filter = '"filter": %s,' % mblayer[0]["filter"]
-            except:
-                pass
-            # layout = mblayer["layout"]
-            paint = mblayer[0]["paint"]
-            vLayers.append("""
+        layout = ""
+        filter = ""
+        type = mblayer["type"]
+        # layout = mblayer["layout"]
+        paint = mblayer["paint"]
+        vLayers.append("""
         {
             "id": "lyr_%s",
             "type": "%s",
             "source": "%s",
-            %s
             "layout": {%s},
             "paint": %s
         }
-""" % (name, type, safeLayerName, filter, layout, paint))
+""" % (safeLayerName, type, safeLayerName, layout, paint))
     blend = BLEND_MODES[layer.blendMode()]
     if vts is None:
         new_obj = u"""{style}
