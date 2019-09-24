@@ -30,7 +30,8 @@ defaultPropVal = {
     "line-width": 1,
     "line-color": "#ffffff",
     "fill-opacity": 1,
-    "fill-color": "#ffffff"
+    "fill-color": "#ffffff",
+    "text-color": "#000000"
 }
 
 
@@ -38,34 +39,66 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
     mapboxStyle = layerStyleAsMapbox(layer)
     styleJSON = mapboxStyle[0]
     style = json.loads(styleJSON)
-    styleProps = {}
-    elseAdded = False
+    layoutProps = {}
+    paintProps = {}
+
     for eachLayer in style["layers"]:
         layer = eachLayer[0]
         if "filter" in layer:
-            if len(styleProps) == 0:
+            if len(layoutProps) == 0:
+                try:
+                    for prop in layer["layout"]:
+                        layoutProps[prop] = ["case",
+                                            layer["filter"],
+                                            layer["layout"][prop]]
+                except:
+                    pass
+            else:
+                for prop in layer["layout"]:
+                    layoutProps[prop].append(layer["filter"])
+                    layoutProps[prop].append(layer["layout"][prop])
+            if len(paintProps) == 0:
                 for prop in layer["paint"]:
-                    styleProps[prop] = ["case",
+                    paintProps[prop] = ["case",
                                         layer["filter"],
                                         layer["paint"][prop]]
             else:
+                try:
+                    for prop in layer["layout"]:
+                        layoutProps[prop].append(layer["filter"])
+                        layoutProps[prop].append(layer["layout"][prop])
+                except:
+                    pass
                 for prop in layer["paint"]:
-                    styleProps[prop].append(layer["filter"])
-                    styleProps[prop].append(layer["paint"][prop])
+                    paintProps[prop].append(layer["filter"])
+                    paintProps[prop].append(layer["paint"][prop])
             layer.pop("filter")
         else:
-            if len(styleProps) > 0:
+            if len(layoutProps) > 0:
                 for prop in layer["layout"]:
-                    styleProps[prop].append(layer["layout"][prop])
+                    paintProps[prop].append(layer["layout"][prop])
+            if len(paintProps) > 0:
                 for prop in layer["paint"]:
-                    styleProps[prop].append(layer["paint"][prop])
-            elseAdded = True
+                    if prop[:4] != "text":
+                        try:
+                            paintProps[prop].append(layer["paint"][prop])
+                        except:
+                            paintProps[prop] = [layer["paint"][prop]]
                 
-    if len(styleProps) > 0:
-        style["layers"][0][0]["paint"] = styleProps
-        for prop in styleProps:
-            if len(styleProps[prop]) % 2 == 1:
-                styleProps[prop].append(defaultPropVal[prop])
+    if len(layoutProps) > 0:
+        style["layers"][0][0]["layout"] = layoutProps
+        for prop in layoutProps:
+            if len(layoutProps[prop]) % 2 == 1:
+                layoutProps[prop].append(defaultPropVal[prop])
+    if len(paintProps) > 0:
+        style["layers"][0][0]["paint"] = paintProps
+        for prop in paintProps:
+            if len(paintProps[prop]) % 2 == 1:
+                if prop[:4] != "text":
+                    try:
+                        paintProps[prop].append(defaultPropVal[prop])
+                    except:
+                        paintProps[prop] = [defaultPropVal[prop]]
         
     return style["layers"]
 

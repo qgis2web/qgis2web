@@ -148,16 +148,19 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                                    outputProjectFileName, usedFields, legends,
                                    cluster, json, wfsLayers, markerType,
                                    useMultiStyle, symbol)
+        layerType = ""
         for count, mblayer in enumerate(mblayers):
             type = mblayer[0]["type"]
-            try:
-                layout = mblayer[0]["layout"]
-                if layout["text-font"]:
-                    layout["text-font"] = ["Open Sans Regular"]
-            except:
-                layout ="{}"
-            paint = mblayer[0]["paint"]
-            vLayers.append("""
+            if type != layerType:
+                layerType = type
+                try:
+                    layout = mblayer[0]["layout"]
+                    if layout["text-font"]:
+                        layout["text-font"] = ["Open Sans Regular"]
+                except:
+                    layout ="{}"
+                paint = mblayer[0]["paint"]
+                vLayers.append("""
         {
             "id": "lyr_%s_%d",
             "type": "%s",
