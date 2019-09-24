@@ -35,9 +35,6 @@ defaultPropVal = {
 
 
 def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
-    layout = ""
-    paint = ""
-    filter = ""
     mapboxStyle = layerStyleAsMapbox(layer)
     styleJSON = mapboxStyle[0]
     style = json.loads(styleJSON)
@@ -58,6 +55,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             layer.pop("filter")
         else:
             if len(styleProps) > 0:
+                for prop in layer["layout"]:
+                    styleProps[prop].append(layer["layout"][prop])
                 for prop in layer["paint"]:
                     styleProps[prop].append(layer["paint"][prop])
             elseAdded = True
@@ -68,8 +67,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
             if len(styleProps[prop]) % 2 == 1:
                 styleProps[prop].append(defaultPropVal[prop])
         
-    mblayer = style["layers"][0][0]
-    return mblayer
+    return style["layers"]
 
 
 def getSymbolAsStyle(symbol, markerFolder, layer_transparency, sln, sl,
