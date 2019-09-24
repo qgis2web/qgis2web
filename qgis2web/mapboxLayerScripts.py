@@ -105,21 +105,27 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             addVT = True
         geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
         mbGeom = MB_TYPE_MAP[geom]
-        mblayer = getLayerStyle(layer, safeLayerName, markerFolder,
+        mblayers = getLayerStyle(layer, safeLayerName, markerFolder,
                                     outputProjectFileName, useShapes)
-        markerType = mblayer["type"]
-        layout = ""
-        paint = mblayer["paint"]
-        vtLayers.append("""
+        for count, mblayer in enumerate(mblayers):
+            markerType = mblayer[0]["type"]
+            paint = mblayer[0]["paint"]
+            try:
+                layout = mblayer[0]["layout"]
+                if layout["text-font"]:
+                    layout["text-font"] = ["Open Sans Regular"]
+            except:
+                layout ="{}"
+            vtLayers.append("""
         {
-            "id": "lyr_%s",
+            "id": "lyr_%s_%d",
             "type": "%s",
             "source": "%s",
             "source-layer": "%s",
-            "layout": {%s},
+            "layout": %s,
             "paint": %s
         }
-""" % (safeLayerName, markerType, safeName(vts), layer.name(), layout, paint))
+""" % (safeLayerName, count, markerType, safeName(vts), layer.name(), layout, paint))
         vtStyle = vtStyles[vts]
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]

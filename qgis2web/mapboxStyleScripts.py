@@ -1,6 +1,5 @@
 import sys, os
 import shutil
-sys.path.append(os.path.dirname(__file__))
 from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
@@ -14,7 +13,7 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSvgMarkerSymbolLayer)
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import getRGBAColor, handleHiddenField
-from bridgestyle.qgis import layerStyleAsMapbox
+from .bridgestyle.qgis import layerStyleAsMapbox
 import json
 
 COLOR = 1
