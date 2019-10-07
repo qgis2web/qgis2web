@@ -238,11 +238,12 @@ class MapboxWriter(Writer):
                 [%f, %f],
                 [%f, %f]
             ]
-        }""" % (safeLayerName, rasterPath,
-                    bbox.xMinimum(), bbox.yMinimum(),
-                    bbox.xMaximum(), bbox.yMinimum(),
-                    bbox.xMaximum(), bbox.yMaximum(),
-                    bbox.xMinimum(), bbox.yMaximum()))
+        }""" % (
+                            safeLayerName, rasterPath,
+                            bbox.xMinimum(), bbox.yMinimum(),
+                            bbox.xMaximum(), bbox.yMinimum(),
+                            bbox.xMaximum(), bbox.yMaximum(),
+                            bbox.xMinimum(), bbox.yMaximum()))
             lyrCount += 1
 
         for count, layer in enumerate(layer_list):

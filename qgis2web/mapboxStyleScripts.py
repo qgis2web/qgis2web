@@ -11,11 +11,11 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsSvgMarkerSymbolLayer) #noqa
-from qgis2web.exp2js import compile_to_file #noqa
-from qgis2web.utils import getRGBAColor, handleHiddenField #noqa
-from bridgestyle.qgis import layerStyleAsMapbox #noqa
-import json #noqa
+                       QgsSvgMarkerSymbolLayer)  # noqa
+from qgis2web.exp2js import compile_to_file  # noqa
+from qgis2web.utils import getRGBAColor, handleHiddenField  # noqa
+from bridgestyle.qgis import layerStyleAsMapbox  # noqa
+import json  # noqa
 
 COLOR = 1
 NUMERIC = 2
