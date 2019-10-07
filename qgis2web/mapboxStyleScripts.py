@@ -11,11 +11,11 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsSvgMarkerSymbolLayer)
-from qgis2web.exp2js import compile_to_file
-from qgis2web.utils import getRGBAColor, handleHiddenField
-from bridgestyle.qgis import layerStyleAsMapbox
-import json
+                       QgsSvgMarkerSymbolLayer) #noqa
+from qgis2web.exp2js import compile_to_file #noqa
+from qgis2web.utils import getRGBAColor, handleHiddenField #noqa
+from bridgestyle.qgis import layerStyleAsMapbox #noqa
+import json #noqa
 
 COLOR = 1
 NUMERIC = 2
@@ -50,8 +50,8 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                 try:
                     for prop in layer["layout"]:
                         layoutProps[prop] = ["case",
-                                            layer["filter"],
-                                            layer["layout"][prop]]
+                                             layer["filter"],
+                                             layer["layout"][prop]]
                 except:
                     pass
             else:
@@ -85,7 +85,7 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                             paintProps[prop].append(layer["paint"][prop])
                         except:
                             paintProps[prop] = [layer["paint"][prop]]
-                
+
     if len(layoutProps) > 0:
         style["layers"][0][0]["layout"] = layoutProps
         for prop in layoutProps:
@@ -100,7 +100,6 @@ def getLayerStyle(layer, sln, markerFolder, outputProjectFilename, useShapes):
                         paintProps[prop].append(defaultPropVal[prop])
                     except:
                         paintProps[prop] = [defaultPropVal[prop]]
-        
     return style["layers"]
 
 
@@ -309,7 +308,7 @@ def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
         lineColor = getCategorizedValues(colorProp, classAttr, categories,
                                          COLOR)
         lineWidth = getCategorizedValues(widthProp, classAttr, categories,
-                                      NUMERIC)
+                                         NUMERIC)
     strokeString = """
             "line-color": %s,
             "line-width": %s""" % (lineColor, lineWidth)

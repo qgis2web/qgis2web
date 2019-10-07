@@ -239,10 +239,10 @@ class MapboxWriter(Writer):
                 [%f, %f]
             ]
         }""" % (safeLayerName, rasterPath,
-                bbox.xMinimum(), bbox.yMinimum(),
-                bbox.xMaximum(), bbox.yMinimum(),
-                bbox.xMaximum(), bbox.yMaximum(),
-                bbox.xMinimum(), bbox.yMaximum()))
+                    bbox.xMinimum(), bbox.yMinimum(),
+                    bbox.xMaximum(), bbox.yMinimum(),
+                    bbox.xMaximum(), bbox.yMaximum(),
+                    bbox.xMinimum(), bbox.yMaximum()))
             lyrCount += 1
 
         for count, layer in enumerate(layer_list):
@@ -264,18 +264,18 @@ class MapboxWriter(Writer):
                  vtSources,
                  vtLayers,
                  vLayers) = writeVectorLayer(layer, safeLayerName,
-                                              usedFields[count], highlight,
-                                              popupsOnHover, popup[count],
-                                              outputProjectFileName,
-                                              wfsLayers, cluster[count],
-                                              visible[count], json[count],
-                                              legends, new_src, canvas, count,
-                                              restrictToExtent, extent,
-                                              feedback, labelCode, vtLabels,
-                                              vtStyles, useMultiStyle,
-                                              useHeat, useVT, useShapes,
-                                              useOSMB, vtSources, vtLayers,
-                                              vLayers)
+                                             usedFields[count], highlight,
+                                             popupsOnHover, popup[count],
+                                             outputProjectFileName,
+                                             wfsLayers, cluster[count],
+                                             visible[count], json[count],
+                                             legends, new_src, canvas, count,
+                                             restrictToExtent, extent,
+                                             feedback, labelCode, vtLabels,
+                                             vtStyles, useMultiStyle,
+                                             useHeat, useVT, useShapes,
+                                             useOSMB, vtSources, vtLayers,
+                                             vLayers)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -306,7 +306,7 @@ var styleJSON = {
     "glyphs": "%s",
     "layers": [%s],
 }""" % (",".join(vtSources + sources), sprite, glyphs,
-        ",".join(vtLayers + vLayers + rLayers))
+            ",".join(vtLayers + vLayers + rLayers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
         if not os.path.exists(mbStore):
             shutil.copytree(os.path.join(os.path.dirname(__file__),

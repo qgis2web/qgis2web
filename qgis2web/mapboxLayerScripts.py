@@ -106,7 +106,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         geom = TYPE_MAP[layer.wkbType()].replace("Multi", "")
         mbGeom = MB_TYPE_MAP[geom]
         mblayers = getLayerStyle(layer, safeLayerName, markerFolder,
-                                    outputProjectFileName, useShapes)
+                                 outputProjectFileName, useShapes)
         for count, mblayer in enumerate(mblayers):
             markerType = mblayer[0]["type"]
             paint = mblayer[0]["paint"]
@@ -115,7 +115,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 if layout["text-font"]:
                     layout["text-font"] = ["Open Sans Regular"]
             except:
-                layout ="{}"
+                layout = "{}"
             vtLayers.append("""
         {
             "id": "lyr_%s_%d",
@@ -125,7 +125,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             "layout": %s,
             "paint": %s
         }
-""" % (safeLayerName, count, markerType, safeName(vts), layer.name(), layout, paint))
+""" % (safeLayerName, count, markerType, safeName(vts), layer.name(), layout,
+       paint))
         vtStyle = vtStyles[vts]
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]
@@ -164,7 +165,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                     if layout["text-font"]:
                         layout["text-font"] = ["Open Sans Regular"]
                 except:
-                    layout ="{}"
+                    layout = "{}"
                 paint = mblayer[0]["paint"]
                 vLayers.append("""
         {
