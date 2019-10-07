@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 import shutil
 sys.path.append(os.path.dirname(__file__))
 from qgis.core import (QgsSingleSymbolRenderer,
