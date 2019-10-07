@@ -96,7 +96,8 @@ def walkExpression(node, mapLib):
 def handle_condition(node, mapLib):
     global condtioncounts
     subexps = re.findall(r"WHEN(\s+.*?\s+)THEN(\s+.*?\s+)", node.dump())
-    QgsMessageLog.logMessage(subexps, "qgis2web", level=Qgis.Info)
+    print(subexps)
+    # QgsMessageLog.logMessage((subexps), "qgis2web", level=Qgis.Info)
     count = 1
     js = ""
     for sub in subexps:

@@ -339,31 +339,14 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
 
 
 def rasterScript(layer, safeLayerName):
-    out_raster = 'data/' + safeLayerName + '.png'
-    pt2 = layer.extent()
-    crsSrc = layer.crs()
-    crsDest = QgsCoordinateReferenceSystem(4326)
-    try:
-        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
-    except:
-        xform = QgsCoordinateTransform(crsSrc, crsDest)
-    pt3 = xform.transformBoundingBox(pt2)
-    bbox_canvas2 = [pt3.yMinimum(), pt3.yMaximum(),
-                    pt3.xMinimum(), pt3.xMaximum()]
-    bounds = '[[' + unicode(pt3.yMinimum()) + ','
-    bounds += unicode(pt3.xMinimum()) + '],['
-    bounds += unicode(pt3.yMaximum()) + ','
-    bounds += unicode(pt3.xMaximum()) + ']]'
     raster = """
-        var img_{safeLayerName} = '{out_raster}';
-        var img_bounds_{safeLayerName} = {bounds};
-        var overlay_{safeLayerName} = """.format(safeLayerName=safeLayerName,
-                                                 out_raster=out_raster,
-                                                 bounds=bounds)
-    raster += "new L.imageOverlay(img_"
-    raster += """{safeLayerName}, img_bounds_{safeLayerName});
-        bounds_group.addLayer(overlay_{safeLayerName});""".format(
-        safeLayerName=safeLayerName)
+        {
+            "id": "%s",
+            "type": "raster",
+            "source": "%s",
+            "minzoom": 0,
+            "maxzoom": 22
+        }""" % (safeLayerName, safeLayerName)
     return raster
 
 

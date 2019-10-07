@@ -148,6 +148,11 @@ class MapboxWriter(Writer):
 
         QgsApplication.initQgis()
 
+        crsSrc = mapSettings.destinationCrs()
+        crs = QgsCoordinateReferenceSystem.EpsgCrsId
+        crsDest = QgsCoordinateReferenceSystem(4326, crs)
+        xform = QgsCoordinateTransform(crsSrc, crsDest, project)
+
         dataStore, cssStore = writeFoldersAndFiles(pluginDir, feedback,
                                                    outputProjectFileName,
                                                    cluster, measure,
@@ -180,6 +185,7 @@ class MapboxWriter(Writer):
             }
         }"""]
         vLayers = []
+        rLayers = []
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -218,48 +224,26 @@ class MapboxWriter(Writer):
                                                     "data")
                         exportRaster(layer, lyrCount, layersFolder,
                                      feedback, iface, matchCRS)
-            if layer.hasScaleBasedVisibility():
-                scaleDependentLayers += scaleDependentLayerScript(
-                    layer, safeLayerName, clst)
+                        rasterPath = './data/' + safeLayerName + '.png'
+                        extent = layer.extent()
+                        bbox = xform.transformBoundingBox(extent)
+                        print(bbox.xMinimum())
+                        sources.append("""
+        "%s": {
+            "type": "image",
+            "url": "%s",
+            "coordinates": [
+                [%f, %f],
+                [%f, %f],
+                [%f, %f],
+                [%f, %f]
+            ]
+        }""" % (safeLayerName, rasterPath,
+                bbox.xMinimum(), bbox.yMinimum(),
+                bbox.xMaximum(), bbox.yMinimum(),
+                bbox.xMaximum(), bbox.yMaximum(),
+                bbox.xMinimum(), bbox.yMaximum()))
             lyrCount += 1
-        if scaleDependentLayers != "":
-            scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
-
-        crsSrc = mapSettings.destinationCrs()
-        crsAuthId = crsSrc.authid()
-        crsProj4 = crsSrc.toProj4()
-        middle = """
-        """
-        if highlight or popupsOnHover:
-            selectionColor = mapSettings.selectionColor().name()
-            middle += highlightScript(highlight, popupsOnHover, selectionColor)
-        if extent == "Canvas extent":
-            pt0 = canvas.extent()
-            crsDest = QgsCoordinateReferenceSystem(4326)
-            try:
-                xform = QgsCoordinateTransform(crsSrc, crsDest,
-                                               QgsProject.instance())
-            except:
-                xform = QgsCoordinateTransform(crsSrc, crsDest)
-            pt1 = xform.transformBoundingBox(pt0)
-            bbox_canvas = [pt1.yMinimum(), pt1.yMaximum(),
-                           pt1.xMinimum(), pt1.xMaximum()]
-            bounds = '[[' + unicode(pt1.yMinimum()) + ','
-            bounds += unicode(pt1.xMinimum()) + '],['
-            bounds += unicode(pt1.yMaximum()) + ','
-            bounds += unicode(pt1.xMaximum()) + ']]'
-            if matchCRS and crsAuthId != 'EPSG:4326':
-                middle += crsScript(crsAuthId, crsProj4)
-        else:
-            bounds = 0
-            if matchCRS and crsAuthId != 'EPSG:4326':
-                middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                            minZoom, bounds, locate)
-        middle += featureGroupsScript()
-        extentCode = extentScript(extent, restrictToExtent)
-        new_src += middle
-        new_src += extentCode
 
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
@@ -292,8 +276,6 @@ class MapboxWriter(Writer):
                                               useHeat, useVT, useShapes,
                                               useOSMB, vtSources, vtLayers,
                                               vLayers)
-                if useMapUnits:
-                    mapUnitLayers.append(safeLayerName)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -303,17 +285,10 @@ class MapboxWriter(Writer):
                                                          getFeatureInfo[count])
                     feedback.completeStep()
                 else:
-                    useRaster = True
                     feedback.showFeedback('Writing %s as raster layer...' %
                                           layer.name())
-                    new_obj = rasterScript(layer, safeLayerName)
+                    rLayers.append(rasterScript(layer, safeLayerName))
                     feedback.completeStep()
-                if visible[count]:
-                    new_obj += """
-        map.addLayer(overlay_""" + safeLayerName + """);"""
-                new_src += new_obj
-        values = {"@MAPBOX_SOURCES@": ",".join(vtSources),
-                  "@MAPBOX_LAYERS@": ",".join(vtLayers)}
         sprite = ("https://s3-eu-west-1.amazonaws.com/tiles.os.uk/styles/"
                   "open-zoomstack-outdoor/sprites")
         glyphs = ("https://glfonts.lukasmartinelli.ch/fonts/{fontstack}/"
@@ -321,12 +296,7 @@ class MapboxWriter(Writer):
         s = """
 var styleJSON = {
     "version": 8,
-    "name": "OS Outdoor",
-
-    "center": [
-        -1.445462913521851,
-        50.924985957591986
-    ],
+    "name": "qgis2web export",
     "pitch": 0,
     "light": {
         "intensity": 0.2
@@ -335,14 +305,8 @@ var styleJSON = {
     "sprite": "%s",
     "glyphs": "%s",
     "layers": [%s],
-    "created": "2018-05-11T11:38:48.884Z",
-    "id": "cjh1w236f0tj22sl87sm547vt",
-    "modified": "2018-05-26T21:01:47.000Z",
-    "owner": "Ordnance Survey",
-    "visibility": "public",
-    "draft": false
 }""" % (",".join(vtSources + sources), sprite, glyphs,
-        ",".join(vtLayers + vLayers))
+        ",".join(vtLayers + vLayers + rLayers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
         if not os.path.exists(mbStore):
             shutil.copytree(os.path.join(os.path.dirname(__file__),
@@ -352,85 +316,11 @@ var styleJSON = {
                          'w', encoding='utf-8') as f:
             f.write(unicode(s))
             f.close()
-        the_src = new_src
-        new_src = jsons + """
-        <script>"""
-        if len(mapUnitLayers) > 0:
-            new_src += """
-        var m2px = 1;
-        function newM2px() {
-            var centerLatLng = map.getCenter();
-            var pointC = map.latLngToContainerPoint(centerLatLng);
-            var pointX = [pointC.x + 100, pointC.y];
-
-            var latLngC = map.containerPointToLatLng(pointC);
-            var latLngX = map.containerPointToLatLng(pointX);
-
-            var distanceX = latLngC.distanceTo(latLngX)/100;
-
-            reciprocal = 1 / distanceX;
-            m2px = reciprocal;
-        }
-        function geoStyle(m) {
-            return Math.ceil(m * m2px);
-        }"""
-        new_src += getVTStyles(vtStyles)
-        new_src += getVTLabels(vtLabels)
-        new_src += the_src + scaleDependentLayers
-        if title != "":
-            titleStart = unicode(titleSubScript(title))
-            new_src += unicode(titleStart)
-        if addressSearch:
-            address_text = addressSearchScript()
-            new_src += address_text
-
-        if (params["Appearance"]["Add layers list"] and
-                params["Appearance"]["Add layers list"] != "" and
-                params["Appearance"]["Add layers list"] != "None"):
-            new_src += addLayersList(
-                [], matchCRS, layer_list, cluster, legends,
-                params["Appearance"]["Add layers list"] == "Expanded")
-        if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-            # placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
-            # placement = PLACEMENT[placement]
-            # end = scaleBar(placement)
-            end = scaleBar()
-        else:
-            end = ''
-        layerType = "layer"
-        try:
-            if cluster[count]:
-                layerType = "cluster"
-        except:
-            pass
-        searchLayer = "%s_%s" % (layerType,
-                                 params["Appearance"]["Search layer"])
-        labelList = []
-        for count, layer in enumerate(layer_list):
-            vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-            safeLayerName = re.sub(r'[\W_]+', '',
-                                   layer.name()) + "_" + unicode(count)
-            if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
-                labelling = layer.labeling()
-                if labelling is not None:
-                    palyr = labelling.settings()
-                    if palyr.fieldName and palyr.fieldName != "":
-                        labelList.append("layer_%s" % safeLayerName)
-        labelsList = ",".join(labelList)
-        end += endHTMLscript(wfsLayers, layerSearch, labelCode,
-                             labelVisibility, searchLayer, useHeat, useRaster,
-                             labelsList, mapUnitLayers)
-        new_src += end
         pt0 = canvas.center()
-        crsDest = QgsCoordinateReferenceSystem(4326)
-        try:
-            xform = QgsCoordinateTransform(crsSrc, crsDest,
-                                           QgsProject.instance())
-        except Exception:
-            xform = QgsCoordinateTransform(crsSrc, crsDest)
         pt1 = xform.transform(pt0)
         center = '[' + str(pt1.x()) + ','
         center += str(pt1.y()) + ']'
+        center.replace('nan', '0')
         bearing = 360 - canvas.rotation()
         zoom = scaleToZoom(canvas.scale())
         new_src = jsons + """
