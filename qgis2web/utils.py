@@ -106,6 +106,11 @@ TYPE_MAP = {
     QgsWkbTypes.MultiPolygonZM: 'MultiPolygon',
     QgsWkbTypes.MultiPolygonM: 'MultiPolygon'}
 
+MB_TYPE_MAP = {
+    'Point': 'symbol',
+    'LineString': 'line',
+    'Polygon': 'fill'}
+
 BLEND_MODES = {
     QPainter.CompositionMode_SourceOver: 'normal',
     QPainter.CompositionMode_Multiply: 'multiply',
@@ -509,11 +514,9 @@ def is25d(layer, canvas, restrictToExtent, extent):
             sl2 = sym.symbolLayer(2)
         except IndexError:
             return False
-
         if (isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and
                 isinstance(sl2, QgsGeometryGeneratorSymbolLayer)):
             return True
-
     return False
 
 
