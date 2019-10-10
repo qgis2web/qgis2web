@@ -182,6 +182,7 @@ software:</p>
     <li>QGIS</li>
     <li>OpenLayers</li>
     <li>Leaflet</li>
+    <li>Mapbox GL JS</li>
 </ul>
 
 <p>Thanks are also due for major code contributions to:</p>
