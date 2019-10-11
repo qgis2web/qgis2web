@@ -327,8 +327,8 @@ var styleJSON = {
         attribution = ('<a href='
                        '"https://github.com/tomchadwin/qgis2web" '
                        'target="_blank">qgis2web</a> &middot; '
-                       '<a href="https://www.mapbox.com/" target="_blank">'
-                       'Mapbox</a> &middot; '
+                       '<a href="https://github.com/mapbox/mapbox-gl-js" '
+                       'target="_blank">Mapbox GL JS</a> &middot; '
                        '<a href="https://qgis.org" target="_blank">QGIS</a>'
                        )
         new_src = jsons + """

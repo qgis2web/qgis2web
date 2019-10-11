@@ -373,7 +373,7 @@
        <item>
         <widget class="QRadioButton" name="mapbox">
          <property name="text">
-          <string>Mapbox</string>
+          <string>Mapbox GL JS</string>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">mapFormat</string>
