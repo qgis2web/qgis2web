@@ -30,7 +30,7 @@ def convert(geostyler):
     featureTypeStyle = SubElement(userStyle, "FeatureTypeStyle")
     if "transformation" in geostyler:
         featureTypeStyle.append(processTransformation(geostyler["transformation"]))
-    for rule in geostyler["rules"]:
+    for rule in geostyler.get("rules", []):
         featureTypeStyle.append(processRule(rule))
     
     sldstring = ElementTree.tostring(root, encoding='utf8', method='xml').decode()
@@ -102,11 +102,11 @@ def _createSymbolizer(sl):
 
     return symbolizer
 
-def _symbolProperty(sl, name):
+def _symbolProperty(sl, name, default=None):
     if name in sl:        
         return _processProperty(sl[name])      
     else:
-        return None
+        return default
 
 def _processProperty(value):
     v = convertExpression(value)
@@ -236,8 +236,12 @@ def _lineSymbolizer(sl, graphicStrokeLayer = 0):
         _addCssParameter(stroke, "stroke-linecap", cap)    
         if dasharray is not None:            
             if cap != "butt":
-                GAP_FACTOR = 2
-                tokens = [int(v) * GAP_FACTOR if i % 2 else int(v) for i,v in enumerate(dasharray.split(" "))]
+                try:
+                    EXTRA_GAP = 2 * width
+                    tokens = [int(v) + EXTRA_GAP if i % 2 else int(v) for i,v in enumerate(dasharray.split(" "))]
+                except: #in case width is not a number, but an expression
+                    GAP_FACTOR = 2
+                    tokens = [int(v) * GAP_FACTOR if i % 2 else int(v) for i,v in enumerate(dasharray.split(" "))]
                 dasharray = " ".join([str(v) for v in tokens])
             _addCssParameter(stroke, "stroke-dasharray", dasharray)
     if offset is not None:
@@ -292,18 +296,24 @@ def _basePointSimbolizer(sl):
 def _markGraphic(sl):
     color = _symbolProperty(sl, "color")
     outlineColor = _symbolProperty(sl, "strokeColor")
+    fillOpacity = _symbolProperty(sl, "fillOpacity", 1.0)
+    strokeOpacity = _symbolProperty(sl, "strokeOpacity", 1.0)
     outlineWidth = _symbolProperty(sl, "strokeWidth")
     outlineDasharray = _symbolProperty(sl, "strokeDasharray")
     shape = _symbolProperty(sl, "wellKnownName")
     mark = Element("Mark")
     _addSubElement(mark, "WellKnownName", shape)
-    fill = SubElement(mark, "Fill")
-    _addCssParameter(fill, "fill", color)
-    stroke = _addSubElement(mark, "Stroke")    
-    _addCssParameter(stroke, "stroke", outlineColor)
-    _addCssParameter(stroke, "stroke-width", outlineWidth)
-    if outlineDasharray is not None:
-        _addCssParameter(stroke, "stroke-dasharray", outlineDasharray)
+    if fillOpacity:
+        fill = SubElement(mark, "Fill")
+        _addCssParameter(fill, "fill", color)
+        _addCssParameter(fill, "fill-opacity", fillOpacity)
+    stroke = _addSubElement(mark, "Stroke")
+    if strokeOpacity:
+        _addCssParameter(stroke, "stroke", outlineColor)
+        _addCssParameter(stroke, "stroke-width", outlineWidth)
+        _addCssParameter(stroke, "stroke-opacity", strokeOpacity)
+        if outlineDasharray is not None:
+            _addCssParameter(stroke, "stroke-dasharray", outlineDasharray)
 
     return mark
 

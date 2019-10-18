@@ -1,0 +1,29 @@
+{
+    "name": "testlayer",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Fill",
+                    "opacity": 1.0,
+                    "graphicFill": [
+                        {
+                            "kind": "Mark",
+                            "color": "#e15989",
+                            "wellKnownName": "horline",
+                            "size": 10,
+                            "strokeColor": "#e15989",
+                            "strokeWidth": 1,
+                            "rotate": 0
+                        }
+                    ],
+                    "graphicFillDistanceX": 5.0,
+                    "graphicFillDistanceY": 5.0,
+                    "outlineColor": "#232323",
+                    "outlineWidth": 0.982677165366
+                }
+            ]
+        }
+    ]
+}

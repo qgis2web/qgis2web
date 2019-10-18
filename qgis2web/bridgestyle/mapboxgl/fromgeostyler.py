@@ -26,7 +26,8 @@ def _toZoomLevel(scale):
 
 def processLayer(layer):
     allLayers = []
-    for rule in layer["rules"]:
+    
+    for rule in layer.get("rules", []):
         layers = processRule(rule, layer["name"])
         allLayers += layers
 
@@ -147,8 +148,12 @@ def _textSymbolizer(sl):
     size = _symbolProperty(sl, "size")
     if "offset" in sl:
         offset = sl["offset"]
-        offsetx = convertExpression(offset[0])
-        offsety = convertExpression(offset[1])
+        try:
+            offsetx = convertExpression(offset[0])
+            offsety = convertExpression(offset[1])
+        except TypeError:
+            offsetx = convertExpression(offset)
+            offsety = convertExpression(offset)
         layout["text-offset"] = [offsetx, offsety]
 
             

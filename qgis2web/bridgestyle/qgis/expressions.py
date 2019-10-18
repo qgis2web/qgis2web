@@ -67,24 +67,20 @@ functions = {"radians": "toRadians",
              } #TODO
 
 def walkExpression(node, layer):
-    exp = False
-    try:
-        if node.nodeType() == QgsExpressionNode.ntBinaryOperator:
-            exp = handleBinary(node, layer)
-        elif node.nodeType() == QgsExpressionNode.ntUnaryOperator:
-            exp = handleUnary(node, layer)
-        #elif node.nodeType() == QgsExpressionNode.ntInOperator:
-            #filt = handle_in(node)
-        elif node.nodeType() == QgsExpressionNode.ntFunction:
-            exp = handleFunction(node, layer)
-        elif node.nodeType() == QgsExpressionNode.ntLiteral:
-            exp = handleLiteral(node)
-        elif node.nodeType() == QgsExpressionNode.ntColumnRef:
-            exp = handleColumnRef(node, layer)
-        #elif node.nodeType() == QgsExpression.ntCondition:
-        #    filt = handle_condition(nod)
-    except:
-        pass
+    if node.nodeType() == QgsExpressionNode.ntBinaryOperator:
+        exp = handleBinary(node, layer)
+    elif node.nodeType() == QgsExpressionNode.ntUnaryOperator:
+        exp = handleUnary(node, layer)
+    #elif node.nodeType() == QgsExpressionNode.ntInOperator:
+        #filt = handle_in(node)
+    elif node.nodeType() == QgsExpressionNode.ntFunction:
+        exp = handleFunction(node, layer)
+    elif node.nodeType() == QgsExpressionNode.ntLiteral:
+        exp = handleLiteral(node)
+    elif node.nodeType() == QgsExpressionNode.ntColumnRef:
+        exp = handleColumnRef(node, layer)
+    #elif node.nodeType() == QgsExpression.ntCondition:
+    #    filt = handle_condition(nod)
     return exp
 
 def handleBinary(node, layer):
