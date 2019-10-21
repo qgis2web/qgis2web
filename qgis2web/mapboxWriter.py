@@ -181,9 +181,9 @@ class MapboxWriter(Writer):
             "type": "background",
             "layout": {},
             "paint": {
-                "background-color": "#ffffff"
+                "background-color": "%s"
             }
-        }"""]
+        }""" % mapSettings.backgroundColor().name()]
         vLayers = []
         rLayers = []
         scaleDependentLayers = ""
