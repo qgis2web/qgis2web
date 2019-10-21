@@ -4,8 +4,8 @@
 [![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
-<p>QGIS plugin to export your project to an OpenLayers or Leaflet webmap. No
-server-side software required.</p>
+<p>QGIS plugin to export your project to a Leaflet, OpenLayers or Mapbox GL JS 
+webmap. No server-side software required.</p>
 
 <h2>Installation</h2>
 <ul>
@@ -43,22 +43,24 @@ to your QGIS project, so save your project if you want to keep these settings.
 </p>
 
 <h2>Current limitations</h2>
-<p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
-This means that their respective functionality differs in many ways. qgis2web
-does its best to interpret a QGIS project and to export HTML, Javascript, and
-CSS to create a web map as close to the QGIS project as possible.</p>
+<p>QGIS, Leaflet, OpenLayers, and Mapbox GL JS are all different mapping 
+technologies. This means that their respective functionality differs in many 
+ways. qgis2web does its best to interpret a QGIS project and to export HTML, 
+Javascript, and CSS to create a web map as close to the QGIS project as 
+possible.</p>
 <p>However, many elements of a QGIS project cannot be reproduced, and many are
-only possible in <em>either</em> OpenLayers <em>or</em> Leaflet. qgis2web
-tries its best to produce a publish-ready map, but you can always manually edit
-the output code to achieve what qgis2web cannot.</p>
+only possible in <em>either</em> Leaflet, OpenLayers, <em>or</em> Mapbox GL 
+JS. qgis2web tries its best to produce a publish-ready map, but you can always 
+manually edit the output code to achieve what qgis2web cannot.</p>
 <ul>
-    <li>in OL3 maps, only single rendered points cluster, not categorized
-        or graduated</li>
-    <li>line style (dashed/dotted) does not appear in OL3 preview, but works in
-        export</li>
+    <li>in OpenLayers maps, only single rendered points cluster, not 
+        categorized or graduated</li>
+    <li>line style (dashed/dotted) does not appear in OpenLayers preview, but 
+        works in export</li>
     <li>only a single 2.5d layer will render per map</li>
     <li>2.5d layers only appear when zoomed in to building scales</li>
-    <li>attribute filters and abstract export only works in leaflet based webmaps</li>
+    <li>attribute filters and abstract export only works in leaflet based 
+        webmaps</li>
 </ul>
 
 <h3>Layer options</h3>
@@ -200,6 +202,7 @@ software:</p>
 
 <p>In addition, the following libraries have been used:</p>
 <ul>
+    <li>bridge-style, by @volaya</li>
     <li>ol3-layerswitcher, by @walkermatt</li>
     <li>Autolinker.js, by @gregjacobs</li>
     <li>requestAnimationFrame polyfill, by @paulirish</li>
