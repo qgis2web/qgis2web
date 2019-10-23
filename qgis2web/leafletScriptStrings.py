@@ -738,8 +738,8 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 for entry in filterItems[item]["values"]:
                     endHTML += """
             {nameS}_options_str  += '<option value="{e}">{e}</option>';
-                        """.format(e=entry, name=itemName,
-                                   nameS=safeName(itemName))
+                        """.format(e=entry.replace("'", "&#39;"), 
+                                   name=itemName, nameS=safeName(itemName))
                 endHTML += """
             sel_{nameS}.innerHTML = {nameS}_options_str;
             div_{nameS}.appendChild(sel_{nameS});
