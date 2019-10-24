@@ -310,7 +310,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
             row += "(feature.properties[\'" + str(field) + "\'] "
             row += "!== null ? "
 
-            if (editorWidget == 'Photo'):
+            print(editorWidget)
+            if (editorWidget == 'ExternalResource'):
                 row += "'<img src=\"images/' + "
                 row += "String(feature.properties['" + str(field)
                 row += r"']).replace(/[\\\/:]/g, '_').trim()"

@@ -592,7 +592,7 @@ def exportImages(layer, field, layerFileName):
     field_index = layer.fields().indexFromName(field)
 
     widget = layer.editorWidgetSetup(field_index).type()
-    if widget != 'Photo':
+    if widget != 'ExternalResource':
         return
 
     fr = QgsFeatureRequest()

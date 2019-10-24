@@ -122,7 +122,7 @@ var onPointerMove = function(evt) {
                             if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
-                            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
+                            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
                                 popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                             } else {
                                 popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
@@ -148,7 +148,7 @@ var onPointerMove = function(evt) {
                         if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
                             popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                         }
-                        if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
+                        if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
                             popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                         } else {
                             popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
@@ -265,7 +265,7 @@ var onSingleClick = function(evt) {
                                 if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
                                     popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                                 }
-                                if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
+                                if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
                                     popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                                 } else {
                                     popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
@@ -291,7 +291,7 @@ var onSingleClick = function(evt) {
                             if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
-                            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
+                            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
                                 popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
                             } else {
                                 popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
