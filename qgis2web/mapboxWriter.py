@@ -30,6 +30,7 @@ from qgis.core import (QgsApplication,
 import codecs
 import shutil
 import traceback
+from urllib.parse import parse_qs
 from PyQt5.QtCore import (Qt,
                           QObject)
 from PyQt5.QtGui import QCursor
@@ -227,7 +228,6 @@ class MapboxWriter(Writer):
                         rasterPath = './data/' + safeLayerName + '.png'
                         extent = layer.extent()
                         bbox = xform.transformBoundingBox(extent)
-                        print(bbox.xMinimum())
                         sources.append("""
         "%s": {
             "type": "image",
@@ -244,6 +244,16 @@ class MapboxWriter(Writer):
                             bbox.xMaximum(), bbox.yMinimum(),
                             bbox.xMaximum(), bbox.yMaximum(),
                             bbox.xMinimum(), bbox.yMaximum()))
+                    else:
+                        tileProps = parse_qs(layer.source())
+                        if ('type' in tileProps and
+                                tileProps['type'][0] == "xyz"):
+                            sources.append("""
+        "%s": {
+            "type": "raster",
+            "tiles": ["%s"],
+            "tileSize": 256
+        }""" % (safeLayerName, tileProps['url'][0]))
             lyrCount += 1
 
         for count, layer in enumerate(layer_list):
@@ -281,17 +291,13 @@ class MapboxWriter(Writer):
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
-                    new_obj, useWMS, useWMTS = wmsScript(layer, safeLayerName,
-                                                         useWMS, useWMTS,
-                                                         getFeatureInfo[count])
+                    rLayers.append(wmsScript(layer, safeLayerName))
                     feedback.completeStep()
                 else:
                     feedback.showFeedback('Writing %s as raster layer...' %
                                           layer.name())
                     rLayers.append(rasterScript(layer, safeLayerName))
                     feedback.completeStep()
-        sprite = ("https://s3-eu-west-1.amazonaws.com/tiles.os.uk/styles/"
-                  "open-zoomstack-outdoor/sprites")
         glyphs = ("https://glfonts.lukasmartinelli.ch/fonts/{fontstack}/"
                   "{range}.pbf")
         s = """
@@ -303,10 +309,10 @@ var styleJSON = {
         "intensity": 0.2
     },
     "sources": {%s},
-    "sprite": "%s",
+    "sprite": "",
     "glyphs": "%s",
     "layers": [%s],
-}""" % (",".join(vtSources + sources), sprite, glyphs,
+}""" % (",".join(vtSources + sources), glyphs,
             ",".join(vtLayers + vLayers + rLayers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
         if not os.path.exists(mbStore):

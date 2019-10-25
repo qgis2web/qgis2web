@@ -283,16 +283,16 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
+def wmsScript(layer, safeLayerName):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     if 'type' in d and d['type'][0] == "xyz":
         wms = """
-        var overlay_{safeLayerName} = L.tileLayer('{url}', {{
-            opacity: {opacity}
-        }});
-        overlay_{safeLayerName}.addTo(map);""".format(
-            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0])
+        {
+            "id": "%s",
+            "type": "raster",
+            "source": "%s"
+        }""" % (safeLayerName, safeLayerName)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
@@ -335,7 +335,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify):
             opacity: %d%s
         });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity,
                   getFeatureInfo)
-    return wms, useWMS, useWMTS
+    return wms
 
 
 def rasterScript(layer, safeLayerName):
