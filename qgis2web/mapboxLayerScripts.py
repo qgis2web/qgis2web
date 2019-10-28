@@ -40,7 +40,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                      cluster, visible, json, legends, new_src, canvas, zIndex,
                      restrictToExtent, extent, feedback, labelCode, vtLabels,
                      vtStyles, useMultiStyle, useHeat, useVT, useShapes,
-                     useOSMB, vtSources, vtLayers, vLayers):
+                     useOSMB, vtSources, layers):
     vts = layer.customProperty("VectorTilesReader/vector_tile_url")
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
@@ -115,7 +115,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                     layout["text-font"] = ["Open Sans Regular"]
             except:
                 layout = "{}"
-            vtLayers.append("""
+            layers.append("""
         {
             "id": "lyr_%s_%d",
             "type": "%s",
@@ -164,7 +164,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
                 except:
                     layout = "{}"
                 paint = mblayer["paint"]
-                vLayers.append("""
+                layers.append("""
         {
             "id": "lyr_%s_%d",
             "type": "%s",
@@ -205,7 +205,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     feedback.completeStep()
     return (new_src, legends, wfsLayers, labelCode, vtLabels, vtStyles,
             useMapUnits, useMultiStyle, useHeat, useVT, useShapes, useOSMB,
-            vtSources, vtLayers, vLayers)
+            vtSources, layers)
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
