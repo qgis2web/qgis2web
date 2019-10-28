@@ -747,6 +747,16 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             lab_{nameS}.innerHTML = '{name}';
             lab_{nameS}.className = 'filterLabel';
             div_{nameS}.appendChild(lab_{nameS});
+            var reset_{nameS} = document.createElement('span');
+            reset_{nameS}.innerHTML = 'clear filter';
+            reset_{nameS}.onclick = function() {{
+                var options = document.getElementById("sel_{nameS}").options;
+                for (var i=0; i < options.length; i++) {{
+                    options[i].selected = false;
+                }}
+                filterFunc();
+            }};
+            div_{nameS}.appendChild(reset_{nameS});
                 """.format(name=itemName, nameS=safeName(itemName))
             if filterItems[item]["type"] in ["int", "real"]:
                 endHTML += """
