@@ -736,9 +736,13 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             sel_{nameS}.onchange = function(){{filterFunc()}};
             """.format(name=itemName, nameS=safeName(itemName), s=selSize)
                 for entry in filterItems[item]["values"]:
+                    try:
+                        safeEntry = entry.replace("'", "&apos;")
+                    except:
+                        safeEntry = entry
                     endHTML += """
             {nameS}_options_str  += '<option value="{e}">{e}</option>';
-                        """.format(e=entry.replace("'", "&#39;"), 
+                        """.format(e=safeEntry,
                                    name=itemName, nameS=safeName(itemName))
                 endHTML += """
             sel_{nameS}.innerHTML = {nameS}_options_str;
