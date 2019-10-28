@@ -685,7 +685,7 @@ def returnFilterValues(layer_list, fieldName, fieldType):
         if cleanFilterValues[0] == cleanFilterValues[1]:
             cleanFilterValues[1] = cleanFilterValues[0] + 1
     if fieldType in ["date", "time", "real", "datetime"]:
-        cleanFilterValues = [min(filterValues),
+        cleanFilterValues = [min(filter(None, filterValues)),
                              max(filterValues)]
         if cleanFilterValues[0] == cleanFilterValues[1]:
             if fieldType == "real":

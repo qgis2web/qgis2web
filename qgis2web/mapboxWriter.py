@@ -176,7 +176,7 @@ class MapboxWriter(Writer):
         useWMTS = False
         useRaster = False
         vtSources = []
-        vtLayers = ["""
+        layers = ["""
         {
             "id": "background",
             "type": "background",
@@ -185,8 +185,6 @@ class MapboxWriter(Writer):
                 "background-color": "%s"
             }
         }""" % mapSettings.backgroundColor().name()]
-        vLayers = []
-        rLayers = []
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -254,6 +252,14 @@ class MapboxWriter(Writer):
             "tiles": ["%s"],
             "tileSize": 256
         }""" % (safeLayerName, tileProps['url'][0]))
+                        else:
+                            url = "%s&%s" % (tileProps['url'][0], layer.source())
+                            sources.append("""
+        "%s": {
+            "type": "raster",
+            "tiles": ["%s"],
+            "tileSize": 256
+        }""" % (safeLayerName, url))
             lyrCount += 1
 
         for count, layer in enumerate(layer_list):
@@ -273,8 +279,7 @@ class MapboxWriter(Writer):
                  useShapes,
                  useOSMB,
                  vtSources,
-                 vtLayers,
-                 vLayers) = writeVectorLayer(layer, safeLayerName,
+                 layers) = writeVectorLayer(layer, safeLayerName,
                                              usedFields[count], highlight,
                                              popupsOnHover, popup[count],
                                              outputProjectFileName,
@@ -285,18 +290,17 @@ class MapboxWriter(Writer):
                                              feedback, labelCode, vtLabels,
                                              vtStyles, useMultiStyle,
                                              useHeat, useVT, useShapes,
-                                             useOSMB, vtSources, vtLayers,
-                                             vLayers)
+                                             useOSMB, vtSources, layers)
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
-                    rLayers.append(wmsScript(layer, safeLayerName))
+                    layers.append(wmsScript(layer, safeLayerName))
                     feedback.completeStep()
                 else:
                     feedback.showFeedback('Writing %s as raster layer...' %
                                           layer.name())
-                    rLayers.append(rasterScript(layer, safeLayerName))
+                    layers.append(rasterScript(layer, safeLayerName))
                     feedback.completeStep()
         glyphs = ("https://glfonts.lukasmartinelli.ch/fonts/{fontstack}/"
                   "{range}.pbf")
@@ -313,7 +317,7 @@ var styleJSON = {
     "glyphs": "%s",
     "layers": [%s],
 }""" % (",".join(vtSources + sources), glyphs,
-            ",".join(vtLayers + vLayers + rLayers))
+            ",".join(layers))
         mbStore = os.path.join(outputProjectFileName, 'mapbox')
         if not os.path.exists(mbStore):
             shutil.copytree(os.path.join(os.path.dirname(__file__),

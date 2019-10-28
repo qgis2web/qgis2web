@@ -310,7 +310,6 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
             row += "(feature.properties[\'" + str(field) + "\'] "
             row += "!== null ? "
 
-            print(editorWidget)
             if (editorWidget == 'ExternalResource'):
                 row += "'<img src=\"images/' + "
                 row += "String(feature.properties['" + str(field)

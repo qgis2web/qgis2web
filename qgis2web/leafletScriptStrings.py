@@ -2,7 +2,7 @@ import re
 import os
 import traceback
 from urllib.parse import parse_qs
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, QDateTime
 from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
@@ -846,8 +846,8 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     hh2 = 0
                     mm2 = 0
                     ss2 = 0
-                    ds = startDate.toMSecsSinceEpoch()
-                    de = endDate.toMSecsSinceEpoch()
+                    ds = QDateTime(startDate).toMSecsSinceEpoch()
+                    de = QDateTime(endDate).toMSecsSinceEpoch()
                 if filterItems[item]["type"] == "datetime":
                     ds = startDate.toMSecsSinceEpoch()
                     de = endDate.toMSecsSinceEpoch()
@@ -876,6 +876,26 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             lab_{nameS}_date1.innerHTML  = '{name} from';
             document.getElementById("div_{nameS}_date1").appendChild(
                 lab_{nameS}_date1);
+            var reset_{nameS}_date1 = document.createElement('span');
+            reset_{nameS}_date1.innerHTML = "clear";
+            reset_{nameS}_date1.onclick = function() {{
+                tail.DateTime("#dat_{nameS}_date1", {{
+                    dateStart: {ds},
+                    dateEnd: {de},
+                    dateFormat: {d},
+                    timeFormat: {t},
+                    today: false,
+                    weekStart: 1,
+                    position: "left",
+                    closeButton: true,
+                    stayOpen: true,
+                    timeStepMinutes:1,
+                    timeStepSeconds: 1
+                }}).selectDate({Y1},{M1}-1,{D1},{hh1},{mm1},{ss1});
+                tail.DateTime("#dat_{nameS}_date1").reload()
+            }}
+            document.getElementById("div_{nameS}_date1").appendChild(
+                reset_{nameS}_date1);
             document.addEventListener("DOMContentLoaded", function(){{
                 tail.DateTime("#dat_{nameS}_date1", {{
                     dateStart: {ds},
@@ -929,7 +949,29 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             lab_{nameS}_date2.innerHTML  = '{name} till';
             document.getElementById("div_{nameS}_date2")
               .appendChild(lab_{nameS}_date2);
-            """.format(name=itemName, nameS=safeName(itemName))
+            var reset_{nameS}_date2 = document.createElement('span');
+            reset_{nameS}_date2.innerHTML = "clear";
+            reset_{nameS}_date2.onclick = function() {{
+                tail.DateTime("#dat_{nameS}_date2", {{
+                    dateStart: {ds},
+                    dateEnd: {de},
+                    dateFormat: {d},
+                    timeFormat: {t},
+                    today: false,
+                    weekStart: 1,
+                    position: "left",
+                    closeButton: true,
+                    stayOpen: true,
+                    timeStepMinutes:1,
+                    timeStepSeconds: 1
+                }}).selectDate({Y2},{M2}-1,{D2},{hh2},{mm2},{ss2});
+                tail.DateTime("#dat_{nameS}_date2").reload()
+            }}
+            document.getElementById("div_{nameS}_date2").appendChild(
+                reset_{nameS}_date2);
+            """.format(name=itemName, nameS=safeName(itemName), de=de, ds=ds,
+                       d=d, t=t, Y2=Y2, M2=M2, D2=D2, hh2=hh2, mm2=mm2,
+                       ss2=ss2)
     if useHeat:
         endHTML += """
         function geoJson2heat(geojson, weight) {
