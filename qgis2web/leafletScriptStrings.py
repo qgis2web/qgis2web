@@ -770,6 +770,12 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             lab_{nameS}.innerHTML  = '{name}: <span id="val_{name}"></span>';
             lab_{nameS}.className = 'slider';
             document.getElementById("menu").appendChild(lab_{nameS});
+            var reset_{nameS} = document.createElement('span');
+            reset_{nameS}.innerHTML = 'clear filter';
+            reset_{nameS}.onclick = function() {{
+                sel_{nameS}.noUiSlider.reset();
+            }};
+            document.getElementById("menu").appendChild(reset_{nameS});
             var sel_{nameS} = document.getElementById('div_{name}');
             """ .format(name=itemName, nameS=safeName(itemName))
                 if filterItems[item]["type"] == "int":
