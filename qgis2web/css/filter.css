@@ -23,16 +23,32 @@
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 10px;
-  display: grid;
+}
+.filterselect input, .filterselect select {
+    display: block;
+    width: 100%;
 }
 .filterselect p{
   
   font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
-  margin-top: 0px; !important
+  margin-top: 0px !important;
   margin-left: 0px;
   margin-right: 0px;
   margin-bottom: 0px;
-  display: grid;
+}
+.filterlabel {
+    font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+    width: 50%;
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    clear: left;
+}
+.filterlabel + .filterlabel {
+    clear: none;
+    text-align: right;
+    color: #999;
 }
 .slider {
   font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;

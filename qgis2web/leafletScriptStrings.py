@@ -749,10 +749,11 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             div_{nameS}.appendChild(sel_{nameS});
             var lab_{nameS} = document.createElement('div');
             lab_{nameS}.innerHTML = '{name}';
-            lab_{nameS}.className = 'filterLabel';
+            lab_{nameS}.className = 'filterlabel';
             div_{nameS}.appendChild(lab_{nameS});
-            var reset_{nameS} = document.createElement('span');
+            var reset_{nameS} = document.createElement('div');
             reset_{nameS}.innerHTML = 'clear filter';
+            reset_{nameS}.className = 'filterlabel';
             reset_{nameS}.onclick = function() {{
                 var options = document.getElementById("sel_{nameS}").options;
                 for (var i=0; i < options.length; i++) {{
@@ -770,12 +771,14 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             div_{nameS}.id = "div_{name}";
             div_{nameS}.className = "slider";
             document.getElementById("menu").appendChild(div_{nameS});
-            var lab_{nameS} = document.createElement('p');
+            var lab_{nameS} = document.createElement('div');
             lab_{nameS}.innerHTML  = '{name}: <span id="val_{name}"></span>';
-            lab_{nameS}.className = 'slider';
+            lab_{nameS}.className = 'filterlabel';
             document.getElementById("menu").appendChild(lab_{nameS});
-            var reset_{nameS} = document.createElement('span');
+            var reset_{nameS} = document.createElement('div');
             reset_{nameS}.innerHTML = 'clear filter';
+            reset_{nameS}.className = 'filterlabel';
+            lab_{nameS}.className = 'filterlabel';
             reset_{nameS}.onclick = function() {{
                 sel_{nameS}.noUiSlider.reset();
             }};
@@ -876,12 +879,14 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             dat_{nameS}_date1.type = "text";
             dat_{nameS}_date1.id = "dat_{nameS}_date1";
             div_{nameS}_date1.appendChild(dat_{nameS}_date1);
-            var lab_{nameS}_date1 = document.createElement('p');
+            var lab_{nameS}_date1 = document.createElement('div');
             lab_{nameS}_date1.innerHTML  = '{name} from';
+            lab_{nameS}_date1.className = 'filterlabel';
             document.getElementById("div_{nameS}_date1").appendChild(
                 lab_{nameS}_date1);
-            var reset_{nameS}_date1 = document.createElement('span');
+            var reset_{nameS}_date1 = document.createElement('div');
             reset_{nameS}_date1.innerHTML = "clear";
+            reset_{nameS}_date1.className = 'filterlabel';
             reset_{nameS}_date1.onclick = function() {{
                 tail.DateTime("#dat_{nameS}_date1", {{
                     dateStart: {ds},
@@ -946,12 +951,14 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             dat_{nameS}_date2.type = "text";
             dat_{nameS}_date2.id = "dat_{nameS}_date2";
             div_{nameS}_date2.appendChild(dat_{nameS}_date2);
-            var lab_{nameS}_date2 = document.createElement('p');
+            var lab_{nameS}_date2 = document.createElement('div');
             lab_{nameS}_date2.innerHTML  = '{name} till';
+            lab_{nameS}_date2.className = 'filterlabel';
             document.getElementById("div_{nameS}_date2")
               .appendChild(lab_{nameS}_date2);
-            var reset_{nameS}_date2 = document.createElement('span');
+            var reset_{nameS}_date2 = document.createElement('div');
             reset_{nameS}_date2.innerHTML = "clear";
+            reset_{nameS}_date2.className = 'filterlabel';
             reset_{nameS}_date2.onclick = function() {{
                 tail.DateTime("#dat_{nameS}_date2", {{
                     dateStart: {ds},
