@@ -892,7 +892,6 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     weekStart: 1,
                     position: "left",
                     closeButton: true,
-                    stayOpen: true,
                     timeStepMinutes:1,
                     timeStepSeconds: 1
                 }}).selectDate({Y1},{M1}-1,{D1},{hh1},{mm1},{ss1});
@@ -910,7 +909,6 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     weekStart: 1,
                     position: "left",
                     closeButton: true,
-                    stayOpen: true,
                     timeStepMinutes:1,
                     timeStepSeconds: 1
                 }}).selectDate({Y1},{M1}-1,{D1},{hh1},{mm1},{ss1});
@@ -928,7 +926,6 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     weekStart: 1,
                     position: "left",
                     closeButton: true,
-                    stayOpen: true,
                     timeStepMinutes:1,
                     timeStepSeconds: 1
                 }}).selectDate({Y2},{M2}-1,{D2},{hh2},{mm2},{ss2});
@@ -965,7 +962,6 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                     weekStart: 1,
                     position: "left",
                     closeButton: true,
-                    stayOpen: true,
                     timeStepMinutes:1,
                     timeStepSeconds: 1
                 }}).selectDate({Y2},{M2}-1,{D2},{hh2},{mm2},{ss2});
