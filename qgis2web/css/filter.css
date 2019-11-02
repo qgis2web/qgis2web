@@ -20,8 +20,8 @@
   
   font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
   margin-top: 10px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 10px;
+  margin-right: 0px;
   margin-bottom: 10px;
 }
 .filterselect input, .filterselect select {
@@ -32,18 +32,18 @@
   
   font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
   margin-top: 0px !important;
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: 10px;
+  margin-right: 10px;
   margin-bottom: 0px;
 }
 .filterlabel {
     font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
-    width: 50%;
-    float: left;
-    margin: 0px;
+    /*width: 50%;
+    float: right;*/
+    margin-right: 10px;
     padding: 0px;
     border: 0px;
-    clear: left;
+    /*clear: left;*/
 }
 .filterlabel + .filterlabel {
     clear: none;
