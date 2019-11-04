@@ -284,7 +284,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         style = """
                 stroke: false,
                 fillOpacity: 1,
-                fillPattern: pattern_%s_%d""" % (sln, slc)
+                fillPattern: pattern_%s_%d,""" % (sln, slc)
     else:
         feedback.showFeedback("""replacing symbol layer {}
                                  with circle""".format(sl.layerType()))
