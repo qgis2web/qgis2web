@@ -14,7 +14,7 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers or Leaflet. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=3.10.0
+version=3.11.0
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -23,7 +23,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2019/10/30 3.10.0 Mapbox GL JS background colour, apostrophes in Leaflet filters, popup images, Mapbox GL JS XYZ tiled rasters, Leaflet filter reset, Leaflet date filter, Leaflet null records in filters, Mapbox GL JS layer zIndex, autoclose Leaflet filter date picker, correct changelog
+changelog=2019/10/30 3.11.0 Mapbox GL JS popups, popup value localization (thanks, Alasdair Rae!), Leafler clear fiter alignment, Leaflet pattern fill hover
+    2019/10/30 3.10.0 Mapbox GL JS background colour, apostrophes in Leaflet filters, popup images, Mapbox GL JS XYZ tiled rasters, Leaflet filter reset, Leaflet date filter, Leaflet null records in filters, Mapbox GL JS layer zIndex, autoclose Leaflet filter date picker, correct changelog
     2019/10/18 3.9.0 Experimental Mapbox GL JS support, Leaflet labels with underscore in layer name, Leaflet label error, Leaflet heatmap, Leaflet no symbols renderer, attribution uses HTTPS, QGIS in attribution, catch dev console crash, Leaflet scale-dependent tile layers (thanks, @jaminmelville), fix tile_json import, fix 2.5D detection (thanks, @tfh-galbraith!), correct changelog in metadata
     2019/07/29 3.8.0 Filter by attribute support for Leaflet, abstract export for Leaflet, support for non interactive layers 
     2019/05/09 3.7.0 Leaflet 1.5.1, Leaflet SVG markers, overlapping features in OL popup, new expression functions (thanks, TodoInTX!)
