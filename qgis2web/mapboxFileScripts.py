@@ -33,7 +33,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     os.makedirs(markerStore)
     shutil.copyfile(jsDir + 'qgis2web_expressions.js',
                     jsStore + 'qgis2web_expressions.js')
-
+    shutil.copyfile(jsDir + 'Autolinker.min.js',
+                    jsStore + 'Autolinker.min.js')
     shutil.copytree(cssDir + 'images', cssStore + 'images')
     feedback.completeStep()
     return dataStore, cssStore

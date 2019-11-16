@@ -48,8 +48,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     labeltext, vtLabels = getLabels(layer, safeLayerName,
                                     outputProjectFileName, vts, vtLabels)
     labelCode += labeltext
-    (new_pop, popFuncs) = getPopups(layer, safeLayerName, highlight,
-                                    popupsOnHover, popup, vts)
+    new_pop = getPopups(layer, safeLayerName, highlight, popupsOnHover, popup,
+                        vts)
     renderer = layer.renderer()
     layer_transp = 1 - (float(layer.opacity()) / 100)
     style = ""
@@ -205,7 +205,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     feedback.completeStep()
     return (new_src, legends, wfsLayers, labelCode, vtLabels, vtStyles,
             useMapUnits, useMultiStyle, useHeat, useVT, useShapes, useOSMB,
-            vtSources, layers)
+            vtSources, layers, new_pop)
 
 
 def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels):
@@ -347,17 +347,17 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
                 row += layer.attributeDisplayName(fieldIndex)
                 row += '</strong><br />'
             row += "' + "
-            row += "(feature.properties[\'" + unicode(field) + "\'] "
+            row += "(e.features[0].properties[\'" + unicode(field) + "\'] "
             row += "!== null ? "
 
             if (editorWidget == 'Photo'):
                 row += "'<img src=\"images/' + "
-                row += "String(feature.properties['" + unicode(field)
+                row += "String(e.features[0].properties['" + unicode(field)
                 row += r"']).replace(/[\\\/:]/g, '_').trim()"
                 row += " + '\">' : '') + '"
             else:
                 row += "Autolinker.link("
-                row += "String(feature.properties['" + unicode(field)
+                row += "String(e.features[0].properties['" + unicode(field)
                 row += "'])) : '') + '"
 
             row += """</td>\\
@@ -366,11 +366,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
                 </table>'"""
         table = tablestart + row + tableend
     if popup != 0 and table != "":
-        popFuncs = popFuncsScript(table)
-    else:
-        popFuncs = ""
-    new_pop = popupScript(safeLayerName, popFuncs, highlight, popupsOnHover)
-    return new_pop, popFuncs
+        new_pop = popupScript(safeLayerName, table, highlight, popupsOnHover)
+    return new_pop
 
 
 def getLegend(layer, renderer, outputProjectFileName, safeLayerName):

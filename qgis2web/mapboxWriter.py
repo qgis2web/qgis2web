@@ -262,6 +262,7 @@ class MapboxWriter(Writer):
         }""" % (safeLayerName, url))
             lyrCount += 1
 
+        popupCode = ""
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
             safeLayerName = safeName(rawLayerName) + "_" + unicode(count)
@@ -279,7 +280,8 @@ class MapboxWriter(Writer):
                  useShapes,
                  useOSMB,
                  vtSources,
-                 layers) = writeVectorLayer(layer, safeLayerName,
+                 layers,
+                 popups) = writeVectorLayer(layer, safeLayerName,
                                              usedFields[count], highlight,
                                              popupsOnHover, popup[count],
                                              outputProjectFileName,
@@ -291,6 +293,7 @@ class MapboxWriter(Writer):
                                              vtStyles, useMultiStyle,
                                              useHeat, useVT, useShapes,
                                              useOSMB, vtSources, layers)
+                popupCode += popups
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
@@ -343,6 +346,7 @@ var styleJSON = {
                        )
         new_src = jsons + """
 <script src="./mapbox/style.js"></script>
+<script src="./js/Autolinker.min.js"></script>
 <script>
 var map = new mapboxgl.Map({
  container: 'map',
@@ -357,7 +361,8 @@ map.addControl(new mapboxgl.AttributionControl({
     customAttribution: '%s',
     compact: false
 }));
-</script>""" % (center, zoom, bearing, attribution)
+%s
+</script>""" % (center, zoom, bearing, attribution, popupCode)
         # try:
         writeHTMLstart(outputIndex, title, cluster, addressSearch,
                        measure, matchCRS, layerSearch, canvas,

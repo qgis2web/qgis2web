@@ -193,35 +193,28 @@ def popFuncsScript(table):
 
 
 def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
+    sln = "lyr_%s_0" % safeLayerName
     popup = """
-        function pop_{safeLayerName}""".format(safeLayerName=safeLayerName)
-    popup += "(feature, layer) {"
-    if highlight or popupsOnHover:
-        popup += """
-            layer.on({
-                mouseout: function(e) {"""
-        if highlight:
-            popup += """
-                    for (i in e.target._eventParents) {
-                        e.target._eventParents[i].resetStyle(e.target);
-                    }"""
-        if popupsOnHover:
-            popup += """
-                    if (typeof layer.closePopup == 'function') {
-                        layer.closePopup();
-                    } else {
-                        layer.eachLayer(function(feature){
-                            feature.closePopup()
-                        });
-                    }"""
-        popup += """
-                },
-                mouseover: highlightFeature,
-            });"""
-    if "<table></table>" not in popFuncs:
-        popup += """{popFuncs}
-        """.format(popFuncs=popFuncs)
-    popup += "}"
+map.on('click', '%s', function (e) {
+    var description = %s
+     
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(description)
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', '%s', function () {
+    map.getCanvas().style.cursor = 'pointer';
+});
+ 
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', '%s', function () {
+    map.getCanvas().style.cursor = '';
+});
+
+""" % (sln, popFuncs, sln, sln)
     return popup
 
 
