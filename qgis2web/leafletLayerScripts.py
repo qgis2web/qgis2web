@@ -317,8 +317,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
                 row += " + '\">' : '') + '"
             else:
                 row += "Autolinker.link("
-                row += "String(feature.properties['" + str(field)
-                row += "'])) : '') + '"
+                row += "feature.properties['" + str(field)
+                row += "'].toLocaleString()) : '') + '"
 
             row += """</td>\\
                     </tr>\\"""
