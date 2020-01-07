@@ -386,7 +386,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
 
             var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
-            if (visibility === 'visible') {
+            if (typeof visibility === 'undefined' || visibility === 'visible') {
                 map.setLayoutProperty(clickedLayer, 'visibility', 'none');
                 this.className = '';
             } else {

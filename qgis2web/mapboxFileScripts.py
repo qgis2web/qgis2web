@@ -193,7 +193,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             padding: 10px;
             text-decoration: none;
             border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-            text-align: center;
         }
 
          #menu a: last-child {
