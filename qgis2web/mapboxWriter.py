@@ -298,12 +298,12 @@ class MapboxWriter(Writer):
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
-                    layers.append(wmsScript(layer, safeLayerName))
+                    layers.append(wmsScript(layer, safeLayerName, count))
                     feedback.completeStep()
                 else:
                     feedback.showFeedback('Writing %s as raster layer...' %
                                           layer.name())
-                    layers.append(rasterScript(layer, safeLayerName))
+                    layers.append(rasterScript(layer, safeLayerName, count))
                     feedback.completeStep()
         glyphs = ("https://glfonts.lukasmartinelli.ch/fonts/{fontstack}/"
                   "{range}.pbf")

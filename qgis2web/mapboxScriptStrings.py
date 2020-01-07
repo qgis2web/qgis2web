@@ -276,16 +276,16 @@ def clusterScript(safeLayerName):
     return cluster
 
 
-def wmsScript(layer, safeLayerName):
+def wmsScript(layer, safeLayerName, count):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     if 'type' in d and d['type'][0] == "xyz":
         wms = """
         {
-            "id": "%s",
+            "id": "lyr_%s_%d",
             "type": "raster",
             "source": "%s"
-        }""" % (safeLayerName, safeLayerName)
+        }""" % (safeLayerName, count, safeLayerName)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
@@ -331,15 +331,15 @@ def wmsScript(layer, safeLayerName):
     return wms
 
 
-def rasterScript(layer, safeLayerName):
+def rasterScript(layer, safeLayerName, count):
     raster = """
         {
-            "id": "%s",
+            "id": "lyr_%s_%d",
             "type": "raster",
             "source": "%s",
             "minzoom": 0,
             "maxzoom": 22
-        }""" % (safeLayerName, safeLayerName)
+        }""" % (safeLayerName, count, safeLayerName)
     return raster
 
 
@@ -363,7 +363,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                   collapsed):
     layerName_list = []
     for ct, layer in enumerate(layer_list):
-        sln = "'%s_%d'" % (safeName(layer.name()), ct)
+        sln = "'lyr_%s_%d_0'" % (safeName(layer.name()), ct)
         layerName_list.append(sln)
     layersList = """
     var toggleableLayerIds = [%s];
