@@ -179,7 +179,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             top: 10px;
             right: 10px;
             border-radius: 3px;
-            width: 120px;
             border: 1px solid rgba(0, 0, 0, 0.4);
             font-family: 'Open Sans',
             sans-serif;

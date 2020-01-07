@@ -363,7 +363,7 @@ var map = new mapboxgl.Map({
  bearing: %s,
  attributionControl: false
 });
-map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 map.addControl(new mapboxgl.AttributionControl({
     customAttribution: '%s',
     compact: false
