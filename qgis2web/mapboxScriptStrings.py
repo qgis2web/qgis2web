@@ -361,50 +361,41 @@ def titleSubScript(webmap_head):
 
 def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                   collapsed):
-    if len(basemapList) < 2 or matchCRS:
-        controlStart = """
-        var baseMaps = {};"""
-    else:
-        comma = ""
-        controlStart = """
-        var baseMaps = {"""
-        for count, basemap in enumerate(basemapList):
-            controlStart += comma + "'" + unicode(basemap)
-            controlStart += "': basemap" + unicode(count)
-            comma = ", "
-        controlStart += "};"
-    controlStart += """
-        L.control.layers(baseMaps,{"""
-    layersList = controlStart
+    layerName_list = []
+    for ct, layer in enumerate(layer_list):
+        sln = "'%s_%d'" % (safeName(layer.name()), ct)
+        layerName_list.append(sln)
+    layersList = """
+    var toggleableLayerIds = [%s];
 
-    lyrCount = len(layer_list) - 1
-    for i, clustered in zip(reversed(layer_list), reversed(cluster)):
-        try:
-            rawLayerName = i.name()
-            safeLayerName = safeName(rawLayerName) + "_" + unicode(lyrCount)
-            lyrCount -= 1
-            if i.type() == QgsMapLayer.VectorLayer:
-                testDump = i.renderer().dump()
-                if (clustered and
-                        i.geometryType() == QgsWkbTypes.PointGeometry):
-                    new_layer = "'" + legends[safeLayerName].replace("'", "\'")
-                    new_layer += "': cluster_""" + safeLayerName + ","
-                else:
-                    new_layer = "'" + legends[safeLayerName].replace("'", "\'")
-                    new_layer += "': layer_" + safeLayerName + ","
-                layersList += new_layer
-            elif i.type() == QgsMapLayer.RasterLayer:
-                new_layer = '"' + rawLayerName.replace("'", "\'") + '"'
-                new_layer += ": overlay_" + safeLayerName + ""","""
-                layersList += new_layer
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=Qgis.Critical)
-    controlEnd = "}"
-    if collapsed:
-        controlEnd += ",{collapsed:false}"
-    controlEnd += ").addTo(map);"
-    layersList += controlEnd
+    for (var i = 0; i < toggleableLayerIds.length; i++) {
+        var id = toggleableLayerIds[i];
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+            var clickedLayer = this.textContent;
+            e.preventDefault();
+            e.stopPropagation();
+
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+            if (visibility === 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }""" % (",".join(layerName_list))
+
     return layersList
 
 

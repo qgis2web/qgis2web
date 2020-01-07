@@ -344,6 +344,13 @@ var styleJSON = {
                        'target="_blank">Mapbox GL JS</a> &middot; '
                        '<a href="https://qgis.org" target="_blank">QGIS</a>'
                        )
+        layersList = ""
+        if (params["Appearance"]["Add layers list"] and
+                params["Appearance"]["Add layers list"] != "" and
+                params["Appearance"]["Add layers list"] != "None"):
+            layersList = addLayersList(
+                [], matchCRS, layer_list, cluster, legends,
+                params["Appearance"]["Add layers list"] == "Expanded")
         new_src = jsons + """
 <script src="./mapbox/style.js"></script>
 <script src="./js/Autolinker.min.js"></script>
@@ -362,7 +369,7 @@ map.addControl(new mapboxgl.AttributionControl({
     compact: false
 }));
 %s
-</script>""" % (center, zoom, bearing, attribution, popupCode)
+%s</script>""" % (center, zoom, bearing, attribution, popupCode, layersList)
         # try:
         writeHTMLstart(outputIndex, title, cluster, addressSearch,
                        measure, matchCRS, layerSearch, canvas,

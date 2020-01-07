@@ -129,7 +129,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@EXP_JS@": exp_js,
               "@OL3_BACKGROUNDCOLOR@": "",
               "@OL3_STYLEVARS@": "",
-              "@OL3_POPUP@": "",
+              "@OL3_POPUP@": """<nav id="menu"></nav>""",
               "@OL3_GEOJSONVARS@": "",
               "@OL3_WFSVARS@": "",
               "@OL3_PROJ4@": "",
@@ -172,96 +172,49 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             margin: 0 0 5px;
             color: #777;
         }
-        .leaflet-container {
+         #menu {
             background: #fff;
-            padding-right: 10px;
+            position: absolute;
+            z-index: 1;
+            top: 10px;
+            right: 10px;
+            border-radius: 3px;
+            width: 120px;
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            font-family: 'Open Sans',
+            sans-serif;
         }
-        .leaflet-popup-content {
-            width:auto !important;
-            padding-right:10px;
+
+         #menu a {
+            font-size: 13px;
+            color: #404040;
+            display: block;
+            margin: 0;
+            padding: 0;
+            padding: 10px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+            text-align: center;
         }
-        .leaflet-tooltip {
-            background: none;
-            box-shadow: none;
+
+         #menu a: last-child {
             border: none;
         }
-        .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
-            border: 0px;
+
+         #menu a: hover {
+            background-color: #f8f8f8;
+            color: #404040;
         }
+
+         #menu a.active {
+            background-color: #3887be;
+            color: #ffffff;
         }
-        .fa, .leaflet-container, a {
-            color: """ + widgetAccent + """ !important;
+
+         #menu a.active: hover {
+            background: #3074a4;
         }
-        .leaflet-control-zoom-in, .leaflet-control-zoom-out,
-        .leaflet-control-locate a,
-        .leaflet-touch .leaflet-control-geocoder-icon,
-        .leaflet-control-search .search-button,
-         .leaflet-control-measure {
-            background-color: """ + widgetBackground + """ !important;
-            border-radius: 0px !important;
-            color: """ + widgetAccent + """ !important;
-        }
-        .leaflet-touch .leaflet-control-layers,
-        .leaflet-touch .leaflet-bar,
-        .leaflet-control-search,
-        .leaflet-control-measure {
-            border: 3px solid rgba(255,255,255,.4) !important;
-        }
-        .leaflet-control-attribution a {
-            color: #0078A8 !important;
-        }
-        .leaflet-control-scale-line {
-            border: 2px solid """ + widgetBackground + """ !important;
-            border-top: none !important;
-            color: black !important;
-        }
-        .leaflet-control-search .search-button,
-        .leaflet-container .leaflet-control-search,
-        .leaflet-control-measure {
-            box-shadow: none !important;
-        }
-        .leaflet-control-search .search-button {
-            width: 30px !important;
-            height: 30px !important;
-            font-size: 13px !important;
-            text-align: center !important;
-            line-height: 30px !important;
-        }
-        .leaflet-control-measure .leaflet-control {
-            width: 30px !important;
-            height: 30px !important;
-        }
-        .leaflet-container .leaflet-control-search{
-            background: none !important;
-        }
-        .leaflet-control-search .search-input {
-            margin: 0px 0px 0px 0px !important;
-            height: 30px !important;
-        }
-        .leaflet-control-measure {
-            background: none!important;
-            border-radius: 4px !important;
-        }
-        .leaflet-control-measure .leaflet-control-measure-interaction {
-            background-color: """ + widgetBackground + """ !important;
-        }
-        .leaflet-touch .leaflet-control-measure
-        .leaflet-control-measure-toggle,
-        .leaflet-touch .leaflet-control-measure
-        .leaflet-control-measure-toggle:hover {
-            width: 30px !important;
-            height: 30px !important;
-            border-radius: 0px !important;
-            background-color: """ + widgetBackground + """ !important;
-            color: """ + widgetAccent + """ !important;
-            font-size: 13px;
-            line-height: 30px;
-            text-align: center;
-            text-indent: 0%;
-        }
-        .leaflet-control-layers-toggle {
-            background-color: """ + widgetBackground + """ !important;
-        }"""
+        """
         f_css.write(text)
         f_css.close()
     feedback.completeStep()
