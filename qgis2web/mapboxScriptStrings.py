@@ -363,21 +363,24 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                   collapsed):
     layerName_list = []
     for ct, layer in enumerate(layer_list):
-        sln = "'lyr_%s_%d_0'" % (safeName(layer.name()), ct)
+        sln = "'lyr_%s_%d_0', '%s'" % (safeName(layer.name()), ct,
+                                       layer.name())
         layerName_list.append(sln)
     layersList = """
     var toggleableLayerIds = [%s];
 
-    for (var i = 0; i < toggleableLayerIds.length; i++) {
+    for (var i = 0; i < toggleableLayerIds.length; i=i+2) {
         var id = toggleableLayerIds[i];
+        var layerName = toggleableLayerIds[i+1]
 
         var link = document.createElement('a');
         link.href = '#';
         link.className = 'active';
-        link.textContent = id;
+        link.layer = id;
+        link.textContent = layerName;
 
         link.onclick = function (e) {
-            var clickedLayer = this.textContent;
+            var clickedLayer = this.layer;
             e.preventDefault();
             e.stopPropagation();
 
