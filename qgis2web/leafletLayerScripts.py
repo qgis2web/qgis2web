@@ -318,7 +318,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
             else:
                 row += "Autolinker.link("
                 row += "feature.properties['" + str(field)
-                row += "'].toLocaleString()) : '') + '"
+                row += "'].toLocaleString(), {truncate: {length: 30, "
+                row += "location: 'smart'}}) : '') + '"
 
             row += """</td>\\
                     </tr>\\"""
