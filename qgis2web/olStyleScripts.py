@@ -233,7 +233,7 @@ function categories_%s(feature, value, size, resolution, labelText,
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + str(cnt) + ".png"))
         if (cat.value() is not None and cat.value() != ""):
-            categoryStr = "case '%s':" % cat.value().replace("'", "\\'")
+            categoryStr = "case '%s':" % str(cat.value()).replace("'", "\\'")
         else:
             categoryStr = "default:"
         (style, pattern, setPattern,
