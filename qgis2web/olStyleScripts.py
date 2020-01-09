@@ -168,15 +168,9 @@ def getLabelFormat(layer):
     size = 10
     # italic = layer.customProperty("labeling/fontItalic")
     # bold = layer.customProperty("labeling/fontWeight")
-    r = layer.customProperty("labeling/textColorR")
-    g = layer.customProperty("labeling/textColorG")
-    b = layer.customProperty("labeling/textColorB")
     bufferColor = ""
     bufferWidth = 0
-    if (r or g or b) is None:
-        color = "rgba(0, 0, 0, 1)"
-    else:
-        color = "rgba(%s, %s, %s, 1)" % (r, g, b)
+    color = layer.labeling().settings().format().color().name()
     labelling = layer.labeling()
     face = ","
     if labelling is not None:
