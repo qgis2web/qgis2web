@@ -253,7 +253,8 @@ class MapboxWriter(Writer):
             "tileSize": 256
         }""" % (safeLayerName, tileProps['url'][0]))
                         else:
-                            url = "%s&%s" % (tileProps['url'][0], layer.source())
+                            url = "%s&%s" % (tileProps['url'][0],
+                                             layer.source())
                             sources.append("""
         "%s": {
             "type": "raster",
@@ -282,17 +283,17 @@ class MapboxWriter(Writer):
                  vtSources,
                  layers,
                  popups) = writeVectorLayer(layer, safeLayerName,
-                                             usedFields[count], highlight,
-                                             popupsOnHover, popup[count],
-                                             outputProjectFileName,
-                                             wfsLayers, cluster[count],
-                                             visible[count], json[count],
-                                             legends, new_src, canvas, count,
-                                             restrictToExtent, extent,
-                                             feedback, labelCode, vtLabels,
-                                             vtStyles, useMultiStyle,
-                                             useHeat, useVT, useShapes,
-                                             useOSMB, vtSources, layers)
+                                            usedFields[count], highlight,
+                                            popupsOnHover, popup[count],
+                                            outputProjectFileName,
+                                            wfsLayers, cluster[count],
+                                            visible[count], json[count],
+                                            legends, new_src, canvas, count,
+                                            restrictToExtent, extent,
+                                            feedback, labelCode, vtLabels,
+                                            vtStyles, useMultiStyle,
+                                            useHeat, useVT, useShapes,
+                                            useOSMB, vtSources, layers)
                 popupCode += popups
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if layer.dataProvider().name() == "wms":

@@ -124,7 +124,7 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
             "layout": %s,
             "paint": %s
         }""" % (safeLayerName, count, markerType, safeName(vts),
-                              layer.name(), layout, paint))
+                layer.name(), layout, paint))
         vtStyle = vtStyles[vts]
         if layer.name() not in vtStyle:
             vtStyle[layer.name()] = ["", "", ""]

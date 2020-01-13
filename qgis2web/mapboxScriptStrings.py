@@ -197,7 +197,7 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
     popup = """
 map.on('click', '%s', function (e) {
     var description = %s
-     
+
     new mapboxgl.Popup()
         .setLngLat(e.lngLat)
         .setHTML(description)
@@ -208,7 +208,7 @@ map.on('click', '%s', function (e) {
 map.on('mouseenter', '%s', function () {
     map.getCanvas().style.cursor = 'pointer';
 });
- 
+
 // Change it back to a pointer when it leaves.
 map.on('mouseleave', '%s', function () {
     map.getCanvas().style.cursor = '';
@@ -386,7 +386,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
 
             var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
-            if (typeof visibility === 'undefined' || visibility === 'visible') {
+            if (typeof visibility === 'undefined' || visibility == 'visible') {
                 map.setLayoutProperty(clickedLayer, 'visibility', 'none');
                 this.className = '';
             } else {
