@@ -33,7 +33,7 @@ python3 -m pip install future
 
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
 
-pycodestyle --exclude=test,resources*.py,exp2js.py,ui*.py,xmltodict.py ./ --format=pylint --ignore=E722,W504,W605
+pycodestyle --exclude=test,resources*.py,exp2js.py,ui*.py,xmltodict.py,bridgestyle* ./ --format=pylint --ignore=E722,W504,W605
 # pylint qgis2web.py
 QGIS_DEBUG=0 xvfb-run --server-args="-screen 0, 1024x768x24" nosetests -s --nologcapture -A 'not slow' -v --rednose --with-coverage --verbose
 popd
