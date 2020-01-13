@@ -623,7 +623,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             filterList.append('"' + filterItems[item]["name"] + '": "' +
                               filterItems[item]["type"] + '"')
         endHTML += ",".join(filterList) + "};"
-        endHTML += """
+        endHTML += r"""
         function filterFunc() {
           map.eachLayer(function(lyr){
           if ("options" in lyr && "dataVar" in lyr["options"]){
