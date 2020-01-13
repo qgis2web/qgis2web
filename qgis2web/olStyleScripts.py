@@ -170,7 +170,10 @@ def getLabelFormat(layer):
     # bold = layer.customProperty("labeling/fontWeight")
     bufferColor = ""
     bufferWidth = 0
-    color = layer.labeling().settings().format().color().name()
+    try:
+        color = layer.labeling().settings().format().color().name()
+    except:
+        color = "#000000"
     labelling = layer.labeling()
     face = ","
     if labelling is not None:
@@ -233,7 +236,7 @@ function categories_%s(feature, value, size, resolution, labelText,
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + str(cnt) + ".png"))
         if (cat.value() is not None and cat.value() != ""):
-            categoryStr = "case '%s':" % cat.value().replace("'", "\\'")
+            categoryStr = "case '%s':" % str(cat.value()).replace("'", "\\'")
         else:
             categoryStr = "default:"
         (style, pattern, setPattern,
