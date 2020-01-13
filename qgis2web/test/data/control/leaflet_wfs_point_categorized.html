@@ -45,19 +45,19 @@
         function pop_point_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['ref'] !== null ? Autolinker.link(String(feature.properties['ref'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['ref'] !== null ? Autolinker.link(feature.properties['ref'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['tpo_name'] !== null ? Autolinker.link(String(feature.properties['tpo_name'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['tpo_name'] !== null ? Autolinker.link(feature.properties['tpo_name'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(String(feature.properties['area_ha'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['area_ha'] !== null ? Autolinker.link(feature.properties['area_ha'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['digitised'] !== null ? Autolinker.link(String(feature.properties['digitised'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['digitised'] !== null ? Autolinker.link(feature.properties['digitised'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['objtype'] !== null ? Autolinker.link(String(feature.properties['objtype'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['objtype'] !== null ? Autolinker.link(feature.properties['objtype'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});

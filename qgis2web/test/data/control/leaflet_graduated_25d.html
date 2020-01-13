@@ -47,22 +47,22 @@
         function pop_lakes_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(String(feature.properties['cat'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(feature.properties['cat'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(String(feature.properties['NAMES'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['NAMES'] !== null ? Autolinker.link(feature.properties['NAMES'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(String(feature.properties['AREA_MI'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['AREA_MI'] !== null ? Autolinker.link(feature.properties['AREA_MI'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(String(feature.properties['xlabel'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['xlabel'] !== null ? Autolinker.link(feature.properties['xlabel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(String(feature.properties['ylabel'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['ylabel'] !== null ? Autolinker.link(feature.properties['ylabel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(String(feature.properties['rotation'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['rotation'] !== null ? Autolinker.link(feature.properties['rotation'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});

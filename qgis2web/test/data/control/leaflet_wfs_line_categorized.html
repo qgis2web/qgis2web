@@ -48,7 +48,7 @@
                         <td colspan="2">' + (feature.properties['objecttype'] !== null ? Autolinker.link(String(feature.properties['objecttype'])) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['name'] !== null ? Autolinker.link(feature.properties['name'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['navigable'] !== null ? Autolinker.link(String(feature.properties['navigable'])) : '') + '</td>\
