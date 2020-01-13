@@ -1,8 +1,11 @@
+from . import togeostyler 
+from . import fromgeostyler
+
 import os
 import zipfile
 import json
 from shutil import copyfile
-from bridgestyle.qgis import togeostyler
+from bridgestyle import qgis
 from bridgestyle import sld
 from bridgestyle import mapboxgl
 from bridgestyle import mapserver
@@ -11,7 +14,7 @@ from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
 def layerStyleAsSld(layer):
-    geostyler, icons, warnings = qgis.togeostyler.convert(layer)
+    geostyler, icons, warnings = togeostyler.convert(layer)
     sldString, sldWarnings = sld.fromgeostyler.convert(geostyler)        
     warnings.extend(sldWarnings)
     return sldString, icons, warnings
@@ -26,7 +29,8 @@ def saveLayerStyleAsZippedSld(layer, filename):
     sldstring, icons, warnings = layerStyleAsSld(layer)
     z = zipfile.ZipFile(filename, "w")
     for icon in icons.keys():
-        z.write(icon, os.path.basename(icon))
+        if icon:
+            z.write(icon, os.path.basename(icon))
     z.writestr(layer.name() + ".sld", sldstring)
     z.close()
     return warnings
@@ -38,7 +42,7 @@ def layerStyleAsMapbox(layer):
     return mbox, icons, warnings
 
 def layerStyleAsMapboxFolder(layer, folder):
-    geostyler, icons, warnings = qgis.togeostyler.convert(layer)
+    geostyler, icons, warnings = togeostyler.convert(layer)
     mbox, mbWarnings = mapboxgl.fromgeostyler.convert(geostyler)    
     filename = os.path.join(folder, "style.mapbox")
     with open(filename, "w", encoding='utf-8') as f:
@@ -47,13 +51,13 @@ def layerStyleAsMapboxFolder(layer, folder):
     return warnings
     
 def layerStyleAsMapfile(layer):
-    geostyler, icons, warnings = qgis.togeostyler.convert(layer)
+    geostyler, icons, warnings = togeostyler.convert(layer)
     mserver, mserverSymbols, msWarnings = mapserver.fromgeostyler.convert(geostyler)
     warnings.extend(msWarnings)
     return mserver, mserverSymbols, icons, warnings
 
 def layerStyleAsMapfileFolder(layer, folder, additional=None):
-    geostyler, icons, warnings = qgis.togeostyler.convert(layer)
+    geostyler, icons, warnings = togeostyler.convert(layer)
     mserverDict, mserverSymbolsDict, msWarnings = mapserver.fromgeostyler.convertToDict(geostyler)
     warnings.extend(msWarnings)
     additional = additional or {} 
