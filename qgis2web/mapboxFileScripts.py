@@ -179,14 +179,15 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             top: 10px;
             right: 10px;
             border-radius: 3px;
-            border: 1px solid rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(50, 50, 50, 0.4);
             font-family: 'Open Sans',
             sans-serif;
         }
 
          #menu a {
             font-size: 13px;
-            color: #404040;
+            color: #999;
+            background-color: #e8e8e8;
             display: block;
             margin: 0;
             padding: 0;
@@ -195,22 +196,23 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             border-bottom: 1px solid rgba(0, 0, 0, 0.25);
         }
 
-         #menu a: last-child {
+         #menu a:last-child {
             border: none;
         }
 
-         #menu a: hover {
+         #menu a:hover {
             background-color: #f8f8f8;
             color: #404040;
         }
 
          #menu a.active {
-            background-color: #3887be;
-            color: #ffffff;
+            background-color: #f8f8f8;
+            color: #404040;
         }
 
-         #menu a.active: hover {
-            background: #3074a4;
+         #menu a.active:hover {
+            color: #999;
+            background-color: #e8e8e8;
         }
         """
         f_css.write(text)

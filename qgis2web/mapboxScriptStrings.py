@@ -365,7 +365,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
     for ct, layer in enumerate(layer_list):
         sln = "'lyr_%s_%d_0', '%s'" % (safeName(layer.name()), ct,
                                        layer.name())
-        layerName_list.append(sln)
+        layerName_list.insert(0, sln)
     layersList = """
     var toggleableLayerIds = [%s];
 
