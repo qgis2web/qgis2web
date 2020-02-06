@@ -366,6 +366,7 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
         tableend = """
                 </table>'"""
         table = tablestart + row + tableend
+    new_pop = ""
     if popup != 0 and table != "":
         new_pop = popupScript(safeLayerName, table, highlight, popupsOnHover)
     return new_pop
