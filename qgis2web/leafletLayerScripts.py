@@ -287,7 +287,8 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
         for field, val in zip(field_names, field_vals):
             fieldIndex = fields.indexFromName(str(field))
             editorWidget = layer.editorWidgetSetup(fieldIndex).type()
-
+            displayName = layer.attributeDisplayName(fieldIndex).replace("'",
+                                                                         "\\'")
             if (editorWidget == 'Hidden'):
                 continue
 
@@ -296,7 +297,7 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
             if val == 'inline label':
                 row += """
                         <th scope="row">"""
-                row += layer.attributeDisplayName(fieldIndex)
+                row += displayName
                 row += """</th>\\
                         <td>"""
             else:
@@ -304,7 +305,7 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
                         <td colspan="2">"""
             if val == "header label":
                 row += '<strong>'
-                row += layer.attributeDisplayName(fieldIndex)
+                row += displayName
                 row += '</strong><br />'
             row += "' + "
             row += "(feature.properties[\'" + str(field) + "\'] "
