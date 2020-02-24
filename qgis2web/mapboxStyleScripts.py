@@ -59,8 +59,13 @@ def getLayerStyle(layer):
                     pass
             else:
                 for prop in layer["layout"]:
-                    layoutProps[prop].append(layer["filter"])
-                    layoutProps[prop].append(layer["layout"][prop])
+                    try:
+                        layoutProps[prop].append(layer["filter"])
+                        layoutProps[prop].append(layer["layout"][prop])
+                    except:
+                        layoutProps[prop] = ["case",
+                                             layer["filter"],
+                                             layer["layout"][prop]]
             if len(paintProps) == 0:
                 for prop in layer["paint"]:
                     paintProps[prop] = ["case",
@@ -72,10 +77,17 @@ def getLayerStyle(layer):
                         layoutProps[prop].append(layer["filter"])
                         layoutProps[prop].append(layer["layout"][prop])
                 except:
-                    pass
+                    layoutProps[prop] = ["case",
+                                         layer["filter"],
+                                         layer["layout"][prop]]
                 for prop in layer["paint"]:
-                    paintProps[prop].append(layer["filter"])
-                    paintProps[prop].append(layer["paint"][prop])
+                    try:
+                        paintProps[prop].append(layer["filter"])
+                        paintProps[prop].append(layer["paint"][prop])
+                    except:
+                        paintProps[prop] = ["case",
+                                            layer["filter"],
+                                            layer["paint"][prop]]
             layer.pop("filter")
         else:
             if len(layoutProps) > 0:
