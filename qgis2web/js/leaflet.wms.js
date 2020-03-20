@@ -207,7 +207,82 @@ wms.Source = L.Layer.extend({
             // Try loading content in <iframe>.
             result = "<iframe src='" + url + "' style='border:none'>";
         }
-        return result;
+
+        const response = result
+
+        //parseWMSResponse(response)
+        // parse the wms response
+        const el = document.createElement('html');
+        el.innerHTML = response
+
+        const keys = []
+        el.querySelectorAll('th').forEach((th) => {
+            keys.push(th.innerText)
+        })
+
+        const values = []
+        el.querySelectorAll('td').forEach((td) => {
+            values.push(td.innerText)
+        })
+
+        // get the keys and the values
+
+
+        // create new html response
+
+        const html = document.createElement('html')
+        const head = document.createElement('head')
+        const body = document.createElement('body')
+        const table = document.createElement('table')
+
+        table.classList.add('featureInfo')
+
+        for (i = 0; i < keys.length; i++) {
+            const tr = document.createElement('tr')
+            const tdKey = document.createElement('td')
+            tdKey.classList.add('featureKey')
+            const tdValue = document.createElement('td')
+            tdValue.classList.add('featureValue')
+
+            tdKey.innerHTML = keys[i]
+            tdValue.innerHTML = values[i]
+
+            tr.appendChild(tdKey)
+            tr.appendChild(tdValue)
+
+            table.appendChild(tr)
+        }
+        const style = document.createElement('style')
+        style.type = 'text/css'
+        css = document.createTextNode(`
+        table.featureInfo, table.featureInfo td {
+            border: 1px solid black;
+        }
+        
+        td.featureKey {
+            font-weight: bold;
+        }
+        
+        td.featureValue {
+        
+        }
+        `
+        )
+
+        style.appendChild(css)
+        head.appendChild(style)
+
+
+        html.appendChild(head)
+
+        body.appendChild(table)
+
+        html.appendChild(body)
+
+
+
+        return html;
+
     },
 
     'showFeatureInfo': function(latlng, info) {
