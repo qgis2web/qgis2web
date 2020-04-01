@@ -82,7 +82,8 @@ def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w", "utf-8") as f:
         if matchCRS:
-            f.write("""ol.proj.get("%s").setExtent(%s);
+            f.write("""ol.proj.proj4.register(proj4);
+ol.proj.get("%s").setExtent(%s);
 """ % (authid, bounds))
         f.write("""var wms_layers = [];\n""")
         f.write(layerVars + "\n")
