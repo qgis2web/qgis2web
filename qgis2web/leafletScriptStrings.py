@@ -287,17 +287,23 @@ def clusterScript(safeLayerName):
 
 
 def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
-              maxZoom):
+              maxZoom, count):
     d = parse_qs(layer.source())
     opacity = layer.renderer().opacity()
     attr = ""
     attrText = layer.attribution().replace('\n', ' ').replace('\r', ' ')
     attrUrl = layer.attributionUrl()
+    zIndex = count + 400
     if attrText != "":
         attr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
+    wms = """
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};""".format(
+            safeLayerName=safeLayerName, zIndex=zIndex)
     if 'type' in d and d['type'][0] == "xyz":
-        wms = """
+        wms += """
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
+            pane: 'pane_{safeLayerName}',
             opacity: {opacity},
             attribution: '{attr}',
             minZoom: {minZoom},
@@ -321,8 +327,9 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
         except:
             wmts_style = ""
         wmts_tileMatrixSet = d['tileMatrixSet'][0]
-        wms = """
+        wms += """
         var layer_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
+            pane: 'pane_{safeLayerName}',
             layer: '{wmts_layer}',
             tilematrixSet: '{wmts_tileMatrixSet}',
             format: '{wmts_format}',
@@ -345,8 +352,9 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
         if not identify:
             getFeatureInfo = """,
             identify: false"""
-        wms = """
+        wms += """
         var layer_%s = L.WMS.layer("%s", "%s", {
+            pane: 'pane_%s',
             format: '%s',
             uppercase: true,
             transparent: true,
@@ -355,8 +363,8 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
             info_format: 'text/html',
             opacity: %d%s,
             attribution: '%s',
-        });""" % (safeLayerName, wms_url, wms_layer, wms_format, opacity,
-                  getFeatureInfo, attr)
+        });""" % (safeLayerName, wms_url, wms_layer, safeLayerName, wms_format,
+                  opacity, getFeatureInfo, attr)
     return wms, useWMS, useWMTS
 
 

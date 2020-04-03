@@ -279,7 +279,8 @@ class LeafletWriter(Writer):
                     new_obj, useWMS, useWMTS = wmsScript(layer, safeLayerName,
                                                          useWMS, useWMTS,
                                                          getFeatureInfo[count],
-                                                         minZoom, maxZoom)
+                                                         minZoom, maxZoom,
+                                                         count)
                     feedback.completeStep()
                 else:
                     useRaster = True
