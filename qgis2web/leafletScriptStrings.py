@@ -312,11 +312,15 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]
-        wmts_url = wmts_url.replace("request=getcapabilities", "")
+        wmts_url = re.sub("request=getcapabilities", "", wmts_url,
+                          flags=re.IGNORECASE)
         wmts_layer = d['layers'][0]
         wmts_format = d['format'][0]
         # wmts_crs = d['crs'][0]
-        wmts_style = d['styles'][0]
+        try:
+            wmts_style = d['styles'][0]
+        except:
+            wmts_style = ""
         wmts_tileMatrixSet = d['tileMatrixSet'][0]
         wms = """
         var layer_{safeLayerName} = L.tileLayer.wmts('{wmts_url}', {{
