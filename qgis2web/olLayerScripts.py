@@ -61,7 +61,7 @@ def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
     layersList = []
     # currentVT = ""
     for layer in (group_list + no_group_list):
-        layersList.append(layer)
+        layersList.append(layer.replace("'", "\\'"))
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
 
     fieldAliases = ""
@@ -310,7 +310,7 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     labelFields = ""
     for field, label in zip(labels.keys(), labels.values()):
         labelFields += "'%(field)s': '%(label)s', " % (
-            {"field": field, "label": label})
+            {"field": field.replace("'", "\\'"), "label": label})
     labelFields = "{%(labelFields)s});\n" % (
         {"labelFields": labelFields})
     labelFields = "lyr_%(name)s.set('fieldLabels', " % (
@@ -319,12 +319,12 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     for f in fieldList:
         fieldIndex = fieldList.indexFromName(f.name())
         aliasFields += "'%(field)s': '%(alias)s', " % (
-            {"field": f.name(),
+            {"field": f.name().replace("'", "\\'"),
              "alias": layer.attributeDisplayName(fieldIndex).replace("'",
                                                                      "\\'")})
         widget = layer.editorWidgetSetup(fieldIndex).type()
         imageFields += "'%(field)s': '%(image)s', " % (
-            {"field": f.name(),
+            {"field": f.name().replace("'", "\\'"),
              "image": widget})
     aliasFields = "{%(aliasFields)s});\n" % (
         {"aliasFields": aliasFields})
