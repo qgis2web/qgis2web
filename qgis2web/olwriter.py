@@ -409,7 +409,7 @@ def getMeasure(measureTool, controlCount):
 def getCSS(geocode, geolocateUser, layerSearch, controlCount):
     extracss = """
         <link rel="stylesheet" """
-    extracss += """href="./resources/ol3-layerswitcher.css">
+    extracss += """href="./resources/ol-layerswitcher.css">
         <link rel="stylesheet" """
     extracss += """href="./resources/qgis2web.css">"""
     if geocode:
@@ -453,7 +453,7 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
 
 def getLayerSwitcher():
     return """
-        <script src="./resources/ol3-layerswitcher.js"></script>"""
+        <script src="./resources/ol-layerswitcher.js"></script>"""
 
 
 def getPopup():
@@ -464,8 +464,8 @@ def getPopup():
 
 
 def getJS(osmb):
-    ol3qgis2webjs = """<script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>"""
+    ol3qgis2webjs = """<script src="./resources/Autolinker.min.js"></script>
+        <script src="./resources/qgis2web.js"></script>"""
     if osmb != "":
         ol3qgis2webjs += """
         <script>{osmb}</script>""".format(osmb=osmb)
