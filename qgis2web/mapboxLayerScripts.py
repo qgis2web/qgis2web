@@ -356,10 +356,9 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts):
                 row += r"']).replace(/[\\\/:]/g, '_').trim()"
                 row += " + '\">' : '') + '"
             else:
-                row += "Autolinker.link("
+                row += "autolinker.link("
                 row += "e.features[0].properties['" + unicode(field)
-                row += "'].toLocaleString(), {truncate: {length: 30, "
-                row += "location: 'smart'}}) : '') + '"
+                row += "'].toLocaleString()) : '') + '"
 
             row += """</td>\\
                     </tr>\\"""

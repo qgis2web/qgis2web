@@ -369,6 +369,7 @@ map.addControl(new mapboxgl.AttributionControl({
     customAttribution: '%s',
     compact: false
 }));
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 %s
 %s</script>""" % (center, zoom, bearing, attribution, popupCode, layersList)
         # try:
