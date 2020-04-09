@@ -302,7 +302,7 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
     wms = """
         map.createPane('pane_{safeLayerName}');
         map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};""".format(
-                safeLayerName=safeLayerName, zIndex=zIndex)
+        safeLayerName=safeLayerName, zIndex=zIndex)
     if 'type' in d and d['type'][0] == "xyz":
         wms += """
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
