@@ -46,7 +46,7 @@
         function pop_polygon_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['name'] !== null ? Autolinker.link(feature.properties['NAME'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['NAME'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['details'] !== null ? Autolinker.link(feature.properties['details'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
