@@ -72,6 +72,7 @@ var doHighlight = false;
 var doHover = false;
 
 var highlight;
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 var onPointerMove = function(evt) {
     if (!doHover && !doHighlight) {
         return;

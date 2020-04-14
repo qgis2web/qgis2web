@@ -76,6 +76,7 @@ var doHighlight = true;
 var doHover = false;
 
 var highlight;
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 var onPointerMove = function(evt) {
     if (!doHover && !doHighlight) {
         return;
@@ -123,7 +124,7 @@ var onPointerMove = function(evt) {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
                             if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                                popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                                popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                             } else {
                                 popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                             }
@@ -266,7 +267,7 @@ var onSingleClick = function(evt) {
                                     popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                                 }
                                 if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                                 } else {
                                     popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                                 }
