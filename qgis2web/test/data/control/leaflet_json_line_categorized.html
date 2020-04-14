@@ -47,16 +47,16 @@
         function pop_pipelines_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['cat'] !== null ? Autolinker.link(feature.properties['cat'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? autolinker.link(feature.properties['cat'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['LOCDESC'] !== null ? Autolinker.link(feature.properties['LOCDESC'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['LOCDESC'] !== null ? autolinker.link(feature.properties['LOCDESC'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['F_CODE'] !== null ? Autolinker.link(feature.properties['F_CODE'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['F_CODE'] !== null ? autolinker.link(feature.properties['F_CODE'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['F_CODEDESC'] !== null ? Autolinker.link(feature.properties['F_CODEDESC'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['F_CODEDESC'] !== null ? autolinker.link(feature.properties['F_CODEDESC'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
