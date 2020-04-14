@@ -187,7 +187,7 @@ var onPointerMove = function(evt) {
                             popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                         }
                         if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                            popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                            popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                         } else {
                             popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                         }
@@ -330,7 +330,7 @@ var onSingleClick = function(evt) {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
                             if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                             } else {
                                 popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                             }

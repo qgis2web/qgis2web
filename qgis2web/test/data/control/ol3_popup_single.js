@@ -192,7 +192,7 @@ var onSingleClick = function(evt) {
                 if (currentFeatureKeys[i] != 'geometry') {
                     popupField = '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>'
                     if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                        popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                        popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                     } else {
                         popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                     }
