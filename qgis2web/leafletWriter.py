@@ -111,7 +111,6 @@ class LeafletWriter(Writer):
             cls, iface, feedback, folder,
             layer_list, visible, interactive, cluster,
             json, getFeatureInfo, params, popup):
-        print(__file__)
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         legends = {}
