@@ -426,7 +426,7 @@ def titleSubScript(webmap_head, level, pos):
             var abstract = new L.Control(%s);
             abstract.onAdd = function (map) {
                 this._div = L.DomUtil.create('div',
-                'leaflet-control leaflet-bar abstract');
+                'leaflet-control abstract');
                 this._div.id = 'abstract'""" % positionOpt
         if len(webmap_head) > 240:
             titleSub += """
