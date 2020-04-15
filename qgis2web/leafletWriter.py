@@ -64,6 +64,7 @@ from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
 from qgis2web.feedbackDialog import Feedback
+print(__file__)
 
 
 class LeafletWriter(Writer):
