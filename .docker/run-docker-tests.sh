@@ -31,7 +31,7 @@ python3 -m pip install python-coveralls
 python3 -m pip install Twisted
 python3 -m pip install future
 
-export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
+export PYTHONPATH=/usr/share/qgis/python/plugins:/usr/src/qgis2web:$PYTHONPATH
 
 pycodestyle --exclude=test,resources*.py,exp2js.py,ui*.py,xmltodict.py,bridgestyle* ./ --format=pylint --ignore=E722,W504,W605
 # pylint qgis2web.py
