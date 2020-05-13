@@ -42,6 +42,7 @@ defaultPropVal = {
 def getLayerStyle(layer):
     mapboxStyle = bridgestyle.qgis.layerStyleAsMapbox(layer)
     styleJSON = mapboxStyle[0]
+    print(styleJSON)
     style = json.loads(styleJSON)
     layoutProps = {}
     paintProps = {}
@@ -73,13 +74,13 @@ def getLayerStyle(layer):
                                         layer["paint"][prop]]
             else:
                 try:
-                    for prop in layer["layout"]:
-                        layoutProps[prop].append(layer["filter"])
-                        layoutProps[prop].append(layer["layout"][prop])
+                    for prop in layer["paint"]:
+                        paintProps[prop].append(layer["filter"])
+                        paintProps[prop].append(layer["paint"][prop])
                 except:
                     layoutProps[prop] = ["case",
                                          layer["filter"],
-                                         layer["layout"][prop]]
+                                         layer["paint"][prop]]
                 for prop in layer["paint"]:
                     try:
                         paintProps[prop].append(layer["filter"])
@@ -92,7 +93,7 @@ def getLayerStyle(layer):
         else:
             if len(layoutProps) > 0:
                 for prop in layer["layout"]:
-                    paintProps[prop].append(layer["layout"][prop])
+                    layerProps[prop].append(layer["layout"][prop])
             if len(paintProps) > 0:
                 for prop in layer["paint"]:
                     if prop[:4] != "text":
