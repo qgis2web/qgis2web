@@ -1,3 +1,2 @@
-
 def convert(geostyler):
-    pass #TODO
+    pass  # TODO

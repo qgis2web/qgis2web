@@ -6,11 +6,15 @@ from bridgestyle import qgis
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 
+
 class QgisToStylerTest(unittest.TestCase):
-   pass
-    
+    pass
+
+
 _layers = {}
-def load_layer(file):    
+
+
+def load_layer(file):
     if file not in _layers:
         name = os.path.basename(file)
         layer = QgsRasterLayer(file, "testlayer", "gdal")
@@ -19,18 +23,23 @@ def load_layer(file):
         _layers[file] = layer
     return _layers[file]
 
+
 def test_function(datafile, stylefile, expected):
     def test(self):
         layer = load_layer(datafile)
         layer.loadNamedStyle(stylefile)
         geostyler, icons, warnings = qgis.togeostyler.convert(layer)
-        expected["name"] = "testlayer" #just in case the expected geostyler was created 
-                                       # from a layer with a different name
+        expected[
+            "name"
+        ] = "testlayer"  # just in case the expected geostyler was created
+        # from a layer with a different name
         self.assertEqual(geostyler, expected)
+
     return test
 
+
 def run_tests():
-    '''
+    """
     This methods dinamically create tests based on the contents of the 'qgis'
     subfolder.
     The structure of files in the subfolder must be as follows:
@@ -46,7 +55,7 @@ def run_tests():
     - The test will load the testlayer file, assign the qml to it, generate
       a geostyler representation from it, and then compare to the expected
       geostyler result.
-    '''
+    """
     suite = unittest.TestSuite()
     main_folder = os.path.join(os.path.dirname(__file__), "data", "qgis")
     for subfolder in os.listdir(main_folder):
@@ -60,12 +69,16 @@ def run_tests():
                 name = os.path.splitext(stylefile)[0]
                 expectedfile = name + ".geostyler"
                 with open(expectedfile) as f:
-                    expected = json.load(f)                
-                setattr(QgisToStylerTest, 'test_' + name, test_function(datafile, stylefile, expected))                
-    
+                    expected = json.load(f)
+                setattr(
+                    QgisToStylerTest,
+                    "test_" + name,
+                    test_function(datafile, stylefile, expected),
+                )
+
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(QgisToStylerTest)
     unittest.TextTestRunner().run(suite)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     run_tests()
-    
