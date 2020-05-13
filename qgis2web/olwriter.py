@@ -365,7 +365,7 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
 
 
 def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
-    units = ['m', 'ft', 'degrees', '']
+    units = ['m', 'km', 'ft', '', '', '', 'degrees', '', 'cm', 'mm', '']
     proj4 = ""
     proj = ""
     view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
