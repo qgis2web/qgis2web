@@ -1,30 +1,35 @@
 
 isTracking = false;
-geolocateControl = function(opt_options) {
-    var options = opt_options || {};
-    var button = document.createElement('button');
-    button.className += ' fa fa-map-marker';
-    var handleGeolocate = function() {
-        if (isTracking) {
-            map.removeLayer(geolocateOverlay);
-            isTracking = false;
-      } else if (geolocation.getTracking()) {
-            map.addLayer(geolocateOverlay);
-            map.getView().setCenter(geolocation.getPosition());
-            isTracking = true;
-      }
+var geolocateControl = (function (Control) {
+    geolocateControl = function(opt_options) {
+        var options = opt_options || {};
+        var button = document.createElement('button');
+        button.className += ' fa fa-map-marker';
+        var handleGeolocate = function() {
+            if (isTracking) {
+                map.removeLayer(geolocateOverlay);
+                isTracking = false;
+          } else if (geolocation.getTracking()) {
+                map.addLayer(geolocateOverlay);
+                map.getView().setCenter(geolocation.getPosition());
+                isTracking = true;
+          }
+        };
+        button.addEventListener('click', handleGeolocate, false);
+        button.addEventListener('touchstart', handleGeolocate, false);
+        var element = document.createElement('div');
+        element.className = 'geolocate ol-unselectable ol-control';
+        element.appendChild(button);
+        ol.control.Control.call(this, {
+            element: element,
+            target: options.target
+        });
     };
-    button.addEventListener('click', handleGeolocate, false);
-    button.addEventListener('touchstart', handleGeolocate, false);
-    var element = document.createElement('div');
-    element.className = 'geolocate ol-unselectable ol-control';
-    element.appendChild(button);
-    ol.control.Control.call(this, {
-        element: element,
-        target: options.target
-    });
-};
-ol.inherits(geolocateControl, ol.control.Control);
+    if (Control) geolocateControl.__proto__ = Control;
+    geolocateControl.prototype = Object.create(Control && Control.prototype);
+    geolocateControl.prototype.constructor = geolocateControl;
+    return geolocateControl;
+}(ol.control.Control));
 
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
