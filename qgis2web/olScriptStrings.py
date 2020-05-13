@@ -6,42 +6,47 @@ from qgis2web.olStyleScripts import getStrokeStyle
 def measureControlScript():
     measureControl = """
 var measuring = false;
-measureControl = function(opt_options) {
+var measureControl = (function (Control) {
+    measureControl = function(opt_options) {
 
-  var options = opt_options || {};
+      var options = opt_options || {};
 
-  var button = document.createElement('button');
-  button.className += ' fas fa-ruler ';
+      var button = document.createElement('button');
+      button.className += ' fas fa-ruler ';
 
-  var this_ = this;
-  var handleMeasure = function(e) {
-    if (!measuring) {
-        this_.getMap().addInteraction(draw);
-        createHelpTooltip();
-        createMeasureTooltip();
-        measuring = true;
-    } else {
-        this_.getMap().removeInteraction(draw);
-        measuring = false;
-        this_.getMap().removeOverlay(helpTooltip);
-        this_.getMap().removeOverlay(measureTooltip);
-    }
-  };
+      var this_ = this;
+      var handleMeasure = function(e) {
+        if (!measuring) {
+            this_.getMap().addInteraction(draw);
+            createHelpTooltip();
+            createMeasureTooltip();
+            measuring = true;
+        } else {
+            this_.getMap().removeInteraction(draw);
+            measuring = false;
+            this_.getMap().removeOverlay(helpTooltip);
+            this_.getMap().removeOverlay(measureTooltip);
+        }
+      };
 
-  button.addEventListener('click', handleMeasure, false);
-  button.addEventListener('touchstart', handleMeasure, false);
+      button.addEventListener('click', handleMeasure, false);
+      button.addEventListener('touchstart', handleMeasure, false);
 
-  var element = document.createElement('div');
-  element.className = 'measure-control ol-unselectable ol-control';
-  element.appendChild(button);
+      var element = document.createElement('div');
+      element.className = 'measure-control ol-unselectable ol-control';
+      element.appendChild(button);
 
-  ol.control.Control.call(this, {
-    element: element,
-    target: options.target
-  });
+      ol.control.Control.call(this, {
+        element: element,
+        target: options.target
+      });
 
-};
-ol.inherits(measureControl, ol.control.Control);"""
+    };
+    if (Control) measureControl.__proto__ = Control;
+    measureControl.prototype = Object.create(Control && Control.prototype);
+    measureControl.prototype.constructor = measureControl;
+    return measureControl;
+}(ol.control.Control));"""
     return measureControl
 
 
