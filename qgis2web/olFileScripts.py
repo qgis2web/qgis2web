@@ -56,10 +56,10 @@ def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
         <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features="""
         jsAddress += """Element.prototype.classList,URL"></script>
         <script src="resources/horsey.min.js"></script>
-        <script src="resources/ol3-search-layer.min.js"></script>"""
+        <script src="resources/ol3-search-layer.js"></script>"""
         searchVals = layerSearch.split(": ")
         layerSearch = u"""
-    var searchLayer = new ol.SearchLayer({{
+    var searchLayer = new SearchLayer({{
       layer: lyr_{layer},
       colName: '{field}',
       zoom: 10,
