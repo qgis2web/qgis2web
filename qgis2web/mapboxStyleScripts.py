@@ -22,16 +22,16 @@ COLOR = 1
 NUMERIC = 2
 
 defaultPropVal = {
-    "circle-opacity": 1,
-    "circle-radius": 1,
-    "circle-stroke-width": 1,
+    "circle-opacity": 0,
+    "circle-radius": 0,
+    "circle-stroke-width": 0,
     "circle-stroke-color": "#000000",
     "circle-color": "#ffffff",
-    "line-opacity": 1,
-    "line-width": 1,
+    "line-opacity": 0,
+    "line-width": 0,
     "line-dasharray": "[10,5]",
     "line-color": "#ffffff",
-    "fill-opacity": 1,
+    "fill-opacity": 0,
     "fill-color": "#ffffff",
     "text-color": "#000000",
     "icon-image": "none",
@@ -42,7 +42,6 @@ defaultPropVal = {
 def getLayerStyle(layer):
     mapboxStyle = bridgestyle.qgis.layerStyleAsMapbox(layer)
     styleJSON = mapboxStyle[0]
-    print(styleJSON)
     style = json.loads(styleJSON)
     layoutProps = {}
     paintProps = {}
@@ -50,45 +49,32 @@ def getLayerStyle(layer):
     for eachLayer in style["layers"]:
         layer = eachLayer
         if "filter" in layer:
-            if len(layoutProps) == 0:
-                try:
-                    for prop in layer["layout"]:
-                        layoutProps[prop] = ["case",
-                                             layer["filter"],
-                                             layer["layout"][prop]]
-                except:
-                    pass
-            else:
+            if "layout" in layer:
                 for prop in layer["layout"]:
-                    try:
-                        layoutProps[prop].append(layer["filter"])
+                    if layer["filter"] != "ELSE":
+                        if prop in layoutProps:
+                            layoutProps[prop].extend([layer["filter"],
+                                                    layer["layout"][prop]])
+                        else:
+                            if layer["filter"] != "ELSE":
+                                layoutProps[prop] = ["case",
+                                                    layer["filter"],
+                                                    layer["layout"][prop]]
+                    else:
                         layoutProps[prop].append(layer["layout"][prop])
-                    except:
-                        layoutProps[prop] = ["case",
-                                             layer["filter"],
-                                             layer["layout"][prop]]
-            if len(paintProps) == 0:
+            if "paint" in layer:
                 for prop in layer["paint"]:
-                    paintProps[prop] = ["case",
-                                        layer["filter"],
-                                        layer["paint"][prop]]
-            else:
-                try:
-                    for prop in layer["paint"]:
-                        paintProps[prop].append(layer["filter"])
+                    if layer["filter"] != "ELSE":
+                        if prop in paintProps:
+                            paintProps[prop].extend([layer["filter"],
+                                                    layer["paint"][prop]])
+                        else:
+                            if layer["filter"] != "ELSE":
+                                paintProps[prop] = ["case",
+                                                    layer["filter"],
+                                                    layer["paint"][prop]]
+                    else:
                         paintProps[prop].append(layer["paint"][prop])
-                except:
-                    layoutProps[prop] = ["case",
-                                         layer["filter"],
-                                         layer["paint"][prop]]
-                for prop in layer["paint"]:
-                    try:
-                        paintProps[prop].append(layer["filter"])
-                        paintProps[prop].append(layer["paint"][prop])
-                    except:
-                        paintProps[prop] = ["case",
-                                            layer["filter"],
-                                            layer["paint"][prop]]
             layer.pop("filter")
         else:
             if len(layoutProps) > 0:
