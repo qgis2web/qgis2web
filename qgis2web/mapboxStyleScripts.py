@@ -54,12 +54,12 @@ def getLayerStyle(layer):
                     if layer["filter"] != "ELSE":
                         if prop in layoutProps:
                             layoutProps[prop].extend([layer["filter"],
-                                                    layer["layout"][prop]])
+                                                      layer["layout"][prop]])
                         else:
                             if layer["filter"] != "ELSE":
                                 layoutProps[prop] = ["case",
-                                                    layer["filter"],
-                                                    layer["layout"][prop]]
+                                                     layer["filter"],
+                                                     layer["layout"][prop]]
                     else:
                         layoutProps[prop].append(layer["layout"][prop])
             if "paint" in layer:
