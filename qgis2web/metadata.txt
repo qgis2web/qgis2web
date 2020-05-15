@@ -23,7 +23,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2020/05/15 3.14.0 Mapbox 1.10.0, Mapbox fixes, OL projection, OL geolocation, OL measure, OL layer search
+changelog=2020/05/15 3.14.0 MBGLJS 1.10.0, MBGLJS fixes, OL projection, OL geolocation, OL measure, OL layer search
     2020/04/08 3.13.0 Leaflet 1.6.0, OL 6.3.1, MBGLJS layer list colours, MBGLJS layer list order, MBGLJS pseudoclasses, MBGLJS layer with no fields, Leaflet field label apostrophes, MBGLJS field label apostrophes, MBGLJS style error, OL CRS, Leaflet WMTS, Leaflet XYZ/WMTS layer order, OL field name apostrophes, Autolinker slowdown
     2020/01/13 3.12.1 OL no labels, Travis
     2020/01/10 3.12.0 Mapbox GL JS layers list, processing algorithm error, shorten popup links, OL label colour
