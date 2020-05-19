@@ -99,9 +99,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         <script src="js/leaflet-tilelayer-wmts.js"></script>"""
     if (matchCRS and
             canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
-        crsJS = """
-        <script src="js/proj4.js"></script>
-        <script src="js/proj4leaflet.js"></script>"""
+        crsJS = ""
     else:
         crsJS = ""
     exp_js = """
