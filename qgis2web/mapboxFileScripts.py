@@ -81,11 +81,17 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         addressCSS = ""
         addressJS = ""
-    if measure != "None":
+    if measure == "Metric":
         measureCSS = """
         <link rel="stylesheet" href="./mapbox/measure.css">"""
         measureJS = """
-        <script src="./mapbox/measure.js"></script>
+        <script src="./mapbox/measureMetric.js"></script>
+        <script src="./mapbox/turf.min.js"></script>"""
+    elif measure == "Imperial":
+        measureCSS = """
+        <link rel="stylesheet" href="./mapbox/measure.css">"""
+        measureJS = """
+        <script src="./mapbox/measureImperial.js"></script>
         <script src="./mapbox/turf.min.js"></script>"""
     else:
         measureCSS = ""
