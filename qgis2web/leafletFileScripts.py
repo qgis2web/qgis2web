@@ -253,7 +253,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_GEOCODINGJS@": "",
               "@OL3_LAYERSWITCHER@": "",
               "@OL3_LAYERS@": "",
-              "@OL3_MEASURESTYLE@": ""}
+              "@OL3_MEASURESTYLE@": "",
+              "@MBGLJS_MEASURE@": ""}
 
     with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)

@@ -211,7 +211,8 @@ class OpenLayersWriter(Writer):
                   "@LEAFLET_LAYERSEARCHJS@": "",
                   "@LEAFLET_LAYERFILTERJS@": "",
                   "@LEAFLET_CLUSTERCSS@": "",
-                  "@LEAFLET_CLUSTERJS@": ""}
+                  "@LEAFLET_CLUSTERJS@": "",
+                  "@MBGLJS_MEASURE@": ""}
         with open(os.path.join(folder, "index.html"), "w") as f:
             htmlTemplate = htmlTemplate
             if htmlTemplate == "":

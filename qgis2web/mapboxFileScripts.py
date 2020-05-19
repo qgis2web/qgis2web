@@ -83,9 +83,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         addressJS = ""
     if measure != "None":
         measureCSS = """
-        <link rel="stylesheet" href="css/leaflet-measure.css">"""
+        <link rel="stylesheet" href="./mapbox/measure.css">"""
         measureJS = """
-        <script src="js/leaflet-measure.js"></script>"""
+        <script src="./mapbox/measure.js"></script>
+        <script src="./mapbox/turf.min.js"></script>"""
     else:
         measureCSS = ""
         measureJS = ""
@@ -119,7 +120,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_MEASURECSS@": measureCSS,
               "@LEAFLET_EXTRAJS@": extraJS,
               "@LEAFLET_ADDRESSJS@": addressJS,
-              "@LEAFLET_MEASUREJS@": measureJS,
+              "@LEAFLET_MEASUREJS@": "",
               "@LEAFLET_CRSJS@": crsJS,
               "@LEAFLET_LAYERFILTERCSS@": "",
               "@LEAFLET_LAYERFILTERJS@": "",
@@ -129,7 +130,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@EXP_JS@": exp_js,
               "@OL3_BACKGROUNDCOLOR@": "",
               "@OL3_STYLEVARS@": "",
-              "@OL3_POPUP@": """<nav id="menu"></nav>""",
+              "@OL3_POPUP@": """<nav id="menu"></nav>
+              <div id="distance" class="distance-container"></div>""",
               "@OL3_GEOJSONVARS@": "",
               "@OL3_WFSVARS@": "",
               "@OL3_PROJ4@": "",
@@ -138,7 +140,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_GEOCODINGJS@": "",
               "@OL3_LAYERSWITCHER@": "",
               "@OL3_LAYERS@": "",
-              "@OL3_MEASURESTYLE@": ""}
+              "@OL3_MEASURESTYLE@": "",
+              "@MBGLJS_MEASURE@": measureJS}
 
     with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)
