@@ -412,30 +412,31 @@ def scaleBar():
 def addressSearchScript():
     addressSearch = """
         var geocodeNominatimRequest = function(query, mapBounds, options) {
-	var params = { format: "json", q: query, limit: options.limit };
-	var urlParams = new URLSearchParams(Object.entries(params));
+        var params = { format: "json", q: query, limit: options.limit };
+        var urlParams = new URLSearchParams(Object.entries(params));
 
-	return fetch("http://nominatim.openstreetmap.org/search?" + urlParams)
-        .then(function(response) {
-		if(response.ok) {
-			return response.json();
-		} else {
-			return [];
-		}
-	}).then(function(json) {
-		return json.map(function(result) {
-			return {
-				name: result.display_name,
-				lat: result.lat,
-				lon: result.lon,
-				bbox: [result.boundingbox[2], result.boundingbox[0],
-                       result.boundingbox[3], result.boundingbox[1]]
-			};
-		});
-	});
-};
+        return fetch("http://nominatim.openstreetmap.org/search?" + urlParams)
+            .then(function(response) {
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    return [];
+                }
+            }).then(function(json) {
+                return json.map(function(result) {
+                    return {
+                        name: result.display_name,
+                        lat: result.lat,
+                        lon: result.lon,
+                        bbox: [result.boundingbox[2], result.boundingbox[0],
+                               result.boundingbox[3], result.boundingbox[1]]
+                    };
+                });
+            });
+        };
 
-map.addControl(new MapboxGenericGeocoder({}, geocodeNominatimRequest));"""
+        map.addControl(new MapboxGenericGeocoder({}, geocodeNominatimRequest));
+"""
     return addressSearch
 
 
