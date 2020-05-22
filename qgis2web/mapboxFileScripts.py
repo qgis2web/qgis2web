@@ -96,6 +96,18 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         measureCSS = ""
         measureJS = ""
+    if locate:
+        locateJS = """
+        <script>
+        map.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            })
+        );
+        </script>"""
     extraJS = ""
     if useWMS:
         extraJS += """
@@ -145,7 +157,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_LAYERSWITCHER@": "",
               "@OL3_LAYERS@": "",
               "@OL3_MEASURESTYLE@": "",
-              "@MBGLJS_MEASURE@": measureJS}
+              "@MBGLJS_MEASURE@": measureJS,
+              "@MBGLJS_LOCATE@": locateJS}
 
     with codecs.open(outputIndex, 'w', encoding='utf-8') as f:
         base = replaceInTemplate(template + ".html", values)
