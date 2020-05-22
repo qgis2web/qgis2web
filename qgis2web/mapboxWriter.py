@@ -156,10 +156,8 @@ class MapboxWriter(Writer):
 
         dataStore, cssStore = writeFoldersAndFiles(pluginDir, feedback,
                                                    outputProjectFileName,
-                                                   cluster, measure,
-                                                   matchCRS, layerSearch,
-                                                   canvas, addressSearch,
-                                                   locate)
+                                                   cluster, layerSearch,
+                                                   canvas, addressSearch)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
                  widgetAccent, widgetBackground)
 
@@ -352,6 +350,10 @@ var styleJSON = {
             layersList = addLayersList(
                 [], matchCRS, layer_list, cluster, legends,
                 params["Appearance"]["Add layers list"] == "Expanded")
+        if addressSearch:
+            addressSearchCode = addressSearchScript()
+        else:
+            addressSearchCode = ""
         new_src = jsons + """
 <script src="./mapbox/style.js"></script>
 <script src="./js/Autolinker.min.js"></script>
@@ -371,13 +373,11 @@ map.addControl(new mapboxgl.AttributionControl({
 }));
 var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 %s
-%s</script>""" % (center, zoom, bearing, attribution, popupCode, layersList)
+%s%s</script>""" % (center, zoom, bearing, attribution, popupCode, layersList,
+                    addressSearchCode)
         # try:
-        writeHTMLstart(outputIndex, title, cluster, addressSearch,
-                       measure, matchCRS, layerSearch, canvas,
-                       locate, new_src, template, feedback,
-                       useMultiStyle, useHeat, useShapes,
-                       useOSMB, useWMS, useWMTS, useVT)
+        writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
+                       layerSearch, canvas, locate, new_src, template, feedback)
         # except Exception as e:
         #     QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
         #                              level=QgsMessageLog.CRITICAL)

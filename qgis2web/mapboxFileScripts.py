@@ -8,8 +8,7 @@ from qgis2web.utils import replaceInTemplate
 
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
-                         cluster_set, measure, matchCRS, layerSearch, canvas,
-                         address, locate):
+                         cluster_set, layerSearch, canvas, address):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -41,9 +40,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, layerSearch, canvas, locate, qgis2webJS, template,
-                   feedback, useMultiStyle, useHeat, useShapes,
-                   useOSMB, useWMS, useWMTS, useVT):
+                   layerSearch, canvas, locate, qgis2webJS, template, feedback):
     useCluster = False
     for cluster in cluster_set:
         if cluster:
@@ -74,10 +71,10 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         layerSearchJS = ""
     if address:
         addressCSS = """
-        <link rel="stylesheet" href="css/"""
-        addressCSS += """leaflet-control-geocoder.Geocoder.css">"""
+        <link rel="stylesheet" href="mapbox/"""
+        addressCSS += """mapbox-gl-generic-geocoder.css">"""
         addressJS = """
-        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>"""
+        <script src="mapbox/mapbox-gl-generic-geocoder.min.js"></script>"""
     else:
         addressCSS = ""
         addressJS = ""
@@ -108,18 +105,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
             })
         );
         </script>"""
-    extraJS = ""
-    if useWMS:
-        extraJS += """
-        <script src="js/leaflet.wms.js"></script>"""
-    if useWMTS:
-        extraJS += """
-        <script src="js/leaflet-tilelayer-wmts.js"></script>"""
-    if (matchCRS and
-            canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
-        crsJS = ""
     else:
-        crsJS = ""
+        locateJS = ""
+    extraJS = ""
     exp_js = """
         <script src="js/qgis2web_expressions.js"></script>"""
 
@@ -137,7 +125,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_EXTRAJS@": extraJS,
               "@LEAFLET_ADDRESSJS@": addressJS,
               "@LEAFLET_MEASUREJS@": "",
-              "@LEAFLET_CRSJS@": crsJS,
+              "@LEAFLET_CRSJS@": "",
               "@LEAFLET_LAYERFILTERCSS@": "",
               "@LEAFLET_LAYERFILTERJS@": "",
               "@QGIS2WEBJS@": qgis2webJS,
