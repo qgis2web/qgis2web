@@ -377,7 +377,8 @@ var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
                     addressSearchCode)
         # try:
         writeHTMLstart(outputIndex, title, cluster, addressSearch, measure,
-                       layerSearch, canvas, locate, new_src, template, feedback)
+                       layerSearch, canvas, locate, new_src, template,
+                       feedback)
         # except Exception as e:
         #     QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
         #                              level=QgsMessageLog.CRITICAL)
