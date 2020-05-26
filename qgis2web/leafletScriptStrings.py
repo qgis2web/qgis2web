@@ -304,6 +304,14 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
         map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};""".format(
         safeLayerName=safeLayerName, zIndex=zIndex)
     if 'type' in d and d['type'][0] == "xyz":
+        if 'zmin' in d:
+            zmin = "minNativeZoom={zmin},".format(zmin=d['zmin'][0])
+        else:
+            zmin = ""
+        if 'zmax' in d:
+            zmax = "maxNativeZoom={zmax}".format(zmax=d['zmax'][0])
+        else:
+            zmax = ""
         wms += """
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
             pane: 'pane_{safeLayerName}',
@@ -311,12 +319,12 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
             attribution: '{attr}',
             minZoom: {minZoom},
             maxZoom: {maxZoom},
-            minNativeZoom: {minNativeZoom},
-            maxNativeZoom: {maxNativeZoom}
+            {zmin}
+            {zmax}
         }});
         layer_{safeLayerName};""".format(
             opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0],
-            attr=attr, minNativeZoom=d['zmin'][0], maxNativeZoom=d['zmax'][0],
+            attr=attr, zmin=zmin, zmax=zmax,
             minZoom=minZoom, maxZoom=maxZoom)
     elif 'tileMatrixSet' in d:
         useWMTS = True
