@@ -305,11 +305,11 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
         safeLayerName=safeLayerName, zIndex=zIndex)
     if 'type' in d and d['type'][0] == "xyz":
         if 'zmin' in d:
-            zmin = "minNativeZoom={zmin},".format(zmin=d['zmin'][0])
+            zmin = "minNativeZoom: {zmin},".format(zmin=d['zmin'][0])
         else:
             zmin = ""
         if 'zmax' in d:
-            zmax = "maxNativeZoom={zmax}".format(zmax=d['zmax'][0])
+            zmax = "maxNativeZoom: {zmax}".format(zmax=d['zmax'][0])
         else:
             zmax = ""
         wms += """
