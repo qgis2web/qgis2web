@@ -14,7 +14,7 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers, Leaflet, or Mapbox GL JS. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
-version=3.15.0
+version=3.15.1
 author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=tom.chadwin@nnpa.org.uk
 
@@ -23,7 +23,8 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2020/05/29 3.15.0 MBGLJS measure, remove MBGLJS match CRS, MBGLJS geolocate, MBGLJS address search, Leaflet XYZ without zmin, OL geocoder
+changelog=2020/06/01 3.15.1 Fix Leaflet XYZ layers
+    2020/05/29 3.15.0 MBGLJS measure, remove MBGLJS match CRS, MBGLJS geolocate, MBGLJS address search, Leaflet XYZ without zmin, OL geocoder
     2020/05/15 3.14.0 MBGLJS 1.10.0, MBGLJS fixes, OL projection, OL geolocation, OL address search, OL measure, OL layer search
     2020/04/08 3.13.0 Leaflet 1.6.0, OL 6.3.1, MBGLJS layer list colours, MBGLJS layer list order, MBGLJS pseudoclasses, MBGLJS layer with no fields, Leaflet field label apostrophes, MBGLJS field label apostrophes, MBGLJS style error, OL CRS, Leaflet WMTS, Leaflet XYZ/WMTS layer order, OL field name apostrophes, Autolinker slowdown
     2020/01/13 3.12.1 OL no labels, Travis
