@@ -51,9 +51,13 @@
                 map.fitBounds(bounds_group.getBounds());
             }
         }
+        map.createPane('pane_test_0');
+        map.getPane('pane_test_0').style.zIndex = 400;
         var img_test_0 = 'data/test_0.png';
         var img_bounds_test_0 = [[54.97056462575153,-2.110901948055512],[54.97956776501248,-2.0952621209424374]];
-        var layer_test_0 = new L.imageOverlay(img_test_0, img_bounds_test_0);
+        var layer_test_0 = new L.imageOverlay(img_test_0,
+                                              img_bounds_test_0,
+                                              {pane: 'pane_test_0'});
         bounds_group.addLayer(layer_test_0);
         map.addLayer(layer_test_0);
         setBounds();
