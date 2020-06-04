@@ -379,7 +379,8 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
     return wms, useWMS, useWMTS
 
 
-def rasterScript(layer, safeLayerName):
+def rasterScript(layer, safeLayerName, zIndex):
+    zIndex = zIndex + 400
     out_raster = 'data/' + safeLayerName + '.png'
     pt2 = layer.extent()
     crsSrc = layer.crs()
@@ -394,13 +395,18 @@ def rasterScript(layer, safeLayerName):
     bounds += str(pt3.yMaximum()) + ','
     bounds += str(pt3.xMaximum()) + ']]'
     raster = """
+        map.createPane('pane_{safeLayerName}');
+        map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};
         var img_{safeLayerName} = '{out_raster}';
         var img_bounds_{safeLayerName} = {bounds};
         var layer_{safeLayerName} = """.format(safeLayerName=safeLayerName,
+                                               zIndex=zIndex,
                                                out_raster=out_raster,
                                                bounds=bounds)
     raster += "new L.imageOverlay(img_"
-    raster += """{safeLayerName}, img_bounds_{safeLayerName});
+    raster += """{safeLayerName},
+                    img_bounds_{safeLayerName},
+                    {{pane: 'pane_{safeLayerName}'}});
         bounds_group.addLayer(layer_{safeLayerName});""".format(
         safeLayerName=safeLayerName)
     return raster

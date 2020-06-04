@@ -286,7 +286,7 @@ class LeafletWriter(Writer):
                     useRaster = True
                     feedback.showFeedback('Writing %s as raster layer...' %
                                           layer.name())
-                    new_obj = rasterScript(layer, safeLayerName)
+                    new_obj = rasterScript(layer, safeLayerName, count)
                     feedback.completeStep()
                 if visible[count]:
                     new_obj += """
