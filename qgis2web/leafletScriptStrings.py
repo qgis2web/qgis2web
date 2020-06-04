@@ -405,10 +405,10 @@ def rasterScript(layer, safeLayerName, zIndex):
                                                bounds=bounds)
     raster += "new L.imageOverlay(img_"
     raster += """{safeLayerName},
-                                              img_bounds_{safeLayerName},
-                                              {{pane: 'pane_{safeLayerName}'}});
-        bounds_group.addLayer(layer_{safeLayerName});""".format(
-        safeLayerName=safeLayerName)
+                                              img_bounds_{sln},
+                                              {{pane: 'pane_{sln}'}});
+        bounds_group.addLayer(layer_{sln});""".format(
+        sln=safeLayerName)
     return raster
 
 
