@@ -404,7 +404,7 @@ def rasterScript(layer, safeLayerName, zIndex):
                                                out_raster=out_raster,
                                                bounds=bounds)
     raster += "new L.imageOverlay(img_"
-    raster += """{safeLayerName},
+    raster += """{sln},
                                               img_bounds_{sln},
                                               {{pane: 'pane_{sln}'}});
         bounds_group.addLayer(layer_{sln});""".format(
