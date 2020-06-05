@@ -658,9 +658,10 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             features = this[lyr["options"]["dataVar"]].features.slice(0);
             try{
               for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
                 if (Filters[key] == "str" || Filters[key] == "bool"){
                   var selection = [];
-                  var options = document.getElementById("sel_" + key.replace(/[^a-zA-Z0-9_]/g, "")).options
+                  var options = document.getElementById("sel_" + keyS).options
                   for (var i=0; i < options.length; i++) {
                     if (options[i].selected) selection.push(options[i].value);
                   }
@@ -680,7 +681,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 }
                 if (Filters[key] == "int"){
                   sliderVals =  document.getElementById(
-                    "div_" + key.replace(/[^a-zA-Z ]/g, "")).noUiSlider.get();
+                    "div_" + keyS).noUiSlider.get();
                   try{
                     if (key in features[0].properties){
                     for (i = features.length - 1; i >= 0; --i){
@@ -697,7 +698,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                   }
                 if (Filters[key] == "real"){
                   sliderVals =  document.getElementById(
-                    "div_" + key.replace(/[^a-zA-Z ]/g, "")).noUiSlider.get();
+                    "div_" + keyS).noUiSlider.get();
                   try{
                     if (key in features[0].properties){
                     for (i = features.length - 1; i >= 0; --i){
