@@ -660,7 +660,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
               for (key in Filters){
                 if (Filters[key] == "str" || Filters[key] == "bool"){
                   var selection = [];
-                  var options = document.getElementById("sel_" + key).options
+                  var options = document.getElementById("sel_" + key.replace(/[^a-zA-Z0-9_]/g, "")).options
                   for (var i=0; i < options.length; i++) {
                     if (options[i].selected) selection.push(options[i].value);
                   }
@@ -680,7 +680,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 }
                 if (Filters[key] == "int"){
                   sliderVals =  document.getElementById(
-                    "div_" + key).noUiSlider.get();
+                    "div_" + key.replace(/[^a-zA-Z ]/g, "")).noUiSlider.get();
                   try{
                     if (key in features[0].properties){
                     for (i = features.length - 1; i >= 0; --i){
@@ -697,7 +697,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                   }
                 if (Filters[key] == "real"){
                   sliderVals =  document.getElementById(
-                    "div_" + key).noUiSlider.get();
+                    "div_" + key.replace(/[^a-zA-Z ]/g, "")).noUiSlider.get();
                   try{
                     if (key in features[0].properties){
                     for (i = features.length - 1; i >= 0; --i){
@@ -754,13 +754,13 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             document.getElementById("menu").appendChild(
                 document.createElement("div"));
             var div_{nameS} = document.createElement('div');
-            div_{nameS}.id = "div_{name}";
+            div_{nameS}.id = "div_{nameS}";
             div_{nameS}.className= "filterselect";
             document.getElementById("menu").appendChild(div_{nameS});
             sel_{nameS} = document.createElement('select');
             sel_{nameS}.multiple = true;
             sel_{nameS}.size = {s};
-            sel_{nameS}.id = "sel_{name}";
+            sel_{nameS}.id = "sel_{nameS}";
             var {nameS}_options_str = "<option value='' unselected></option>";
             sel_{nameS}.onchange = function(){{filterFunc()}};
             """.format(name=itemName, nameS=safeName(itemName), s=selSize)
@@ -797,11 +797,11 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             document.getElementById("menu").appendChild(
                 document.createElement("div"));
             var div_{nameS} = document.createElement("div");
-            div_{nameS}.id = "div_{name}";
+            div_{nameS}.id = "div_{nameS}";
             div_{nameS}.className = "slider";
             document.getElementById("menu").appendChild(div_{nameS});
             var lab_{nameS} = document.createElement('div');
-            lab_{nameS}.innerHTML  = '{name}: <span id="val_{name}"></span>';
+            lab_{nameS}.innerHTML  = '{name}: <span id="val_{nameS}"></span>';
             lab_{nameS}.className = 'filterlabel';
             document.getElementById("menu").appendChild(lab_{nameS});
             var reset_{nameS} = document.createElement('div');
@@ -812,7 +812,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 sel_{nameS}.noUiSlider.reset();
             }};
             document.getElementById("menu").appendChild(reset_{nameS});
-            var sel_{nameS} = document.getElementById('div_{name}');
+            var sel_{nameS} = document.getElementById('div_{nameS}');
             """ .format(name=itemName, nameS=safeName(itemName))
                 if filterItems[item]["type"] == "int":
                     endHTML += """
@@ -833,7 +833,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             for (value in values){{
             filterVals.push(parseInt(value))
             }}
-            val_{nameS} = document.getElementById('val_{name}');
+            val_{nameS} = document.getElementById('val_{nameS}');
             val_{nameS}.innerHTML = values.join(' - ');
                 filterFunc()
             }});""".format(name=itemName, nameS=safeName(itemName),
@@ -850,7 +850,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
                 }}
             }});
             sel_{nameS}.noUiSlider.on('update', function (values) {{
-            val_{nameS} = document.getElementById('val_{name}');
+            val_{nameS} = document.getElementById('val_{nameS}');
             val_{nameS}.innerHTML = values.join(' - ');
                 filterFunc()
             }});
