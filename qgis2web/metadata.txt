@@ -23,7 +23,7 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2020/06/15 3.16.0 Mapbox GL JS 1.11.0, Leaflet raster zIndex, Leaflet filtered labels, OL centre on layer search result
+changelog=2020/06/15 3.16.0 Mapbox GL JS 1.11.0, Leaflet raster zIndex, Leaflet filtered labels, Leaflet filter with special characters in column name, OL centre on layer search result
     2020/06/01 3.15.1 Fix Leaflet XYZ layers
     2020/05/29 3.15.0 MBGLJS measure, remove MBGLJS match CRS, MBGLJS geolocate, MBGLJS address search, Leaflet XYZ without zmin, OL geocoder
     2020/05/15 3.14.0 MBGLJS 1.10.0, MBGLJS fixes, OL projection, OL geolocation, OL address search, OL measure, OL layer search
