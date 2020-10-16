@@ -190,7 +190,8 @@ def getLabelFormat(layer):
             max = float(palyr.maximumScale)
             if min != 0:
                 min = 1 / ((1 / min) * 39.37 * 90.7)
-            max = 1 / ((1 / max) * 39.37 * 90.7)
+            if max != 0:
+                max = 1 / ((1 / max) * 39.37 * 90.7)
             labelRes = " && resolution > %(min)d " % {"min": max}
             labelRes += "&& resolution < %(max)d" % {"max": min}
         else:
