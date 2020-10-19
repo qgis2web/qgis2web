@@ -524,7 +524,7 @@ def safeName(name):
     # TODO: we are assuming that at least one character is valid...
     validChr = '_0123456789abcdefghijklmnopqrstuvwxyz' \
                'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    return ''.join(c for c in name if c in validChr)
+    return 'l_' + ''.join(c for c in name if c in validChr)
 
 
 def removeSpaces(txt):
