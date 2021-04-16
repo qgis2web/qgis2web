@@ -16,7 +16,7 @@ jobs:
       #     sudo apt-get -y install docker-ce
       - name: Run test in Docker
         env:
-          QGIS_TEST_VERSION="latest"
+          QGIS_TEST_VERSION: latest
         run: |
           qgis /usr/src/.docker/run-docker-tests.sh
       - run: echo "🍏 This job's status is ${{ job.status }}."
