@@ -17,6 +17,7 @@ jobs:
       - name: Run test in Docker
         env:
           QGIS_TEST_VERSION: latest
+          DISPLAY: 'var'
         run: |
           qgis /usr/src/.docker/run-docker-tests.sh
       - run: echo "🍏 This job's status is ${{ job.status }}."
