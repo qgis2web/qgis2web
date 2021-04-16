@@ -7,7 +7,7 @@ jobs:
   Test-Runner:
     runs-on: ubuntu-latest
     container:
-      image: dockerhub-username:docker-image-tag
+      image: qgis/qgis:latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
