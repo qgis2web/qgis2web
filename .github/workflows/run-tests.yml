@@ -1,0 +1,22 @@
+name: Run tests
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  Test-Runner:
+    runs-on: ubuntu-latest
+    container:
+      image: dockerhub-username:docker-image-tag
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt-get -y install docker-ce
+      - name: Run test in Docker
+        env:
+          QGIS_TEST_VERSION="latest"
+        run: |
+          qgis /usr/src/.docker/run-docker-tests.sh
+      - run: echo "🍏 This job's status is ${{ job.status }}."
