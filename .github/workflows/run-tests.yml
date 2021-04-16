@@ -21,5 +21,5 @@ jobs:
           QT_DEBUG_PLUGIN: 1
           QT_QPA_PLATFORM: offscreen
         run: |
-          apt-get update && apt-get -y install python3-pyqt5.qtwebkit libqt5webkit5-dev && qgis /usr/src/.docker/run-docker-tests.sh
+          /usr/src/.docker/run-docker-tests.sh
       - run: echo "🍏 This job's status is ${{ job.status }}."
