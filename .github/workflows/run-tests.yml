@@ -19,6 +19,7 @@ jobs:
           QGIS_TEST_VERSION: latest
           DISPLAY: 'var'
           QT_DEBUG_PLUGIN: 1
+          QT_QPA_PLATFORM: offscreen
         run: |
           qgis /usr/src/.docker/run-docker-tests.sh
       - run: echo "🍏 This job's status is ${{ job.status }}."
