@@ -226,7 +226,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         rotationOrigin: 'center center',
         icon: %s""" % (rot, getIcon("markers/" + sln + ".svg", svgSize))
         markerType = "marker"
-        # save colorized svg with safe layer name in the markers folder
+
+        # save a colorized svg in the markers folder
+        # replacing "param(...)" with actual values from QGIS
+        # and renaming to safe layer name
         with open(sl.path()) as f:
             s = f.read()
             s = s.replace('param(fill)', getRGBAColor(props["color"], alpha).strip("'"))
