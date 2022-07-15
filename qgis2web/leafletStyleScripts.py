@@ -235,8 +235,9 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
             s = s.replace('param(fill)', getRGBAColor(props["color"],
                                                       alpha).strip("'"))
             s = s.replace('param(fill-opacity)', '1')
-            s = s.replace('param(outline)', getRGBAColor(props["outline_color"],
-                                                         alpha).strip("'"))
+            s = s.replace('param(outline)', getRGBAColor(
+                                              props["outline_color"],
+                                              alpha).strip("'"))
             s = s.replace('param(outline-width)', props["outline_width"])
             s = s.replace('param(outline-opacity)', '1')
         with open(os.path.join(markerFolder, sln + ".svg"), 'w') as f:
