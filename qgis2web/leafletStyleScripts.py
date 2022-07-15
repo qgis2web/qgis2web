@@ -211,7 +211,6 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         except Exception:
             markerType = "circleMarker"
     elif isinstance(sl, QgsSvgMarkerSymbolLayer):
-        path = os.path.join(markerFolder, os.path.basename(sl.path()))
         svgSize = sl.size() * 3.8
         if symbol.dataDefinedAngle().isActive():
             if symbol.dataDefinedAngle().useExpression():
@@ -222,13 +221,24 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
                 rot += ") * 0.0174533"
         else:
             rot = str(sl.angle() * 0.0174533)
-        shutil.copy(sl.path(), path)
         style = """
         rotationAngle: %s,
         rotationOrigin: 'center center',
-        icon: %s""" % (rot, getIcon("markers/" + os.path.basename(sl.path()),
-                                    svgSize))
+        icon: %s""" % (rot, getIcon("markers/" + sln + ".svg", svgSize))
         markerType = "marker"
+
+        # save a colorized svg in the markers folder
+        # replacing "param(...)" with actual values from QGIS
+        # and renaming to safe layer name
+        with open(sl.path()) as f:
+            s = f.read()
+            s = s.replace('param(fill)', getRGBAColor(props["color"], alpha).strip("'"))
+            s = s.replace('param(fill-opacity)', '1')
+            s = s.replace('param(outline)', getRGBAColor(props["outline_color"], alpha).strip("'"))
+            s = s.replace('param(outline-width)', props["outline_width"])
+            s = s.replace('param(outline-opacity)', '1')
+        with open(os.path.join(markerFolder, sln + ".svg"), 'w') as f:
+            f.write(s)
     elif isinstance(sl, QgsSimpleLineSymbolLayer):
         color = getRGBAColor(props["line_color"], alpha)
         line_width = props["line_width"]
