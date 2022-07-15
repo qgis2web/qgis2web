@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
@@ -224,21 +225,30 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         style = """
         rotationAngle: %s,
         rotationOrigin: 'center center',
-        icon: %s""" % (rot, getIcon("markers/" + sln + ".svg", svgSize))
+        icon: %s""" % (rot, getIcon("markers/" + sln + ".svg?outline-width=10", svgSize))
         markerType = "marker"
 
-        # save a colorized svg in the markers folder
+        # Save a colorized svg in the markers folder
         # replacing "param(...)" with actual values from QGIS
-        # and renaming to safe layer name
-        pColor = getRGBAColor(props["color"], alpha).strip("'"))
-        pOutline = getRGBAColor(props["outline_color"], alpha).strip("'"))
+        # and renaming to safe layer name.
+        #
+        # Note that svg attributes with params sometimes also have default values
+        # like:   stroke-width="param(outline-width) 1"
+        # but we need to replace the whole attribute value.
+        pColor = getRGBAColor(props["color"], alpha)
+        pOutline = getRGBAColor(props["outline_color"], alpha)
         with open(sl.path()) as f:
             s = f.read()
-            s = s.replace('param(fill)', pColor)
-            s = s.replace('param(fill-opacity)', '1')
-            s = s.replace('param(outline)', pOutline)
-            s = s.replace('param(outline-width)', props["outline_width"])
-            s = s.replace('param(outline-opacity)', '1')
+            # adjust outline width to account for svg symbol size
+            viewboxSize = float(re.search('viewBox="([^"]*)"', s)
+                .group(1).split(' ')[-1])
+            outlinefactor = viewboxSize / sl.size()
+            pOutlineWidth = '"{}"'.format(float(props["outline_width"]) * outlinefactor)
+            s = re.sub('"param\(fill\)[^"]*"', pColor, s)
+            s = re.sub('"param\(fill-opacity\)[^"]*"', '1', s)
+            s = re.sub('"param\(outline\)[^"]*"', pOutline, s)
+            s = re.sub('"param\(outline-width\)[^"]*"', pOutlineWidth, s)
+            s = re.sub('"param\(outline-opacity\)[^"]*"', '1', s)
         with open(os.path.join(markerFolder, sln + ".svg"), 'w') as f:
             f.write(s)
     elif isinstance(sl, QgsSimpleLineSymbolLayer):
