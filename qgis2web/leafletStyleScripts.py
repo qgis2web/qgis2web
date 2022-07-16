@@ -225,7 +225,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         style = """
         rotationAngle: %s,
         rotationOrigin: 'center center',
-        icon: %s""" % (rot, getIcon("markers/" + sln + ".svg?outline-width=10", svgSize))
+        icon: %s""" % (rot, getIcon("markers/" + sln + ".svg", svgSize))
         markerType = "marker"
 
         # Save a colorized svg in the markers folder
@@ -245,10 +245,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
             outlinefactor = viewboxSize / sl.size()
             pOutlineWidth = '"{}"'.format(float(props["outline_width"]) * outlinefactor)
             s = re.sub('"param\(fill\)[^"]*"', pColor, s)
-            s = re.sub('"param\(fill-opacity\)[^"]*"', '1', s)
+            s = re.sub('"param\(fill-opacity\)[^"]*"', '"1"', s)
             s = re.sub('"param\(outline\)[^"]*"', pOutline, s)
             s = re.sub('"param\(outline-width\)[^"]*"', pOutlineWidth, s)
-            s = re.sub('"param\(outline-opacity\)[^"]*"', '1', s)
+            s = re.sub('"param\(outline-opacity\)[^"]*"', '"1"', s)
         with open(os.path.join(markerFolder, sln + ".svg"), 'w') as f:
             f.write(s)
     elif isinstance(sl, QgsSimpleLineSymbolLayer):
