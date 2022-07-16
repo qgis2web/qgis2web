@@ -245,10 +245,10 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
             s = f.read()
             # adjust outline width to account for svg symbol size
             viewboxSize = float(re.search('viewBox="([^"]*)"', s)
-                .group(1).split(' ')[-1])
+                                .group(1).split(' ')[-1])
             outlinefactor = viewboxSize / sl.size()
-            pOutlineWidth = '"' + format(float(props["outline_width"])
-                * outlinefactor) + '"'
+            pOutlineWidth = float(props["outline_width"]) * outlinefactor
+            pOutlineWidth = '"{}"'.format(pOutlineWidth)
             s = re.sub('"param\(fill\)[^"]*"', pColor, s)
             s = re.sub('"param\(fill-opacity\)[^"]*"', '"1"', s)
             s = re.sub('"param\(outline\)[^"]*"', pOutline, s)
