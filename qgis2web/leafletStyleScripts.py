@@ -223,19 +223,21 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
                 rot += ") * 0.0174533"
         else:
             rot = str(sl.angle() * 0.0174533)
-        safeLabel = '' if not label else '_' + re.sub(r'[\W_]+', '', str(label))
+        safeLabel = '' if not label \
+            else '_' + re.sub(r'[\W_]+', '', str(label))
+        markerPath = "markers/" + sln + safeLabel + ".svg"
         style = """
         rotationAngle: %s,
         rotationOrigin: 'center center',
-        icon: %s""" % (rot, getIcon("markers/" + sln + safeLabel + ".svg", svgSize))
+        icon: %s""" % (rot, getIcon(markerPath, svgSize))
         markerType = "marker"
 
         # Save a colorized svg in the markers folder
         # replacing "param(...)" with actual values from QGIS
         # and renaming to safe layer name.
         #
-        # Note that svg attributes with params sometimes also have default values
-        # like:   stroke-width="param(outline-width) 1"
+        # Note that svg attributes with params sometimes also have default
+        # values like:   stroke-width="param(outline-width) 1"
         # but we need to replace the whole attribute value.
         pColor = getRGBAColor(props["color"], alpha)
         pOutline = getRGBAColor(props["outline_color"], alpha)
@@ -245,13 +247,15 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
             viewboxSize = float(re.search('viewBox="([^"]*)"', s)
                 .group(1).split(' ')[-1])
             outlinefactor = viewboxSize / sl.size()
-            pOutlineWidth = '"{}"'.format(float(props["outline_width"]) * outlinefactor)
+            pOutlineWidth = '"' + format(float(props["outline_width"])
+                * outlinefactor) + '"'
             s = re.sub('"param\(fill\)[^"]*"', pColor, s)
             s = re.sub('"param\(fill-opacity\)[^"]*"', '"1"', s)
             s = re.sub('"param\(outline\)[^"]*"', pOutline, s)
             s = re.sub('"param\(outline-width\)[^"]*"', pOutlineWidth, s)
             s = re.sub('"param\(outline-opacity\)[^"]*"', '"1"', s)
-        safeLabel = '' if not label else '_' + re.sub(r'[\W_]+', '', str(label))
+        safeLabel = '' if not label \
+            else '_' + re.sub(r'[\W_]+', '', str(label))
         markerPath = os.path.join(markerFolder, sln + safeLabel + ".svg")
         with open(markerPath, 'w') as f:
             f.write(s)
