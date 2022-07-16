@@ -63,7 +63,8 @@ def getLayerStyle(layer, sln, interactivity, markerFolder,
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
                                              layer_alpha, interactivity, sln,
-                                             sl, useMapUnits, feedback)
+                                             sl, useMapUnits, feedback,
+                                             cat.value())
                 patterns += pattern
                 if (cat.value() is not None and cat.value() != ""):
                     style += """
@@ -168,7 +169,7 @@ def getLayerStyle(layer, sln, interactivity, markerFolder,
 
 
 def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
-                     sln, sl, useMapUnits, feedback):
+                     sln, sl, useMapUnits, feedback, label=''):
     interactive = str(interactivity).lower()
     markerType = None
     pattern = ""
@@ -222,10 +223,11 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
                 rot += ") * 0.0174533"
         else:
             rot = str(sl.angle() * 0.0174533)
+        safeLabel = '' if not label else '_' + re.sub(r'[\W_]+', '', str(label))
         style = """
         rotationAngle: %s,
         rotationOrigin: 'center center',
-        icon: %s""" % (rot, getIcon("markers/" + sln + ".svg", svgSize))
+        icon: %s""" % (rot, getIcon("markers/" + sln + safeLabel + ".svg", svgSize))
         markerType = "marker"
 
         # Save a colorized svg in the markers folder
@@ -249,7 +251,9 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
             s = re.sub('"param\(outline\)[^"]*"', pOutline, s)
             s = re.sub('"param\(outline-width\)[^"]*"', pOutlineWidth, s)
             s = re.sub('"param\(outline-opacity\)[^"]*"', '"1"', s)
-        with open(os.path.join(markerFolder, sln + ".svg"), 'w') as f:
+        safeLabel = '' if not label else '_' + re.sub(r'[\W_]+', '', str(label))
+        markerPath = os.path.join(markerFolder, sln + safeLabel + ".svg")
+        with open(markerPath, 'w') as f:
             f.write(s)
     elif isinstance(sl, QgsSimpleLineSymbolLayer):
         color = getRGBAColor(props["line_color"], alpha)
