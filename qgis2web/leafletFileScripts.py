@@ -64,6 +64,8 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                     jsStore + 'multi-style-layer.js')
     shutil.copyfile(jsDir + 'Autolinker.min.js',
                     jsStore + 'Autolinker.min.js')
+    shutil.copyfile(jsDir + 'Autolinker.min.js.map',
+                    jsStore + 'Autolinker.min.js.map')
     shutil.copyfile(jsDir + 'OSMBuildings-Leaflet.js',
                     jsStore + 'OSMBuildings-Leaflet.js')
     shutil.copyfile(jsDir + 'leaflet-heat.js',
