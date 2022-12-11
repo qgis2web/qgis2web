@@ -140,6 +140,15 @@ def handle_binary(node, mapLib):
     right = node.opRight()
     retLeft = walkExpression(left, mapLib)
     retRight = walkExpression(right, mapLib)
+    
+    #JavaScript expects the capitalisation for reserved words to be
+    #all lowercase. The below ensures, however it has been entered in QGIS,
+    #that it will be output to the JaveScript code in lowercase.
+    if retLeft.lower() in ['true', 'false', 'null'] :
+          retLeft = retLeft.lower()
+    if retRight.lower() in ['true', 'false', 'null'] :
+          retRight = retRight.lower()
+    
     if retOp == "LIKE":
         return "(%s.indexOf(%s) > -1)" % (retLeft[:-1],
                                           re.sub("[_%]", "", retRight))
