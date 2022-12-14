@@ -115,6 +115,7 @@ var style_%(name)s = %(style)s;
             except Exception:
                 new_vtStyles = new_vtStyle
             vtStyles[vts] = new_vtStyles
+    
     for k, v in vtStyles.items():
         styleName = safeName(k)
         styleString = v
@@ -126,6 +127,7 @@ var style_%(name)s = function(feature, resolution) {
     %(style)s;
 }''' % {"defs": defs, "pattern": pattern, "name": styleName,
                     "style": styleString, "setPattern": setPattern})
+
     return mapUnitLayers
 
 
@@ -190,8 +192,9 @@ def getLabelFormat(layer):
             max = float(palyr.maximumScale)
             if min != 0:
                 min = 1 / ((1 / min) * 39.37 * 90.7)
-            if max != 0:
-                max = 1 / ((1 / max) * 39.37 * 90.7)
+            if max == 0:
+              max = 0.0001
+            max = 1 / ((1 / max) * 39.37 * 90.7)
             labelRes = " && resolution > %(min)d " % {"min": max}
             labelRes += "&& resolution < %(max)d" % {"max": min}
         else:
@@ -312,6 +315,12 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer,
     useAnyMapUnits = False
     for count, rule in enumerate(rules):
         symbol = rule.symbol()
+
+        # Todo: symbol could be null / NoneType, calls getSymbolAsStyle which leads
+        # to an error
+        #if symbol is None:
+        #    continue
+        
         (styleCode, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(symbol, stylesFolder, layer_alpha,
                                          renderer, sln, layer, feedback)
@@ -409,12 +418,18 @@ def getStyle(style, cluster, labelRes, labelText, sln, size,
 
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                      layer, feedback):
+    
+    # Todo: symbol could be null / NoneType. Check impact of below return
+    if symbol is None:
+        return ("", "", "", None)
+    
     styles = {}
     useMapUnits = False
     if layer_transparency == 0:
         alpha = symbol.alpha()
     else:
         alpha = layer_transparency
+      
     for i in range(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
@@ -426,6 +441,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             borderWidth = props["outline_width"]
             sizeUnits = props["size_unit"]
             size = None
+            
             if sizeUnits != "MapUnit":
                 size = sl.size() * 2
             try:
