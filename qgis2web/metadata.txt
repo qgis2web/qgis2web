@@ -10,7 +10,7 @@
 
 [general]
 name=qgis2web
-qgisMinimumVersion=2.99
+qgisMinimumVersion=3.8
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
 about=qgis2web generates a web map from your current QGIS project, either as OpenLayers, Leaflet, or Mapbox GL JS. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
@@ -23,7 +23,9 @@ email=tom.chadwin@nnpa.org.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2020/06/15 3.16.0 Mapbox GL JS 1.11.0, Leaflet raster zIndex, Leaflet filtered labels, Leaflet filter with special characters in column name, OL centre on layer search result
+changelog=
+    2022/xx/xx 3.17.0 Changed minimum supported version to 3.8 due to a number of changes within PyQGIS API. Minor bug fixes XXX. Enhancements XXX.
+    2020/06/15 3.16.0 Mapbox GL JS 1.11.0, Leaflet raster zIndex, Leaflet filtered labels, Leaflet filter with special characters in column name, OL centre on layer search result
     2020/06/01 3.15.1 Fix Leaflet XYZ layers
     2020/05/29 3.15.0 MBGLJS measure, remove MBGLJS match CRS, MBGLJS geolocate, MBGLJS address search, Leaflet XYZ without zmin, OL geocoder
     2020/05/15 3.14.0 MBGLJS 1.10.0, MBGLJS fixes, OL projection, OL geolocation, OL address search, OL measure, OL layer search

@@ -27,6 +27,7 @@ from qgis.core import (QgsApplication,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
+                       QgsCoordinateTransformContext,
                        QgsVectorLayer,
                        QgsField,
                        QgsFeature,
@@ -250,9 +251,27 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
     options = []
     if precision != "maintain":
         options.append("COORDINATE_PRECISION=" + str(precision))
-    e, err = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
+    
+    
+    # QGIS version check
+    if Qgis.QGIS_VERSION_INT < 32000:
+        e, err = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
                                                      "utf-8", crs, 'GeoJson',
                                                      0, layerOptions=options)
+    
+    else:
+        svOptions = QgsVectorFileWriter.SaveVectorOptions()
+        svOptions.fileEncoding = "utf-8"
+        svOptions.driverName = 'GeoJson'
+        svOptions.onlySelectedFeatures = 0
+        svOptions.layerOptions = options
+        if cleanLayer.wkbType() == QgsWkbTypes.Unknown:
+            svOptions.overrideGeometryType = QgsWkbTypes.Type.NullGeometry
+        
+        # Requires QGIS 3.20 or above
+        e, *err = QgsVectorFileWriter.writeAsVectorFormatV3(cleanLayer, tmpPath,
+                                                layer.transformContext(), svOptions)
+    
     if e == QgsVectorFileWriter.NoError:
         with open(path, mode="w", encoding="utf8") as f:
             f.write("var %s = " % ("json_" + sln))
@@ -263,13 +282,24 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
                         line = removeSpaces(line)
                     f.write(line)
         os.remove(tmpPath)
+        
     else:
-        QgsMessageLog.logMessage(
-            "Could not write json file {}: {}".format(tmpPath, err),
-            "qgis2web",
-            level=Qgis.Critical)
+        # QGIS version check
+        if Qgis.QGIS_VERSION_INT < 32000:
+            QgsMessageLog.logMessage(
+                "Could not write json file {}: {}".format(tmpPath, err),
+                "qgis2web",
+                level=Qgis.Critical)
+            
+        else:
+            # Requires QGIS 3.20 or above
+            QgsMessageLog.logMessage(
+                "Could not write json file {}: {}; {}; {}".format(tmpPath, *err),
+                "qgis2web",
+                level=Qgis.Critical)
         return
-
+        
+        
     fields = layer.fields()
     for field in fields:
         exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
@@ -342,8 +372,11 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     pipe.set(piped_renderer.clone())
 
     file_writer = QgsRasterFileWriter(piped_file)
+    file_writer_transformContext = QgsProject.instance().transformContext()
 
-    file_writer.writeRaster(pipe, piped_height, -1, piped_extent, piped_crs)
+    # Requires QGIS 3.8 or above
+    file_writer.writeRaster(pipe, piped_height, -1, piped_extent,
+                                    piped_crs, file_writer_transformContext)
 
     # Export layer as PNG
     out_raster = os.path.join(layersFolder,
@@ -354,7 +387,7 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
     if not (matchCRS and layer.crs() == projectCRS):
         # Extent of the layer in EPSG:3857
         crsSrc = layer.crs()
-        crsDest = QgsCoordinateReferenceSystem(3857)
+        crsDest = QgsCoordinateReferenceSystem("EPSG:3857")
         try:
             xform = QgsCoordinateTransform(crsSrc, crsDest,
                                            QgsProject.instance())
@@ -370,7 +403,6 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
         # Reproject in 3857
         piped_3857 = os.path.join(tempfile.gettempdir(),
                                   name_ts + '_piped_3857.tif')
-        # qgis_version = Qgis.QGIS_VERSION
 
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
@@ -513,6 +545,8 @@ def is25d(layer, canvas, restrictToExtent, extent):
             sl1 = sym.symbolLayer(1)
             sl2 = sym.symbolLayer(2)
         except IndexError:
+            return False
+        except AttributeError:
             return False
         if (isinstance(sl1, QgsGeometryGeneratorSymbolLayer) and
                 isinstance(sl2, QgsGeometryGeneratorSymbolLayer)):
