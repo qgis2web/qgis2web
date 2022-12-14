@@ -232,9 +232,10 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     try:
-        iconSize = (symbol.size() * 4) + 5
+        # Qt function is expecting an int
+        iconSize = int((symbol.size() * 4) + 5)
     except Exception:
-        iconSize = 16
+        iconSize = int(16)
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                          QSize(iconSize,
                                                                iconSize))
@@ -515,7 +516,7 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
                 new_layer += ": layer_" + safeLayerName + ""","""
                 layersList += new_layer
         except Exception:
-            QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
+            QgsMessageLog.logMessage(traceback.format_exc() + "\n", "qgis2web",
                                      level=Qgis.Critical)
     controlEnd = "}"
     if collapsed:
