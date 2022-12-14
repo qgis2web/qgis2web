@@ -28,6 +28,7 @@ from qgis.core import (Qgis,
                        QgsWkbTypes,
                        QgsProject,
                        QgsMapLayer,
+                       QgsMapLayerType,
                        QgsVectorLayer,
                        QgsNetworkAccessManager,
                        QgsMessageLog)
@@ -358,15 +359,18 @@ class MainDialog(QDialog, FORM_CLASS):
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
-        root_node = QgsProject.instance().layerTreeRoot()
+        root_node = QgsProject.instance().layerTreeRoot() # QgsLayerTree
         tree_groups = []
-        tree_layers = root_node.findLayers()
+        tree_layers = root_node.findLayers() # List[QgsLayerTreeLayer]
         self.layers_item = QTreeWidgetItem()
         self.layers_item.setText(0, "Layers and Groups")
         self.layersTree.setColumnCount(3)
 
-        for tree_layer in tree_layers:
-            layer = tree_layer.layer()
+        for tree_layer in tree_layers: # QgsLayerTreeLayer
+            layer = tree_layer.layer() # QgsMapLayer
+            
+            # Exclude plugins, OpenLayers plugin layers, and
+            # 'Vector' layers without any geometry.
             if (layer.type() != QgsMapLayer.PluginLayer and
                     (layer.type() != QgsMapLayer.VectorLayer or
                      layer.wkbType() != QgsWkbTypes.NoGeometry) and
@@ -374,7 +378,9 @@ class MainDialog(QDialog, FORM_CLASS):
                 try:
                     # if layer.type() == QgsMapLayer.VectorLayer:
                     #    testDump = layer.renderer().dump()
-                    layer_parent = tree_layer.parent()
+                    layer_parent = tree_layer.parent() # QgsLayerTreeNode
+                    
+                    # None if root node. Parent of root node is also None
                     if layer_parent.parent() is None:
                         item = TreeLayerItem(self.iface, layer,
                                              self.layersTree, dlg)
@@ -597,6 +603,8 @@ class MainDialog(QDialog, FORM_CLASS):
         getFeatureInfo = []
         for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
+            
+            # Non-groups
             if isinstance(item, TreeLayerItem):
                 if item.checkState(0) == Qt.Checked:
                     layers.append(item.layer)
@@ -763,13 +771,20 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        
+        # Popups
         self.interactiveItem = QTreeWidgetItem(self)
         self.interactiveCheck = QCheckBox()
-        int = True
-        if int == 0 or str(int).lower() == "false":
-            self.interactiveCheck.setChecked(False)
-        else:
-            self.interactiveCheck.setChecked(True)
+        # Todo: Assume this is in place of a configuration setting to
+        # Todo: stop auto ticking 'Popup'?
+#        int = True
+#        # if 1 == 0 or 'true' == 'false'
+#        if int == 0 or str(int).lower() == "false":
+#            self.interactiveCheck.setChecked(False)
+#        else:
+#            self.interactiveCheck.setChecked(True)
+        self.interactiveCheck.setChecked(True)
+            
         self.interactiveItem.setText(0, "Popups")
         self.addChild(self.interactiveItem)
         tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
@@ -792,6 +807,8 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterCheck.stateChanged.connect(self.changeCluster)
                 self.addChild(self.clusterItem)
                 tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
+                
+            # Popup fields (for VectorLayer only)
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Popup fields")
             options = []
