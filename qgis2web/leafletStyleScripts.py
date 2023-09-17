@@ -230,8 +230,8 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         # save a colorized svg in the markers folder
         # replacing "param(...)" with actual values from QGIS
         # and renaming to safe layer name
-        pColor = getRGBAColor(props["color"], alpha).strip("'"))
-        pOutline = getRGBAColor(props["outline_color"], alpha).strip("'"))
+        pColor = getRGBAColor(props["color"], alpha).strip("'")
+        pOutline = getRGBAColor(props["outline_color"], alpha).strip("'")
         with open(sl.path()) as f:
             s = f.read()
             s = s.replace('param(fill)', pColor)
