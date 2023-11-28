@@ -11,42 +11,30 @@ var measureControl = (function (Control) {
 
       var options = opt_options || {};
 
-      var measurebutton = document.createElement('button');
-      measurebutton.className += ' fas fa-ruler ';
+      var button = document.createElement('button');
+      button.className += ' fas fa-ruler ';
 
       var this_ = this;
       var handleMeasure = function(e) {
         if (!measuring) {
-            selectLabel.style.display = "";
             this_.getMap().addInteraction(draw);
             createHelpTooltip();
             createMeasureTooltip();
             measuring = true;
         } else {
-            selectLabel.style.display = "none";
             this_.getMap().removeInteraction(draw);
             measuring = false;
             this_.getMap().removeOverlay(helpTooltip);
             this_.getMap().removeOverlay(measureTooltip);
-            var staticTooltip = document.getElementsByClassName("tooltip-static");
-                while (staticTooltip.length > 0) {
-                  staticTooltip[0].parentNode.removeChild(staticTooltip[0]);
-                }
-            measureLayer.getSource().clear();
-            sketch = null;
         }
       };
 
-      measurebutton.addEventListener('click', handleMeasure, false);
-      measurebutton.addEventListener('touchstart', handleMeasure, false);
-
-      measurebutton.addEventListener("click", () => {
-          measurebutton.classList.toggle("clicked");
-        });
+      button.addEventListener('click', handleMeasure, false);
+      button.addEventListener('touchstart', handleMeasure, false);
 
       var element = document.createElement('div');
       element.className = 'measure-control ol-unselectable ol-control';
-      element.appendChild(measurebutton);
+      element.appendChild(button);
 
       ol.control.Control.call(this, {
         element: element,
@@ -58,7 +46,7 @@ var measureControl = (function (Control) {
     measureControl.prototype = Object.create(Control && Control.prototype);
     measureControl.prototype.constructor = measureControl;
     return measureControl;
-    }(ol.control.Control));"""
+}(ol.control.Control));"""
     return measureControl
 
 
@@ -89,29 +77,6 @@ def measuringScript():
 
 def measureScript():
     measure = """
-    var measureControl = document.querySelector(".measure-control");
-
-    var selectLabel = document.createElement("label");
-    selectLabel.innerHTML = "&nbsp;Measure:&nbsp;";
-
-    var typeSelect = document.createElement("select");
-    typeSelect.id = "type";
-
-    var measurementOption = [
-        { value: "LineString", description: "Lenght" },
-        { value: "Polygon", description: "Area" }
-        ];
-    measurementOption.forEach(function (option) {
-        var optionElement = document.createElement("option");
-        optionElement.value = option.value;
-        optionElement.text = option.description;
-        typeSelect.appendChild(optionElement);
-    });
-
-    selectLabel.appendChild(typeSelect);
-    measureControl.appendChild(selectLabel);
-
-    selectLabel.style.display = "none";
 /**
  * Currently drawn feature.
  * @type {ol.Feature}
@@ -153,120 +118,57 @@ var continueLineMsg = 'Click to continue drawing the line';
 
 
 
-/**
- * Message to show when the user is drawing a polygon.
- * @type {string}
- */
-var continuePolygonMsg = "1click continue, 2click close";
 
 
-var typeSelect = document.getElementById("type");
-var typeSelectForm = document.getElementById("form_measure");
 
-typeSelect.onchange = function (e) {		  
-  map.removeInteraction(draw);
-  addInteraction();
-  map.addInteraction(draw);		  
-};
-
-var style = new ol.style.Style({
-  stroke: new ol.style.Stroke({ 
-	color: "rgba(0, 0, 255)", //blu
-	lineDash: [10, 10],
-	width: 4
-  }),
-  image: new ol.style.Circle({
-	radius: 6,
-	stroke: new ol.style.Stroke({
-	  color: "rgba(255, 255, 255)", 
-	  width: 1
-	}),
-  })
-});
-
-var style2 = new ol.style.Style({	  
-	stroke: new ol.style.Stroke({
-		color: "rgba(255, 255, 255)", 
-		lineDash: [10, 10],
-		width: 2
-	  }),
-  image: new ol.style.Circle({
-	radius: 5,
-	stroke: new ol.style.Stroke({
-	  color: "rgba(0, 0, 255)", 
-	  width: 1
-	}),
-		  fill: new ol.style.Fill({
-	  color: "rgba(255, 204, 51, 0.4)", 
-	}),
-	  })
-});
-
-var labelStyle = new ol.style.Style({
-  text: new ol.style.Text({
-	font: "14px Calibri,sans-serif",
-	fill: new ol.style.Fill({
-	  color: "rgba(0, 0, 0, 1)"
-	}),
-	stroke: new ol.style.Stroke({
-	  color: "rgba(255, 255, 255, 1)",
-	  width: 3
-	})
-  })
-});
-
-var labelStyleCache = [];
-
-var styleFunction = function (feature, type) {
-  var styles = [style, style2];
-  var geometry = feature.getGeometry();
-  var type = geometry.getType();
-  var lineString;
-  if (!type || type === type) {
-	if (type === "Polygon") {
-	  lineString = new ol.geom.LineString(geometry.getCoordinates()[0]);
-	} else if (type === "LineString") {
-	  lineString = geometry;
-	}
-  }
-  if (lineString) {
-	var count = 0;
-	lineString.forEachSegment(function (a, b) {
-	  var segment = new ol.geom.LineString([a, b]);
-	  var label = formatLength(segment);
-	  if (labelStyleCache.length - 1 < count) {
-		labelStyleCache.push(labelStyle.clone());
-	  }
-	  labelStyleCache[count].setGeometry(segment);
-	  labelStyleCache[count].getText().setText(label);
-	  styles.push(labelStyleCache[count]);
-	  count++;
-	});
-  }
-  return styles;
-};
 var source = new ol.source.Vector();
 
 var measureLayer = new ol.layer.Vector({
-  source: source,
-  displayInLayerSwitcher: false,
-  style: function (feature) {
-	labelStyleCache = [];
-	return styleFunction(feature);
-  }
+    source: source,
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(255, 255, 255, 0.2)'
+        }),
+        stroke: new ol.style.Stroke({
+            color: '#ffcc33',
+            width: 3
+        }),
+        image: new ol.style.Circle({
+            radius: 7,
+            fill: new ol.style.Fill({
+                color: '#ffcc33'
+            })
+        })
+    })
 });
 
 map.addLayer(measureLayer);
 
 var draw; // global so we can remove it later
 function addInteraction() {
-  var type = typeSelect.value;
+  var type = 'LineString';
   draw = new ol.interaction.Draw({
     source: source,
     type: /** @type {ol.geom.GeometryType} */ (type),
-	style: function (feature) {
-			  return styleFunction(feature, type);
-			}
+    style: new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.2)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(0, 0, 0, 0.5)',
+        lineDash: [10, 10],
+        width: 2
+      }),
+      image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+          color: 'rgba(0, 0, 0, 0.7)'
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.2)'
+        })
+      })
+    })
   });
 
   var listener;
@@ -281,13 +183,8 @@ function addInteraction() {
         listener = sketch.getGeometry().on('change', function(evt) {
           var geom = evt.target;
           var output;
-          if (geom instanceof ol.geom.Polygon) {
-				  output = formatArea(/** @type {ol.geom.Polygon} */ (geom));
-				  tooltipCoord = geom.getInteriorPoint().getCoordinates();
-				} else if (geom instanceof ol.geom.LineString) {
-				  output = formatLength(/** @type {ol.geom.LineString} */ (geom));
-				  tooltipCoord = geom.getLastCoordinate();
-				}
+            output = formatLength( /** @type {ol.geom.LineString} */ (geom));
+            tooltipCoord = geom.getLastCoordinate();
           measureTooltipElement.innerHTML = output;
           measureTooltip.setPosition(tooltipCoord);
         });
@@ -378,29 +275,7 @@ var formatLength = function(line) {
     return output;
 };
 
-/**
- * Format area output.
- * @param {ol.geom.Polygon} polygon The polygon.
- * @return {string} Formatted area.
- */
-var formatArea = function (polygon) {
-  var area = polygon.getArea();
-  var output;
-  if (area > 107639) {  // Converte 1 km^2 in piedi quadrati
-    output = (Math.round((area / 107639) * 1000) / 1000) + ' sq mi';
-	} else {
-		output = (Math.round(area * 10.7639 * 100) / 100) + ' sq ft';
-	}
-  return output;
-};
-
 addInteraction();
-
-var parentElement = document.querySelector(".measure-control");
-var elementToMove = document.getElementById("form_measure");
-if (elementToMove && parentElement) {
-  parentElement.insertBefore(elementToMove, parentElement.firstChild);
-}
 """
     return measureUnitFeet
 
@@ -433,30 +308,7 @@ var formatLength = function(line) {
   return output;
 };
 
-/**
- * Format area output.
- * @param {ol.geom.Polygon} polygon The polygon.
- * @return {string} Formatted area.
- */
-var formatArea = function (polygon) {
-  var area = polygon.getArea();
-  var output;
-  if (area > 1000000) {
-	output =
-	  Math.round((area / 1000000) * 1000) / 1000 + " " + "km<sup>2</sup>";
-  } else {
-	output = Math.round(area * 100) / 100 + " " + "m<sup>2</sup>";
-  }
-  return output;
-};
-
 addInteraction();
-
-var parentElement = document.querySelector(".measure-control");
-var elementToMove = document.getElementById("form_measure");
-if (elementToMove && parentElement) {
-  parentElement.insertBefore(elementToMove, parentElement.firstChild);
-}
 """
     return measureUnitMetric
 
@@ -501,14 +353,9 @@ def measureStyleScript(controlCount):
 .measure-control {
   top: %(pos)dpx;
   left: .5em;
-  display: flex;
 }
 .ol-touch .measure-control {
   top: %(touchPos)dpx;
-}
-.measure-control label {
-  padding: 1px;
-  padding-right: 4px;
 }
 </style>""" % {"pos": pos, "touchPos": touchPos}
     return measureStyle
