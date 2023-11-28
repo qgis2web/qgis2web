@@ -3,6 +3,9 @@
 [![Join the chat at https://gitter.im/tomchadwin/qgis2web](https://badges.gitter.im/tomchadwin/qgis2web.svg)](https://gitter.im/tomchadwin/qgis2web?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
+
+![qgis2web](https://github.com/tomchadwin/qgis2web/assets/89784373/04659d78-a0d0-453c-8140-be732b4fcf97)
+
 <p>QGIS plugin to export your project to an OpenLayers or Leaflet webmap. No
 server-side software required.</p>
 
