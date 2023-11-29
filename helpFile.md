@@ -1,4 +1,5 @@
 <h1>qgis2web</h1>
+<br></br>
 <p>QGIS plugin to export your project to an OpenLayers or Leaflet webmap. No
 server-side software required.</p>
 
@@ -12,6 +13,7 @@ server-side software required.</p>
 </ul>
 
 <h2>Usage</h2>
+<br></br>
 <p>Prepare your map as far as possible in QGIS, as you want it to appear in
 your webmap. Specific tasks you can carry out to improve your webmap include:
 </p>
@@ -38,6 +40,7 @@ to your QGIS project, so save your project if you want to keep these settings.
 </p>
 
 <h2>Current limitations</h2>
+<br></br>
 <p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
 This means that their respective functionality differs in many ways. qgis2web
 does its best to interpret a QGIS project and to export HTML, Javascript, and
@@ -56,6 +59,7 @@ the output code to achieve what qgis2web cannot.</p>
 </ul>
 
 <h3>Layer options</h3>
+<br></br>
 <dl>
     <dt>Popup fields</dt>
         <dd>Specify how each field will be labelled in popups</dd>
@@ -76,6 +80,7 @@ the output code to achieve what qgis2web cannot.</p>
 <h3>General options</h3>
 
 <h4>Data export</h4>
+<br></br>
 <dl>
     <dt>Export folder</dt>
         <dd>The folder where the webmap will be saved</dd> 
@@ -90,6 +95,7 @@ the output code to achieve what qgis2web cannot.</p>
 </dl>
 
 <h4>Scale/Zoom</h4>
+<br></br>
 <dl>
     <dt>Extent</dt>
         <dd>Either match the current QGIS view or show all contents of all
@@ -103,6 +109,7 @@ the output code to achieve what qgis2web cannot.</p>
 </dl>
 
 <h4>Appearance</h4>
+<br></br>
 <dl>
     <dt>Add abstract</dt>
         <dd>This will push the abtract from the projects metadata (field abstract) into the webmap as a collapsible info box. Supported in leaflet only</dd>
@@ -131,6 +138,7 @@ the output code to achieve what qgis2web cannot.</p>
 </dl>
 
 <h2>Reporting bugs</h2>
+<br></br>
 <p>Please report any problems you have with qgis2web. Without this feedback, I
 am often completely unaware that a problem exists. To ensure no time or effort
 is wasted in bug reporting, please follow these steps:</p>
@@ -159,6 +167,7 @@ is wasted in bug reporting, please follow these steps:</p>
 coming.</p>
 
 <h2>Credits</h2>
+<br></br>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
 gentlemen. Thanks are also very much due to Paolo Cavallini, who suggested

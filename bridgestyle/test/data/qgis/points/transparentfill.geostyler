@@ -1,0 +1,22 @@
+{
+    "name": "testlayer points",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "opacity": 1.0,
+                    "rotate": 0.0,
+                    "kind": "Mark",
+                    "color": "#987db7",
+                    "wellKnownName": "circle",
+                    "size": 7.5590551182,
+                    "strokeColor": "#232323",
+                    "strokeWidth": 1,
+                    "strokeOpacity": 1.0,
+                    "fillOpacity": 0.0
+                }
+            ]
+        }
+    ]
+}

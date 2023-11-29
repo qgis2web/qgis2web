@@ -1,0 +1,162 @@
+{
+    "name": "World Map",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Fill",
+                    "opacity": 1.0,
+                    "color": "#cfcfca",
+                    "outlineColor": "#232323",
+                    "outlineWidth": 0.982677165366
+                }
+            ]
+        },
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "opacity": 1.0,
+                    "rotate": 0.0,
+                    "kind": "Mark",
+                    "color": "#b80808",
+                    "wellKnownName": "star",
+                    "size": 24.94488189006,
+                    "strokeColor": "#b80808",
+                    "strokeWidth": 0.75590551182,
+                    "Geometry": [
+                        "centroid",
+                        [
+                            "PropertyName",
+                            "geom"
+                        ]
+                    ]
+                },
+                {
+                    "opacity": 1.0,
+                    "rotate": 34.0,
+                    "kind": "Mark",
+                    "color": "#ff0000",
+                    "wellKnownName": "star",
+                    "size": 27.21259842552,
+                    "strokeColor": "#ff0000",
+                    "strokeWidth": 0.75590551182,
+                    "Geometry": [
+                        "centroid",
+                        [
+                            "PropertyName",
+                            "geom"
+                        ]
+                    ]
+                }
+            ],
+            "filter": [
+                "Or",
+                [
+                    "PropertyIsEqualTo",
+                    [
+                        "PropertyName",
+                        "NAME"
+                    ],
+                    "India"
+                ],
+                [
+                    "PropertyIsEqualTo",
+                    [
+                        "PropertyName",
+                        "NAME"
+                    ],
+                    "China"
+                ]
+            ]
+        },
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "opacity": 1.0,
+                    "rotate": 0.0,
+                    "kind": "Mark",
+                    "color": "#ffffff",
+                    "wellKnownName": "hexagon",
+                    "size": [
+                        "Mul",
+                        3.7795275591,
+                        [
+                            "Div",
+                            [
+                                "PropertyName",
+                                "POP_EST"
+                            ],
+                            10000000
+                        ]
+                    ],
+                    "strokeColor": "#fa8b39",
+                    "strokeWidth": 3.7795275591,
+                    "Geometry": [
+                        "centroid",
+                        [
+                            "PropertyName",
+                            "geom"
+                        ]
+                    ]
+                },
+                {
+                    "opacity": 1.0,
+                    "rotate": 0.0,
+                    "kind": "Mark",
+                    "color": "#fab07c",
+                    "wellKnownName": "hexagon",
+                    "size": [
+                        "Mul",
+                        3.7795275591,
+                        [
+                            "Mul",
+                            0.409091,
+                            [
+                                "Div",
+                                [
+                                    "PropertyName",
+                                    "POP_EST"
+                                ],
+                                10000000
+                            ]
+                        ]
+                    ],
+                    "strokeColor": "#fab07c",
+                    "strokeWidth": 0.75590551182,
+                    "Geometry": [
+                        "centroid",
+                        [
+                            "PropertyName",
+                            "geom"
+                        ]
+                    ]
+                }
+            ],
+            "filter": [
+                "Not",
+                [
+                    "Or",
+                    [
+                        "PropertyIsEqualTo",
+                        [
+                            "PropertyName",
+                            "NAME"
+                        ],
+                        "India"
+                    ],
+                    [
+                        "PropertyIsEqualTo",
+                        [
+                            "PropertyName",
+                            "NAME"
+                        ],
+                        "China"
+                    ]
+                ]
+            ]
+        }
+    ]
+}

@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        function pop_centreline_0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['objecttype'] !== null ? Autolinker.link(String(feature.properties['objecttype'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['navigable'] !== null ? Autolinker.link(String(feature.properties['navigable'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['responsibleparty'] !== null ? Autolinker.link(String(feature.properties['responsibleparty'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['broad'] !== null ? Autolinker.link(String(feature.properties['broad'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['from_'] !== null ? Autolinker.link(String(feature.properties['from_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['to_'] !== null ? Autolinker.link(String(feature.properties['to_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['reachid'] !== null ? Autolinker.link(String(feature.properties['reachid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['globalid'] !== null ? Autolinker.link(String(feature.properties['globalid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['route'] !== null ? Autolinker.link(String(feature.properties['route'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['shape_stlength__'] !== null ? Autolinker.link(String(feature.properties['shape_stlength__'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_centreline_0_0(feature) {
+            switch(String(feature.properties['route'])) {
+                case 'Acle Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(145,233,72,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Bargate Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(186,108,230,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Barton Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(119,137,218,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Barton Broad West Gap':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(238,154,63,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Bridge Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(131,183,236,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Brograve Route':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(58,228,120,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Catfield Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(124,223,107,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Cockshoot Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(136,209,111,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Coltishall Canal':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(22,224,181,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Commisioners Cut':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(125,123,207,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Dyke between Stalham and Sutton Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(75,193,222,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Dyke leading to Barton Turf':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(66,203,75,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Dyke leading to Gay\'s Staithe':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(169,204,51,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Dyke of Stalham':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(198,18,207,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Fleet Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(213,70,146,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Geldeston Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(78,204,152,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Geldeston Pub':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(109,226,129,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Hardley Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(126,214,19,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Hickling Route':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(203,159,87,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Horsey Mere':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(208,13,36,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Hoveton Great Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(207,133,104,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'How Hill':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(220,223,115,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Langley Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(78,61,205,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Lime Kiln Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(210,28,71,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Martham Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(239,109,16,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Neatishead Staithe Cut':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(228,86,73,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'New Cut':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(233,114,87,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'North Walsham & Dilham Canal':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(205,200,121,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'North Walsham and Dilham Canal':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(182,73,201,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Old River Yare':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(63,128,225,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Oulton Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(201,98,174,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Oulton Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(38,220,217,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Paddy\'s Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(121,232,62,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Ranworth Dam':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(37,86,208,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Ant':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(82,216,201,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Bure':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(228,123,169,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Chet':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(203,119,199,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Thurne':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(227,199,128,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Waveney':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(41,237,30,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Waveney Island 1':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(113,55,228,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Wensum':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(140,149,240,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'River Yare':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(111,227,239,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Rockland Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(59,217,167,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Rockland Dike':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(67,227,142,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Salhouse Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(158,81,225,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Short Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(98,174,206,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Slutton\'s Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(124,235,154,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Smallburgh Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(145,205,23,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Stalham Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(225,64,166,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Sutton Broad Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(203,102,188,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'The Fleet':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(40,138,204,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Thurne Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(192,61,235,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Upton Dyke':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(135,114,202,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Womack Island':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(212,191,98,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Womack Water':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(202,97,99,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Wood End Staithe Channel':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(214,97,136,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Wroxham Broad':
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(143,74,232,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_centreline_0',
+                opacity: 1,
+                color: 'rgba(181,201,45,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_centreline_0');
+        map.getPane('pane_centreline_0').style.zIndex = 400;
+        map.getPane('pane_centreline_0').style['mix-blend-mode'] = 'normal';
+        var layer_centreline_0 = L.geoJson(null, {
+            attribution: '',
+            interactive: true,
+            style: style_centreline_0_0,
+            pane: 'pane_centreline_0',
+            onEachFeature: pop_centreline_0
+        });
+        function getcentreline_0Json(geojson) {
+            layer_centreline_0.addData(geojson);
+        };
+        bounds_group.addLayer(layer_centreline_0);
+        map.addLayer(layer_centreline_0);
+        </script>
+        <script src='http://balleter.nationalparks.gov.uk/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=broads_inspire:centreline&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3Agetcentreline_0Json'></script>
+    </body>
+</html>

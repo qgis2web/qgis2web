@@ -1,0 +1,20 @@
+{
+    "name": "points",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "opacity": 1.0,
+                    "rotate": 0.0,
+                    "kind": "Mark",
+                    "color": "#e77148",
+                    "wellKnownName": "circle",
+                    "size": 7.5590551182,
+                    "strokeColor": "#232323",
+                    "strokeWidth": 1
+                }
+            ]
+        }
+    ]
+}

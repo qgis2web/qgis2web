@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        @CSSADDRESS@
+        @EXTRACSS@
+        @LEAFLET_CLUSTERCSS@
+        @LEAFLET_LAYERSEARCHCSS@
+        @LEAFLET_LAYERFILTERCSS@
+        @LEAFLET_ADDRESSCSS@
+        @LEAFLET_MEASURECSS@
+        @OL3_BACKGROUNDCOLOR@
+        @OL3_GEOCODINGLINKS@
+        @OL3_MEASURESTYLE@
+        <style>
+        #map {
+            width: @MAP_WIDTH@;
+            height: @MAP_HEIGHT@;
+        }
+        </style>
+        <title>@PAGETITLE@</title>
+    </head>
+    <body>
+        <div id="map">
+            @OL3_POPUP@
+        </div>
+        @EXP_JS@
+        @OL3_PROJ4@
+        @OL3_PROJDEF@
+        @JSADDRESS@
+        @LEAFLET_EXTRAJS@
+        @LEAFLET_ADDRESSJS@
+        @LEAFLET_MEASUREJS@
+        @LEAFLET_CRSJS@
+        @OL3_LAYERSWITCHER@
+        @OL3_GEOCODINGJS@
+        @LEAFLET_CLUSTERJS@
+        @LEAFLET_LAYERSEARCHJS@
+        @LEAFLET_LAYERFILTERJS@
+        @OL3_GEOJSONVARS@
+        @OL3_STYLEVARS@
+        @OL3_LAYERS@ 
+        @QGIS2WEBJS@
+        @OL3_WFSVARS@@MBGLJS_MEASURE@@MBGLJS_LOCATE@
+    </body>
+</html>

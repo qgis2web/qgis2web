@@ -1,0 +1,15 @@
+{
+    "name": "testlayer",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Fill",
+                    "opacity": 1.0,
+                    "color": "#e15989"
+                }
+            ]
+        }
+    ]
+}

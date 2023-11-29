@@ -1,0 +1,17 @@
+{
+    "name": "points",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Text",
+                    "size": 7.5590551182,
+                    "label": "^a",
+                    "font": "Wingdings",
+                    "color": "#b7484b"
+                }
+            ]
+        }
+    ]
+}

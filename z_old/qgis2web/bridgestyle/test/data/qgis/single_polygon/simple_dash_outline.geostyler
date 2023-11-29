@@ -1,0 +1,18 @@
+{
+    "name": "testlayer",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Fill",
+                    "opacity": 1.0,
+                    "color": "#e15989",
+                    "outlineColor": "#232323",
+                    "outlineWidth": 0.982677165366,
+                    "outlineDasharray": "5 2"
+                }
+            ]
+        }
+    ]
+}

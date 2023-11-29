@@ -1,0 +1,19 @@
+{
+    "name": "testdata",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Line",
+                    "color": "#becf50",
+                    "opacity": 1.0,
+                    "width": 0.982677165366,
+                    "perpendicularOffset": 0.0,
+                    "cap": "square",
+                    "join": "bevel"
+                }
+            ]
+        }
+    ]
+}

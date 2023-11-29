@@ -1,0 +1,26 @@
+{
+    "name": "testlayer",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "opacity": 1.0,
+                    "rotate": 0.0,
+                    "offset": [
+                        10.0,
+                        -10.0
+                    ],
+                    "kind": "Mark",
+                    "color": "#729b6f",
+                    "wellKnownName": "circle",
+                    "size": 7.5590551182,
+                    "strokeColor": "#232323",
+                    "strokeWidth": 1,
+                    "strokeOpacity": 1.0,
+                    "fillOpacity": 1.0
+                }
+            ]
+        }
+    ]
+}

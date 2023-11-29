@@ -1,0 +1,16 @@
+{
+    "name": "points",
+    "rules": [
+        {
+            "name": "",
+            "symbolizers": [
+                {
+                    "kind": "Mark",
+                    "color": "#b7484b",
+                    "wellKnownName": "ttf://Wingdings#0x5e",
+                    "size": 7.5590551182
+                }
+            ]
+        }
+    ]
+}

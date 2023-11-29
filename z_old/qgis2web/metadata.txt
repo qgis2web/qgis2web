@@ -1,0 +1,212 @@
+# This file contains metadata for your plugin. Beginning
+# with version 1.8 this is the preferred way to supply information about a
+# plugin. The current method of embedding metadata in __init__.py will
+# be supported until version 2.0
+
+# This file should be included when you package your plugin.
+
+# Mandatory items:
+
+
+[general]
+name=qgis2web
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
+description=Export to an OpenLayers/Leaflet webmap
+about=qgis2web generates a web map from your current QGIS project, either as OpenLayers, Leaflet, or Mapbox GL JS. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
+version=3.16.0
+author=Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
+email=tom.chadwin@nnpa.org.uk
+
+# end of mandatory metadata
+
+# Optional items:
+
+# Uncomment the following line and add your changelog entries:
+changelog=2020/06/15 3.16.0 Mapbox GL JS 1.11.0, Leaflet raster zIndex, Leaflet filtered labels, Leaflet filter with special characters in column name, OL centre on layer search result
+    2020/06/01 3.15.1 Fix Leaflet XYZ layers
+    2020/05/29 3.15.0 MBGLJS measure, remove MBGLJS match CRS, MBGLJS geolocate, MBGLJS address search, Leaflet XYZ without zmin, OL geocoder
+    2020/05/15 3.14.0 MBGLJS 1.10.0, MBGLJS fixes, OL projection, OL geolocation, OL address search, OL measure, OL layer search
+    2020/04/08 3.13.0 Leaflet 1.6.0, OL 6.3.1, MBGLJS layer list colours, MBGLJS layer list order, MBGLJS pseudoclasses, MBGLJS layer with no fields, Leaflet field label apostrophes, MBGLJS field label apostrophes, MBGLJS style error, OL CRS, Leaflet WMTS, Leaflet XYZ/WMTS layer order, OL field name apostrophes, Autolinker slowdown
+    2020/01/13 3.12.1 OL no labels, Travis
+    2020/01/10 3.12.0 Mapbox GL JS layers list, processing algorithm error, shorten popup links, OL label colour
+    2019/10/30 3.11.0 Mapbox GL JS popups, popup value localization (thanks, Alasdair Rae!), Leaflet clear filter alignment, Leaflet pattern fill hover
+    2019/10/30 3.10.0 Mapbox GL JS background colour, apostrophes in Leaflet filters, popup images, Mapbox GL JS XYZ tiled rasters, Leaflet filter reset, Leaflet date filter, Leaflet null records in filters, Mapbox GL JS layer zIndex, autoclose Leaflet filter date picker, correct changelog
+    2019/10/18 3.9.0 Experimental Mapbox GL JS support, Leaflet labels with underscore in layer name, Leaflet label error, Leaflet heatmap, Leaflet no symbols renderer, attribution uses HTTPS, QGIS in attribution, catch dev console crash, Leaflet scale-dependent tile layers (thanks, @jaminmelville), fix tile_json import, fix 2.5D detection (thanks, @tfh-galbraith!), correct changelog in metadata
+    2019/07/29 3.8.0 Filter by attribute support for Leaflet, abstract export for Leaflet, support for non interactive layers 
+    2019/05/09 3.7.0 Leaflet 1.5.1, Leaflet SVG markers, overlapping features in OL popup, new expression functions (thanks, TodoInTX!)
+    2019/03/19 3.6.0 Leaflet 1.4.0, OL 5.3.0, remove WMTS GetCapabilities from Leaflet GetTile requests, Leaflet multiple WMS without GetFeatureInfo, disabled labels, close dialog on project close, OL measure, OL apostrophes in field alias
+    2019/02/12 3.5.0 Correct QGIS3 template location in README, fix processing arguments (thanks, @shivareddyiirs!), fix expressions, handle apostrophe in Leaflet layers list, Leaflet XYZ visibility, fix OL layers list XYZ title, add Leaflet WMS(T)/XYZ attribution
+    2018/11/16 3.4.0 Support many more geometry types (thanks @boesiii!), move Leaflet qgis2web attribution to prefix, Leaflet raster scale-dependent visibility, correct 3.3.1 changelog in metadata.txt
+    2018/10/15 3.3.1 OL layer visibility, OL categorized label buffer, OL categorized label placement, OL scale-dependency
+    2018/09/25 3.3.0 OpenLayers 5, vector tiles without API key, OL ungrouped vector tiles, OL categorized vector tiles, Leaflet labels, icon colour profiles, support polygonZM, Leaflet trailing attribution comma, update proj4js, unset "value" error, replace debug libs with source maps, remove CDN option, OL geocoder local, Leaflet reduce geolocate maxzoom, correct README, OL label buffer
+    2018/07/20 3.2.0 Customizable widget colours (thanks, @paulds8!), Python 3 time (thanks, @shivareddyiirs!), LineStringZ/M (thanks, @boesiii!), disable intermittent tests, Leaflet cluster layers list, OL stroke: no pen, raw strings in exp2js
+    2018/05/18 3.1.1 Flickering OL markers (thanks, @ahocevar!), LinestringM, OL no-brush fill
+    2018/05/02 3.1.0 OpenLayers 4.6.5, update Docker images, reinstate vector tiles, Unicode Leaflet title, vector export encoding error, further processing migration (WIP)
+    2018/04/17 3.0.1 Leaflet else-only rules, patterns in rules, Leaflet cat/grad patterns, reinstate try: for testDump, OL grid, PEP8 compliance improved
+    2018/02/22 3.0.0 First full QGIS3 release, basemaps removed, fixed OL graduated ranges
+    2018/01/30 2.99.1 Further QGIS3 migration
+    2017/12/13 2.99.0 Initial QGIS3 experimental version
+    2017/12/04 2.32.0 Upgrade to OL 4.5.0, export styled vector tiles imported with Vector Tiles Reader (experimental), OL declutter, OL grid, map units, coalesce expressions function, time2web fixes, Leaflet layer search, OL match CRS, OL label along lines, OL WFS, exclude OpenLayers plugin layers, rule-based is25d(), OL proj4js local
+    2017/11/07 2.31.0 WMS getFeatureInfo, OL border "no pen", Leaflet scale-dependent labels, improve Leaflet cluster, OL match CRS
+    2017/10/31 2.30.0 Deduplicate Leaflet style code, fix swapped raster width/height, Leaflet layer code refactor, deduplicate Leaflet legend code, handle strange negative symbolLayerCount(), handle null in Leaflet categorized, remove erratic Leaflet categorized WFS tests, upgrade from PEP8 to pycodestyle, use sudo _H in Travis pip install
+    2017/10/17 2.29.0 OL refactor, remove unused exception handling, refactor is25d(), fix layer search, fix OL label font, extend coverage tests, remove unused style code, remove unused imports, avoid unnecessary raster reprojection, remove unused function arguments, add tests, clear project between tests, use rednose, handle MultiPolygonZM
+    2017/09/26 2.28.0 OL line pattern fill, fix OL expressions, Leaflet popup images, avoid layer name duplication, popup size, OL clusters, code tidy, reduce unnecessary log messages
+    2017/09/23 2.27.1 OL graduated layers broken by Labelgun implementation
+    2017/09/20 2.27.0 OL overlapping labels via Labelgun (thanks, @JamesMilnerUK!), increase test coverage, point simple shapes in QGIS 2.14, fix Leaflet line pattern fill, OL 4.3.3
+    2017/09/18 2.26.0 Leaflet line pattern fill, Leaflet no layers, Leaflet label expressions, raise JS errors in Travis
+    2017/09/11 2.25.0 Leaflet overlapping labels via Labelgun (thanks, @JamesMilnerUK!), popups in export project processing algorithm, time dialog raising exception, update README, metadata changelog typo
+    2017/08/26 2.24.0 Label Leaflet non-point layers, handle null in expressions, Leaflet reset multistyle highlight, syntax tidy, remove unneeded Leaflet output, update README
+    2017/08/23 2.23.1 Fix unicode error (remove debug prints in time functions), update README
+    2017/08/23 2.23.0 Time support (thanks, @ruz76!), OL font marker, OL line point marker, non-numeric categories, Leaflet 1.2.0, OL 4.3.1, improve HTML5 compliance
+    2017/07/19 2.22.0 Leaflet 1.1.0, expressions "NOT IN", Leaflet different symbol layers in rule-based renders, OL point marker simple shapes fix
+    2017/06/30 2.21.1 Handle different CRSes for Restrict to extent + Canvas extent, Unicode attribution error (thanks, @saerdnaer!), fixed Leaflet scale-dependent layers, fixed Processing: export project
+    2017/06/19 2.21.0 Added code of conduct, fixed Leaflet highlight on hover, simple point marker shapes, fixed OL categorized/graduated layers list, add @rowanwins to credits
+    2017/06/19 2.20.0 OL clusters improved (thanks, @OlaKov!), missing import in Leaflet clusters, Debian nightly removed from tests, fixed Leaflet multipoint multistyle (thanks, @perliedman!), use Leaflet multistyle only when required, debug option, Leaflet CDN to 1.0.3, OL upgraded to 4.2.0, OL layers list icons (thanks, @OlaKov!)
+    2017/06/02 2.19.0 Upgrade OpenLayers to 4.1.1, missing import in expression parser, exclude Quick Map Services layers in OL, OL label minimum visibility 0, handle OL SVG in millimetres, (no filter) in expressions
+    2017/05/19 2.18.0 Leaflet multiple symbol layers (thanks, @perliedman!), fix OL cluster popups (thanks, @olakov!), OL symbol levels, fix OL point size, fix OL point outline, fix Leaflet no stroke, update README
+    2017/05/11 2.17.1 Save raster visible state, handle all Processing/GDAL versions in raster export, remove unnecessary import
+    2017/05/09 2.17.0 Enlarge test suite, test 2.5D on LTR, dedupe/refactor vector export, update CONTRIBUTING.md, fix Leaflet rule-based layers, fix Leaflet non-visible rasters
+    2017/05/03 2.16.3 Fix OL popups (thanks, @OlaKov!), fix layer group bug (thanks, @lucacasagrande!)
+    2017/04/25 2.16.2 Fix Leaflet rule-based layers, fix WKBMultiPoint25D, fix OL3 measure control
+    2017/04/13 2.16.1 Leaflet scale-dependent clusters, Leaflet clustered layer search, encoding error
+    2017/04/12 2.16.0 Remove unused libraries, update README, remove deprecated code, dedupe raster code, add processing provider/algorithm, fix Leaflet rasters, fix layer groups, fix Leaflet scale-dependent layers
+    2017/04/05 2.15.0 Leaflet measure area, fix Leaflet measure, categorize on numeric fields
+    2017/03/30 2.14.0 QGIS minimum version to 2.14, fix 2.5d imports, rearrange layer options
+    2017/03/25 2.13.0 Missing imports, improve feedback, tweak GUI, feedback option, categorize on null, preview feature limit option, escape expressions
+    2017/03/24 2.12.0 Feedback for Leaflet JSON export (thanks, @boesiii!), fix missing imports
+    2017/03/22 2.11.0 Feedback object, dialog, and progress bar (thanks, @nyalldawson!), Leaflet refactor, OL refactor, remove star imports, escape Leaflet layers list
+    2017/03/15 2.10.0 Disable auto-preview if layer > 1000 features (thanks, @nyalldawson!), upgrade Leaflet.Draw to fix measure, fix Pylint test, WMTS
+    2017/03/13 2.9.0 Collapsed/expanded layers list (thanks, @walkermatt!), more expression functions, handle switch in config datatype
+    2017/03/10 2.8.0 Refactor save/restore settings (thanks, @nyalldawson!), escape category strings, Leaflet simple line, Leaflet no brush, Leaflet fill opacity, OL overlapping controls, combine layer and colour alpha, Leaflet scale-dependent label visibility
+    2017/03/02 2.7.0 FTP (thanks @nyalldawson!), OpenLayers 4, major refactor (thanks, @nyalldawson!), add lower() expression function, update credits, change print() to log(), Leaflet address search, Leaflet trailing attribution comma
+    2017/02/10 2.6.0 Layer attributions, OL3 overlapping controls, remove Leaflet feature_/raster_group
+    2017/02/09 2.5.0 Harmonize Leaflet/OL3 output subfolder name, fix WMS, WMS/XYZ transparency, OL3 XYZ scale-dependent visibility
+    2017/02/08 2.4.0 Fix default categories, remove single basemap from layers list, OL3 i18n, fix layer search, fix Leaflet labels, fix OL3 raster, XYZ tileserver layer support
+    2017/01/30 2.3.1 Pass WMS version in OL3, Leaflet WMS uppercase, Leaflet categorize on unicode field, remove commented code
+    2017/01/27 2.3.0 Expression handling by qgs2js (thanks, @NathanW2!), fix traceback error, update Leaflet-search, upgrade to Leaflet 1.0.3, expressions in labels, template overwrite, template warning, Proj4 and Proj4Leaflet updated
+    2017/01/19 2.2.0 Leaflet busy cursor, add IN, LIKE, NOT LIKE, ILIKE, NOT ILIKE, IS, IS NOT, ~ operators to expressions, hide non-matches in Leaflet rule-based renders
+    2017/01/18 2.1.0 Leaflet scalebar placement, new settings tab, disable preview on startup option, only export viewport features with 'Restrict to extent', increase is25d() performance, handle min/maxScale=0, fix preview, fix dev tools, rule-based renderer, update README, "donate to QGIS button" on Github
+    2017/01/04 2.0.0 Layer blending modes, help tab error
+    2016/12/22 2.0.0-beta1 Leaflet refactor, new test WFS layers, Leaflet unicode category legend icons, Leaflet legend icon sizes, Leaflet categorized/graduated SVGs, W3C compliance (thanks, @garprogram!), add Stamen terrain background basemap, handle QGIS WFS typo fix, update Proj4 for Leaflet1.0, disable preview if QtWebkit unavailable (thanks, @mbernasocchi!), Leaflet style into own file, add ISSUE_TEMPLATE, correct README, correct CONTRIBUTING, upgrade to Leaflet 1.0.2, upgrade to OL 3.20.1, delete unused files
+    2016/10/05 1.19.0 Leaflet SVG zIndex, OL3 WMS, Leaflet WFS visibility, remove redundant Leaflet layer control, OL3 safeName(), reset default Leaflet tooltip style, crash on plugin reload
+    2016/10/03 1.19.0-beta1 Upgrade to Leaflet 1.0.0, fix Leaflet layer order
+    2016/09/23 1.18.0 Point marker rotation
+    2016/09/20 1.17.0 Scale-dependent labels, Leaflet categorized vector field marker error, correct metadata changelog
+    2016/09/16 1.16.1 Improved heatmaps
+    2016/09/15 1.16.0 Heatmaps
+    2016/09/14 1.15.1 Only include checked layers in layer search dropdown
+    2016/09/13 1.15.0 Search layer properties (thanks @ThomasG77 and @boesiii!), Leaflet categorized SVG error, update README, update wiki
+    2016/08/25 1.14.1 Fixed save settings to project
+    2016/08/23 1.14.0 Leaflet handle invalid JS field names, remove hidden fields from popup label UI, scale bar from QGIS, handle features without geometry, allow hidden fields as labels, allow hidden fields for cat/grad layers, save popup label settings
+    2016/07/28 1.13.1 Leaflet categorized/graduated with special characters in field name
+    2016/07/26 1.13.0 Geolocate on click, MapQuest removed, metadata typo
+    2016/07/20 1.12.1 WFS in 2.16+, WFS duplicate popup code, updated README 
+    2016/07/15 1.12.0 OS X test environment (thanks, @jnicho02!), label formatting, hidden fields, remove "Delete unused fields", OL3 CDN to 3.17.1, empty popups, OL3 popup labels on hover, Leaflet simple line style, cubic resampling, raster export fallback
+    2016/07/06 1.11.0 Images overflow popups, relax layer name (thanks, @lucacasagrande!), popup labels format, remove Mapquest basemaps, OL to 3.17.1, correct fieldAliases (thanks, @nboisteault!), Leaflet point size, label format, wiki created, README updated
+    2016/06/28 1.10.0-FOSS4GUK2016 Popup images (thanks, @GeoSpark!), stylized rasters (thanks, @lucacasagrande!), OL3 field aliases, OL3 measure/highlight (thanks, @walkermatt!), OL3 SVGs, QGIS minimum version to 2.8, test output improved (thanks, @walkermatt!), raster tests, skip raster tests for Travis nightly
+    2016/06/13 1.9.2 Leaflet decimal labels
+    2016/06/02 1.9.1 Categorized/graduated 2.5d error
+    2016/05/25 1.9.0 Upgrade OL3 to 3.16.0, fix Leaflet disappearing points
+    2016/05/16 1.8.1 Leaflet single polygon border width (thanks, @boesiii!), integrate Coveralls, say "no" to jQuery in README dev section
+    2016/05/04 1.8.0 Measure tool: metric/imperial (thanks, @boesiii!), Travis status on README, Gitter badge on README, dev info in README, test info in README, coverage info in README, unused functions removed
+    2016/04/26 1.7.0 Maintain precision option, OL3 transparency, Leaflet CDN, Leaflet layer visibility, Leaflet apostrophe in field name, 2.5d points, Leaflet restrict to extent, expand test suite, test on LTR, current, and nightly (thanks, @m-kuhn!), use QGIS example layers in tests
+    2016/04/15 1.6.0 Make preview proxy aware, bump OL to 3.15.1, add development info to README and improve debug instructions
+    2016/04/12 1.5.1 Basemaps README/Help text clarified, templates read from .qgis, OL3 "No pen", workaround odd test WFS point layer issue
+    2016/03/30 1.5.0 OSM B&W basemap added , fix popups (thanks @lucacasagrande and @walkermatt!), move templates to .qgis2, handle 2.5D lines, README updated
+    2016/03/21 1.4.0 OL3 layer control rewrite (thanks, @walkermatt!), OL3 point numeric labels, README updated
+    2016/03/18 1.3.2 Stop 2.5d renderer altering source layer (thanks, @nyalldawson!), OL3 non-string labels
+    2016/03/15 1.3.1 Change symbolForFeature() to symbolForFeature2() (thanks, @anitagraser!)
+    2016/03/14 1.3.0 Converted 2.5 layers (thanks, @m-kuhn and @nyalldawson!)
+    2016/03/09 1.2.1 2.5d OL3 shadows, OL3 point border width and colour
+    2016/03/04 1.2.0 2.5d OL3 render (thanks, @kekscom!), added credit to 1.1.0 changelog metadata
+    2016/03/04 1.1.0 ol3-layerswitcher updated (thanks, @walkermatt!), bump to OL3.14.2, add required polyfills, expand credits, 2.5d Leaflet render (thanks, @m-kuhn!)
+    2016/02/12 1.0.0 Leaflet JSON categorized/graduated clusters, OL3 raster scale-dependent visibility, Leaflet unicode field aliases, refactor and fix save settings, correct canvas-size template, tweak UI, update README
+    2016/02/05 1.0.0-RC3 Leaflet refactor, Openlayers bumped to 3.13.1, OL3 output tidy, Leaflet output tidy, qgis2web attribution on maps with no basemaps, qgis2web attribution on OL3 maps, format OL3 attribution, Leaflet rasters missing from layers list, remove broken Leaflet Autolinker link, OL3 rasters misprojected (thanks, @lucacasagrande!), OL3 highlight points (thanks, @lucacasagrande!), highlight lines (thanks @lucacasagrande!), Leaflet fit to layers with no map layers, Leaflet layers missing on map load, Leaflet highlighted layer comes to front, fix Leaflet geocode CSS URL, fix Leaflet clusters in layers list, handle non-ASCII project and layer names (thanks @akbargumbira!), Leaflet categorized point layers list, updated README
+    2016/01/15 1.0.0-RC2 Scale-dependent visibility widget removed from GUI, README updated, OL upgraded to 3.13.0, web inspector added, OL3 export refactored, tests refactored, Leaflet export refactored, revert Leaflet styled rasters, change Leaflet raster export to EPSG:3857
+    2016/01/15 1.0.0-RC1 LineCap and lineJoin, remove Leaflet border multiplier, OL3 line style bug, OL3 "No brush" fill bug, updated README, Gitter integration
+    2016/01/11 1.0.0-beta3 Non-full-screen template, save dialog size and position, Leaflet code cleanup, prevent options horizontal scroll, Leaflet cluster error, Leaflet rasters only with "Fit to layers", basemaps GUI altered, disable base layers on Match CRS, 1.0.0-beta2 changelog corrected, more work for rendered rasters (incomplete)
+    2016/01/05 1.0.0-beta2 Multiple basemaps, OL3 basemap attribution, OL3 missing attribute values, template improvements, OL3 raster error, Leaflet raster error, OL to 3.12.1, add usage instructions to README, initial work for rendered rasters (incomplete)
+    2015/12/16 1.0.0-beta1 OL3 measure tool, Leaflet template, bump OL to 3.12.0, correct Leaflet point size, Leaflet null attributes, update README
+    2015/12/14 0.40.0 OL3 Geolocate user, OL3 address search
+    2015/12/10 0.39.0 OL3 clustering (single styles only), Leaflet SVG labels, label setting removed from GUI, GUI updated, README updated, remove 'null' labels
+    2015/12/08 0.38.0 OL3 "Match project CRS", OL3 exported JSON now in EPSG:4326
+    2015/12/04 0.37.0 OL3 remote WFS layers, fix Leaflet "Match project CRS", remove old Leaflet custom marker code, migrate to new Travis infrastructure, remove export tests
+    2015/12/02 0.36.0 Basic test suite complete, Leaflet point SVG markers, @riccardoklinger and @volaya added to authors
+    2015/11/24 0.35.0 Leaflet "Delete unused fields", new icon, SVG icon source, pipe JS errors to Python console, bump Leaflet to 0.7.7, Leaflet stacking order, implement meaningful unit tests (suite incomplete)
+    2015/11/11 0.34.0 Leaflet pointToLayer error, README improvements, OL3 upgraded, fix popup dropdown regression, internationalization improvements, code improvements, Leaflet info popup settings
+    2015/11/11 0.33.0 Code improvements, complete style/geometry Leaflet tests, add all style/geometry OL3 tests, fix OL3 fill bug
+    2015/11/11 0.32.0 Leaflet major code refactor, PEP8 E501 compliance, OL3 no brush fill, Leaflet layers with no geometry, Leaflet simple polygon unit test
+    2015/10/22 0.31.1 Fix error retrieving layer popup setting
+    2015/10/22 0.31.0 Layer settings save in QGIS project, Leaflet cluster error, collapse unselected layers, avoid legendInterface, Leaflet WFS errors, clear layers between unit tests, further test suite development (incomplete)
+    2015/10/20 0.30.0 General settings save per-project
+    2015/10/14 0.29.0 Upgrade OL3 to 3.10.1, update and correct README, tidy README markup, avoid readlines(), changelog typo, OL3 incorrect var name, remove old unused Leaflet label code, OL3 point radius from QGIS
+    2015/10/08 0.28.0 Get "Highlight features" style, map background colour, and map title from QGIS,  OL3 style export fails if no font-size set
+    2015/10/05 0.27.0 New help tab and credits, Leaflet line style, IO error
+    2015/10/01 0.26.0 Leaflet show popups on hover, extraneous quotes in OL3 template
+    2015/09/29 0.25.0 Leaflet pass maxZoom to basemaps, OL3 label improvements, OL3 point highlight code improvements, Leaflet highlight features, autolink OL3 property values, Leaflet WFS deduplication, Leaflet layer style code improvements, metadata changelog typos
+    2015/09/23 0.24.0 OL3 popup layout improvements, OL3 label improvements, Leaflet label improvements, Leaflet labels appear over popups, catch font marker and vector field marker exceptions, "Highlight features" doesn't highlight points, catch marker line exceptions
+    2015/09/21 0.23.3 OL3 "Highlight features" breaks "Show popups on hover"
+    2015/09/18 0.23.2 Leaflet "Match CRS" with "Fit to layers extent", Leaflet "baseMaps is not defined"
+    2015/09/18 0.23.1 Fit to layers extent with clustering in Leaflet fixed, further unit test work (still not complete)
+    2015/09/08 0.23.0 Added test data and suite of unit tests (not yet fully functional), broken marker image in local Leaflet geolocate
+    2015/09/04 0.22.0 Upgrade Leaflet to 0.7.5, upgrade OL3 to 3.8.2, SVG errors, OL3 labelling errors
+    2015/08/13 0.21.4 Replace hard-coded values with QGIS constants, pass preview exceptions to preview frame, remove pluginLayers from layer list
+    2015/08/11 0.21.3 Fix raster/WMS regression
+    2015/08/10 0.21.2 Replace str() with unicode() throughout, ignore layers with no geometry, tidy output, handle 2.5D geometries, catch exception on initial preview, preserve layer stacking order when changing layer visibility via layer list (thanks to https://github.com/radumas)
+    2015/07/17 0.21.1 Fix unbound crsProj4 error, remove legacy Leaflet legend code
+    2015/07/17 0.21.0 Fix crash with rule-based renderers (use first rule style for all features), improve readme
+    2015/07/16 0.20.0 Leaflet legend icons for categorized/graduated layers, Leaflet raster JS error
+    2015/07/15 0.19.0 Leaflet legend icons for simple symbols, disable base layer if Match CRS selected, fixed UnboundLocalError
+    2015/07/15 0.18.0 jQuery removed from OL3 output, OL3 upgraded to current stable (3.7.0)
+    2015/07/14 0.17.0 OL3 scale-dependent visibility fixed, default label display corrected, Leaflet code tidied, UI simplified, map library local or CDN
+    2015/07/13 0.16.1 Leaflet scale-dependent visibility improvement, Leaflet simpleline error
+    2015/07/10 0.16.0 Leaflet scale-dependent visibility, code improvements (PEP8 and Pylint), export icon corrected, changelog and readme updated
+    2015/07/09 0.15.0 UI altered, preview on plugin launch, mouse clicks in unit tests, options enabled/disabled per output format
+    2015/07/07 0.14.1 Fixed export failures
+    2015/07/06 0.14.0 BROKEN Travis build success, minimum QGIS version 2.4
+    2015/06/19 0.13.7 Leaflet label default non-hover, border improvements, PEP8, Travis integration
+    2015/06/19 0.13.6 Basemap fixes
+	2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
+	2015/06/19 0.13.4 BROKEN Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
+	2015/06/18 0.13.3 Leaflet style improvements: simple line opacity, graduated point outline weight and pen style, graduated line pen style, graduated polygon border pen style
+	2015/06/17 0.13.2 Leaflet point border width/line style, Leaflet categorized polygon border width, "Fit to layers exten"t fixed, QSettings namespaced, unicode error fixed, numeric settings now combos, UI tidied, UI labels not editable
+	2015/06/16 0.13.1 Fill style "No Brush" observed in Leaflet, border/fill transparency decoupled in Leaflet
+	2015/06/16 0.13.0 Leaflet measure tool (thanks to https://github.com/boesiii), Leaflet string handling improvements
+	2015/06/15 0.12.2 New mandatory metadata item added
+	2015/06/15 0.12.1 UNRELEASED Major regression fixed
+	2015/06/12 0.12.0 BROKEN Dialog settings persist, corrected typo in changelog
+	2015/06/08 0.11.0 Geocode user in Leaflet, Leaflet string handling improved, export folder persists
+	2015/06/04 0.10.0 Leaflet address search
+	2015/05/26 0.9.0 Major Leaflet export code refactor
+	2015/05/20 0.8.0 Match project CRS in Leaflet, "Basemap: none" option,  Leaflet observes layers list and scale bar settings 
+	2015/05/19 0.7.0 Leaflet export code refactor
+	2015/05/18 0.6.2 Change default precision to 15, get alpha of fill colours
+	2015/05/15 0.6.1 Fix 0.6.0 OL3 regression
+	2015/05/15 0.6.0 BROKEN Leaflet labels, fix open in browser
+	2015/05/14 0.5.0 FIRST STABLE RELEASE: New logo, Leaflet full-screen
+	2015/05/14 0.4.3 Limit per-layer options to appropriate layer types
+	2015/05/13 0.4.2 Fix Leaflet styles not applied
+	2015/05/08 0.4.1 Fix Leaflet custom icon layers
+	2015/05/07 0.4.0 Leaflet layer visibility, fix Leaflet simple outline
+	2015/05/07 0.3.1 Fix leaflet exporting wrong layers
+	2015/05/05 0.3.0 Leaflet preview, Leaflet JSON minification, fix Leaflet layer control
+	2015/05/05 0.2.3 Basemap code unified, export behaviour unified, Leaflet export opens in browser
+	2015/04/27 0.2.2 New basemaps in OL3 export
+	2015/04/27 0.2.1 OL3 export crash
+	2015/04/27 0.2.0 Basemap in Leaflet export, additional basemaps from qgis2leaf, icons fixed, toolbar icon added, QGIS menu item renamed
+	2015/04/25 0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet export
+	2015/04/23 0.0.1 Initial release
+# tags are comma separated with spaces allowed
+tags=web,webmap,webmaps,Leaflet,OpenLayers,OL3,Mapbox GL JS,HTML,Javascript,CSS,export
+
+homepage=https://github.com/tomchadwin/qgis2web/wiki
+tracker=https://github.com/tomchadwin/qgis2web/issues
+repository=https://github.com/tomchadwin/qgis2web
+icon=qgis2web.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version
+deprecated=False
+
