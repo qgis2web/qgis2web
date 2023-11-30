@@ -4,7 +4,9 @@
 [![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
 
-![qgis2web](https://github.com/tomchadwin/qgis2web/blob/master/qgis2web.png)
+&nbsp;&nbsp;&nbsp;&nbsp;![qgis2web](https://github.com/tomchadwin/qgis2web/blob/master/qgis2web.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![OSGeoUK2](https://github.com/tomchadwin/qgis2web/assets/89784373/5fc4351a-0235-4bf4-9443-ec38fd5e0327)
+
+
 
 <p>QGIS plugin to export your project to an OpenLayers or Leaflet webmap. No
 server-side software required.</p>
