@@ -76,3 +76,7 @@ th, td {
 #popup-content li {
     margin-bottom:0.25em;
 }
+
+#popup-content>table {
+    font-size: 11.4px;
+}
