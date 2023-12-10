@@ -4,7 +4,7 @@
 [![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
 
-&nbsp;&nbsp;&nbsp;&nbsp;![qgis2web](https://github.com/tomchadwin/qgis2web/blob/master/qgis2web.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![OSGeoUK2](https://github.com/tomchadwin/qgis2web/assets/89784373/5fc4351a-0235-4bf4-9443-ec38fd5e0327)
+&nbsp;&nbsp;&nbsp;&nbsp;![qgis2web](https://github.com/tomchadwin/qgis2web/blob/master/qgis2web.png)
 
 
 
@@ -17,7 +17,7 @@ server-side software required.</p>
 </ul>
 <p>or:</p>
 <ul>
-    <li>Download and unzip to your QGIS plugins directory</li>
+    <li>Download and unzip this repo to your QGIS plugins directory</li>
 </ul>
 
 <h2>Usage</h2>
@@ -43,7 +43,28 @@ CTRL/CMD-click for multiple basemaps or to deselect a basemap.</p>
 <p>The top-left pane lets you set options for each layer in your map. The
 bottom-left pane sets overall options for your project. All options are written
 to your QGIS project, so save your project if you want to keep these settings.
+
+<b>More info on the [WIKI](https://github.com/tomchadwin/qgis2web/wiki)</b>
 </p>
+
+<h2>Awards</h2>
+
+qgis2web is among the winners of the [OSGeo:UK](https://uk.osgeo.org/agm/agm2023minutes.html) 2023 competition via GoFundGeo
+![os geo uk](https://github.com/tomchadwin/qgis2web/assets/89784373/275553ce-39bd-42b2-81d3-12e551ce1261)
+
+
+<h2>Donations</h2>
+Hello to all the enthusiastic users of qgis2web!
+
+We are thrilled to see how widely our project is being used and appreciated around the world. The development and maintenance require significant time and effort, and we want to continue improving and adding new features.
+
+Please consider making a small donation; even a modest "virtual coffee" can help support our commitment to providing quality software; very contribution is appreciated and goes directly towards the continuous improvement of the project. 
+
+[<img src="https://github.com/tomchadwin/qgis2web/assets/89784373/3bf8e193-e65e-4dc6-a189-a9e669f98b1e">](https://www.opengis.it/buy-me-a-coffee/)
+</br><b>🎁 As a token of our gratitude, donors will receive as a gift [qgis2opengis](https://github.com/andreaordonselli/qgis2opengis) (a plugin enhancing OpenLayers export of qgis2web).🎁</b>
+
+Thank you for your support!
+</br>Happy mapping!🗺️
 
 <h2>Current limitations</h2>
 <p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
@@ -63,82 +84,6 @@ the output code to achieve what qgis2web cannot.</p>
     <li>2.5d layers only appear when zoomed in to building scales</li>
     <li>attribute filters and abstract export only works in leaflet based webmaps</li>
 </ul>
-
-<h3>Layer options</h3>
-<dl>
-    <dt>Popup fields</dt>
-        <dd>Specify how each field will be labelled in popups</dd>
-    <dt>Popups</dt>
-        <dd>Specify, whether or not a layer shows a popup on a click. If not, the layer is not even clickable</dd>
-    <dt>Visible</dt>
-        <dd>Select whether the layer will be visible on map load. This only
-            determines visibility - the layer will be loaded regardless of this
-            setting</dd> 
-    <dt>Encode to JSON</dt>
-        <dd>If unchecked, WFS layers will remain remote WFS layers in the
-            webmap. If checked, the layer will be written to a local GeoJSON
-            file</dd>
-    <dt>Cluster</dt>
-        <dd>Cluster point features</dd>
-</dl>
-
-<h3>General options</h3>
-
-<h4>Data export</h4>
-<dl>
-    <dt>Export folder</dt>
-        <dd>The folder where the webmap will be saved</dd> 
-    <dt>Mapping library location</dt>
-        <dd>Select whether to use a local copy of OL3/Leaflet, or whether to
-            call the library from its CDN</dd>
-    <dt>Minify GeoJSON files</dt>
-        <dd>Remove unnecessary whitespace from exported GeoJSON to reduce file
-            size</dd>
-    <dt>Precision</dt>
-        <dd>Simplify geometry to reduce file size</dd>
-</dl>
-
-<h4>Scale/Zoom</h4>
-<dl>
-    <dt>Extent</dt>
-        <dd>Either match the current QGIS view or show all contents of all
-            layers (only local GeoJSON and rasters, not WFS/WMS)</dd>
-    <dt>Max zoom level</dt>
-        <dd>How far the webmap will zoom in</dd>
-    <dt>Min zoom level</dt>
-        <dd>How far the webmap will zoom out</dd>
-    <dt>Restrict to extent</dt>
-        <dd>Prevent panning or zooming beyond the selected extent</dd>
-</dl>
-
-<h4>Appearance</h4>
-<dl>
-    <dt>Add abstract</dt>
-        <dd>This will push the abtract from the projects metadata (field abstract) into the webmap as a collapsible info box. Supported in leaflet only</dd> 
-    <dt>Add address search</dt>
-        <dd>Add field to allow searching for locations (geocode)</dd>
-    <dt>Add layers list</dt>
-        <dd>Include list of layers (with legend icons, where possible)</dd>
-    <dt>Add measure tool</dt>
-        <dd>Include interactive measuring widget</dd>
-    <dt>Attribute filter</dt>
-        <dd>Every supported field of all layers are listed as well as the type and layers they occur in. Selected attributes will be used to filter the webmap and all layers that contain the attribute with the same name.</dd>
-    <dt>Geolocate user</dt>
-        <dd>Show user's location on map</dd>
-    <dt>Highlight on hover</dt>
-        <dd>Highlight features on mouseover</dd>
-    <dt>Layer search</dt>
-        <dd>Add option to search for values in layer field values</dd>
-    <dt>Match project CRS</dt>
-        <dd>Create webmap in same projection as QGIS project, otherwise the
-        webmap is projected in EPSG:3857</dd>
-    <dt>Show popups on hover</dt>
-        <dd>Show popups when mouse hovers over features</dd>
-    <dt>Template</dt>
-        <dd>Select HTML template for webmap - add your own templates to the
-            /qgis2web/templates directory in your current QGIS3 profile 
-            folder</dd>
-</dl>
 
 <h2>Reporting bugs</h2>
 <p>Please report any problems you have with qgis2web. Without this feedback, I
