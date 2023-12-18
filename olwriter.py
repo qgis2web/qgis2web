@@ -250,7 +250,7 @@ class OpenLayersWriter(Writer):
 
 
 def replaceInScript(template, values):
-    path = os.path.join(os.path.dirname(__file__), "resources", template)
+    path = os.path.join(os.path.dirname(__file__), "openlayers", template)
     with open(path) as f:
         lines = f.readlines()
     s = "".join(lines)
@@ -422,29 +422,13 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
         <style>
         .ol-geocoder.gcd-gl-container {
             top: %dpx!important;
-            left: .5em!important;
-            width: 2.1em!important;
-            height: 2.1em!important;
-        }
-        .ol-geocoder .gcd-gl-container{
-            width: 2.1em!important;
-            height: 2.1em!important;
-        }
-        .ol-geocoder .gcd-gl-control{
-            width: 2.1em!important;
-        }
-        .ol-geocoder .gcd-gl-expanded {
-            width: 15.625em!important;
-            height: 2.1875em;
+            left: 8px!important;
         }
         .ol-touch .ol-geocoder.gcd-gl-container{
             top: %dpx!important;
         }
-        .ol-geocoder .gcd-gl-btn {
-            width: 1.375em!important;
-            height: 1.375em!important;
-            top: .225em!important;
-            background-image: none!important;
+        .ol-geocoder .gcd-gl-btn:after{
+            display:none;
         }
         </style>""" % (geocodePos, touchPos)
     if layerSearch:

@@ -66,7 +66,7 @@ from qgis2web.configparams import (getParams,
                                    specificOptions)
 from qgis2web.olwriter import OpenLayersWriter
 from qgis2web.leafletWriter import LeafletWriter
-from qgis2web.mapboxWriter import MapboxWriter
+#from qgis2web.mapboxWriter import MapboxWriter
 from qgis2web.writerRegistry import (WRITER_REGISTRY)
 from qgis2web.exporter import (EXPORTER_REGISTRY)
 from qgis2web.feedbackDialog import FeedbackDialog
@@ -165,7 +165,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.layersTree.model().dataChanged.connect(self.populateAttrFilter)
         self.ol3.clicked.connect(self.changeFormat)
         self.leaflet.clicked.connect(self.changeFormat)
-        self.mapbox.clicked.connect(self.changeFormat)
+        #self.mapbox.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
         helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 "helpFile.md")
@@ -213,8 +213,8 @@ class MainDialog(QDialog, FORM_CLASS):
             return OpenLayersWriter
         elif self.mapFormat.checkedButton() == self.leaflet:
             return LeafletWriter
-        elif self.mapFormat.checkedButton() == self.mapbox:
-            return MapboxWriter
+        #elif self.mapFormat.checkedButton() == self.mapbox:
+            #return MapboxWriter
 
     def createWriter(self):
         """
@@ -550,7 +550,7 @@ class MainDialog(QDialog, FORM_CLASS):
         """
         self.ol3.setChecked(isinstance(writer, OpenLayersWriter))
         self.leaflet.setChecked(isinstance(writer, LeafletWriter))
-        self.mapbox.setChecked(isinstance(writer, MapboxWriter))
+        #self.mapbox.setChecked(isinstance(writer, MapboxWriter))
 
     def loadPreviewFile(self, file):
         """

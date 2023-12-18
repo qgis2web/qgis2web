@@ -372,6 +372,9 @@
        </item>
        <item>
         <widget class="QRadioButton" name="mapbox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Mapbox GL JS</string>
          </property>
@@ -393,18 +396,18 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>:/plugins/qgis2web/icons/preview.gif</normaloff>:/plugins/qgis2web/icons/preview.gif</iconset>
+           <normaloff>icons/preview.gif</normaloff>icons/preview.gif</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="buttonExport">
          <property name="text">
-          <string>Export</string>
+          <string> Export</string>
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
+           <normaloff>icons/export.png</normaloff>icons/export.png</iconset>
          </property>
         </widget>
        </item>

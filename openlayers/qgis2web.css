@@ -60,9 +60,14 @@ th, td {
 
 .layer-switcher {
     top: 0.5em;
-    right: 0.5em;
-    text-align: left;
+    bottom: unset!important;
 }
+
+.layer-switcher .panel {
+	max-height: calc(100vh - 100px);
+}
+
+
 
 #popup-content>ul>li:nth-child(even) {
     background-color: #eee;

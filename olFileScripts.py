@@ -21,10 +21,9 @@ def writeFiles(folder, restrictToExtent, feedback):
     shutil.copyfile(fontDir + 'fa-solid-900.ttf',
                     fontStore + 'fa-solid-900.ttf')
     # copy the rest
+    src = os.path.join(os.path.dirname(__file__), "openlayers")
     if not os.path.exists(dst):
-        shutil.copytree(os.path.join(os.path.dirname(__file__),
-                                     "resources"),
-                        dst)
+        shutil.copytree(src,dst)
     feedback.completeStep()
 
 

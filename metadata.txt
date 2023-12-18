@@ -13,18 +13,27 @@ name=qgis2web
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
-about=qgis2web generates a web map from your current QGIS project, either as OpenLayers, Leaflet, or Mapbox GL JS. It replicates as many aspects of the project as it can, including layers, styles (including categorized and graduated), and extent. No server-side software required.
+about=
+ QGIS plugin to export your project to an OpenLayers or Leaflet webmap. It replicates as many aspects of the project as it can, including layers, extent and styles (including categorized and graduated). No server-side software required.
+ 
+ Please consider a small donation at https://www.opengis.it/buy-me-a-coffee/
+ Even a modest "virtual coffee" can help support our commitment to providing quality software.
+ As a token of our gratitude, donors will receive as a gift qgis2opengis (a plugin enhancing OpenLayers export of qgis2web).
+ 
+ Happy mapping!
+ 
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.17.1
+version=3.17.2
 
 # end of mandatory metadata
 
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2023/12/09 3.17.1 Fix openlayers wms query: now visible in the popup, only visible layers on the map will be queried, not all; the tables returned by the WMS server will have a defined text size, a loading icon has been added which makes it clear that the click on the map has been made and that the popup is waiting for the remote WMS server to respond.
+changelog=2023/12/18 3.17.2 Disable Mapbox GL JS export, new openlayers geocoder: fix its marker and smartphone view, reorganized OpenLayers/Leaflet folders, fix openlayers layerswitcher height which did not allow the use of the pointer in the part occupied by the element.
+    2023/12/09 3.17.1 Fix openlayers wms query: now visible in the popup, only visible layers on the map will be queried, not all; the tables returned by the WMS server will have a defined text size, a loading icon has been added which makes it clear that the click on the map has been made and that the popup is waiting for the remote WMS server to respond.
     2023/11/28 3.17.0 For openlayers export: added area measurement, fix popup if measurement not completed, modified the drawing style now visible on both light and dark backgrounds, added graphic tips for opening and closing measurement drawing, deactivating measurement deletes measurement drawings
     2023/11/28 3.16.1 Software consolidation prior to major changes
     2020/06/15 3.16.0 Mapbox GL JS 1.11.0, Leaflet raster zIndex, Leaflet filtered labels, Leaflet filter with special characters in column name, OL centre on layer search result
@@ -207,7 +216,7 @@ tags=web,webmap,webmaps,Leaflet,OpenLayers,OL3,Mapbox GL JS,HTML,Javascript,CSS,
 homepage=https://github.com/tomchadwin/qgis2web/wiki
 tracker=https://github.com/tomchadwin/qgis2web/issues
 repository=https://github.com/tomchadwin/qgis2web
-icon=qgis2web.png
+icon=icons\qgis2web.png
 # experimental flag
 experimental=False
 

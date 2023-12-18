@@ -14,17 +14,17 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
-    jsDir = pluginDir + os.sep + 'js' + os.sep
+    jsDir = pluginDir + os.sep + 'leaflet' + os.sep + 'js' + os.sep
     dataStore = os.path.join(outputProjectFileName, 'data')
     os.makedirs(dataStore)
-    imageDir = pluginDir + os.sep + 'images' + os.sep
+    imageDir = pluginDir + os.sep + 'leaflet' + os.sep + 'images' + os.sep
     imageStore = os.path.join(outputProjectFileName, 'images')
     legendStore = os.path.join(outputProjectFileName, 'legend')
     os.makedirs(legendStore)
     cssStore = os.path.join(outputProjectFileName, 'css')
     os.makedirs(cssStore)
     cssStore += os.sep
-    cssDir = pluginDir + os.sep + 'css' + os.sep
+    cssDir = pluginDir + os.sep + 'leaflet' + os.sep + 'css' + os.sep
     fontDir = pluginDir + os.sep + 'webfonts' + os.sep
     fontStore = os.path.join(outputProjectFileName, 'webfonts')
     os.makedirs(fontStore)
