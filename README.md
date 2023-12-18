@@ -4,9 +4,7 @@
 [![Donate to QGIS](https://img.shields.io/badge/donate%20to-QGIS-green.svg)](http://qgis.org/en/site/getinvolved/donations.html)
 <h1>qgis2web</h1>
 
-&nbsp;&nbsp;&nbsp;&nbsp;![qgis2web](https://github.com/tomchadwin/qgis2web/blob/master/qgis2web.png)
-
-
+&nbsp;&nbsp;&nbsp;&nbsp;![qgis2web](https://github.com/qgis2web/qgis2web/blob/master/icons/qgis2web.png)
 
 QGIS plugin to export your project to an OpenLayers or Leaflet webmap.</br>
 It replicates as many aspects of the project as it can, including layers, extent and styles (including categorized and graduated).</br>
