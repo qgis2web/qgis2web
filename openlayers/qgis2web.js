@@ -239,7 +239,7 @@ var onSingleClick = function(evt) {
     var clusteredFeatures;
     var popupText = '<ul>';
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-        if (feature instanceof ol.Feature && (layer.get("interactive") || layer.get("interactive") == undefined)) {
+        if (layer && feature instanceof ol.Feature && (layer.get("interactive") || layer.get("interactive") == undefined)) {
             var doPopup = false;
             for (k in layer.get('fieldImages')) {
                 if (layer.get('fieldImages')[k] != "Hidden") {
