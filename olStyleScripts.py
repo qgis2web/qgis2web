@@ -522,7 +522,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             lineJoin = sl.penJoinStyle()
 
             style, useMapUnits = getStrokeStyle(color, line_style, line_width,
-                                                line_units, lineCap, lineJoin)
+                                                line_units, lineCap, lineJoin, props)
         elif isinstance(sl, QgsSimpleFillSymbolLayer):
             fillColor = getRGBAColor(props["color"], alpha)
 
@@ -542,7 +542,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             style = ""
             (stroke, useMapUnits) = getStrokeStyle(borderColor, borderStyle,
                                                    borderWidth, line_units,
-                                                   lineCap, lineJoin)
+                                                   lineCap, lineJoin, props)
             if stroke != "":
                 symbolStyles.append(stroke)
             fill = getFillStyle(fillColor, props)
@@ -605,7 +605,7 @@ def getSquare(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
             angle: Math.PI/4, %s %s})""" % (size, stroke,
@@ -619,7 +619,7 @@ def getDiamond(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
             %s %s})""" % (size, stroke, getFillStyle(color, props)),
@@ -632,7 +632,7 @@ def getPentagon(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
             %s %s})""" % (size, stroke, getFillStyle(color, props)),
@@ -645,7 +645,7 @@ def getHexagon(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 6,
             %s %s})""" % (size, stroke, getFillStyle(color, props)),
@@ -658,7 +658,7 @@ def getTriangle(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 3,
             %s %s})""" % (size, stroke, getFillStyle(color, props)),
@@ -671,7 +671,7 @@ def getStar(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
             radius2: %s, %s %s})""" % (size, size / 2, stroke,
@@ -686,7 +686,7 @@ def getCircle(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
 
     return ("""new ol.style.Circle({radius: %s + size,
@@ -701,7 +701,7 @@ def getCross(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
             radius2: 0, %s %s})""" % (size, stroke,
@@ -715,7 +715,7 @@ def getCross2(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
         stroke += ","
     return ("""new ol.style.RegularShape({radius: %s + size,
                                           points: 4,
@@ -735,7 +735,7 @@ def getLine(color, borderColor, borderWidth, size, props):
     else:
         line_units = props["outline_width_unit"]
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
-                                             line_units, 0, 0)
+                                             line_units, 0, 0, props)
     rot = props["angle"]
     return ("""new ol.style.Text({
         rotation: %s * Math.PI/180,
@@ -760,17 +760,32 @@ def getIcon(path, size, svgWidth, svgHeight, rot):
                      "path": path.replace("\\", "\\\\")}
 
 
-def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin):
+def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin, props):
     if dashed == "no":
         return ("", False)
     if line_units != "MapUnit":
-        width = str(int(float(width) * 3.8))
+        #width = str(int(float(width) * 3.8))
+        width = str(float(width) * 3.8)
         useMapUnits = False
     else:
         width = "m2px(%s)" % width
         useMapUnits = True
-    dash = dashed.replace("dash", "10,5")
-    dash = dash.replace("dot", "1,5")
+    outline_style = props.get('outline_style', 'no')
+    if outline_style == "no":
+        dash_length = 4 * float(width)
+        dash_space = 2 * float(width)
+        dot_length = 1 * float(width)
+        dot_space = 2 * float(width)
+    else:
+        dash_length = 5 * float(width)
+        dash_space = 1 * float(width)
+        dot_length = 2 * float(width)
+        dot_space = 1 * float(width)
+
+    dash = dashed.replace("dash", f"{dash_length},{dash_space}")
+    #dash = dashed.replace("dash", "10,5")
+    dash = dash.replace("dot", f"{dot_length},{dot_space}")
+    #dash = dash.replace("dot", "1,5")
     dash = dash.replace("solid", "")
     dash = dash.replace(" ", ",")
     dash = "[%s]" % dash

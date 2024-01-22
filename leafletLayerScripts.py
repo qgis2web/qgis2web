@@ -280,6 +280,7 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
     fields = layer.fields()
     field_names = popup.keys()
     field_vals = popup.values()
+
     table = ""
     for field in popup:
         tablestart = "'<table>\\"
@@ -289,28 +290,38 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
             editorWidget = layer.editorWidgetSetup(fieldIndex).type()
             displayName = layer.attributeDisplayName(fieldIndex).replace("'",
                                                                          "\\'")
-            if (editorWidget == 'Hidden'):
+            if editorWidget == 'Hidden' or val == 'hidden field':
                 continue
-
             row += """
                     <tr>\\"""
-            if val == 'inline label':
+            if val == 'inline label - always visible':
                 row += """
                         <th scope="row">"""
                 row += displayName
                 row += """</th>\\
                         <td>"""
-            else:
+            elif val == "inline label - visible with data":
                 row += """
+                        <th scope="row">"""
+                row += displayName
+                row += """</th>\\
+                        <td class="visible-with-data" id="""
+                row += '"' + str(field) + '"' '>'
+            else:
+                if val == "header label - visible with data":
+                    row += """
+                        <td class="visible-with-data" id="""
+                    row += '"' + str(field) + '"' + 'colspan="2">'
+                else:
+                    row += """
                         <td colspan="2">"""
-            if val == "header label":
+            if val == "header label - always visible" or val == 'header label - visible with data':
                 row += '<strong>'
                 row += displayName
                 row += '</strong><br />'
             row += "' + "
             row += "(feature.properties[\'" + str(field) + "\'] "
             row += "!== null ? "
-
             if (editorWidget == 'ExternalResource'):
                 row += "'<img src=\"images/' + "
                 row += "String(feature.properties['" + str(field)
@@ -320,7 +331,6 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
                 row += "autolinker.link("
                 row += "feature.properties['" + str(field)
                 row += "'].toLocaleString()) : '') + '"
-
             row += """</td>\\
                     </tr>\\"""
         tableend = """

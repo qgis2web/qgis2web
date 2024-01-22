@@ -91,6 +91,17 @@ class MainDialog(QDialog, FORM_CLASS):
         self.iface = iface
 
         self.previewUrl = None
+        
+        # Set All
+        self.setAllLayersExportValue = "default"
+        self.setAllLayersVisibleValue = "default"
+        self.setAllLayersPoupsValue = "default"
+        self.setAllLayersClusterValue = "default"
+        self.setAllLayersGetFeatureInfo = "default"
+        self.setAllLayersEncodeValue = "default"
+        self.setAllPopupFieldsComboValue = None
+        self.setAllApplyButton.clicked.connect(self.setAllApplyClicked)
+        
         self.layer_search_combo = None
         self.layer_filter_select = None
         self.exporter_combo = None
@@ -105,6 +116,7 @@ class MainDialog(QDialog, FORM_CLASS):
 
         self.verticalLayout_2.addStretch()
         self.horizontalLayout_6.addStretch()
+
         if stgs.value("qgis2web/previewOnStartup", Qt.Checked) == Qt.Checked:
             self.previewOnStartup.setCheckState(Qt.Checked)
         else:
@@ -141,8 +153,10 @@ class MainDialog(QDialog, FORM_CLASS):
         self.right_layout.insertWidget(0, widget)
         self.populateConfigParams(self)
         self.populate_layers_and_groups(self)
+        self.populateSetAllCombo()
         self.populateLayerSearch()
         self.populateAttrFilter()
+
 
         writer = WRITER_REGISTRY.createWriterFromProject()
         self.setStateToWriter(writer)
@@ -183,6 +197,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.setModal(False)
 
     @pyqtSlot(bool)
+
     def showHideDevConsole(self, visible):
         self.devConsole.setVisible(visible)
 
@@ -402,6 +417,80 @@ class MainDialog(QDialog, FORM_CLASS):
             item = self.layers_item.child(i)
             if item.checkState(0) != Qt.Checked:
                 item.setExpanded(False)
+
+    def populateSetAllCombo(self):
+        self.setAllCombo.addItem("Layers to: Export Checked/Unchecked")
+        self.setAllCombo.addItem("Layers to: Visible Checked/Unchecked")
+        self.setAllCombo.addItem("Layers to: Popups Checked/Unchecked")
+        self.setAllCombo.addItem("Layers to: Cluster Checked/Unchecked")
+        self.setAllCombo.addItem("Layers to: Encode JSON Checked/Unchecked")
+        self.setAllCombo.addItem("Layers to: GetFeatureInfo Checked/Unchecked")
+        self.setAllCombo.addItem("Popup fields to: no label")
+        self.setAllCombo.addItem("Popup fields to: inline label - always visible")
+        self.setAllCombo.addItem("Popup fields to: inline label - visible with data")
+        self.setAllCombo.addItem("Popup fields to: hidden field")
+        self.setAllCombo.addItem("Popup fields to: header label - always visible")
+        self.setAllCombo.addItem("Popup fields to: header label - visible with data")
+
+    def setAllApplyClicked(self):
+        try:
+            selected_value = self.setAllCombo.currentText()
+
+            # Depending on the value chosen, set dedicated variables present in MainDialog
+            if selected_value == "Layers to: Export Checked/Unchecked":
+                if self.setAllLayersExportValue == "unchecked" or self.setAllLayersExportValue == "default":
+                    self.setAllLayersExportValue = "checked"
+                else:
+                    self.setAllLayersExportValue = "unchecked"
+
+            if selected_value == "Layers to: Visible Checked/Unchecked":
+                if self.setAllLayersVisibleValue == "unchecked" or self.setAllLayersVisibleValue == "default":
+                    self.setAllLayersVisibleValue = "checked"
+                else:
+                    self.setAllLayersVisibleValue = "unchecked"
+                    
+            if selected_value == "Layers to: Popups Checked/Unchecked":
+                if self.setAllLayersPoupsValue == "unchecked" or self.setAllLayersPoupsValue == "default":
+                    self.setAllLayersPoupsValue = "checked"
+                else:
+                    self.setAllLayersPoupsValue = "unchecked"
+                    
+            if selected_value == "Layers to: Cluster Checked/Unchecked":
+                if self.setAllLayersClusterValue == "unchecked" or self.setAllLayersClusterValue == "default":
+                    self.setAllLayersClusterValue = "checked"
+                else:
+                    self.setAllLayersClusterValue = "unchecked"
+                    
+            if selected_value == "Layers to: Encode JSON Checked/Unchecked":
+                if self.setAllLayersEncodeValue == "unchecked" or self.setAllLayersEncodeValue == "default":
+                    self.setAllLayersEncodeValue = "checked"
+                else:
+                    self.setAllLayersEncodeValue = "unchecked"
+                    
+            if selected_value == "Layers to: GetFeatureInfo Checked/Unchecked":
+                if self.setAllLayersGetFeatureInfo == "unchecked" or self.setAllLayersGetFeatureInfo == "default":
+                    self.setAllLayersGetFeatureInfo = "checked"
+                else:
+                    self.setAllLayersGetFeatureInfo = "unchecked"
+                    
+            if selected_value == "Popup fields to: no label":
+                self.setAllPopupFieldsComboValue = "no label"
+            if selected_value == "Popup fields to: inline label - always visible":
+                self.setAllPopupFieldsComboValue = "inline label - always visible"
+            if selected_value == "Popup fields to: inline label - visible with data":
+                self.setAllPopupFieldsComboValue = "inline label - visible with data"
+            if selected_value == "Popup fields to: hidden field":
+                self.setAllPopupFieldsComboValue = "hidden field"
+            if selected_value == "Popup fields to: header label - always visible":
+                self.setAllPopupFieldsComboValue = "header label - always visible"
+            if selected_value == "Popup fields to: header label - visible with data":
+                self.setAllPopupFieldsComboValue = "header label - visible with data"
+
+            self.layersTree.clear() # Delete layers tree
+            self.populate_layers_and_groups(self) # Populate layers tree configured in TreeLayerItem class
+
+        except Exception as e:
+            print("Errore in layersSettingsApplyClicked:", str(e))
 
     def populateLayerSearch(self):
         self.layer_search_combo.clear()
@@ -753,6 +842,13 @@ class TreeLayerItem(QTreeWidgetItem):
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
+
+        # set all
+        if dlg.setAllLayersExportValue == "checked":
+            self.setCheckState(0, Qt.Checked)
+        if dlg.setAllLayersExportValue == "unchecked":
+            self.setCheckState(0, Qt.Unchecked)
+
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
         vis = layer.customProperty("qgis2web/Visible", True)
@@ -760,6 +856,13 @@ class TreeLayerItem(QTreeWidgetItem):
             self.visibleCheck.setChecked(False)
         else:
             self.visibleCheck.setChecked(True)
+
+        # set all
+        if dlg.setAllLayersVisibleValue == "checked":
+            self.visibleCheck.setChecked(True)
+        if dlg.setAllLayersVisibleValue == "unchecked":
+            self.visibleCheck.setChecked(False)
+
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
@@ -770,6 +873,13 @@ class TreeLayerItem(QTreeWidgetItem):
             self.interactiveCheck.setChecked(False)
         else:
             self.interactiveCheck.setChecked(True)
+
+        # set all
+        if dlg.setAllLayersPoupsValue == "checked":
+            self.interactiveCheck.setChecked(True)
+        if dlg.setAllLayersPoupsValue == "unchecked":
+            self.interactiveCheck.setChecked(False)
+
         self.interactiveItem.setText(0, "Popups")
         self.addChild(self.interactiveItem)
         tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
@@ -779,6 +889,13 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Encode to JSON") == 2:
                     self.jsonCheck.setChecked(True)
+
+                # set all
+                if dlg.setAllLayersEncodeValue == "checked":
+                    self.jsonCheck.setChecked(True)
+                if dlg.setAllLayersEncodeValue == "unchecked":
+                    self.jsonCheck.setChecked(False)
+
                 self.jsonItem.setText(0, "Encode to JSON")
                 self.jsonCheck.stateChanged.connect(self.changeJSON)
                 self.addChild(self.jsonItem)
@@ -788,6 +905,13 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
                     self.clusterCheck.setChecked(True)
+
+                # set all
+                if dlg.setAllLayersClusterValue == "checked":
+                    self.clusterCheck.setChecked(True)
+                if dlg.setAllLayersClusterValue == "unchecked":
+                    self.clusterCheck.setChecked(False)
+
                 self.clusterItem.setText(0, "Cluster")
                 self.clusterCheck.stateChanged.connect(self.changeCluster)
                 self.addChild(self.clusterItem)
@@ -802,27 +926,46 @@ class TreeLayerItem(QTreeWidgetItem):
                 if editorWidget == 'Hidden':
                     continue
                 options.append(f.name())
-            for option in options:
-                self.attr = QTreeWidgetItem(self)
-                self.attrWidget = QComboBox()
-                self.attrWidget.addItem("no label")
-                self.attrWidget.addItem("inline label")
-                self.attrWidget.addItem("header label")
-                custProp = layer.customProperty("qgis2web/popup/" + option)
-                if (custProp != "" and custProp is not None):
-                    self.attrWidget.setCurrentIndex(
-                        self.attrWidget.findText(
-                            layer.customProperty("qgis2web/popup/" + option)))
-                self.attr.setText(1, option)
-                self.popupItem.addChild(self.attr)
-                tree.setItemWidget(self.attr, 2, self.attrWidget)
-            self.addChild(self.popupItem)
+            if options:
+                for option in options:
+                    self.attr = QTreeWidgetItem(self)
+                    self.attrWidget = QComboBox()
+                    self.attrWidget.addItem("no label")
+                    self.attrWidget.addItem("inline label - always visible")
+                    self.attrWidget.addItem("inline label - visible with data")
+                    self.attrWidget.addItem("hidden field")
+                    self.attrWidget.addItem("header label - always visible")
+                    self.attrWidget.addItem("header label - visible with data")
+                    custProp = layer.customProperty("qgis2web/popup/" + option)
+                    if (custProp != "" and custProp is not None):
+                        self.attrWidget.setCurrentIndex(
+                            self.attrWidget.findText(
+                                layer.customProperty("qgis2web/popup/" + option)))
+                    self.attr.setText(1, option)
+                    self.popupItem.addChild(self.attr)
+                    tree.setItemWidget(self.attr, 2, self.attrWidget)
+
+                    # set all
+                    if dlg.setAllPopupFieldsComboValue is not None:
+                        self.attrWidget.setCurrentIndex(
+                            self.attrWidget.findText(dlg.setAllPopupFieldsComboValue))
+
+                self.addChild(self.popupItem)
+            else:
+                self.popupItem.setText(0, "")
         else:
             if layer.providerType() == 'wms':
                 self.getFeatureInfoItem = QTreeWidgetItem(self)
                 self.getFeatureInfoCheck = QCheckBox()
                 if layer.customProperty("qgis2web/GetFeatureInfo") == 2:
                     self.getFeatureInfoCheck.setChecked(True)
+
+                # set all
+                if dlg.setAllLayersGetFeatureInfo == "checked":
+                    self.getFeatureInfoCheck.setChecked(True)
+                if dlg.setAllLayersGetFeatureInfo == "unchecked":
+                    self.getFeatureInfoCheck.setChecked(False)
+
                 self.getFeatureInfoItem.setText(0, "Enable GetFeatureInfo?")
                 self.getFeatureInfoCheck.stateChanged.connect(
                     self.changeGetFeatureInfo)

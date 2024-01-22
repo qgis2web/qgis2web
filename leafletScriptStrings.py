@@ -137,6 +137,20 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
     map += """
         var autolinker = new Autolinker"""
     map += "({truncate: {length: 30, location: 'smart'}});"
+    map += """
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }"""
     if locate:
         map += """
         L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""
@@ -193,7 +207,12 @@ def extentScript(extent, restrictToExtent):
 def popFuncsScript(table):
     popFuncs = """
             var popupContent = %s;
-            layer.bindPopup(popupContent, {maxHeight: 400});""" % table
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);""" % table
     return popFuncs
 
 

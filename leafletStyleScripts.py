@@ -252,7 +252,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
 
         style, useMapUnits = getStrokeStyle(color, line_style, line_width,
                                             line_units, lineCap, lineJoin,
-                                            useMapUnits, feedback)
+                                            useMapUnits, feedback, props)
         style += """
                 fillOpacity: 0,"""
     elif isinstance(sl, QgsSimpleFillSymbolLayer):
@@ -273,7 +273,7 @@ def getSymbolAsStyle(symbol, markerFolder, layer_transparency, interactivity,
         strokeStyle, useMapUnits = getStrokeStyle(borderColor, borderStyle,
                                                   borderWidth, line_units,
                                                   lineCap, lineJoin,
-                                                  useMapUnits, feedback)
+                                                  useMapUnits, feedback, props)
 
         style = ('''%s %s''' %
                  (strokeStyle, getFillStyle(fillColor, props)))
@@ -316,7 +316,7 @@ def getMarker(color, borderColor, borderWidth, borderUnits, size, sizeUnits,
     useMapUnits = False
     strokeStyle, useMapUnits = getStrokeStyle(borderColor, lineStyle,
                                               borderWidth, borderUnits, 0, 0,
-                                              useMapUnits, feedback)
+                                              useMapUnits, feedback, props)
     if sizeUnits == "MapUnit":
         useMapUnits = True
         size = "geoStyle(%s)" % size
@@ -345,7 +345,7 @@ def getIcon(path, svgSize):
 
 
 def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
-                   useMapUnits, feedback):
+                   useMapUnits, feedback, props):
     if dashed != "no":
         width = round(float(width) * 3.8, 0)
         if width == 0:
@@ -353,8 +353,22 @@ def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
         if units == "MapUnit":
             useMapUnits = True
             width = "geoStyle(%s)" % width
-        dash = dashed.replace("dash", "10,5")
-        dash = dash.replace("dot", "1,5")
+        outline_style = props.get('outline_style', 'no')
+        if outline_style == "no":
+            dash_length = 4 * float(width)
+            dash_space = 2 * float(width)
+            dot_length = 1 * float(width)
+            dot_space = 2 * float(width)
+        else:
+            dash_length = 5 * float(width)
+            dash_space = 1 * float(width)
+            dot_length = 2 * float(width)
+            dot_space = 1 * float(width)
+
+        dash = dashed.replace("dash", f"{dash_length},{dash_space}")
+        #dash = dashed.replace("dash", "10,5")
+        dash = dash.replace("dot", f"{dot_length},{dot_space}")
+        #♀dash = dash.replace("dot", "1,5")
         dash = dash.replace("solid", "")
         dash = dash.replace(" ", ",")
         capString = "round"

@@ -418,8 +418,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
         layerCode += getLegend(renderer.ranges(), layer, layerName)
     else:
         layerCode += '''
-                title: '%(name)s'
-            });''' % {"name": layer.name()}
+                title: ' '
+            });''' #% {"name": layer.name().replace("'", "\\'")}
     return layerCode
 
 
@@ -432,7 +432,7 @@ def getLegend(subitems, layer, layerName):
                   {"icon": layerName, "count": count, "text": text})
     legend = '''
     title: '%(name)s<br />%(icons)s'
-        });''' % {"icons": icons, "name": layer.name()}
+        });''' % {"icons": icons, "name": layer.name().replace("'", "\\'")}
     return legend
 
 

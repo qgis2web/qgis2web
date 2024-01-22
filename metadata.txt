@@ -25,14 +25,15 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.17.2
+version=3.17.3
 
 # end of mandatory metadata
 
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=2023/12/18 3.17.2 Disable Mapbox GL JS export, new openlayers geocoder: fix its marker and smartphone view, reorganized OpenLayers/Leaflet folders, fix openlayers layerswitcher height which did not allow the use of the pointer in the part occupied by the element.
+changelog= 2024/01/22 3.17.3 Fixed the representation of dash lines, dot lines and dash-dot lines for lines, polylines and polygon strokes for both openlayers and leaflet export - Added Set All combo box which allows you to set the layer list options massively - Fix apostrophes or double quotes in layer names or in legend values - If layer's style is "No Symbols" the layer's name will not be visible in legend   
+    2023/12/18 3.17.2 Disable Mapbox GL JS export, new openlayers geocoder: fix its marker and smartphone view, reorganized OpenLayers/Leaflet folders, fix openlayers layerswitcher height which did not allow the use of the pointer in the part occupied by the element.
     2023/12/09 3.17.1 Fix openlayers wms query: now visible in the popup, only visible layers on the map will be queried, not all; the tables returned by the WMS server will have a defined text size, a loading icon has been added which makes it clear that the click on the map has been made and that the popup is waiting for the remote WMS server to respond.
     2023/11/28 3.17.0 For openlayers export: added area measurement, fix popup if measurement not completed, modified the drawing style now visible on both light and dark backgrounds, added graphic tips for opening and closing measurement drawing, deactivating measurement deletes measurement drawings
     2023/11/28 3.16.1 Software consolidation prior to major changes
