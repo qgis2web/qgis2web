@@ -354,7 +354,7 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
         legend += layer.name().replace("'", "\\'")
     elif isinstance(renderer, QgsNullSymbolRenderer):
-        legend = ""
+        legend = layer.name().replace("'", "\\'")
         symbol = None
     else:
         if isinstance(renderer, QgsCategorizedSymbolRenderer):

@@ -403,8 +403,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     if pointLayerType == "Vector":
         layerCode += '''
                 style: style_%(n)s,
+                popuplayertitle: "%(name)s",
                 interactive: %(int)s,''' % {"n": layerName,
-                                            "int": str(interactive).lower()}
+                                            "int": str(interactive).lower(),
+                                            "name": layer.name()}
     else:
         layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
     if isinstance(renderer, QgsSingleSymbolRenderer):
@@ -418,8 +420,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
         layerCode += getLegend(renderer.ranges(), layer, layerName)
     else:
         layerCode += '''
-                title: ' '
-            });''' #% {"name": layer.name().replace("'", "\\'")}
+                title: '%(name)s'
+            });''' % {"name": layer.name().replace("'", "\\'")}
     return layerCode
 
 

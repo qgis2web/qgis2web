@@ -293,9 +293,24 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             background: #fff;
             padding-right: 10px;
         }
-        .leaflet-popup-content {
-            width:auto;
-            padding-right:10px;
+        .leaflet-popup-scrolled {
+            width:auto!important;
+            height: auto!important;
+            overflow: auto;
+            max-height: 70vw;
+            max-width: 70vw;
+            border-bottom: unset!important;
+            border-top: unset!important;
+        }
+        th {
+            min-width: 75px;
+        }
+        td {
+            min-width: 75px;
+        }
+        td img {
+            max-height: 50vw;
+            max-width: 50vw;
         }
         .leaflet-tooltip {
             background: none;
@@ -397,6 +412,12 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-control-layers-toggle {
             background-color: """ + widgetBackground + """ !important;
+        }
+        .leaflet-overlay-pane {
+            z-index: 550;
+        }
+        .leaflet-popup-pane {
+            z-index: 700;
         }"""
         f_css.write(text)
         f_css.close()

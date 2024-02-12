@@ -1,5 +1,0 @@
-psycopg2
-nose2
-pyyaml
-future
-transifex-client

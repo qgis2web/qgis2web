@@ -151,6 +151,16 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
          }
          return tempDiv.innerHTML;
         }"""
+    map += """
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);"""
     if locate:
         map += """
         L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""

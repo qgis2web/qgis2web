@@ -6,45 +6,118 @@ html, body {
     font-size: small;
 }
 
-th, td {
-    vertical-align: top;
-    text-align: left;
-}
 
 #map {
     width: 100%;
     height: 100%;
 }
 
+
+
+.ol-selectable {
+	z-index: 3;
+}
+		
 .ol-popup {
     display: none;
     position: absolute;
     background-color: white;
-    -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
     padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #cccccc;
-    bottom: 12px;
-    left: -50px;   
-    height: auto;
-    width: auto;
-    min-width: 100px;
-    max-height:400px;
-    overflow: auto;      
+	border-radius: 10px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+}
+
+.ol-popup:after, .ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    position: absolute;
+}
+
+.ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 50%;
+    margin-left: -10px;
+}
+
+.ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 50%;
+    margin-left: -11px;
 }
 
 .ol-popup-closer {
-    text-decoration: none;
+	text-decoration: none;
     position: absolute;
-    top: 2px;
-    right: 8px;
+    top: 4px;
+    right: 4px;
+    text-align: center;
+    width: 19px;
+    color: #999;
+    font-family: cursive;
+    font-weight: bold;
 }
 
 .ol-popup-closer:after {
     content: "X";
 }
+
+#popup-content {
+	font-size: 12px;
+    line-height: 1.2;
+    margin-top: 5px;
+	max-height: 70vw;
+	max-width: 70vw;
+	overflow: auto;
+}
+
+#popup-content ul {
+    list-style-type: none;
+    padding-left: 0;
+	margin: unset;
+}
+
+#popup-content li {
+    margin-bottom:0.25em;
+}
+
+#popup-content>ul>li>a {
+    position: relative;
+    display: block;
+    padding: 2px;
+    border-bottom: 1px solid #666;
+    font-size: 12.5px;
+}
+
+#popup-content>table {
+    font-size: 11.4px;
+}
+
+th, td {
+    vertical-align: top;
+    text-align: left;
+}
+
+th {
+	min-width: 75px;
+}
+td {
+	min-width: 75px;
+	/* max-height: 70vw;
+	max-width: 70vw; */
+}
+
+td img {
+	max-height: 50vw!important;
+	max-width: 50vw!important;
+}
+
+
 
 .ol-attribution a {
     text-decoration: none;
@@ -69,19 +142,3 @@ th, td {
 
 
 
-#popup-content>ul>li:nth-child(even) {
-    background-color: #eee;
-}
-
-#popup-content ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-#popup-content li {
-    margin-bottom:0.25em;
-}
-
-#popup-content>table {
-    font-size: 11.4px;
-}
