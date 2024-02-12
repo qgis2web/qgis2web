@@ -302,6 +302,11 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             border-bottom: unset!important;
             border-top: unset!important;
         }
+        .leaflet-popup-content{
+            max-height: 70vw;
+            max-width: 70vw;
+            overflow: auto;
+        }
         th {
             min-width: 75px;
         }
