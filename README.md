@@ -164,6 +164,3 @@ software:</p>
     <li>Leaflet.pattern, by @teastman</li>
     <li>Leaflet.VectorGrid, by @IvanSanchez</li>
 </ul>
-
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/tomchadwin/qgis2web.svg)](https://greenkeeper.io/)
