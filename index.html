@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Page with CSS</title>
-    <!-- <link rel="stylesheet" type="text/css" href="wiki_hide_elements.css"> -->
+    <title>WIKI in plugin</title>
+    <style>
+        #github-iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        #header-logged-out, 
+        .repository-container-header, 
+        .gh-header-actions, 
+        .wiki-pages-box, 
+        .mt-0.mb-2, 
+        .input-group, 
+        .footer {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-    <iframe id="github-iframe" width="100%" height="100%" frameborder="0"></iframe>
+    <iframe id="github-iframe"></iframe>
     <script>
         function loadGitHubPage(url) {
             fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
