@@ -7,6 +7,19 @@
     <!-- <link rel="stylesheet" type="text/css" href="wiki_hide_elements.css"> -->
 </head>
 <body>
-    <iframe src="https://github.com/qgis2web/qgis2web/wiki" width="100%" height="100%"></iframe>
+    <iframe id="github-iframe" width="100%" height="100%" frameborder="0"></iframe>
+    <script>
+        function loadGitHubPage(url) {
+            fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
+                .then(response => response.text())
+                .then(data => {
+                    const iframe = document.getElementById('github-iframe');
+                    iframe.srcdoc = data;
+                })
+                .catch(error => console.error('Error fetching GitHub page:', error));
+        }
+        // Calling the function with the GitHub URL
+        loadGitHubPage('https://github.com/qgis2web/qgis2web/wiki');
+    </script>
 </body>
 </html>
