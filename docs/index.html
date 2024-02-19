@@ -4,8 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>qgis2web WIKI</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        #container {
+            max-width: 1200px; /* Larghezza massima del contenitore */
+            margin: 0 auto; /* Centra il contenuto */
+            padding: 20px; /* Spazio interno */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombra */
+            background-color: #f9f9f9; /* Colore di sfondo */
+        }
+
+        #tableOfContents {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 20px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-   
+    <div id="container">
+        <img src="../icons/qgis2web.png">
+
+        <h1 class="no-summary">qgis2web WIKI</h1>
+
+        <!-- Sommario -->
+        <div id="tableOfContents">
+            <h2 class="no-summary">Sommario</h2>
+            <ul id="tocList"></ul>
+        </div>
+
+        <h1 id="First-steps">First steps</h1>
+
+        <h2 id="Installation">Installation</h2>
+
+        <h2 id="Usage">Usage</h2>
+
+        <h1 id="Project-settings">Project settings</h1>
+
+        <h2 id="setLabels">Set Labels</h2>
+        <h4>Layers labelled in QGIS will be labelled in your webmap. The following formatting will be exported:</h4>
+        <ul>
+            <li>font size</li>
+            <li>font colour</li>
+            <li>typeface</li>
+            <li>bold</li>
+            <li>italic</li>
+            <li>backgrounds</li>
+            <li>borders</li>
+            <li>buffer</li>
+        </ul>
+        <img src="https://github.com/tomchadwin/qgis2web-docs/blob/master/screenshots/labels.png?raw=true" alt="Labeled Features">
+        <h5>Note</h5>
+        <ul>
+            <li>Buffers are only exported in OpenLayers</li>
+            <li>Backgrounds and borders are only exported in Leaflet</li>
+            <li>The export only specifies which font a label uses - it does not export the font itself</li>
+        </ul>
+
+        <h1 id="qgis2web-settings">qgis2web settings</h1>
+
+        <h1 id="Troubleshooting-and-Limitation">Troubleshooting and Limitation</h1>
+    </div>
+
+    <script>
+        // Funzione per creare il sommario dinamico a struttura ad albero
+        function createTreeTableOfContents() {
+            var tocList = document.getElementById('tocList');
+            var headings = document.querySelectorAll('h1:not(.no-summary), h2:not(.no-summary)');
+
+            var currentParent = tocList;
+            var currentLevel = 1;
+
+            headings.forEach(function (heading) {
+                var listItem = document.createElement('li');
+                var link = document.createElement('a');
+                link.textContent = heading.textContent;
+                link.href = '#' + heading.id;
+                link.onclick = function() {
+                    scrollToElement(heading);
+                };
+                listItem.appendChild(link);
+
+                // Determina il livello del titolo
+                var level = parseInt(heading.tagName.substring(1));
+
+                if (level === 1) {
+                    // Livello 1: aggiungi direttamente al sommario
+                    tocList.appendChild(listItem);
+                    currentParent = listItem; // Imposta l'elemento corrente come genitore
+                } else if (level === 2) {
+                    // Livello 2: aggiungi come sottoelenco del livello 1 corrente
+                    var sublist = document.createElement('ul');
+                    currentParent.appendChild(sublist);
+                    sublist.appendChild(listItem);
+                }
+            });
+        }
+
+        // Funzione per lo scorrimento della pagina
+        function scrollToElement(element) {
+            window.scrollTo({
+                behavior: 'smooth',
+                top: element.offsetTop
+            });
+        }
+
+        // Chiama la funzione per creare il sommario al caricamento della pagina
+        window.onload = createTreeTableOfContents;
+    </script>
+
 </body>
 </html>
