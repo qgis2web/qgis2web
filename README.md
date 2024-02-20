@@ -47,6 +47,7 @@ to your QGIS project, so save your project if you want to keep these settings.
 <h2>Awards</h2>
 
 qgis2web is among the winners of the [OSGeo:UK](https://uk.osgeo.org/agm/agm2023minutes.html) 2023 competition via GoFundGeo
+</br>
 ![os geo uk](https://github.com/tomchadwin/qgis2web/assets/89784373/275553ce-39bd-42b2-81d3-12e551ce1261)
 
 
@@ -60,53 +61,6 @@ Please consider a small donation; even a modest "virtual coffee" can help suppor
 
 Thank you for your support!
 </br>Happy mapping!🗺️
-
-<h2>Current limitations</h2>
-<p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
-This means that their respective functionality differs in many ways. qgis2web
-does its best to interpret a QGIS project and to export HTML, Javascript, and
-CSS to create a web map as close to the QGIS project as possible.</p>
-<p>However, many elements of a QGIS project cannot be reproduced, and many are
-only possible in <em>either</em> OpenLayers <em>or</em> Leaflet. qgis2web
-tries its best to produce a publish-ready map, but you can always manually edit
-the output code to achieve what qgis2web cannot.</p>
-<ul>
-    <li>in OL3 maps, only single rendered points cluster, not categorized
-        or graduated</li>
-    <li>line style (dashed/dotted) does not appear in OL3 preview, but works in
-        export</li>
-    <li>only a single 2.5d layer will render per map</li>
-    <li>2.5d layers only appear when zoomed in to building scales</li>
-    <li>attribute filters and abstract export only works in leaflet based webmaps</li>
-</ul>
-
-<h2>Reporting bugs</h2>
-<p>Please report any problems you have with qgis2web. Without this feedback, I
-am often completely unaware that a problem exists. To ensure no time or effort
-is wasted in bug reporting, please follow these steps:</p>
-<ol>
-    <li>Make sure you are using the latest release of qgis2web</li>
-    <li>Check the issues on Github to see whether the bug has already been
-        reported, and if so, read through all the comments on the issue, and
-        add any additional information from your experience of the bug</li>
-    <li>Make sure you can reproduce the bug reliably</li>
-    <li>Reduce the complexity of your bug conditions as far as you can,
-        especially by reducing the number of layers, ideally to one</li>
-    <li>Raise a Github issue, including:
-    <ul>
-        <li>only one bug per Github issue</li>
-        <li>the qgis2web version (or make it clear you are using Github master
-            branch)</li>
-        <li>any Python error text/stack trace which occurs</li>
-        <li>browser JS console errors - press F12 in qgis2web to open the 
-            developer toolbar and find the console</li>
-        <li>screenshot of your settings</li>
-        <li>screenshot of the output</li>
-        <li>a link to the data you used, if possible</li>
-    </ul></li>
-</ol>
-<p>The stability of qgis2web relies on your bug reports, so please keep them
-coming.</p>
 
 <h2>Credits</h2>
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
