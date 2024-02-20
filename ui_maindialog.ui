@@ -409,29 +409,11 @@
          <string notr="true">background-color: rgb(255, 255, 255);</string>
         </property>
         <attribute name="title">
-         <string>Help</string>
+         <string>WIKI</string>
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QTextBrowser" name="helpField">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">padding: 10px;</string>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="lineWidth">
-            <number>0</number>
-           </property>
-          </widget>
+          <layout class="QVBoxLayout" name="helpField"/>
          </item>
         </layout>
        </widget>
@@ -541,7 +523,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="right_layout" stretch=""/>
+    <layout class="QVBoxLayout" name="right_layout"/>
    </item>
   </layout>
  </widget>

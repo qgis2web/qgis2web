@@ -181,9 +181,16 @@ class MainDialog(QDialog, FORM_CLASS):
         self.leaflet.clicked.connect(self.changeFormat)
         #self.mapbox.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
-        helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                "helpFile.md")
-        self.helpField.setSource(QUrl.fromLocalFile(helpText))
+        
+        #helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        #                        "helpFile.md")
+        #self.helpField.setSource(QUrl.fromLocalFile(helpText))
+        if webkit_available:
+            self.webViewWiki = QWebView()
+            wikiText = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./docs/index.html")
+            self.webViewWiki.load(QUrl.fromLocalFile(wikiText))
+            self.helpField.addWidget(self.webViewWiki)
+            
         if webkit_available:
             self.devConsole = QWebInspector(self.preview)
             self.devConsole.setFixedHeight(0)
@@ -197,6 +204,30 @@ class MainDialog(QDialog, FORM_CLASS):
         self.setModal(False)
 
     @pyqtSlot(bool)
+    
+    def loadWebPage(self, url):
+        self.webViewWiki.load(url)
+        self.applyCSS()
+        
+    
+    def applyCSS(self):
+        css_code = """
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = `
+            #header-logged-out,
+            .repository-container-header,
+            .gh-header-actions,
+            .wiki-pages-box,
+            .mt-0.mb-2,
+            .input-group,
+            .footer {
+                display: none!important;
+            }
+        `;
+        document.head.appendChild(style);
+        """
+        self.webViewWiki.page().mainFrame().evaluateJavaScript(css_code)
 
     def showHideDevConsole(self, visible):
         self.devConsole.setVisible(visible)

@@ -41,7 +41,7 @@ CTRL/CMD-click for multiple basemaps or to deselect a basemap.</p>
 bottom-left pane sets overall options for your project. All options are written
 to your QGIS project, so save your project if you want to keep these settings.
 
-<b>More info on the [WIKI](https://github.com/tomchadwin/qgis2web/wiki)</b>
+<b>More info on the [WIKI](https://qgis2web.github.io/qgis2web/)</b>
 </p>
 
 <h2>Awards</h2>
