@@ -29,7 +29,7 @@ your webmap. Specific tasks you can carry out to improve your webmap include:
     <li>If any of your fields contain image's path, change their Widget Type to "Attachment" to have the images appear in popups</li>
     <li>Style your layers, and set their scale-dependent visibility, if required</li>
 </ul>
-<p>Run qgis2web from the Web menu, or via its icon.</p>
+<p>Run qgis2web from the Web menu, or via its icon in Web toolbar.</p>
 <p>The panes lets you set options to export your map. All options are written to your QGIS project, so save your project if you want to keep these settings.
 
 <b>More info on the [WIKI](https://qgis2web.github.io/qgis2web/)</b>
