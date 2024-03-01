@@ -22,24 +22,15 @@ No server-side software required.
 your webmap. Specific tasks you can carry out to improve your webmap include:
 </p>
 <ul>
-    <li>Set your project title, and background and highlight colours in 
-        <code>Project > Project Properties...</code></li>
-    <li>Give your layers human-friendly names in the <code>Layers Panel</code>
-    </li>
-    <li>Give your layer columns human friendly names via <code>Layer > Properties > Fields > Alias</code></li>
-    <li>Hide the columns you don't want to appear in your popups by changing
-        their Edit widget to "Hidden"</li>
-    <li>If any of your fields contain image filenames, change their Edit
-        widget to "Photo" to have the images appear in popups</li>
-    <li>Style your layers, and set their scale-dependent visibility, if
-        required</li>
+    <li>Set your project title, and background and highlight colours in <code>Project > Properties...</code></li>
+    <li>Give your layers human-friendly names in the <code>Layers Panel</code></li>
+    <li>Give your layer columns human friendly names via <code>Layer > Properties > Attributes Form > Fields > Alias</code></li>
+    <li>Hide the columns you don't want to appear in your popups by changing their Widget Type to "Hidden"</li>
+    <li>If any of your fields contain image's path, change their Widget Type to "Attachment" to have the images appear in popups</li>
+    <li>Style your layers, and set their scale-dependent visibility, if required</li>
 </ul>
-<p>Run qgis2web from the Web menu, or via its icon. If required, choose a
-basemap from the list below the preview pane, and click "Update preview".
-CTRL/CMD-click for multiple basemaps or to deselect a basemap.</p>
-<p>The top-left pane lets you set options for each layer in your map. The
-bottom-left pane sets overall options for your project. All options are written
-to your QGIS project, so save your project if you want to keep these settings.
+<p>Run qgis2web from the Web menu, or via its icon.</p>
+<p>The panes lets you set options to export your map. All options are written to your QGIS project, so save your project if you want to keep these settings.
 
 <b>More info on the [WIKI](https://qgis2web.github.io/qgis2web/)</b>
 </p>
