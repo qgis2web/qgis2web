@@ -25,14 +25,15 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.18.2
+version=3.18.3
 
 # end of mandatory metadata
 
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 2024/02/20 3.18.2 Online WIKI section merges with Help tab of qgis2web. Repository's Docs folder is created, which is displayed online as GitHub pages, and locally loaded into qgis2web's WIKI tab (instead of Help).
+changelog= 2024/03/20 Fixed blocking bug. It is now possible to read the new value format of the symbollayer color property since QGIS version 3.36
+    2024/02/20 3.18.2 Online WIKI section merges with Help tab of qgis2web. Repository's Docs folder is created, which is displayed online as GitHub pages, and locally loaded into qgis2web's WIKI tab (instead of Help).
     2024/02/12 3.18.1 Restored layer title in openlayers/leaflet layerswitcher in absence of style - Fixed bug: now openlayers popup is visible on click even if "highlight on hover" setting is active, thanks to @cukavac - Greatly improved OpenLayers popup graphics, both for desktop and smartphone - Added "popuplayertitle" variable in layer, which allows printing layer title in openlayers popup - Added maximum height and width for images in openlayers/leaflet popup - Fixed bug: features data set as clusters are now shown in openlayers popup both on click and with active hover - Fixed the problem of different popups on the first click and on the second - Changed overlay-pane z-index. Measurement now appears above the basemaps and layers, as well as the popup, as well as geolocate user
     2024/01/22 3.18.0 Fixed the representation of dash lines, dot lines and dash-dot lines for lines, polylines and polygon strokes for both openlayers and leaflet export - Added Set All combo box which allows you to set the layer list options massively - Fix apostrophes or double quotes in layer names or in legend values - If layer's style is "No Symbols" the layer's name will not be visible in legend   
     2023/12/18 3.17.2 Disable Mapbox GL JS export, new openlayers geocoder: fix its marker and smartphone view, reorganized OpenLayers/Leaflet folders, fix openlayers layerswitcher height which did not allow the use of the pointer in the part occupied by the element.
