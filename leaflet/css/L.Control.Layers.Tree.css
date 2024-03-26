@@ -1,0 +1,66 @@
+.leaflet-control-layers-toggle.leaflet-layerstree-named-toggle {
+    margin: 2px 5px;
+    width: auto;
+    height: auto;
+    background-image: none;
+}
+
+.leaflet-control-layers-list{
+	font: 13px / 1.7 "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.leaflet-layerstree-node {
+}
+
+.leaflet-layerstree-header input{
+    margin-left: 0px;
+}
+
+
+.leaflet-layerstree-header {
+}
+
+.leaflet-layerstree-header-pointer {
+    cursor: pointer;
+}
+
+.leaflet-layerstree-header label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.leaflet-layerstree-header-label {
+}
+
+.leaflet-layerstree-header-name {
+	padding-left: 2px;
+}
+
+.leaflet-layerstree-header-space {
+}
+
+.leaflet-layerstree-children {
+    padding-left: 20px;
+}
+
+.leaflet-layerstree-children-nopad {
+    padding-left: 0px;
+}
+
+.leaflet-layerstree-closed {
+}
+
+.leaflet-layerstree-opened {
+}
+
+.leaflet-layerstree-hide {
+    display: none;
+}
+
+.leaflet-layerstree-nevershow {
+    display: none;
+}
+
+.leaflet-layerstree-expand-collapse {
+    cursor: pointer;
+}

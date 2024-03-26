@@ -128,40 +128,36 @@ var onPointerMove = function(evt) {
     var clusteredFeatures;
     var popupText = '<ul>';
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-        // We only care about features from layers in the layersList, ignore
-        // any other layers which the map might contain such as the vector
-        // layer used by the measure tool
-        if (layersList.indexOf(layer) === -1) {
-            return;
-        }
-        var doPopup = false;
-        for (k in layer.get('fieldImages')) {
-            if (layer.get('fieldImages')[k] != "Hidden") {
-                doPopup = true;
-            }
-        }
-        currentFeature = feature;
-        currentLayer = layer;
-        clusteredFeatures = feature.get("features");
-        var clusterFeature;
-        if (typeof clusteredFeatures !== "undefined") {
-            if (doPopup) {
-                for(var n=0; n<clusteredFeatures.length; n++) {
-                    currentFeature = clusteredFeatures[n];
-                    currentFeatureKeys = currentFeature.getKeys();
-                    popupText += '<li><table>'
-					popupText += '<a>' + '<b>' + 'Layer' + ':&nbsp;' + layer.get('popuplayertitle') + '</b>' + '</a>';
-					popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
-                    popupText += '</table></li>';    
+        if (layer && feature instanceof ol.Feature && (layer.get("interactive") || layer.get("interactive") == undefined)) {
+            var doPopup = false;
+            for (k in layer.get('fieldImages')) {
+                if (layer.get('fieldImages')[k] != "Hidden") {
+                    doPopup = true;
                 }
             }
-        } else {
-            currentFeatureKeys = currentFeature.getKeys();
-            if (doPopup) {
-                popupText += '<li><table>';
-				popupText += '<a>' + '<b>' + 'Layer' + ':&nbsp;' + layer.get('popuplayertitle') + '</b>' + '</a>';
-				popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
-                popupText += '</table></li>';
+            currentFeature = feature;
+            currentLayer = layer;
+            clusteredFeatures = feature.get("features");
+            var clusterFeature;
+            if (typeof clusteredFeatures !== "undefined") {
+                if (doPopup) {
+                    for(var n=0; n<clusteredFeatures.length; n++) {
+                        currentFeature = clusteredFeatures[n];
+                        currentFeatureKeys = currentFeature.getKeys();
+                        popupText += '<li><table>'
+                        popupText += '<a>' + '<b>' + 'Layer' + ':&nbsp;' + layer.get('popuplayertitle') + '</b>' + '</a>';
+                        popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
+                        popupText += '</table></li>';    
+                    }
+                }
+            } else {
+                currentFeatureKeys = currentFeature.getKeys();
+                if (doPopup) {
+                    popupText += '<li><table>';
+                    popupText += '<a>' + '<b>' + 'Layer' + ':&nbsp;' + layer.get('popuplayertitle') + '</b>' + '</a>';
+                    popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
+                    popupText += '</table></li>';
+                }
             }
         }
     });
@@ -179,7 +175,7 @@ var onPointerMove = function(evt) {
             if (currentFeature) {
                 var styleDefinition = currentLayer.getStyle().toString();
 
-                if (currentFeature.getGeometry().getType() == 'Point') {
+                if (currentFeature.getGeometry().getType() == 'Point' || currentFeature.getGeometry().getType() == 'MultiPoint') {
                     var radius = styleDefinition.split('radius')[1].split(' ')[1];
 
                     highlightStyle = new ol.style.Style({
@@ -190,9 +186,9 @@ var onPointerMove = function(evt) {
                             radius: radius
                         })
                     })
-                } else if (currentFeature.getGeometry().getType() == 'LineString') {
+                } else if (currentFeature.getGeometry().getType() == 'LineString' || currentFeature.getGeometry().getType() == 'MultiLineString') {
 
-                    var featureWidth = styleDefinition.split('width')[1].split(' ')[1].replace('})','');
+                    var featureWidth = parseFloat(styleDefinition.split('width')[1].split(' ')[1].replace('})',''));
 
                     highlightStyle = new ol.style.Style({
                         stroke: new ol.style.Stroke({

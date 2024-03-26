@@ -82,7 +82,7 @@ def highlightScript(highlight, popupsOnHover, highlightFill):
     if highlight:
         highlightScript += """
 
-            if (e.target.feature.geometry.type === 'LineString') {
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
               highlightLayer.setStyle({
                 color: '""" + highlightFill + """',
               });
@@ -236,8 +236,10 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
                 mouseout: function(e) {"""
         if highlight:
             popup += """
-                    for (i in e.target._eventParents) {
-                        e.target._eventParents[i].resetStyle(e.target);
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
                     }"""
         if popupsOnHover:
             popup += """
@@ -506,8 +508,10 @@ def titleSubScript(webmap_head, level, pos):
     return titleSub
 
 
-def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
+def addLayersList(basemapList, matchCRS, layer_list, groups, cluster, legends,
                   collapsed):
+    #print("Layer List:", layer_list)
+    #print("Groups:", groups)
     if len(basemapList) < 2 or matchCRS:
         controlStart = """
         var baseMaps = {};"""
@@ -520,9 +524,15 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
             controlStart += "': basemap" + str(count)
             comma = ", "
         controlStart += "};"
+    
     controlStart += """
-        L.control.layers(baseMaps,{"""
+        var overlaysTree = ["""
     layersList = controlStart
+
+    # Dizionario per tenere traccia dei gruppi creati
+    created_groups = {}
+    # Dizionario per tenere traccia dei gruppi per i quali abbiamo già aggiunto la chiusura
+    closed_groups = {}
 
     lyrCount = len(layer_list) - 1
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
@@ -530,27 +540,75 @@ def addLayersList(basemapList, matchCRS, layer_list, cluster, legends,
             rawLayerName = i.name()
             safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             lyrCount -= 1
+
+            # Verifica se il layer fa parte di uno dei gruppi
+            is_in_group = False
+            for group_layers in groups.values():
+                if i in group_layers:
+                    is_in_group = True
+                    break
+            
+            if is_in_group:
+                for group_name, group_layers in groups.items():
+                    if i in group_layers:
+                        # Controlla se il gruppo è già stato creato
+                        if group_name not in created_groups:
+                            created_groups[group_name] = []  # Crea il gruppo vuoto
+                            layersList += """
+        {label: '<b>""" + group_name + "</b>', selectAllCheckbox: true, children: ["""
+                        # Aggiunge il layer al gruppo
+                        created_groups[group_name].append(i)
+                            
             if i.type() == QgsMapLayer.VectorLayer:
                 # testDump = i.renderer().dump()
                 if clustered and i.geometryType() == QgsWkbTypes.PointGeometry:
-                    new_layer = "'" + legends[safeLayerName].replace("'", "\'")
-                    new_layer += "': cluster_""" + safeLayerName + ","
+                    layersList += """
+            {label: '""" + legends[safeLayerName].replace("'", "\'")
+                    layersList += "', layer: cluster_""" + safeLayerName + "},"
                 else:
-                    new_layer = "'" + legends[safeLayerName].replace("'", "\'")
-                    new_layer += "': layer_" + safeLayerName + ","
-                layersList += new_layer
+                    layersList += """
+            {label: '""" + legends[safeLayerName].replace("'", "\'")
+                    layersList += "', layer: layer_" + safeLayerName + "},"
             elif i.type() == QgsMapLayer.RasterLayer:
-                new_layer = '"' + rawLayerName.replace("'", "\'") + '"'
-                new_layer += ": layer_" + safeLayerName + ""","""
-                layersList += new_layer
+                layersList += '''
+            {label: "''' + rawLayerName.replace("'", "\'") + '"'
+                layersList += ", layer: layer_" + safeLayerName + """},"""
+
+            # Controlla se tutti i layer del gruppo sono stati aggiunti
+            for group_name in created_groups:
+                if group_name not in closed_groups and len(created_groups[group_name]) == len(groups[group_name]):
+                    layersList += "]},"  # Chiude il gruppo se tutti i layer sono stati aggiunti
+                    # Aggiungi il gruppo alla lista dei gruppi chiusi
+                    closed_groups[group_name] = True
+
         except Exception:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                     level=Qgis.Critical)
-    controlEnd = "}"
+                                    level=Qgis.Critical)
+            
+    layersList += "]"
+
+    layersList += """
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+        """
     if collapsed:
-        controlEnd += ",{collapsed:false}"
-    controlEnd += ").addTo(map);"
-    layersList += controlEnd
+        layersList += """
+            collapsed: false, 
+        });
+        """
+    else:
+        layersList += """
+            collapsed: true,
+        });
+        """  
+    layersList += """
+        lay.addTo(map);
+        """
     return layersList
 
 

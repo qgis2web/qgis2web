@@ -10,36 +10,40 @@
             margin: 0;
             padding: 0;
             background-color: #fff;
-        }
-
-        #container {
-            max-width: 1000px; /* Larghezza massima del contenitore */
-            margin: 0 auto; /* Centra il contenuto */
-            padding: 20px; /* Spazio interno */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombra */
-            background-color: #f9f9f9; /* Colore di sfondo */
+			height: 100%; /* Imposta l'altezza di html e body al 100% della viewport */
         }
 		
-		@media (max-width: 1000px) {
-			#tableOfContents {
-				position: fixed;
-				font-size: 13px;
-				top: 0;
-				right: 0;
-				background-color: #f9f9f9;
-				padding: 5px;
-				border: 2px solid #ddd;		
-			}
+		#page {
+			display: flex;
+			flex-direction: column;
 		}
-		@media (min-width: 1001px) {
-			#tableOfContents {
-				position: fixed;
-				top: 15px;
-				right: 15px;
-				background-color: #f9f9f9;
-				padding: 15px;
-				border: 2px solid #ddd;		
-			}
+		
+		#tableOfContents {
+			max-width: 1000px;
+			width: 95%;
+			margin: auto;
+			font-size: 13px;
+			left: 50%;
+			background-color: #f9f9f9;
+			padding: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		}
+
+		.toc-column {
+			float: left;
+			margin-left: 10px;
+		}
+
+        #container {
+			max-width: 1000px;
+			width: 95%;
+			margin: 0 auto;
+			padding: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+			background-color: #f9f9f9;
+			height: calc(97vh - 150px);
+			overflow-y: auto;
+			font-size: 15px;
 		}
 		
 		.line {
@@ -56,7 +60,7 @@
 		}
 		
 		code {
-		font-size: 16px;
+		font-size: 14px;
 		background: #ddd;
 		padding-left: 4px;
 		padding-right: 4px;
@@ -69,30 +73,41 @@
     </style>
 </head>
 <body>
+	
+	<div id="page">
+	<div id="tableOfContents">
+		<div class="toc-column">
+			<b>SUMMARY</b></br>
+			<a href="#Firststeps">First steps</a></br>
+			<a href="#Installation">Installation</a></br>
+			<a href="#Usage">Usage</a></br>
+		</div>
+		<div class="toc-column">
+			<b>Project settings</b></br>
+			<a href="#SetQGISproject">Set QGIS project</a></br>
+			<a href="#setLayers">Set Layers</a></br>
+			<a href="#SetStyles">Set Styles</a></br>
+			<a href="#setLabels">Set Labels</a></br>
+			<a href="#setBasemaps">Set Basemaps</a></br>
+		</div>
+		<div class="toc-column">
+			<b>qgis2web settings</b></br>
+			<a href="#LayersandGroups">Layers and Groups</a></br>
+			<a href="#Appearance">Appearance</a></br>
+			<a href="#Export">Export</a></br>
+		</div>
+		<div class="toc-column">
+			<b>Limitation & Bug</b></br>
+			<a href="#Currentlimitations">Current limitations</a></br>
+			<a href="#Reportingbugs">Reporting bugs</a>
+		</div>
+	</div>
+	
     <div id="container">
-        <img src="https://raw.githubusercontent.com/qgis2web/qgis2web/master/icons/qgis2web.png">
+
+        <img src="..\icons\qgis2web.png">
 
         <h1>qgis2web WIKI</h1>
-
-        <div id="tableOfContents">
-			<b>Summary</b></br>
-				<a href="#Firststeps">First steps</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#Installation">Installation</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#Usage">Usage</a></br>
-				<a href="#Projectsettings">Project settings</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#SetQGISproject">Set QGIS project</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#setLayers">Set Layers</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#SetStyles">Set Styles</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#setLabels">Set Labels</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#setBasemaps">Set Basemaps</a></br>
-				<a href="#qgis2websettings">qgis2web settings</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#LayersandGroups">Layers and Groups</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#Appearance">Appearance</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#Export">Export</a></br>
-				<a href="#Limitation&Bug">Limitation & Bug</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#Currentlimitations">Current limitations</a></br>
-				&nbsp&nbsp&nbsp&nbsp<a href="#Reportingbugs">Reporting bugs</a>
-		</div>
 
         <h1 id="Firststeps">First steps</h1>
 
@@ -114,19 +129,24 @@
 		<div class="dotted-line"></div>
 		
 			<h2 id="Usage">Usage</h2>
-			
-				<p>To start the plugin, select <code>Web &gt; qgis2web &gt; Create web map</code> or click the qgis2web logo icon in the toolbar.</p>
-
-				<p>When you first start qgis2web, you will see a preview of your webmap in the plugin's dialog box.</p>
 				
+				<p>Prepare your map as far as possible in QGIS, as you want it to appear in	your webmap. Specific tasks you can carry out to improve your webmap include:
+				</p>
+				<ul>
+					<li>Set your project title, and background and highlight colours in <code>Project > Properties...</code></li>
+					<li>Give your layers human-friendly names in the <code>Layers Panel</code></li>
+					<li>Give your layer columns human friendly names via <code>Layer > Properties > Attributes Form > Fields > Alias</code></li>
+					<li>Hide the columns you don't want to appear in your popups by changing their Widget Type to "Hidden"</li>
+					<li>If any of your fields contain image's path, change their Widget Type to "Attachment" to have the images appear in popups</li>
+					<li>Style your layers, and set their scale-dependent visibility, if required</li>
+				</ul>
+				<p>Run qgis2web from the Web menu, or via its icon in Web toolbar</p>
+				<p>The panes lets you set options to export your map. All options are written to your QGIS project, so save your project if you want to keep these settings.
+			
+				<p>When you first start qgis2web, you will see a preview of your webmap in the plugin's dialog box.</p>	
 				<p>* This preview <em>does not update automatically</em> when you change settings within the dialog. Click <code>Update preview</code> to see your changes.</p>
-
 				<p>When you switch output format, by changing selection between <code>OpenLayers</code> and <code>Leaflet</code>, the preview <em>does</em> automatically update.</p>
-
-				<p>qgis2web saves as many settings as it can to your project file. Make sure you save your project after using the plugin so that you retain your settings.</p>
-
 				<p>* You can disable the initial automatic preview on the <code>Settings</code> tab</p>
-
 				<p>** The preview window will automatically be disabled if you have a layer with more than 1000 features</p>
 			
 		<div class="line"></div>
@@ -160,7 +180,7 @@
 
 					<p>Single quotes <code>'</code> and quotation marks <code>"</code> are supported but try not to use them</p>
 					<img src="layername.png" alt="Layer Properties Screenshot">
-					<p>These will appear in your map's <code>Layer list</code>:</p>
+					<p>These will appear in your map's <code>Layer list</code> , grouped or not :</p>
 					<img src="layerlist.png" alt="Layer Title in Layers List Screenshot">
 					<p>Set your layers' scale-dependent visibility, if required:</p>
 					<img src="scaledependent.png" alt="Set Scale-Dependent Visibility Screenshot">
@@ -305,7 +325,7 @@
 				<p>The settings shown on this page can be set massively for all layers using the "Set all" input. The entries dedicated to the checks first insert them all, then remove them, then insert them etc...</p>
 				<img src="setall.png" alt="Set all input">
 				 
-				<h3>Export</h3>
+				<h3>Export Layers</h3>
 				<p>When you launch qgis2web all activated layers in your qgis project will be checked as exportable. If you want to export all the layers of your project, turn them on before launching qgis2web or use the "Set all" input</p>
 
 				<h3>Visible</h3>
@@ -460,4 +480,5 @@
     </div>
 
 </body>
+	</div>
 </html>

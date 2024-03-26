@@ -55,12 +55,12 @@ def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
     visibility = getVisibility(mapLayers, layerObjs, visible)
 
     usedGroups = []
-    (group_list, no_group_list,
+    (group_and_no_group_list,
      usedGroups) = getGroups(canvas, layers, restrictToExtent,
                              extent, groupedLayers)
     layersList = []
     # currentVT = ""
-    for layer in (group_list + no_group_list):
+    for layer in (group_and_no_group_list):
         layersList.append(layer.replace("'", "\\'"))
     layersListString = "var layersList = [" + ",".join(layersList) + "];"
 
@@ -245,6 +245,7 @@ def buildGroups(groups, qms, layer_names_id):
                                layer_names_id[layer.id()] + ",")
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
+                                fold: "open",
                                 title: "%s"});\n''' %
                       ("group_" + safeName(group), groupLayerObjs, group))
         for layer in groupLayers:
@@ -268,39 +269,28 @@ def layersAnd25d(layers, canvas, restrictToExtent, extent, qms):
 
 
 def getGroups(canvas, layers, restrictToExtent, extent, groupedLayers):
-    group_list = []
-    no_group_list = []
+    group_and_no_group_list = []
     usedGroups = []
     currentVT = ""
     for count, layer in enumerate(layers):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         if (vts is not None):
             if (vts != currentVT):
-                no_group_list.append("lyr_" + safeName(vts))
+                group_and_no_group_list.append("lyr_" + safeName(vts))
                 currentVT = vts
         else:
-            try:
-                if is25d(layer, canvas, restrictToExtent, extent):
-                    pass
-                elif layer.id() in groupedLayers:
-                    groupName = groupedLayers[layer.id()]
-                    if groupName not in usedGroups:
-                        group_list.append("group_" + safeName(groupName))
-                        usedGroups.append(groupName)
-                else:
-                    no_group_list.append("lyr_" + safeName(layer.name()) +
-                                         "_" + str(count))
-            except Exception:
-                if layer.id() in groupedLayers:
-                    groupName = groupedLayers[layer.id()]
-                    if groupName not in usedGroups:
-                        group_list.append("group_" + safeName(groupName))
-                        usedGroups.append(groupName)
-                else:
-                    no_group_list.append("lyr_" + safeName(layer.name()) +
-                                         "_" + str(count))
+            if is25d(layer, canvas, restrictToExtent, extent):
+                pass
+            elif layer.id() in groupedLayers:
+                groupName = groupedLayers[layer.id()]
+                if groupName not in usedGroups:
+                    group_and_no_group_list.append("group_" + safeName(groupName))
+                    usedGroups.append(groupName)
+            else:
+                group_and_no_group_list.append("lyr_" + safeName(layer.name()) +
+                                     "_" + str(count))
 
-    return (group_list, no_group_list, usedGroups)
+    return (group_and_no_group_list, usedGroups)
 
 
 def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
@@ -355,7 +345,7 @@ var jsonSource_%(n)s = new ol.source.Vector({
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
     layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
-    declutter: true,
+    declutter: false,
     source: ''' % {"n": layerName}
     if cluster:
         layerCode += 'cluster_%(n)s,' % {"n": layerName}
@@ -392,7 +382,7 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
     layerCode += '''\nvar lyr_%(n)s = new ol.layer.%(t)s({
-                declutter: true,
+                declutter: false,
                 source:''' % {"n": layerName, "t": pointLayerType}
     if cluster:
         layerCode += 'cluster_%(n)s,' % {"n": layerName}
@@ -526,7 +516,7 @@ def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
     return """
         var lyr_%s = new ol.layer.Tile({
             'title': '%s',
-            'type': 'base',
+            //'type': 'base',
             'opacity': %f,
             %s
             %s

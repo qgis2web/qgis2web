@@ -179,13 +179,14 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
         editorWidget = layer.editorWidgetSetup(fieldIndex).type()
         fieldType = layer.fields().field(field).type()
         fieldName = layer.fields().field(field).name()
+        fieldLength = layer.fields().field(field).length()
         if (editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
         if fieldType == QVariant.Double or fieldType == QVariant.Int:
             fieldType = "double"
         else:
             fieldType = "string"
-        uri += '&field=' + fieldName + ":" + fieldType
+        uri += '&field=' + fieldName + ":" + fieldType + "(%d)" % fieldLength
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()
     outFeat = QgsFeature()
@@ -628,13 +629,13 @@ def handleHiddenField(layer, field):
         fieldName = field
     return fieldName
 
-
+    
 def getRGBAColor(color, alpha):
     r, g, b, a = color.split(",")[:4]
     a = (float(a) / 255) * alpha
     return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
 
-
+    
 def boilType(fieldType):
     fType = None
     if fieldType.lower() in ["boolean", "bool"]:

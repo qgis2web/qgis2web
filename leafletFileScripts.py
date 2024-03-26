@@ -50,6 +50,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
     shutil.copyfile(jsDir + 'leaflet.js.map', jsStore + 'leaflet.js.map')
     shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
+    shutil.copyfile(jsDir + 'L.Control.Layers.Tree.min.js',
+                    jsStore + 'L.Control.Layers.Tree.min.js')
+    shutil.copyfile(cssDir + 'L.Control.Layers.Tree.css',
+                    cssStore + 'L.Control.Layers.Tree.css')
     if address:
         shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
                         jsStore + 'leaflet-control-geocoder.Geocoder.js')
@@ -133,10 +137,15 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     feedback.showFeedback("Writing HTML...")
     cssAddress = '<link rel="stylesheet" href="css/leaflet.css">'
     jsAddress = '<script src="js/leaflet.js"></script>'
+    cssAddress += """
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">"""
+    jsAddress += """
+        <script src="js/L.Control.Layers.Tree.min.js"></script>"""
     if locate:
-        cssAddress += '<link rel="stylesheet" '
-        cssAddress += 'href="css/L.Control.Locate.min.css">'
-        jsAddress += '<script src="js/L.Control.Locate.min.js"></script>'
+        cssAddress += """
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">"""
+        jsAddress += """
+        <script src="js/L.Control.Locate.min.js"></script>"""
     if useMultiStyle:
         jsAddress += """
         <script src="js/multi-style-layer.js"></script>"""
@@ -156,7 +165,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
         jsAddress += """
         <script src="js/OSMBuildings-Leaflet.js"></script>"""
     extracss = '<link rel="stylesheet" href="css/qgis2web.css">'
-    extracss += '<link rel="stylesheet" href="css/fontawesome-all.min.css">'
+    extracss += """
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">"""
     if useCluster:
         clusterCSS = """<link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">"""

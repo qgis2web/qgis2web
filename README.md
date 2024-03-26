@@ -22,15 +22,24 @@ No server-side software required.
 your webmap. Specific tasks you can carry out to improve your webmap include:
 </p>
 <ul>
-    <li>Set your project title, and background and highlight colours in <code>Project > Properties...</code></li>
-    <li>Give your layers human-friendly names in the <code>Layers Panel</code></li>
-    <li>Give your layer columns human friendly names via <code>Layer > Properties > Attributes Form > Fields > Alias</code></li>
-    <li>Hide the columns you don't want to appear in your popups by changing their Widget Type to "Hidden"</li>
-    <li>If any of your fields contain image's path, change their Widget Type to "Attachment" to have the images appear in popups</li>
-    <li>Style your layers, and set their scale-dependent visibility, if required</li>
+    <li>Set your project title, and background and highlight colours in 
+        <code>Project > Project Properties...</code></li>
+    <li>Give your layers human-friendly names in the <code>Layers Panel</code>
+    </li>
+    <li>Give your layer columns human friendly names via <code>Layer > Properties > Fields > Alias</code></li>
+    <li>Hide the columns you don't want to appear in your popups by changing
+        their Edit widget to "Hidden"</li>
+    <li>If any of your fields contain image filenames, change their Edit
+        widget to "Photo" to have the images appear in popups</li>
+    <li>Style your layers, and set their scale-dependent visibility, if
+        required</li>
 </ul>
-<p>Run qgis2web from the Web menu, or via its icon in Web toolbar.</p>
-<p>The panes lets you set options to export your map. All options are written to your QGIS project, so save your project if you want to keep these settings.
+<p>Run qgis2web from the Web menu, or via its icon. If required, choose a
+basemap from the list below the preview pane, and click "Update preview".
+CTRL/CMD-click for multiple basemaps or to deselect a basemap.</p>
+<p>The top-left pane lets you set options for each layer in your map. The
+bottom-left pane sets overall options for your project. All options are written
+to your QGIS project, so save your project if you want to keep these settings.
 
 <b>More info on the [WIKI](https://qgis2web.github.io/qgis2web/)</b>
 </p>
@@ -87,25 +96,26 @@ software:</p>
 
 <p>In addition, the following libraries have been used:</p>
 <ul>
-    <li>ol3-layerswitcher, by @walkermatt</li>
-    <li>Autolinker.js, by @gregjacobs</li>
-    <li>requestAnimationFrame polyfill, by @paulirish</li>
+    <li>[ol-layerswitcher](https://github.com/walkermatt/ol-layerswitcher), by @walkermatt</li>
+    <li>[Autolinker.js](https://github.com/gregjacobs/Autolinker.js), by @gregjacobs</li>
+    <li>[requestAnimationFrame polyfill](https://gist.github.com/paulirish/1579671), by @paulirish</li>
     <li>Function.prototype.bind polyfill, by @mozilla</li>
-    <li>Leaflet.label, by @jacobtoye</li>
-    <li>Leaflet.Locate, by @domoritz</li>
-    <li>Leaflet.markercluster, by @danzel</li>
-    <li>leaflet-measure, by @ljagis</li>
-    <li>leaflet-hash, by @mlevans</li>
-    <li>Proj4js, by @madair, @calvinmetcalf, and other</li>
-    <li>Proj4Leaflet, by @kartena</li>
-    <li>Leaflet.search, by @stefanocudini</li>
-    <li>ol3-search-layer, by @ThomasG77</li>
-    <li>Leaflet.heat, by @mourner</li>
-    <li>OSMBuildings, by @kekscom</li>
-    <li>multi-style-layer, by @perliedman</li>
-    <li>Leaflet.SvgShapeMarkers, by @rowanwins</li>
-    <li>rbush, by @mourner</li>
-    <li>Labelgun, by @JamesMilnerUK</li>
-    <li>Leaflet.pattern, by @teastman</li>
-    <li>Leaflet.VectorGrid, by @IvanSanchez</li>
+    <li>[Leaflet.label](https://github.com/Leaflet/Leaflet.label), by @jacobtoye</li>
+    <li>[Leaflet.Locate](https://github.com/domoritz/leaflet-locatecontrol), by @domoritz</li>
+    <li>[Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster), by @danzel</li>
+    <li>[leaflet-measure](https://github.com/ljagis/leaflet-measure), by @ljagis</li>
+    <li>[leaflet-hash](https://github.com/mlevans/leaflet-hash), by @mlevans</li>
+    <li>[proj4js](https://github.com/proj4js/proj4js), by @madair, @calvinmetcalf, @ahocevar and other</li>
+    <li>[Proj4Leaflet](https://github.com/kartena/Proj4Leaflet), by @kartena</li>
+    <li>[leaflet-search](https://github.com/stefanocudini/leaflet-search), by @stefanocudini</li>
+    <li>[ol3-search-layer](https://github.com/webgeodatavore/ol3-search-layer), by @ThomasG77</li>
+    <li>[simpleheat](https://github.com/mourner/simpleheat), by @mourner</li>
+    <li>[OSMBuildings](https://github.com/kekscom/osmbuildings), by @kekscom</li>
+    <li>[leaflet-multi-style](https://github.com/perliedman/leaflet-multi-style), by @perliedman</li>
+    <li>[Leaflet.SvgShapeMarkers](https://github.com/rowanwins/Leaflet.SvgShapeMarkers), by @rowanwins</li>
+    <li>[rbush](https://github.com/mourner/rbush), by @mourner</li>
+    <li>[Labelgun](https://github.com/Geovation/labelgun), by @JamesMilnerUK</li>
+    <li>[Leaflet.pattern](https://github.com/teastman/Leaflet.pattern), by @teastman</li>
+    <li>[Leaflet.VectorGrid](https://github.com/Leaflet/Leaflet.VectorGrid), by @IvanSanchez</li>
+    <li>[Leaflet.Control.Layers.Tree](https://github.com/jjimenezshaw/Leaflet.Control.Layers.Tree), by @jjimenezshaw</li>
 </ul>

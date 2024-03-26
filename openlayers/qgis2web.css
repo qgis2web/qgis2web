@@ -71,8 +71,8 @@ html, body {
 	font-size: 12px;
     line-height: 1.2;
     margin-top: 5px;
-	max-height: 70vw;
-	max-width: 70vw;
+	max-height: 50vw;
+	max-width: 50vw;
 	overflow: auto;
 }
 
@@ -101,20 +101,21 @@ html, body {
 th, td {
     vertical-align: top;
     text-align: left;
+	color: #333;
 }
 
 th {
-	min-width: 75px;
+	min-width: 100px;
 }
 td {
-	min-width: 75px;
+	min-width: 100px;
 	/* max-height: 70vw;
 	max-width: 70vw; */
 }
 
 td img {
-	max-height: 50vw!important;
-	max-width: 50vw!important;
+	max-height: 40vw!important;
+	max-width: 40vw!important;
 }
 
 

@@ -42,7 +42,8 @@ from qgis.PyQt.QtCore import (QObject,
                               QByteArray,
                               QEvent,
                               Qt)
-from qgis.PyQt.QtGui import (QIcon)
+from qgis.PyQt.QtGui import (QIcon,
+                             QFont)
 from qgis.PyQt.QtWidgets import (QAction,
                                  QAbstractItemView,
                                  QDialog,
@@ -55,9 +56,13 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QWidget,
                                  QTextBrowser)
 from qgis.PyQt.uic import loadUiType
-from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
-from qgis.PyQt.QtWebKit import QWebSettings
-
+try:
+    from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
+    from qgis.PyQt.QtWebKit import QWebSettings
+    webkit_available = True
+except ImportError:
+    webkit_available = False
+    
 import traceback
 
 from . import utils
@@ -74,11 +79,12 @@ from qgis2web.feedbackDialog import FeedbackDialog
 from qgis.gui import QgsColorButton
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-webkit_available = True
 
 FORM_CLASS, _ = loadUiType(os.path.join(
     os.path.dirname(__file__), 'ui_maindialog.ui'))
 
+italic_font = QFont()
+italic_font.setItalic(True)
 
 class MainDialog(QDialog, FORM_CLASS):
     """The main dialog of QGIS2Web plugin."""
@@ -95,7 +101,7 @@ class MainDialog(QDialog, FORM_CLASS):
         # Set All
         self.setAllLayersExportValue = "default"
         self.setAllLayersVisibleValue = "default"
-        self.setAllLayersPoupsValue = "default"
+        self.setAllLayersPopupsValue = "default"
         self.setAllLayersClusterValue = "default"
         self.setAllLayersGetFeatureInfo = "default"
         self.setAllLayersEncodeValue = "default"
@@ -108,7 +114,7 @@ class MainDialog(QDialog, FORM_CLASS):
 
         self.feedback = FeedbackDialog(self)
         self.feedback.setModal(True)
-
+        
         stgs = QSettings()
 
         self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry",
@@ -185,10 +191,17 @@ class MainDialog(QDialog, FORM_CLASS):
         #helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
         #                        "helpFile.md")
         #self.helpField.setSource(QUrl.fromLocalFile(helpText))
+        
         if webkit_available:
+            QWebSettings.clearMemoryCaches()
             self.webViewWiki = QWebView()
             wikiText = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./docs/index.html")
             self.webViewWiki.load(QUrl.fromLocalFile(wikiText))
+            self.helpField.addWidget(self.webViewWiki)
+        else:
+            self.webViewWiki = QTextBrowser()
+            self.webViewWiki.setText(self.tr('Preview is not available since QtWebKit '
+                                   'dependency is missing on your system'))
             self.helpField.addWidget(self.webViewWiki)
             
         if webkit_available:
@@ -204,30 +217,6 @@ class MainDialog(QDialog, FORM_CLASS):
         self.setModal(False)
 
     @pyqtSlot(bool)
-    
-    def loadWebPage(self, url):
-        self.webViewWiki.load(url)
-        self.applyCSS()
-        
-    
-    def applyCSS(self):
-        css_code = """
-        var style = document.createElement('style');
-        style.type = 'text/css';
-        style.innerHTML = `
-            #header-logged-out,
-            .repository-container-header,
-            .gh-header-actions,
-            .wiki-pages-box,
-            .mt-0.mb-2,
-            .input-group,
-            .footer {
-                display: none!important;
-            }
-        `;
-        document.head.appendChild(style);
-        """
-        self.webViewWiki.page().mainFrame().evaluateJavaScript(css_code)
 
     def showHideDevConsole(self, visible):
         self.devConsole.setVisible(visible)
@@ -401,15 +390,18 @@ class MainDialog(QDialog, FORM_CLASS):
         if result and (not os.environ.get('CI') and
                        not os.environ.get('TRAVIS')):
             webbrowser.open_new_tab(self.exporter.destinationUrl())
+            
+    
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
         root_node = QgsProject.instance().layerTreeRoot()
-        tree_groups = []
         tree_layers = root_node.findLayers()
         self.layers_item = QTreeWidgetItem()
         self.layers_item.setText(0, "Layers and Groups")
         self.layersTree.setColumnCount(3)
+
+        group_dict = {}
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
@@ -418,36 +410,71 @@ class MainDialog(QDialog, FORM_CLASS):
                      layer.wkbType() != QgsWkbTypes.NoGeometry) and
                     layer.customProperty("ol_layer_type") is None):
                 try:
-                    # if layer.type() == QgsMapLayer.VectorLayer:
-                    #    testDump = layer.renderer().dump()
                     layer_parent = tree_layer.parent()
                     if layer_parent.parent() is None:
-                        item = TreeLayerItem(self.iface, layer,
-                                             self.layersTree, dlg)
+                        item = TreeLayerItem(self.iface, layer, self.layersTree, dlg)
                         self.layers_item.addChild(item)
                     else:
-                        if layer_parent not in tree_groups:
-                            tree_groups.append(layer_parent)
-                except Exception:
-                    QgsMessageLog.logMessage(traceback.format_exc(),
-                                             "qgis2web",
-                                             level=Qgis.Critical)
+                        if layer_parent not in group_dict:
+                            group_name = layer_parent.name()
+                            group_item = TreeGroupItem(group_name, [], self.layersTree)
+                            group_dict[layer_parent] = group_item
+                        else:
+                            group_item = group_dict[layer_parent]
+                    
+                        layer_item = TreeLayerItem(self.iface, layer, self.layersTree, dlg)
+                        group_item.addChild(layer_item)
+                        self.layers_item.addChild(group_item)
 
-        for tree_group in tree_groups:
-            group_name = tree_group.name()
-            group_layers = [
-                tree_layer.layer() for tree_layer in tree_group.findLayers()]
-            item = TreeGroupItem(group_name, group_layers, self.layersTree)
-            self.layers_item.addChild(item)
-
+                except Exception as e:
+                    QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web", level=Qgis.Critical)
+             
         self.layersTree.addTopLevelItem(self.layers_item)
         self.layersTree.expandAll()
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
-        for i in range(self.layers_item.childCount()):
-            item = self.layers_item.child(i)
-            if item.checkState(0) != Qt.Checked:
-                item.setExpanded(False)
+        
+        def find_items_recursively(root_item, target_text, found_items=None):
+            """Recursively search for items with a specific text."""
+            if found_items is None:
+                found_items = []
+
+            if root_item.text(0) == target_text:
+                found_items.append(root_item)
+            # elif root_item.text(0) != "":
+                # found_items.append(root_item) 
+
+            for i in range(root_item.childCount()):
+                child_item = root_item.child(i)
+                find_items_recursively(child_item, target_text, found_items)
+
+            if found_items:
+                return found_items
+            else:
+                return None
+                    
+        for i in range(self.layers_item.childCount()): 
+            layersItem = self.layers_item.child(i)
+            if layersItem.checkState(0) != Qt.Checked: 
+                layersItem.setExpanded(False)
+            for group in range(layersItem.childCount()):
+                layersInGroup = layersItem.child(group)
+                if layersInGroup.checkState(0) != Qt.Checked: 
+                    layersInGroup.setExpanded(False)
+
+            popups_items = find_items_recursively(layersItem, "Popups")
+            if popups_items is not None:
+                for popups_item in popups_items:
+                    widget = self.layersTree.itemWidget(popups_item, 1)
+                    if widget:
+                        if not widget.isChecked():
+                            popups_item.setExpanded(False)
+                        else:
+                            popups_item.setExpanded(True)
+                        for k in range(popups_item.childCount()):
+                            popupFieldsItem = popups_item.child(k) 
+                            if popupFieldsItem.text(0) == "":
+                                popups_item.setHidden(True)
 
     def populateSetAllCombo(self):
         self.setAllCombo.addItem("Layers to: Export Checked/Unchecked")
@@ -481,10 +508,10 @@ class MainDialog(QDialog, FORM_CLASS):
                     self.setAllLayersVisibleValue = "unchecked"
                     
             if selected_value == "Layers to: Popups Checked/Unchecked":
-                if self.setAllLayersPoupsValue == "unchecked" or self.setAllLayersPoupsValue == "default":
-                    self.setAllLayersPoupsValue = "checked"
+                if self.setAllLayersPopupsValue == "unchecked" or self.setAllLayersPopupsValue == "default":
+                    self.setAllLayersPopupsValue = "checked"
                 else:
-                    self.setAllLayersPoupsValue = "unchecked"
+                    self.setAllLayersPopupsValue = "unchecked"
                     
             if selected_value == "Layers to: Cluster Checked/Unchecked":
                 if self.setAllLayersClusterValue == "unchecked" or self.setAllLayersClusterValue == "default":
@@ -521,7 +548,7 @@ class MainDialog(QDialog, FORM_CLASS):
             self.populate_layers_and_groups(self) # Populate layers tree configured in TreeLayerItem class
 
         except Exception as e:
-            print("Errore in layersSettingsApplyClicked:", str(e))
+            print("Error in layersSettingsApplyClicked:", str(e))
 
     def populateLayerSearch(self):
         self.layer_search_combo.clear()
@@ -731,40 +758,30 @@ class MainDialog(QDialog, FORM_CLASS):
                 groupLayers = []
                 if item.checkState(0) != Qt.Checked:
                     continue
-                for layer in item.layers:
-                    groupLayers.append(layer)
-                    layers.append(layer)
-                    popup.append({})
-                    if item.visible:
-                        visible.append(True)
-                    else:
-                        visible.append(False)
-                    if item.interactive:
-                        interactive.append(True)
-                    else:
-                        interactive.append(False)
-                    if hasattr(item, "json") and item.json:
-                        json.append(True)
-                    else:
-                        json.append(False)
-                    if hasattr(item, "cluster") and item.cluster:
-                        cluster.append(True)
-                    else:
-                        cluster.append(False)
-                    if hasattr(item, "getFeatureInfo") and item.getFeatureInfo:
-                        getFeatureInfo.append(True)
-                    else:
-                        getFeatureInfo.append(False)
+                for allGroups in range(item.childCount()):
+                    allLayers = item.child(allGroups)
+                    if isinstance(allLayers, TreeLayerItem):
+                        if allLayers.checkState(0) == Qt.Checked:
+                            groupLayers.append(allLayers.layer)
+                            layers.append(allLayers.layer)
+                            popup.append(allLayers.popup)
+                            visible.append(allLayers.visible)
+                            interactive.append(allLayers.interactive)
+                            json.append(allLayers.json)
+                            cluster.append(allLayers.cluster)
+                            getFeatureInfo.append(allLayers.getFeatureInfo)
                 groups[group] = groupLayers[::-1]
 
-        return (layers[::-1],
-                groups,
-                popup[::-1],
-                visible[::-1],
-                interactive[::-1],
-                json[::-1],
-                cluster[::-1],
-                getFeatureInfo[::-1])
+        layers = layers[::-1]
+        groups = groups
+        popup = popup[::-1]
+        visible = visible[::-1]
+        interactive = interactive[::-1]
+        json = json[::-1]
+        cluster = cluster[::-1]
+        getFeatureInfo = getFeatureInfo[::-1]
+
+        return (layers, groups, popup, visible, interactive, json, cluster, getFeatureInfo)
 
     def reject(self):
         self.saveParameters()
@@ -836,18 +853,20 @@ class TreeGroupItem(QTreeWidgetItem):
         self.setText(0, name)
         self.setIcon(0, self.groupIcon)
         self.setCheckState(0, Qt.Checked)
-        self.visibleItem = QTreeWidgetItem(self)
-        self.visibleCheck = QCheckBox()
-        self.visibleCheck.setChecked(True)
-        self.visibleItem.setText(0, "Visibility")
-        self.addChild(self.visibleItem)
-        tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
-        self.interactiveItem = QTreeWidgetItem(self)
-        self.interactiveCheck = QCheckBox()
-        self.interactiveCheck.setChecked(True)
-        self.interactiveItem.setText(0, "Popups")
-        self.addChild(self.interactiveItem)
-        tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
+        
+        # self.visibleItem = QTreeWidgetItem(self)
+        # self.visibleCheck = QCheckBox()
+        # self.visibleCheck.setChecked(True)
+        # self.visibleItem.setText(0, "Visibility")
+        # self.addChild(self.visibleItem)
+        # tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
+        
+        # self.interactiveItem = QTreeWidgetItem(self)
+        # self.interactiveCheck = QCheckBox()
+        # self.interactiveCheck.setChecked(True)
+        # self.interactiveItem.setText(0, "Popups")        
+        # self.addChild(self.interactiveItem)
+        # tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
 
     @property
     def visible(self):
@@ -873,7 +892,6 @@ class TreeLayerItem(QTreeWidgetItem):
             self.setCheckState(0, Qt.Checked)
         else:
             self.setCheckState(0, Qt.Unchecked)
-
         # set all
         if dlg.setAllLayersExportValue == "checked":
             self.setCheckState(0, Qt.Checked)
@@ -887,40 +905,21 @@ class TreeLayerItem(QTreeWidgetItem):
             self.visibleCheck.setChecked(False)
         else:
             self.visibleCheck.setChecked(True)
-
         # set all
         if dlg.setAllLayersVisibleValue == "checked":
             self.visibleCheck.setChecked(True)
         if dlg.setAllLayersVisibleValue == "unchecked":
             self.visibleCheck.setChecked(False)
-
         self.visibleItem.setText(0, "Visible")
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
-        self.interactiveItem = QTreeWidgetItem(self)
-        self.interactiveCheck = QCheckBox()
-        int = True
-        if int == 0 or str(int).lower() == "false":
-            self.interactiveCheck.setChecked(False)
-        else:
-            self.interactiveCheck.setChecked(True)
-
-        # set all
-        if dlg.setAllLayersPoupsValue == "checked":
-            self.interactiveCheck.setChecked(True)
-        if dlg.setAllLayersPoupsValue == "unchecked":
-            self.interactiveCheck.setChecked(False)
-
-        self.interactiveItem.setText(0, "Popups")
-        self.addChild(self.interactiveItem)
-        tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
+                
         if layer.type() == layer.VectorLayer:
             if layer.providerType() == 'WFS':
                 self.jsonItem = QTreeWidgetItem(self)
                 self.jsonCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Encode to JSON") == 2:
                     self.jsonCheck.setChecked(True)
-
                 # set all
                 if dlg.setAllLayersEncodeValue == "checked":
                     self.jsonCheck.setChecked(True)
@@ -936,7 +935,6 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
                     self.clusterCheck.setChecked(True)
-
                 # set all
                 if dlg.setAllLayersClusterValue == "checked":
                     self.clusterCheck.setChecked(True)
@@ -947,50 +945,12 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterCheck.stateChanged.connect(self.changeCluster)
                 self.addChild(self.clusterItem)
                 tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
-            self.popupItem = QTreeWidgetItem(self)
-            self.popupItem.setText(0, "Popup fields")
-            options = []
-            fields = self.layer.fields()
-            for f in fields:
-                fieldIndex = fields.indexFromName(f.name())
-                editorWidget = layer.editorWidgetSetup(fieldIndex).type()
-                if editorWidget == 'Hidden':
-                    continue
-                options.append(f.name())
-            if options:
-                for option in options:
-                    self.attr = QTreeWidgetItem(self)
-                    self.attrWidget = QComboBox()
-                    self.attrWidget.addItem("no label")
-                    self.attrWidget.addItem("inline label - always visible")
-                    self.attrWidget.addItem("inline label - visible with data")
-                    self.attrWidget.addItem("hidden field")
-                    self.attrWidget.addItem("header label - always visible")
-                    self.attrWidget.addItem("header label - visible with data")
-                    custProp = layer.customProperty("qgis2web/popup/" + option)
-                    if (custProp != "" and custProp is not None):
-                        self.attrWidget.setCurrentIndex(
-                            self.attrWidget.findText(
-                                layer.customProperty("qgis2web/popup/" + option)))
-                    self.attr.setText(1, option)
-                    self.popupItem.addChild(self.attr)
-                    tree.setItemWidget(self.attr, 2, self.attrWidget)
-
-                    # set all
-                    if dlg.setAllPopupFieldsComboValue is not None:
-                        self.attrWidget.setCurrentIndex(
-                            self.attrWidget.findText(dlg.setAllPopupFieldsComboValue))
-
-                self.addChild(self.popupItem)
-            else:
-                self.popupItem.setText(0, "")
         else:
             if layer.providerType() == 'wms':
                 self.getFeatureInfoItem = QTreeWidgetItem(self)
                 self.getFeatureInfoCheck = QCheckBox()
                 if layer.customProperty("qgis2web/GetFeatureInfo") == 2:
                     self.getFeatureInfoCheck.setChecked(True)
-
                 # set all
                 if dlg.setAllLayersGetFeatureInfo == "checked":
                     self.getFeatureInfoCheck.setChecked(True)
@@ -1003,17 +963,81 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.addChild(self.getFeatureInfoItem)
                 tree.setItemWidget(self.getFeatureInfoItem, 1,
                                    self.getFeatureInfoCheck)
-
+                                       
+        self.interactiveItem  = QTreeWidgetItem(self)
+        self.interactiveCheck = QCheckBox()
+        if layer.type() == layer.VectorLayer:
+            int = True
+            if int == 0 or str(int).lower() == "false":
+                self.interactiveCheck.setChecked(False)
+            else:
+                self.interactiveCheck.setChecked(True)
+            # set all
+            if dlg.setAllLayersPopupsValue == "checked":
+                self.interactiveCheck.setChecked(True)
+            if dlg.setAllLayersPopupsValue == "unchecked":
+                self.interactiveCheck.setChecked(False)
+                
+            self.interactiveItem.setText(0, "Popups")
+            tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
+            self.interactiveCheck.stateChanged.connect(self.togglePopups)  
+        
+            self.popupItem = QTreeWidgetItem(self.interactiveItem)
+            self.popupItem.setText(0, "Popup fields:")
+            options = []
+            fields = self.layer.fields()
+            for f in fields:
+                fieldIndex = fields.indexFromName(f.name())
+                editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                if editorWidget == 'Hidden':
+                    continue
+                options.append(f.name())
+            if options:
+                for option in options:
+                    self.attr = QTreeWidgetItem(self.popupItem)
+                    self.attrWidget = QComboBox()
+                    self.attrWidget.addItem("no label")
+                    self.attrWidget.addItem("inline label - always visible")
+                    self.attrWidget.addItem("inline label - visible with data")
+                    self.attrWidget.addItem("hidden field")
+                    self.attrWidget.addItem("header label - always visible")
+                    self.attrWidget.addItem("header label - visible with data")
+                    custProp = layer.customProperty("qgis2web/popup/" + option)
+                    if (custProp != "" and custProp is not None):
+                        self.attrWidget.setCurrentIndex(
+                            self.attrWidget.findText(
+                                layer.customProperty("qgis2web/popup/" + option)))
+                    self.attr.setText(0, option)
+                    self.attr.setFont(0, italic_font)
+                    self.popupItem.addChild(self.attr)
+                    tree.setItemWidget(self.attr, 1, self.attrWidget)
+                    # set all
+                    if dlg.setAllPopupFieldsComboValue is not None:
+                        self.attrWidget.setCurrentIndex(
+                            self.attrWidget.findText(dlg.setAllPopupFieldsComboValue))
+                self.addChild(self.popupItem)
+            else:
+                self.popupItem.setText(0, "")
+        
+        self.emptyRow = QTreeWidgetItem()
+        self.addChild(self.emptyRow)
+        
     @property
     def popup(self):
         popup = []
         self.tree = self.treeWidget()
         for p in range(self.childCount()):
-            item = self.child(p).text(1)
-            if item != "":
-                popupVal = self.tree.itemWidget(self.child(p), 2).currentText()
-                pair = (item, popupVal)
-                popup.append(pair)
+            optionItem = self.child(p)
+            if optionItem.text(0) == "Popups":
+                for n in range(optionItem.childCount()):
+                    popupFieldsItem = optionItem.child(n)
+                    for m in range(popupFieldsItem.childCount()):
+                        widgetItem = popupFieldsItem.child(m)
+                        widgetText = widgetItem.text(0)
+                        if widgetText != "":
+                            popupVal = self.tree.itemWidget(widgetItem, 1).currentText()
+                            pair = (widgetText, popupVal)
+                            popup.append(pair)
         popup = OrderedDict(popup)
         return popup
 
@@ -1056,6 +1080,12 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer.setCustomProperty("qgis2web/GetFeatureInfo",
                                      isGetFeatureInfo)
 
+    def togglePopups(self, state):
+        if state == Qt.Unchecked:
+            self.interactiveItem.setExpanded(False)
+        else:
+            self.interactiveItem.setExpanded(True)
+   
 
 class TreeSettingItem(QTreeWidgetItem):
 
@@ -1131,25 +1161,25 @@ class TreeSettingItem(QTreeWidgetItem):
         else:
             return self.text(1)
 
+if webkit_available:
+    class WebPage(QWebPage):
+        """
+        Makes it possible to use a Python logger to print javascript
+        console messages
+        """
 
-class WebPage(QWebPage):
-    """
-    Makes it possible to use a Python logger to print javascript
-    console messages
-    """
+        def __init__(self, logger=None, parent=None):
+            super(WebPage, self).__init__(parent)
 
-    def __init__(self, logger=None, parent=None):
-        super(WebPage, self).__init__(parent)
-
-    def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
-        if (msg != ("Unable to get image data from canvas because "
-                    "the canvas has been tainted by cross-origin data.") and
-                msg != ("Deprecated include of L.Mixin.Events: this property "
-                        "will be removed in future releases, please inherit "
-                        "from L.Evented instead.") and
-                os.environ.get('CI') and os.environ.get('TRAVIS')):
-            raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
-                              Exception())
+        def javaScriptConsoleMessage(self, msg, lineNumber, sourceID):
+            if (msg != ("Unable to get image data from canvas because "
+                        "the canvas has been tainted by cross-origin data.") and
+                    msg != ("Deprecated include of L.Mixin.Events: this property "
+                            "will be removed in future releases, please inherit "
+                            "from L.Evented instead.") and
+                    os.environ.get('CI') and os.environ.get('TRAVIS')):
+                raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
+                                  Exception())
 
 
 class jsException(Exception):
