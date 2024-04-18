@@ -71,8 +71,8 @@ html, body {
 	font-size: 12px;
     line-height: 1.2;
     margin-top: 5px;
-	max-height: 50vw;
-	max-width: 50vw;
+	max-height: 90vh;
+	max-width: 70vw;
 	overflow: auto;
 }
 
