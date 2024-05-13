@@ -16,6 +16,7 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
+                       QgsSVGFillSymbolLayer,
                        QgsSymbolLayerUtils)
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
@@ -563,6 +564,27 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             if fill != "":
                 symbolStyles.append(fill)
             style = ",".join(symbolStyles)
+        elif isinstance(sl, QgsSVGFillSymbolLayer):
+            path = os.path.join(stylesFolder, os.path.basename(sl.svgFilePath()))
+            svg = xml.etree.ElementTree.parse(sl.svgFilePath()).getroot()
+            try:
+                svgWidth = svg.attrib["width"]
+                svgWidth = re.sub("px", "", svgWidth)
+                svgWidth = re.sub("mm", "", svgWidth)
+            except Exception:
+                svgWidth = "5"
+
+            try:
+                svgHeight = svg.attrib["height"]
+                svgHeight = re.sub("px", "", svgHeight)
+                svgHeight = re.sub("mm", "", svgHeight)
+            except Exception:
+                svgHeight = "5"
+
+            shutil.copy(sl.svgFilePath(), path)
+            style = ("image: %s" %
+                     getIcon("styles/" + os.path.basename(sl.svgFilePath()),
+                             sl.properties()['width'], svgWidth, svgHeight, sl.properties()['angle']))
         elif isinstance(sl, QgsLinePatternFillSymbolLayer):
             weight = sl.subSymbol().width()
             spaceWeight = sl.distance()

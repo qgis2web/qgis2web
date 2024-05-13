@@ -10,6 +10,7 @@ from qgis.core import (QgsProject,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsSvgMarkerSymbolLayer,
+                       QgsSVGFillSymbolLayer,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
@@ -426,11 +427,11 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
 def getLegend(subitems, layer, layerName):
     icons = ""
     for count, subitem in enumerate(subitems):
-        if isinstance(subitem.symbol().symbolLayers()[0], QgsSvgMarkerSymbolLayer):
-            svgFile = os.path.basename(subitem.symbol().symbolLayers()[0].path())
-            icons += ("""\\
-    <img style="max-width:16px; max-height:16px;" src="styles/%(icon)s" /> %(text)s<br />""" %
-                      {"icon": svgFile, "text": subitem.label().replace("'", "\\'")})
+        if isinstance(subitem.symbol().symbolLayers()[0], QgsSVGFillSymbolLayer):
+            svgFile = os.path.basename(subitem.symbol().symbolLayers()[0].svgFilePath())
+            icons += ('''\
+    <img style="max-width:16px; max-height:16px;" src="styles/''' + svgFile + '''" /> %(text)s<br />''' %
+                      {"icon": layerName, "text": subitem.label().replace("'", "\\'")})
         else:
             icons += ("""\\
     <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
