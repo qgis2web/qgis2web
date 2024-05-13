@@ -71,8 +71,8 @@ html, body {
 	font-size: 12px;
     line-height: 1.2;
     margin-top: 5px;
-	max-height: 50vw;
-	max-width: 50vw;
+	max-height: 70vh;
+	max-width: 70vw;
 	overflow: auto;
 }
 
@@ -109,15 +109,17 @@ th {
 }
 td {
 	min-width: 100px;
-	/* max-height: 70vw;
-	max-width: 70vw; */
 }
 
 td img {
-	max-height: 40vw!important;
-	max-width: 40vw!important;
+	max-height: 60vh!important;
+	max-width: 60vw!important;
 }
 
+td video {
+	max-height: 60vh!important;
+	max-width: 60vw!important;
+}
 
 
 .ol-attribution a {

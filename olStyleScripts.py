@@ -503,7 +503,21 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                     rot += ") * 0.0174533"
             else:
                 rot = str(sl.angle() * 0.0174533)
-            shutil.copy(sl.path(), path)
+                
+            # save a colorized svg in the markers folder
+            # replacing "param(...)" with actual values from QGIS
+            pColor = getRGBAColor(props["color"], alpha).strip("'")
+            pOutline = getRGBAColor(props["outline_color"], alpha).strip("'")
+            with open(sl.path()) as f:
+                s = f.read()
+                s = s.replace('param(fill)', pColor)
+                s = s.replace('param(fill-opacity)', '1')
+                s = s.replace('param(outline)', pOutline)
+                s = s.replace('param(outline-width)', str(float(props["outline_width"]) * 80))
+                s = s.replace('param(outline-opacity)', '1')
+            with open(path, 'w') as f:
+                f.write(s)
+        
             style = ("image: %s" %
                      getIcon("styles/" + os.path.basename(sl.path()),
                              sl.size(), svgWidth, svgHeight, rot))

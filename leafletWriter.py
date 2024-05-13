@@ -145,6 +145,7 @@ class LeafletWriter(Writer):
         template = params["Appearance"]["Template"]
         widgetAccent = params["Appearance"]["Widget Icon"]
         widgetBackground = params["Appearance"]["Widget Background"]
+        layersList = params["Appearance"]["Add layers list"]
 
         usedFields = [ALL_ATTRIBUTES] * len(popup)
 
@@ -155,7 +156,7 @@ class LeafletWriter(Writer):
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
                                                    layerFilter, canvas,
-                                                   addressSearch, locate)
+                                                   addressSearch, locate, layersList)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
                  widgetAccent, widgetBackground)
 

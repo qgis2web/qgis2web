@@ -9,7 +9,7 @@ from qgis2web.utils import replaceInTemplate
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                          cluster_set, measure, matchCRS, layerSearch,
-                         filterItems, canvas, address, locate):
+                         filterItems, canvas, address, locate, layersList):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -50,10 +50,11 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
     shutil.copyfile(jsDir + 'leaflet.js', jsStore + 'leaflet.js')
     shutil.copyfile(jsDir + 'leaflet.js.map', jsStore + 'leaflet.js.map')
     shutil.copyfile(cssDir + 'leaflet.css', cssStore + 'leaflet.css')
-    shutil.copyfile(jsDir + 'L.Control.Layers.Tree.min.js',
-                    jsStore + 'L.Control.Layers.Tree.min.js')
-    shutil.copyfile(cssDir + 'L.Control.Layers.Tree.css',
-                    cssStore + 'L.Control.Layers.Tree.css')
+    if layersList != "None":
+        shutil.copyfile(jsDir + 'L.Control.Layers.Tree.min.js',
+                        jsStore + 'L.Control.Layers.Tree.min.js')
+        shutil.copyfile(cssDir + 'L.Control.Layers.Tree.css',
+                        cssStore + 'L.Control.Layers.Tree.css')
     if address:
         shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
                         jsStore + 'leaflet-control-geocoder.Geocoder.js')

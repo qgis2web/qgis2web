@@ -105,7 +105,7 @@
 	
     <div id="container">
 
-        <img src="qgis2web.png">
+        <img src="..\icons\qgis2web.png">
 
         <h1>qgis2web WIKI</h1>
 
@@ -123,8 +123,11 @@
 				<ul>
 					<li><p>Click <code>Install plugin</code></p>
 				<p>or:</p>			
-					<li><a href="https://github.com/qgis2web/qgis2web/archive/master.zip" target="_blank">Download</a> and unzip to your QGIS plugins directory</li>
+					<li><a href="https://github.com/qgis2web/qgis2web/archive/master.zip" target="_blank">Download</a> master repository from github</li>
+					<li>In QGIS, open <code>Plugins &gt; Manage and Install Plugins... &gt; Install from ZIP</code></li>	
 				</ul>
+
+				<img src="install_from_zip.png" alt="Install From Zip">
 			
 		<div class="dotted-line"></div>
 		
@@ -194,16 +197,18 @@
 					<p>Hide the field if you don't want to export it, by changing their <code>Widget Type</code> to "Hidden". As a result, the information will not appear in the popup:</p>
 					<img src="hidden.png" alt="Hide Field Screenshot">
 
-					<h3>Image Photo</h3>
+					<h3>Image or Video</h3>
 
-					<p>If you want to show images in the popup you must set <code>Widget Type</code> to "Attachment" and do not change other values. Only the Absolute path is supported:</p>
+					<p>If you want to show images or video in popup you must set <code>Widget Type</code> to "Attachment" and do not change other values. Only the Absolute path is supported:</p>
 					<img src="attachment.png" alt="Photo Screenshot">
 
 					<p>Set the absolute path as the field text:</p>
 					<img src="absolutepath.png" alt="Absolute Path Screenshot">
 
-					<p>The result in your map will look like this:</p>
+					<p>The result in your map will look like this</p>
 					<img src="popupresultimage.png" alt="Image Screenshot">
+					<p>or this, for video</p>
+					<img src="video.png" alt="Video Screenshot">
 
 		<div class="dotted-line"></div>		
 		
@@ -238,8 +243,12 @@
 					<h3>Dash Dot Dot Line</h3>
 					<img src="dashdotdotline.png" alt="Dash Dot Dot Line">
 
-					<h3>SVG Marker</h3>
+					<h3>SVG Marker (supported fill and border)</h3>
 					<img src="svgmarker.png" alt="SVG Marker">
+
+					<a>SVG Categorized or Graduated</a>
+
+					<img src="svg_categorized_or_graduated.png" alt="SVG Categorized or Graduated">
 
 					<h3>Transparency</h3>
 					<h4>Vector Layer</h4>
@@ -278,41 +287,37 @@
 		
 		<div class="dotted-line"></div>				
 			
-			<h2 id="setBasemaps">Set Basemaps</h2>
+			<h2 id="setBasemaps">Set Basemaps using XYZ Tiles</h2>
 				
 				<p>As of QGIS 3.0 and qgis2web 3.0 basemaps are now handled through the XYZ Tiles data source in QGIS.</p>
 
-				<h3>Basemap Sources</h3>
-				<p>Leaflet has a gallery of map providers <a href="http://leaflet-extras.github.io/leaflet-providers/preview/">HERE</a></p>
-				<p>This highlights the URL needed for XYZ Tiles:</p>
-				<img src="xyz.png" alt="XYZ Tiles URL Example">
+				<h3>Basemap Sources:</h3>
+				<b>OpenStreetMap</b></p>
+				http://tile.openstreetmap.org/{z}/{x}/{y}.png</p>
+				<b>OpenTopoMap</b></p>
+				https://tile.opentopomap.org/{z}/{x}/{y}.png</p>
+				<b>Google Hybrid</b></p>
+				https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}</p>
+				<b>Google Satellite</b></p>
+				https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}</p>
+				<b>Google Road</b></p>
+				https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}</p>
+				<b>Bing Aerial</b></p>
+				http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1</p>
+			    </br>
 
-				<p>You may need to modify the first character from something like:</p>
-					<code>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</code>
-					<p>to</p>
-					<code>https://a.tile.openstreetmap.org/{z}/{x}/{y}.png</code>
-					<p>If it requires an API key it will be something like this:</p>
-					<code>https://a.tile.openstreetmap.org/{z}/{x}/{y}.png?apikey=sdf987876sd8vs87s6f8blah</code>
-
-				<h3>Adding a Basemap using XYZ Tiles</h3>
-				<p>XYZ Tiles can be accessed from the browser and you can right click on it to add a new connection:</p>
-				<img src="newxyz.png" alt="Add XYZ Tiles Connection">
-				<p>Then put in a name for the basemap and the aforementioned URL</p>
-				<img src="xyzconnection.png" alt="Add Basemap Name and URL">
-				<p>You can then drag the newly added basemap from the Browser Menu into the Map. After adding a couple layers, it will look something like this in the preview:</p>
-				
-				<h4>Openlayers</h4>
-				<img src="xyzopenlayers.png" alt="Openlayers Preview">
-
-				<h4>Leaflet</h4>
-				<img src="xyzleaflet.png" alt="Leaflet Preview">
+				<p>XYZ Tiles can be accessed from menù on top:</p>
+				<img src="browse_xyz.png" alt="Browse XYZ">
+				<p>Then put in a name for basemap and the aforementioned URL</p>
+				<img src="add_new_xyz.png" alt="Add new XYZ">
+				<p>Then click to "add" to put in Map</p>
+				<img src="add_xyz_to_map.png" alt="Add XYZ to map">
 
 				<h3>Notes</h3>
 				<ul>
 					<li>If you select multiple basemaps, you will only be able to switch between them if you also add a layers list to your map</li>
 					<li>Basemaps are normally available on in EPSG:3857</li>
 					<li>Openlayers doesn't seem to like layers with api keys, but they seem to work fine with leaflet</li>
-					<li>Openlayers will create radio buttons for basemaps, Leaflet creates checkboxes as it treats basemaps the same as the other layers.</li>
 				</ul>
 				
 		<div class="line"></div>
@@ -442,8 +447,6 @@
 				<ul>
 					<li>in OL3 maps, only single rendered points cluster, not categorized
 						or graduated</li>
-					<li>line style (dashed/dotted) does not appear in OL3 preview, but works in
-						export</li>
 					<li>only a single 2.5d layer will render per map</li>
 					<li>2.5d layers only appear when zoomed in to building scales</li>
 					<li>attribute filters and abstract export only works in leaflet based webmaps</li>

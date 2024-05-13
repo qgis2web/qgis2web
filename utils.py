@@ -250,11 +250,26 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
     path = os.path.join(layersFolder, sln + ".js")
     options = []
     if precision != "maintain":
-        options.append("COORDINATE_PRECISION=" + str(precision))
-    e, err = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath,
-                                                     "utf-8", crs, 'GeoJson',
-                                                     0, layerOptions=options)
-    if e == QgsVectorFileWriter.NoError:
+        options.append("COORDINATE_PRECISION=" + str(precision))         
+    
+    # Define all features coordinates to 4326
+    tr = QgsCoordinateTransform(cleanLayer.crs(), crs, QgsProject.instance())
+    # Define option for vector file
+    save_options = QgsVectorFileWriter.SaveVectorOptions()
+    save_options.fileEncoding = 'utf-8' 
+    save_options.ct = tr  
+    save_options.driverName = 'GeoJson'
+    save_options.onlySelectedFeatures = 0
+    save_options.layerOptions = options     
+    
+    # Make sure that we are using the latest (non-deprecated) write method
+    if hasattr(QgsVectorFileWriter, 'writeAsVectorFormatV3'):
+        # Use writeAsVectorFormatV3 for QGIS versions >= 3.20 to avoid DeprecationWarnings
+        result = QgsVectorFileWriter.writeAsVectorFormatV3(cleanLayer, tmpPath, QgsProject.instance().transformContext(), save_options)
+    else:
+        # Use writeAsVectorFormat for QGIS versions < 3.10.3 for backwards compatibility
+        result = QgsVectorFileWriter.writeAsVectorFormat(cleanLayer, tmpPath, "utf-8", crs, 'GeoJson', 0, layerOptions=options)   
+    if result:
         with open(path, mode="w", encoding="utf8") as f:
             f.write("var %s = " % ("json_" + sln))
             with open(tmpPath, encoding="utf8") as tmpFile:
@@ -266,7 +281,7 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
         os.remove(tmpPath)
     else:
         QgsMessageLog.logMessage(
-            "Could not write json file {}: {}".format(tmpPath, err),
+            "Could not write json file {}: {}".format(tmpPath, result),
             "qgis2web",
             level=Qgis.Critical)
         return
@@ -274,6 +289,7 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
     fields = layer.fields()
     for field in fields:
         exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
+
 
 
 def add25dAttributes(cleanLayer, layer, canvas):
@@ -629,13 +645,11 @@ def handleHiddenField(layer, field):
         fieldName = field
     return fieldName
 
-    
 def getRGBAColor(color, alpha):
     r, g, b, a = color.split(",")[:4]
     a = (float(a) / 255) * alpha
     return "'rgba(%s)'" % ",".join([r, g, b, str(a)])
 
-    
 def boilType(fieldType):
     fType = None
     if fieldType.lower() in ["boolean", "bool"]:
