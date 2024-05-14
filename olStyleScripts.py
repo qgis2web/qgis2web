@@ -16,6 +16,7 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
+                       QgsSVGFillSymbolLayer,
                        QgsSymbolLayerUtils)
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
@@ -562,6 +563,22 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             fill = getFillStyle(fillColor, props)
             if fill != "":
                 symbolStyles.append(fill)
+            style = ",".join(symbolStyles)
+        elif isinstance(sl, QgsSVGFillSymbolLayer):
+            borderColor = getRGBAColor(props["color"], 0.5)
+            borderStyle = 'solid'
+            borderWidth = 0.5
+            line_units = 'mm'
+            lineCap = 0
+            lineJoin = 0
+
+            symbolStyles = []
+            style = ""
+            (stroke, useMapUnits) = getStrokeStyle(borderColor, borderStyle,
+                                                   borderWidth, line_units,
+                                                   lineCap, lineJoin, props)
+            if stroke != "":
+                symbolStyles.append(stroke)
             style = ",".join(symbolStyles)
         elif isinstance(sl, QgsLinePatternFillSymbolLayer):
             weight = sl.subSymbol().width()
