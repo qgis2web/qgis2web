@@ -136,18 +136,18 @@
 				<p>Prepare your map as far as possible in QGIS, as you want it to appear in	your webmap. Specific tasks you can carry out to improve your webmap include:
 				</p>
 				<ul>
-					<li>Set your project title, and background and highlight colours in <code>Project > Properties...</code></li>
+					<li>Set your project title, abstract, background and highlight colours in <code>Project > Properties... > General/Metadata</code></li>
 					<li>Give your layers human-friendly names in the <code>Layers Panel</code></li>
 					<li>Give your layer columns human friendly names via <code>Layer > Properties > Attributes Form > Fields > Alias</code></li>
-					<li>Hide the columns you don't want to appear in your popups by changing their Widget Type to "Hidden"</li>
-					<li>If any of your fields contain image's path, change their Widget Type to "Attachment" to have the images appear in popups</li>
-					<li>Style your layers, and set their scale-dependent visibility, if required</li>
+					<li>Hide fields you don't want to appear in your popups by changing their Widget Type to "Hidden"</li>
+					<li>Show media in your popups by changing their Widget Type to "Attachment" (your fields must contain image's path)</li>
+					<li>Style your layers as explained in this wiki, and set their scale-dependent visibility, if required</li>
 				</ul>
 				<p>Run qgis2web from the Web menu, or via its icon in Web toolbar</p>
 				<p>The panes lets you set options to export your map. All options are written to your QGIS project, so save your project if you want to keep these settings.
 			
 				<p>When you first start qgis2web, you will see a preview of your webmap in the plugin's dialog box.</p>	
-				<p>* This preview <em>does not update automatically</em> when you change settings within the dialog. Click <code>Update preview</code> to see your changes.</p>
+				<p>This preview <em>does not update automatically</em> when you change settings within the dialog. Click <code>Update preview</code> to see your changes *</p>
 				<p>When you switch output format, by changing selection between <code>OpenLayers</code> and <code>Leaflet</code>, the preview <em>does</em> automatically update.</p>
 				<p>* You can disable the initial automatic preview on the <code>Settings</code> tab</p>
 				<p>** The preview window will automatically be disabled if you have a layer with more than 1000 features</p>
@@ -161,16 +161,24 @@
 				<p>In QGIS, open <code>Project &gt; Project Properties... &gt; General</code>. The following settings will affect your webmap:</p>
 
 				<ul>
-					<li><code>Project title</code></li>
 					<li><code>Selection color</code></li>
 					<li><code>Background color</code></li>
 				</ul>
 
-				<img src="project.png" alt="Project Properties Screenshot"></img>
+				<img src="selection-and-backround-color.png" alt="Project Selection and Backround"></img>
+				
+				<p>and open <code>Metadata</code>. The following settings will affect your webmap:</p>
+				
+				<ul>
+					<li><code>Title</code></li>
+					<li><code>Abstract</code></li>
+				</ul>
+				
+				<img src="title-and-abstract.png" alt="Project Title and Abstract"></img>
 
-				<p><code>Project title</code> is set as the <code>&lt;title&gt;</code> of the exported webpage. In Leaflet maps, the title is also overlaid on the map:</p>
+				<p><code>Project title</code> and <code>Project abstract</code> are visible in your exported webmap; they can be positioned <code>upper left</code>, <code>upper right</code>, <code>bottom left</code> or <code>bottom right</code></p>
 
-				<img src="projecttitle.png" alt="Project Title in Leaflet Screenshot"></img>
+				<img src="title-and-abstract-example.png" alt="Project Title and Abstract Example"></img>
 
 				<p><code>Selection color</code> is used as the highlight colour if <code>Highlight on hover</code> is checked:</p>
 
@@ -190,14 +198,17 @@
 
 					<h3>Alias</h3>
 
-					<p>Give your layer columns human friendly names via <code>Layer &gt; Properties &gt; Attributes Form &gt; Select Field &gt; Alias</code>:</p>
+					<p>Give your layer fields human friendly names via <code>Layer &gt; Properties &gt; Attributes Form &gt; Select Field &gt; Alias</code></p>
+
+					<p>Single quotes ' and quotation marks " are <u>not supported</u></p>
+
 					<img src="alias.png" alt="Field Alias Screenshot">
 
 					<h3>Hidden Fields</h3>
 					<p>Hide the field if you don't want to export it, by changing their <code>Widget Type</code> to "Hidden". As a result, the information will not appear in the popup:</p>
 					<img src="hidden.png" alt="Hide Field Screenshot">
 
-					<h3>Image or Video</h3>
+					<h3>Media (Image or Video)</h3>
 
 					<p>If you want to show images or video in popup you must set <code>Widget Type</code> to "Attachment" and do not change other values. Only the Absolute path is supported:</p>
 					<img src="attachment.png" alt="Photo Screenshot">
@@ -210,7 +221,19 @@
 					<p>or this, for video</p>
 					<img src="video.png" alt="Video Screenshot">
 
-		<div class="dotted-line"></div>		
+					<h3>Attach documents</h3>
+					<p>To attach documents and open them in another browser window, create a text field in your layer and write a string like this:</p>
+					<code>&lt;a href="NTA_ENTE.pdf" target="_blank"&gt;NTA_ENTE.pdf&lt;/a&gt;</code>
+					<p></p>
+					<img src="attach-document.png" alt="Attach Document Screenshot">
+					
+					<p>Insert your document into exported folder</p>
+					<img src="save-document.png" alt="Save Document Screenshot">
+					
+					<p>Popup will show the link as clickable and when clicked it will open a new browser tab showing Document (for supported format), or Download it</p>
+					<img src="popup-attach-example.png" alt="Popup Attach Example Screenshot">
+		
+					<div class="dotted-line"></div>		
 		
 			<h2 id="SetStyles">Set Styles</h2>
 					<h3>No symbol</h3>
@@ -226,6 +249,8 @@
 					<img src="graduated.png" alt="Graduated Symbol Renderer">
 
 					<h3>2.5D</h3>
+					<li>only a single 2.5d layer will render per map</li>
+					<li>2.5d layers only appear when zoomed in to building scales</li>
 					<img src="25d.png" alt="2.5D Symbol Renderer">
 
 					<p>More complex 2.5D styles are also possible, such as categorized:</p>
@@ -243,13 +268,28 @@
 					<h3>Dash Dot Dot Line</h3>
 					<img src="dashdotdotline.png" alt="Dash Dot Dot Line">
 
-					<h3>SVG Marker (supported fill and border)</h3>
+					<h3>SVG Marker (for point layers only)</h3>
+					<p>Supported customization:</p>
+					<li>Size</li>
+					<li>Fill color</li>
+					<li>Stroke color</li>
+					<li>Stroke width</li>
+
 					<img src="svgmarker.png" alt="SVG Marker">
 
 					<a>SVG Categorized or Graduated</a>
-
+					<p>Supported customization for all svg's in simbology:</p>
+					<li>Size</li>
+					<li>Fill color</li>
+					<li>Stroke color</li>
+					<li>Stroke width</li>
+					<p></p>
 					<img src="svg_categorized_or_graduated.png" alt="SVG Categorized or Graduated">
-
+					<p></p>
+					<li><u>Only openlayers export</u>: Multiple use of the same svg icon with different properties</li>
+					<p></p>
+					<img src="multiple-same-svg.png" alt="Multiple Same SVG Screenshot">
+					
 					<h3>Transparency</h3>
 					<h4>Vector Layer</h4>
 					<p>Change color's opacity, not layer's opacity</p>
@@ -293,17 +333,17 @@
 
 				<h3>Basemap Sources:</h3>
 				<b>OpenStreetMap</b></p>
-				http://tile.openstreetmap.org/{z}/{x}/{y}.png</p>
+				<code>http://tile.openstreetmap.org/{z}/{x}/{y}.png</code></p>
 				<b>OpenTopoMap</b></p>
-				https://tile.opentopomap.org/{z}/{x}/{y}.png</p>
+				<code>https://tile.opentopomap.org/{z}/{x}/{y}.png</code></p>
 				<b>Google Hybrid</b></p>
-				https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}</p>
+				<code>https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}</code></p>
 				<b>Google Satellite</b></p>
-				https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}</p>
+				<code>https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}</code></p>
 				<b>Google Road</b></p>
-				https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}</p>
+				<code>https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}</code></p>
 				<b>Bing Aerial</b></p>
-				http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1</p>
+				<code>http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1</code></p>
 			    </br>
 
 				<p>XYZ Tiles can be accessed from menù on top:</p>
@@ -383,30 +423,38 @@
 		<div class="dotted-line"></div>	
 				
 			<h2 id="Appearance">Appearance</h2>
-			
-				<h3>Add abstract</h3>
-					<p>Add a collapsible info window in the webmap which shows the projects metadata abstract/ currently only leaflet-based webmaps</p>
-				<h3>Add address search</h3>
-					<p>Add field to allow searching for locations (geocode)</p>
-				<h3>Add layers list</h3>
+				
+				<h3>Title</h3>
+				<p>Add a info window in the webmap which shows the projects title</p>
+				<h3>Abstract</h3>
+					<p>Add a collapsible info window in the webmap which shows the projects metadata abstract</p>
+				<h3>Layers list</h3>
 					<p>Include list of layers (with legend icons, where possible)</p>
+				<h3>Attribute Filter</h3>
+					<p>Only for Leaflet export: Allows you to choose multiple fields and will show the graphical possibility of filtering the data visible on the map</p>
 				<h3>Geolocate user</h3>
 					<p>Show user's location on map<br />
 					<strong>Note:</strong> Chrome now blocks geolocation unless your map is hosted securely (HTTPS)</p>
-				<h3>Highlight on hover</h3>
-					<p>Highlight features on mouseover</p>
+				<h3>Measure tool</h3>
+					<p>Include interactive measuring widget - choose metric or imperial units</p>	
+				<h3>Address search</h3>
+					<p>Add field to allow searching for address locations (geocode)</p>
 				<h3>Layer search</h3>
 					<p>Add option to search for values in layer field values</p>
-				<h3>Match project CRS</h3>
-					<p>Create webmap in same projection as QGIS project, otherwise the webmap is projected in EPSG:3857</p>
-				<h3>Add measure tool</h3>
-					<p>Include interactive measuring widget - choose metric or imperial units</p>
+					<strong>Note:</strong> Layer search does not work in leaflet export if a point layer with symbols other than circle is used
+					<p></p><strong>Note:</strong> Layer search does not work in openlayers export if cluster is active in that layer
 				<h3>Show popups on hover</h3>
 					<p>Show popups when mouse hovers over features</p>
+				<h3>Highlight on hover</h3>
+					<p>Highlight features on mouseover</p>
+				<h3>Match project CRS</h3>
+					<p>Create webmap in same projection as QGIS project, otherwise the webmap is projected in EPSG:3857</p>
 				<h3>Template</h3>
-					<p>Select HTML template for webmap - add your own templates to the
-						/qgis2web/templates directory in your current QGIS3 profile 
-						folder</p>
+					<p>Select HTML template for webmap - add your own templates to /qgis2web/templates directory in your current QGIS3 profile folder</p>
+				<h3>Widget Icon</h3>
+					<p>Choose controls main color</p>
+				<h3>Widget Background</h3>
+					<p>Choose controls background color</p>
 				<h3>Extent</h3>
 					<p>Either match the current QGIS view or show all contents of all layers (only local GeoJSON and rasters, not WFS/WMS)</p>
 				<h3>Max zoom level</h3>
@@ -444,13 +492,7 @@
 				only possible in <em>either</em> OpenLayers <em>or</em> Leaflet. qgis2web
 				tries its best to produce a publish-ready map, but you can always manually edit
 				the output code to achieve what qgis2web cannot.</p>
-				<ul>
-					<li>in OL3 maps, only single rendered points cluster, not categorized
-						or graduated</li>
-					<li>only a single 2.5d layer will render per map</li>
-					<li>2.5d layers only appear when zoomed in to building scales</li>
-					<li>attribute filters and abstract export only works in leaflet based webmaps</li>
-				</ul>
+				<p></p>The limitations are described in the body text of this WIKI</p>
 
 			<h2 id="Reportingbugs">Reporting bugs</h2>
 				<p>Please report any problems you have with qgis2web. Without this feedback, I
@@ -464,7 +506,7 @@
 					<li>Make sure you can reproduce the bug reliably</li>
 					<li>Reduce the complexity of your bug conditions as far as you can,
 						especially by reducing the number of layers, ideally to one</li>
-					<li>Raise a Github issue, including:
+					<li>Raise a Github issue in <code>github.com/qgis2web/qgis2web/issues</code>, including:
 					<ul>
 						<li>only one bug per Github issue</li>
 						<li>the qgis2web version (or make it clear you are using Github master

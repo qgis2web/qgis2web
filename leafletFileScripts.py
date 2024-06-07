@@ -284,10 +284,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         #map {
             background-color: """ + backgroundColor + """
         }
-        th {
-            text-align: left;
-            vertical-align: top;
-        }
         .info {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
@@ -305,29 +301,30 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             padding-right: 10px;
         }
         .leaflet-popup-scrolled {
-            width:auto!important;
-            height: auto!important;
-            overflow: auto;
-            max-height: 70vw;
-            max-width: 70vw;
             border-bottom: unset!important;
             border-top: unset!important;
         }
         .leaflet-popup-content{
-            max-height: 70vw;
+            max-height: 70vh;
             max-width: 70vw;
-            overflow: auto;
         }
-        th {
+        .leaflet-popup-content.media{
+            width: auto!important;
+            height: auto!important;
+        }
+        .leaflet-popup-content th {
+            text-align: left;
+            vertical-align: top;
             min-width: 75px;
         }
-        td {
+        .leaflet-popup-content td {
             min-width: 75px;
         }
-        td img {
-            max-height: 50vw;
-            max-width: 50vw;
+        .leaflet-popup-content td img {
+            max-height: 60vh;
+            max-width: 60vw;
         }
+
         .leaflet-tooltip {
             background: none;
             box-shadow: none;

@@ -44,23 +44,25 @@ def getTemplates():
 def getParams(configure_exporter_action=None):
 
     accentColor = QgsColorButton()
-    accentColor.setColor(QColor(0, 0, 0))
+    accentColor.setColor(QColor(68, 68, 68))
     backgroundColor = QgsColorButton()
     backgroundColor.setColor(QColor(248, 248, 248))
 
     params = {
         "Appearance": {
-            "Add layers list": ("None", "Collapsed", "Expanded"),
-            "Match project CRS": False,
-            "Add address search": False,
-            "Add abstract": ("None", "upper right", "lower right",
+            "Title": ("None", "upper right", "lower right",
+                          "lower left", "upper left"),
+            "Abstract": ("None", "upper right", "lower right",
                              "lower left", "upper left"),
-            "Layer search": ("None", "placeholder"),
+            "Layers list": ("None", "Collapsed", "Expanded"),
             "Attribute filter": ["None", "placeholder2"],
+            "Geolocate user": False,
             "Measure tool": ("None", "Metric", "Imperial"),
+            "Address search": False,
+            "Layer search": ("None", "placeholder"),
             "Show popups on hover": False,
             "Highlight on hover": False,
-            "Geolocate user": False,
+            "Match project CRS": False,
             "Template": getTemplates(),
             "Widget Icon": accentColor,
             "Widget Background": backgroundColor
@@ -119,7 +121,8 @@ def getDefaultParams():
 
 
 specificParams = {
-    "Add abstract": "leaflet",
+    #"Add abstract": "leaflet",
+    #"Title": "OL3",
     "Attribute filter": "leaflet"
 }
 

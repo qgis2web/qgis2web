@@ -110,8 +110,7 @@ def crsScript(crsAuthId, crsProj4):
     return crs
 
 
-def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
-              locate):
+def mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds):
     map = """
         var map = L.map('map', {"""
     if matchCRS and crsAuthId != 'EPSG:4326':
@@ -120,7 +119,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
             continuousWorld: false,
             worldCopyJump: false, """
     map += """
-            zoomControl:true, maxZoom:""" + str(maxZoom)
+            zoomControl:false, maxZoom:""" + str(maxZoom)
     map += """, minZoom:""" + str(minZoom) + """
         })"""
     if extent == "Canvas extent":
@@ -138,6 +137,7 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
         var autolinker = new Autolinker"""
     map += "({truncate: {length: 30, location: 'smart'}});"
     map += """
+        // remove popup's row if "visible-with-data"
         function removeEmptyRowsFromPopupContent(content, feature) {
          var tempDiv = document.createElement('div');
          tempDiv.innerHTML = content;
@@ -152,45 +152,66 @@ def mapScript(extent, matchCRS, crsAuthId, measure, maxZoom, minZoom, bounds,
          return tempDiv.innerHTML;
         }"""
     map += """
-        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
-          var tagName = event.target.tagName,
-            popup = map._popup;
-          // Also check if flag is already set.
-          if (tagName === "IMG" && popup && !popup._updated) {
-            popup._updated = true; // Set flag to prevent looping.
-            popup.update();
-          }
-        }, true);"""
-    if locate:
-        map += """
-        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);"""
-    if measure != "None":
-        if measure == "Imperial":
-            options = """{
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+    """
+
+    return map
+
+def addZoomControl():
+    zoomControlScript = """
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        """
+    return zoomControlScript
+
+def addLocateControl(locate):
+    if not locate:
+        return "" 
+    locateScript = """
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        """
+    return locateScript
+
+def addMeasureControl(measure):
+    if measure == "None":
+        return ""    
+    if measure == "Imperial":
+        options = """{
             position: 'topleft',
             primaryLengthUnit: 'feet',
             secondaryLengthUnit: 'miles',
             primaryAreaUnit: 'sqfeet',
             secondaryAreaUnit: 'sqmiles'
         }"""
-        else:
-            options = """{
+    else:
+        options = """{
             position: 'topleft',
             primaryLengthUnit: 'meters',
             secondaryLengthUnit: 'kilometers',
             primaryAreaUnit: 'sqmeters',
             secondaryAreaUnit: 'hectares'
-        }"""
-        map += """
+        }"""    
+    measureScript = """
         var measureControl = new L.Control.Measure(%s);
         measureControl.addTo(map);
-        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
-        .innerHTML = '';
-        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
-        .className += ' fas fa-ruler';
-        """ % options
-    return map
-
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        """ % options   
+    return measureScript
 
 def featureGroupsScript():
     featureGroups = """
@@ -217,12 +238,11 @@ def extentScript(extent, restrictToExtent):
 def popFuncsScript(table):
     popFuncs = """
             var popupContent = %s;
-            layer.bindPopup(popupContent, {maxHeight: 400});
-            
-            var popup = layer.getPopup();
-            var content = popup.getContent();
-            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
-            popup.setContent(updatedContent);""" % table
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });""" % table
     return popFuncs
 
 
@@ -264,7 +284,6 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
     try:
         iconSize = int((symbol.size() * 4) + 5)
-        print("iconSize:", iconSize)
     except Exception:
         iconSize = 16
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
@@ -443,8 +462,7 @@ def rasterScript(layer, safeLayerName, zIndex):
         sln=safeLayerName)
     return raster
 
-
-def titleSubScript(webmap_head, level, pos):
+def titleSubScript(title, pos):
     if pos == "upper right":
         positionOpt = u"{'position':'topright'}"
     if pos == "lower right":
@@ -454,59 +472,71 @@ def titleSubScript(webmap_head, level, pos):
     if pos == "upper left":
         positionOpt = u"{'position':'topleft'}"
     titleSub = ""
-    if level == 1:
-        titleSub += """
-            var title = new L.Control();
-            title.onAdd = function (map) {
-                this._div = L.DomUtil.create('div', 'info');
-                this.update();
+    if pos != "None":
+        titleSub = """
+        var title = new L.Control(%s);
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>""" % positionOpt
+        titleSub += title.replace("'", "\\'") + """</h2>';
+        };
+        title.addTo(map);"""
+    return titleSub
+
+def abstractSubScript(abstract, pos):
+    if pos == "upper right":
+        positionOpt = u"{'position':'topright'}"
+    if pos == "lower right":
+        positionOpt = u"{'position':'bottomright'}"
+    if pos == "lower left":
+        positionOpt = u"{'position':'bottomleft'}"
+    if pos == "upper left":
+        positionOpt = u"{'position':'topleft'}"
+    abstractSub = ""
+    if pos != "None":
+        abstractSub += """
+        var abstract = new L.Control(%s);
+        abstract.onAdd = function (map) {
+            this._div = L.DomUtil.create('div',
+            'leaflet-control abstract');
+            this._div.id = 'abstract'""" % positionOpt
+        if len(abstract) > 240:
+            abstractSub += """
+                this._div.setAttribute("onmouseenter", "abstract.show()");
+                this._div.setAttribute("onmouseleave", "abstract.hide()");
+                this.hide();
                 return this._div;
             };
-            title.update = function () {
-                this._div.innerHTML = '<h2>"""
-        titleSub += webmap_head.replace("'", "\\'") + """</h2>';
-            };
-            title.addTo(map);"""
-    if level == 2 and pos != "None":
-        titleSub += """
-            var abstract = new L.Control(%s);
-            abstract.onAdd = function (map) {
-                this._div = L.DomUtil.create('div',
-                'leaflet-control abstract');
-                this._div.id = 'abstract'""" % positionOpt
-        if len(webmap_head) > 240:
-            titleSub += """
-                    this._div.setAttribute("onmouseenter", "abstract.show()");
-                    this._div.setAttribute("onmouseleave", "abstract.hide()");
-                    this.hide();
-                    return this._div;
-                };
-                abstract.hide = function () {
-                    this._div.classList.remove("abstractUncollapsed");
-                    this._div.classList.add("abstract");
-                    this._div.innerHTML = 'i'
-                }
-                abstract.show = function () {
-                    this._div.classList.remove("abstract");
-                    this._div.classList.add("abstractUncollapsed");
-                    this._div.innerHTML = '"""
+            abstract.hide = function () {
+                this._div.classList.remove("abstractUncollapsed");
+                this._div.classList.add("abstract");
+                this._div.innerHTML = 'i'
+            }
+            abstract.show = function () {
+                this._div.classList.remove("abstract");
+                this._div.classList.add("abstractUncollapsed");
+                this._div.innerHTML = '"""
         else:
-            titleSub += """
+            abstractSub += """
 
-                    abstract.show();
-                    return this._div;
-                };
-                abstract.show = function () {
-                    this._div.classList.remove("abstract");
-                    this._div.classList.add("abstractUncollapsed");
-                    this._div.innerHTML = '"""
-
-        titleSub += webmap_head.replace("'", "\\'").replace("\n", "<br />")
-        titleSub += """';
+                abstract.show();
+                return this._div;
             };
-            abstract.addTo(map);"""
+            abstract.show = function () {
+                this._div.classList.remove("abstract");
+                this._div.classList.add("abstractUncollapsed");
+                this._div.innerHTML = '"""
 
-    return titleSub
+        abstractSub += abstract.replace("'", "\\'").replace("\n", "<br />")
+        abstractSub += """';
+        };
+        abstract.addTo(map);"""
+
+    return abstractSub
 
 
 def addLayersList(basemapList, matchCRS, layer_list, groups, cluster, legends,

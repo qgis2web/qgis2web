@@ -56,8 +56,12 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            scaleBar,
                                            scaleDependentScript,
                                            titleSubScript,
+                                           abstractSubScript,
                                            getVTStyles,
-                                           getVTLabels)
+                                           getVTLabels,
+                                           addLocateControl,
+                                           addMeasureControl,
+                                           addZoomControl)
 from qgis2web.utils import (ALL_ATTRIBUTES, exportVector,
                             exportRaster, safeName, returnFilterValues)
 from qgis2web.writer import (Writer,
@@ -134,8 +138,9 @@ class LeafletWriter(Writer):
         maxZoom = params["Scale/Zoom"]["Max zoom level"]
         restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
         matchCRS = params["Appearance"]["Match project CRS"]
-        addressSearch = params["Appearance"]["Add address search"]
-        abstractOptions = params["Appearance"]["Add abstract"]
+        addressSearch = params["Appearance"]["Address search"]
+        titleOptions = params["Appearance"]["Title"]
+        abstractOptions = params["Appearance"]["Abstract"]
         locate = params["Appearance"]["Geolocate user"]
         measure = params["Appearance"]["Measure tool"]
         highlight = params["Appearance"]["Highlight on hover"]
@@ -145,7 +150,7 @@ class LeafletWriter(Writer):
         template = params["Appearance"]["Template"]
         widgetAccent = params["Appearance"]["Widget Icon"]
         widgetBackground = params["Appearance"]["Widget Background"]
-        layersList = params["Appearance"]["Add layers list"]
+        layersList = params["Appearance"]["Layers list"]
 
         usedFields = [ALL_ATTRIBUTES] * len(popup)
 
@@ -237,8 +242,16 @@ class LeafletWriter(Writer):
             bounds = 0
             if matchCRS and crsAuthId != 'EPSG:4326':
                 middle += crsScript(crsAuthId, crsProj4)
-        middle += mapScript(extent, matchCRS, crsAuthId, measure, maxZoom,
-                            minZoom, bounds, locate)
+        middle += mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds)
+        if title != "":
+            titleStart = titleSubScript(title, titleOptions)
+            middle += titleStart
+        if abstract != "":
+            abstractStart = abstractSubScript(abstract, abstractOptions)
+            middle += abstractStart            
+        middle += addZoomControl()
+        middle += addLocateControl(locate)
+        middle += addMeasureControl(measure)
         middle += featureGroupsScript()
         extentCode = extentScript(extent, restrictToExtent)
         new_src += middle
@@ -319,21 +332,13 @@ class LeafletWriter(Writer):
         new_src += getVTStyles(vtStyles)
         new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
-        if title != "":
-            titleStart = titleSubScript(title, 1, "upper right")
-            new_src += titleStart
-        if abstract != "":
-            abstractStart = titleSubScript(abstract, 2, abstractOptions)
-            new_src += abstractStart
         if addressSearch:
             address_text = addressSearchScript()
             new_src += address_text
-        if (params["Appearance"]["Add layers list"] and
-                params["Appearance"]["Add layers list"] != "" and
-                params["Appearance"]["Add layers list"] != "None"):
+        if (layersList and layersList != "" and layersList != "None"):
             new_src += addLayersList(
                 [], matchCRS, layer_list, groups, cluster, legends,
-                params["Appearance"]["Add layers list"] == "Expanded")
+                layersList == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             # placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
             # placement = PLACEMENT[placement]

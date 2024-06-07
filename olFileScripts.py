@@ -58,18 +58,16 @@ def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
         <script src="resources/ol3-search-layer.js"></script>"""
         searchVals = layerSearch.split(": ")
         layerSearch = u"""
-    var searchLayer = new SearchLayer({{
-      layer: lyr_{layer},
-      colName: '{field}',
-      zoom: 10,
-      collapsed: true,
-      map: map
-    }});
-
-    map.addControl(searchLayer);
-    document.getElementsByClassName('search-layer')[0]
-    .getElementsByTagName('button')[0].className +=
-    ' fa fa-binoculars';
+var searchLayer = new SearchLayer({{
+    layer: lyr_{layer},
+    colName: '{field}',
+    zoom: 10,
+    collapsed: true,
+    map: map
+}});
+map.addControl(searchLayer);
+document.getElementsByClassName('search-layer')[0].getElementsByTagName('button')[0].className += ' fa fa-binoculars';
+document.getElementsByClassName('search-layer-input-search')[0].placeholder = 'Search feature ...';
     """.format(layer=searchLayer, field=searchVals[1])
         controlCount = controlCount + 1
     else:

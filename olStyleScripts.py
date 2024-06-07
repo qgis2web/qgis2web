@@ -209,13 +209,21 @@ def getLabelFormat(layer):
 def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
                  layer, feedback):
     symbol = renderer.symbol()
+    svg_layer = symbol.symbolLayer(0)
     (style, pattern, setPattern,
      useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
                                      layer_alpha, renderer, sln, layer,
                                      feedback)
     style = "var style = " + style
+
+    if isinstance(svg_layer, QgsSvgMarkerSymbolLayer):
+        svg_size = int(svg_layer.size() * 3.5)
+        symbol_size = QSize(svg_size, svg_size)
+    else:
+        symbol_size = QSize(16, 16)
+
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
-        symbol, QSize(16, 16))
+        symbol, symbol_size)
     legendIcon.save(os.path.join(legendFolder, sln + ".png"))
     value = 'var value = ""'
     return (style, pattern, setPattern, value, useMapUnits)
@@ -232,8 +240,16 @@ function categories_%s(feature, value, size, resolution, labelText,
     cats = []
     useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
-        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(cat.symbol(),
-                                                             QSize(16, 16))
+        symbol = cat.symbol()
+        svg_layer = symbol.symbolLayer(0)
+        if isinstance(svg_layer, QgsSvgMarkerSymbolLayer):
+            svg_size = int(svg_layer.size() * 3.5)
+            symbol_size = QSize(svg_size, svg_size)
+        else:
+            symbol_size = QSize(16, 16)
+
+        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
+                                                             symbol_size)
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + str(cnt) + ".png"))
         if (cat.value() is not None and cat.value() != ""):
@@ -241,7 +257,7 @@ function categories_%s(feature, value, size, resolution, labelText,
         else:
             categoryStr = "default:"
         (style, pattern, setPattern,
-         useMapUnits) = (getSymbolAsStyle(cat.symbol(), stylesFolder,
+         useMapUnits) = (getSymbolAsStyle(symbol, stylesFolder,
                                           layer_alpha, renderer, sln, layer,
                                           feedback))
         if useMapUnits:
@@ -266,12 +282,20 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
     elseif = ""
     useAnyMapUnits = False
     for cnt, ran in enumerate(renderer.ranges()):
+        symbol = ran.symbol()
+        svg_layer = symbol.symbolLayer(0)
+        if isinstance(svg_layer, QgsSvgMarkerSymbolLayer):
+            svg_size = int(svg_layer.size() * 3.5)
+            symbol_size = QSize(svg_size, svg_size)
+        else:
+            symbol_size = QSize(16, 16)
+
         legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
-            ran.symbol(), QSize(16, 16))
+            symbol, symbol_size)
         legendIcon.save(os.path.join(
             legendFolder, sln + "_" + str(cnt) + ".png"))
         (symbolstyle, pattern, setPattern,
-         useMapUnits) = getSymbolAsStyle(ran.symbol(), stylesFolder,
+         useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
                                          layer_alpha, renderer, sln, layer,
                                          feedback)
         ranges.append("""%sif (value >= %f && value <= %f) {
@@ -478,8 +502,16 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                                                size, props)
                 style = "image: %s" % style
         elif isinstance(sl, QgsSvgMarkerSymbolLayer):
-            path = os.path.join(stylesFolder, os.path.basename(sl.path()))
-            svg = xml.etree.ElementTree.parse(sl.path()).getroot()
+            svg_path = sl.path()
+            base_filename = os.path.basename(svg_path)
+            filename, file_extension = os.path.splitext(base_filename)
+            # Check if the file already exists, if yes, append a progressive number
+            count = 0
+            while os.path.exists(os.path.join(stylesFolder, base_filename)):
+                count += 1
+                base_filename = f"{filename}_{count}{file_extension}"
+            path = os.path.join(stylesFolder, base_filename)
+            svg = xml.etree.ElementTree.parse(svg_path).getroot()
             try:
                 svgWidth = svg.attrib["width"]
                 svgWidth = re.sub("px", "", svgWidth)
@@ -508,7 +540,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             # replacing "param(...)" with actual values from QGIS
             pColor = getRGBAColor(props["color"], alpha).strip("'")
             pOutline = getRGBAColor(props["outline_color"], alpha).strip("'")
-            with open(sl.path()) as f:
+            with open(svg_path) as f:
                 s = f.read()
                 s = s.replace('param(fill)', pColor)
                 s = s.replace('param(fill-opacity)', '1')
@@ -519,7 +551,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                 f.write(s)
         
             style = ("image: %s" %
-                     getIcon("styles/" + os.path.basename(sl.path()),
+                     getIcon("styles/" + base_filename,
                              sl.size(), svgWidth, svgHeight, rot))
         elif isinstance(sl, QgsFontMarkerSymbolLayer):
             char = sl.character()

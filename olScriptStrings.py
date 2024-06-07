@@ -58,7 +58,8 @@ var measureControl = (function (Control) {
     measureControl.prototype = Object.create(Control && Control.prototype);
     measureControl.prototype.constructor = measureControl;
     return measureControl;
-    }(ol.control.Control));"""
+    }(ol.control.Control));
+    map.addControl(new measureControl())"""
     return measureControl
 
 
@@ -608,7 +609,8 @@ var geolocateControl = (function (Control) {
     geolocateControl.prototype = Object.create(Control && Control.prototype);
     geolocateControl.prototype.constructor = geolocateControl;
     return geolocateControl;
-}(ol.control.Control));"""
+}(ol.control.Control));
+map.addControl(new geolocateControl())"""
     else:
         return ""
 
@@ -656,16 +658,17 @@ def geocodeScript(geocode):
 var geocoder = new Geocoder('nominatim', {
   provider: 'osm',
   lang: 'en-US',
-  placeholder: 'Search for ...',
+  placeholder: 'Search place or address ...',
   limit: 5,
-  keepOpen: true
+  keepOpen: true,
 });
 map.addControl(geocoder);
-
 document.getElementsByClassName('gcd-gl-btn')[0].className += ' fa fa-search';
 """
     else:
         return ""
+
+
 
 
 def getGrid(project):
@@ -734,3 +737,6 @@ map.getView().on('change:resolution', function(evt){
 %s
 });""" % lyrScripts
     return mapUnitLayers
+
+
+

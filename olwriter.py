@@ -38,16 +38,19 @@ from qgis2web.olScriptStrings import (measureScript,
                                       measureUnitMetricScript,
                                       measureUnitFeetScript,
                                       measureStyleScript,
-                                      layerSearchStyleScript,
+                                      #layerSearchStyleScript,
                                       geolocation,
-                                      geolocateStyle,
+                                      #geolocateStyle,
                                       geolocationHead,
                                       geocodeLinks,
                                       geocodeJS,
                                       geocodeScript,
                                       getGrid,
                                       getM2px,
-                                      getMapUnitLayers)
+                                      getMapUnitLayers,
+                                      #titleControlScript,
+                                      #abstractControlScript
+                                      )
 from qgis2web.olStyleScripts import exportStyles
 from qgis2web.writer import (Writer,
                              WriterResult,
@@ -117,14 +120,16 @@ class OpenLayersWriter(Writer):
         minZoom = int(settings["Scale/Zoom"]["Min zoom level"])
         popupsOnHover = settings["Appearance"]["Show popups on hover"]
         highlightFeatures = settings["Appearance"]["Highlight on hover"]
-        geocode = settings["Appearance"]["Add address search"]
+        geocode = settings["Appearance"]["Address search"]
         measureTool = settings["Appearance"]["Measure tool"]
-        addLayersList = settings["Appearance"]["Add layers list"]
+        addLayersList = settings["Appearance"]["Layers list"]
         htmlTemplate = settings["Appearance"]["Template"]
         layerSearch = settings["Appearance"]["Layer search"]
         searchLayer = settings["Appearance"]["Search layer"]
         widgetAccent = settings["Appearance"]["Widget Icon"]
         widgetBackground = settings["Appearance"]["Widget Background"]
+        titleOption = settings["Appearance"]["Title"]
+        abstractOption = settings["Appearance"]["Abstract"]
 
         writeFiles(folder, restrictToExtent, feedback)
         exportLayers(iface, layers, folder, precision, optimize,
@@ -144,14 +149,18 @@ class OpenLayersWriter(Writer):
         popupLayers = "popupLayers = [%s];" % ",".join(
             ['1' for field in popup])
         project = QgsProject.instance()
-        controls = getControls(project, measureTool, geolocateUser)
+        #controls = getControls(project, measureTool, geolocateUser)
         layersList = getLayersList(addLayersList)
-        pageTitle = project.title()
+        projectTitle = project.title()
+        projectAbstract = project.metadata().abstract()
+        title = titleControlScript(projectTitle, titleOption)
+        abstract = abstractControlScript(projectAbstract, abstractOption)
+
         backgroundColor = getBackground(mapSettings, widgetAccent,
                                         widgetBackground)
-        (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
-                                                       controlCount)
-        backgroundColor += geolocateCode
+        # (geolocateCode, controlCount) = geolocateStyle(geolocateUser,
+        #                                                controlCount)
+        #backgroundColor += geolocateCode
         mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
         onHover = str(popupsOnHover).lower()
         highlight = str(highlightFeatures).lower()
@@ -165,6 +174,7 @@ class OpenLayersWriter(Writer):
         geocodingLinks = geocodeLinks(geocode)
         geocodingJS = geocodeJS(geocode)
         geocodingScript = geocodeScript(geocode)
+        scaleBar = scaleBarScript(project)
         m2px = getM2px(mapUnitsLayers)
         (extracss, controlCount) = getCSS(geocode, geolocateUser, layerSearch,
                                           controlCount)
@@ -180,7 +190,7 @@ class OpenLayersWriter(Writer):
         mapSize = iface.mapCanvas().size()
         exp_js = getExpJS()
         grid = getGrid(project)
-        values = {"@PAGETITLE@": pageTitle,
+        values = {"@PAGETITLE@": projectTitle,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
                   "@JSADDRESS@": jsAddress,
@@ -224,7 +234,7 @@ class OpenLayersWriter(Writer):
             f.write(templateOutput)
         values = {"@GEOLOCATEHEAD@": geolocateHead,
                   "@BOUNDS@": mapbounds,
-                  "@CONTROLS@": ",".join(controls),
+                  #"@CONTROLS@": ",".join(controls),
                   "@LAYERSLIST@": layersList,
                   "@POPUPLAYERS@": popupLayers,
                   "@VIEW@": view,
@@ -240,7 +250,10 @@ class OpenLayersWriter(Writer):
                   "@MEASUREUNIT@": measureUnit,
                   "@GRID@": grid,
                   "@M2PX@": m2px,
-                  "@MAPUNITLAYERS@": mapUnitLayers}
+                  "@MAPUNITLAYERS@": mapUnitLayers,
+                  "@TITLE@": title,
+                  "@ABSTRACT@": abstract,
+                  "@SCALEBAR@": scaleBar}
         with open(os.path.join(folder, "resources", "qgis2web.js"),
                   "w") as f:
             out = replaceInScript("qgis2web.js", values)
@@ -310,21 +323,25 @@ def bounds(iface, useCanvas, layers, matchCRS):
                                  extent.xMaximum(), extent.yMaximum())
 
 
-def getControls(project, measureTool, geolocateUser):
-    controls = ['expandedAttribution']
-    if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
-        controls.append("new ol.control.ScaleLine({})")
-    if measureTool != "None":
-        controls.append('new measureControl()')
-    if geolocateUser:
-        controls.append('new geolocateControl()')
-    return controls
+# def getControls(project, measureTool, geolocateUser):
+    #controls = ['expandedAttribution']
+    # controls =[]
+    # if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
+    #     controls.append("new ol.control.ScaleLine({})")
+    # if measureTool != "None":
+    #     controls.append('new measureControl()')
+    # if geolocateUser:
+    #     controls.append('new geolocateControl()')
+    # return controls
 
 
 def getLayersList(addLayersList):
     if (addLayersList and addLayersList != "" and addLayersList != "None"):
         layersList = """
-var layerSwitcher = new ol.control.LayerSwitcher({tipLabel: "Layers"});
+var layerSwitcher = new ol.control.LayerSwitcher({
+    tipLabel: "Layers",
+    target: 'top-right-container'
+    });
 map.addControl(layerSwitcher);"""
         if addLayersList == "Expanded":
             layersList += """
@@ -335,35 +352,41 @@ layerSwitcher.showPanel();
         layersList = ""
     return layersList
 
+def hex_to_rgba(hex_color, alpha):
+    hex_color = hex_color.lstrip('#')
+    r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
 
 def getBackground(mapSettings, widgetAccent, widgetBackground):
+    hover_focus_color = hex_to_rgba(widgetBackground.lstrip('#'), 0.7)
     return """
         <style>
         html, body {{
             background-color: {bgcol};
         }}
-        .ol-control button {{
-            background-color: {widgetBackground} !important;
-            color: {widgetAccent} !important;
-            border-radius: 0px !important;
+        .ol-control > * {{
+            background-color: {widgetBackground}!important;
+            color: {widgetAccent}!important;
+            border-radius: 0px;
         }}
-        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {{
+        .ol-attribution a, .gcd-gl-input::placeholder, .search-layer-input-search::placeholder {{
+            color: {widgetAccent}!important;
+        }}
+        .search-layer-input-search {{
+            background-color: {widgetBackground}!important;
+        }}
+        .ol-control > *:focus, .ol-control >*:hover {{
+            background-color: {hover_focus_color}!important;
+        }} 
+        .ol-control {{
             background-color: rgba(255,255,255,.4) !important;
-            padding: 3px !important;
-        }}
-        .ol-scale-line {{
-            background: none !important;
-        }}
-        .ol-scale-line-inner {{
-            border: 2px solid {widgetBackground} !important;
-            border-top: none !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            color: black !important;
-        }}
+            padding: 2px !important;
+        }} 
         </style>
 """.format(bgcol=mapSettings.backgroundColor().name(),
            widgetBackground=widgetBackground,
-           widgetAccent=widgetAccent)
+           widgetAccent=widgetAccent,
+           hover_focus_color=hover_focus_color)
 
 
 def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
@@ -414,26 +437,26 @@ def getCSS(geocode, geolocateUser, layerSearch, controlCount):
     extracss += """href="./resources/ol-layerswitcher.css">
         <link rel="stylesheet" """
     extracss += """href="./resources/qgis2web.css">"""
-    if geocode:
-        geocodePos = 65 + (controlCount * 35)
-        touchPos = 80 + (controlCount * 50)
-        controlCount += 1
-        extracss += """
-        <style>
-        .ol-geocoder.gcd-gl-container {
-            top: %dpx!important;
-            left: 8px!important;
-        }
-        .ol-touch .ol-geocoder.gcd-gl-container{
-            top: %dpx!important;
-        }
-        .ol-geocoder .gcd-gl-btn:after{
-            display:none;
-        }
-        </style>""" % (geocodePos, touchPos)
-    if layerSearch:
-        (layerSearchStyle, controlCount) = layerSearchStyleScript(controlCount)
-        extracss += layerSearchStyle
+    # if geocode:
+    #     geocodePos = 65 + (controlCount * 35)
+    #     touchPos = 80 + (controlCount * 50)
+    #     controlCount += 1
+    #     extracss += """
+    #     <style>
+    #     .ol-geocoder.gcd-gl-container {
+    #         top: %dpx!important;
+    #         left: 8px!important;
+    #     }
+    #     .ol-touch .ol-geocoder.gcd-gl-container{
+    #         top: %dpx!important;
+    #     }
+    #     .ol-geocoder .gcd-gl-btn:after{
+    #         display:none;
+    #     }
+    #     </style>""" % (geocodePos, touchPos)
+    # if layerSearch:
+    #     (layerSearchStyle, controlCount) = layerSearchStyleScript(controlCount)
+    #     extracss += layerSearchStyle
     return (extracss, controlCount)
 
 
@@ -466,3 +489,116 @@ def getLayers():
 def getExpJS():
     return """
         <script src="resources/qgis2web_expressions.js"></script>"""
+
+
+
+def titleControlScript(pTitle, pOption):
+    if pOption == "None" or not pTitle:
+        return ""
+    
+    title_classes = {
+        "upper right": "top-right-title",
+        "upper left": "top-left-title",
+        "lower right": "bottom-right-title",
+        "lower left": "bottom-left-title"
+    }
+    target_containers = {
+        "upper right": "top-right-container",
+        "upper left": "top-left-container",
+        "lower right": "bottom-right-container",
+        "lower left": "bottom-left-container"
+    }
+    title_class = title_classes.get(pOption)
+    target_container = target_containers.get(pOption)
+    
+    titleControl = """
+var Title = new ol.control.Control({
+    element: (() => {
+        var titleElement = document.createElement('div');
+        titleElement.className = '%TITLE_CLASS% ol-control';
+        titleElement.innerHTML = '<h2 class="project-title">%PTITLE%</h2>';
+        return titleElement;
+    })(),
+    target: '%TARGET_CONTAINER%'
+});
+map.addControl(Title)
+    """.replace("%PTITLE%", pTitle).replace("%TITLE_CLASS%", title_class).replace("%TARGET_CONTAINER%", target_container)
+    return titleControl
+
+
+def abstractControlScript(pAbstract, pOption):
+    if pOption == "None" or not pAbstract:
+        return ""
+    
+    abstract_classes = {
+        "upper right": "top-right-abstract",
+        "upper left": "top-left-abstract",
+        "lower right": "bottom-right-abstract",
+        "lower left": "bottom-left-abstract"
+    }
+
+    target_containers = {
+        "upper right": "top-right-container",
+        "upper left": "top-left-container",
+        "lower right": "bottom-right-container",
+        "lower left": "bottom-left-container"
+    }
+
+    abstract_class = abstract_classes.get(pOption)
+    target_container = target_containers.get(pOption)
+
+    if not abstract_class or not target_container:
+        return
+    
+    abstractControl = """
+var Abstract = new ol.control.Control({
+    element: (() => {
+        var titleElement = document.createElement('div');
+        titleElement.className = '%ABSTRACT_CLASS% ol-control';
+        titleElement.id = 'abstract';
+
+        var linkElement = document.createElement('a');
+
+        if (%PABSTRACT_LEN% > 240) {
+            linkElement.setAttribute("onmouseenter", "showAbstract()");
+            linkElement.setAttribute("onmouseleave", "hideAbstract()");
+            linkElement.innerHTML = 'i';
+
+            window.hideAbstract = function() {
+                linkElement.classList.add("project-abstract");
+                linkElement.classList.remove("project-abstract-uncollapsed");
+                linkElement.innerHTML = 'i';
+            }
+
+            window.showAbstract = function() {
+                linkElement.classList.remove("project-abstract");
+                linkElement.classList.add("project-abstract-uncollapsed");
+                linkElement.innerHTML = '%PABSTRACT%';
+            }
+
+            hideAbstract();
+        } else {
+            linkElement.classList.add("project-abstract-uncollapsed");
+            linkElement.innerHTML = '%PABSTRACT%';
+        }
+
+        titleElement.appendChild(linkElement);
+        return titleElement;
+    })(),
+    target: '%TARGET_CONTAINER%'
+});
+map.addControl(Abstract);
+""".replace("%ABSTRACT_CLASS%", abstract_class)\
+   .replace("%PABSTRACT%", pAbstract.replace("'", "\\'").replace("\n", "<br />"))\
+   .replace("%TARGET_CONTAINER%", target_container)\
+   .replace("%PABSTRACT_LEN%", str(len(pAbstract)))
+
+    return abstractControl
+
+
+def scaleBarScript(project):
+    if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
+        return """
+map.addControl(new ol.control.ScaleLine({}));"""
+    else:
+        return ""

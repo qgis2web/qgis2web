@@ -9,7 +9,6 @@ from qgis.core import (QgsProject,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
-                       QgsSvgMarkerSymbolLayer,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
@@ -401,17 +400,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     else:
         layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
     if isinstance(renderer, QgsSingleSymbolRenderer):
-        if isinstance(renderer.symbol().symbolLayers()[0], QgsSvgMarkerSymbolLayer):
-            svgFile = os.path.basename(renderer.symbol().symbolLayers()[0].path())
-            layerCode += '''
-                title: '<img style="max-width:16px; max-height:16px;" src="styles/''' + svgFile + '''" /> %(name)s'
+        layerCode += '''
+                title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
             });''' % {"icon": layerName,
-                      "name": layer.name().replace("'", "\\'")}
-        else:
-            layerCode += '''
-                    title: '<img src="styles/legend/%(icon)s.png" /> %(name)s'
-                });''' % {"icon": layerName,
-                          "name": layer.name().replace("'", "\\'")}
+                      "name": layer.name().replace("'", "\\'")}              
     elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         layerCode += getLegend(renderer.categories(), layer, layerName)
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
@@ -426,16 +418,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
 def getLegend(subitems, layer, layerName):
     icons = ""
     for count, subitem in enumerate(subitems):
-        if isinstance(subitem.symbol().symbolLayers()[0], QgsSvgMarkerSymbolLayer):
-            svgFile = os.path.basename(subitem.symbol().symbolLayers()[0].path())
-            icons += ("""\\
-    <img style="max-width:16px; max-height:16px;" src="styles/%(icon)s" /> %(text)s<br />""" %
-                      {"icon": svgFile, "text": subitem.label().replace("'", "\\'")})
-        else:
-            icons += ("""\\
+        text = subitem.label().replace("'", "\\'")
+        icons += ("""\\
     <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
-                      {"icon": layerName, "count": count, "text": subitem.label().replace("'", "\\'")})
-    
+                  {"icon": layerName, "count": count, "text": text})
     legend = '''
     title: '%(name)s<br />%(icons)s'
         });''' % {"icons": icons, "name": layer.name().replace("'", "\\'")}

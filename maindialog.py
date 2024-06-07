@@ -630,7 +630,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     item.addChild(subitem)
                     self.items[group][param] = subitem
                 self.appearanceParams.addTopLevelItem(item)
-                item.sortChildren(0, Qt.AscendingOrder)
+                #item.sortChildren(0, Qt.AscendingOrder)
         self.appearanceParams.expandAll()
         self.appearanceParams.resizeColumnToContents(0)
         self.appearanceParams.resizeColumnToContents(1)
@@ -930,7 +930,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonCheck.stateChanged.connect(self.changeJSON)
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-            if layer.geometryType() == QgsWkbTypes.PointGeometry:
+            if layer.geometryType() == QgsWkbTypes.PointGeometry and layer.renderer().type() == 'singleSymbol':
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
