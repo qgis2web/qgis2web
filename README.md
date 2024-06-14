@@ -65,6 +65,12 @@ Thank you for your support!
 </br>Happy mapping!🗺️
 
 <h2>Credits</h2>
+qgis2web's author is Tom Chadwin (@tomchadwin), in charge as official developer from April 2015 to November 2023, from this date Andrea Ordonselli (@andreaordonselli) took over.
+<p>The list of all other contributing developers is available at this link https://github.com/qgis2web/qgis2web/graphs/contributors
+<p>For qgis2web enthusiasts we recommend reading this splendid article written by Tom which describes the birth and growth of qgis2web:
+https://tom.chadw.in/wrote/qgis2webTheStorySoFar
+
+<p>In short words:
 <p>qgis2web is fundamentally a merge of Victor Olaya's qgis-ol3 and Riccardo
 Klinger's qgis2leaf. It would not exist without their work. Thank you,
 gentlemen. Thanks are also very much due to Paolo Cavallini, who suggested
