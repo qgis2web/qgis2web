@@ -11,10 +11,13 @@ No server-side software required.
 <h2>Installation</h2>
 <ul>
     <li>In QGIS, select <code>Plugins > Manage and Install Plugins...</code></li>
+    <li>Find <code>qgis2web</code></li>
 </ul>
 <p>or:</p>
 <ul>
-    <li>Download and unzip this repo to your QGIS plugins directory</li>
+    <li><a href="https://github.com/qgis2web/qgis2web/archive/master.zip" target="_blank">Download</a> master repository from github</li>
+	<li>In QGIS, open <code>Plugins &gt; Manage and Install Plugins... &gt; Install from ZIP</code></li>	
+				
 </ul>
 
 <h2>Usage</h2>
