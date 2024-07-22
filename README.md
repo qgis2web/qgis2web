@@ -94,26 +94,27 @@ software:</p>
 
 <p>In addition, the following libraries have been used:</p>
 <ul>
-    <li>[ol-layerswitcher](https://github.com/walkermatt/ol-layerswitcher), by @walkermatt</li>
-    <li>[Autolinker.js](https://github.com/gregjacobs/Autolinker.js), by @gregjacobs</li>
-    <li>[requestAnimationFrame polyfill](https://gist.github.com/paulirish/1579671), by @paulirish</li>
+    <li><a href="https://github.com/walkermatt/ol-layerswitcher">ol-layerswitcher</a>, by @walkermatt</li>
+    <li><a href="https://github.com/gregjacobs/Autolinker.js">Autolinker.js</a>, by @gregjacobs</li>
+    <li><a href="https://gist.github.com/paulirish/1579671">requestAnimationFrame polyfill</a>, by @paulirish</li>
     <li>Function.prototype.bind polyfill, by @mozilla</li>
-    <li>[Leaflet.label](https://github.com/Leaflet/Leaflet.label), by @jacobtoye</li>
-    <li>[Leaflet.Locate](https://github.com/domoritz/leaflet-locatecontrol), by @domoritz</li>
-    <li>[Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster), by @danzel</li>
-    <li>[leaflet-measure](https://github.com/ljagis/leaflet-measure), by @ljagis</li>
-    <li>[leaflet-hash](https://github.com/mlevans/leaflet-hash), by @mlevans</li>
-    <li>[proj4js](https://github.com/proj4js/proj4js), by @madair, @calvinmetcalf, @ahocevar and other</li>
-    <li>[Proj4Leaflet](https://github.com/kartena/Proj4Leaflet), by @kartena</li>
-    <li>[leaflet-search](https://github.com/stefanocudini/leaflet-search), by @stefanocudini</li>
-    <li>[ol3-search-layer](https://github.com/webgeodatavore/ol3-search-layer), by @ThomasG77</li>
-    <li>[simpleheat](https://github.com/mourner/simpleheat), by @mourner</li>
-    <li>[OSMBuildings](https://github.com/kekscom/osmbuildings), by @kekscom</li>
-    <li>[leaflet-multi-style](https://github.com/perliedman/leaflet-multi-style), by @perliedman</li>
-    <li>[Leaflet.SvgShapeMarkers](https://github.com/rowanwins/Leaflet.SvgShapeMarkers), by @rowanwins</li>
-    <li>[rbush](https://github.com/mourner/rbush), by @mourner</li>
-    <li>[Labelgun](https://github.com/Geovation/labelgun), by @JamesMilnerUK</li>
-    <li>[Leaflet.pattern](https://github.com/teastman/Leaflet.pattern), by @teastman</li>
-    <li>[Leaflet.VectorGrid](https://github.com/Leaflet/Leaflet.VectorGrid), by @IvanSanchez</li>
-    <li>[Leaflet.Control.Layers.Tree](https://github.com/jjimenezshaw/Leaflet.Control.Layers.Tree), by @jjimenezshaw</li>
+    <li><a href="https://github.com/Leaflet/Leaflet.label">Leaflet.label</a>, by @jacobtoye</li>
+    <li><a href="https://github.com/domoritz/leaflet-locatecontrol">Leaflet.Locate</a>, by @domoritz</li>
+    <li><a href="https://github.com/Leaflet/Leaflet.markercluster">Leaflet.markercluster</a>, by @danzel</li>
+    <li><a href="https://github.com/ljagis/leaflet-measure">leaflet-measure</a>, by @ljagis</li>
+    <li><a href="https://github.com/mlevans/leaflet-hash">leaflet-hash</a>, by @mlevans</li>
+    <li><a href="https://github.com/proj4js/proj4js">proj4js</a>, by @madair, @calvinmetcalf, @ahocevar and others</li>
+    <li><a href="https://github.com/kartena/Proj4Leaflet">Proj4Leaflet</a>, by @kartena</li>
+    <li><a href="https://github.com/stefanocudini/leaflet-search">leaflet-search</a>, by @stefanocudini</li>
+    <li><a href="https://github.com/webgeodatavore/ol3-search-layer">ol3-search-layer</a>, by @ThomasG77</li>
+    <li><a href="https://github.com/mourner/simpleheat">simpleheat</a>, by @mourner</li>
+    <li><a href="https://github.com/kekscom/osmbuildings">OSMBuildings</a>, by @kekscom</li>
+    <li><a href="https://github.com/perliedman/leaflet-multi-style">leaflet-multi-style</a>, by @perliedman</li>
+    <li><a href="https://github.com/rowanwins/Leaflet.SvgShapeMarkers">Leaflet.SvgShapeMarkers</a>, by @rowanwins</li>
+    <li><a href="https://github.com/mourner/rbush">rbush</a>, by @mourner</li>
+    <li><a href="https://github.com/Geovation/labelgun">Labelgun</a>, by @JamesMilnerUK</li>
+    <li><a href="https://github.com/teastman/Leaflet.pattern">Leaflet.pattern</a>, by @teastman</li>
+    <li><a href="https://github.com/Leaflet/Leaflet.VectorGrid">Leaflet.VectorGrid</a>, by @IvanSanchez</li>
+    <li><a href="https://github.com/jjimenezshaw/Leaflet.Control.Layers.Tree">Leaflet.Control.Layers.Tree</a>, by @jjimenezshaw</li>
 </ul>
+
