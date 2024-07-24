@@ -52,7 +52,7 @@ We are thrilled to see how widely our project is being used and appreciated arou
 Please consider a small donation; even a modest "virtual coffee" can help support our commitment to providing quality software. 
 
 [<img src="https://github.com/tomchadwin/qgis2web/assets/89784373/3bf8e193-e65e-4dc6-a189-a9e669f98b1e">](https://www.opengis.it/buy-me-a-coffee/)
-</br><b>🎁 As a token of our gratitude, donors will receive as a gift [qgis2opengis](https://github.com/andreaordonselli/qgis2opengis) (a plugin enhancing OpenLayers export of qgis2web).🎁</b>
+</br><b>🎁 As a token of our gratitude, donors will receive as a gift [qgis2o.gis](https://github.com/andreaordonselli/qgis2o.gis) (a plugin enhancing OpenLayers export of qgis2web).🎁</b>
 
 Thank you for your support!
 </br>Happy mapping!🗺️
