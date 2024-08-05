@@ -163,7 +163,7 @@ class LeafletWriter(Writer):
                                                    layerFilter, canvas,
                                                    addressSearch, locate, layersList)
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
-                 widgetAccent, widgetBackground)
+                 widgetAccent, widgetBackground, layersList)
 
         wfsLayers = ""
         labelCode = ""

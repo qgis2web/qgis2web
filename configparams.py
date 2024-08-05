@@ -37,7 +37,7 @@ def getTemplates():
                 d.seek(0)
                 d.write(srcCode)
                 d.truncate()
-    return tuple(f[:f.find(".")] for f in reversed(os.listdir(dst))
+    return tuple(f[:f.find(".")] for f in os.listdir(dst)
                  if f.endswith("html"))
 
 

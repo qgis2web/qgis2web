@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>661</width>
-    <height>532</height>
+    <width>663</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -453,7 +453,7 @@
            <normaloff>icons/ol.png</normaloff>icons/ol.png</iconset>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">mapFormat</string>
@@ -470,7 +470,7 @@
            <normaloff>icons/leaflet.png</normaloff>icons/leaflet.png</iconset>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">mapFormat</string>
@@ -478,16 +478,38 @@
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="mapbox">
-         <property name="enabled">
-          <bool>false</bool>
+        <widget class="QPushButton" name="coffeeButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>152</width>
+           <height>44</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>40</height>
+          </size>
          </property>
          <property name="text">
-          <string>Mapbox GL JS</string>
+          <string/>
          </property>
-         <attribute name="buttonGroup">
-          <string notr="true">mapFormat</string>
-         </attribute>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/coffee-button.png</normaloff>icons/coffee-button.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>150</width>
+           <height>45</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
@@ -519,6 +541,27 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QWidget" name="info_layout" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <widget class="QWidget" name="horizontalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>0</y>
+          <width>531</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="info_container"/>
+       </widget>
+      </widget>
      </item>
     </layout>
    </item>

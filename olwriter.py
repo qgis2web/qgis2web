@@ -337,17 +337,33 @@ def bounds(iface, useCanvas, layers, matchCRS):
 
 def getLayersList(addLayersList):
     if (addLayersList and addLayersList != "" and addLayersList != "None"):
-        layersList = """
+        if addLayersList == "Collapsed":
+            layersList = """
 var layerSwitcher = new ol.control.LayerSwitcher({
     tipLabel: "Layers",
     target: 'top-right-container'
-    });
-map.addControl(layerSwitcher);"""
+});
+map.addControl(layerSwitcher);
+    """
         if addLayersList == "Expanded":
-            layersList += """
-layerSwitcher.hidePanel = function() {};
-layerSwitcher.showPanel();
-"""
+            layersList = """
+var layerSwitcher = new ol.control.LayerSwitcher({
+    activationMode: 'click',
+	startActive: true,
+	tipLabel: "Layers",
+    target: 'top-right-container',
+	collapseLabel: '»',
+	collapseTipLabel: 'Close'
+    });
+map.addControl(layerSwitcher);
+if (hasTouchScreen || isSmallScreen) {
+	document.addEventListener('DOMContentLoaded', function() {
+		setTimeout(function() {
+			layerSwitcher.hidePanel();
+		}, 500);
+	});	
+}
+"""     
     else:
         layersList = ""
     return layersList

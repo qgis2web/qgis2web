@@ -11,6 +11,10 @@ var map = new ol.Map({
 //initial view - epsg:3857 coordinates if not "Match project CRS"
 map.getView().fit(@BOUNDS@, map.getSize());
 
+////small screen definition
+    var hasTouchScreen = map.getViewport().classList.contains('ol-touch');
+    var isSmallScreen = window.innerWidth < 650;
+
 ////controls container
 
     //top left container
@@ -158,7 +162,8 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
 
 var highlight;
 var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-var onPointerMove = function(evt) {
+
+function onPointerMove(evt) {
     if (!doHover && !doHighlight) {
         return;
     }
@@ -213,8 +218,8 @@ var onPointerMove = function(evt) {
     } else {
         popupText += '</ul>';
     }
-
-    if (doHighlight) {
+    
+	if (doHighlight) {
         if (currentFeature !== highlight) {
             if (highlight) {
                 featureOverlay.getSource().removeFeature(highlight);
@@ -283,12 +288,29 @@ var onPointerMove = function(evt) {
     }
 };
 
-var onSingleClick = function(evt) {
-    if (doHover) {
+map.on('pointermove', onPointerMove);
+
+var popupContent = '';
+var popupCoord = null;
+var featuresPopupActive = false;
+
+function updatePopup() {
+    if (popupContent) {
+        overlayPopup.setPosition(popupCoord);
+        content.innerHTML = popupContent;
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+        closer.blur();
+    }
+} 
+
+function onSingleClickFeatures(evt) {
+    if (doHover || sketch) {
         return;
     }
-    if (sketch) {
-        return;
+    if (!featuresPopupActive) {
+        featuresPopupActive = true;
     }
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
@@ -297,25 +319,25 @@ var onSingleClick = function(evt) {
     var currentFeatureKeys;
     var clusteredFeatures;
     var popupText = '<ul>';
+    
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-        if (layer && feature instanceof ol.Feature && (layer.get("interactive") || layer.get("interactive") == undefined)) {
+        if (layer && feature instanceof ol.Feature && (layer.get("interactive") || layer.get("interactive") === undefined)) {
             var doPopup = false;
-            for (k in layer.get('fieldImages')) {
-                if (layer.get('fieldImages')[k] != "Hidden") {
+            for (var k in layer.get('fieldImages')) {
+                if (layer.get('fieldImages')[k] !== "Hidden") {
                     doPopup = true;
                 }
             }
             currentFeature = feature;
             clusteredFeatures = feature.get("features");
-            var clusterFeature;
             if (typeof clusteredFeatures !== "undefined") {
                 if (doPopup) {
-                    for(var n=0; n<clusteredFeatures.length; n++) {
+                    for(var n = 0; n < clusteredFeatures.length; n++) {
                         currentFeature = clusteredFeatures[n];
                         currentFeatureKeys = currentFeature.getKeys();
-                        popupText += '<li><table>'
-						popupText += '<a>' + '<b>' + layer.get('popuplayertitle') + '</b>' + '</a>';
-						popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
+                        popupText += '<li><table>';
+                        popupText += '<a><b>' + layer.get('popuplayertitle') + '</b></a>';
+                        popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
                         popupText += '</table></li>';    
                     }
                 }
@@ -323,94 +345,86 @@ var onSingleClick = function(evt) {
                 currentFeatureKeys = currentFeature.getKeys();
                 if (doPopup) {
                     popupText += '<li><table>';
-					popupText += '<a>' + '<b>' + layer.get('popuplayertitle') + '</b>' + '</a>';
-					popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
+                    popupText += '<a><b>' + layer.get('popuplayertitle') + '</b></a>';
+                    popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
                     popupText += '</table>';
                 }
             }
         }
     });
-    if (popupText == '<ul>') {
+    if (popupText === '<ul>') {
         popupText = '';
     } else {
         popupText += '</ul>';
     }
-    
-	var viewProjection = map.getView().getProjection();
-	var viewResolution = map.getView().getResolution();
+	
+	popupContent = popupText;
+    popupCoord = coord;
+    updatePopup();
+}
 
-	for (i = 0; i < wms_layers.length; i++) {
-		if (wms_layers[i][1] && wms_layers[i][0].getVisible()) {
-			overlayPopup.setPosition(coord);
-			container.style.display = 'block';
-			var url = wms_layers[i][0].getSource().getFeatureInfoUrl(
-					evt.coordinate, viewResolution, viewProjection, {
-					'INFO_FORMAT': 'text/html',
-				});
-			if (url) {
-				content.innerHTML = '';
-
-				var loadingIcon = document.createElement('div');
-				loadingIcon.className = 'lds-roller';
-
-				var imgElement = document.createElement('img');
-                imgElement.className = 'lds-roller-img';
-				imgElement.style.height = '25px';
-				imgElement.style.width = '25px';
-				loadingIcon.appendChild(imgElement);
-
-				container.appendChild(loadingIcon);
-
-				var timeoutPromise = new Promise((resolve, reject) => {
-						setTimeout(() => {
-							reject(new Error('Timeout exceeded'));
-						}, 5000); // 5000 millisecondi (5 secondi)
-					});
-
-				Promise.race([
-						fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)),
-						timeoutPromise
-					])
-				.then((response) => {
-					if (response.ok) {
-						return response.text();
-					} //else {						
-					//}
-				})
-				.then((html) => {
-					if (html.indexOf('<table') !== -1) {
-						overlayPopup.setPosition(coord);
-						content.innerHTML += html + '<p>' + '</p>';
-						container.style.display = 'block';
-					} // else {
-					// }
-				})
-				// .catch((error) => {
-				// })
-				.finally(() => {
-					var loaderIcon = document.querySelector('.lds-roller');
-					loaderIcon.remove();
-				});
-			}
-		}
-	}
-
-    if (popupText) {
-        overlayPopup.setPosition(coord);
-        content.innerHTML = popupText;
-        container.style.display = 'block';        
-    } else {
-        container.style.display = 'none';
-        closer.blur();
+function onSingleClickWMS(evt) {
+    if (doHover || sketch) {
+        return;
     }
-};
+	if (!featuresPopupActive) {
+		popupContent = '';
+	}
+    var coord = evt.coordinate;
+    var viewProjection = map.getView().getProjection();
+    var viewResolution = map.getView().getResolution();
 
-map.on('pointermove', function(evt) {
-    onPointerMove(evt);
-});
-map.on('singleclick', function(evt) {
-    onSingleClick(evt);
-});
+    for (var i = 0; i < wms_layers.length; i++) {
+        if (wms_layers[i][1] && wms_layers[i][0].getVisible()) {
+            var url = wms_layers[i][0].getSource().getFeatureInfoUrl(
+                evt.coordinate, viewResolution, viewProjection, {
+                    'INFO_FORMAT': 'text/html',
+                });
+            if (url) {				
+                const wmsTitle = wms_layers[i][0].get('popuplayertitle');					
+                var ldsRoller = '<div id="lds-roller"><img class="lds-roller-img" style="height: 25px; width: 25px;"></img></div>';
+				
+                popupCoord = coord;
+				popupContent += ldsRoller;
+                updatePopup();
+
+                var timeoutPromise = new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        reject(new Error('Timeout exceeded'));
+                    }, 5000); // (5 second)
+                });
+
+                Promise.race([
+                    fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)),
+                    timeoutPromise
+                ])
+                .then((response) => {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                })
+                .then((html) => {
+                    if (html.indexOf('<table') !== -1) {
+                        popupContent += '<a><b>' + wmsTitle + '</b></a>';
+                        popupContent += html + '<p></p>';
+                        updatePopup();
+                    }
+                })
+                // .catch((error) => {
+				// })
+                .finally(() => {
+                    setTimeout(() => {
+                        var loaderIcon = document.querySelector('#lds-roller');
+						loaderIcon.remove();
+                    }, 500); // (0.5 second)	
+                });
+            }
+        }
+    }
+}
+
+map.on('singleclick', onSingleClickFeatures);
+map.on('singleclick', onSingleClickWMS);
 
 //get container
 var topLeftContainerDiv = document.getElementById('top-left-container')
@@ -449,55 +463,43 @@ var bottomRightContainerDiv = document.getElementById('bottom-right-container')
 @GRID@
 
 //attribution
-var attributionComplete = false;
-map.on("rendercomplete", function(evt) {
-	if (!attributionComplete) {
-		var attribution = document.getElementsByClassName('ol-attribution')[0];	
-		attribution.classList.remove('ol-collapsed');
-		var button = attribution.getElementsByTagName('button')[0];
-		if (button) {
-			button.parentNode.removeChild(button);
-		}
-		var attributionList = attribution.getElementsByTagName('ul')[0];
-		if (attributionList) {
-			var qgis2webAttribution = document.createElement('li');
-			qgis2webAttribution.innerHTML = '<a href="https://github.com/tomchadwin/qgis2web">qgis2web</a> &middot; ';
-			attributionList.appendChild(qgis2webAttribution);
+var bottomAttribution = new ol.control.Attribution({
+  collapsible: false,
+  collapsed: false,
+  className: 'bottom-attribution'
+});
+map.addControl(bottomAttribution);
 
-			var olAttribution = document.createElement('li');
-			olAttribution.innerHTML = '<a href="https://openlayers.org/">OpenLayers</a> &middot; ';
-			attributionList.appendChild(olAttribution);
-
-			var qgisAttribution = document.createElement('li');
-			qgisAttribution.innerHTML = '<a href="https://qgis.org/">QGIS</a>';
-			attributionList.appendChild(qgisAttribution);
-		}
-	attributionComplete = true;
-	}
-})
-
+var attributionList = document.createElement('li');
+attributionList.innerHTML = `
+	<a href="https://github.com/tomchadwin/qgis2web">qgis2web</a> &middot;
+	<a href="https://openlayers.org/">OpenLayers</a> &middot;
+	<a href="https://qgis.org/">QGIS</a>	
+`;
+bottomAttribution.element.appendChild(attributionList);
 
 
 // Disable "popup on hover" or "highlight on hover" if ol-control mouseover
-var preDoHover = doHover;
-var preDoHighlight = doHighlight;
-if (doHover || doHighlight) {
-    var controlElements = document.getElementsByClassName('ol-control');
-    for (var i = 0; i < controlElements.length; i++) {
-        controlElements[i].addEventListener('mouseover', function() {
-            if (doHover) { doHover = false; }
-            if (doHighlight) { doHighlight = false; }
-        });
-        controlElements[i].addEventListener('mouseout', function() {
-            doHover = preDoHover;
-            doHighlight = preDoHighlight;
-        });
-    }
-}
+document.addEventListener('DOMContentLoaded', function() {
+    var preDoHover = doHover;
+	var preDoHighlight = doHighlight;
+	if (doHover || doHighlight) {
+		var controlElements = document.getElementsByClassName('ol-control');
+		for (var i = 0; i < controlElements.length; i++) {
+			controlElements[i].addEventListener('mouseover', function() {
+				if (doHover) { doHover = false; }
+				if (doHighlight) { doHighlight = false; }
+			});
+			controlElements[i].addEventListener('mouseout', function() {
+				doHover = preDoHover;
+				doHighlight = preDoHighlight;
+			});
+		}
+	}
+});
 
 
 //move controls inside containers, in order
-
     //zoom
     var zoomControl = document.getElementsByClassName('ol-zoom')[0];
     if (zoomControl) {
@@ -530,7 +532,7 @@ if (doHover || doHighlight) {
         bottomLeftContainerDiv.appendChild(scaleLineControl);
     }
     //attribution
-    var attributionControl = document.getElementsByClassName('ol-attribution')[0];
+    var attributionControl = document.getElementsByClassName('bottom-attribution')[0];
     if (attributionControl) {
         bottomRightContainerDiv.appendChild(attributionControl);
     }

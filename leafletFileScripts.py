@@ -277,24 +277,33 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
 
 
 def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
-             widgetBackground):
+             widgetBackground, layersList):
     feedback.showFeedback("Writing CSS...")
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
         #map {
             background-color: """ + backgroundColor + """
         }
+        html, body, #map {
+			overflow: hidden;
+        }
+        .col9{
+			height: 100%!important;
+		}
+		.col3{
+			height: 100%;
+			overflow: auto;
+		}
         .info {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
-            background: white;
-            background: rgba(255,255,255,0.8);
+            background-color:""" + widgetBackground + """ !important;
+            color: """ + widgetAccent + """ !important;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 5px;
         }
         .info h2 {
             margin: 0 0 5px;
-            color: #777;
         }
         .leaflet-container {
             background: #fff;
@@ -365,6 +374,9 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             border-radius: 5px;
             max-width: 40%;
         }
+        .leaflet-control {
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4)!important;
+        }
         .leaflet-touch .leaflet-control-layers,
         .leaflet-touch .leaflet-bar,
         .leaflet-control-search,
@@ -423,8 +435,34 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             text-align: center;
             text-indent: 0%;
         }
-        .leaflet-control-layers-toggle {
+        .leaflet-control-layers {
+			padding: 2px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
             background-color: """ + widgetBackground + """ !important;
+            color: """ + widgetAccent + """ !important;
+
+		}
+        .leaflet-control-layers-expanded {
+			padding-left: 6px;
+		}	
+        .leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+            display: block;
+            background-image: none;
+			text-decoration: none;
+            margin-bottom: 3px;
+        }
+        .leaflet-control-layers-expanded .leaflet-control-layers-toggle::after {
+            content: '»';
+            font-size: x-large;
+            color: """ + widgetAccent + """ !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
         }
         .leaflet-overlay-pane {
             z-index: 550;
@@ -432,6 +470,12 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         .leaflet-popup-pane {
             z-index: 700;
         }"""
+        if (layersList == "Collapsed"):
+            text +="""
+        .leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+            display: none;
+        }
+        """
         f_css.write(text)
         f_css.close()
     feedback.completeStep()

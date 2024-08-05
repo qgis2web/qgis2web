@@ -170,7 +170,7 @@ typeSelect.onchange = function (e) {
   map.addInteraction(draw);		  
 };
 
-var style = new ol.style.Style({
+var measureLineStyle = new ol.style.Style({
   stroke: new ol.style.Stroke({ 
 	color: "rgba(0, 0, 255)", //blu
 	lineDash: [10, 10],
@@ -185,7 +185,7 @@ var style = new ol.style.Style({
   })
 });
 
-var style2 = new ol.style.Style({	  
+var measureLineStyle2 = new ol.style.Style({	  
 	stroke: new ol.style.Stroke({
 		color: "rgba(255, 255, 255)", 
 		lineDash: [10, 10],
@@ -219,7 +219,7 @@ var labelStyle = new ol.style.Style({
 var labelStyleCache = [];
 
 var styleFunction = function (feature, type) {
-  var styles = [style, style2];
+  var styles = [measureLineStyle, measureLineStyle2];
   var geometry = feature.getGeometry();
   var type = geometry.getType();
   var lineString;
