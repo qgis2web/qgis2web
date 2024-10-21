@@ -128,6 +128,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.setAllLayersPopupsValue = "default"
         self.setAllLayersClusterValue = "default"
         self.setAllLayersGetFeatureInfo = "default"
+        self.setAllLayersBaseMap = "default"
         self.setAllLayersEncodeValue = "default"
         self.setAllPopupFieldsComboValue = None
         self.setAllApplyButton.clicked.connect(self.setAllApplyClicked)
@@ -378,7 +379,7 @@ class MainDialog(QDialog, FORM_CLASS):
         writer = self.getWriterFactory()()
         (writer.layers, writer.groups, writer.popup,
          writer.visible, writer.interactive, writer.json,
-         writer.cluster, writer.getFeatureInfo) = self.getLayersAndGroups()
+         writer.cluster, writer.getFeatureInfo, writer.baseMap) = self.getLayersAndGroups()
         writer.params = self.getParameters()
         return writer
 
@@ -605,6 +606,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.setAllCombo.addItem("Layers to: Cluster Checked/Unchecked")
         self.setAllCombo.addItem("Layers to: Encode JSON Checked/Unchecked")
         self.setAllCombo.addItem("Layers to: GetFeatureInfo Checked/Unchecked")
+        self.setAllCombo.addItem("Layers to: BaseMap Checked/Unchecked")
         self.setAllCombo.addItem("Popup fields to: no label")
         self.setAllCombo.addItem("Popup fields to: inline label - always visible")
         self.setAllCombo.addItem("Popup fields to: inline label - visible with data")
@@ -652,6 +654,12 @@ class MainDialog(QDialog, FORM_CLASS):
                     self.setAllLayersGetFeatureInfo = "checked"
                 else:
                     self.setAllLayersGetFeatureInfo = "unchecked"
+            
+            if selected_value == "Layers to: BaseMap Checked/Unchecked":
+                if self.setAllLayersBaseMap == "unchecked" or self.setAllLayersBaseMap == "default":
+                    self.setAllLayersBaseMap = "checked"
+                else:
+                    self.setAllLayersBaseMap = "unchecked"
                     
             if selected_value == "Popup fields to: no label":
                 self.setAllPopupFieldsComboValue = "no label"
@@ -676,7 +684,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.layer_search_combo.clear()
         self.layer_search_combo.addItem("None")
         (layers, groups, popup, visible, interactive,
-         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo, baseMap) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 options = []
@@ -698,7 +706,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateAttrFilter(self):
         self.layer_filter_select.clear()
         (layers, groups, popup, visible, interactive,
-         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo, baseMap) = self.getLayersAndGroups()
         options = []
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
@@ -861,6 +869,7 @@ class MainDialog(QDialog, FORM_CLASS):
         json = []
         cluster = []
         getFeatureInfo = []
+        baseMap = []
         for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
@@ -872,6 +881,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     json.append(item.json)
                     cluster.append(item.cluster)
                     getFeatureInfo.append(item.getFeatureInfo)
+                    baseMap.append(item.baseMap)
             else:
                 group = item.name
                 groupLayers = []
@@ -889,6 +899,7 @@ class MainDialog(QDialog, FORM_CLASS):
                             json.append(allLayers.json)
                             cluster.append(allLayers.cluster)
                             getFeatureInfo.append(allLayers.getFeatureInfo)
+                            baseMap.append(allLayers.baseMap)
                 groups[group] = groupLayers[::-1]
 
         layers = layers[::-1]
@@ -899,13 +910,14 @@ class MainDialog(QDialog, FORM_CLASS):
         json = json[::-1]
         cluster = cluster[::-1]
         getFeatureInfo = getFeatureInfo[::-1]
+        baseMap = baseMap[::-1]
 
-        return (layers, groups, popup, visible, interactive, json, cluster, getFeatureInfo)
+        return (layers, groups, popup, visible, interactive, json, cluster, getFeatureInfo, baseMap)
 
     def reject(self):
         self.saveParameters()
         (layers, groups, popup, visible, interactive,
-         json, cluster, getFeatureInfo) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo, baseMap) = self.getLayersAndGroups()
         try:
             for layer, pop, vis, int in zip(layers, popup, visible,
                                             interactive):
@@ -1075,12 +1087,27 @@ class TreeLayerItem(QTreeWidgetItem):
                 if dlg.setAllLayersGetFeatureInfo == "unchecked":
                     self.getFeatureInfoCheck.setChecked(False)
 
-                self.getFeatureInfoItem.setText(0, "Enable GetFeatureInfo?")
-                self.getFeatureInfoCheck.stateChanged.connect(
-                    self.changeGetFeatureInfo)
+                self.getFeatureInfoItem.setText(0, "GetFeatureInfo")
+                self.getFeatureInfoCheck.stateChanged.connect(self.changeGetFeatureInfo)
                 self.addChild(self.getFeatureInfoItem)
                 tree.setItemWidget(self.getFeatureInfoItem, 1,
                                    self.getFeatureInfoCheck)
+
+                self.baseMapItem = QTreeWidgetItem(self)
+                self.baseMapCheck = QCheckBox()
+                if layer.customProperty("qgis2web/BaseMap") == 2:
+                    self.baseMapCheck.setChecked(True)
+                # set all
+                if dlg.setAllLayersBaseMap == "checked":
+                    self.baseMapCheck.setChecked(True)
+                if dlg.setAllLayersBaseMap == "unchecked":
+                    self.baseMapCheck.setChecked(False)
+
+                self.baseMapItem.setText(0, "BaseMap")
+                self.baseMapCheck.stateChanged.connect(self.changeBaseMap)
+                self.addChild(self.baseMapItem)
+                tree.setItemWidget(self.baseMapItem, 1, self.baseMapCheck)
+
                                        
         self.interactiveItem  = QTreeWidgetItem(self)
         self.interactiveCheck = QCheckBox()
@@ -1139,7 +1166,7 @@ class TreeLayerItem(QTreeWidgetItem):
         
         self.emptyRow = QTreeWidgetItem()
         self.addChild(self.emptyRow)
-        
+    
     @property
     def popup(self):
         popup = []
@@ -1187,6 +1214,13 @@ class TreeLayerItem(QTreeWidgetItem):
             return self.getFeatureInfoCheck.isChecked()
         except Exception:
             return False
+    
+    @property
+    def baseMap(self):
+        try:
+            return self.baseMapCheck.isChecked()
+        except Exception:
+            return False
 
     def changeJSON(self, isJSON):
         self.layer.setCustomProperty("qgis2web/Encode to JSON", isJSON)
@@ -1197,6 +1231,10 @@ class TreeLayerItem(QTreeWidgetItem):
     def changeGetFeatureInfo(self, isGetFeatureInfo):
         self.layer.setCustomProperty("qgis2web/GetFeatureInfo",
                                      isGetFeatureInfo)
+        
+    def changeBaseMap(self, isBaseMap):
+        self.layer.setCustomProperty("qgis2web/BaseMap", isBaseMap)
+        
 
     def togglePopups(self, state):
         if state == Qt.Unchecked:

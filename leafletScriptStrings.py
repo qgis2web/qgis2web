@@ -539,38 +539,26 @@ def abstractSubScript(abstract, pos):
     return abstractSub
 
 
-def addLayersList(basemapList, matchCRS, layer_list, groups, cluster, legends,
+def addLayersList(baseMap, matchCRS, layer_list, groups, cluster, legends,
                   expanded):
-    #print("Layer List:", layer_list)
-    #print("Groups:", groups)
-    if len(basemapList) < 2 or matchCRS:
-        controlStart = """
-        var baseMaps = {};"""
-    else:
-        comma = ""
-        controlStart = """
-        var baseMaps = {"""
-        for count, basemap in enumerate(basemapList):
-            controlStart += comma + "'" + str(basemap)
-            controlStart += "': basemap" + str(count)
-            comma = ", "
-        controlStart += "};"
-    
-    controlStart += """
-        var overlaysTree = ["""
+    controlStart = """
+        var overlaysTree = [
+    """
+        
     layersList = controlStart
-
     # Dizionario per tenere traccia dei gruppi creati
     created_groups = {}
     # Dizionario per tenere traccia dei gruppi per i quali abbiamo già aggiunto la chiusura
     closed_groups = {}
 
     lyrCount = len(layer_list) - 1
+    baseMapCount = len(baseMap)
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
             safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             lyrCount -= 1
+            baseMapCount -= 1
 
             # Verifica se il layer fa parte di uno dei gruppi
             is_in_group = False
@@ -603,7 +591,11 @@ def addLayersList(basemapList, matchCRS, layer_list, groups, cluster, legends,
             elif i.type() == QgsMapLayer.RasterLayer:
                 layersList += '''
             {label: "''' + rawLayerName.replace("'", "\'") + '"'
-                layersList += ", layer: layer_" + safeLayerName + """},"""
+                layersList += ", layer: layer_" + safeLayerName 
+                if baseMap[baseMapCount]:
+                    layersList += ", radioGroup: 'bm' },"
+                else:
+                    layersList += "},"
 
             # Controlla se tutti i layer del gruppo sono stati aggiunti
             for group_name in created_groups:
