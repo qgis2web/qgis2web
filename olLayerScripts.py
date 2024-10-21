@@ -29,7 +29,7 @@ except ImportError:
 
 
 def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
-                         settings, json, matchCRS, clustered, getFeatureInfo,
+                         settings, json, matchCRS, clustered, getFeatureInfo, baseMap,
                          iface, restrictToExtent, extent, bounds, authid):
 
     canvas = iface.mapCanvas()
@@ -37,8 +37,8 @@ def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
     layer_names_id = {}
     vtLayers = []
     for count, (layer, encode2json,
-                cluster, info) in enumerate(zip(layers, json, clustered,
-                                                getFeatureInfo)):
+                cluster, info, baseMap) in enumerate(zip(layers, json, clustered,
+                                                getFeatureInfo, baseMap)):
         layer_names_id[layer.id()] = str(count)
         if is25d(layer, canvas, restrictToExtent, extent):
             pass
@@ -141,8 +141,9 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
             opacity = layer.renderer().opacity()
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
+                baseMap = layer.customProperty("qgis2web/BaseMap", 0) == 2
                 return getXYZ(layerName, rawName, opacity, minResolution,
-                              maxResolution, layerAttr, d["url"][0]), vtLayers
+                              maxResolution, layerAttr, d["url"][0], baseMap), vtLayers
             elif "tileMatrixSet" in d:
                 return getWMTS(layer, d, layerAttr, layerName, opacity,
                                minResolution, maxResolution), vtLayers
@@ -512,11 +513,15 @@ def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
 
 
 def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
-           layerAttr, url):
-    return """
+           layerAttr, url, baseMap):
+    layerCode = """
         var lyr_%s = new ol.layer.Tile({
-            'title': '%s',
-            //'type': 'base',
+            'title': '%s',""" % (layerName, rawName)
+    if baseMap:
+        layerCode += "'type':'base',"
+    else: 
+        layerCode += ""
+    layerCode += """
             'opacity': %f,
             %s
             %s
@@ -524,8 +529,10 @@ def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
     attributions: '%s',
                 url: '%s'
             })
-        });""" % (layerName, rawName, opacity, minResolution, maxResolution,
+        });""" % (opacity, minResolution, maxResolution,
                   layerAttr, url)
+    
+    return layerCode
 
 
 def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,

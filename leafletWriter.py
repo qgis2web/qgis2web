@@ -102,6 +102,7 @@ class LeafletWriter(Writer):
             json=self.json,
             cluster=self.cluster,
             getFeatureInfo=self.getFeatureInfo,
+            baseMap = self.baseMap,
             params=self.params,
             folder=dest_folder)
         result = WriterResult()
@@ -115,7 +116,7 @@ class LeafletWriter(Writer):
     def writeLeaflet(
             cls, iface, feedback, folder,
             layer_list, groups, visible, interactive, cluster,
-            json, getFeatureInfo, params, popup):
+            json, getFeatureInfo, baseMap, params, popup):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         legends = {}
@@ -337,7 +338,7 @@ class LeafletWriter(Writer):
             new_src += address_text
         if (layersList and layersList != "" and layersList != "None"):
             new_src += addLayersList(
-                [], matchCRS, layer_list, groups, cluster, legends,
+                baseMap, matchCRS, layer_list, groups, cluster, legends,
                 layersList == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             # placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]
