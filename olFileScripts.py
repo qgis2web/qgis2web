@@ -29,8 +29,7 @@ def writeFiles(folder, restrictToExtent, feedback):
 
 def writeHTMLstart(settings, controlCount, osmb, feedback):
     feedback.showFeedback("Writing HTML...")
-    jsAddress = """<script src="resources/polyfills.js"></script>
-        <script src="./resources/functions.js"></script>"""
+    jsAddress = """<script src="./resources/functions.js"></script>"""
     cssAddress = """<link rel="stylesheet" href="./resources/ol.css">"""
     jsAddress += """
         <script src="./resources/ol.js"></script>"""
@@ -52,8 +51,6 @@ def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
         <link rel="stylesheet" type="text/css" """
         cssAddress += """href="resources/ol3-search-layer.min.css">"""
         jsAddress += """
-        <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features="""
-        jsAddress += """Element.prototype.classList,URL"></script>
         <script src="resources/horsey.min.js"></script>
         <script src="resources/ol3-search-layer.js"></script>"""
         searchVals = layerSearch.split(": ")

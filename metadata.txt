@@ -25,7 +25,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.22.0
+version=3.23.0
 
 # end of mandatory metadata
 
@@ -33,6 +33,7 @@ version=3.22.0
 
 # Uncomment the following line and add your changelog entries:
 changelog= 
+    22/10/2024 3.23.0 remove polyfill, added text for recommended qgis version, Fix disable doHover & doHighlight on ol-control, Fix openlayers style export for categorized decimal double fields [solves #1081], Fix openlayers to export null values ​​to table in case of categorized layer [solves #1096], Add Basemap choice for XYZ layers - it will be reflected in LayersList as radio button (not checkbox) (thanks to @pietro_c) [solves #1077]
     2024/07/30 3.22.0 Transition from QtWebKit to QtWebEngine, maindialog graphic improvement, button reduced/extended for Layers list Expanded, update ol-geocoder and ol-layerswitcher library, improve color and shadow export, fix minor bug
 	2024/06/07 3.21.0 organized appearance tab and added Title export variable, cluster choice visible only if layer is point and with single symbol, project title in 4 corners, dynamic size for svg icons in layerswitcher, openlayers: added project "Abstract" description export, openlayers: restored geocoder icon in preview window, openlayers: greatly simplified and organized js and css export code - now ol-controls elemets acquire automatic position, adjusted custom color and background for all ol-controls elements, disabled "popup on hover" and "highlight on hover" if mouse pointer is over an ol-control element, same svg usable for categorized or graduated symbol with different symbologies properties, leaflet: adjusted width of layerswitcher elements in case of categorized or graduated symbology, leaflet: adjusted popup size in case of presence of media, update WIKI documentation
     2024/05/13 3.20.0 openlayers: popup is able to show videos supported by the browser, fixed popup's height and width, image and video contents (thanks to @JanKirchhoff), commented projection's extension in layers.js and qgis2web.js files, svg icon is clearly visible in legend even in case of large dimensions (svg icon is shown directly, not qgis png's legend) (thanks to @geraldo), support for colored svg icons (fill and border) - leaflet: .js and .css files referring to layerslist are stored in the export folder only if layerslist is visible, fixed svg icons border width - updated writeAsVectorFormat function that was deprecated (thanks to @agiudiceandrea), updated WIKI documentation
