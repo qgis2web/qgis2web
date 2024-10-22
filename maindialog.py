@@ -291,7 +291,6 @@ class MainDialog(QDialog, FORM_CLASS):
             self.webViewWiki.page().setNetworkAccessManager(network_manager)
             self.webViewWiki.load(QUrl("https://www.opengis.it/info"))
             self.info_container.addWidget(self.webViewWiki)
-            QTimer.singleShot(15000, self.doNotConsent)
 
     #@pyqtSlot(bool)
 
@@ -328,15 +327,6 @@ class MainDialog(QDialog, FORM_CLASS):
             widget.setText(self.tr('Preview is not available since QtWebKit '
                                     'dependency is missing on your system'))
         self.right_layout.insertWidget(0, widget)
-
-    def doNotConsent(self):
-        script = """
-        var button = document.querySelector('.fc-cta-do-not-consent');
-        if (button) {
-            button.click();
-        }
-        """
-        self.webViewWiki.page().mainFrame().evaluateJavaScript(script)
 
     def showHideDevConsole(self, visible):
         self.devConsole.setVisible(visible)

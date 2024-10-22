@@ -231,12 +231,12 @@ def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
 
 def categorized(defs, sln, layer, renderer, legendFolder, stylesFolder,
                 layer_alpha, feedback):
-    # cluster = False
     defs += """
 function categories_%s(feature, value, size, resolution, labelText,
                        labelFont, labelFill, bufferColor, bufferWidth,
                        placement) {
-                switch(value.toString()) {""" % sln
+                var valueStr = (value !== null && value !== undefined) ? value.toString() : 'default';
+                switch(valueStr) {""" % sln
     cats = []
     useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
@@ -252,8 +252,14 @@ function categories_%s(feature, value, size, resolution, labelText,
                                                              symbol_size)
         legendIcon.save(os.path.join(legendFolder,
                                      sln + "_" + str(cnt) + ".png"))
-        if (cat.value() is not None and cat.value() != ""):
-            categoryStr = "case '%s':" % str(cat.value()).replace("'", "\\'")
+        if cat.value() is not None and cat.value() != "":
+            value = cat.value()
+            if isinstance(value, float) and value.is_integer():
+                # Format decimal numbers without trailing zeroes
+                value_str = str(int(value))
+            else:
+                value_str = str(value)
+            categoryStr = "case '%s':" % value_str.replace("'", "\\'")
         else:
             categoryStr = "default:"
         (style, pattern, setPattern,

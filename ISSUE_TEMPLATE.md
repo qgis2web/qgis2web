@@ -1,10 +1,14 @@
-Before opening an issue:
-- Check that you have installed the latest version of qgis2web
-- Search among the issues if a similar report already exists and if you can find your solution
-- Simplify your project with simple layer names, simple field names, simple symbols (Avoid apostrophe, double quotes, parentheses, accents..)
-- Attach an example of your project so that we can reproduce the issue
-- If you can't attach an example project, attach screenshots
+To ensure no time or effort is wasted in bug reporting, please follow these steps:
 
-For the experts:
-- Paste qgis2web or QGIS Python console errors
-- Paste browser console errors
+1. Make sure you are using the latest release of qgis2web
+2. Check the issues on Github to see whether the bug has already been reported, and if so, read through all the comments on the issue, and add any additional information from your experience of the bug
+3. Make sure you can reproduce the bug reliably
+4. Reduce the complexity of your bug conditions as far as you can, especially by reducing the number of layers, ideally to one
+5. Raise a Github issue, including:
+  - only one bug per Github issue
+  - the qgis2web version (or make it clear you are using Github master branch)
+  - any Python error text/stack trace which occurs
+  - browser JS console errors - press F12 in qgis2web to open the developer toolbar and find the console
+  - screenshot of your settings
+  - screenshot of the output
+  - a link to the data you used, if possible
