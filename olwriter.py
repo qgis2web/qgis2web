@@ -66,6 +66,7 @@ class OpenLayersWriter(Writer):
 
     def __init__(self):
         super(OpenLayersWriter, self).__init__()
+        
 
     @classmethod
     def type(cls):
@@ -76,6 +77,7 @@ class OpenLayersWriter(Writer):
         return QObject.tr(translator, 'OpenLayers')
 
     def write(self, iface, dest_folder, feedback=None):
+        
         if not feedback:
             feedback = Feedback()
 
@@ -90,6 +92,7 @@ class OpenLayersWriter(Writer):
                                          json=self.json,
                                          clustered=self.cluster,
                                          getFeatureInfo=self.getFeatureInfo,
+                                         baseMap=self.baseMap,
                                          settings=self.params,
                                          folder=dest_folder)
         result = WriterResult()
@@ -101,7 +104,7 @@ class OpenLayersWriter(Writer):
 
     @classmethod
     def writeOL(cls, iface, feedback, layers, groups, popup, visible,
-                interactive, json, clustered, getFeatureInfo, settings,
+                interactive, json, clustered, getFeatureInfo, baseMap, settings,
                 folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         mapSettings = iface.mapCanvas().mapSettings()
@@ -138,7 +141,7 @@ class OpenLayersWriter(Writer):
         mapUnitLayers = getMapUnitLayers(mapUnitsLayers)
         osmb = writeLayersAndGroups(layers, groups, visible, interactive,
                                     folder, popup, settings, json, matchCRS,
-                                    clustered, getFeatureInfo, iface,
+                                    clustered, getFeatureInfo, baseMap, iface,
                                     restrictToExtent, extent, mapbounds,
                                     mapSettings.destinationCrs().authid())
         (jsAddress,
