@@ -518,7 +518,8 @@ def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
         var lyr_%s = new ol.layer.Tile({
             'title': '%s',""" % (layerName, rawName)
     if baseMap:
-        layerCode += "'type':'base',"
+        layerCode += """
+            'type':'base',"""
     else: 
         layerCode += ""
     layerCode += """
@@ -526,7 +527,7 @@ def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
             %s
             %s
             source: new ol.source.XYZ({
-    attributions: '%s',
+            attributions: '%s',
                 url: '%s'
             })
         });""" % (opacity, minResolution, maxResolution,
