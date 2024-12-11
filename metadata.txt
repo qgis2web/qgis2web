@@ -25,7 +25,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.23.0
+version=3.24.0
 
 # end of mandatory metadata
 
@@ -33,6 +33,7 @@ version=3.23.0
 
 # Uncomment the following line and add your changelog entries:
 changelog= 
+	2024/12/11 3.24.0 openlayers: Added cluster export for categorized and graded point geometries with variable color from green (few geometries) to red (many geometries), openlayers and leaflet: supported apostrophe and double quote everywhere: in layer group title, in layer title, in categorized/graded legend, in project title, in project abstract, Added saving of the Popups check state in the Layers and Group tab
     2024/10/28 3.23.0 remove polyfill, added text for recommended qgis version, fix disable doHover & doHighlight on ol-control, fix openlayers style export for categorized decimal double fields [solves #1081], fix openlayers to export null values ​​to table in case of categorized layer [solves #1096], Add Basemap choice for XYZ/WMS layers - it will be reflected in LayersList as radio button (not checkbox) (thanks to @pietrocomelli) [solves #1077] - Correct spelling length (thanks @dgetz) [solves #1104], update WIKI documentation
     2024/07/30 3.22.0 Transition from QtWebKit to QtWebEngine, maindialog graphic improvement, button reduced/extended for Layers list Expanded, update ol-geocoder and ol-layerswitcher library, improve color and shadow export, fix minor bug
 	2024/06/07 3.21.0 organized appearance tab and added Title export variable, cluster choice visible only if layer is point and with single symbol, project title in 4 corners, dynamic size for svg icons in layerswitcher, openlayers: added project "Abstract" description export, openlayers: restored geocoder icon in preview window, openlayers: greatly simplified and organized js and css export code - now ol-controls elemets acquire automatic position, adjusted custom color and background for all ol-controls elements, disabled "popup on hover" and "highlight on hover" if mouse pointer is over an ol-control element, same svg usable for categorized or graduated symbol with different symbologies properties, leaflet: adjusted width of layerswitcher elements in case of categorized or graduated symbology, leaflet: adjusted popup size in case of presence of media, update WIKI documentation

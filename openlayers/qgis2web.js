@@ -169,7 +169,6 @@ function onPointerMove(evt) {
     }
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
-    var popupField;
     var currentFeature;
     var currentLayer;
     var currentFeatureKeys;
@@ -190,7 +189,6 @@ function onPointerMove(evt) {
             if (clusteredFeatures) {
 				clusterLength = clusteredFeatures.length;
 			}
-            var clusterFeature;
             if (typeof clusteredFeatures !== "undefined") {
                 if (doPopup) {
                     for(var n=0; n<clusteredFeatures.length; n++) {
@@ -314,7 +312,6 @@ function onSingleClickFeatures(evt) {
     }
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
-    var popupField;
     var currentFeature;
     var currentFeatureKeys;
     var clusteredFeatures;
@@ -472,7 +469,7 @@ map.addControl(bottomAttribution);
 
 var attributionList = document.createElement('li');
 attributionList.innerHTML = `
-	<a href="https://github.com/tomchadwin/qgis2web">qgis2web</a> &middot;
+	<a href="https://github.com/qgis2web/qgis2web">qgis2web</a> &middot;
 	<a href="https://openlayers.org/">OpenLayers</a> &middot;
 	<a href="https://qgis.org/">QGIS</a>	
 `;

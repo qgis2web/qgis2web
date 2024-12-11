@@ -1050,7 +1050,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonCheck.stateChanged.connect(self.changeJSON)
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-            if layer.geometryType() == QgsWkbTypes.PointGeometry and layer.renderer().type() == 'singleSymbol':
+            if layer.geometryType() == QgsWkbTypes.PointGeometry: #and layer.renderer().type() == 'singleSymbol':
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
@@ -1107,6 +1107,10 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.interactiveCheck.setChecked(False)
             else:
                 self.interactiveCheck.setChecked(True)
+
+            if layer.customProperty("qgis2web/Popups") == 0:
+                self.interactiveCheck.setChecked(False)
+
             # set all
             if dlg.setAllLayersPopupsValue == "checked":
                 self.interactiveCheck.setChecked(True)
@@ -1227,6 +1231,7 @@ class TreeLayerItem(QTreeWidgetItem):
         
 
     def togglePopups(self, state):
+        self.layer.setCustomProperty("qgis2web/Popups", state)
         if state == Qt.Unchecked:
             self.interactiveItem.setExpanded(False)
         else:

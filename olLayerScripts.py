@@ -247,8 +247,8 @@ def buildGroups(groups, qms, layer_names_id):
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 fold: "open",
-                                title: "%s"});\n''' %
-                      ("group_" + safeName(group), groupLayerObjs, group))
+                                title: '%s'});\n''' %
+                      ("group_" + safeName(group), groupLayerObjs, group.replace("'", "\\'")))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
     return (groupVars, groupedLayers)
@@ -355,13 +355,13 @@ var jsonSource_%(n)s = new ol.source.Vector({
     layerCode += '''%(min)s %(max)s
     style: style_%(n)s,
     interactive: %(int)s,
-    title: "%(name)s"
+    title: '%(name)s'
 });
 
 function get%(n)sJson(geojson) {
     var features_%(n)s = format_%(n)s.readFeatures(geojson);
     jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {"name": layer.name(), "n": layerName, "int": str(interactive).lower(),
+}''' % {"name": layer.name().replace("'", "\\'"), "n": layerName, "int": str(interactive).lower(),
         "min": minResolution, "max": maxResolution}
     return layerCode
 
@@ -378,8 +378,8 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                                                     "crs": crsConvert,
                                                     "layerAttr": layerAttr}
     if cluster:
-        layerCode += '''cluster_%(n)s = new ol.source.Cluster({
-  distance: 10,
+        layerCode += '''\ncluster_%(n)s = new ol.source.Cluster({
+  distance: 30,
   source: jsonSource_%(n)s
 });''' % {"n": layerName}
     layerCode += '''\nvar lyr_%(n)s = new ol.layer.%(t)s({
@@ -394,10 +394,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
     if pointLayerType == "Vector":
         layerCode += '''
                 style: style_%(n)s,
-                popuplayertitle: "%(name)s",
+                popuplayertitle: '%(name)s',
                 interactive: %(int)s,''' % {"n": layerName,
                                             "int": str(interactive).lower(),
-                                            "name": layer.name()}
+                                            "name": layer.name().replace("'", "\\'")}
     else:
         layerCode += writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax)
     if isinstance(renderer, QgsSingleSymbolRenderer):
@@ -430,7 +430,7 @@ def getLegend(subitems, layer, layerName):
 
 
 def isCluster(cluster, renderer):
-    if (cluster and isinstance(renderer, QgsSingleSymbolRenderer)):
+    if (cluster):
         cluster = True
     else:
         cluster = False
@@ -516,7 +516,7 @@ def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
            layerAttr, url, baseMap):
     layerCode = """
         var lyr_%s = new ol.layer.Tile({
-            'title': '%s',""" % (layerName, rawName)
+            'title': '%s',""" % (layerName, rawName.replace("'", "\\'"))
     if baseMap:
         layerCode += """
             'type':'base',"""
@@ -555,8 +555,8 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
     }
     var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.WMTS(({
-                              url: "%(url)s",
-    attributions: '%(layerAttr)s',
+                                url: "%(url)s",
+                                attributions: '%(layerAttr)s',
                                 "layer": "%(layerId)s",
                                 "TILED": "true",
              matrixSet: 'EPSG:3857',
@@ -571,13 +571,13 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
               wrapX: true,
                                 "VERSION": "1.0.0",
                             })),
-                            title: "%(name)s",
+                            title: '%(name)s',
                             opacity: %(opacity)s,
                             %(minRes)s
                             %(maxRes)s
                           });''' % {"layerId": layerId, "url": url,
                                     "layerAttr": layerAttr, "format": format,
-                                    "n": layerName, "name": layer.name(),
+                                    "n": layerName, "name": layer.name().replace("'", "\\'"),
                                     "opacity": opacity, "style": style,
                                     "minRes": minResolution,
                                     "maxRes": maxResolution}
@@ -599,20 +599,20 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
     return '''var lyr_%(n)s = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
                               url: "%(url)s",
-    attributions: '%(layerAttr)s',
+                              attributions: '%(layerAttr)s',
                               params: {
                                 "LAYERS": "%(layers)s",
                                 "TILED": "true",
                                 "VERSION": "%(version)s"},
                             })),
-                            title: "%(name)s",
+                            title: '%(name)s',
                             opacity: %(opacity)f,
                             %(minRes)s
                             %(maxRes)s
                           });
               wms_layers.push([lyr_%(n)s, %(info)d]);''' % {
         "layers": layers, "url": url, "layerAttr": layerAttr, "n": layerName,
-        "name": layer.name(), "version": version, "opacity": opacity,
+        "name": layer.name().replace("'", "\\'"), "version": version, "opacity": opacity,
         "minRes": minResolution, "maxRes": maxResolution, "info": info}
 
 
@@ -639,19 +639,19 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
 
     return '''var lyr_%(n)s = new ol.layer.Image({
                             opacity: 1,
-                            title: "%(name)s",
+                            title: '%(name)s',
                             %(minRes)s
                             %(maxRes)s
                             source: new ol.source.ImageStatic({
-                               url: "./layers/%(n)s.png",
-    attributions: '%(layerAttr)s',
+                                url: "./layers/%(n)s.png",
+                                attributions: '%(layerAttr)s',
                                 projection: '%(mapCRS)s',
                                 alwaysInRange: true,
                                 imageExtent: %(extent)s
                             })
                         });''' % {"n": layerName,
                                   "extent": sExtent,
-                                  "name": layer.name(),
+                                  "name": layer.name().replace("'", "\\'"),
                                   "minRes": minResolution,
                                   "maxRes": maxResolution,
                                   "mapCRS": mapCRS,

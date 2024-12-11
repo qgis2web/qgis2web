@@ -225,7 +225,7 @@ def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
         symbol, symbol_size)
     legendIcon.save(os.path.join(legendFolder, sln + ".png"))
-    value = 'var value = ""'
+    value = ''
     return (style, pattern, setPattern, value, useMapUnits)
 
 
@@ -274,9 +274,9 @@ function categories_%s(feature, value, size, resolution, labelText,
         cats.append(categoryStr)
     defs += "\n".join(cats) + "}};"
     style = """
-var style = categories_%s(feature, value, size, resolution, labelText,
-                          labelFont, labelFill, bufferColor,
-                          bufferWidth, placement)""" % sln
+    var style = categories_%s(feature, value, size, resolution, labelText,
+                            labelFont, labelFill, bufferColor,
+                            bufferWidth, placement)""" % sln
     value = getValue(layer, renderer)
     return (style, pattern, setPattern, value, defs, useAnyMapUnits)
 
@@ -366,8 +366,8 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer,
 
 
 def getValue(layer, renderer):
-    classAttr = handleHiddenField(layer, renderer.classAttribute())
-    value = ('var value = feature.get("%s");' % classAttr)
+    value = handleHiddenField(layer, renderer.classAttribute())
+    #value = ('var value = feature.get("%s");' % classAttr)
     return value
 
 
@@ -381,54 +381,88 @@ def getStyle(style, cluster, labelRes, labelText, sln, size,
         feature: feature,
         variables: {}
     };
-    %(value)s
-    var labelText = "";
-    ''' % {
-        "value": value}
+    
+    var labelText = ""; '''
     if cluster:
-        this_style += '''var clusteredFeatures = feature.get("features");
+        this_style += '''
     var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
     var bufferColor = "%(bufferColor)s";
     var bufferWidth = %(bufferWidth)s;
-    size = clusteredFeatures.length;
     var textAlign = "center";
-    var offsetX = 0;
-    var offsetY = 0;
-    if (size == 1) {
-        textAlign = "left"
-        offsetX = 8
-        offsetY = 3
+    var offsetX = 15;
+    var offsetY = 10;
+    var feature
+	var value
+    var clusteredFeatures = feature.get("features");
+    size = clusteredFeatures.length;
+    if (size == 1) { // If cluster has one feature
         var feature = clusteredFeatures[0];
+        value = clusteredFeatures[0].get("%(value)s");
         if (%(label)s !== null%(labelRes)s) {
             labelText = String(%(label)s);
         }
-        key = value + "_" + labelText
-    } else {
-        labelText = size.toString()
-        size = 2*(Math.log(size)/ Math.log(2))
-    }
-    %(style)s;\n''' % {"style": style, "labelRes": labelRes,
-                       "label": labelText, "size": size, "face": face,
-                       "labelFill": color, "bufferColor": bufferColor,
-                       "bufferWidth": bufferWidth}
+    } else { // If cluster has more than one feature
+		labelText = size.toString();
+		var radius = 6 + Math.log(size) * 3;
+		var maxClusterSize = 80;
+		var relativeSize = Math.min(size / maxClusterSize, 1);
+		var redComponent, greenComponent, blueComponent = 0;
+		if (relativeSize < 0.5) {
+			redComponent = Math.floor(210 * (relativeSize / 0.5));
+			greenComponent = 210;
+		} else {
+			redComponent = 210;
+			greenComponent = Math.floor(210 * (1 - (relativeSize - 0.5) / 0.5));
+		}
+		var color = `rgba(${redComponent}, ${greenComponent}, ${blueComponent}, 0.75)`;
+		return [
+			new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: radius + 4,
+					fill: new ol.style.Fill({
+						color: `rgba(${redComponent}, ${greenComponent}, ${blueComponent}, 0.3)`
+					})
+				})
+			}),
+			new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: radius,
+					fill: new ol.style.Fill({
+						color: color
+					})
+				}),
+				text: new ol.style.Text({
+					font: labelFont,
+					text: labelText,
+					fill: new ol.style.Fill({
+						color: labelFill
+					}),
+					placement: placement
+				})
+			})
+		];
+	}
+    %(style)s;\n''' % {"style": style, "labelRes": labelRes, "label": labelText, "size": size, "face": face,
+            "labelFill": color, "bufferColor": bufferColor,
+            "bufferWidth": bufferWidth, "value": value}
     else:
-        this_style += '''size = 0;
+        this_style += '''var value = feature.get("%(value)s");
     var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
     var bufferColor = "%(bufferColor)s";
     var bufferWidth = %(bufferWidth)s;
     var textAlign = "left";
-    var offsetX = 8;
-    var offsetY = 3;
+    var offsetX = 0;
+    var offsetY = 0;
     var placement = '%(placement)s';
     if (%(label)s !== null%(labelRes)s) {
         labelText = String(%(label)s);
     }
     %(style)s;\n''' % {"style": style, "placement": placement,
-                       "labelRes": labelRes, "label": labelText, "size": size,
-                       "face": face, "labelFill": color,
-                       "bufferColor": bufferColor, "bufferWidth": bufferWidth}
+                    "labelRes": labelRes, "label": labelText, "size": size,
+                    "face": face, "labelFill": color, "value": value,
+                    "bufferColor": bufferColor, "bufferWidth": bufferWidth}
 
     this_style += '''
     return style;

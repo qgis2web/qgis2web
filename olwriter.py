@@ -541,7 +541,7 @@ var Title = new ol.control.Control({
     target: '%TARGET_CONTAINER%'
 });
 map.addControl(Title)
-    """.replace("%PTITLE%", pTitle).replace("%TITLE_CLASS%", title_class).replace("%TARGET_CONTAINER%", target_container)
+    """.replace("%PTITLE%", pTitle.replace("'", "\\'")).replace("%TITLE_CLASS%", title_class).replace("%TARGET_CONTAINER%", target_container)
     return titleControl
 
 
