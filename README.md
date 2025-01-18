@@ -41,7 +41,7 @@ Read documentation on the [WIKI](https://qgis2web.github.io/qgis2web/)
 
 <h2>Awards</h2>
 
-qgis2web is among the winners of the [OSGeo:UK](https://uk.osgeo.org/agm/agm2023minutes.html) 2023 competition via GoFundGeo
+qgis2web is among the winners of the [OSGeo:UK](https://uk.osgeo.org/agm/agm2024minutes.html) 2024 competition via GoFundGeo
 </br>
 ![os geo uk](https://github.com/tomchadwin/qgis2web/assets/89784373/275553ce-39bd-42b2-81d3-12e551ce1261)
 
