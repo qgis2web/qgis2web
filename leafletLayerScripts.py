@@ -128,11 +128,14 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
         (legend, symbol) = getLegend(layer, renderer, outputProjectFileName,
                                      safeLayerName, feedback)
         legends[safeLayerName] = legend
+        slCount = 0
+        if symbol:
+            slCount = symbol.symbolLayerCount()
         (new_obj, legends, wfsLayers,
          useMultiStyle) = getLayer(layer, renderer, safeLayerName, interactive,
                                    outputProjectFileName, usedFields, legends,
                                    cluster, json, wfsLayers, markerType,
-                                   useMultiStyle, symbol, feedback)
+                                   useMultiStyle, slCount, feedback)
     blend = BLEND_MODES[layer.blendMode()]
     if vts is None:
         new_obj = u"""{style}
@@ -288,12 +291,14 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
         for field, val in zip(field_names, field_vals):
             fieldIndex = fields.indexFromName(str(field))
             editorWidget = layer.editorWidgetSetup(fieldIndex).type()
-            displayName = layer.attributeDisplayName(fieldIndex).replace("'",
-                                                                         "\\'")
+            displayName = layer.attributeDisplayName(fieldIndex).replace("'", "\\'")
+            
             if editorWidget == 'Hidden' or val == 'hidden field':
                 continue
+            
             row += """
                     <tr>\\"""
+            
             if val == 'inline label - always visible':
                 row += """
                         <th scope="row">"""
@@ -306,31 +311,37 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
                 row += displayName
                 row += """</th>\\
                         <td class="visible-with-data" id="""
-                row += '"' + str(field) + '"' '>'
+                row += '"' + str(field) + '"' + '>'
             else:
                 if val == "header label - visible with data":
                     row += """
                         <td class="visible-with-data" id="""
-                    row += '"' + str(field) + '"' + 'colspan="2">'
+                    row += '"' + str(field) + '"' + ' colspan="2">'
                 else:
                     row += """
                         <td colspan="2">"""
+            
             if val == "header label - always visible" or val == 'header label - visible with data':
                 row += '<strong>'
                 row += displayName
                 row += '</strong><br />'
+            
+            # Qui gestiamo la sicurezza per gli apici singoli e doppi
             row += "' + "
             row += "(feature.properties[\'" + str(field) + "\'] "
             row += "!== null ? "
-            if (editorWidget == 'ExternalResource'):
+
+            if editorWidget == 'ExternalResource':
                 row += "'<img src=\"images/' + "
-                row += "String(feature.properties['" + str(field)
-                row += r"']).replace(/[\\\/:]/g, '_').trim()"
+                row += "String(feature.properties['" + str(field) + "']"
+                row += r").replace(/[\\\/:]/g, '_').trim().replace(/'/g, '\\\'').replace(/\"/g, '&quot;')"
                 row += " + '\">' : '') + '"
             else:
                 row += "autolinker.link("
-                row += "feature.properties['" + str(field)
-                row += "'].toLocaleString()) : '') + '"
+                row += "String(feature.properties['" + str(field) + "'])"
+                row += ".replace(/'/g, '\\\'').replace(/\"/g, '&quot;')"
+                row += ".toLocaleString()) : '') + '"
+            
             row += """</td>\\
                     </tr>\\"""
         tableend = """
@@ -381,27 +392,26 @@ def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
 
 def getLayer(layer, renderer, safeLayerName, interactive,
              outputProjectFileName, usedFields, legends, cluster, json,
-             wfsLayers, markerType, useMultiStyle, symbol, feedback):
+             wfsLayers, markerType, useMultiStyle, slCount, feedback):
     if layer.geometryType() == QgsWkbTypes.PointGeometry:
         (new_obj,
          wfsLayers,
          useMultiStyle) = pointLayer(layer, safeLayerName, interactive,
                                      cluster, usedFields, json, wfsLayers,
-                                     markerType, symbol, useMultiStyle,
+                                     markerType, slCount, useMultiStyle,
                                      feedback)
     else:
         (new_obj, wfsLayers,
          useMultiStyle) = nonPointLayer(layer, safeLayerName, interactive,
-                                        usedFields, json, wfsLayers, symbol,
+                                        usedFields, json, wfsLayers, slCount,
                                         useMultiStyle, feedback)
     return new_obj, legends, wfsLayers, useMultiStyle
 
 
 def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json,
-               wfsLayers, markerType, symbol, useMultiStyle, feedback):
+               wfsLayers, markerType, slCount, useMultiStyle, feedback):
     if layer.providerType() == 'WFS' and json is False:
         p2lf = ""
-        slCount = symbol.symbolLayerCount()
         if slCount < 1:
             slCount = 1
         for sl in range(slCount):
@@ -409,7 +419,7 @@ def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json,
         (new_obj,
          scriptTag,
          useMultiStyle) = buildPointWFS(p2lf, safeLayerName, layer,
-                                        interactive, cluster, symbol,
+                                        interactive, cluster, slCount,
                                         useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -419,7 +429,7 @@ def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json,
         if attrText != "":
             layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
         (new_obj,
-         useMultiStyle) = buildPointJSON(symbol, safeLayerName, usedFields,
+         useMultiStyle) = buildPointJSON(slCount, safeLayerName, usedFields,
                                          interactive, markerType, layerAttr,
                                          useMultiStyle)
         if cluster:
@@ -428,10 +438,10 @@ def pointLayer(layer, safeLayerName, interactive, cluster, usedFields, json,
 
 
 def nonPointLayer(layer, safeLayerName, interactive, usedFields, json,
-                  wfsLayers, symbol, useMultiStyle, feedback):
+                  wfsLayers, slCount, useMultiStyle, feedback):
     if layer.providerType() == 'WFS' and json is False:
         (new_obj, scriptTag,
-         useMultiStyle) = buildNonPointWFS(safeLayerName, layer, symbol,
+         useMultiStyle) = buildNonPointWFS(safeLayerName, layer, slCount,
                                            interactive, useMultiStyle)
         wfsLayers += wfsScript(scriptTag)
     else:
@@ -442,7 +452,7 @@ def nonPointLayer(layer, safeLayerName, interactive, usedFields, json,
             layerAttr = u'<a href="%s">%s</a>' % (attrUrl, attrText)
         new_obj, useMultiStyle = buildNonPointJSON(safeLayerName, usedFields,
                                                    layerAttr, interactive,
-                                                   symbol, useMultiStyle)
+                                                   slCount, useMultiStyle)
     return new_obj, wfsLayers, useMultiStyle
 
 
@@ -505,12 +515,8 @@ def VTLayer(json_url):
     return vtJS
 
 
-def buildPointJSON(symbol, sln, usedFields, interactive, markerType, layerAttr,
+def buildPointJSON(slCount, sln, usedFields, interactive, markerType, layerAttr,
                    useMultiStyle):
-    if symbol:
-        slCount = symbol.symbolLayerCount()
-    else:
-        slCount = 0
     multiStyle = ""
     if slCount > 1:
         multiStyle = ".multiStyle"
@@ -557,7 +563,7 @@ def buildPointJSON(symbol, sln, usedFields, interactive, markerType, layerAttr,
     return (pointJSON, useMultiStyle)
 
 
-def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol,
+def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, slCount,
                   useMultiStyle):
     layerAttr = ""
     attrText = layer.attribution()
@@ -566,7 +572,6 @@ def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol,
         layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     p2ls = ""
-    slCount = symbol.symbolLayerCount()
     multiStyle = ""
     p2lStart = "pointToLayer: "
     p2lEnd = ""
@@ -609,7 +614,7 @@ def buildPointWFS(p2lf, layerName, layer, interactive, cluster_set, symbol,
     return new_obj, scriptTag, useMultiStyle
 
 
-def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
+def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, slCount,
                       useMultiStyle):
     if usedFields != 0:
         onEachFeature = u"""
@@ -617,10 +622,6 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
     else:
         onEachFeature = u""
     styles = u""
-    if symbol:
-        slCount = symbol.symbolLayerCount()
-    else:
-        slCount = 0
     multiStyle = u""
     styleStart = "style: "
     styleEnd = ""
@@ -650,7 +651,7 @@ def buildNonPointJSON(safeName, usedFields, layerAttr, interactive, symbol,
     return new_obj, useMultiStyle
 
 
-def buildNonPointWFS(layerName, layer, symbol, interactive, useMultiStyle):
+def buildNonPointWFS(layerName, layer, slCount, interactive, useMultiStyle):
     layerAttr = ""
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
@@ -658,7 +659,6 @@ def buildNonPointWFS(layerName, layer, symbol, interactive, useMultiStyle):
         layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     scriptTag = getWFSScriptTag(layer, layerName)
     styles = ""
-    slCount = symbol.symbolLayerCount()
     multiStyle = ""
     styleStart = "style: "
     styleEnd = ""

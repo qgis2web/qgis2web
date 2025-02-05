@@ -473,7 +473,10 @@ attributionList.innerHTML = `
 	<a href="https://openlayers.org/">OpenLayers</a> &middot;
 	<a href="https://qgis.org/">QGIS</a>	
 `;
-bottomAttribution.element.appendChild(attributionList);
+var bottomAttributionUl = bottomAttribution.element.querySelector('ul');
+if (bottomAttributionUl) {
+  bottomAttribution.element.insertBefore(attributionList, bottomAttributionUl);
+}
 
 
 // Disable "popup on hover" or "highlight on hover" if ol-control mouseover

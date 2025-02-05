@@ -16,7 +16,9 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsLinePatternFillSymbolLayer,
-                       QgsSymbolLayerUtils)
+                       QgsSymbolLayerUtils,
+                       QgsMapLayer)
+from qgis.PyQt.QtGui import QPixmap, QImage
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
 
@@ -30,6 +32,18 @@ def exportStyles(layers, folder, clustered, feedback):
     mapUnitLayers = []
     for count, (layer, cluster) in enumerate(zip(layers, clustered)):
         sln = safeName(layer.name()) + "_" + str(count)
+
+        # if raster layer
+        if layer.type() == QgsMapLayer.RasterLayer and layer.dataProvider().name() == "gdal":
+            legendSymbologyItems = layer.legendSymbologyItems() # simbology items list
+            for count, (name, color) in enumerate(legendSymbologyItems):
+                pixmap = QPixmap(16, 16)
+                pixmap.fill(color)  # fill with the legend color
+                icon_name = sln + "_" + str(count) + ".png"
+                print(icon_name)
+                pixmap.save(os.path.join(legendFolder, icon_name))
+        
+        # if not vector layer      
         if layer.type() != layer.VectorLayer:
             continue
         pattern = ""
@@ -58,7 +72,7 @@ def exportStyles(layers, folder, clustered, feedback):
                                           stylesFolder, layer_alpha, feedback)
             elif isinstance(renderer, QgsRuleBasedRenderer):
                 (style, pattern, setPattern, value,
-                 useMapUnits) = ruleBased(renderer, folder, stylesFolder,
+                 useMapUnits) = ruleBased(renderer, folder, stylesFolder, legendFolder,
                                           layer_alpha, sln, layer, feedback)
             else:
                 value = "''"
@@ -206,25 +220,95 @@ def getLabelFormat(layer):
     return (labelRes, size, face, color, bufferColor, bufferWidth)
 
 
+def getLegendIconAndAnchors(symbol, sln, legendFolder):
+    left_icon_space = []
+    right_icon_space = []
+    top_icon_space = []
+    bottom_icon_space = []
+
+    for i in range(symbol.symbolLayerCount()):
+        symbolLayer = symbol.symbolLayer(i)
+        props = symbolLayer.properties()
+        
+        if isinstance(symbolLayer, (QgsSimpleMarkerSymbolLayer, QgsSvgMarkerSymbolLayer)):
+            symbolSize = symbolLayer.size()
+            symbolUnit = symbolLayer.sizeUnit()
+            if symbolUnit == 0:  # millimeters
+                scale_factor = 4.5
+            elif symbolUnit == 4:  # points
+                scale_factor = 1.45
+            elif symbolUnit == 2:  # pixels
+                scale_factor = 1.30
+            else:  # other
+                scale_factor = 4.5
+
+            if isinstance(symbolLayer, QgsSimpleMarkerSymbolLayer):
+                width = symbolSize * scale_factor
+                height = symbolSize * scale_factor
+            elif isinstance(symbolLayer, QgsSvgMarkerSymbolLayer):
+                aspect_ratio = symbolLayer.defaultAspectRatio()
+                if aspect_ratio > 0:
+                    width = symbolSize * scale_factor
+                    height = width * aspect_ratio
+                else:
+                    height = symbolSize * scale_factor
+                    width = height * aspect_ratio
+        else:
+            width = 16
+            height = 16
+        
+        ax = int(props["horizontal_anchor_point"]) if "horizontal_anchor_point" in props else 0
+        ay = int(props["vertical_anchor_point"]) if "vertical_anchor_point" in props else 0
+        left = 0 if ax == 0 else width/2 if ax == 1 else width
+        right = width if ax == 0 else width/2 if ax == 1 else 0
+        top = 0 if ay == 0 else height/2 if ay == 1 else height
+        bottom = height if ay == 0 else height/2 if ay == 1 else 0
+        left_icon_space.append(left)
+        right_icon_space.append(right)
+        top_icon_space.append(top)
+        bottom_icon_space.append(bottom)
+
+    max_left_icon = max(left_icon_space)
+    max_right_icon = max(right_icon_space)
+    max_top_icon = max(top_icon_space)
+    max_bottom_icon = max(bottom_icon_space)
+
+    icon_width = int(max(max_left_icon, max_right_icon)*2)
+    icon_height = int(max(max_top_icon, max_bottom_icon)*2)
+
+    symbol_size = QSize(icon_width, icon_height)
+
+    legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol, symbol_size)
+    icon_name = sln + ".png"
+    icon_path = os.path.join(legendFolder, icon_name)
+    legendIcon.save(icon_path)
+
+    if legendIcon:
+        left_trim = int(icon_width / 2 - max_left_icon)
+        right_trim = int(icon_width / 2 - max_right_icon)
+        top_trim = int(icon_height / 2 - max_top_icon)
+        bottom_trim = int(icon_height / 2 - max_bottom_icon)
+
+        image = QImage(icon_path)
+
+        cropped_width = image.width() - left_trim - right_trim
+        cropped_height = image.height() - top_trim - bottom_trim
+
+        cropped_image = image.copy(left_trim, top_trim, cropped_width, cropped_height)
+        cropped_image.save(icon_path)
+
+
 def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
                  layer, feedback):
     symbol = renderer.symbol()
-    svg_layer = symbol.symbolLayer(0)
     (style, pattern, setPattern,
      useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
                                      layer_alpha, renderer, sln, layer,
                                      feedback)
     style = "var style = " + style
 
-    if isinstance(svg_layer, QgsSvgMarkerSymbolLayer):
-        svg_size = int(svg_layer.size() * 3.5)
-        symbol_size = QSize(svg_size, svg_size)
-    else:
-        symbol_size = QSize(16, 16)
-
-    legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
-        symbol, symbol_size)
-    legendIcon.save(os.path.join(legendFolder, sln + ".png"))
+    getLegendIconAndAnchors(symbol, sln, legendFolder)
+    
     value = ''
     return (style, pattern, setPattern, value, useMapUnits)
 
@@ -241,17 +325,9 @@ function categories_%s(feature, value, size, resolution, labelText,
     useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
         symbol = cat.symbol()
-        svg_layer = symbol.symbolLayer(0)
-        if isinstance(svg_layer, QgsSvgMarkerSymbolLayer):
-            svg_size = int(svg_layer.size() * 3.5)
-            symbol_size = QSize(svg_size, svg_size)
-        else:
-            symbol_size = QSize(16, 16)
-
-        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
-                                                             symbol_size)
-        legendIcon.save(os.path.join(legendFolder,
-                                     sln + "_" + str(cnt) + ".png"))
+        
+        getLegendIconAndAnchors(symbol, sln + "_" + str(cnt), legendFolder)
+        
         if cat.value() is not None and cat.value() != "":
             value = cat.value()
             if isinstance(value, float) and value.is_integer():
@@ -289,17 +365,9 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
     useAnyMapUnits = False
     for cnt, ran in enumerate(renderer.ranges()):
         symbol = ran.symbol()
-        svg_layer = symbol.symbolLayer(0)
-        if isinstance(svg_layer, QgsSvgMarkerSymbolLayer):
-            svg_size = int(svg_layer.size() * 3.5)
-            symbol_size = QSize(svg_size, svg_size)
-        else:
-            symbol_size = QSize(16, 16)
+        
+        getLegendIconAndAnchors(symbol, sln + "_" + str(cnt), legendFolder)
 
-        legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(
-            symbol, symbol_size)
-        legendIcon.save(os.path.join(
-            legendFolder, sln + "_" + str(cnt) + ".png"))
         (symbolstyle, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
                                          layer_alpha, renderer, sln, layer,
@@ -316,7 +384,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
     return (style, pattern, setPattern, value, useAnyMapUnits)
 
 
-def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer,
+def ruleBased(renderer, folder, stylesFolder, legendFolder, layer_alpha, sln, layer,
               feedback):
     # cluster = False
     template = """
@@ -340,12 +408,15 @@ def ruleBased(renderer, folder, stylesFolder, layer_alpha, sln, layer,
     expFile = os.path.join(folder, "resources", "qgis2web_expressions.js")
     ifelse = "if"
     useAnyMapUnits = False
-    for count, rule in enumerate(rules):
+    for cnt, rule in enumerate(rules):
         symbol = rule.symbol()
+
+        getLegendIconAndAnchors(symbol, sln + "_" + str(cnt), legendFolder)
+
         (styleCode, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(symbol, stylesFolder, layer_alpha,
                                          renderer, sln, layer, feedback)
-        name = "".join((sln, "rule", str(count)))
+        name = "".join((sln, "rule", str(cnt)))
         exp = rule.filterExpression()
         if rule.isElse():
             elsejs = styleCode
@@ -483,15 +554,25 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         pattern = ""
-        setPattern = ""
+        setPattern = "" 
+        ax = int(props["horizontal_anchor_point"]) if "horizontal_anchor_point" in props else 0
+        ay = int(props["vertical_anchor_point"]) if "vertical_anchor_point" in props else 0
         if isinstance(sl, QgsSimpleMarkerSymbolLayer):
             color = getRGBAColor(props["color"], alpha)
             borderColor = getRGBAColor(props["outline_color"], alpha)
             borderWidth = props["outline_width"]
             sizeUnits = props["size_unit"]
-            size = None
-            if sizeUnits != "MapUnit":
-                size = sl.size() * 2
+            symbolSize = None
+            if sizeUnits == "MM":
+                symbolSize = sl.size() * 2
+            elif sizeUnits == "Point":
+                symbolSize = sl.size() * 0.55
+            elif sizeUnits == "Pixel":
+                symbolSize = sl.size() * 0.40
+            else:
+                symbolSize = sl.size()
+            anchorX = 0 if ax == 1 else symbolSize if ax == 0 else -symbolSize
+            anchorY = 0 if ay == 1 else -symbolSize if ay == 0 else symbolSize
             try:
                 shape = sl.shape()
             except Exception:
@@ -499,47 +580,57 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             try:
                 if shape == 0 or shape == "square":
                     style, useMapUnits = getSquare(color, borderColor,
-                                                   borderWidth, size, props)
+                                                   borderWidth, symbolSize,
+                                                   props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 1 or shape == "diamond":
                     style, useMapUnits = getDiamond(color, borderColor,
-                                                    borderWidth, size, props)
+                                                    borderWidth, symbolSize,
+                                                    props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 2 or shape == "pentagon":
                     style, useMapUnits = getPentagon(color, borderColor,
-                                                     borderWidth, size, props)
+                                                     borderWidth, symbolSize,
+                                                     props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 3 or shape == "hexagon":
                     style, useMapUnits = getHexagon(color, borderColor,
-                                                    borderWidth, size, props)
+                                                    borderWidth, symbolSize,
+                                                    props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 4 or shape == 5 or shape == "triangle":
                     style, useMapUnits = getTriangle(color, borderColor,
-                                                     borderWidth, size, props)
+                                                     borderWidth, symbolSize,
+                                                     props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 6 or shape == "star":
                     style, useMapUnits = getStar(color, borderColor,
-                                                 borderWidth, size, props)
+                                                 borderWidth, symbolSize, 
+                                                 props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 9 or shape == "cross":
                     style, useMapUnits = getCross(color, borderColor,
-                                                  borderWidth, size, props)
+                                                  borderWidth, symbolSize, 
+                                                  props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 11 or shape == "cross2":
                     style, useMapUnits = getCross2(color, borderColor,
-                                                   borderWidth, size, props)
+                                                   borderWidth, symbolSize, 
+                                                   props, anchorX, anchorY)
                     style = "image: %s" % style
                 elif shape == 12 or shape == "line":
                     style, useMapUnits = getLine(color, borderColor,
-                                                 borderWidth, size, props)
+                                                 borderWidth, symbolSize, 
+                                                 props, anchorX, anchorY)
                     style = "text: %s" % style
                 else:
                     style, useMapUnits = getCircle(color, borderColor,
-                                                   borderWidth, size, props)
+                                                   borderWidth, symbolSize, 
+                                                   props, anchorX, anchorY)
                     style = "image: %s" % style
             except Exception:
                 style, useMapUnits = getCircle(color, borderColor, borderWidth,
-                                               size, props)
+                                               symbolSize, props, anchorX, anchorY)
                 style = "image: %s" % style
         elif isinstance(sl, QgsSvgMarkerSymbolLayer):
             svg_path = sl.path()
@@ -592,7 +683,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         
             style = ("image: %s" %
                      getIcon("styles/" + base_filename,
-                             sl.size(), svgWidth, svgHeight, rot))
+                             sl.size(), svgWidth, svgHeight,
+                             rot, ax, ay))
         elif isinstance(sl, QgsFontMarkerSymbolLayer):
             char = sl.character()
             color = getRGBAColor(props["color"], alpha)
@@ -685,7 +777,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             pattern, setPattern, useMapUnits)
 
 
-def getSquare(color, borderColor, borderWidth, size, props):
+def getSquare(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -693,13 +785,14 @@ def getSquare(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
-            angle: Math.PI/4, %s %s})""" % (size, stroke,
+            angle: Math.PI/4, displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke,
                                             getFillStyle(color, props)),
             useMapUnits)
 
 
-def getDiamond(color, borderColor, borderWidth, size, props):
+def getDiamond(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -707,12 +800,13 @@ def getDiamond(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+    
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
-            %s %s})""" % (size, stroke, getFillStyle(color, props)),
+            displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke, getFillStyle(color, props)),
             useMapUnits)
 
 
-def getPentagon(color, borderColor, borderWidth, size, props):
+def getPentagon(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -720,12 +814,13 @@ def getPentagon(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+    
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
-            %s %s})""" % (size, stroke, getFillStyle(color, props)),
+            displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke, getFillStyle(color, props)),
             useMapUnits)
 
 
-def getHexagon(color, borderColor, borderWidth, size, props):
+def getHexagon(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -733,12 +828,13 @@ def getHexagon(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+
     return ("""new ol.style.RegularShape({radius: %s + size, points: 6,
-            %s %s})""" % (size, stroke, getFillStyle(color, props)),
+            displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke, getFillStyle(color, props)),
             useMapUnits)
 
 
-def getTriangle(color, borderColor, borderWidth, size, props):
+def getTriangle(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -746,12 +842,13 @@ def getTriangle(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+
     return ("""new ol.style.RegularShape({radius: %s + size, points: 3,
-            %s %s})""" % (size, stroke, getFillStyle(color, props)),
+            displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke, getFillStyle(color, props)),
             useMapUnits)
 
 
-def getStar(color, borderColor, borderWidth, size, props):
+def getStar(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
     else:
@@ -759,13 +856,14 @@ def getStar(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+    
     return ("""new ol.style.RegularShape({radius: %s + size, points: 5,
-            radius2: %s, %s %s})""" % (size, size / 2, stroke,
+            radius2: %s, displacement: [%s, %s], %s %s})""" % (symbolSize, symbolSize / 2, anchorX, anchorY, stroke,
                                        getFillStyle(color, props)),
             useMapUnits)
 
 
-def getCircle(color, borderColor, borderWidth, size, props):
+def getCircle(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
         useMapUnits = None
@@ -774,13 +872,13 @@ def getCircle(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
-
+    
     return ("""new ol.style.Circle({radius: %s + size,
-            %s %s})""" % (size, stroke, getFillStyle(color, props)),
+            displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke, getFillStyle(color, props)),
             useMapUnits)
 
 
-def getCross(color, borderColor, borderWidth, size, props):
+def getCross(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
         useMapUnits = None
@@ -789,12 +887,13 @@ def getCross(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+    
     return ("""new ol.style.RegularShape({radius: %s + size, points: 4,
-            radius2: 0, %s %s})""" % (size, stroke,
+            radius2: 0, displacement: [%s, %s], %s %s})""" % (symbolSize, anchorX, anchorY, stroke,
                                       getFillStyle(color, props)), useMapUnits)
 
 
-def getCross2(color, borderColor, borderWidth, size, props):
+def getCross2(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
         useMapUnits = None
@@ -803,18 +902,20 @@ def getCross2(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
         stroke += ","
+ 
     return ("""new ol.style.RegularShape({radius: %s + size,
                                           points: 4,
                                           radius2: 0,
                                           angle: Math.PI / 4,
+                                          displacement: [%s, %s],
                                           %s
-                                          %s})""" % (size, stroke,
+                                          %s})""" % (symbolSize, anchorX, anchorY, stroke,
                                                      getFillStyle(color,
                                                                   props)),
             useMapUnits)
 
 
-def getLine(color, borderColor, borderWidth, size, props):
+def getLine(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
     if props['outline_style'] == "no":
         stroke = ""
         useMapUnits = None
@@ -823,26 +924,29 @@ def getLine(color, borderColor, borderWidth, size, props):
         stroke, useMapUnits = getStrokeStyle(borderColor, "", borderWidth,
                                              line_units, 0, 0, props)
     rot = props["angle"]
+    
     return ("""new ol.style.Text({
         rotation: %s * Math.PI/180,
-        text: '\u2502',  %s})""" % (rot, stroke), useMapUnits)
+        displacement: [%s, %s],
+        text: '\u2502',  %s})""" % (rot, anchorX, anchorY, stroke), useMapUnits)
 
 
-def getIcon(path, size, svgWidth, svgHeight, rot):
+def getIcon(path, size, svgWidth, svgHeight, rot, ax, ay):
     size = math.floor(float(size) * 3.8)
-    anchor = size / 2
+    anchorX = float(svgWidth) / 2 if ax == 1 else float(svgWidth) if ax == 2 else 0
+    anchorY = float(svgHeight) / 2 if ay == 1 else float(svgHeight) if ay == 2 else 0
     scale = str(float(size) / float(svgWidth))
     return '''new ol.style.Icon({
                   imgSize: [%(w)s, %(h)s],
                   scale: %(scale)s,
-                  anchor: [%(a)d, %(a)d],
+                  anchor: [%(anchorX)s, %(anchorY)s],
                   anchorXUnits: "pixels",
                   anchorYUnits: "pixels",
                   rotation: %(rot)s,
                   src: "%(path)s"
             })''' % {"w": svgWidth, "h": svgHeight,
                      "scale": scale, "rot": rot,
-                     "s": size, "a": anchor,
+                     "s": size, "anchorX": anchorX, "anchorY": anchorY,
                      "path": path.replace("\\", "\\\\")}
 
 

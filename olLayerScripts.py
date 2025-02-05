@@ -27,7 +27,15 @@ try:
 except ImportError:
     qms = False
 
-
+class LegendItem:
+    def __init__(self, label, color):
+        self._label = label
+        self._color = color
+    def label(self):
+        return self._label
+    def color(self):
+        return self._color
+    
 def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
                          settings, json, matchCRS, clustered, getFeatureInfo, baseMap,
                          iface, restrictToExtent, extent, bounds, authid):
@@ -172,7 +180,7 @@ def getAttribution(layer):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
     if attrText != "":
-        layerAttr = ' &middot; <a href="%s">%s</a>' % (attrUrl, attrText)
+        layerAttr = ' &nbsp &middot; <a href="%s">%s</a>' % (attrUrl, attrText)
     else:
         layerAttr = " "
     return layerAttr
@@ -407,8 +415,10 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
                       "name": layer.name().replace("'", "\\'")}              
     elif isinstance(renderer, QgsCategorizedSymbolRenderer):
         layerCode += getLegend(renderer.categories(), layer, layerName)
+        layerCode += '''});'''
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         layerCode += getLegend(renderer.ranges(), layer, layerName)
+        layerCode += '''});'''
     else:
         layerCode += '''
                 title: '%(name)s'
@@ -424,8 +434,8 @@ def getLegend(subitems, layer, layerName):
     <img src="styles/legend/%(icon)s_%(count)s.png" /> %(text)s<br />""" %
                   {"icon": layerName, "count": count, "text": text})
     legend = '''
-    title: '%(name)s<br />%(icons)s'
-        });''' % {"icons": icons, "name": layer.name().replace("'", "\\'")}
+    title: '%(name)s<br />%(icons)s' ''' % {"icons": icons, 
+                                            "name": layer.name().replace("'", "\\'")}
     return legend
 
 
@@ -636,23 +646,33 @@ def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
 
     sExtent = "[%f, %f, %f, %f]" % (extentRep.xMinimum(), extentRep.yMinimum(),
                                     extentRep.xMaximum(), extentRep.yMaximum())
+    
+    # Get legend symbology items
+    legendSymbologyItems = layer.legendSymbologyItems()
+
+    # Convert legendSymbologyItems to a format compatible with getAttributionLegend and getTitleLegend
+    subitems = [LegendItem(item[0], item[1]) for item in legendSymbologyItems]
+
+    # Use getAttributionLegend and getTitleLegend to compose attribution and title
+    title = getLegend(subitems, layer, layerName)
 
     return '''var lyr_%(n)s = new ol.layer.Image({
-                            opacity: 1,
-                            title: '%(name)s',
-                            %(minRes)s
-                            %(maxRes)s
-                            source: new ol.source.ImageStatic({
-                                url: "./layers/%(n)s.png",
-                                attributions: '%(layerAttr)s',
-                                projection: '%(mapCRS)s',
-                                alwaysInRange: true,
-                                imageExtent: %(extent)s
-                            })
-                        });''' % {"n": layerName,
-                                  "extent": sExtent,
-                                  "name": layer.name().replace("'", "\\'"),
-                                  "minRes": minResolution,
-                                  "maxRes": maxResolution,
-                                  "mapCRS": mapCRS,
-                                  "layerAttr": layerAttr}
+        opacity: 1,
+        %(title)s,
+        %(minRes)s
+        %(maxRes)s
+        source: new ol.source.ImageStatic({
+            url: "./layers/%(n)s.png",
+            attributions: '%(layerAttr)s',
+            projection: '%(mapCRS)s',
+            alwaysInRange: true,
+            imageExtent: %(extent)s
+        })
+    });''' % {"n": layerName,
+                "extent": sExtent,
+                "name": layer.name().replace("'", "\\'"),
+                "minRes": minResolution,
+                "maxRes": maxResolution,
+                "mapCRS": mapCRS,
+                "layerAttr": layerAttr,
+                "title": title}
