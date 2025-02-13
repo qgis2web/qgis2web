@@ -1448,8 +1448,15 @@ def install_qtwebengine():
             subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"], env=env)
         elif system == 'Linux':
             subprocess.check_call(["sudo", "apt-get", "install", "python3-pyqt5.qtwebengine"])
-        elif system == 'Darwin':  # macOS
-            subprocess.check_call(["brew", "install", "pyqt5"])
+        elif system == 'Darwin':
+            brew_prefix = "/usr/local"  # Default for Intel Macs
+            try:
+                brew_prefix = subprocess.check_output(["/usr/local/bin/brew", "--prefix"]).strip().decode("utf-8")
+            except FileNotFoundError:
+                brew_prefix = "/opt/homebrew"  # Use Apple Silicon path if Intel path fails
+            subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt5"])
+            pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
+            subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"])
         else:
             raise OSError("Unsupported operating system")
         QMessageBox.information(None, "Installation Complete", "QtWebEngine has been installed successfully. Quit QGIS ...")

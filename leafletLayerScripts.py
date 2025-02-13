@@ -334,12 +334,14 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
             if editorWidget == 'ExternalResource':
                 row += "'<img src=\"images/' + "
                 row += "String(feature.properties['" + str(field) + "']"
-                row += r").replace(/[\\\/:]/g, '_').trim().replace(/'/g, '\\\'').replace(/\"/g, '&quot;')"
+                row += ").replace(/[\\\/:]/g, '_').trim()"
+                row += ".replace(/'/g, '\\\'')"
+                row += ".replace(/\"/g, '&quot;')"
                 row += " + '\">' : '') + '"
             else:
                 row += "autolinker.link("
                 row += "String(feature.properties['" + str(field) + "'])"
-                row += ".replace(/'/g, '\\\'').replace(/\"/g, '&quot;')"
+                row += ".replace(/'/g, '\\\'')"
                 row += ".toLocaleString()) : '') + '"
             
             row += """</td>\\
