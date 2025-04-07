@@ -36,7 +36,7 @@ class LegendItem:
     def color(self):
         return self._color
     
-def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
+def writeLayersAndGroups(layers, groups, collapsedGroup, visible, interactive, folder, popup,
                          settings, json, matchCRS, clustered, getFeatureInfo, baseMap,
                          iface, restrictToExtent, extent, bounds, authid):
 
@@ -57,7 +57,7 @@ def writeLayersAndGroups(layers, groups, visible, interactive, folder, popup,
                                            restrictToExtent, extent, count,
                                            vtLayers)
             layerVars += "\n" + "\n".join([layerVar])
-    (groupVars, groupedLayers) = buildGroups(groups, qms, layer_names_id)
+    (groupVars, groupedLayers) = buildGroups(groups, collapsedGroup, qms, layer_names_id)
     (mapLayers, layerObjs, osmb) = layersAnd25d(layers, canvas,
                                                 restrictToExtent, extent, qms)
     visibility = getVisibility(mapLayers, layerObjs, visible)
@@ -238,9 +238,10 @@ def getVisibility(mapLayers, layers, visible):
     return visibility
 
 
-def buildGroups(groups, qms, layer_names_id):
+def buildGroups(groups, collapsedGroup, qms, layer_names_id):
     groupVars = ""
     groupedLayers = {}
+    collapsedIndex = 0
     for group, groupLayers in groups.items():
         groupLayerObjs = ""
         for layer in groupLayers:
@@ -252,11 +253,15 @@ def buildGroups(groups, qms, layer_names_id):
                 continue
             groupLayerObjs += ("lyr_" + safeName(layer.name()) + "_" +
                                layer_names_id[layer.id()] + ",")
+            
+        groupCollapsed = "close" if collapsedGroup[collapsedIndex] else "open"
+        collapsedIndex += 1
+        
         groupVars += ('''var %s = new ol.layer.Group({
                                 layers: [%s],
-                                fold: "open",
+                                fold: '%s',
                                 title: '%s'});\n''' %
-                      ("group_" + safeName(group), groupLayerObjs, group.replace("'", "\\'")))
+                      ("group_" + safeName(group), groupLayerObjs, groupCollapsed, group.replace("'", "\\'")))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
     return (groupVars, groupedLayers)
@@ -616,6 +621,7 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                                 "VERSION": "%(version)s"},
                             })),
                             title: '%(name)s',
+                            popuplayertitle: '%(name)s',
                             opacity: %(opacity)f,
                             %(minRes)s
                             %(maxRes)s

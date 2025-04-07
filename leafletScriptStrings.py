@@ -539,7 +539,7 @@ def abstractSubScript(abstract, pos):
     return abstractSub
 
 
-def addLayersList(baseMap, matchCRS, layer_list, groups, cluster, legends,
+def addLayersList(baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster, legends,
                   expanded):
     controlStart = """
         var overlaysTree = [
@@ -553,6 +553,7 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, cluster, legends,
 
     lyrCount = len(layer_list) - 1
     baseMapCount = len(baseMap)
+    collapsedGroupCount = 0
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
@@ -573,8 +574,10 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, cluster, legends,
                         # Controlla se il gruppo è già stato creato
                         if group_name not in created_groups:
                             created_groups[group_name] = []  # Crea il gruppo vuoto
+                            collapsed = "collapsed: true," if collapsedGroup[collapsedGroupCount] else ""
+                            collapsedGroupCount += 1
                             layersList += """
-        {label: '<b>""" + group_name + "</b>', selectAllCheckbox: true, children: ["""
+        {label: '<b>""" + group_name + "</b>', " + collapsed + " selectAllCheckbox: true, children: ["""
                         # Aggiunge il layer al gruppo
                         created_groups[group_name].append(i)
                             

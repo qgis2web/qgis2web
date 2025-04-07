@@ -57,7 +57,7 @@ def getLayerStyle(layer, sln, interactivity, markerFolder,
             style += """
         function style_%s_%s(feature) {
             switch(String(feature.properties['%s'])) {""" % (sln, sl,
-                                                             classAttr)
+                                                             classAttr.replace("'", "\\'"))
             for cat in renderer.categories():
                 (styleCode, markerType, useMapUnits,
                  pattern) = getSymbolAsStyle(cat.symbol(), markerFolder,
@@ -97,7 +97,7 @@ def getLayerStyle(layer, sln, interactivity, markerFolder,
                 style += """&& feature.properties['%(a)s'] <= %(u)f ) {
                 return %(s)s
             }"""
-                style = style % {"a": classAttr, "l": ran.lowerValue(),
+                style = style % {"a": classAttr.replace("'", "\\'"), "l": ran.lowerValue(),
                                  "u": ran.upperValue(),
                                  "s": styleCode}
             style = patterns + style + """

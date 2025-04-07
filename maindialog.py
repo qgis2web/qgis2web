@@ -64,7 +64,8 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QLabel,
                                  QLineEdit,
                                  QDialogButtonBox,
-                                 QSizePolicy)
+                                 QSizePolicy,
+                                 QApplication)
 from qgis.PyQt.uic import loadUiType
 from qgis.PyQt.QtNetwork import QNetworkProxy
 
@@ -82,7 +83,7 @@ except ImportError:
     webkit_available = False
 
 try:
-    from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineSettings, QWebEngineProfile
+    from qgis.PyQt.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineSettings, QWebEngineProfile
     webengine_available = True
 except ImportError:
     webengine_available = False 
@@ -196,7 +197,7 @@ class MainDialog(QDialog, FORM_CLASS):
                                    'not available because the PyQtWebEngine 5.15.6 dependency is missing or your '
                                    'QGIS version is earlier than 3.38.0\n\n'
                                    'Please ensure you have:\n'
-                                   '- QGIS >= 3.38.0\n'     
+                                   '- Recommended QGIS version (is shown below the Preview button)\n'     
                                    '- AN ACTIVE INTERNET CONNECTION (even under proxy)\n'
                                    'Then click the button to install.\n\n'
                                    'WARNING: QGIS will close after installation, SAVE YOUR PROJECT FIRST.\n\n'
@@ -369,7 +370,7 @@ class MainDialog(QDialog, FORM_CLASS):
         writer = self.getWriterFactory()()
         (writer.layers, writer.groups, writer.popup,
          writer.visible, writer.interactive, writer.json,
-         writer.cluster, writer.getFeatureInfo, writer.baseMap) = self.getLayersAndGroups()
+         writer.cluster, writer.getFeatureInfo, writer.baseMap, writer.collapsedGroup) = self.getLayersAndGroups()
         writer.params = self.getParameters()
         return writer
 
@@ -530,7 +531,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     else:
                         if layer_parent not in group_dict:
                             group_name = layer_parent.name()
-                            group_item = TreeGroupItem(group_name, [], self.layersTree)
+                            group_item = TreeGroupItem(group_name, [], self.layersTree, layer_parent)
                             group_dict[layer_parent] = group_item
                         else:
                             group_item = group_dict[layer_parent]
@@ -674,7 +675,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.layer_search_combo.clear()
         self.layer_search_combo.addItem("None")
         (layers, groups, popup, visible, interactive,
-         json, cluster, getFeatureInfo, baseMap) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 options = []
@@ -696,7 +697,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateAttrFilter(self):
         self.layer_filter_select.clear()
         (layers, groups, popup, visible, interactive,
-         json, cluster, getFeatureInfo, baseMap) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         options = []
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
@@ -860,6 +861,7 @@ class MainDialog(QDialog, FORM_CLASS):
         cluster = []
         getFeatureInfo = []
         baseMap = []
+        collapsedGroup = []
         for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
@@ -891,6 +893,7 @@ class MainDialog(QDialog, FORM_CLASS):
                             getFeatureInfo.append(allLayers.getFeatureInfo)
                             baseMap.append(allLayers.baseMap)
                 groups[group] = groupLayers[::-1]
+                collapsedGroup.append(item.collapsedGroup)
 
         layers = layers[::-1]
         groups = groups
@@ -901,13 +904,14 @@ class MainDialog(QDialog, FORM_CLASS):
         cluster = cluster[::-1]
         getFeatureInfo = getFeatureInfo[::-1]
         baseMap = baseMap[::-1]
+        collapsedGroup = collapsedGroup
 
-        return (layers, groups, popup, visible, interactive, json, cluster, getFeatureInfo, baseMap)
+        return (layers, groups, popup, visible, interactive, json, cluster, getFeatureInfo, baseMap, collapsedGroup)
 
     def reject(self):
         self.saveParameters()
         (layers, groups, popup, visible, interactive,
-         json, cluster, getFeatureInfo, baseMap) = self.getLayersAndGroups()
+         json, cluster, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         try:
             for layer, pop, vis, int in zip(layers, popup, visible,
                                             interactive):
@@ -966,7 +970,7 @@ class TreeGroupItem(QTreeWidgetItem):
     groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons",
                                    "group.gif"))
 
-    def __init__(self, name, layers, tree):
+    def __init__(self, name, layers, tree, layer_parent):
         QTreeWidgetItem.__init__(self)
         self.layers = layers
         self.name = name
@@ -988,6 +992,13 @@ class TreeGroupItem(QTreeWidgetItem):
         # self.addChild(self.interactiveItem)
         # tree.setItemWidget(self.interactiveItem, 1, self.interactiveCheck)
 
+        self.collapsedGroupItem = QTreeWidgetItem(self)
+        self.collapsedGroupCheck = QCheckBox()
+        self.collapsedGroupCheck.setChecked(not layer_parent.isExpanded())
+        self.collapsedGroupItem.setText(0, "Collapsed if LayersList")
+        self.addChild(self.collapsedGroupItem)
+        tree.setItemWidget(self.collapsedGroupItem, 1, self.collapsedGroupCheck)
+
     @property
     def visible(self):
         return self.visibleCheck.isChecked()
@@ -995,6 +1006,10 @@ class TreeGroupItem(QTreeWidgetItem):
     @property
     def interactive(self):
         return self.interactiveCheck.isChecked()
+    
+    @property
+    def collapsedGroup(self):
+        return self.collapsedGroupCheck.isChecked()
 
 
 class TreeLayerItem(QTreeWidgetItem):
@@ -1402,9 +1417,9 @@ def get_proxy_settings():
 #     if user_site_packages not in sys.path:
 #         sys.path.append(user_site_packages)
 
+
 def install_qtwebengine():
     QgsApplication.setPrefixPath(os.getenv('QGIS_PREFIX_PATH', ''), True)
-    QgsApplication.initQgis()
 
     # add_user_site_packages_to_path()
 
@@ -1414,7 +1429,7 @@ def install_qtwebengine():
     required_version = (3, 38, 0)
     if qgis_version_tuple < required_version:
         QMessageBox.critical(None, "Version Error", "QtWebEngine dependency requires QGIS version 3.38.0 or higher.")
-        QgsApplication.exitQgis()
+        QApplication.quit()
         os._exit(0)
         return
 
@@ -1433,7 +1448,7 @@ def install_qtwebengine():
             full_proxy_url = f"http://{auth_part}{proxy_url}"
         else:
             QMessageBox.information(None, "Cancelled", "Installation cancelled by user.")
-            QgsApplication.exitQgis()
+            QApplication.quit()
             os._exit(0)
             return
 
@@ -1465,6 +1480,6 @@ def install_qtwebengine():
     except Exception as e:
         QMessageBox.critical(None, "Installation Failed", f"An unexpected error occurred: {e}")
     finally:
-        QgsApplication.exitQgis()
+        QApplication.quit()
         os._exit(0)
 

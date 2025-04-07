@@ -273,8 +273,12 @@ def getLegendIconAndAnchors(symbol, sln, legendFolder):
     max_top_icon = max(top_icon_space)
     max_bottom_icon = max(bottom_icon_space)
 
-    icon_width = int(max(max_left_icon, max_right_icon)*2)
-    icon_height = int(max(max_top_icon, max_bottom_icon)*2)
+    if isinstance(symbolLayer, (QgsSimpleMarkerSymbolLayer, QgsSvgMarkerSymbolLayer)):
+        icon_width = int(max(max_left_icon, max_right_icon)*2)
+        icon_height = int(max(max_top_icon, max_bottom_icon)*2)
+    else:
+        icon_width = 16
+        icon_height = 16
 
     symbol_size = QSize(icon_width, icon_height)
 
@@ -283,19 +287,20 @@ def getLegendIconAndAnchors(symbol, sln, legendFolder):
     icon_path = os.path.join(legendFolder, icon_name)
     legendIcon.save(icon_path)
 
-    if legendIcon:
-        left_trim = int(icon_width / 2 - max_left_icon)
-        right_trim = int(icon_width / 2 - max_right_icon)
-        top_trim = int(icon_height / 2 - max_top_icon)
-        bottom_trim = int(icon_height / 2 - max_bottom_icon)
+    if isinstance(symbolLayer, (QgsSimpleMarkerSymbolLayer, QgsSvgMarkerSymbolLayer)):
+        if legendIcon:
+            left_trim = int(icon_width / 2 - max_left_icon)
+            right_trim = int(icon_width / 2 - max_right_icon)
+            top_trim = int(icon_height / 2 - max_top_icon)
+            bottom_trim = int(icon_height / 2 - max_bottom_icon)
 
-        image = QImage(icon_path)
+            image = QImage(icon_path)
 
-        cropped_width = image.width() - left_trim - right_trim
-        cropped_height = image.height() - top_trim - bottom_trim
+            cropped_width = image.width() - left_trim - right_trim
+            cropped_height = image.height() - top_trim - bottom_trim
 
-        cropped_image = image.copy(left_trim, top_trim, cropped_width, cropped_height)
-        cropped_image.save(icon_path)
+            cropped_image = image.copy(left_trim, top_trim, cropped_width, cropped_height)
+            cropped_image.save(icon_path)
 
 
 def singleSymbol(renderer, stylesFolder, layer_alpha, sln, legendFolder,
@@ -516,9 +521,10 @@ def getStyle(style, cluster, labelRes, labelText, sln, size,
 	}
     %(style)s;\n''' % {"style": style, "labelRes": labelRes, "label": labelText, "size": size, "face": face,
             "labelFill": color, "bufferColor": bufferColor,
-            "bufferWidth": bufferWidth, "value": value}
+            "bufferWidth": bufferWidth * 3, "value": value.replace('"', '\\"')}
     else:
-        this_style += '''var value = feature.get("%(value)s");
+        this_style += '''
+    var value = feature.get("%(value)s");
     var labelFont = "%(size)spx%(face)s sans-serif";
     var labelFill = "%(labelFill)s";
     var bufferColor = "%(bufferColor)s";
@@ -532,8 +538,8 @@ def getStyle(style, cluster, labelRes, labelText, sln, size,
     }
     %(style)s;\n''' % {"style": style, "placement": placement,
                     "labelRes": labelRes, "label": labelText, "size": size,
-                    "face": face, "labelFill": color, "value": value,
-                    "bufferColor": bufferColor, "bufferWidth": bufferWidth}
+                    "face": face, "labelFill": color, "value": value.replace('"', '\\"'),
+                    "bufferColor": bufferColor, "bufferWidth": bufferWidth * 3}
 
     this_style += '''
     return style;

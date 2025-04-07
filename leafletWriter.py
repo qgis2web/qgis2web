@@ -96,6 +96,7 @@ class LeafletWriter(Writer):
             feedback,
             layer_list=self.layers,
             groups=self.groups,
+            collapsedGroup=self.collapsedGroup,
             popup=self.popup,
             visible=self.visible,
             interactive=self.interactive,
@@ -115,7 +116,7 @@ class LeafletWriter(Writer):
     @classmethod
     def writeLeaflet(
             cls, iface, feedback, folder,
-            layer_list, groups, visible, interactive, cluster,
+            layer_list, groups, collapsedGroup, visible, interactive, cluster,
             json, getFeatureInfo, baseMap, params, popup):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -155,7 +156,7 @@ class LeafletWriter(Writer):
 
         usedFields = [ALL_ATTRIBUTES] * len(popup)
 
-        QgsApplication.initQgis()
+        #QgsApplication.initQgis()
 
         dataStore, cssStore = writeFoldersAndFiles(pluginDir, feedback,
                                                    outputProjectFileName,
@@ -338,7 +339,7 @@ class LeafletWriter(Writer):
             new_src += address_text
         if (layersList and layersList != "" and layersList != "None"):
             new_src += addLayersList(
-                baseMap, matchCRS, layer_list, groups, cluster, legends,
+                baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster, legends,
                 layersList == "Expanded")
         if project.readBoolEntry("ScaleBar", "/Enabled", False)[0]:
             # placement = project.readNumEntry("ScaleBar", "/Placement", 0)[0]

@@ -25,7 +25,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.25.1
+version=3.26.0
 
 # end of mandatory metadata
 
@@ -33,6 +33,7 @@ version=3.25.1
 
 # Uncomment the following line and add your changelog entries:
 changelog= 
+    2025/04/07 3.26.0 New option for groups in the graphical interface "Collapsed if LayersList" which collapses the group in the LayerSwitcher (qgis2web reflects the group as open/closed as configured in QGIS) - Adjusted export of SimpleFill icons for LayersList - The map automatically moves if the popup goes off-screen (autopan) - Fixed double quotation escape for "value" in style creation - Adjusted buffer width below the text - Improved WMS query: first URL provided, then URL encoded, then passed through URL proxy - Removed QgsApplication.initQgis() from leafletWriter for use with QGIS 3.42 - Fixed apostrophe escape for "classAttr" in style creation - The form was extended for the recommended QGIS version (it was not visible on some PCs) - Updated the recommended version to QGIS 3.40 - Removed QgsApplication.initQgis() and QgsApplication.exitQgis() from maindialog for use with QGIS 3.42
     2025/02/13 3.25.1 Preview also usable on MAC computers, Leaflet: Adjusted link export
     2025/02/05 3.25.0 leaflet: export does not return an error if the data contains apostrophes or double quotes, the logic for counting symbols in the leafletLayerScripts file has been modified, which seems to have resolved the issue causing QGIS to crash with the error "Windows fatal exception: access violation, slCount = symbol.symbolLayerCount()" - openlayers: style definition supported in points and pixels in addition to millimeters, attribution definitions have been improved, simple marker and SVG Marker symbols support X and Y anchoring set for the symbol (now zoom work well), the use of multiple Simple Marker and SVG Marker symbols within the same Marker is supported, improved creation of PNG icons for the LayersList: icons are clearly visible even in cases of multiple symbols and different anchor points, legend support for raster layers is now available
 	2024/12/11 3.24.0 openlayers: Added cluster export for categorized and graded point geometries with variable color from green (few geometries) to red (many geometries), openlayers and leaflet: supported apostrophe and double quote everywhere: in layer group title, in layer title, in categorized/graded legend, in project title, in project abstract, Added saving of the Popups check state in the Layers and Group tab

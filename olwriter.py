@@ -86,6 +86,7 @@ class OpenLayersWriter(Writer):
         self.preview_file = self.writeOL(iface, feedback,
                                          layers=self.layers,
                                          groups=self.groups,
+                                         collapsedGroup=self.collapsedGroup,
                                          popup=self.popup,
                                          visible=self.visible,
                                          interactive=self.interactive,
@@ -103,7 +104,7 @@ class OpenLayersWriter(Writer):
         return result
 
     @classmethod
-    def writeOL(cls, iface, feedback, layers, groups, popup, visible,
+    def writeOL(cls, iface, feedback, layers, groups, collapsedGroup, popup, visible,
                 interactive, json, clustered, getFeatureInfo, baseMap, settings,
                 folder):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -139,7 +140,7 @@ class OpenLayersWriter(Writer):
                      popup, json, restrictToExtent, extent, feedback, matchCRS)
         mapUnitsLayers = exportStyles(layers, folder, clustered, feedback)
         mapUnitLayers = getMapUnitLayers(mapUnitsLayers)
-        osmb = writeLayersAndGroups(layers, groups, visible, interactive,
+        osmb = writeLayersAndGroups(layers, groups, collapsedGroup, visible, interactive,
                                     folder, popup, settings, json, matchCRS,
                                     clustered, getFeatureInfo, baseMap, iface,
                                     restrictToExtent, extent, mapbounds,
