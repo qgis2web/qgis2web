@@ -56,10 +56,10 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
         shutil.copyfile(cssDir + 'L.Control.Layers.Tree.css',
                         cssStore + 'L.Control.Layers.Tree.css')
     if address:
-        shutil.copyfile(jsDir + 'leaflet-control-geocoder.Geocoder.js',
-                        jsStore + 'leaflet-control-geocoder.Geocoder.js')
-        shutil.copyfile(cssDir + 'leaflet-control-geocoder.Geocoder.css',
-                        cssStore + 'leaflet-control-geocoder.Geocoder.css')
+        shutil.copyfile(jsDir + 'leaflet.photon.js',
+                        jsStore + 'leaflet.photon.js')
+        shutil.copyfile(cssDir + 'leaflet.photon.css',
+                        cssStore + 'leaflet.photon.css')
     if locate:
         shutil.copyfile(jsDir + 'L.Control.Locate.min.js',
                         jsStore + 'L.Control.Locate.min.js')
@@ -197,9 +197,9 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     if address:
         addressCSS = """
         <link rel="stylesheet" href="css/"""
-        addressCSS += """leaflet-control-geocoder.Geocoder.css">"""
+        addressCSS += """leaflet.photon.css">"""
         addressJS = """
-        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>"""
+        <script src="js/leaflet.photon.js"></script>"""
     else:
         addressCSS = ""
         addressJS = ""

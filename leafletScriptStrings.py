@@ -14,7 +14,6 @@ from qgis.core import (QgsProject,
                        QgsWkbTypes)
 from qgis2web.utils import scaleToZoom, safeName
 
-
 def jsonScript(layer):
     json = """
         <script src="data/{layer}.js\"></script>""".format(layer=layer)
@@ -698,18 +697,40 @@ def scaleBar():
     return scaleBar
 
 
-def addressSearchScript():
-    addressSearch = """
-        var osmGeocoder = new L.Control.Geocoder({
-            collapsed: true,
+def addressSearchScript(method):
+    addressSearch = f"""
+        const url = {{"nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+        "ban": "https://api-adresse.data.gouv.fr/search/?"}}
+        var photonControl = L.control.photon({{
+            url: url["{method}"],
+            feedbackLabel: '',
             position: 'topleft',
-            text: 'Search',
-            title: 'Testing'
-        }).addTo(map);
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .className += ' fa fa-search';
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .title += 'Search for a place';
+            includePosition: true,
+            initial: true,
+            // resultsHandler: myHandler,
+        }}).addTo(map);
+        photonControl._container.childNodes[0].style.borderRadius="10px"
+        // Create a variable to store the geoJSON data
+        var x = null;
+        // Create a variable to store the marker
+        var marker = null;
+        // Add an event listener to the Photon control to create a marker from the returned geoJSON data
+        var z = null;
+        photonControl.on('selected', function(e) {{
+            console.log(photonControl.search.resultsContainer);
+            if (x != null) {{
+                map.removeLayer(obj3.marker);
+                map.removeLayer(x);
+            }}
+            obj2.gcd = e.choice;
+            x = L.geoJSON(obj2.gcd).addTo(map);
+            var label = typeof obj2.gcd.properties.label === 'undefined' ? obj2.gcd.properties.display_name : obj2.gcd.properties.label;
+            obj3.marker = L.marker(x.getLayers()[0].getLatLng()).bindPopup(label).addTo(map);
+            map.setView(x.getLayers()[0].getLatLng(), 17);
+            z = typeof e.choice.properties.label === 'undefined'? e.choice.properties.name : e.choice.properties.label;
+            console.log(e);
+            e.target.input.value = z;
+        }});
         """
     return addressSearch
 
