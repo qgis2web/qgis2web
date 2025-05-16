@@ -731,6 +731,27 @@ def addressSearchScript(method):
             console.log(e);
             e.target.input.value = z;
         }});
+        var search = document.getElementsByClassName("leaflet-photon leaflet-control")[0];
+        search.style.display = "flex";
+        search.style.backgroundColor="rgba(255,255,255,0.5)" 
+
+        // Créer le nouvel élément bouton
+        var button = document.createElement("button");
+        button.type = "button";
+        button.id = "gcd-button-control";
+        button.className = "gcd-gl-btn fa fa-search";
+
+        // Ajouter le bouton à l'élément parent
+        search.insertBefore(button, search.firstChild);
+        last = search.lastChild;
+        last.style.display = "none";
+        button.addEventListener("click", function (e) {{
+            if (last.style.display === "none") {{
+                last.style.display = "block";
+            }} else {{
+                last.style.display = "none";
+            }}
+        }});
         """
     return addressSearch
 
