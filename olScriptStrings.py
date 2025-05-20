@@ -734,12 +734,6 @@ def geocodeScript(geocode):
       locality: "lieu-dit",
       municipality: "commune",
       }};
-      if (types[feature.properties.type]) {{
-      var spanType = document.createElement("span");
-      spanType.className = "type";
-      title.appendChild(spanType);
-      spanType.innerHTML = types[feature.properties.type];
-      }}
       if (
       feature.properties.city &&
       feature.properties.city !== feature.properties.name
