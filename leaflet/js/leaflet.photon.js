@@ -247,7 +247,9 @@ L.PhotonBaseSearch = L.PhotonBase.extend({
             detailsContainer = L.DomUtil.create('small', '', el),
             details = [],
             type = this.formatType(feature);
-        if (feature.properties.name) {
+            if (feature.properties.display_name) {
+                title.innerHTML = feature.properties.display_name;
+            } else if (feature.properties.name) {
             title.innerHTML = feature.properties.name;
         } else if (feature.properties.housenumber) {
             title.innerHTML = feature.properties.housenumber;
