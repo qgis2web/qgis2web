@@ -57,7 +57,7 @@ L.PhotonBaseSearch = L.PhotonBase.extend({
         placeholder: 'Entrez une adresse',
         minChar: 3,
         limit: 5,
-        submitDelay: 300,
+        submitDelay: 1000,
         includePosition: true,
         bbox: null,
         noResultLabel: 'Pas de résultats',
