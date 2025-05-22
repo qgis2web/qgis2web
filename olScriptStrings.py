@@ -692,7 +692,7 @@ def geocodeScript(geocode):
   //Fonction permettant de centrer, zoomer et représenter l'adresse géocodée
   function onSelected(feature) {{
       obj.label = feature;
-      input.value = obj.label.properties.label;
+      input.value = typeof obj.label.properties.label === "undefined"? obj.label.properties.name : obj.label.properties.label;
       var coordinates = ol.proj.transform(
       [feature.geometry.coordinates[0], feature.geometry.coordinates[1]],
       "EPSG:4326",
