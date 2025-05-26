@@ -775,7 +775,7 @@ def geocodeScript(geocode):
   var API_URL = "//api-adresse.data.gouv.fr";
 
   // Create search by adresses component
-  var container = new Photon.Search({{
+  var containers = new Photon.Search({{
     resultsHandler: myHandler,
     onSelected: onSelected,
     placeholder: "Tapez une adresse",
@@ -793,7 +793,8 @@ def geocodeScript(geocode):
   }});
 
   // Add the created DOM element within the map
-  var controlGeocoder = new AddDomControl(container, {{
+  var left = document.getElementById("top-left-container");
+  var controlGeocoder = new AddDomControl(containers, {{
     className: "photon-geocoder-autocomplete ol-unselectable ol-control",
   }});
   map.addControl(controlGeocoder);
@@ -818,6 +819,8 @@ def geocodeScript(geocode):
       }}
   }});
   input = document.getElementsByClassName("photon-input")[0];
+  var searchbar = document.getElementsByClassName("photon-geocoder-autocomplete ol-unselectable ol-control")[0]
+  left.appendChild(searchbar);
         """
     else:
         return ""
