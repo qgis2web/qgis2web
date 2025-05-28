@@ -1472,6 +1472,49 @@ def install_qtwebengine():
             subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt5"])
             pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
             subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"])
+            
+            # Add symlink to Frameworks so that PyQtWebEngine can find the rest of Qt. This is due
+            # to the executable RPATHs being set to e.g. @rpath/QtGui.framework/Versions/5/QtGui
+
+            # Example locations:
+            # sys.executable:    "/Applications/QGIS-LTR.app/Contents/MacOS/QGIS"
+            # Frameworks:        "/Applications/QGIS-LTR.app/Contents/Frameworks"
+            # Python frameowrks: "/Applications/QGIS-LTR.app/Contents/Resources/python/site-packages/PyQt5/Qt5/lib/"
+
+            framework_path = os.path.realpath(os.path.join(sys.executable, "../../Frameworks"))
+            python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt5/Qt5/lib"))
+            webengine_framework = ["QtWebEngine.framework", "QtWebEngineCore.framework", "QtWebEngineWidgets.framework"]
+
+            try:
+                framework_directory_listing = os.listdir(framework_path)
+            except FileNotFoundError as e:
+                raise FileNotFoundError(
+                    "Unable to locate framework directory for QGIS. Only app bundles are supported " + 
+                    "e.g., the official QGIS version. Path searched: %s" % framework_path
+                )
+
+            for path in framework_directory_listing:
+                link_points_to = os.path.join(framework_path, path)
+
+                # Only want to link to directories that have the glob pattern "Qt*.framework" and
+                # are not part of the webengine framework. Not all of the Qt framework is needed,
+                # but it is simpler to add everything.
+                # TODO: Change all path operations to Pathlib
+                if (os.path.isdir(link_points_to) and path.startswith("Qt") and path.endswith(".framework")
+                    and path not in webengine_framework
+                ):
+                    link_path = os.path.join(python_framework_path, path)
+                    # If the symlink already exists, remove and create afresh
+                    if os.path.lexists(link_path) and os.path.islink(link_path):
+                        try:
+                            os.unlink(link_path)
+                        except:
+                            raise OSError("Unable to remove symlink: %s" % link_path)
+                    try:
+                        os.symlink(link_points_to, link_path, target_is_directory=True)
+                    except:
+                        raise OSError("Unable to create symlink: %s" % link_path)
+        
         else:
             raise OSError("Unsupported operating system")
         QMessageBox.information(None, "Installation Complete", "QtWebEngine has been installed successfully. Quit QGIS ...")
