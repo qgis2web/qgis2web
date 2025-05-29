@@ -1487,7 +1487,7 @@ def install_qtwebengine():
 
             try:
                 framework_directory_listing = os.listdir(framework_path)
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 raise FileNotFoundError(
                     "Unable to locate framework directory for QGIS. Only app bundles are supported " + 
                     "e.g., the official QGIS version. Path searched: %s" % framework_path
