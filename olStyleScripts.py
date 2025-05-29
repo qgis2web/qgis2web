@@ -1,3 +1,4 @@
+import base64
 import os
 import shutil
 import re
@@ -640,15 +641,24 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                 style = "image: %s" % style
         elif isinstance(sl, QgsSvgMarkerSymbolLayer):
             svg_path = sl.path()
-            base_filename = os.path.basename(svg_path)
-            filename, file_extension = os.path.splitext(base_filename)
+            # check if svg is embedded in project file or not
+            # as per QgsSymbolLayerUtils::svgSymbolNameToPath and
+            #        QgsSymbolLayerUtils::svgSymbolPathToName
+            if svg_path[0:7] == "base64:":
+                svg_xml = base64.standard_b64decode(svg_path[7:]).decode("utf-8")
+                svg = xml.etree.ElementTree.fromstring(svg_xml)
+                base_filename = "embedded.svg"
+                filename, file_extension = ("embedded", ".svg")
+            else:
+                svg = xml.etree.ElementTree.parse(svg_path).getroot()
+                base_filename = os.path.basename(svg_path)
+                filename, file_extension = os.path.splitext(base_filename)
             # Check if the file already exists, if yes, append a progressive number
             count = 0
             while os.path.exists(os.path.join(stylesFolder, base_filename)):
                 count += 1
                 base_filename = f"{filename}_{count}{file_extension}"
             path = os.path.join(stylesFolder, base_filename)
-            svg = xml.etree.ElementTree.parse(svg_path).getroot()
             try:
                 svgWidth = svg.attrib["width"]
                 svgWidth = re.sub("px", "", svgWidth)
@@ -677,13 +687,19 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             # replacing "param(...)" with actual values from QGIS
             pColor = getRGBAColor(props["color"], alpha).strip("'")
             pOutline = getRGBAColor(props["outline_color"], alpha).strip("'")
-            with open(svg_path) as f:
+            if svg_path[0:7] == "base64:":
+                s = svg_xml
+            else:
+                f = open(svg_path)
                 s = f.read()
-                s = s.replace('param(fill)', pColor)
-                s = s.replace('param(fill-opacity)', '1')
-                s = s.replace('param(outline)', pOutline)
-                s = s.replace('param(outline-width)', str(float(props["outline_width"]) * 80))
-                s = s.replace('param(outline-opacity)', '1')
+                f.close()
+
+            s = s.replace('param(fill)', pColor)
+            s = s.replace('param(fill-opacity)', '1')
+            s = s.replace('param(outline)', pOutline)
+            s = s.replace('param(outline-width)', str(float(props["outline_width"]) * 80))
+            s = s.replace('param(outline-opacity)', '1')
+
             with open(path, 'w') as f:
                 f.write(s)
         
