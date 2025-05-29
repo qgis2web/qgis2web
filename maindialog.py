@@ -1479,7 +1479,7 @@ def install_qtwebengine():
             # Example locations:
             # sys.executable:    "/Applications/QGIS-LTR.app/Contents/MacOS/QGIS"
             # Frameworks:        "/Applications/QGIS-LTR.app/Contents/Frameworks"
-            # Python frameowrks: "/Applications/QGIS-LTR.app/Contents/Resources/python/site-packages/PyQt5/Qt5/lib/"
+            # Python frameworks: "/Applications/QGIS-LTR.app/Contents/Resources/python/site-packages/PyQt5/Qt5/lib/"
 
             framework_path = os.path.realpath(os.path.join(sys.executable, "../../Frameworks"))
             python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt5/Qt5/lib"))
