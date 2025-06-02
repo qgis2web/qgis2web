@@ -732,14 +732,14 @@ def addressSearchScript(method):
             e.target.input.value = z;
         }});
         var search = document.getElementsByClassName("leaflet-photon leaflet-control")[0];
+        search.classList.add("leaflet-control-search")
         search.style.display = "flex";
         search.style.backgroundColor="rgba(255,255,255,0.5)" 
 
         // Créer le nouvel élément bouton
-        var button = document.createElement("button");
-        button.type = "button";
+        var button = document.createElement("div");
         button.id = "gcd-button-control";
-        button.className = "gcd-gl-btn fa fa-search";
+        button.className = "gcd-gl-btn fa fa-search search-button";
 
         // Ajouter le bouton à l'élément parent
         search.insertBefore(button, search.firstChild);

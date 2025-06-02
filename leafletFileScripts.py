@@ -398,10 +398,10 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-control-search .search-button {
             width: 30px !important;
-            height: 30px !important;
+            height: 22px !important;
             font-size: 13px !important;
             text-align: center !important;
-            line-height: 30px !important;
+            cursor: pointer;
         }
         .leaflet-control-measure .leaflet-control {
             width: 30px !important;
@@ -474,6 +474,11 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             text +="""
         .leaflet-control-layers-expanded .leaflet-control-layers-toggle {
             display: none;
+        }
+        #gcd-button-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         """
         f_css.write(text)
