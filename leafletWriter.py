@@ -334,8 +334,8 @@ class LeafletWriter(Writer):
         new_src += getVTStyles(vtStyles)
         new_src += getVTLabels(vtLabels)
         new_src += the_src + scaleDependentLayers
-        if addressSearch:
-            address_text = addressSearchScript()
+        if addressSearch != "None":
+            address_text = addressSearchScript(addressSearch)
             new_src += address_text
         if (layersList and layersList != "" and layersList != "None"):
             new_src += addLayersList(
