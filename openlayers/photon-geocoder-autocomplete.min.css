@@ -12,7 +12,7 @@ ul.photon-autocomplete {
     height: 200px;
     overflow:hidden;
     overflow-y: scroll;
-    scrollbar-width: thin;
+    scrollbar-width: none;
 }
 .photon-autocomplete li {
     min-height: 20px;

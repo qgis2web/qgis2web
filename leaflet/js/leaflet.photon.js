@@ -54,7 +54,7 @@ L.PhotonBaseSearch = L.PhotonBase.extend({
 
     options: {
         url: 'https://api-adresse.data.gouv.fr/search/?',
-        placeholder: 'Entrez une adresse',
+        placeholder: 'Search an address',
         minChar: 3,
         limit: 5,
         submitDelay: 1000,

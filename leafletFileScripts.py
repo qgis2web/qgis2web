@@ -398,10 +398,15 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-control-search .search-button {
             width: 30px !important;
-            height: 22px !important;
+            height: 30px !important;
             font-size: 13px !important;
             text-align: center !important;
             cursor: pointer;
+        }
+        .search-button.fa.fa-binoculars{
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .leaflet-control-measure .leaflet-control {
             width: 30px !important;

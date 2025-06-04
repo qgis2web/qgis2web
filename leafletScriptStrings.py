@@ -826,7 +826,7 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             initial: false,
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));
-        document.getElementsByClassName('search-button')[0].className +=
+        document.getElementsByClassName('search-button')[1].className +=
          ' fa fa-binoculars';
             """.format(searchLayer=searchLayer,
                        field=searchVals[1])
