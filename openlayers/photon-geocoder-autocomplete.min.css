@@ -1,0 +1,95 @@
+ul.photon-autocomplete {
+    position: absolute;
+    background-color: white;
+    max-width: fit-content;
+    z-index: 1000;
+    box-shadow: 0 4px 9px #999999;
+    display: none;
+    margin: 0; /* Remove margins */
+    list-style-type: none; /* Remove bullets */
+    padding: 0; /* Remove padding */
+    font-family: Arial, sans-serif;
+    height: 200px;
+    overflow:hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.photon-autocomplete li {
+    min-height: 20px;
+    line-height: 1em;
+    padding: 5px 10px;
+    overflow: hidden;
+    /* white-space: nowrap; */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    font-size: 1em;
+}
+.photon-autocomplete li strong {
+    display: block;
+    
+}
+.photon-geocoder-autocomplete{
+    position: relative !important;
+    float: left !important;
+    top: unset;
+    left: unset;
+    margin-top: 8px;
+    margin-left: 8px;
+    clear: both;
+}
+.photon-autocomplete li.on {
+    background-color: #ff8c9d;
+    cursor: pointer;
+}
+.photon-autocomplete li.photon-no-result {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    line-height: 20px;
+    width: fit-content;
+    block-size: fit-content;
+}
+.photon-autocomplete .photon-feedback {
+    display: block;
+    text-align: right;
+    font-size: 0.8em;
+    padding: 3px;
+    color: #999;
+    border-top: 1px solid #eee;
+}
+.photon-input{border-radius: 10px;}
+.photon-input:focus {
+    width: 400px;
+    border-radius: 10px;
+}
+@media all and (max-width:500px){
+    #map .photon-input:focus {
+        width: 300px;
+        border-radius: 10px;
+    }
+}
+@media all and (max-width:400px){
+    #map ul.photon-autocomplete {
+        position: relative;
+        background-color: white;
+        max-width: 400;
+        z-index: 1000;
+        box-shadow: 0 4px 9px #999999;
+        display: none;
+        margin: 0; /* Remove margins */
+        list-style-type: none; /* Remove bullets */
+        padding: 0; /* Remove padding */
+        font-family: Arial, sans-serif;
+    }
+    #map .photon-input:focus {
+        width: 200px;
+        border-radius: 10px;
+    }
+}
+@media all and (max-width:280px){
+    #map .photon-input:focus {
+        width: 150px;
+        border-radius: 10px;
+    }
+}
