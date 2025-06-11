@@ -770,8 +770,8 @@ def geocodeScript(geocode):
   }}
 
   // URL for API
-  const url = {{"nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
-  "ban": "https://api-adresse.data.gouv.fr/search/?"}}
+  const url = {{"Nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+  "BAN": "https://api-adresse.data.gouv.fr/search/?"}}
   var API_URL = "//api-adresse.data.gouv.fr";
 
   // Create search by adresses component

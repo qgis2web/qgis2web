@@ -699,8 +699,8 @@ def scaleBar():
 
 def addressSearchScript(method):
     addressSearch = f"""
-        const url = {{"nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
-        "ban": "https://api-adresse.data.gouv.fr/search/?"}}
+        const url = {{"Nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+        "BAN": "https://api-adresse.data.gouv.fr/search/?"}}
         var photonControl = L.control.photon({{
             url: url["{method}"],
             feedbackLabel: '',
