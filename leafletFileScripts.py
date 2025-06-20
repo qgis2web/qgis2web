@@ -474,16 +474,16 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-popup-pane {
             z-index: 700;
-        }"""
-        if (layersList == "Collapsed"):
-            text +="""
-        .leaflet-control-layers-expanded .leaflet-control-layers-toggle {
-            display: none;
         }
         #gcd-button-control {
             display: flex;
             justify-content: center;
             align-items: center;
+        }"""
+        if (layersList == "Collapsed"):
+            text +="""
+        .leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+            display: none;
         }
         """
         f_css.write(text)
