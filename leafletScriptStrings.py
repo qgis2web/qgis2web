@@ -14,7 +14,6 @@ from qgis.core import (QgsProject,
                        QgsWkbTypes)
 from qgis2web.utils import scaleToZoom, safeName
 
-
 def jsonScript(layer):
     json = """
         <script src="data/{layer}.js\"></script>""".format(layer=layer)
@@ -698,18 +697,61 @@ def scaleBar():
     return scaleBar
 
 
-def addressSearchScript():
-    addressSearch = """
-        var osmGeocoder = new L.Control.Geocoder({
-            collapsed: true,
+def addressSearchScript(method):
+    addressSearch = f"""
+        const url = {{"Nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+        "BAN": "https://api-adresse.data.gouv.fr/search/?"}}
+        var photonControl = L.control.photon({{
+            url: url["{method}"],
+            feedbackLabel: '',
             position: 'topleft',
-            text: 'Search',
-            title: 'Testing'
-        }).addTo(map);
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .className += ' fa fa-search';
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .title += 'Search for a place';
+            includePosition: true,
+            initial: true,
+            // resultsHandler: myHandler,
+        }}).addTo(map);
+        photonControl._container.childNodes[0].style.borderRadius="10px"
+        // Create a variable to store the geoJSON data
+        var x = null;
+        // Create a variable to store the marker
+        var marker = null;
+        // Add an event listener to the Photon control to create a marker from the returned geoJSON data
+        var z = null;
+        photonControl.on('selected', function(e) {{
+            console.log(photonControl.search.resultsContainer);
+            if (x != null) {{
+                map.removeLayer(obj3.marker);
+                map.removeLayer(x);
+            }}
+            obj2.gcd = e.choice;
+            x = L.geoJSON(obj2.gcd).addTo(map);
+            var label = typeof obj2.gcd.properties.label === 'undefined' ? obj2.gcd.properties.display_name : obj2.gcd.properties.label;
+            obj3.marker = L.marker(x.getLayers()[0].getLatLng()).bindPopup(label).addTo(map);
+            map.setView(x.getLayers()[0].getLatLng(), 17);
+            z = typeof e.choice.properties.label === 'undefined'? e.choice.properties.display_name : e.choice.properties.label;
+            console.log(e);
+            e.target.input.value = z;
+        }});
+        var search = document.getElementsByClassName("leaflet-photon leaflet-control")[0];
+        search.classList.add("leaflet-control-search")
+        search.style.display = "flex";
+        search.style.backgroundColor="rgba(255,255,255,0.5)" 
+
+        // Créer le nouvel élément bouton
+        var button = document.createElement("div");
+        button.id = "gcd-button-control";
+        button.className = "gcd-gl-btn fa fa-search search-button";
+
+        // Ajouter le bouton à l'élément parent
+        search.insertBefore(button, search.firstChild);
+        last = search.lastChild;
+        last.style.display = "none";
+        button.addEventListener("click", function (e) {{
+            if (last.style.display === "none") {{
+                last.style.display = "block";
+            }} else {{
+                last.style.display = "none";
+            }}
+        }});
         """
     return addressSearch
 
@@ -784,10 +826,12 @@ def endHTMLscript(wfsLayers, layerSearch, filterItems, labelCode, labels,
             initial: false,
             hideMarkerOnCollapse: true,
             propertyName: '{field}'}}));
-        document.getElementsByClassName('search-button')[0].className +=
-         ' fa fa-binoculars';
-            """.format(searchLayer=searchLayer,
-                       field=searchVals[1])
+        if (typeof url === 'undefined') {{
+            document.getElementsByClassName('search-button')[0].className += ' fa fa-binoculars';
+        }} else {{
+            document.getElementsByClassName('search-button')[1].className += ' fa fa-binoculars';
+        }}""".format(searchLayer=searchLayer,
+                    field=searchVals[1])
     filterItems = sorted(filterItems, key=lambda k: k['type'])
     filterNum = len(filterItems)
     if filterNum != 0:

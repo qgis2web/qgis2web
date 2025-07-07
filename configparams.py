@@ -58,7 +58,7 @@ def getParams(configure_exporter_action=None):
             "Attribute filter": ["None", "placeholder2"],
             "Geolocate user": False,
             "Measure tool": ("None", "Metric", "Imperial"),
-            "Address search": False,
+            "Address search": ("None", "Nominatim", "BAN"),
             "Layer search": ("None", "placeholder"),
             "Show popups on hover": False,
             "Highlight on hover": False,

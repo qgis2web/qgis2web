@@ -637,7 +637,7 @@ def geolocateStyle(geolocate, controlCount):
 def geocodeLinks(geocode):
     if geocode:
         returnVal = """
-        <link href="resources/ol-geocoder.min.css" rel="stylesheet">"""
+        <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">"""
         return returnVal
     else:
         return ""
@@ -646,25 +646,182 @@ def geocodeLinks(geocode):
 def geocodeJS(geocode):
     if geocode:
         returnVal = """
-        <script src="resources/ol-geocoder.js"></script>"""
+        <script src="resources/photon-geocoder-autocomplete.min.js"></script>"""
         return returnVal
     else:
         return ""
 
 
 def geocodeScript(geocode):
-    if geocode:
-        return """
-var geocoder = new Geocoder('nominatim', {
-  provider: 'osm',
-  lang: 'en-US',
-  placeholder: 'Search place or address ...',
-  limit: 5,
-  keepOpen: true,
-});
-map.addControl(geocoder);
-document.getElementsByClassName('gcd-gl-btn')[0].className += ' fa fa-search';
-"""
+    if geocode != "None":
+        return f"""
+  //Geocodeur
+
+  //Variable pouvant représenter le point de l'adresse géocodé
+  var vectorLayer = new ol.layer.Vector({{ // VectorLayer({{
+      source: new ol.source.Vector(),
+  }});
+  map.addLayer(vectorLayer);
+  var vectorSource = vectorLayer.getSource();
+
+  //Variable servant à stocker les coordonnées des adresses géocodées
+  var obj2 = {{
+  value: '',
+  letMeKnow() {{
+      console.log(`Position géocodée ${{this.gcd}}`);
+  }},
+  get gcd() {{
+      return this.value;
+  }},
+  set gcd(value) {{
+      this.value = value;
+      this.letMeKnow();
+  }}
+  }}
+
+  var obj = {{
+      value: '',
+      get label() {{
+          return this.value;
+      }},
+      set label(value) {{
+          this.value = value;
+      }}
+  }}
+
+  //Fonction permettant de centrer, zoomer et représenter l'adresse géocodée
+  function onSelected(feature) {{
+      obj.label = feature;
+      input.value = typeof obj.label.properties.label === "undefined"? obj.label.properties.display_name : obj.label.properties.label;
+      var coordinates = ol.proj.transform(
+      [feature.geometry.coordinates[0], feature.geometry.coordinates[1]],
+      "EPSG:4326",
+      map.getView().getProjection()
+      );
+      vectorSource.clear(true);
+      obj2.gcd = [feature.geometry.coordinates[0], feature.geometry.coordinates[1]];
+      var marker = new ol.Feature(new ol.geom.Point(coordinates));
+      var zIndex = 1;
+      marker.setStyle(new ol.style.Style({{
+      image: new ol.style.Icon(({{
+          anchor: [0.5, 36],
+          height:10,
+          width:10,
+          anchorXUnits: "fraction",
+          anchorYUnits: "pixels",
+          opacity: 1,
+          src: "./resources/ic_location_on_128_28437.png",
+          zIndex: zIndex
+      }})),
+      zIndex: zIndex
+      }}));
+      vectorSource.addFeature(marker);
+      map.getView().setCenter(coordinates);
+      map.getView().setZoom(18);
+  }}
+
+  // Format result dans la barre de recherche autocompletée
+  var formatResult = function (feature, el) {{
+      var title = document.createElement("strong");
+      el.appendChild(title);
+      var detailsContainer = document.createElement("small");
+      el.appendChild(detailsContainer);
+      var details = [];
+      title.innerHTML = feature.properties.label || feature.properties.display_name;
+      var types = {{
+      housenumber: "numéro",
+      street: "rue",
+      locality: "lieu-dit",
+      municipality: "commune",
+      }};
+      if (
+      feature.properties.city &&
+      feature.properties.city !== feature.properties.name
+      ) {{
+      details.push(feature.properties.city);
+      }}
+      if (feature.properties.context) {{
+      details.push(feature.properties.context);
+      }}
+      detailsContainer.innerHTML = details.join(", ");
+  }};
+
+  //Définition d'une classe permettant la création du bouton de control de la barre de recherche dans une balise div
+  class AddDomControl extends ol.control.Control {{
+      constructor(elementToAdd, opt_options) {{
+      const options = opt_options || {{}};
+
+      const element = document.createElement("div");
+      if (options.className) {{
+          element.className = options.className;
+      }}
+      element.appendChild(elementToAdd);
+
+      super({{
+          element: element,
+          target: options.target,
+      }});
+      }}
+  }}
+
+  // Function to show you can do something with the returned elements
+  function myHandler(featureCollection) {{
+      console.log(featureCollection);
+  }}
+
+  // URL for API
+  const url = {{"Nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+  "BAN": "https://api-adresse.data.gouv.fr/search/?"}}
+  var API_URL = "//api-adresse.data.gouv.fr";
+
+  // Create search by adresses component
+  var containers = new Photon.Search({{
+    resultsHandler: myHandler,
+    onSelected: onSelected,
+    placeholder: "Search an address",
+    formatResult: formatResult,
+    //url: API_URL + "/search/?",
+    url: url["{geocode}"],
+    position: "topright",
+    // ,includePosition: function() {{
+    //   return ol.proj.transform(
+    //     map.getView().getCenter(),
+    //     map.getView().getProjection(), //'EPSG:3857',
+    //     'EPSG:4326'
+    //   );
+    // }}
+  }});
+
+  // Add the created DOM element within the map
+  var left = document.getElementById("top-left-container");
+  var controlGeocoder = new AddDomControl(containers, {{
+    className: "photon-geocoder-autocomplete ol-unselectable ol-control",
+  }});
+  map.addControl(controlGeocoder);
+  var search = document.getElementsByClassName("photon-geocoder-autocomplete ol-unselectable ol-control")[0];
+  search.style.display = "flex";
+
+  // Créer le nouvel élément bouton
+  var button = document.createElement("button");
+  button.type = "button";
+  button.id = "gcd-button-control";
+  button.className = "gcd-gl-btn fa fa-search leaflet-control";
+
+  // Ajouter le bouton à l'élément parent
+  search.insertBefore(button, search.firstChild);
+  last = search.lastChild;
+  last.style.display = "none";
+  button.addEventListener("click", function (e) {{
+      if (last.style.display === "none") {{
+          last.style.display = "block";
+      }} else {{
+          last.style.display = "none";
+      }}
+  }});
+  input = document.getElementsByClassName("photon-input")[0];
+  var searchbar = document.getElementsByClassName("photon-geocoder-autocomplete ol-unselectable ol-control")[0]
+  left.appendChild(searchbar);
+        """
     else:
         return ""
 
