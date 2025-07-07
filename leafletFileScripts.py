@@ -376,6 +376,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-control {
             box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4)!important;
+            border-radius: 4px;
         }
         .leaflet-touch .leaflet-control-layers,
         .leaflet-touch .leaflet-bar,
@@ -390,11 +391,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             border: 2px solid """ + widgetBackground + """ !important;
             border-top: none !important;
             color: black !important;
-        }
-        .leaflet-control-search .search-button,
-        .leaflet-container .leaflet-control-search,
-        .leaflet-control-measure {
-            box-shadow: none !important;
         }
         .leaflet-control-search .search-button {
             width: 30px !important;
