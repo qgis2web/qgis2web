@@ -109,7 +109,7 @@ software:</p>
     <li><a href="https://github.com/proj4js/proj4js">proj4js</a>, by @madair, @calvinmetcalf, @ahocevar and others</li>
     <li><a href="https://github.com/kartena/Proj4Leaflet">Proj4Leaflet</a>, by @kartena</li>
     <li><a href="https://github.com/stefanocudini/leaflet-search">leaflet-search</a>, by @stefanocudini</li>
-    <li><a href="https://github.com/webgeodatavore/ol3-search-layer">ol3-search-layer</a>, by @ThomasG77</li>
+    <li><a href="https://github.com/andreaordonselli/ol-search-layer">ol-search-layer</a>, by @andreaordonselli</li>
     <li><a href="https://github.com/mourner/simpleheat">simpleheat</a>, by @mourner</li>
     <li><a href="https://github.com/kekscom/osmbuildings">OSMBuildings</a>, by @kekscom</li>
     <li><a href="https://github.com/perliedman/leaflet-multi-style">leaflet-multi-style</a>, by @perliedman</li>
