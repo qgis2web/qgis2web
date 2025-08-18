@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from qgis.PyQt import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -27,7 +27,7 @@ class Ui_FtpConfiguration(object):
         FtpConfiguration.setObjectName(_fromUtf8("FtpConfiguration"))
         FtpConfiguration.resize(349, 198)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         FtpConfiguration.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(FtpConfiguration)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -52,7 +52,7 @@ class Ui_FtpConfiguration(object):
         self.portSpinBox.setObjectName(_fromUtf8("portSpinBox"))
         self.gridLayout.addWidget(self.portSpinBox, 1, 1, 1, 1)
         self.buttonBox = QtWidgets.QDialogButtonBox(FtpConfiguration)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 2)
         self.folderLineEdit = QtWidgets.QLineEdit(FtpConfiguration)

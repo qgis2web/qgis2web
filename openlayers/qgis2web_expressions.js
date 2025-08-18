@@ -179,8 +179,8 @@ function fnc_coalesce(values, context) {
 };
 
 function fnc_if(values, context) {
-    return false;
-};
+    return values[0] ? values[1] : values[2];
+}
 
 function fnc_aggregate(values, context) {
     return false;

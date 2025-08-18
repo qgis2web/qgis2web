@@ -23,7 +23,7 @@ from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsApplication
 
-import sip
+#import sip
 import os
 # from . import resources_rc
 from qgis2web.maindialog import MainDialog
@@ -55,9 +55,9 @@ class Qgis2Web(object):
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
-        if not self.dlg or sip.isdeleted(self.dlg):
+        if self.dlg is None:
             self.dlg = MainDialog(self.iface)
-        self.dlg.setAttribute(Qt.WA_DeleteOnClose)
+            self.dlg.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+            self.dlg.destroyed.connect(lambda: setattr(self, 'dlg', None))
         self.dlg.show()
-        # bring to front
         self.dlg.raise_()

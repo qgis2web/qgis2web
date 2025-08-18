@@ -112,18 +112,18 @@ MB_TYPE_MAP = {
     'Polygon': 'fill'}
 
 BLEND_MODES = {
-    QPainter.CompositionMode_SourceOver: 'normal',
-    QPainter.CompositionMode_Multiply: 'multiply',
-    QPainter.CompositionMode_Screen: 'screen',
-    QPainter.CompositionMode_Overlay: 'overlay',
-    QPainter.CompositionMode_Darken: 'darken',
-    QPainter.CompositionMode_Lighten: 'lighten',
-    QPainter.CompositionMode_ColorDodge: 'color-dodge',
-    QPainter.CompositionMode_ColorBurn: 'color-burn',
-    QPainter.CompositionMode_HardLight: 'hard-light',
-    QPainter.CompositionMode_SoftLight: 'soft-light',
-    QPainter.CompositionMode_Difference: 'difference',
-    QPainter.CompositionMode_Exclusion: 'exclusion'}
+    QPainter.CompositionMode.CompositionMode_SourceOver: 'normal',
+    QPainter.CompositionMode.CompositionMode_Multiply: 'multiply',
+    QPainter.CompositionMode.CompositionMode_Screen: 'screen',
+    QPainter.CompositionMode.CompositionMode_Overlay: 'overlay',
+    QPainter.CompositionMode.CompositionMode_Darken: 'darken',
+    QPainter.CompositionMode.CompositionMode_Lighten: 'lighten',
+    QPainter.CompositionMode.CompositionMode_ColorDodge: 'color-dodge',
+    QPainter.CompositionMode.CompositionMode_ColorBurn: 'color-burn',
+    QPainter.CompositionMode.CompositionMode_HardLight: 'hard-light',
+    QPainter.CompositionMode.CompositionMode_SoftLight: 'soft-light',
+    QPainter.CompositionMode.CompositionMode_Difference: 'difference',
+    QPainter.CompositionMode.CompositionMode_Exclusion: 'exclusion'}
 
 PLACEMENT = ['bottomleft', 'topleft', 'topright', 'bottomleft', 'bottomright']
 

@@ -151,25 +151,42 @@ def getLabels(layer, folder, sln):
         if palyr and palyr.fieldName and palyr.fieldName != "":
             labelField = palyr.fieldName
             if labelField != "":
-                if str(layer.customProperty(
-                        "labeling/isExpression")).lower() == "true":
-                    exprFilename = os.path.join(folder, "resources",
-                                                "qgis2web_expressions.js")
-                    fieldName = layer.customProperty("labeling/fieldName")
-                    name = compile_to_file(fieldName, "label_%s" % sln,
-                                           "OpenLayers3", exprFilename)
-                    js = "%s(context)" % (name)
-                    js = js.strip()
-                    labelText = js
+                if palyr.isExpression:                   
+                    # Trova i campi usati nell'espressione
+                    field_names = re.findall(r'"([^"]+)"', labelField)
+                    hidden_found = False
+                    # sfoglia i campi per capire se sono editorWidget=Hidden
+                    for fname in field_names:
+                        fieldIndex = layer.fields().indexFromName(fname)
+                        if fieldIndex != -1:
+                            editorWidget = layer.editorWidgetSetup(fieldIndex).type()
+                            if editorWidget == 'Hidden':
+                                hidden_found = True
+                                break
+                    # se trova un campo editorWidget=Hidden crea label vuota
+                    if hidden_found:
+                        labelText = '""'
+                        print(layer.name(), " label is an expression")
+                        print('labelText is None because one field is editorWidget=Hidden')
+                    else:
+                        # trova il percorso del file e salva in fondo l'espressione
+                        # tradotta da SQL a JavaScript con la funzione compile_to_file di exp2js
+                        exprFilename = os.path.join(folder, "resources",
+                                                    "qgis2web_expressions.js")
+                        name = compile_to_file(labelField, "label_%s" % sln,
+                                            "OpenLayers3", exprFilename)
+                        js = "%s(context)" % (name)
+                        js = js.strip()
+                        labelText = js
                 else:
                     fieldIndex = layer.fields().indexFromName(
                         labelField)
                     # editFormConfig = layer.editFormConfig()
                     editorWidget = layer.editorWidgetSetup(fieldIndex).type()
                     if (editorWidget == 'Hidden'):
-                        labelField = "q2wHide_" + labelField
-                    labelText = ('feature.get("%s")' %
-                                 labelField.replace('"', '\\"'))
+                        labelText = '""'
+                    else:
+                        labelText = ('feature.get("%s")' % labelField.replace('"', '\\"'))                    
             else:
                 labelText = '""'
         else:

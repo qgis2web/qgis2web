@@ -9,6 +9,7 @@ from qgis.core import (QgsProject,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
+                       QgsRuleBasedRenderer,
                        QgsHeatmapRenderer,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
@@ -207,6 +208,10 @@ def build25d(canvas, layer, count):
                 if (attrValue >= range.lowerValue() and
                         attrValue <= range.upperValue()):
                     symbol = range.symbol().clone()
+        elif isinstance(renderer, QgsRuleBasedRenderer):
+            rule = renderer.rootRule().match(feat, renderContext)
+            if rule is not None:
+                symbol = rule.symbol().clone()
         else:
             symbol = renderer.symbolForFeature(feat, renderContext)
         symbolLayer = symbol.symbolLayer(0)
@@ -423,6 +428,14 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
         layerCode += '''});'''
     elif isinstance(renderer, QgsGraduatedSymbolRenderer):
         layerCode += getLegend(renderer.ranges(), layer, layerName)
+        layerCode += '''});'''
+    elif isinstance(renderer, QgsRuleBasedRenderer):
+        rules = renderer.rootRule().children()
+        subitems = []
+        for rule in rules:
+            if rule.symbol() is not None:
+                subitems.append(LegendItem(rule.label(), rule.symbol().color()))
+        layerCode += getLegend(subitems, layer, layerName)
         layerCode += '''});'''
     else:
         layerCode += '''

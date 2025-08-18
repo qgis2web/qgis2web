@@ -248,14 +248,6 @@
 					<h3>Graduated</h3>
 					<img src="graduated.png" alt="Graduated Symbol Renderer">
 
-					<h3>2.5D</h3>
-					<li>only a single 2.5d layer will render per map</li>
-					<li>2.5d layers only appear when zoomed in to building scales</li>
-					<img src="25d.png" alt="2.5D Symbol Renderer">
-
-					<p>More complex 2.5D styles are also possible, such as categorized:</p>
-					<img src="25dcategorized.png" alt="2.5D Categorized Symbol Renderer">
-
 					<h3>Dash Line</h3>
 					<img src="dashline.png" alt="Dash Line">
 
@@ -323,6 +315,7 @@
 					<li>Buffers are only exported in OpenLayers</li>
 					<li>Backgrounds and borders are only exported in Leaflet</li>
 					<li>The export only specifies which font a label uses - it does not export the font itself</li>
+					<li>Expressions are supported (e.g. to concatenate values from different fields)</li>
 				</ul>
 		
 		<div class="dotted-line"></div>				
@@ -450,30 +443,29 @@
 				<h3>Address search</h3>
 					<p>Add field to allow searching for address locations (geocode)</p>
 				<h3>Layer search</h3>
-					<p>Add option to search for values in layer field values</p>
+					<p>Add option to search for values in layer field values, also in cluster</p>
 					<strong>Note:</strong> Layer search does not work in leaflet export if a point layer with symbols other than circle is used
-					<p></p><strong>Note:</strong> Layer search does not work in openlayers export if cluster is active in that layer
 				<h3>Show popups on hover</h3>
 					<p>Show popups when mouse hovers over features</p>
 				<h3>Highlight on hover</h3>
 					<p>Highlight features on mouseover</p>
-				<h3>Match project CRS</h3>
-					<p>Create webmap in same projection as QGIS project, otherwise the webmap is projected in EPSG:3857</p>
 				<h3>Template</h3>
 					<p>Select HTML template for webmap - add your own templates to /qgis2web/templates directory in your current QGIS3 profile folder</p>
 				<h3>Widget Icon</h3>
 					<p>Choose controls main color</p>
 				<h3>Widget Background</h3>
 					<p>Choose controls background color</p>
+				<h3>Match project CRS</h3>
+					<p>Create webmap in same projection as QGIS project, otherwise the webmap is projected in EPSG:3857</p>
+				<h3>Restrict to extent</h3>
+					<p>Prevent panning or zooming beyond the selected extent</p>
 				<h3>Extent</h3>
 					<p>Either match the current QGIS view or show all contents of all layers (only local GeoJSON and rasters, not WFS/WMS)</p>
 				<h3>Max zoom level</h3>
 					<p>How far the webmap will zoom in</p>
 				<h3>Min zoom level</h3>
 					<p>How far the webmap will zoom out</p>
-				<h3>Restrict to extent</h3>
-					<p>Prevent panning or zooming beyond the selected extent</p>
-
+				
 		<div class="dotted-line"></div>
 		
 			<h2 id="Export">Export</h2>

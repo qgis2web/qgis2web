@@ -22,7 +22,8 @@ from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsRectangle,
-                       QgsCsException)
+                       QgsCsException,
+                       QgsVectorLayer)
 from qgis.PyQt.QtCore import Qt, QObject
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QApplication
@@ -107,15 +108,15 @@ class OpenLayersWriter(Writer):
     def writeOL(cls, iface, feedback, layers, groups, collapsedGroup, popup, visible,
                 interactive, json, clustered, getFeatureInfo, baseMap, settings,
                 folder):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         mapSettings = iface.mapCanvas().mapSettings()
         controlCount = 0
         stamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
         folder = os.path.join(folder, 'qgis2web_' + stamp)
         restrictToExtent = settings["Scale/Zoom"]["Restrict to extent"]
-        matchCRS = settings["Appearance"]["Match project CRS"]
         precision = settings["Data export"]["Precision"]
         optimize = settings["Data export"]["Minify GeoJSON files"]
+        matchCRS = settings["Scale/Zoom"]["Match project CRS"]
         extent = settings["Scale/Zoom"]["Extent"]
         mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
         fullextent = bounds(iface, False, layers, matchCRS)
@@ -277,43 +278,33 @@ def replaceInScript(template, values):
 
 
 def bounds(iface, useCanvas, layers, matchCRS):
-    if useCanvas:
-        canvas = iface.mapCanvas()
-        canvasCrs = canvas.mapSettings().destinationCrs()
-        if not matchCRS:
-            epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
-            try:
-                transform = QgsCoordinateTransform(canvasCrs, epsg3857,
-                                                   QgsProject.instance())
-            except Exception:
-                transform = QgsCoordinateTransform(canvasCrs, epsg3857)
+    epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
+    canvas = iface.mapCanvas()
+    canvasCrs = canvas.mapSettings().destinationCrs()
+    
+    targetCrs = epsg3857 if not matchCRS else canvasCrs
 
+    if useCanvas:
+        if matchCRS:
+            extent = canvas.extent()
+        else:
             try:
+                transform = QgsCoordinateTransform(canvasCrs, epsg3857, QgsProject.instance())
                 extent = transform.transformBoundingBox(canvas.extent())
             except QgsCsException:
                 extent = QgsRectangle(-20026376.39, -20048966.10,
-                                      20026376.39, 20048966.10)
-        else:
-            extent = canvas.extent()
+                                    20026376.39, 20048966.10)
     else:
         extent = None
         for layer in layers:
-            if not matchCRS:
-                epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
-                try:
-                    transform = QgsCoordinateTransform(layer.crs(), epsg3857,
-                                                       QgsProject.instance())
-                except Exception:
-                    transform = QgsCoordinateTransform(layer.crs(), epsg3857)
-
-                try:
-                    layerExtent = transform.transformBoundingBox(
-                        layer.extent())
-                except QgsCsException:
-                    layerExtent = QgsRectangle(-20026376.39, -20048966.10,
-                                               20026376.39, 20048966.10)
-            else:
-                layerExtent = layer.extent()
+            if not isinstance(layer, QgsVectorLayer):
+                continue
+            try:
+                transform = QgsCoordinateTransform(layer.crs(), targetCrs, QgsProject.instance())
+                layerExtent = transform.transformBoundingBox(layer.extent())
+            except QgsCsException:
+                layerExtent = QgsRectangle(-20026376.39, -20048966.10,
+                                           20026376.39, 20048966.10)
             if extent is None:
                 extent = layerExtent
             else:

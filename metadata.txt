@@ -11,6 +11,7 @@
 [general]
 name=qgis2web
 qgisMinimumVersion=2.99
+supportsQt6=True
 qgisMaximumVersion=3.99
 description=Export to an OpenLayers/Leaflet webmap
 about=
@@ -25,7 +26,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.27.0
+version=3.28.0
 
 # end of mandatory metadata
 
@@ -33,6 +34,7 @@ version=3.27.0
 
 # Uncomment the following line and add your changelog entries:
 changelog= 
+	2025/08/18 3.28.0 Qt6 support, without preview - UI: - Reorganized the Scale/Zoom menu in the Appearance tab (moved "Match Project CRS" here and renamed it to "Fit to vector layers extent") - Added warning for users with dual integrated/dedicated video cards (force QGIS to use the integrated video card via the control panel to avoid crashes) - OpenLayers: - Increased OpenLayers library version from 6.15.1 to 10.6.0 - Updated ol3-search-layer to https://github.com/andreaordonselli/ol-search-layer/ (new repository published for the occasion) - Legend icons for layers with rule-based symbology are now visible - Added support for expressions in labels (allows concatenation of multiple values to create complex labels) - Adjusted the "Fit to vector layers extent" function - Leaflet: - Increased Leaflet library version from 1.7.1 to 1.9.4 - Fit to vector layers extent" now also blocks zooming out beyond the pan limit - Other: - Improved photon-geocoder code and enhanced the OpenLayers search marker
 	2025/07/07 3.27.0 Add symlinks on install of QtWebEngine to locate the Qt Frameworks for preview on macOS (thanks to @nameloCmaS) - Add support to read embedded SVG Marker Symbologies (thanks to @nameloCmaS) - Improved address search, you can choose between OSM and BAN (thanks to @yohann1c for commit) - Fix the styling of leaflet buttons
     2025/04/07 3.26.0 New option for groups in the graphical interface "Collapsed if LayersList" which collapses the group in the LayerSwitcher (qgis2web reflects the group as open/closed as configured in QGIS) - Adjusted export of SimpleFill icons for LayersList - The map automatically moves if the popup goes off-screen (autopan) - Fixed double quotation escape for "value" in style creation - Adjusted buffer width below the text - Improved WMS query: first URL provided, then URL encoded, then passed through URL proxy - Removed QgsApplication.initQgis() from leafletWriter for use with QGIS 3.42 - Fixed apostrophe escape for "classAttr" in style creation - The form was extended for the recommended QGIS version (it was not visible on some PCs) - Updated the recommended version to QGIS 3.40 - Removed QgsApplication.initQgis() and QgsApplication.exitQgis() from maindialog for use with QGIS 3.42
     2025/02/13 3.25.1 Preview also usable on MAC computers, Leaflet: Adjusted link export

@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from qgis.PyQt import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -27,12 +27,12 @@ class Ui_Feedback(object):
         Feedback.setObjectName(_fromUtf8("Feedback"))
         Feedback.resize(400, 354)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         Feedback.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(Feedback)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.buttonBox = QtWidgets.QDialogButtonBox(Feedback)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.gridLayout.addWidget(self.buttonBox, 2, 0, 1, 2)
         self.progressBar = QtWidgets.QProgressBar(Feedback)

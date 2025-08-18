@@ -259,6 +259,7 @@ class exportLayer(qgis2webAlgorithm):
             inputParams[1])
         writer.params["Data export"]["Minify GeoJSON files"] = inputParams[2]
         writer.params["Data export"]["Precision"] = inputParams[3]
+        writer.params["Scale/Zoom"]["Match project CRS"] = inputParams[13]
         writer.params["Scale/Zoom"]["Extent"] = inputParams[4]
         writer.params["Scale/Zoom"]["Max zoom level"] = inputParams[5]
         writer.params["Scale/Zoom"]["Min zoom level"] = inputParams[6]
@@ -268,7 +269,6 @@ class exportLayer(qgis2webAlgorithm):
         writer.params["Appearance"]["Geolocate user"] = inputParams[10]
         writer.params["Appearance"]["Highlight on hover"] = inputParams[11]
         writer.params["Appearance"]["Layer search"] = inputParams[12]
-        writer.params["Appearance"]["Match project CRS"] = inputParams[13]
         writer.params["Appearance"]["Measure tool"] = inputParams[14]
         writer.params["Appearance"]["Show popups on hover"] = inputParams[15]
         writer.params["Appearance"]["Template"] = inputParams[16]
@@ -436,7 +436,7 @@ class exportVector(exportLayer):
                 <dt>Max zoom level</dt>
                 <dd>1-28</dd>
                 <dt>Extent</dt>
-                <dd>Canvas extent | Fit to layers extent</dd>
+                <dd>Canvas extent | Fit to vector layers extent</dd>
                 <dt>Add layers list</dt>
                 <dd>None | collapsed | expanded</dd>
                 <dt>Measure tool</dt>
@@ -546,7 +546,7 @@ class exportRaster(exportLayer):
                 <dt>Max zoom level</dt>
                 <dd>1-28</dd>
                 <dt>Extent</dt>
-                <dd>Canvas extent | Fit to layers extent</dd>
+                <dd>Canvas extent | Fit to vector layers extent</dd>
                 <dt>Add layers list</dt>
                 <dd>None | collapsed | expanded</dd>
                 <dt>Measure tool</dt>

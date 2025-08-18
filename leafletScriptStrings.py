@@ -221,14 +221,15 @@ def featureGroupsScript():
 def extentScript(extent, restrictToExtent):
     layerOrder = """
         function setBounds() {"""
-    if extent == 'Fit to layers extent':
+    if extent == 'Fit to vector layers extent':
         layerOrder += """
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }"""
     if restrictToExtent:
         layerOrder += """
-            map.setMaxBounds(map.getBounds());"""
+            map.setMaxBounds(map.getBounds());
+            map.setMinZoom(map.getZoom());"""
     layerOrder += """
         }"""
     return layerOrder
@@ -699,8 +700,8 @@ def scaleBar():
 
 def addressSearchScript(method):
     addressSearch = f"""
-        const url = {{"Nominatim": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
-        "BAN": "https://api-adresse.data.gouv.fr/search/?"}}
+        const url = {{"Nominatim OSM": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+        "France BAN": "https://api-adresse.data.gouv.fr/search/?"}}
         var photonControl = L.control.photon({{
             url: url["{method}"],
             feedbackLabel: '',
@@ -736,12 +737,12 @@ def addressSearchScript(method):
         search.style.display = "flex";
         search.style.backgroundColor="rgba(255,255,255,0.5)" 
 
-        // Créer le nouvel élément bouton
+        // Create the new button element
         var button = document.createElement("div");
         button.id = "gcd-button-control";
         button.className = "gcd-gl-btn fa fa-search search-button";
 
-        // Ajouter le bouton à l'élément parent
+        // Insert the button at the beginning of the search control
         search.insertBefore(button, search.firstChild);
         last = search.lastChild;
         last.style.display = "none";

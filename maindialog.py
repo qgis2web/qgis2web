@@ -24,6 +24,8 @@ import webbrowser
 import platform
 import subprocess
 import sysconfig
+import pkgutil
+import traceback
 
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
@@ -69,12 +71,6 @@ from qgis.PyQt.QtWidgets import (QAction,
 from qgis.PyQt.uic import loadUiType
 from qgis.PyQt.QtNetwork import QNetworkProxy
 
-# from PyQt5.QtCore import PYQT_VERSION_STR
-# from qgis.PyQt.QtCore import QT_VERSION_STR
-# print("PyQt version:", PYQT_VERSION_STR)
-# print("Qt version:", QT_VERSION_STR)
-# print("QGIS version:", Qgis.QGIS_VERSION)
-
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
     from qgis.PyQt.QtWebKit import QWebSettings
@@ -82,11 +78,52 @@ try:
 except ImportError:
     webkit_available = False
 
+import qgis.PyQt.QtCore as qtcore
+USE_PYQT6 = qtcore.QT_VERSION_STR.startswith("6")
+# user_site = site.getusersitepackages()
+# vendor = os.path.join(user_site, "webengine_qt6" if USE_PYQT6 else "webengine_qt5")
+# print('PythonUserSitePackages WebEngine', vendor)
+# if os.path.isdir(vendor) and vendor not in sys.path:
+#     sys.path.insert(0, vendor)
+
+# ----- 1. Set environment variables early (before any PyQt import)
+# if USE_PYQT6:
+#     qt6_dir = r"C:\Program Files\QGISQT6 3.40.9\apps\Qt6"
+#     print('qt6dir', qt6_dir)
+#     print("Resolved Qt6 dir:", qt6_dir_2)
+#     os.environ["QTWEBENGINE_PROCESS_PATH"]    = os.path.join(qt6_dir, "bin", "QtWebEngineProcess.exe")
+#     os.environ["QTWEBENGINE_LOCALEDIR"]       = os.path.join(qt6_dir, "translations")
+#     os.environ["QTWEBENGINE_RESOURCES_PATH"]  = os.path.join(qt6_dir, "resources")
+#     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
+#     os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--no-sandbox --disable-gpu --enable-logging=stderr --log-level=0"
+
+# ----- 2. Import modules AFTER environment vars
 try:
-    from qgis.PyQt.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineSettings, QWebEngineProfile
-    webengine_available = True
-except ImportError:
-    webengine_available = False 
+    if USE_PYQT6:
+        # try:
+        #     from qgis.PyQt.QtWebEngine import QtWebEngine
+        #     # QtWebEngine.initialize()
+        # except ImportError:
+        #     print("QtWebEngine.initialize() not available in this environment.")
+
+        from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+        from qgis.PyQt.QtWebEngineCore import (
+            QWebEnginePage, QWebEngineSettings, QWebEngineProfile
+        )
+        print("PyQt6 WebEngine ready")
+        webengine_qt5_available = False
+        webengine_qt6_available = True
+    else:
+        from qgis.PyQt.QtWebEngineWidgets import (
+            QWebEngineView, QWebEnginePage, QWebEngineSettings, QWebEngineProfile
+        )
+        print("PyQt5 WebEngine ready")
+        webengine_qt5_available = True
+        webengine_qt6_available = False
+except ImportError as e:
+    print("WebEngine missing:", e)
+    webengine_qt5_available = False
+    webengine_qt6_available = False
 
 import traceback
 
@@ -146,31 +183,31 @@ class MainDialog(QDialog, FORM_CLASS):
         self.restoreGeometry(stgs.value("qgis2web/MainDialogGeometry",
                                         QByteArray(), type=QByteArray))
 
-        self.verticalLayout_2.addStretch()
-        self.horizontalLayout_6.addStretch()
+        #self.verticalLayout_2.addStretch()
+        #self.horizontalLayout_6.addStretch()
 
-        if stgs.value("qgis2web/previewOnStartup", Qt.Checked) == Qt.Checked:
-            self.previewOnStartup.setCheckState(Qt.Checked)
+        if stgs.value("qgis2web/previewOnStartup", Qt.CheckState.Checked) == Qt.CheckState.Checked:
+            self.previewOnStartup.setCheckState(Qt.CheckState.Checked)
         else:
-            self.previewOnStartup.setCheckState(Qt.Unchecked)
+            self.previewOnStartup.setCheckState(Qt.CheckState.Unchecked)
         if stgs.value("qgis2web/closeFeedbackOnSuccess",
-                      Qt.Checked) == Qt.Checked:
-            self.closeFeedbackOnSuccess.setCheckState(Qt.Checked)
+                      Qt.CheckState.Checked) == Qt.CheckState.Checked:
+            self.closeFeedbackOnSuccess.setCheckState(Qt.CheckState.Checked)
         else:
-            self.closeFeedbackOnSuccess.setCheckState(Qt.Unchecked)
+            self.closeFeedbackOnSuccess.setCheckState(Qt.CheckState.Unchecked)
         self.previewFeatureLimit.setText(
             stgs.value("qgis2web/previewFeatureLimit", "1000"))
 
-        self.appearanceParams.setSelectionMode(
-            QAbstractItemView.SingleSelection)
+        self.appearanceParams.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         
         self.preview = None
 
-        if webengine_available:
+        if webengine_qt5_available or webengine_qt6_available:
+         # Add preview space
             self.preview = QWebEngineView(self)
             self.preview.setPage(WebPageEngine(self.preview)) 
-            self.preview.setMinimumWidth(650)
-            self.preview.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)          
+            self.preview.setMinimumWidth(649)
+            self.preview.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)          
             self.right_layout.insertWidget(0, self.preview)         
 
             settings = self.preview.settings()
@@ -183,14 +220,23 @@ class MainDialog(QDialog, FORM_CLASS):
             # settings.setAttribute(QWebEngineSettings.ErrorPageEnabled, False)
             # settings.setAttribute(QWebEngineSettings.FullScreenSupportEnabled, False)
             # settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, False)
-            settings.setAttribute(QWebEngineSettings.JavascriptEnabled, True)
-            settings.setAttribute(QWebEngineSettings.DnsPrefetchEnabled, True)
-            settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
+            settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
+            settings.setAttribute(QWebEngineSettings.WebAttribute.DnsPrefetchEnabled, True)
+            settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
 
             profile = self.preview.page().profile()
             profile.clearHttpCache()
-            
-        else:
+            #profile.setHttpCacheMaximumSize(10 * 1024 * 1024)  # Cache limit to 10 MB
+
+         # Add fixed info label after preview
+            self.info_label = QLabel(
+                "<b>Note:</b> PyQtWebEngine is installed and enabled. If the plugin freezes or the preview does not work, try forcing QGIS to use <br>"
+                "the integrated GPU via the NVIDIA/AMD Control Panel. If the problem persists contact support"
+            )
+            self.info_label.setStyleSheet("color: #444; background: #fffbe6; border: 1px solid #ffe58f; padding: 6px;")
+            self.right_layout.insertWidget(1, self.info_label) 
+
+        elif not USE_PYQT6:
             # Add installation instruction and button
             self.widget = QTextBrowser()
             self.widget.setText(self.tr('qgis2web supports a new browser for webmap preview, but it is '
@@ -238,8 +284,8 @@ class MainDialog(QDialog, FORM_CLASS):
         self.toggleOptions()
 
         # launch preview on start and add click on preview button
-        if webengine_available:
-            if self.previewOnStartup.checkState() == Qt.Checked:
+        if webengine_qt5_available or webengine_qt6_available:
+            if self.previewOnStartup.checkState() == Qt.CheckState.Checked:
                 self.autoUpdatePreview()
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
@@ -263,9 +309,10 @@ class MainDialog(QDialog, FORM_CLASS):
             self.webViewWiki.load(QUrl.fromLocalFile(wikiText))
             self.helpField.addWidget(self.webViewWiki)
         else:
-            self.webViewWiki = QTextBrowser()
-            self.webViewWiki.setText(self.tr('Preview is not available since QtWebKit '
-                                             'dependency is missing on your system'))
+            self.webViewWiki = QLabel(
+                "<b>Note:</b> Consult WIKI at the following address https://qgis2web.github.io/qgis2web/"
+            )
+            self.webViewWiki.setStyleSheet("color: #444; background: #fffbe6; border: 1px solid #ffe58f; padding: 6px;")
             self.helpField.addWidget(self.webViewWiki)
 
         self.filter = devToggleFilter()
@@ -405,7 +452,7 @@ class MainDialog(QDialog, FORM_CLASS):
         currentWriter = self.getWriterFactory()
         for param, value in specificParams.items():
             treeParam = self.appearanceParams.findItems(
-                param, Qt.MatchExactly | Qt.MatchRecursive)[0]
+                param, Qt.MatchFlag.MatchExactly | Qt.MatchFlag.MatchRecursive)[0]
             if currentWriter == OpenLayersWriter:
                 if value == "OL3":
                     treeParam.setDisabled(False)
@@ -426,8 +473,8 @@ class MainDialog(QDialog, FORM_CLASS):
                     if treeParam.combo:
                         treeParam.combo.setEnabled(True)
         for option, value in specificOptions.items():
-            treeOptions = self.layersTree.findItems(option, Qt.MatchExactly |
-                                                    Qt.MatchRecursive)
+            treeOptions = self.layersTree.findItems(option, Qt.MatchFlag.MatchExactly |
+                                                    Qt.MatchFlag.MatchRecursive)
             for treeOption in treeOptions:
                 if currentWriter == OpenLayersWriter:
                     if value == "OL3":
@@ -498,7 +545,7 @@ class MainDialog(QDialog, FORM_CLASS):
                                dest_folder=write_folder,
                                feedback=self.feedback)
         self.feedback.showFeedback('Success')
-        if self.closeFeedbackOnSuccess.checkState() == Qt.Checked:
+        if self.closeFeedbackOnSuccess.checkState() == Qt.CheckState.Checked:
             self.feedback.close()
         result = self.exporter.postProcess(results, feedback=self.feedback)
         if result and (not os.environ.get('CI') and
@@ -569,11 +616,11 @@ class MainDialog(QDialog, FORM_CLASS):
                     
         for i in range(self.layers_item.childCount()): 
             layersItem = self.layers_item.child(i)
-            if layersItem.checkState(0) != Qt.Checked: 
+            if layersItem.checkState(0) != Qt.CheckState.Checked: 
                 layersItem.setExpanded(False)
             for group in range(layersItem.childCount()):
                 layersInGroup = layersItem.child(group)
-                if layersInGroup.checkState(0) != Qt.Checked: 
+                if layersInGroup.checkState(0) != Qt.CheckState.Checked: 
                     layersInGroup.setExpanded(False)
 
             popups_items = find_items_recursively(layersItem, "Popups")
@@ -751,7 +798,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     item.addChild(subitem)
                     self.items[group][param] = subitem
                 self.appearanceParams.addTopLevelItem(item)
-                #item.sortChildren(0, Qt.AscendingOrder)
+                #item.sortChildren(0, Qt.Qt.SortOrder.AscendingOrder)
         self.appearanceParams.expandAll()
         self.appearanceParams.resizeColumnToContents(0)
         self.appearanceParams.resizeColumnToContents(1)
@@ -772,7 +819,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     item.addChild(subitem)
                     self.items[group][param] = subitem
                 self.exportParams.addTopLevelItem(item)
-                item.sortChildren(0, Qt.AscendingOrder)
+                item.sortChildren(0, Qt.SortOrder.AscendingOrder)
         self.exportParams.expandAll()
         self.exportParams.resizeColumnToContents(0)
         self.exportParams.resizeColumnToContents(1)
@@ -865,7 +912,7 @@ class MainDialog(QDialog, FORM_CLASS):
         for i in range(self.layers_item.childCount()):
             item = self.layers_item.child(i)
             if isinstance(item, TreeLayerItem):
-                if item.checkState(0) == Qt.Checked:
+                if item.checkState(0) == Qt.CheckState.Checked:
                     layers.append(item.layer)
                     popup.append(item.popup)
                     visible.append(item.visible)
@@ -877,12 +924,12 @@ class MainDialog(QDialog, FORM_CLASS):
             else:
                 group = item.name
                 groupLayers = []
-                if item.checkState(0) != Qt.Checked:
+                if item.checkState(0) != Qt.CheckState.Checked:
                     continue
                 for allGroups in range(item.childCount()):
                     allLayers = item.child(allGroups)
                     if isinstance(allLayers, TreeLayerItem):
-                        if allLayers.checkState(0) == Qt.Checked:
+                        if allLayers.checkState(0) == Qt.CheckState.Checked:
                             groupLayers.append(allLayers.layer)
                             layers.append(allLayers.layer)
                             popup.append(allLayers.popup)
@@ -976,7 +1023,7 @@ class TreeGroupItem(QTreeWidgetItem):
         self.name = name
         self.setText(0, name)
         self.setIcon(0, self.groupIcon)
-        self.setCheckState(0, Qt.Checked)
+        self.setCheckState(0, Qt.CheckState.Checked)
         
         # self.visibleItem = QTreeWidgetItem(self)
         # self.visibleCheck = QCheckBox()
@@ -1024,14 +1071,14 @@ class TreeLayerItem(QTreeWidgetItem):
         self.setIcon(0, self.layerIcon)
         project = QgsProject.instance()
         if project.layerTreeRoot().findLayer(layer.id()).isVisible():
-            self.setCheckState(0, Qt.Checked)
+            self.setCheckState(0, Qt.CheckState.Checked)
         else:
-            self.setCheckState(0, Qt.Unchecked)
+            self.setCheckState(0, Qt.CheckState.Unchecked)
         # set all
         if dlg.setAllLayersExportValue == "checked":
-            self.setCheckState(0, Qt.Checked)
+            self.setCheckState(0, Qt.CheckState.Checked)
         if dlg.setAllLayersExportValue == "unchecked":
-            self.setCheckState(0, Qt.Unchecked)
+            self.setCheckState(0, Qt.CheckState.Unchecked)
 
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleCheck = QCheckBox()
@@ -1247,7 +1294,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def togglePopups(self, state):
         self.layer.setCustomProperty("qgis2web/Popups", state)
-        if state == Qt.Unchecked:
+        if state == Qt.CheckState.Unchecked:
             self.interactiveItem.setExpanded(False)
         else:
             self.interactiveItem.setExpanded(True)
@@ -1269,19 +1316,19 @@ class TreeSettingItem(QTreeWidgetItem):
             widget = value
         elif isinstance(value, bool):
             if value:
-                self.setCheckState(1, Qt.Checked)
+                self.setCheckState(1, Qt.CheckState.Checked)
             else:
-                self.setCheckState(1, Qt.Unchecked)
+                self.setCheckState(1, Qt.CheckState.Unchecked)
         elif isinstance(value, tuple):
             self.combo = QComboBox()
-            self.combo.setSizeAdjustPolicy(0)
+            #self.combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
             for option in value:
                 self.combo.addItem(option)
             widget = self.combo
         elif isinstance(value, list):
             self.list = QListWidget()
-            self.list.setSizeAdjustPolicy(0)
-            self.list.setSelectionMode(QListWidget.MultiSelection)
+            #self.list.setSizeAdjustPolicy(0)
+            #self.list.setSelectionMode(QListWidget.MultiSelection)
             for option in value:
                 self.list.addItem(option)
             widget = self.list
@@ -1307,9 +1354,9 @@ class TreeSettingItem(QTreeWidgetItem):
     def setValue(self, value):
         if isinstance(value, bool):
             if value:
-                self.setCheckState(1, Qt.Checked)
+                self.setCheckState(1, Qt.CheckState.Checked)
             else:
-                self.setCheckState(1, Qt.Unchecked)
+                self.setCheckState(1, Qt.CheckState.Unchecked)
         elif self.combo:
             index = self.combo.findText(value)
             if index != -1:
@@ -1319,7 +1366,7 @@ class TreeSettingItem(QTreeWidgetItem):
 
     def value(self):
         if isinstance(self._value, bool):
-            return self.checkState(1) == Qt.Checked
+            return self.checkState(1) == Qt.CheckState.Checked
         elif isinstance(self._value, (int, float)):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
@@ -1346,7 +1393,8 @@ if webkit_available:
                     os.environ.get('CI') and os.environ.get('TRAVIS')):
                 raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
                                   Exception())
-if webengine_available:
+            
+if webengine_qt5_available or webengine_qt6_available:
     class WebPageEngine(QWebEnginePage):
         def javaScriptConsoleMessage(self, level, message, line_number, source_id):
             exclude_messages = [
@@ -1525,4 +1573,5 @@ def install_qtwebengine():
     finally:
         QApplication.quit()
         os._exit(0)
+
 

@@ -523,13 +523,11 @@ document.addEventListener('DOMContentLoaded', function() {
         topLeftContainerDiv.appendChild(zoomControl);
     }
     //geolocate
-    var geolocateControl = document.getElementsByClassName('geolocate')[0];
-    if (geolocateControl) {
+    if (typeof geolocateControl !== 'undefined') {
         topLeftContainerDiv.appendChild(geolocateControl);
     }
     //measure
-    var measureControl = document.getElementsByClassName('measure-control')[0];
-    if (measureControl) {
+    if (typeof measureControl !== 'undefined') {
         topLeftContainerDiv.appendChild(measureControl);
     }
     //geocoder

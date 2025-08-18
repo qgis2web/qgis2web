@@ -119,7 +119,7 @@ class LeafletWriter(Writer):
             layer_list, groups, collapsedGroup, visible, interactive, cluster,
             json, getFeatureInfo, baseMap, params, popup):
         outputProjectFileName = folder
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         legends = {}
         mapUnitLayers = []
         canvas = iface.mapCanvas()
@@ -135,11 +135,11 @@ class LeafletWriter(Writer):
 
         minify = params["Data export"]["Minify GeoJSON files"]
         precision = params["Data export"]["Precision"]
+        matchCRS = params["Scale/Zoom"]["Match project CRS"]
         extent = params["Scale/Zoom"]["Extent"]
         minZoom = params["Scale/Zoom"]["Min zoom level"]
         maxZoom = params["Scale/Zoom"]["Max zoom level"]
         restrictToExtent = params["Scale/Zoom"]["Restrict to extent"]
-        matchCRS = params["Appearance"]["Match project CRS"]
         addressSearch = params["Appearance"]["Address search"]
         titleOptions = params["Appearance"]["Title"]
         abstractOptions = params["Appearance"]["Abstract"]

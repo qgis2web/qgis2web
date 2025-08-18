@@ -21,13 +21,12 @@ from datetime import datetime
 import ftplib
 
 from qgis.core import QgsProject
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import QObject, QCoreApplication
 from qgis.PyQt.QtWidgets import QFileDialog, QInputDialog, QDialog, QLineEdit
 from .utils import tempFolder
 from .feedbackDialog import Feedback
 
 from .ui_ftp_configuration import Ui_FtpConfiguration
-translator = QObject()
 
 
 class Exporter(QObject):
@@ -117,14 +116,14 @@ class FolderExporter(Exporter):
 
     @classmethod
     def name(cls):
-        return QObject.tr(translator, 'Export to folder')
+        return QCoreApplication.translate('FolderExporter', 'Export to folder')
 
     def configure(self, parent_widget=None):
         new_folder = \
             QFileDialog.getExistingDirectory(parent_widget,
                                              self.tr("Choose export folder"),
                                              self.folder,
-                                             QFileDialog.ShowDirsOnly)
+                                             QFileDialog.Option.ShowDirsOnly)
         if new_folder:
             self.folder = new_folder
 
@@ -244,7 +243,7 @@ class FtpExporter(Exporter):
 
     @classmethod
     def name(cls):
-        return QObject.tr(translator, 'Export to FTP site')
+        return QCoreApplication.translate('FtpExporter', 'Export to FTP site')
 
     def configure(self, parent_widget=None):
         dialog = FtpConfigurationDialog(parent_widget)

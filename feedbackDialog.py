@@ -94,14 +94,17 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
         self.is_cancelled = False
         self.messages = []
         self.buttonBox.button(
-            QDialogButtonBox.Cancel).clicked.connect(self.cancel)
+            QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.cancel)
         self.progressBar.setRange(0, 0)
 
     def processEvents(self):
-        # hack copied from QgsVectorLayerInterruption.... .mustStop
-        # to allow responsive cancelation on linux
+        # This loop is intended to keep the UI responsive and allow cancellation,
+        # especially on Linux and macOS where event processing can be less responsive.
+        # The original logic was inspired by QGIS's QgsVectorLayerInterruption.mustStop.
+        # Note: QCoreApplication.hasPendingEvents() is not available in PyQt6,
+        # so we just call processEvents() a fixed number of times for compatibility.
         i = 0
-        while i < 100 and QCoreApplication.hasPendingEvents():
+        while i < 100:
             QCoreApplication.processEvents()
             i += 1
 
@@ -117,8 +120,8 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
 
     def reset(self):
         self.is_cancelled = False
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-        self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(True)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setEnabled(True)
         self.messages = []
         self.progressBar.setRange(0, 0)
 
@@ -145,14 +148,14 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
     def setFatalError(self, error):
         self.progressBar.setRange(0, 100)
         self.pushHtml('<span style="color:red">{}</span>'.format(error))
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-        self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setEnabled(False)
 
     def setCompleted(self, feedback):
         self.setProgress(100)
         self.pushHtml('<span style="color: green">{}</span>'.format(feedback))
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-        self.buttonBox.button(QDialogButtonBox.Cancel).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setEnabled(False)
 
     def setProgress(self, progress):
         if not self.progressBar.maximum() == 100:

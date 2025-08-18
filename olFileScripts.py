@@ -49,10 +49,10 @@ def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
         cssAddress += """
         <link rel="stylesheet" type="text/css" href="resources/horsey.min.css">
         <link rel="stylesheet" type="text/css" """
-        cssAddress += """href="resources/ol3-search-layer.min.css">"""
+        cssAddress += """href="resources/ol-search-layer.min.css">"""
         jsAddress += """
         <script src="resources/horsey.min.js"></script>
-        <script src="resources/ol3-search-layer.js"></script>"""
+        <script src="resources/ol-search-layer.js"></script>"""
         searchVals = layerSearch.split(": ")
         layerSearch = u"""
 var searchLayer = new SearchLayer({{
@@ -60,7 +60,8 @@ var searchLayer = new SearchLayer({{
     colName: '{field}',
     zoom: 10,
     collapsed: true,
-    map: map
+    map: map,
+    maxResults: 10,
 }});
 map.addControl(searchLayer);
 document.getElementsByClassName('search-layer')[0].getElementsByTagName('button')[0].className += ' fa fa-binoculars';

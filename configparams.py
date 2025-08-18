@@ -58,11 +58,10 @@ def getParams(configure_exporter_action=None):
             "Attribute filter": ["None", "placeholder2"],
             "Geolocate user": False,
             "Measure tool": ("None", "Metric", "Imperial"),
-            "Address search": ("None", "Nominatim", "BAN"),
+            "Address search": ("None", "Nominatim OSM", "France BAN"),
             "Layer search": ("None", "placeholder"),
             "Show popups on hover": False,
             "Highlight on hover": False,
-            "Match project CRS": False,
             "Template": getTemplates(),
             "Widget Icon": accentColor,
             "Widget Background": backgroundColor
@@ -73,8 +72,9 @@ def getParams(configure_exporter_action=None):
             "Minify GeoJSON files": True
         },
         "Scale/Zoom": {
-            "Extent": ("Canvas extent", "Fit to layers extent"),
+            "Match project CRS": False,
             "Restrict to extent": False,
+            "Extent": ("Canvas extent", "Fit to vector layers extent"),
             "Max zoom level": ("1", "2", "3", "4", "5", "6", "7",
                                "8", "9", "10", "11", "12", "13", "14",
                                "15", "16", "17", "18", "19", "20", "21",
