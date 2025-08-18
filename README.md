@@ -111,7 +111,6 @@ software:</p>
     <li><a href="https://github.com/stefanocudini/leaflet-search">leaflet-search</a>, by @stefanocudini</li>
     <li><a href="https://github.com/andreaordonselli/ol-search-layer">ol-search-layer</a>, by @andreaordonselli</li>
     <li><a href="https://github.com/mourner/simpleheat">simpleheat</a>, by @mourner</li>
-    <li><a href="https://github.com/kekscom/osmbuildings">OSMBuildings</a>, by @kekscom</li>
     <li><a href="https://github.com/perliedman/leaflet-multi-style">leaflet-multi-style</a>, by @perliedman</li>
     <li><a href="https://github.com/rowanwins/Leaflet.SvgShapeMarkers">Leaflet.SvgShapeMarkers</a>, by @rowanwins</li>
     <li><a href="https://github.com/mourner/rbush">rbush</a>, by @mourner</li>
