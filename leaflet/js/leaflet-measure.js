@@ -7274,8 +7274,14 @@ L.Control.Measure = L.Control.extend({
   },
   // set icon on the capture marker
   _setCaptureMarkerIcon: function () {
+    // Use an oversized divIcon centered on the map to capture clicks.
+    // In Leaflet 1.9.x the default iconAnchor for a divIcon is not centered,
+    // which can shift the clickable area after zoom/pan. Anchor the icon to
+    // the center so screen clicks are translated to the correct latlng.
+    var mapSize = this._map.getSize();
     this._captureMarker.setIcon(L.divIcon({
-      iconSize: this._map.getSize().multiplyBy(2)
+      iconSize: mapSize.multiplyBy(2),
+      iconAnchor: mapSize, // center the 2x-sized icon on the marker latlng (map center)
     }));
   },
   // format measurements to nice display string based on units in options

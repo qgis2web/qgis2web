@@ -996,30 +996,32 @@ def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin, props):
         #width = str(int(float(width) * 3.8))
         width = str(float(width) * 3.8)
         useMapUnits = False
+        outline_style = props.get('outline_style', 'no')
+        if outline_style == "no":
+            dash_length = 4 * float(width)
+            dash_space = 2 * float(width)
+            dot_length = 1 * float(width)
+            dot_space = 2 * float(width)
+        else:
+            dash_length = 5 * float(width)
+            dash_space = 1 * float(width)
+            dot_length = 2 * float(width)
+            dot_space = 1 * float(width)
+
+        dash = dashed.replace("dash", f"{dash_length},{dash_space}")
+        #dash = dashed.replace("dash", "10,5")
+        dash = dash.replace("dot", f"{dot_length},{dot_space}")
+        #dash = dash.replace("dot", "1,5")
+        dash = dash.replace("solid", "")
+        dash = dash.replace(" ", ",")
+        dash = "[%s]" % dash
+        if dash == "[]" or dash == "[no]":
+            dash = "null"
     else:
         width = "m2px(%s)" % width
-        useMapUnits = True
-    outline_style = props.get('outline_style', 'no')
-    if outline_style == "no":
-        dash_length = 4 * float(width)
-        dash_space = 2 * float(width)
-        dot_length = 1 * float(width)
-        dot_space = 2 * float(width)
-    else:
-        dash_length = 5 * float(width)
-        dash_space = 1 * float(width)
-        dot_length = 2 * float(width)
-        dot_space = 1 * float(width)
-
-    dash = dashed.replace("dash", f"{dash_length},{dash_space}")
-    #dash = dashed.replace("dash", "10,5")
-    dash = dash.replace("dot", f"{dot_length},{dot_space}")
-    #dash = dash.replace("dot", "1,5")
-    dash = dash.replace("solid", "")
-    dash = dash.replace(" ", ",")
-    dash = "[%s]" % dash
-    if dash == "[]" or dash == "[no]":
         dash = "null"
+        useMapUnits = True
+        print('use map units')
     capString = "round"
     if linecap == 0:
         capString = "butt"

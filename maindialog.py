@@ -80,32 +80,19 @@ except ImportError:
 
 import qgis.PyQt.QtCore as qtcore
 USE_PYQT6 = qtcore.QT_VERSION_STR.startswith("6")
-# user_site = site.getusersitepackages()
-# vendor = os.path.join(user_site, "webengine_qt6" if USE_PYQT6 else "webengine_qt5")
-# print('PythonUserSitePackages WebEngine', vendor)
-# if os.path.isdir(vendor) and vendor not in sys.path:
-#     sys.path.insert(0, vendor)
 
 # ----- 1. Set environment variables early (before any PyQt import)
-# if USE_PYQT6:
-#     qt6_dir = r"C:\Program Files\QGISQT6 3.40.9\apps\Qt6"
-#     print('qt6dir', qt6_dir)
-#     print("Resolved Qt6 dir:", qt6_dir_2)
-#     os.environ["QTWEBENGINE_PROCESS_PATH"]    = os.path.join(qt6_dir, "bin", "QtWebEngineProcess.exe")
-#     os.environ["QTWEBENGINE_LOCALEDIR"]       = os.path.join(qt6_dir, "translations")
-#     os.environ["QTWEBENGINE_RESOURCES_PATH"]  = os.path.join(qt6_dir, "resources")
-#     os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
-#     os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]  = "--no-sandbox --disable-gpu --enable-logging=stderr --log-level=0"
+if USE_PYQT6:
+    # Setting environment variables to stabilize WebEngine in PyQt6
+    os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
+    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--no-sandbox --disable-gpu --disable-dev-shm-usage --disable-software-rasterizer --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-features=TranslateUI --single-process"
+    os.environ["QT_LOGGING_RULES"] = "qt.webenginecontext.debug=false"
+    # Try to prevent WebEngine process crashes
+    os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = "0"
 
 # ----- 2. Import modules AFTER environment vars
 try:
     if USE_PYQT6:
-        # try:
-        #     from qgis.PyQt.QtWebEngine import QtWebEngine
-        #     # QtWebEngine.initialize()
-        # except ImportError:
-        #     print("QtWebEngine.initialize() not available in this environment.")
-
         from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
         from qgis.PyQt.QtWebEngineCore import (
             QWebEnginePage, QWebEngineSettings, QWebEngineProfile
@@ -236,14 +223,14 @@ class MainDialog(QDialog, FORM_CLASS):
             self.info_label.setStyleSheet("color: #444; background: #fffbe6; border: 1px solid #ffe58f; padding: 6px;")
             self.right_layout.insertWidget(1, self.info_label) 
 
-        elif not USE_PYQT6:
+        else: 
             # Add installation instruction and button
             self.widget = QTextBrowser()
             self.widget.setText(self.tr('qgis2web supports a new browser for webmap preview, but it is '
-                                   'not available because the PyQtWebEngine 5.15.6 dependency is missing or your '
+                                   'not available because the PyQtWebEngine dependency is missing or your '
                                    'QGIS version is earlier than 3.38.0\n\n'
                                    'Please ensure you have:\n'
-                                   '- Recommended QGIS version (is shown below the Preview button)\n'     
+                                   '- Recommended QGIS version (is shown below the Export button)\n'     
                                    '- AN ACTIVE INTERNET CONNECTION (even under proxy)\n'
                                    'Then click the button to install.\n\n'
                                    'WARNING: QGIS will close after installation, SAVE YOUR PROJECT FIRST.\n\n'
@@ -253,10 +240,10 @@ class MainDialog(QDialog, FORM_CLASS):
             self.layout = QVBoxLayout()
             self.layout.addWidget(self.widget)
 
-            self.deny_button = QPushButton(self.tr('Use old browser\n'
-                                                 '( Limitations and graphic artifacts )'))
-            self.deny_button.clicked.connect(self.deny_qtwebengine)
-            self.layout.addWidget(self.deny_button)
+            # self.deny_button = QPushButton(self.tr('Use old browser\n'
+            #                                      '( Limitations and graphic artifacts )'))
+            # self.deny_button.clicked.connect(self.deny_qtwebengine)
+            # self.layout.addWidget(self.deny_button)
             
             self.install_button = QPushButton(self.tr('Install new Browser\n'
                                                  '( Save your project - QGIS will close )'))
@@ -308,11 +295,12 @@ class MainDialog(QDialog, FORM_CLASS):
             wikiText = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./docs/index.html")
             self.webViewWiki.load(QUrl.fromLocalFile(wikiText))
             self.helpField.addWidget(self.webViewWiki)
-        else:
-            self.webViewWiki = QLabel(
-                "<b>Note:</b> Consult WIKI at the following address https://qgis2web.github.io/qgis2web/"
-            )
-            self.webViewWiki.setStyleSheet("color: #444; background: #fffbe6; border: 1px solid #ffe58f; padding: 6px;")
+        elif webengine_qt6_available:
+            self.webViewWiki = QWebEngineView()
+            wikiText = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./docs/index.html")
+            self.webViewWiki.setUrl(QUrl.fromLocalFile(wikiText))
+            settings = self.webViewWiki.settings()
+            settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
             self.helpField.addWidget(self.webViewWiki)
 
         self.filter = devToggleFilter()
@@ -339,42 +327,29 @@ class MainDialog(QDialog, FORM_CLASS):
             self.webViewWiki.page().setNetworkAccessManager(network_manager)
             self.webViewWiki.load(QUrl("https://www.opengis.it/info"))
             self.info_container.addWidget(self.webViewWiki)
+        elif webengine_qt6_available:
+            # get qgis proxy configuration
+            network_manager = QgsNetworkAccessManager.instance()
+            proxy_settings = network_manager.proxy()
+            if proxy_settings.type() != QNetworkProxy.ProxyType.NoProxy:
+                self.webViewWiki = QWebEngineView()
+                profile = self.webViewWiki.page().profile()
+                proxy_config = f"--proxy-server={proxy_settings.hostName()}:{proxy_settings.port()}"
+                if proxy_settings.user():
+                    proxy_config += f" --proxy-auth={proxy_settings.user()}:{proxy_settings.password()}"
+                existing_flags = os.environ.get("QTWEBENGINE_CHROMIUM_FLAGS", "")
+                if proxy_config not in existing_flags:
+                    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = f"{existing_flags} {proxy_config}".strip()
+            else:
+                self.webViewWiki = QWebEngineView()
+            profile = self.webViewWiki.page().profile()
+            profile.clearHttpCache()
+            def load_url():
+                self.webViewWiki.setUrl(QUrl("https://www.opengis.it/info"))
+            QTimer.singleShot(200, load_url)
+            self.info_container.addWidget(self.webViewWiki)
 
     #@pyqtSlot(bool)
-
-    def deny_qtwebengine(self):
-        # Remove widget, button and layout
-        self.right_layout.removeWidget(self.widget)
-        self.widget.deleteLater()
-        self.right_layout.removeWidget(self.deny_button)
-        self.deny_button.deleteLater()
-        self.right_layout.removeWidget(self.install_button)
-        self.install_button.deleteLater()
-        self.right_layout.removeItem(self.layout)
-        self.layout.deleteLater()
-        
-        if webkit_available:
-            widget = QWebView()
-            self.preview = widget
-            try:
-                # if os.environ["TRAVIS"]:
-                self.preview.setPage(WebPage())
-            except Exception:
-                print("Failed to set custom webpage")
-            webview = self.preview.page()
-            webview.setNetworkAccessManager(QgsNetworkAccessManager.instance())
-            self.preview.settings().setAttribute(
-                QWebSettings.DeveloperExtrasEnabled, True)
-            self.preview.settings().setAttribute(
-                QWebSettings.DnsPrefetchEnabled, True)
-            
-            self.buttonPreview.setDisabled(False)
-            self.buttonPreview.clicked.connect(self.previewMap)
-        else:
-            widget = QTextBrowser()
-            widget.setText(self.tr('Preview is not available since QtWebKit '
-                                    'dependency is missing on your system'))
-        self.right_layout.insertWidget(0, widget)
 
     def showHideDevConsole(self, visible):
         self.devConsole.setVisible(visible)
@@ -1328,7 +1303,7 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(value, list):
             self.list = QListWidget()
             #self.list.setSizeAdjustPolicy(0)
-            #self.list.setSelectionMode(QListWidget.MultiSelection)
+            self.list.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
             for option in value:
                 self.list.addItem(option)
             widget = self.list
@@ -1508,29 +1483,35 @@ def install_qtwebengine():
             if full_proxy_url:
                 env['http_proxy'] = full_proxy_url
                 env['https_proxy'] = full_proxy_url
-            subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"], env=env)
+            if USE_PYQT6:
+                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQt6-WebEngine==6.8.0"], env=env)
+            else:
+                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"], env=env)
         elif system == 'Linux':
-            subprocess.check_call(["sudo", "apt-get", "install", "python3-pyqt5.qtwebengine"])
+            if USE_PYQT6:
+                subprocess.check_call(["sudo", "apt-get", "install", "python3-pyqt6.qtwebengine"])
+            else:
+                subprocess.check_call(["sudo", "apt-get", "install", "python3-pyqt5.qtwebengine"])
         elif system == 'Darwin':
             brew_prefix = "/usr/local"  # Default for Intel Macs
             try:
                 brew_prefix = subprocess.check_output(["/usr/local/bin/brew", "--prefix"]).strip().decode("utf-8")
             except FileNotFoundError:
                 brew_prefix = "/opt/homebrew"  # Use Apple Silicon path if Intel path fails
-            subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt5"])
-            pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
-            subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"])
+            if USE_PYQT6:
+                subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt6"])
+                pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
+                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQt6-WebEngine==6.8.0"])
+            else:
+                subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt5"])
+                pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
+                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"])
             
-            # Add symlink to Frameworks so that PyQtWebEngine can find the rest of Qt. This is due
-            # to the executable RPATHs being set to e.g. @rpath/QtGui.framework/Versions/5/QtGui
-
-            # Example locations:
-            # sys.executable:    "/Applications/QGIS-LTR.app/Contents/MacOS/QGIS"
-            # Frameworks:        "/Applications/QGIS-LTR.app/Contents/Frameworks"
-            # Python frameworks: "/Applications/QGIS-LTR.app/Contents/Resources/python/site-packages/PyQt5/Qt5/lib/"
-
             framework_path = os.path.realpath(os.path.join(sys.executable, "../../Frameworks"))
-            python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt5/Qt5/lib"))
+            if USE_PYQT6:
+                python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt6/Qt6/lib"))
+            else:
+                python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt5/Qt5/lib"))
             webengine_framework = ["QtWebEngine.framework", "QtWebEngineCore.framework", "QtWebEngineWidgets.framework"]
 
             try:
@@ -1562,7 +1543,6 @@ def install_qtwebengine():
                         os.symlink(link_points_to, link_path, target_is_directory=True)
                     except:
                         raise OSError("Unable to create symlink: %s" % link_path)
-        
         else:
             raise OSError("Unsupported operating system")
         QMessageBox.information(None, "Installation Complete", "QtWebEngine has been installed successfully. Quit QGIS ...")
@@ -1573,5 +1553,4 @@ def install_qtwebengine():
     finally:
         QApplication.quit()
         os._exit(0)
-
 

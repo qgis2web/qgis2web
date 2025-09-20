@@ -26,7 +26,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.28.0
+version=3.29.0
 
 # end of mandatory metadata
 
@@ -34,17 +34,18 @@ version=3.28.0
 
 # Uncomment the following line and add your changelog entries:
 changelog= 
-	2025/08/18 3.28.0 Qt6 support, without preview - UI: - Reorganized the Scale/Zoom menu in the Appearance tab (moved "Match Project CRS" here and renamed it to "Fit to vector layers extent") - Added warning for users with dual integrated/dedicated video cards (force QGIS to use the integrated video card via the control panel to avoid crashes) - OpenLayers: - Increased OpenLayers library version from 6.15.1 to 10.6.0 - Updated ol3-search-layer to https://github.com/andreaordonselli/ol-search-layer/ (new repository published for the occasion) - Legend icons for layers with rule-based symbology are now visible - Added support for expressions in labels (allows concatenation of multiple values to create complex labels) - Adjusted the "Fit to vector layers extent" function - Leaflet: - Increased Leaflet library version from 1.7.1 to 1.9.4 - Fit to vector layers extent" now also blocks zooming out beyond the pan limit - Other: - Improved photon-geocoder code and enhanced the OpenLayers search marker
-	2025/07/07 3.27.0 Add symlinks on install of QtWebEngine to locate the Qt Frameworks for preview on macOS (thanks to @nameloCmaS) - Add support to read embedded SVG Marker Symbologies (thanks to @nameloCmaS) - Improved address search, you can choose between OSM and BAN (thanks to @yohann1c for commit) - Fix the styling of leaflet buttons
+    3.29.0 Plugin: Qt6 full support, with preview window - WIKI window support, OpenLayers and Leaflet: Supporting "Map Units" for the stroke, OpenLayers: Improved area measurement,Leaflet: Adjusted multi-selection for Attribute filters in the Appearance tab - Support for large SVG icons; they are no longer clipped in the legend - Modified the leaflet-measure.js library to be compatible with the latest leaflet.js, Other: update WIKI
+    2025/08/18 3.28.0 Qt6 support, without preview - UI: - Reorganized the Scale/Zoom menu in the Appearance tab (moved "Match Project CRS" here and renamed it to "Fit to vector layers extent") - Added warning for users with dual integrated/dedicated video cards (force QGIS to use the integrated video card via the control panel to avoid crashes) - OpenLayers: - Increased OpenLayers library version from 6.15.1 to 10.6.0 - Updated ol3-search-layer to https://github.com/andreaordonselli/ol-search-layer/ (new repository published for the occasion) - Legend icons for layers with rule-based symbology are now visible - Added support for expressions in labels (allows concatenation of multiple values to create complex labels) - Adjusted the "Fit to vector layers extent" function - Leaflet: - Increased Leaflet library version from 1.7.1 to 1.9.4 - Fit to vector layers extent" now also blocks zooming out beyond the pan limit - Other: - Improved photon-geocoder code and enhanced the OpenLayers search marker
+    2025/07/07 3.27.0 Add symlinks on install of QtWebEngine to locate the Qt Frameworks for preview on macOS (thanks to @nameloCmaS) - Add support to read embedded SVG Marker Symbologies (thanks to @nameloCmaS) - Improved address search, you can choose between OSM and BAN (thanks to @yohann1c for commit) - Fix the styling of leaflet buttons
     2025/04/07 3.26.0 New option for groups in the graphical interface "Collapsed if LayersList" which collapses the group in the LayerSwitcher (qgis2web reflects the group as open/closed as configured in QGIS) - Adjusted export of SimpleFill icons for LayersList - The map automatically moves if the popup goes off-screen (autopan) - Fixed double quotation escape for "value" in style creation - Adjusted buffer width below the text - Improved WMS query: first URL provided, then URL encoded, then passed through URL proxy - Removed QgsApplication.initQgis() from leafletWriter for use with QGIS 3.42 - Fixed apostrophe escape for "classAttr" in style creation - The form was extended for the recommended QGIS version (it was not visible on some PCs) - Updated the recommended version to QGIS 3.40 - Removed QgsApplication.initQgis() and QgsApplication.exitQgis() from maindialog for use with QGIS 3.42
     2025/02/13 3.25.1 Preview also usable on MAC computers, Leaflet: Adjusted link export
     2025/02/05 3.25.0 leaflet: export does not return an error if the data contains apostrophes or double quotes, the logic for counting symbols in the leafletLayerScripts file has been modified, which seems to have resolved the issue causing QGIS to crash with the error "Windows fatal exception: access violation, slCount = symbol.symbolLayerCount()" - openlayers: style definition supported in points and pixels in addition to millimeters, attribution definitions have been improved, simple marker and SVG Marker symbols support X and Y anchoring set for the symbol (now zoom work well), the use of multiple Simple Marker and SVG Marker symbols within the same Marker is supported, improved creation of PNG icons for the LayersList: icons are clearly visible even in cases of multiple symbols and different anchor points, legend support for raster layers is now available
-	2024/12/11 3.24.0 openlayers: Added cluster export for categorized and graded point geometries with variable color from green (few geometries) to red (many geometries), openlayers and leaflet: supported apostrophe and double quote everywhere: in layer group title, in layer title, in categorized/graded legend, in project title, in project abstract, Added saving of the Popups check state in the Layers and Group tab
+    2024/12/11 3.24.0 openlayers: Added cluster export for categorized and graded point geometries with variable color from green (few geometries) to red (many geometries), openlayers and leaflet: supported apostrophe and double quote everywhere: in layer group title, in layer title, in categorized/graded legend, in project title, in project abstract, Added saving of the Popups check state in the Layers and Group tab
     2024/10/28 3.23.0 remove polyfill, added text for recommended qgis version, fix disable doHover & doHighlight on ol-control, fix openlayers style export for categorized decimal double fields [solves #1081], fix openlayers to export null values ​​to table in case of categorized layer [solves #1096], Add Basemap choice for XYZ/WMS layers - it will be reflected in LayersList as radio button (not checkbox) (thanks to @pietrocomelli) [solves #1077] - Correct spelling length (thanks @dgetz) [solves #1104], update WIKI documentation
     2024/07/30 3.22.0 Transition from QtWebKit to QtWebEngine, maindialog graphic improvement, button reduced/extended for Layers list Expanded, update ol-geocoder and ol-layerswitcher library, improve color and shadow export, fix minor bug
-	2024/06/07 3.21.0 organized appearance tab and added Title export variable, cluster choice visible only if layer is point and with single symbol, project title in 4 corners, dynamic size for svg icons in layerswitcher, openlayers: added project "Abstract" description export, openlayers: restored geocoder icon in preview window, openlayers: greatly simplified and organized js and css export code - now ol-controls elemets acquire automatic position, adjusted custom color and background for all ol-controls elements, disabled "popup on hover" and "highlight on hover" if mouse pointer is over an ol-control element, same svg usable for categorized or graduated symbol with different symbologies properties, leaflet: adjusted width of layerswitcher elements in case of categorized or graduated symbology, leaflet: adjusted popup size in case of presence of media, update WIKI documentation
+    2024/06/07 3.21.0 organized appearance tab and added Title export variable, cluster choice visible only if layer is point and with single symbol, project title in 4 corners, dynamic size for svg icons in layerswitcher, openlayers: added project "Abstract" description export, openlayers: restored geocoder icon in preview window, openlayers: greatly simplified and organized js and css export code - now ol-controls elemets acquire automatic position, adjusted custom color and background for all ol-controls elements, disabled "popup on hover" and "highlight on hover" if mouse pointer is over an ol-control element, same svg usable for categorized or graduated symbol with different symbologies properties, leaflet: adjusted width of layerswitcher elements in case of categorized or graduated symbology, leaflet: adjusted popup size in case of presence of media, update WIKI documentation
     2024/05/13 3.20.0 openlayers: popup is able to show videos supported by the browser, fixed popup's height and width, image and video contents (thanks to @JanKirchhoff), commented projection's extension in layers.js and qgis2web.js files, svg icon is clearly visible in legend even in case of large dimensions (svg icon is shown directly, not qgis png's legend) (thanks to @geraldo), support for colored svg icons (fill and border) - leaflet: .js and .css files referring to layerslist are stored in the export folder only if layerslist is visible, fixed svg icons border width - updated writeAsVectorFormat function that was deprecated (thanks to @agiudiceandrea), updated WIKI documentation
-	2024/03/26 3.19.0 qgis2web supports layer groups - both OpenLayers and Leaflet exports achieve layer groups (non-nested) exportability - adapt the 'highlight on hover' and 'popup on hover' functionalities to work when layer groups are present - groups and layers' list is sorted as in QGIS and layer groups contains layers - "Popups" choice is positioned as the last item in the list options, becomes a drop-down menu, closes if check is not selected and disappears if there are no exportable popup fields - "Popup fields" ' attributes are displayed in italics and are aligned in the same column as the parent - "visibility" and "popups" choices for groups are removed (currently unnecessary) - Introduced a new layerswitcher for Leaflet export, thanks to @jjimenezshaw - Excluded WIKI and Preview functionality for Linux users who are unable to install and use QtWebKit (So the plugin will launch and be usable without these features) - openlayers export acquires by default declutter:false - xyz openlayers layers do not acquire type:base by default (with only one basemap, it's possible to disable it to have a white background) - fix export for text-field that contains more then 255 characters, thanks to @anonymous378 - Fix highlighting of multi-point and multi-line geometries for both OpenLayers and Leaflet - Fix Leaflet error for mouse out of cluster: "e.target._eventParents[i].resetStyle is not a function" - Modified WIKI graphics for better readability (navigation menù at the top)
+    2024/03/26 3.19.0 qgis2web supports layer groups - both OpenLayers and Leaflet exports achieve layer groups (non-nested) exportability - adapt the 'highlight on hover' and 'popup on hover' functionalities to work when layer groups are present - groups and layers' list is sorted as in QGIS and layer groups contains layers - "Popups" choice is positioned as the last item in the list options, becomes a drop-down menu, closes if check is not selected and disappears if there are no exportable popup fields - "Popup fields" ' attributes are displayed in italics and are aligned in the same column as the parent - "visibility" and "popups" choices for groups are removed (currently unnecessary) - Introduced a new layerswitcher for Leaflet export, thanks to @jjimenezshaw - Excluded WIKI and Preview functionality for Linux users who are unable to install and use QtWebKit (So the plugin will launch and be usable without these features) - openlayers export acquires by default declutter:false - xyz openlayers layers do not acquire type:base by default (with only one basemap, it's possible to disable it to have a white background) - fix export for text-field that contains more then 255 characters, thanks to @anonymous378 - Fix highlighting of multi-point and multi-line geometries for both OpenLayers and Leaflet - Fix Leaflet error for mouse out of cluster: "e.target._eventParents[i].resetStyle is not a function" - Modified WIKI graphics for better readability (navigation menù at the top)
     2024/03/20 3.18.3 Fixed blocking bug. It is now possible to read the new value format of the symbollayer color property since QGIS version 3.36
     2024/02/20 3.18.2 Online WIKI section merges with Help tab of qgis2web. Repository's Docs folder is created, which is displayed online as GitHub pages, and locally loaded into qgis2web's WIKI tab (instead of Help).
     2024/02/12 3.18.1 Restored layer title in openlayers/leaflet layerswitcher in absence of style - Fixed bug: now openlayers popup is visible on click even if "highlight on hover" setting is active, thanks to @cukavac - Greatly improved OpenLayers popup graphics, both for desktop and smartphone - Added "popuplayertitle" variable in layer, which allows printing layer title in openlayers popup - Added maximum height and width for images in openlayers/leaflet popup - Fixed bug: features data set as clusters are now shown in openlayers popup both on click and with active hover - Fixed the problem of different popups on the first click and on the second - Changed overlay-pane z-index. Measurement now appears above the basemaps and layers, as well as the popup, as well as geolocate user
@@ -197,36 +198,36 @@ changelog=
     2015/07/06 0.14.0 BROKEN Travis build success, minimum QGIS version 2.4
     2015/06/19 0.13.7 Leaflet label default non-hover, border improvements, PEP8, Travis integration
     2015/06/19 0.13.6 Basemap fixes
-	2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
-	2015/06/19 0.13.4 BROKEN Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
-	2015/06/18 0.13.3 Leaflet style improvements: simple line opacity, graduated point outline weight and pen style, graduated line pen style, graduated polygon border pen style
-	2015/06/17 0.13.2 Leaflet point border width/line style, Leaflet categorized polygon border width, "Fit to layers exten"t fixed, QSettings namespaced, unicode error fixed, numeric settings now combos, UI tidied, UI labels not editable
-	2015/06/16 0.13.1 Fill style "No Brush" observed in Leaflet, border/fill transparency decoupled in Leaflet
-	2015/06/16 0.13.0 Leaflet measure tool (thanks to https://github.com/boesiii), Leaflet string handling improvements
-	2015/06/15 0.12.2 New mandatory metadata item added
-	2015/06/15 0.12.1 UNRELEASED Major regression fixed
-	2015/06/12 0.12.0 BROKEN Dialog settings persist, corrected typo in changelog
-	2015/06/08 0.11.0 Geocode user in Leaflet, Leaflet string handling improved, export folder persists
-	2015/06/04 0.10.0 Leaflet address search
-	2015/05/26 0.9.0 Major Leaflet export code refactor
-	2015/05/20 0.8.0 Match project CRS in Leaflet, "Basemap: none" option,  Leaflet observes layers list and scale bar settings 
-	2015/05/19 0.7.0 Leaflet export code refactor
-	2015/05/18 0.6.2 Change default precision to 15, get alpha of fill colours
-	2015/05/15 0.6.1 Fix 0.6.0 OL3 regression
-	2015/05/15 0.6.0 BROKEN Leaflet labels, fix open in browser
-	2015/05/14 0.5.0 FIRST STABLE RELEASE: New logo, Leaflet full-screen
-	2015/05/14 0.4.3 Limit per-layer options to appropriate layer types
-	2015/05/13 0.4.2 Fix Leaflet styles not applied
-	2015/05/08 0.4.1 Fix Leaflet custom icon layers
-	2015/05/07 0.4.0 Leaflet layer visibility, fix Leaflet simple outline
-	2015/05/07 0.3.1 Fix leaflet exporting wrong layers
-	2015/05/05 0.3.0 Leaflet preview, Leaflet JSON minification, fix Leaflet layer control
-	2015/05/05 0.2.3 Basemap code unified, export behaviour unified, Leaflet export opens in browser
-	2015/04/27 0.2.2 New basemaps in OL3 export
-	2015/04/27 0.2.1 OL3 export crash
-	2015/04/27 0.2.0 Basemap in Leaflet export, additional basemaps from qgis2leaf, icons fixed, toolbar icon added, QGIS menu item renamed
-	2015/04/25 0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet export
-	2015/04/23 0.0.1 Initial release
+    2015/06/19 0.13.5 buildNonPointJSON() call failure fixed
+    2015/06/19 0.13.4 BROKEN Unicode error on startup fixed, Leaflet observes "Info popup content" setting (thanks to https://github.com/marcobra and https://github.com/boesiii)
+    2015/06/18 0.13.3 Leaflet style improvements: simple line opacity, graduated point outline weight and pen style, graduated line pen style, graduated polygon border pen style
+    2015/06/17 0.13.2 Leaflet point border width/line style, Leaflet categorized polygon border width, "Fit to layers exten"t fixed, QSettings namespaced, unicode error fixed, numeric settings now combos, UI tidied, UI labels not editable
+    2015/06/16 0.13.1 Fill style "No Brush" observed in Leaflet, border/fill transparency decoupled in Leaflet
+    2015/06/16 0.13.0 Leaflet measure tool (thanks to https://github.com/boesiii), Leaflet string handling improvements
+    2015/06/15 0.12.2 New mandatory metadata item added
+    2015/06/15 0.12.1 UNRELEASED Major regression fixed
+    2015/06/12 0.12.0 BROKEN Dialog settings persist, corrected typo in changelog
+    2015/06/08 0.11.0 Geocode user in Leaflet, Leaflet string handling improved, export folder persists
+    2015/06/04 0.10.0 Leaflet address search
+    2015/05/26 0.9.0 Major Leaflet export code refactor
+    2015/05/20 0.8.0 Match project CRS in Leaflet, "Basemap: none" option,  Leaflet observes layers list and scale bar settings 
+    2015/05/19 0.7.0 Leaflet export code refactor
+    2015/05/18 0.6.2 Change default precision to 15, get alpha of fill colours
+    2015/05/15 0.6.1 Fix 0.6.0 OL3 regression
+    2015/05/15 0.6.0 BROKEN Leaflet labels, fix open in browser
+    2015/05/14 0.5.0 FIRST STABLE RELEASE: New logo, Leaflet full-screen
+    2015/05/14 0.4.3 Limit per-layer options to appropriate layer types
+    2015/05/13 0.4.2 Fix Leaflet styles not applied
+    2015/05/08 0.4.1 Fix Leaflet custom icon layers
+    2015/05/07 0.4.0 Leaflet layer visibility, fix Leaflet simple outline
+    2015/05/07 0.3.1 Fix leaflet exporting wrong layers
+    2015/05/05 0.3.0 Leaflet preview, Leaflet JSON minification, fix Leaflet layer control
+    2015/05/05 0.2.3 Basemap code unified, export behaviour unified, Leaflet export opens in browser
+    2015/04/27 0.2.2 New basemaps in OL3 export
+    2015/04/27 0.2.1 OL3 export crash
+    2015/04/27 0.2.0 Basemap in Leaflet export, additional basemaps from qgis2leaf, icons fixed, toolbar icon added, QGIS menu item renamed
+    2015/04/25 0.1.0 Extent, precision, min/maxZoom, clustering, JSON-encode, layer order in Leaflet export
+    2015/04/23 0.0.1 Initial release
 # tags are comma separated with spaces allowed
 tags=web,webmap,webmaps,Leaflet,OpenLayers,OL3,Mapbox GL JS,HTML,Javascript,CSS,export
 

@@ -282,9 +282,9 @@ def popupScript(safeLayerName, popFuncs, highlight, popupsOnHover):
 
 
 def iconLegend(symbol, catr, outputProjectFileName, layerName, catLegend, cnt):
-    try:
-        iconSize = int((symbol.size() * 4) + 5)
-    except Exception:
+    if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayer):
+            iconSize = int((symbol.size() * 4) + 5)
+    else:
         iconSize = 16
     legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
                                                          QSize(iconSize,

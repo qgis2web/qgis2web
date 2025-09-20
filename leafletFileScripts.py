@@ -277,7 +277,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
 
 
 def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
-             widgetBackground, layersList):
+             widgetBackground, layersList, labelBufferCSS=None):
     feedback.showFeedback("Writing CSS...")
     with open(cssStore + 'qgis2web.css', 'w') as f_css:
         text = """
@@ -480,8 +480,20 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
             text +="""
         .leaflet-control-layers-expanded .leaflet-control-layers-toggle {
             display: none;
-        }
-        """
+        }"""
+        if labelBufferCSS:
+            for safeLayerName, color, size in labelBufferCSS:
+                size_int = int(round(size))
+                shadows = []
+                for dx in range(-size_int, size_int + 1):
+                    for dy in range(-size_int, size_int + 1):
+                        if dx == 0 and dy == 0:
+                            continue
+                        shadows.append(f"{dx}px {dy}px 0 {color}")
+                text += f"""
+        .css_{safeLayerName} {{
+            text-shadow: {",\n                ".join(shadows)};
+        }}"""
         f_css.write(text)
         f_css.close()
     feedback.completeStep()

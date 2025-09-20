@@ -39,7 +39,7 @@ import re
 from qgis2web.leafletFileScripts import (writeFoldersAndFiles,
                                          writeCSS,
                                          writeHTMLstart)
-from qgis2web.leafletLayerScripts import writeVectorLayer
+from qgis2web.leafletLayerScripts import (writeVectorLayer, getLabels)
 from qgis2web.leafletScriptStrings import (jsonScript,
                                            scaleDependentLabelScript,
                                            mapScript,
@@ -164,8 +164,23 @@ class LeafletWriter(Writer):
                                                    matchCRS, layerSearch,
                                                    layerFilter, canvas,
                                                    addressSearch, locate, layersList)
+        # Collect label buffer info for each layer
+        labelBufferCSS = []
+        lyrCount = 0
+        vtLabels = {}
+        for layer, jsonEncode, eachPopup, clst in zip(layer_list, json, popup, cluster):
+            rawLayerName = layer.name()
+            safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
+            vts = layer.customProperty("VectorTilesReader/vector_tile_url")
+            if layer.type() == QgsMapLayer.VectorLayer and vts is None:
+                labeltext, vtLabels, labelBuffer, labelBufferColor, labelBufferSize = getLabels(
+                    layer, safeLayerName, outputProjectFileName, vts, vtLabels, feedback)
+                print(labelBufferSize)
+                if labelBuffer:
+                    labelBufferCSS.append((safeLayerName, labelBufferColor, labelBufferSize))
+            lyrCount += 1
         writeCSS(cssStore, mapSettings.backgroundColor().name(), feedback,
-                 widgetAccent, widgetBackground, layersList)
+                 widgetAccent, widgetBackground, layersList, labelBufferCSS)
 
         wfsLayers = ""
         labelCode = ""

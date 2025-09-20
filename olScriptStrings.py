@@ -363,10 +363,12 @@ def measureUnitFeetScript():
   * @return {string} Formatted area.
   */
   var formatArea = function (polygon) {
-    var area = polygon.getArea();
+    var sourceProj = map.getView().getProjection();
+    var geom = polygon.clone().transform(sourceProj, 'EPSG:3857');
+    var area = Math.abs(ol.sphere.getArea(geom));
     var output;
-    if (area > 107639) {  // Converte 1 km^2 in piedi quadrati
-      output = (Math.round((area / 107639) * 1000) / 1000) + ' sq mi';
+    if (area > 2589988) {  // 1 sq mi in square meters
+      output = (Math.round((area / 2589988) * 1000) / 1000) + ' sq mi';
     } else {
       output = (Math.round(area * 10.7639 * 100) / 100) + ' sq ft';
     }
@@ -417,17 +419,18 @@ def measureUnitMetricScript():
   * @param {ol.geom.Polygon} polygon The polygon.
   * @return {string} Formatted area.
   */
-  var formatArea = function (polygon) {
-    var area = polygon.getArea();
-    var output;
-    if (area > 1000000) {
-    output =
-      Math.round((area / 1000000) * 1000) / 1000 + " " + "km<sup>2</sup>";
-    } else {
-    output = Math.round(area * 100) / 100 + " " + "m<sup>2</sup>";
-    }
-    return output;
-  };
+	var formatArea = function (polygon) {
+		var sourceProj = map.getView().getProjection();
+		var geom = polygon.clone().transform(sourceProj, 'EPSG:3857');
+		var area = Math.abs(ol.sphere.getArea(geom));
+		var output;
+		if (area > 1000000) {
+			output = Math.round((area / 1000000) * 1000) / 1000 + ' ' + 'km<sup>2</sup>';
+		} else {
+			output = Math.round(area * 100) / 100 + ' ' + 'm<sup>2</sup>';
+		}
+		return output.replace('.', ',');
+	};
 
   addInteraction();
 

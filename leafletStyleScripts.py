@@ -362,27 +362,28 @@ def getStrokeStyle(color, dashed, width, units, linecap, linejoin,
         width = round(float(width) * 3.8, 0)
         if width == 0:
             width = 1
-        if units == "MapUnit":
-            useMapUnits = True
-            width = "geoStyle(%s)" % width
-        outline_style = props.get('outline_style', 'no')
-        if outline_style == "no":
-            dash_length = 4 * float(width)
-            dash_space = 2 * float(width)
-            dot_length = 1 * float(width)
-            dot_space = 2 * float(width)
+        if units != "MapUnit":
+            outline_style = props.get('outline_style', 'no')
+            if outline_style == "no":
+                dash_length = 4 * float(width)
+                dash_space = 2 * float(width)
+                dot_length = 1 * float(width)
+                dot_space = 2 * float(width)
+            else:
+                dash_length = 5 * float(width)
+                dash_space = 1 * float(width)
+                dot_length = 2 * float(width)
+                dot_space = 1 * float(width)
+            dash = dashed.replace("dash", f"{dash_length},{dash_space}")
+            #dash = dashed.replace("dash", "10,5")
+            dash = dash.replace("dot", f"{dot_length},{dot_space}")
+            #♀dash = dash.replace("dot", "1,5")
+            dash = dash.replace("solid", "")
+            dash = dash.replace(" ", ",")
         else:
-            dash_length = 5 * float(width)
-            dash_space = 1 * float(width)
-            dot_length = 2 * float(width)
-            dot_space = 1 * float(width)
-
-        dash = dashed.replace("dash", f"{dash_length},{dash_space}")
-        #dash = dashed.replace("dash", "10,5")
-        dash = dash.replace("dot", f"{dot_length},{dot_space}")
-        #♀dash = dash.replace("dot", "1,5")
-        dash = dash.replace("solid", "")
-        dash = dash.replace(" ", ",")
+            width = "geoStyle(%s)" % width
+            dash = "null"
+            useMapUnits = True
         capString = "round"
         if linecap == 0:
             capString = "butt"

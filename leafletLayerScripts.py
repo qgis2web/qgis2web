@@ -10,7 +10,8 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSymbolLayerUtils,
                        QgsDataSourceUri,
                        QgsRenderContext,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsSvgMarkerSymbolLayer)
 from qgis2web.leafletStyleScripts import getLayerStyle
 from qgis2web.leafletScriptStrings import (popupScript,
                                            popFuncsScript,
@@ -40,7 +41,8 @@ def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
     feedback.showFeedback("Writing %s as JSON..." % layer.name())
     zIndex = zIndex + 400
     markerFolder = os.path.join(outputProjectFileName, "markers")
-    labeltext, vtLabels = getLabels(layer, safeLayerName,
+    (labeltext, vtLabels, labelBuffer,
+     labelBufferColor, labelBufferSize) = getLabels(layer, safeLayerName,
                                     outputProjectFileName, vts, vtLabels,
                                     feedback)
     labelCode += labeltext
@@ -174,11 +176,22 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
               feedback):
     # label_exp = ''
     labeltext = ""
+    labelBuffer = False
+    labelBufferColor = None
+    labelBufferSize = None
     f = ''
     labelling = layer.labeling()
     if labelling is not None and layer.labelsEnabled():
         palyr = labelling.settings()
         if palyr and palyr.fieldName and palyr.fieldName != "":
+            # buffer
+            labelFormat = palyr.format()
+            labelBufferObj = labelFormat.buffer()
+            if labelBufferObj.enabled():
+                labelBuffer = True
+                labelBufferColor = labelBufferObj.color().name()
+                labelBufferSize = labelBufferObj.size() * 2
+                print(labelBufferSize)
             props = palyr.dataDefinedProperties()
             text = palyr.format()
             bgColor = props.property(palyr.ShapeFillColor).staticValue()
@@ -192,9 +205,6 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
             fontItalic = font.italic()
             fontBold = font.bold()
             fontColor = text.color().name()
-            # fontUnderline = font.underline()
-            # xOffset = palyr.xOffset
-            # yOffset = palyr.yOffset
             styleStart = "'<div style=\"color: %s; font-size: %dpt; " % (
                 fontColor, fontSize)
             if props.property(palyr.ShapeDraw).staticValue():
@@ -273,7 +283,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
             labeltext = ""
     else:
         labeltext = ""
-    return labeltext, vtLabels
+    return labeltext, vtLabels, labelBuffer, labelBufferColor, labelBufferSize
 
 
 def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
@@ -360,8 +370,12 @@ def getPopups(layer, safeLayerName, highlight, popupsOnHover, popup, vts,
 def getLegend(layer, renderer, outputProjectFileName, safeLayerName, feedback):
     if isinstance(renderer, QgsSingleSymbolRenderer):
         symbol = renderer.symbol()
+        if isinstance(symbol.symbolLayer(0), QgsSvgMarkerSymbolLayer):
+            iconSize = int((symbol.size() * 4) + 5)
+        else:
+            iconSize = 16
         legendIcon = QgsSymbolLayerUtils.symbolPreviewPixmap(symbol,
-                                                             QSize(16, 16))
+                                                             QSize(iconSize, iconSize))
         legendIcon.save(os.path.join(outputProjectFileName, "legend",
                                      safeLayerName + ".png"))
         legend = ('<img src="legend/' + safeLayerName + '.png" /> ')
