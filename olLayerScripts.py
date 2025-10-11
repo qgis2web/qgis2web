@@ -131,19 +131,16 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
             else:
                 return "", vtLayers
         if isinstance(renderer, QgsHeatmapRenderer):
-            (pointLayerType, hmRadius,
+            (layerType, hmRadius,
              hmRamp, hmWeight, hmWeightMax) = getHeatmap(layer, renderer)
         else:
-            pointLayerType = "Vector"
+            layerType = "Vector"
         crsConvert = getCRS(iface, matchCRS)
-        if layer.providerType() == "WFS" and not encode2json:
-            return getWFS(layer, layerName, layerAttr, interactive, cluster,
-                          minResolution, maxResolution), vtLayers
-        else:
-            return getJSON(layerName, crsConvert, layerAttr, interactive,
-                           cluster, pointLayerType, minResolution,
+
+        return getJSON_and_WFS(layerName, crsConvert, layerAttr, interactive,
+                           cluster, layerType, minResolution,
                            maxResolution, hmRadius, hmRamp, hmWeight,
-                           hmWeightMax, renderer, layer), vtLayers
+                           hmWeightMax, renderer, layer, encode2json), vtLayers
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -181,7 +178,7 @@ def getAttribution(layer):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
     if attrText != "":
-        layerAttr = ' &nbsp &middot; <a href="%s">%s</a>' % (attrUrl, attrText)
+        layerAttr = '&nbsp;&middot; <a href="%s">%s</a>' % (attrUrl, attrText)
     else:
         layerAttr = " "
     return layerAttr
@@ -351,50 +348,27 @@ def getPopups(layer, labels, sln, fieldLabels, fieldAliases, fieldImages):
     return (fieldLabels, fieldAliases, fieldImages, blend_mode)
 
 
-def getWFS(layer, layerName, layerAttr, interactive, cluster, minResolution,
-           maxResolution):
-    layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
+def getJSON_and_WFS(layerName, crsConvert, layerAttr, interactive, cluster,
+            layerType, minResolution, maxResolution, hmRadius, hmRamp,
+            hmWeight, hmWeightMax, renderer, layer, encode2json):
+
+    wfs = layer.providerType() == "WFS"
+
+    layerCode = '''var format_%(n)s = new ol.format.GeoJSON();'''% {"n": layerName}
+
+    # only if not WFS or checked "encode to json"
+    if (not wfs) or encode2json:
+        layerCode += '''\nvar features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);''' % {"n": layerName, "crs": crsConvert}
+
+    layerCode += '''
 var jsonSource_%(n)s = new ol.source.Vector({
     attributions: '%(layerAttr)s',
-    format: format_%(n)s
 });''' % {"n": layerName, "layerAttr": layerAttr}
-    if cluster:
-        layerCode += '''cluster_%(n)s = new ol.source.Cluster({
-  distance: 10,
-  source: jsonSource_%(n)s
-});''' % {"n": layerName}
-    layerCode += '''var lyr_%(n)s = new ol.layer.Vector({
-    declutter: false,
-    source: ''' % {"n": layerName}
-    if cluster:
-        layerCode += 'cluster_%(n)s,' % {"n": layerName}
-    else:
-        layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
-    layerCode += '''%(min)s %(max)s
-    style: style_%(n)s,
-    interactive: %(int)s,
-    title: '%(name)s'
-});
-
-function get%(n)sJson(geojson) {
-    var features_%(n)s = format_%(n)s.readFeatures(geojson);
-    jsonSource_%(n)s.addFeatures(features_%(n)s);
-}''' % {"name": layer.name().replace("'", "\\'"), "n": layerName, "int": str(interactive).lower(),
-        "min": minResolution, "max": maxResolution}
-    return layerCode
-
-
-def getJSON(layerName, crsConvert, layerAttr, interactive, cluster,
-            pointLayerType, minResolution, maxResolution, hmRadius, hmRamp,
-            hmWeight, hmWeightMax, renderer, layer):
-    layerCode = '''var format_%(n)s = new ol.format.GeoJSON();
-var features_%(n)s = format_%(n)s.readFeatures(json_%(n)s, %(crs)s);
-var jsonSource_%(n)s = new ol.source.Vector({
-    attributions: '%(layerAttr)s',
-});
-jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
-                                                    "crs": crsConvert,
-                                                    "layerAttr": layerAttr}
+    
+    if (not wfs) or encode2json:
+        layerCode += '''
+jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName}
+    
     if cluster:
         layerCode += '''\ncluster_%(n)s = new ol.source.Cluster({
   distance: 30,
@@ -402,14 +376,14 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
 });''' % {"n": layerName}
     layerCode += '''\nvar lyr_%(n)s = new ol.layer.%(t)s({
                 declutter: false,
-                source:''' % {"n": layerName, "t": pointLayerType}
+                source:''' % {"n": layerName, "t": layerType}
     if cluster:
         layerCode += 'cluster_%(n)s,' % {"n": layerName}
     else:
         layerCode += 'jsonSource_%(n)s,' % {"n": layerName}
     layerCode += '''%(min)s %(max)s''' % {"min": minResolution,
                                           "max": maxResolution}
-    if pointLayerType == "Vector":
+    if layerType == "Vector":
         layerCode += '''
                 style: style_%(n)s,
                 popuplayertitle: '%(name)s',
@@ -441,6 +415,51 @@ jsonSource_%(n)s.addFeatures(features_%(n)s);''' % {"n": layerName,
         layerCode += '''
                 title: '%(name)s'
             });''' % {"name": layer.name().replace("'", "\\'")}
+        
+    if wfs and not encode2json:
+        layerCode += '''\n
+fetchWFS%(n)sData(lyr_%(n)s.get('title'), function (error, response) {
+    var features_%(n)s;
+    try {
+        if (typeof response === "object" && !response.nodeType) {
+            // Caso JSONP/GeoJSON
+            features_%(n)s = format_%(n)s.readFeatures(response);
+        } else {
+            // Caso XML string o DOM
+            var parser = new DOMParser();
+            var xmlDoc = (typeof response === "string")
+                ? parser.parseFromString(response, "text/xml")
+                : response;
+
+            // Individua la versione GML/WFS
+            var schemaLoc = xmlDoc.documentElement.getAttribute("xsi:schemaLocation") || "";
+            var gmlFormat;
+
+            if (schemaLoc.includes("gml/2")) {
+                gmlFormat = new ol.format.GML2({srsName: 'EPSG:3857'});
+            } else if (schemaLoc.includes("gml/3")) {
+                gmlFormat = new ol.format.GML3({srsName: 'EPSG:3857'});
+            } else {
+                // fallback generico
+                gmlFormat = new ol.format.WFS();
+            }
+
+            features_%(n)s = gmlFormat.readFeatures(xmlDoc, {
+                dataProjection: 'EPSG:3857',
+                featureProjection: 'EPSG:3857'
+            });
+        }
+
+        if (features_%(n)s && features_%(n)s.length > 0) {
+            jsonSource_%(n)s.addFeatures(features_%(n)s);
+        } else {
+            lyr_%(n)s.set('title', '<i class="fa-regular fa-triangle-exclamation" title="Parsing Error"></i> ' + lyr_%(n)s.get('title'));
+            console.warn("No features loaded for %(n)s");
+        }
+    } catch (e) {
+        console.error("Error parsing WFS for %(n)s:", e);
+    }
+});''' % {"n": layerName}
     return layerCode
 
 
@@ -493,7 +512,7 @@ def getVT(json_url):
 
 
 def getHeatmap(layer, renderer):
-    pointLayerType = "Heatmap"
+    layerType = "Heatmap"
     hmRadius = renderer.radius()
     colorRamp = renderer.colorRamp()
     hmStart = colorRamp.color1().name()
@@ -507,7 +526,7 @@ def getHeatmap(layer, renderer):
     fields = layer.fields()
     hmWeightId = fields.indexFromName(hmWeight)
     hmWeightMax = layer.maximumValue(hmWeightId)
-    return (pointLayerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
+    return (layerType, hmRadius, hmRamp, hmWeight, hmWeightMax)
 
 
 def getCRS(iface, matchCRS):

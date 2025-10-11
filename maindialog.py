@@ -18,6 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
+import re
 import sys
 from collections import defaultdict, OrderedDict
 import webbrowser
@@ -46,7 +47,8 @@ from qgis.PyQt.QtCore import (QObject,
                               QByteArray,
                               QEvent,
                               Qt,
-                              QTimer)
+                              QTimer,
+                              QCoreApplication)
 from qgis.PyQt.QtGui import (QIcon,
                              QFont)
 from qgis.PyQt.QtWidgets import (QAction,
@@ -193,7 +195,7 @@ class MainDialog(QDialog, FORM_CLASS):
          # Add preview space
             self.preview = QWebEngineView(self)
             self.preview.setPage(WebPageEngine(self.preview)) 
-            self.preview.setMinimumWidth(649)
+            self.preview.setMinimumWidth(650)
             self.preview.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)          
             self.right_layout.insertWidget(0, self.preview)         
 
@@ -1077,14 +1079,13 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Encode to JSON") == 2:
                     self.jsonCheck.setChecked(True)
+                self.jsonCheck.stateChanged.connect(self.changeJSON)
                 # set all
                 if dlg.setAllLayersEncodeValue == "checked":
                     self.jsonCheck.setChecked(True)
                 if dlg.setAllLayersEncodeValue == "unchecked":
                     self.jsonCheck.setChecked(False)
-
                 self.jsonItem.setText(0, "Encode to JSON")
-                self.jsonCheck.stateChanged.connect(self.changeJSON)
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
             if layer.geometryType() == QgsWkbTypes.PointGeometry:
@@ -1092,6 +1093,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
                     self.clusterCheck.setChecked(True)
+                self.clusterCheck.stateChanged.connect(self.changeCluster)
                 # set all
                 if dlg.setAllLayersClusterValue == "checked":
                     self.clusterCheck.setChecked(True)
@@ -1099,39 +1101,47 @@ class TreeLayerItem(QTreeWidgetItem):
                     self.clusterCheck.setChecked(False)
 
                 self.clusterItem.setText(0, "Cluster")
-                self.clusterCheck.stateChanged.connect(self.changeCluster)
                 self.addChild(self.clusterItem)
                 tree.setItemWidget(self.clusterItem, 1, self.clusterCheck)
         else:
             if layer.providerType() == 'wms':
-                self.getFeatureInfoItem = QTreeWidgetItem(self)
-                self.getFeatureInfoCheck = QCheckBox()
-                if layer.customProperty("qgis2web/GetFeatureInfo") == 2:
-                    self.getFeatureInfoCheck.setChecked(True)
-                # set all
-                if dlg.setAllLayersGetFeatureInfo == "checked":
-                    self.getFeatureInfoCheck.setChecked(True)
-                if dlg.setAllLayersGetFeatureInfo == "unchecked":
-                    self.getFeatureInfoCheck.setChecked(False)
-
-                self.getFeatureInfoItem.setText(0, "GetFeatureInfo")
-                self.getFeatureInfoCheck.stateChanged.connect(self.changeGetFeatureInfo)
-                self.addChild(self.getFeatureInfoItem)
-                tree.setItemWidget(self.getFeatureInfoItem, 1,
-                                   self.getFeatureInfoCheck)
+                # Check if the layer can identify
+                metadata = layer.htmlMetadata()
+                can_identify_text = "<tr><td>%s</td><td>(.+?)</td>" % (
+                    QCoreApplication.translate("QgsWmsProvider", "Can Identify"))
+                match = re.search(can_identify_text, metadata)
+                can_identify = False
+                if match:
+                    value = match.group(1).strip().lower()
+                    can_identify = value == "yes"
+                if can_identify:
+                    self.getFeatureInfoItem = QTreeWidgetItem(self)
+                    self.getFeatureInfoCheck = QCheckBox()
+                    if layer.customProperty("qgis2web/GetFeatureInfo") == 2:
+                        self.getFeatureInfoCheck.setChecked(True)
+                    self.getFeatureInfoCheck.stateChanged.connect(self.changeGetFeatureInfo)                    
+                    # set all
+                    if dlg.setAllLayersGetFeatureInfo == "checked":
+                        self.getFeatureInfoCheck.setChecked(True)
+                    if dlg.setAllLayersGetFeatureInfo == "unchecked":
+                        self.getFeatureInfoCheck.setChecked(False)
+                    self.getFeatureInfoItem.setText(0, "GetFeatureInfo")
+                    self.addChild(self.getFeatureInfoItem)
+                    tree.setItemWidget(self.getFeatureInfoItem, 1,
+                                    self.getFeatureInfoCheck)
 
                 self.baseMapItem = QTreeWidgetItem(self)
                 self.baseMapCheck = QCheckBox()
                 if layer.customProperty("qgis2web/BaseMap") == 2:
                     self.baseMapCheck.setChecked(True)
+                self.baseMapCheck.stateChanged.connect(self.changeBaseMap)
                 # set all
                 if dlg.setAllLayersBaseMap == "checked":
                     self.baseMapCheck.setChecked(True)
                 if dlg.setAllLayersBaseMap == "unchecked":
                     self.baseMapCheck.setChecked(False)
-
                 self.baseMapItem.setText(0, "BaseMap")
-                self.baseMapCheck.stateChanged.connect(self.changeBaseMap)
+
                 self.addChild(self.baseMapItem)
                 tree.setItemWidget(self.baseMapItem, 1, self.baseMapCheck)
 

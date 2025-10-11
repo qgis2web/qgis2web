@@ -490,9 +490,10 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
                         if dx == 0 and dy == 0:
                             continue
                         shadows.append(f"{dx}px {dy}px 0 {color}")
+                shadow_text = ",\n                ".join(shadows)
                 text += f"""
         .css_{safeLayerName} {{
-            text-shadow: {",\n                ".join(shadows)};
+            text-shadow: {shadow_text};
         }}"""
         f_css.write(text)
         f_css.close()

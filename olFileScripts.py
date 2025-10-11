@@ -87,28 +87,68 @@ def writeScriptIncludes(layers, json, matchCRS):
                     geojsonVars += ('<script src="layers/%s"></script>' %
                                     (sln + ".js"))
             else:
-                layerSource = layer.source()
-                if ("retrictToRequestBBOX" in layerSource or
-                        "restrictToRequestBBOX" in layerSource):
-                    provider = layer.dataProvider()
-                    uri = QgsDataSourceUri(provider.dataSourceUri())
-                    wfsURL = uri.param("url")
-                    wfsTypename = uri.param("typename")
-                    wfsSRS = uri.param("srsname")
-                    layerSource = wfsURL
-                    layerSource += "?SERVICE=WFS&VERSION=1.0.0&"
-                    layerSource += "REQUEST=GetFeature&TYPENAME="
-                    layerSource += wfsTypename
-                    layerSource += "&SRSNAME="
-                    layerSource += wfsSRS
+                # Caso WFS
+                provider = layer.dataProvider()
+                uri = QgsDataSourceUri(provider.dataSourceUri())
+                wfsURL = uri.param("url")
+                wfsTypename = uri.param("typename")
                 if not matchCRS:
-                    layerSource = re.sub(r'SRSNAME\=EPSG\:\d+',
-                                         'SRSNAME=EPSG:3857',
-                                         layerSource)
-                layerSource += "&outputFormat=text%2Fjavascript&"
-                layerSource += "format_options=callback%3A"
-                layerSource += "get" + sln + "Json"
-                wfsVars += ('<script src="%s"></script>' % layerSource)
+                    wfsSRS = "EPSG:3857"
+                else:
+                    wfsSRS = uri.param("srsname") or "EPSG:3857"
+
+                baseURL = (f"{wfsURL}?SERVICE=WFS&VERSION=1.0.0&"
+                           f"REQUEST=GetFeature&TYPENAME={wfsTypename}&"
+                           f"SRSNAME={wfsSRS}")
+
+                wfsVars += '''
+        <script>
+            function fetchWFS%(layerName)sData(title, callback) {
+                var url = "%(baseURL)s";
+
+                function fetchWithFallback(u) {
+                    return fetch(u)
+                        .then(function (r) {
+                            if (!r.ok) throw new Error("Bad response");
+                            return r.text();
+                        })
+                        .catch(function () {
+                            // Fallback AllOrigins
+                            return fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(u))
+                                .then(function (r) {
+                                    if (!r.ok) throw new Error("Proxy failed");
+                                    return r.text();
+                                });
+                        });
+                }
+
+                // Imposta un'icona di caricamento durante il fetch
+                lyr_%(layerName)s.set('title', '<div class="roller-switcher" title="Fetching WFS data"></div> ' + title);
+    
+                fetchWithFallback(url)
+                    .then(function (response) {
+                        if (typeof callback === "function") {
+                            lyr_%(layerName)s.set('title', title);
+                            layerSwitcher.renderPanel();
+                            callback(null, response); // Pass null as error
+                        } else {
+                            console.error("Callback not defined.");
+                        }
+                    })
+                    .catch(function (error) {
+                        if (typeof callback === "function") {
+                            lyr_%(layerName)s.set('title', '<i class="fa-regular fa-triangle-exclamation" title="Error on fetch data"></i> ' + title);
+                            layerSwitcher.renderPanel();
+                            callback(error, null); // Pass the error
+                        } else {
+                            lyr_%(layerName)s.set('title', '<i class="fa-regular fa-triangle-exclamation" title="Error on fetch data"></i> ' + title);
+                            layerSwitcher.renderPanel();
+                            console.error("Error fetching %(layerName)s data:", error);
+                        }
+                    });
+            }
+        </script>
+        ''' % {'layerName': sln, 'baseURL': baseURL}
             if vts is not None:
                 sln = safeName(vts)
             styleVars += ('<script src="styles/%s_style.js">'
