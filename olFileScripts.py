@@ -137,11 +137,11 @@ def writeScriptIncludes(layers, json, matchCRS):
                     })
                     .catch(function (error) {
                         if (typeof callback === "function") {
-                            lyr_%(layerName)s.set('title', '<i class="fa-regular fa-triangle-exclamation" title="Error on fetch data"></i> ' + title);
+                            lyr_%(layerName)s.set('title', '<i class="fa fa-exclamation-triangle" title="Error on fetch data"></i> ' + title);
                             layerSwitcher.renderPanel();
                             callback(error, null); // Pass the error
                         } else {
-                            lyr_%(layerName)s.set('title', '<i class="fa-regular fa-triangle-exclamation" title="Error on fetch data"></i> ' + title);
+                            lyr_%(layerName)s.set('title', '<i class="fa fa-exclamation-triangle" title="Error on fetch data"></i> ' + title);
                             layerSwitcher.renderPanel();
                             console.error("Error fetching %(layerName)s data:", error);
                         }
