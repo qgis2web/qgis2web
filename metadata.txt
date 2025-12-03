@@ -26,14 +26,15 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=3.30.0
+version=3.31.0
 
 # end of mandatory metadata
 
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog= 
+changelog=
+    2025/12/03 3.31.0 Openlayers: The cursor style has been modified (when hovering over a feature, it turns into a pointer), Updated OpenLayers library from 10.6.0 to 10.7.0 (fixed slow popup bug), Support for baseMap with WMS layers - Openlayers and Leaflet: Highlight on hover considers the transparency of the color
     2025/10/11 3.30.0 Plugin: The choices set with the "set all" combo are saved when the interface is closed, The "getFeatureInfo?" option only appears if the WMS layer has the "Can identify" property - Openlayers e Leaflet: Supported the export of images, audio, and video in the popup - Leaflet: Adjusted code for label buffer export - Openlayers: Full support for WFS layers, formats: JSONP, GML2, GML3, and GeoJSON (website upload required to bypass CORS, fallback with allorigin for local-only projects), Full zoom levels with "constrainResolution: true", New design for attributions (smaller size, different color, no underline), "Highlight on hover" illuminates the geometry above - WIKI: update documentation
     2025/09/20 3.29.0 Plugin: Qt6 full support, with preview window - WIKI window support, OpenLayers and Leaflet: Supporting "Map Units" for the stroke, OpenLayers: Improved area measurement, Leaflet: Adjusted multi-selection for Attribute filters in the Appearance tab - Support for large SVG icons; they are no longer clipped in the legend - Modified the leaflet-measure.js library to be compatible with the latest leaflet.js, Other: update WIKI
     2025/08/18 3.28.0 Qt6 support, without preview - UI: - Reorganized the Scale/Zoom menu in the Appearance tab (moved "Match Project CRS" here and renamed it to "Fit to vector layers extent") - Added warning for users with dual integrated/dedicated video cards (force QGIS to use the integrated video card via the control panel to avoid crashes) - OpenLayers: - Increased OpenLayers library version from 6.15.1 to 10.6.0 - Updated ol3-search-layer to https://github.com/andreaordonselli/ol-search-layer/ (new repository published for the occasion) - Legend icons for layers with rule-based symbology are now visible - Added support for expressions in labels (allows concatenation of multiple values to create complex labels) - Adjusted the "Fit to vector layers extent" function - Leaflet: - Increased Leaflet library version from 1.7.1 to 1.9.4 - Fit to vector layers extent" now also blocks zooming out beyond the pan limit - Other: - Improved photon-geocoder code and enhanced the OpenLayers search marker

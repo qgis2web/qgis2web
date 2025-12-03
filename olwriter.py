@@ -169,7 +169,10 @@ class OpenLayersWriter(Writer):
         mapextent = "extent: %s," % mapbounds if restrictToExtent else ""
         onHover = str(popupsOnHover).lower()
         highlight = str(highlightFeatures).lower()
-        highlightFill = mapSettings.selectionColor().name()
+
+        color = mapSettings.selectionColor()
+        highlightFill = f"rgba({color.red()}, {color.green()}, {color.blue()}, {color.alpha()/255:.2f})"
+        
         (proj, proj4, view) = getCRSView(mapextent, fullextent, maxZoom,
                                          minZoom, matchCRS, mapSettings)
         (measureControl, measuring, measure, measureUnit, measureStyle,

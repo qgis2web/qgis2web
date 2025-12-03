@@ -238,7 +238,9 @@ class LeafletWriter(Writer):
         middle = """
         """
         if highlight or popupsOnHover:
-            selectionColor = mapSettings.selectionColor().name()
+            color = mapSettings.selectionColor()
+            selectionColor = f"rgba({color.red()}, {color.green()}, {color.blue()}, {color.alpha()/255:.2f})"
+
             middle += highlightScript(highlight, popupsOnHover, selectionColor)
         if extent == "Canvas extent":
             pt0 = canvas.extent()

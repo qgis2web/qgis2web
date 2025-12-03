@@ -123,13 +123,13 @@ td {
 }
 
 td img {
-	max-height: 60vh!important;
-	max-width: 60vw!important;
+	max-height: 50vh!important;
+	max-width: 50vw!important;
 }
 
 td video {
-	max-height: 60vh!important;
-	max-width: 60vw!important;
+	max-height: 50vh!important;
+	max-width: 50vw!important;
 }
 
 .ol-overlaycontainer-stopevent #top-right-container .layer-switcher:hover ~ .ol-overlaycontainer-stopevent .ol-overlay-container .ol-popup {

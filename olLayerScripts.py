@@ -142,12 +142,12 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
                            maxResolution, hmRadius, hmRamp, hmWeight,
                            hmWeightMax, renderer, layer, encode2json), vtLayers
     elif layer.type() == layer.RasterLayer:
+        baseMap = layer.customProperty("qgis2web/BaseMap", 0) == 2
         if layer.providerType().lower() == "wms":
             source = layer.source()
             opacity = layer.renderer().opacity()
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
-                baseMap = layer.customProperty("qgis2web/BaseMap", 0) == 2
                 return getXYZ(layerName, rawName, opacity, minResolution,
                               maxResolution, layerAttr, d["url"][0], baseMap), vtLayers
             elif "tileMatrixSet" in d:
@@ -155,7 +155,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
                                minResolution, maxResolution), vtLayers
             else:
                 return getWMS(source, layer, layerAttr, layerName, opacity,
-                              minResolution, maxResolution, info), vtLayers
+                              minResolution, maxResolution, info, baseMap), vtLayers
         elif layer.providerType().lower() == "gdal":
             return getRaster(iface, layer, layerName, layerAttr, minResolution,
                              maxResolution, matchCRS), vtLayers
@@ -631,7 +631,7 @@ def getWMTS(layer, d, layerAttr, layerName, opacity, minResolution,
 
 
 def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
-           maxResolution, info):
+           maxResolution, info, baseMap):
     layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
     url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
     metadata = layer.htmlMetadata()
@@ -654,14 +654,15 @@ def getWMS(source, layer, layerAttr, layerName, opacity, minResolution,
                             })),
                             title: '%(name)s',
                             popuplayertitle: '%(name)s',
+                            type: '%(type)s',
                             opacity: %(opacity)f,
                             %(minRes)s
                             %(maxRes)s
                           });
               wms_layers.push([lyr_%(n)s, %(info)d]);''' % {
         "layers": layers, "url": url, "layerAttr": layerAttr, "n": layerName,
-        "name": layer.name().replace("'", "\\'"), "version": version, "opacity": opacity,
-        "minRes": minResolution, "maxRes": maxResolution, "info": info}
+        "name": layer.name().replace("'", "\\'"), "version": version, "type": "base" if baseMap else "", 
+        "opacity": opacity, "minRes": minResolution, "maxRes": maxResolution, "info": info}
 
 
 def getRaster(iface, layer, layerName, layerAttr, minResolution, maxResolution,
