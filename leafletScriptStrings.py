@@ -585,10 +585,14 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster
     created_groups = {}
     # Dizionario per tenere traccia dei gruppi per i quali abbiamo già aggiunto la chiusura
     closed_groups = {}
+    
+    # Crea una mappa tra nome gruppo e indice in collapsedGroup
+    group_to_collapsed_index = {}
+    for idx, group_name in enumerate(groups.keys()):
+        group_to_collapsed_index[group_name] = idx
 
     lyrCount = len(layer_list) - 1
     baseMapCount = len(baseMap)
-    collapsedGroupCount = 0
     for i, clustered in zip(reversed(layer_list), reversed(cluster)):
         try:
             rawLayerName = i.name()
@@ -609,8 +613,9 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster
                         # Controlla se il gruppo è già stato creato
                         if group_name not in created_groups:
                             created_groups[group_name] = []  # Crea il gruppo vuoto
-                            collapsed = "collapsed: true," if collapsedGroup[collapsedGroupCount] else ""
-                            collapsedGroupCount += 1
+                            # Usa l'indice corretto del gruppo nella mappa
+                            group_index = group_to_collapsed_index[group_name]
+                            collapsed = "collapsed: true," if collapsedGroup[group_index] else ""
                             layersList += """
         {label: '<b>""" + group_name + "</b>', " + collapsed + " selectAllCheckbox: true, children: ["""
                         # Aggiunge il layer al gruppo

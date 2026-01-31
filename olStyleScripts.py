@@ -41,7 +41,6 @@ def exportStyles(layers, folder, clustered, feedback):
                 pixmap = QPixmap(16, 16)
                 pixmap.fill(color)  # fill with the legend color
                 icon_name = sln + "_" + str(count) + ".png"
-                print(icon_name)
                 pixmap.save(os.path.join(legendFolder, icon_name))
         
         # if not vector layer      
@@ -1021,7 +1020,6 @@ def getStrokeStyle(color, dashed, width, line_units, linecap, linejoin, props):
         width = "m2px(%s)" % width
         dash = "null"
         useMapUnits = True
-        print('use map units')
     capString = "round"
     if linecap == 0:
         capString = "butt"

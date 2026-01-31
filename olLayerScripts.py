@@ -422,31 +422,32 @@ fetchWFS%(n)sData(lyr_%(n)s.get('title'), function (error, response) {
     var features_%(n)s;
     try {
         if (typeof response === "object" && !response.nodeType) {
-            // Caso JSONP/GeoJSON
+            // Case JSONP/GeoJSON
             features_%(n)s = format_%(n)s.readFeatures(response);
         } else {
-            // Caso XML string o DOM
+            // Case XML string o DOM
             var parser = new DOMParser();
             var xmlDoc = (typeof response === "string")
                 ? parser.parseFromString(response, "text/xml")
                 : response;
 
-            // Individua la versione GML/WFS
-            var schemaLoc = xmlDoc.documentElement.getAttribute("xsi:schemaLocation") || "";
+            // Find GML version from tags
             var gmlFormat;
-
-            if (schemaLoc.includes("gml/2")) {
-                gmlFormat = new ol.format.GML2({srsName: 'EPSG:3857'});
-            } else if (schemaLoc.includes("gml/3")) {
-                gmlFormat = new ol.format.GML3({srsName: 'EPSG:3857'});
+            if (xmlDoc.getElementsByTagName("gml:featureMember").length > 0) {
+                // GML2
+                gmlFormat = new ol.format.GML2();
+            } else if (xmlDoc.getElementsByTagName("gml:featureMembers").length > 0 ||
+                    xmlDoc.getElementsByTagName("gml:FeatureCollection").length > 0) {
+                // GML3
+                gmlFormat = new ol.format.GML3();
             } else {
-                // fallback generico
+                // Fallback generico
                 gmlFormat = new ol.format.WFS();
             }
 
             features_%(n)s = gmlFormat.readFeatures(xmlDoc, {
                 dataProjection: 'EPSG:3857',
-                featureProjection: 'EPSG:3857'
+                featureProjection: map.getView().getProjection()
             });
         }
 

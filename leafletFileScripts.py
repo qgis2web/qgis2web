@@ -320,6 +320,7 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         .leaflet-popup-content.media{
             width: auto!important;
             height: auto!important;
+            overflow: auto;
         }
         .leaflet-popup-content th {
             text-align: left;

@@ -191,7 +191,6 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
                 labelBuffer = True
                 labelBufferColor = labelBufferObj.color().name()
                 labelBufferSize = labelBufferObj.size() * 2
-                print(labelBufferSize)
             props = palyr.dataDefinedProperties()
             text = palyr.format()
             bgColor = props.property(palyr.ShapeFillColor).staticValue()

@@ -175,7 +175,6 @@ class LeafletWriter(Writer):
             if layer.type() == QgsMapLayer.VectorLayer and vts is None:
                 labeltext, vtLabels, labelBuffer, labelBufferColor, labelBufferSize = getLabels(
                     layer, safeLayerName, outputProjectFileName, vts, vtLabels, feedback)
-                print(labelBufferSize)
                 if labelBuffer:
                     labelBufferCSS.append((safeLayerName, labelBufferColor, labelBufferSize))
             lyrCount += 1
