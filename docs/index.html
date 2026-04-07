@@ -81,6 +81,7 @@
 			<a href="#Firststeps">First steps</a></br>
 			<a href="#Installation">Installation</a></br>
 			<a href="#Usage">Usage</a></br>
+			<a href="#BestPractices">Best Practices</a>
 		</div>
 		<div class="toc-column">
 			<b>Project settings</b></br>
@@ -97,8 +98,7 @@
 			<a href="#Export">Export</a></br>
 		</div>
 		<div class="toc-column">
-			<b>Limitation & Bug</b></br>
-			<a href="#Currentlimitations">Current limitations</a></br>
+			<b>Bug</b></br>
 			<a href="#Reportingbugs">Reporting bugs</a>
 		</div>
 	</div>
@@ -151,6 +151,25 @@
 				<p>When you switch output format, by changing selection between <code>OpenLayers</code> and <code>Leaflet</code>, the preview <em>does</em> automatically update.</p>
 				<p>* You can disable the initial automatic preview on the <code>Settings</code> tab</p>
 				<p>** The preview window will automatically be disabled if you have a layer with more than 1000 features</p>
+
+			<h2 id="BestPractices">Best Practices</h2>
+
+				<p>QGIS Desktop and web mapping technologies such as Leaflet or OpenLayers are very different technologies. It is hardly possible to create a 1:1 copy of all desktop
+				features for the web. Manual post-processing of the exported code may therefore	be necessary for complex requirements.</p>
+				<p><a href="#Projectsettings">Project settings</a> section of this wiki explains how to configure your QGIS project.</p>
+				<p><a href="#qgis2websettings">qgis2web settings</a> section of this wiki explains how to configure the plugin's settings for an optimal export.</p>
+
+				<b>Geometry simplification:</b> qgis2web provides a built-in <code>Precision</code> setting in the <code>Export</code> tab (scale 1–15; 1 = most aggressive simplification).
+				For polygons, a value of 5 is a good starting point. The QGIS <code>Simplify</code> tool can also be used for pre-processing. A slight loss of detail is usually
+				 invisible on the web but significantly improves load time. <br>
+				<b>Attribute pre-calculation:</b> Instead of computing colours or rotations during	web export, use the field calculator to create fixed columns (e.g. `web_color`,
+				`rotation`). Select these fields directly in the plugin for styling. This reduces JavaScript processing load for the end user.<br>
+				<b>Manual feature sorting:</b> Since web maps often ignore symbol levels, sort the layer permanently before exporting. Features at the end of the attribute table
+				are typically drawn on top (Z-order). Use the <code>Permanent sort</code> (or <code>Sort</code>) tool in the Processing Toolbox.<br>
+				<b>Raster fallback for complex symbols:</b> If a style cannot be reproduced (e.g. very specific textures or artistic lines), export that layer from QGIS as a
+				raster image (GeoTIFF) and include it as a raster layer. This preserves the appearance completely.<br>
+				<b>Limit data volume:</b> Very large vector datasets are not suitable for static qgis2web exports. Look at techniques like heatmaps, point clustering or server 
+				side rendering (GIS servers) to cope with.
 			
 		<div class="line"></div>
 
@@ -187,119 +206,144 @@
 		<div class="dotted-line"></div>		
 		
 			<h2 id="setLayers">Set Layers</h2>
-				   <p>Give your layers human-friendly names in <code>Layer properties &gt; Source</code></p>
+				   
+				<h4>Limitations</h4>
+				<ul>
+					<li><p>Single quotes <code>'</code> and double quotes <code>"</code> are technically supported but should be avoided.</p></li>
+				</ul>
+				<p>Give your layers human-friendly names in <code>Layer properties &gt; Source</code></p>
+				<img src="layername.png" alt="Layer Properties Screenshot">
+				<p>These will appear in your map's <code>Layer list</code> , grouped or not :</p>
+				<img src="layerlist.png" alt="Layer Title in Layers List Screenshot">
+				<p>Set your layers' scale-dependent visibility, if required:</p>
+				<img src="scaledependent.png" alt="Set Scale-Dependent Visibility Screenshot">
 
-					<p>Single quotes <code>'</code> and quotation marks <code>"</code> are supported but try not to use them</p>
-					<img src="layername.png" alt="Layer Properties Screenshot">
-					<p>These will appear in your map's <code>Layer list</code> , grouped or not :</p>
-					<img src="layerlist.png" alt="Layer Title in Layers List Screenshot">
-					<p>Set your layers' scale-dependent visibility, if required:</p>
-					<img src="scaledependent.png" alt="Set Scale-Dependent Visibility Screenshot">
+				<h3>Alias</h3>
 
-					<h3>Alias</h3>
+				<p>Give your layer fields human friendly names via <code>Layer &gt; Properties &gt; Attributes Form &gt; Select Field &gt; Alias</code></p>
+				
+				<img src="alias.png" alt="Field Alias Screenshot">
 
-					<p>Give your layer fields human friendly names via <code>Layer &gt; Properties &gt; Attributes Form &gt; Select Field &gt; Alias</code></p>
+				<h3>Hidden Fields</h3>
+				<p>Hide the field if you don't want to export it, by changing their <code>Widget Type</code> to "Hidden". As a result, the information will not export and not appear in the popup:</p>
+				<img src="hidden.png" alt="Hide Field Screenshot">
 
-					<p>Single quotes ' and quotation marks " are <u>not supported</u></p>
+				<h3>Media (Image, Audio and Video)</h3>
 
-					<img src="alias.png" alt="Field Alias Screenshot">
+				<p>If you want to show images or audio or video in popup you must set <code>Widget Type</code> to "Attachment" and do not change other values.
+				<u>Only the Absolute path is supported</u> :</p>
+				<img src="attachment.png" alt="Photo Screenshot">
 
-					<h3>Hidden Fields</h3>
-					<p>Hide the field if you don't want to export it, by changing their <code>Widget Type</code> to "Hidden". As a result, the information will not appear in the popup:</p>
-					<img src="hidden.png" alt="Hide Field Screenshot">
+				<p>Set the absolute path as the field text:</p>
+				<img src="absolutepath.png" alt="Absolute Path Screenshot">
 
-					<h3>Media (Image, Audio and Video)</h3>
+				<p>The result in your map will look like this</p>
+				<img src="popupresultimage.png" alt="Image Screenshot">
+				<p>or this, for audio</p>
+				<img src="audio.png" alt="Audio Screenshot">
+				<p>or this, for video</p>
+				<img src="video.png" alt="Video Screenshot">
 
-					<p>If you want to show images or audio or video in popup you must set <code>Widget Type</code> to "Attachment" and do not change other values. Only the Absolute path is supported:</p>
-					<img src="attachment.png" alt="Photo Screenshot">
-
-					<p>Set the absolute path as the field text:</p>
-					<img src="absolutepath.png" alt="Absolute Path Screenshot">
-
-					<p>The result in your map will look like this</p>
-					<img src="popupresultimage.png" alt="Image Screenshot">
-					<p>or this, for audio</p>
-					<img src="audio.png" alt="Audio Screenshot">
-					<p>or this, for video</p>
-					<img src="video.png" alt="Video Screenshot">
-
-					<h3>Attach documents</h3>
-					<p>To attach documents and open them in another browser window, create a text field in your layer and write a string like this:</p>
-					<code>&lt;a href="NTA_ENTE.pdf" target="_blank"&gt;NTA_ENTE.pdf&lt;/a&gt;</code>
-					<p></p>
-					<img src="attach-document.png" alt="Attach Document Screenshot">
-					
-					<p>Insert your document into exported folder</p>
-					<img src="save-document.png" alt="Save Document Screenshot">
-					
-					<p>Popup will show the link as clickable and when clicked it will open a new browser tab showing Document (for supported format), or Download it</p>
-					<img src="popup-attach-example.png" alt="Popup Attach Example Screenshot">
-		
-					<div class="dotted-line"></div>		
+				<h3>Attach documents</h3>
+				<p>To attach documents and open them in another browser window, create a text field in your layer and write a string like this:</p>
+				<code>&lt;a href="NTA_ENTE.pdf" target="_blank"&gt;NTA_ENTE.pdf&lt;/a&gt;</code>
+				<p></p>
+				<img src="attach-document.png" alt="Attach Document Screenshot">
+				
+				<p>Insert your document into exported folder</p>
+				<img src="save-document.png" alt="Save Document Screenshot">
+				
+				<p>Popup will show the link as clickable and when clicked it will open a new browser tab showing Document (for supported format), or Download it</p>
+				<img src="popup-attach-example.png" alt="Popup Attach Example Screenshot">
+	
+				<div class="dotted-line"></div>		
 		
 			<h2 id="SetStyles">Set Styles</h2>
-					<h3>No symbol</h3>
-					<p>Data will not be drawn on the map. Useful if you want to show only labels.</p>
+				<h4>Limitations</h4>
+				<ul>
+					<li>Rule-based symbology is exported in principle, but is error-prone and should always be verified with a test.</li>
+					<li>Diagrams are not supported. Special renderers such as Geometry Generator and 2.5D symbology are not correctly translated into web code 
+						and are sometimes reduced to simple symbols. Heatmaps are only partially supported and depend on the export engine.</li>
+					<li>Symbol levels are supported in OpenLayers; in Leaflet they are not reliably supported.</li>
+				</ul>
 
-					<h3>Single symbol</h3>
-					<img src="single.png" alt="Single Symbol Renderer">
+				<h3>No symbol</h3>
+				<p>Data will not be drawn on the map. Useful if you want to show only labels.</p>
 
-					<h3>Categorized</h3>
-					<img src="categorized.png" alt="Categorized Symbol Renderer">
+				<h3>Single symbol</h3>
+				<img src="single.png" alt="Single Symbol Renderer">
 
-					<h3>Graduated</h3>
-					<img src="graduated.png" alt="Graduated Symbol Renderer">
+				<h3>Categorized</h3>
+				<img src="categorized.png" alt="Categorized Symbol Renderer">
 
-					<h3>Dash Line</h3>
-					<img src="dashline.png" alt="Dash Line">
+				<h3>Graduated</h3>
+				<img src="graduated.png" alt="Graduated Symbol Renderer">
 
-					<h3>Dot Line</h3>
-					<img src="dotline.png" alt="Dot Line">
+				<h3>Dash Line</h3>
+				<img src="dashline.png" alt="Dash Line">
 
-					<h3>Dash Dot Line</h3>
-					<img src="dashdotline.png" alt="Dash Dot Line">
+				<h3>Dot Line</h3>
+				<img src="dotline.png" alt="Dot Line">
 
-					<h3>Dash Dot Dot Line</h3>
-					<img src="dashdotdotline.png" alt="Dash Dot Dot Line">
+				<h3>Dash Dot Line</h3>
+				<img src="dashdotline.png" alt="Dash Dot Line">
 
-					<h3>SVG Marker (for point layers only)</h3>
-					<p>Supported customization:</p>
-					<li>Size</li>
-					<li>Fill color</li>
-					<li>Stroke color</li>
-					<li>Stroke width</li>
+				<h3>Dash Dot Dot Line</h3>
+				<img src="dashdotdotline.png" alt="Dash Dot Dot Line">
 
-					<img src="svgmarker.png" alt="SVG Marker">
+				<h3>SVG Marker (for point layers only)</h3>
+				<p>Supported customization:</p>
+				<li>Size</li>
+				<li>Fill color</li>
+				<li>Stroke color</li>
+				<li>Stroke width</li>
 
-					<a>SVG Categorized or Graduated</a>
-					<p>Supported customization for all svg's in simbology:</p>
-					<li>Size</li>
-					<li>Fill color</li>
-					<li>Stroke color</li>
-					<li>Stroke width</li>
-					<p></p>
-					<img src="svg_categorized_or_graduated.png" alt="SVG Categorized or Graduated">
-					<p></p>
-					<li><u>Only openlayers export</u>: Multiple use of the same svg icon with different properties</li>
-					<p></p>
-					<img src="multiple-same-svg.png" alt="Multiple Same SVG Screenshot">
-					
-					<h3>Transparency</h3>
-					<h4>Vector Layer</h4>
-					<p>Change color's opacity, not layer's opacity</p>
-					<img src="vectortransparency.png" alt="Vector Layer No Yes Transparency">
-					<p></p>
-					<img src="vectortransparency1.png" alt="Vector Layer Transparency">
+				<img src="svgmarker.png" alt="SVG Marker">
 
-					<h4>Raster Layer</h4>
-					<img src="rastertransparency.png" alt="Raster Layer Transparency">
+				<a>SVG Categorized or Graduated</a>
+				<p>Supported customization for all svg's in simbology:</p>
+				<li>Size</li>
+				<li>Fill color</li>
+				<li>Stroke color</li>
+				<li>Stroke width</li>
+				<p></p>
+				<img src="svg_categorized_or_graduated.png" alt="SVG Categorized or Graduated">
+				<p></p>
+				<li><u>Only openlayers export</u>: Multiple use of the same svg icon with different properties</li>
+				<p></p>
+				<img src="multiple-same-svg.png" alt="Multiple Same SVG Screenshot">
+				
+				<h3>Transparency</h3>
+				<h4>Vector Layer</h4>
+				<p>Change color's opacity, not layer's opacity</p>
+				<img src="vectortransparency.png" alt="Vector Layer No Yes Transparency">
+				<p></p>
+				<img src="vectortransparency1.png" alt="Vector Layer Transparency">
 
-					<h4>WMS Layer</h4>
-					<img src="wmstransparency.png" alt="WMS Layer Transparency">
+				<h4>Raster Layer</h4>
+				<img src="rastertransparency.png" alt="Raster Layer Transparency">
+
+				<h4>WMS Layer</h4>
+				<img src="wmstransparency.png" alt="WMS Layer Transparency">
 
 		<div class="dotted-line"></div>		
 		
 			<h2 id="setLabels">Set Labels</h2>
+				<h4>Limitation</h4>
+				<ul>
+					<li>The plugin only exports the information about which font should be used, not the font file itself.
+						The end user's browser must have the font installed locally, or it must be embedded manually. <br>
+						<b>Tip for embedding:</b> Copy the following link into the <code>&lt;head&gt;</code> of <code>index.html</code> and update the
+						   font name in the export's CSS file to <code>'Roboto', sans-serif;</code> :<br>
+							<br>
+							<code>&lt;link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet"&gt;</code>
+							<br><br>
+					</li>
+					<li>Simple expressions (e.g. concatenating field values) are supported. Complex QGIS functions (such as aggregate functions)
+						 and data-defined overrides for size, colour, or rotation are often ignored or incorrectly translated during export.</li>
+					<li>Rule-based labelling is not supported.</li>
+				</ul>
+
 				<h4>Layers labelled in QGIS will be labelled in your webmap. The following formatting will be exported:</h4>
 				<ul>
 					<li>font size</li>
@@ -310,16 +354,12 @@
 					<li>buffer</li>
 				</ul>
 				<img src="labels.png" alt="Labeled Features">
-				<h4>Note</h4>
-				<ul>
-					<li>The export only specifies which font a label uses - it does not export the font itself</li>
-					<li>Expressions are supported (e.g. to concatenate values from different fields)</li>
-				</ul>
 		
 		<div class="dotted-line"></div>				
 			
 			<h2 id="setBasemaps">Set Basemaps using XYZ Tiles</h2>
 				
+				<p>Basemaps (XYZ tiles) are normally only available in EPSG:3857 (Web Mercator).</p>
 				<p>As of QGIS 3.0 and qgis2web 3.0 basemaps are now handled through the XYZ Tiles data source in QGIS.</p>
 
 				<h3>Basemap Sources:</h3>
@@ -454,7 +494,7 @@
 				<h3>Widget Background</h3>
 					<p>Choose controls background color</p>
 				<h3>Match project CRS</h3>
-					<p>Create webmap in same projection as QGIS project, otherwise the webmap is projected in EPSG:3857</p>
+					<p>By default, the web map is exported in EPSG:3857. Using the "Match project CRS" option, the project CRS can be retained instead.</p>
 				<h3>Restrict to extent</h3>
 					<p>Prevent panning or zooming beyond the selected extent</p>
 				<h3>Extent</h3>
@@ -479,18 +519,7 @@
 
 		<div class="line"></div>
 		
-		<h1 id="Limitation&Bug">Limitation & Bug</h1>
-		
-			<h2 id="Currentlimitations">Current limitations</h2>
-				<p>QGIS, OpenLayers, and Leaflet are all different mapping technologies.
-				This means that their respective functionality differs in many ways. qgis2web
-				does its best to interpret a QGIS project and to export HTML, Javascript, and
-				CSS to create a web map as close to the QGIS project as possible.</p>
-				<p>However, many elements of a QGIS project cannot be reproduced, and many are
-				only possible in <em>either</em> OpenLayers <em>or</em> Leaflet. qgis2web
-				tries its best to produce a publish-ready map, but you can always manually edit
-				the output code to achieve what qgis2web cannot.</p>
-				<p></p>The limitations are described in the body text of this WIKI</p>
+		<h1 id="Bug">Bug</h1>
 
 			<h2 id="Reportingbugs">Reporting bugs</h2>
 				<p>Please report any problems you have with qgis2web. Without this feedback, I

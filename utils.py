@@ -184,8 +184,10 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
             fieldName = "q2wHide_" + fieldName
         if fieldType == QVariant.Double or fieldType == QVariant.Int:
             fieldType = "double"
+            fieldLength = max(fieldLength, 20)
         else:
             fieldType = "string"
+            fieldLength = max(fieldLength, 255)
         uri += '&field=' + fieldName + ":" + fieldType + "(%d)" % fieldLength
     newlayer = QgsVectorLayer(uri, layer.name(), 'memory')
     writer = newlayer.dataProvider()

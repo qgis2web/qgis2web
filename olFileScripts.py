@@ -62,6 +62,7 @@ var searchLayer = new SearchLayer({{
     collapsed: true,
     map: map,
     maxResults: 10,
+    showOnFocus: false
 }});
 map.addControl(searchLayer);
 document.getElementsByClassName('search-layer')[0].getElementsByTagName('button')[0].className += ' fa fa-binoculars';

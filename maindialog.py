@@ -219,7 +219,9 @@ class MainDialog(QDialog, FORM_CLASS):
 
          # Add fixed info label after preview
             self.info_label = QLabel(
-                "<b>Note:</b> PyQtWebEngine is installed and enabled. If the plugin freezes or the preview does not work, try forcing QGIS to use <br>"
+                "<b>Note For QGIS4:</b> The technology behind this preview window is still in its infancy. <br>"
+                "You can, however, use the program to Export your project. <br> <br>"
+                "<b>Note For QGIS3:</b> PyQtWebEngine is installed and enabled. If the plugin freezes or the preview does not work, try forcing QGIS to use <br>"
                 "the integrated GPU via the NVIDIA/AMD Control Panel. If the problem persists contact support"
             )
             self.info_label.setStyleSheet("color: #444; background: #fffbe6; border: 1px solid #ffe58f; padding: 6px;")

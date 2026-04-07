@@ -36,8 +36,7 @@ class SearchLayer extends ol.control.Control {
 
     options.map = optOptions.map;
     options.colName = optOptions.colName;
-
-    // Detect vector source
+    options.showOnFocus = typeof optOptions.showOnFocus === 'boolean' ? optOptions.showOnFocus : false;
     let source;
     if (options.layer instanceof ol.layer.Image &&
         options.layer.getSource() instanceof ol.source.ImageVector) {
@@ -55,6 +54,15 @@ class SearchLayer extends ol.control.Control {
       const input = document.querySelector('form > .search-layer-input-search');
       if (hasClass(input, 'search-layer-collapsed')) {
         removeClass(input, 'search-layer-collapsed');
+        // Mostra suggerimenti solo se showOnFocus true
+        if (options.showOnFocus && horseyComponentRef.current) {
+          horseyComponentRef.current.hide();
+          setTimeout(() => {
+            if (input === document.activeElement) {
+              horseyComponentRef.current.show();
+            }
+          }, 0);
+        }
       } else {
         input.value = '';
         addClass(input, 'search-layer-collapsed');
@@ -67,8 +75,7 @@ class SearchLayer extends ol.control.Control {
       }
     };
 
-    button.addEventListener('click', toggleHideShowInput, false);
-    button.addEventListener('touchstart', toggleHideShowInput, false);
+    button.addEventListener('pointerup', toggleHideShowInput, false);
 
     // Create input
     const form = document.createElement('form');
@@ -86,6 +93,11 @@ class SearchLayer extends ol.control.Control {
     input.setAttribute('type', 'text');
     form.appendChild(input);
 
+	// immediate focus on mobile
+	input.addEventListener('touchstart', () => {
+	  input.focus();
+	}, { passive: true });
+
     // Build control element
     const element = document.createElement('div');
     element.className = 'search-layer ol-unselectable ol-control';
@@ -98,6 +110,20 @@ class SearchLayer extends ol.control.Control {
       target: options.target
     });
 
+	// ===============================
+	// MOBILE TOUCH SUPPORT
+	// ===============================
+	// ol does not intercept the tap
+	const stopMapPropagation = (e) => {
+	  e.stopPropagation();
+	};
+	// modern pointer events (desktop + mobile)
+	element.addEventListener('pointerdown', stopMapPropagation, { passive: true });
+	// touch fallback
+	element.addEventListener('touchstart', stopMapPropagation, { passive: true });
+	// mouse fallback
+	element.addEventListener('mousedown', stopMapPropagation);
+	  
     // Create select interaction
     const select = new ol.interaction.Select({
       id: options.selectId || 'defaultSearchLayer',
@@ -131,7 +157,8 @@ class SearchLayer extends ol.control.Control {
         }],
         getText: 'text',
         getValue: 'value',
-		limit: options.maxResults,
+        limit: options.maxResults,
+        blankSearch: !!options.showOnFocus,
         predictNextSearch: function(info) {
           const feat = source.getFeatureById(info.selection.value);
           const featType = feat.getGeometry().getType();
@@ -152,11 +179,27 @@ class SearchLayer extends ol.control.Control {
 
     if (source.getState() === 'ready') {
       horseyComponentRef.current = returnHorsey(input, source, map, select, options);
+      // if required, show suggestions on focus/click
+      if (options.showOnFocus) {
+        input.addEventListener('focus', function showOnFocusHandler() {
+          if (horseyComponentRef.current) horseyComponentRef.current.show();
+        });
+        input.addEventListener('click', function showOnClickHandler() {
+          if (horseyComponentRef.current) horseyComponentRef.current.show();
+        });
+      }
     }
-
     source.once('change', () => {
       if (source.getState() === 'ready') {
         horseyComponentRef.current = returnHorsey(input, source, map, select, options);
+        if (options.showOnFocus) {
+          input.addEventListener('focus', function showOnFocusHandler() {
+            if (horseyComponentRef.current) horseyComponentRef.current.show();
+          });
+          input.addEventListener('click', function showOnClickHandler() {
+            if (horseyComponentRef.current) horseyComponentRef.current.show();
+          });
+        }
       }
     });
   }
