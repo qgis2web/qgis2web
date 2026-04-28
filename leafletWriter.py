@@ -158,11 +158,18 @@ class LeafletWriter(Writer):
 
         #QgsApplication.initQgis()
 
+        useOFM = any(
+            layer.type() == QgsMapLayer.RasterLayer and
+            layer.dataProvider().name() == "wms" and
+            'tiles.openfreemap.org' in layer.dataProvider().dataSourceUri()
+            for layer in layer_list
+        )
+
         dataStore, cssStore = writeFoldersAndFiles(pluginDir, feedback,
                                                    outputProjectFileName,
                                                    cluster, measure,
                                                    matchCRS, layerSearch,
-                                                   layerFilter, canvas,
+                                                   layerFilter, useOFM, canvas,
                                                    addressSearch, locate, layersList)
         # Collect label buffer info for each layer
         labelBufferCSS = []
@@ -309,6 +316,9 @@ class LeafletWriter(Writer):
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
+                    wmsUrl = layer.dataProvider().dataSourceUri()
+                    if 'tiles.openfreemap.org' in wmsUrl:
+                        useOFM = True
                     new_obj, useWMS, useWMTS = wmsScript(layer, safeLayerName,
                                                          useWMS, useWMTS,
                                                          getFeatureInfo[count],
@@ -396,7 +406,7 @@ class LeafletWriter(Writer):
         new_src += end
         try:
             writeHTMLstart(outputIndex, title, cluster, addressSearch,
-                           measure, matchCRS, layerSearch, filterItems, canvas,
+                           measure, matchCRS, layerSearch, filterItems, useOFM, canvas,
                            locate, new_src, template, feedback, useMultiStyle,
                            useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT)
         except Exception:

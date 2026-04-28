@@ -148,7 +148,10 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
             opacity = layer.renderer().opacity()
             d = parse_qs(source)
             if "type" in d and d["type"][0] == "xyz":
-                return getXYZ(layerName, rawName, opacity, minResolution,
+                if "openfreemap.org" in d["url"][0]:
+                    return getOFM(layerName, rawName, baseMap), vtLayers
+                else:
+                    return getXYZ(layerName, rawName, opacity, minResolution,
                               maxResolution, layerAttr, d["url"][0], baseMap), vtLayers
             elif "tileMatrixSet" in d:
                 return getWMTS(layer, d, layerAttr, layerName, opacity,
@@ -178,7 +181,7 @@ def getAttribution(layer):
     attrText = layer.attribution()
     attrUrl = layer.attributionUrl()
     if attrText != "":
-        layerAttr = '&nbsp;&middot; <a href="%s">%s</a>' % (attrUrl, attrText)
+        layerAttr = '<a href="%s">%s</a>' % (attrUrl, attrText)
     else:
         layerAttr = " "
     return layerAttr
@@ -559,6 +562,18 @@ def writeHeatmap(hmRadius, hmRamp, hmWeight, hmWeightMax):
     },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
     return layerCode
 
+def getOFM(layerName, rawName, baseMap):
+    layerCode = """
+var lyr_%(layerName)s = new ol.layer.Group({
+    title: '%(rawName)s',
+    type: '%(baseMap)s',
+    combine: true,
+});
+olms.apply(lyr_%(layerName)s, 'https://tiles.openfreemap.org/styles/liberty');
+""" % {"layerName": layerName,
+       "rawName": rawName.replace("'", "\\'"),
+       "baseMap": "base" if baseMap else ""}
+    return layerCode
 
 def getXYZ(layerName, rawName, opacity, minResolution, maxResolution,
            layerAttr, url, baseMap):

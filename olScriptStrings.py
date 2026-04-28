@@ -620,6 +620,10 @@ def geocodeJS(geocode):
         return returnVal
     else:
         return ""
+    
+def mapboxStyleJS():
+    return """
+        <script src="resources/olms.js"></script>"""
 
 
 def geocodeScript(geocode):

@@ -127,7 +127,7 @@ def mapScript(extent, matchCRS, crsAuthId, maxZoom, minZoom, bounds):
         var hash = new L.Hash(map);"""
     map += """
         map.attributionControl.setPrefix('<a href="""
-    map += """"https://github.com/tomchadwin/qgis2web" target="_blank">"""
+    map += """"https://github.com/qgis2web/qgis2web" target="_blank">"""
     map += """qgis2web</a> &middot; """
     map += """<a href="https://leafletjs.com" title="A JS library """
     map += """for interactive maps">Leaflet</a> &middot; """
@@ -390,15 +390,22 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
         map.getPane('pane_{safeLayerName}').style.zIndex = {zIndex};""".format(
         safeLayerName=safeLayerName, zIndex=zIndex)
     if 'type' in d and d['type'][0] == "xyz":
-        if 'zmin' in d:
-            zmin = "minNativeZoom: {zmin},".format(zmin=d['zmin'][0])
+        url = d['url'][0]
+        if 'tiles.openfreemap.org' in url:
+            wms += """
+        var layer_{safeLayerName} = new L.maplibreGL({{
+            style: 'https://tiles.openfreemap.org/styles/liberty',
+        }});""".format(safeLayerName=safeLayerName)
         else:
-            zmin = ""
-        if 'zmax' in d:
-            zmax = "maxNativeZoom: {zmax}".format(zmax=d['zmax'][0])
-        else:
-            zmax = ""
-        wms += """
+            if 'zmin' in d:
+                zmin = "minNativeZoom: {zmin},".format(zmin=d['zmin'][0])
+            else:
+                zmin = ""
+            if 'zmax' in d:
+                zmax = "maxNativeZoom: {zmax}".format(zmax=d['zmax'][0])
+            else:
+                zmax = ""
+            wms += """
         var layer_{safeLayerName} = L.tileLayer('{url}', {{
             pane: 'pane_{safeLayerName}',
             opacity: {opacity},
@@ -409,9 +416,9 @@ def wmsScript(layer, safeLayerName, useWMS, useWMTS, identify, minZoom,
             {zmax}
         }});
         layer_{safeLayerName};""".format(
-            opacity=opacity, safeLayerName=safeLayerName, url=d['url'][0],
-            attr=attr, zmin=zmin, zmax=zmax,
-            minZoom=minZoom, maxZoom=maxZoom)
+                opacity=opacity, safeLayerName=safeLayerName, url=url,
+                attr=attr, zmin=zmin, zmax=zmax,
+                minZoom=minZoom, maxZoom=maxZoom)
     elif 'tileMatrixSet' in d:
         useWMTS = True
         wmts_url = d['url'][0]

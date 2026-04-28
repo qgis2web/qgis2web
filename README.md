@@ -43,7 +43,7 @@ Read documentation on the [WIKI](https://qgis2web.github.io/qgis2web/)
 
 qgis2web is among the winners of the [OSGeo:UK](https://uk.osgeo.org/agm/agm2024minutes.html) 2024 competition via GoFundGeo
 </br>
-![os geo uk](https://github.com/tomchadwin/qgis2web/assets/89784373/275553ce-39bd-42b2-81d3-12e551ce1261)
+![os geo uk](https://github.com/qgis2web/qgis2web/assets/89784373/275553ce-39bd-42b2-81d3-12e551ce1261)
 
 
 <h2>Donations</h2>
@@ -51,7 +51,7 @@ We are thrilled to see how widely our project is being used and appreciated arou
 
 Please consider a small donation; even a modest "virtual coffee" can help support our commitment to providing quality software. 
 
-[<img src="https://github.com/tomchadwin/qgis2web/assets/89784373/3bf8e193-e65e-4dc6-a189-a9e669f98b1e">](https://www.opengis.it/buy-me-a-coffee/)
+[<img src="https://github.com/qgis2web/qgis2web/assets/89784373/3bf8e193-e65e-4dc6-a189-a9e669f98b1e">](https://www.opengis.it/buy-me-a-coffee/)
 </br><b>🎁 As a token of our gratitude, donors will receive as a gift [qgis2o.gis](https://github.com/andreaordonselli/qgis2o.gis) (a plugin enhancing OpenLayers export of qgis2web).🎁</b>
 
 Thank you for your support!

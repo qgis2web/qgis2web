@@ -363,8 +363,10 @@
 				<p>As of QGIS 3.0 and qgis2web 3.0 basemaps are now handled through the XYZ Tiles data source in QGIS.</p>
 
 				<h3>Basemap Sources:</h3>
-				<b>OpenStreetMap</b></p>
+				<b>OpenStreetMap (doesn't work locally -403r error-, requires a web server)</b></p>
 				<code>http://tile.openstreetmap.org/{z}/{x}/{y}.png</code></p>
+				<b>OpenFreeMap (works locally, see <a href="#ofmTrick">OFM Trick</a>)</b></p>
+				<code>https://tiles.openfreemap.org/natural_earth/ne2sr/{z}/{x}/{y}.png</code></p>
 				<b>OpenTopoMap</b></p>
 				<code>https://tile.opentopomap.org/{z}/{x}/{y}.png</code></p>
 				<b>Google Hybrid</b></p>
@@ -382,12 +384,13 @@
 				<p>Then click to "add" to put in Map</p>
 				<img src="add_xyz_to_map.png" alt="Add XYZ to map">
 
-				<h3>Notes</h3>
-				<ul>
-					<li>If you select multiple basemaps, you will only be able to switch between them if you also add a layers list to your map</li>
-					<li>Basemaps are normally available on in EPSG:3857</li>
-					<li>Openlayers doesn't seem to like layers with api keys, but they seem to work fine with leaflet</li>
-				</ul>
+				<h3 id="ofmTrick">OpenFreeMap Trick</h3>
+				<p>OpenFreeMap is composed of 3 different layers: a background, a vector, and a label layer. To make OFM work in the exported webmap, simply load only
+				the XYZ layer described above into QGIS. The webmap will display a group containing the 3layers (which are not visible).</p>
+				<p>In QGIS, only the XYZ background layer will be visible:</p>
+				<img src="ofm-qgis.png" alt="OFM QGIS">
+				<p>But in the webmap, you will see a complete data</p>
+				<img src="ofm-webmap.png" alt="OFM Webmap">
 				
 		<div class="line"></div>
 

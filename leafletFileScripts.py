@@ -9,7 +9,7 @@ from qgis2web.utils import replaceInTemplate
 
 def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                          cluster_set, measure, matchCRS, layerSearch,
-                         filterItems, canvas, address, locate, layersList):
+                         filterItems, useOFM, canvas, address, locate, layersList):
     feedback.showFeedback("Exporting libraries...")
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
@@ -123,12 +123,17 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
             canvas.mapSettings().destinationCrs().authid() != 'EPSG:4326'):
         shutil.copyfile(jsDir + 'proj4.js', jsStore + 'proj4.js')
         shutil.copyfile(jsDir + 'proj4leaflet.js', jsStore + 'proj4leaflet.js')
+    if useOFM:
+        shutil.copyfile(jsDir + 'maplibre-gl.js', jsStore + 'maplibre-gl.js')
+        shutil.copyfile(jsDir + 'leaflet-maplibre-gl.js',
+                        jsStore + 'leaflet-maplibre-gl.js')
+        shutil.copyfile(cssDir + 'maplibre-gl.css', cssStore + 'maplibre-gl.css')
     feedback.completeStep()
     return dataStore, cssStore
 
 
 def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
-                   matchCRS, layerSearch, filterItems, canvas, locate,
+                   matchCRS, layerSearch, filterItems, useOFM, canvas, locate,
                    qgis2webJS, template, feedback, useMultiStyle, useHeat,
                    useShapes, useOSMB, useWMS, useWMTS, useVT):
     useCluster = False
@@ -194,6 +199,14 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
     else:
         layerFilterCSS = ""
         layerFilterJS = ""
+    if useOFM:
+        mapLibreCSS = '<link rel="stylesheet" href="css/maplibre-gl.css">'
+        maplibreJS = """
+        <script src="js/maplibre-gl.js"></script>
+        <script src="js/leaflet-maplibre-gl.js"></script>"""
+    else:
+        mapLibreCSS = ""
+        maplibreJS = ""
     if address:
         addressCSS = """
         <link rel="stylesheet" href="css/"""
@@ -243,6 +256,8 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@LEAFLET_LAYERSEARCHJS@": layerSearchJS,
               "@LEAFLET_LAYERFILTERCSS@": layerFilterCSS,
               "@LEAFLET_LAYERFILTERJS@": layerFilterJS,
+              "@LEAFLET_MAPLIBRECSS@": mapLibreCSS,
+              "@LEAFLET_MAPLIBREJS@": maplibreJS,
               "@LEAFLET_ADDRESSCSS@": addressCSS,
               "@LEAFLET_MEASURECSS@": measureCSS,
               "@LEAFLET_EXTRAJS@": extraJS,
@@ -262,6 +277,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
               "@OL3_PROJDEF@": "",
               "@OL3_GEOCODINGLINKS@": "",
               "@OL3_GEOCODINGJS@": "",
+              "@OL_MAPBOX_STYLE_JS@": "",
               "@OL3_LAYERSWITCHER@": "",
               "@OL3_LAYERS@": "",
               "@OL3_MEASURESTYLE@": "",
@@ -342,7 +358,6 @@ def writeCSS(cssStore, backgroundColor, feedback, widgetAccent,
         }
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
             border: 0px;
-        }
         }
         .fa, .leaflet-container, a {
             color: """ + widgetAccent + """ !important;
