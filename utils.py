@@ -20,6 +20,7 @@ import time
 import re
 import shutil
 import sys
+import string
 from io import StringIO
 from qgis.PyQt.QtCore import QDir, QVariant
 from qgis.PyQt.QtGui import QPainter
@@ -289,8 +290,9 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
         return
 
     fields = layer.fields()
+    images_folder = os.path.join(os.path.dirname(layersFolder), 'images')
     for field in fields:
-        exportImages(layer, field.name(), layersFolder + "/tmp.tmp")
+        exportImages(layer, field.name(), images_folder)
 
 
 
@@ -541,8 +543,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
 
 def safeName(name):
     # TODO: we are assuming that at least one character is valid...
-    validChr = '_0123456789abcdefghijklmnopqrstuvwxyz' \
-               'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    validChr = '_' + string.digits + string.ascii_letters
     return ''.join(c for c in name if c in validChr)
 
 
@@ -607,7 +608,7 @@ def replaceInTemplate(template, values):
     return s
 
 
-def exportImages(layer, field, layerFileName):
+def exportImages(layer, field, imagesFolder):
     field_index = layer.fields().indexFromName(field)
 
     widget = layer.editorWidgetSetup(field_index).type()
@@ -629,8 +630,7 @@ def exportImages(layer, field, layerFileName):
                                             source_file_name)
 
         photo_file_name = re.sub(r'[\\/:]', '_', photo_file_name).strip()
-        photo_file_name = os.path.join(os.path.dirname(layerFileName),
-                                       '..', 'images', photo_file_name)
+        photo_file_name = os.path.join(imagesFolder, photo_file_name)
 
         try:
             shutil.copyfile(source_file_name, photo_file_name)

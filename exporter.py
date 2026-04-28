@@ -18,7 +18,6 @@
 
 import os
 from datetime import datetime
-import ftplib
 
 from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QObject, QCoreApplication
@@ -228,7 +227,7 @@ class FtpExporter(Exporter):
         self.host = 'myhost.com'
         self.username = 'user'
         self.remote_folder = 'public_html/'
-        self.port = 21
+        self.port = 22
         # if none, user will be prompted for password
         self.password = None
         self.temp_folder = self.newTempFolder(tempFolder())
@@ -243,7 +242,7 @@ class FtpExporter(Exporter):
 
     @classmethod
     def name(cls):
-        return QCoreApplication.translate('FtpExporter', 'Export to FTP site')
+        return QCoreApplication.translate('FtpExporter', 'Export to SFTP site')
 
     def configure(self, parent_widget=None):
         dialog = FtpConfigurationDialog(parent_widget)
@@ -279,7 +278,7 @@ class FtpExporter(Exporter):
         password = self.password
         if password is None:
             password, ok = QInputDialog.getText(
-                None, 'Enter FTP password', 'Password', QLineEdit.Password)
+                None, 'Enter SFTP password', 'Password', QLineEdit.Password)
             if not password or not ok:
                 feedback.setFatalError('User cancelled')
                 return False
@@ -287,87 +286,91 @@ class FtpExporter(Exporter):
         feedback.showFeedback(
             'Connecting to {} on port {}...'.format(self.host, self.port))
 
-        ftp = ftplib.FTP()
         try:
-            ftp.connect(self.host, self.port)
+            import paramiko
+        except ImportError:
+            feedback.setFatalError(
+                'The paramiko library is required for SFTP export. '
+                'Please install it via: pip install paramiko')
+            return False
+
+        ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.RejectPolicy())
+        try:
+            ssh.connect(self.host, port=self.port,
+                        username=self.username, password=password)
         except Exception:
             feedback.setFatalError('Could not connect to server!')
             return False
 
         feedback.showFeedback('Connected!')
-        feedback.showFeedback('Logging in as {}...'.format(self.username))
         if feedback.cancelled():
             feedback.acceptCancel()
+            ssh.close()
             return False
 
         try:
-            ftp.login(self.username, password)
+            sftp = ssh.open_sftp()
         except Exception:
-            feedback.setFatalError("""Login failed for
-                                      user {}!""".format(self.username))
+            feedback.setFatalError('Could not open SFTP channel!')
+            ssh.close()
             return False
 
         feedback.showFeedback('Logged in to {}'.format(self.host))
 
-        def cwd_and_create(p):
-            """
-            recursively changes directory to an ftp target,
-            creating new folders as required.
-            """
-            if not p:
-                return
-            try:
-                ftp.cwd(p)
-            except Exception:
-                parent, base = os.path.split(p)
-                cwd_and_create(parent)
-                if base:
-                    feedback.showFeedback('Creating {}'.format(base))
-                    ftp.mkd(base)
-                    ftp.cwd(base)
+        def sftp_makedirs(remote_path):
+            parts = [p for p in remote_path.replace('\\', '/').split('/') if p]
+            prefix = '/' if remote_path.startswith('/') else ''
+            current = prefix
+            for part in parts:
+                current = (current + part if not current or current == '/'
+                           else current + '/' + part)
+                try:
+                    sftp.stat(current)
+                except OSError:
+                    feedback.showFeedback('Creating {}'.format(current))
+                    sftp.mkdir(current)
 
-        cwd_and_create(self.remote_folder)
+        sftp_makedirs(self.remote_folder)
 
-        feedback.uploaded_count = 0.0
+        uploaded_count = 0.0
 
-        def uploadPath(path):
+        def uploadPath(local_path, remote_path):
+            nonlocal uploaded_count
             if feedback.cancelled():
                 feedback.acceptCancel()
                 return False
-
-            files = os.listdir(path)
-            os.chdir(path)
-            for f in files:
+            for item in os.listdir(local_path):
                 if feedback.cancelled():
                     feedback.acceptCancel()
                     return False
-                current_path = os.path.join(path, f)
-                if os.path.isfile(current_path):
-                    feedback.showFeedback('Uploading {}'.format(f))
-                    fh = open(f, 'rb')
-                    ftp.storbinary('STOR %s' % f, fh)
-                    fh.close()
-                    feedback.uploaded_count += 1
-                    feedback.setProgress(
-                        100 * feedback.uploaded_count / file_count)
-                elif os.path.isdir(current_path):
-                    feedback.showFeedback('Creating folder {}'.format(f))
+                local_item = os.path.join(local_path, item)
+                remote_item = remote_path.rstrip('/') + '/' + item
+                if os.path.isfile(local_item):
+                    feedback.showFeedback('Uploading {}'.format(item))
+                    sftp.put(local_item, remote_item)
+                    uploaded_count += 1
+                    feedback.setProgress(100 * uploaded_count / file_count)
+                elif os.path.isdir(local_item):
+                    feedback.showFeedback('Creating folder {}'.format(item))
                     try:
-                        ftp.mkd(f)
+                        sftp.mkdir(remote_item)
                     except Exception:
                         pass
-                    ftp.cwd(f)
-                    if not uploadPath(current_path):
+                    if not uploadPath(local_item, remote_item):
                         return False
-            ftp.cwd('..')
-            os.chdir('..')
             return True
 
-        if not uploadPath(os.path.join('.', source_folder)):
+        remote_base = self.remote_folder.rstrip('/')
+        if not uploadPath(source_folder, remote_base):
+            sftp.close()
+            ssh.close()
             return False
 
         feedback.setCompleted('Upload complete!')
-        ftp.close()
+        sftp.close()
+        ssh.close()
         return True
 
     def destinationUrl(self):

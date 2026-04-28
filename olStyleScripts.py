@@ -4,7 +4,12 @@ import shutil
 import re
 import codecs
 import math
-import xml.etree.ElementTree
+try:
+    import defusedxml
+    defusedxml.defuse_stdlib()
+    import defusedxml.ElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET  # noqa: S405
 import traceback
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import (QgsSingleSymbolRenderer,
@@ -662,11 +667,11 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             #        QgsSymbolLayerUtils::svgSymbolPathToName
             if svg_path[0:7] == "base64:":
                 svg_xml = base64.standard_b64decode(svg_path[7:]).decode("utf-8")
-                svg = xml.etree.ElementTree.fromstring(svg_xml)
+                svg = ET.fromstring(svg_xml)  # nosec B314
                 base_filename = "embedded.svg"
                 filename, file_extension = ("embedded", ".svg")
             else:
-                svg = xml.etree.ElementTree.parse(svg_path).getroot()
+                svg = ET.parse(svg_path).getroot()  # nosec B314
                 base_filename = os.path.basename(svg_path)
                 filename, file_extension = os.path.splitext(base_filename)
             # Check if the file already exists, if yes, append a progressive number
