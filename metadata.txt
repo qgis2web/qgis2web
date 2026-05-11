@@ -26,7 +26,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=4.1.3
+version=4.1.4
 
 # end of mandatory metadata
 
@@ -34,6 +34,7 @@ version=4.1.3
 
 # Uncomment the following line and add your changelog entries:
 changelog=
+    2026/05/11 4.1.4 Add a safe loader for Qt .ui files that temporarily removes potentially polluting XML modules (e.g. lxml, defusedxml, xml.etree.*) from sys.modules before importing qgis.PyQt.uic.loadUiType, then restores them. Move FORM_CLASS initialization to use this safe loader and ensure package path is appended. Also remove the global call to defusedxml.defuse_stdlib() in olStyleScripts.py to avoid altering stdlib XML behavior. These changes prevent third-party XML libraries from breaking uic.loadUiType while preserving module state.
     2026/04/28 4.1.3 Bugfix Leaflet CSS (thanks to @dmbekker) - Support for OpenFreeMap https://github.com/hyperknot/openfreemap, which runs locally without a web server (see WIKI https://qgis2web.github.io/qgis2web/#setBasemaps for usage) - New graphic for openlayers attribution
     2026/04/07 4.0.0 Plugin: Support for QGIS 4.0 (without preview), Fixed bug that truncated double (now 20) and string (now 255) field values ​​- Openlayers: Updated ol-search-layer library with smartphone support and automatic value listing - Update Wiki (thanks to @sfkeller)
 	2026/01/31 3.32.0 Openlayers: updated WFS URL parsing - Leaflet: Adjusted popup width on smartphones in case of images, Adjusted opening/closing of groups in the LayersList in case of multiple groups (and without layers)

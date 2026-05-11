@@ -70,7 +70,6 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QDialogButtonBox,
                                  QSizePolicy,
                                  QApplication)
-from qgis.PyQt.uic import loadUiType
 from qgis.PyQt.QtNetwork import QNetworkProxy
 
 try:
@@ -116,6 +115,30 @@ except ImportError as e:
 
 import traceback
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def _loadUiType_safe(ui_file):
+    """Load a .ui file after clearing XML modules polluted by third-party imports."""
+    transient_modules = {}
+    reload_prefixes = ("lxml", "defusedxml")
+    reload_modules = ("xml.etree.ElementTree", "xml.etree.cElementTree")
+
+    for key, module in list(sys.modules.items()):
+        if key.startswith(reload_prefixes) or key in reload_modules:
+            transient_modules[key] = module
+            sys.modules.pop(key, None)
+
+    try:
+        from qgis.PyQt.uic import loadUiType
+        return loadUiType(ui_file)
+    finally:
+        sys.modules.update(transient_modules)
+
+
+FORM_CLASS, _ = _loadUiType_safe(
+    os.path.join(os.path.dirname(__file__), 'ui_maindialog.ui'))
+
 from . import utils
 from qgis2web.configparams import (getParams,
                                    specificParams,
@@ -128,11 +151,6 @@ from qgis2web.exporter import (EXPORTER_REGISTRY)
 from qgis2web.feedbackDialog import FeedbackDialog
 
 from qgis.gui import QgsColorButton
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-FORM_CLASS, _ = loadUiType(os.path.join(
-    os.path.dirname(__file__), 'ui_maindialog.ui'))
 
 italic_font = QFont()
 italic_font.setItalic(True)

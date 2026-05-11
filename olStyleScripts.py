@@ -6,7 +6,6 @@ import codecs
 import math
 try:
     import defusedxml
-    defusedxml.defuse_stdlib()
     import defusedxml.ElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET  # noqa: S405
