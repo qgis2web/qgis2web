@@ -267,6 +267,18 @@ class LeafletWriter(Writer):
         if scaleDependentLayers != "":
             scaleDependentLayers = scaleDependentScript(scaleDependentLayers)
 
+        if rasterTileInfo:
+            # Make sure the map itself can zoom in at least as far as the
+            # native resolution of any tiled raster (e.g. mm-GSD drone
+            # orthophotos), otherwise the project's own zoom cap would hide
+            # the raster's deepest, sharpest tiles before you ever reach them.
+            tiledNativeMaxZoom = max(info[2] for info in rasterTileInfo.values())
+            try:
+                if tiledNativeMaxZoom > int(maxZoom):
+                    maxZoom = str(tiledNativeMaxZoom)
+            except (TypeError, ValueError):
+                pass
+
         crsSrc = mapSettings.destinationCrs()
         crsAuthId = crsSrc.authid()
         crsProj4 = crsSrc.toProj4()
@@ -360,9 +372,13 @@ class LeafletWriter(Writer):
                     tilesDirName, actualMinZoom, actualMaxZoom = rasterTileInfo[count]
                     feedback.showFeedback('Writing %s as tiled raster layer...' %
                                           layer.name())
+                    try:
+                        overZoomMaxZoom = max(actualMaxZoom, int(maxZoom))
+                    except (TypeError, ValueError):
+                        overZoomMaxZoom = actualMaxZoom
                     new_obj = rasterTileScript(layer, safeLayerName, count,
                                                tilesDirName, actualMinZoom,
-                                               actualMaxZoom)
+                                               actualMaxZoom, overZoomMaxZoom)
                 else:
                     useRaster = True
                     feedback.showFeedback('Writing %s as raster layer...' %

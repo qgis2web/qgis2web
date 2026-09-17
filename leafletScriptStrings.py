@@ -516,7 +516,10 @@ def rasterScript(layer, safeLayerName, zIndex):
     return raster
 
 
-def rasterTileScript(layer, safeLayerName, zIndex, tilesDirName, minZoom, maxZoom):
+def rasterTileScript(layer, safeLayerName, zIndex, tilesDirName, minZoom,
+                     maxNativeZoom, maxZoom=None):
+    if maxZoom is None:
+        maxZoom = maxNativeZoom
     zIndex = zIndex + 400
     pt2 = layer.extent()
     crsSrc = layer.crs()
@@ -538,13 +541,16 @@ def rasterTileScript(layer, safeLayerName, zIndex, tilesDirName, minZoom, maxZoo
             bounds: img_bounds_{sln},
             minZoom: {minZoom},
             maxZoom: {maxZoom},
-            maxNativeZoom: {maxZoom},
+            maxNativeZoom: {maxNativeZoom},
             tms: false,
             pane: 'pane_{sln}'
         }});
+        layer_{sln}.getBounds = function () {{
+            return L.latLngBounds(img_bounds_{sln});
+        }};
         bounds_group.addLayer(layer_{sln});""".format(
         sln=safeLayerName, zIndex=zIndex, bounds=bounds, tilesDir=tilesDirName,
-        minZoom=minZoom, maxZoom=maxZoom)
+        minZoom=minZoom, maxZoom=maxZoom, maxNativeZoom=maxNativeZoom)
     return raster
 
 
