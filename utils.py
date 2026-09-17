@@ -55,6 +55,12 @@ import tempfile
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
 
+# Rasters with more pixels than this are tiled natively (via GDAL) by
+# default instead of being exported as a single L.imageOverlay image.
+# 4000x4000 was chosen as a practical ceiling for what browsers can decode
+# as one in-memory image without stalling the map view.
+RASTER_TILE_PIXEL_THRESHOLD = 4000 * 4000
+
 TYPE_MAP = {
     QgsWkbTypes.Point: 'Point',
     QgsWkbTypes.Point25D: 'Point',
@@ -856,6 +862,86 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
                                           "COPY_SUBDATASETS": False,
                                           "OPTIONS": "",
                                           "OUTPUT": out_raster})
+
+
+def rasterPixelCount(layer):
+    try:
+        return layer.width() * layer.height()
+    except Exception:
+        return 0
+
+
+def shouldTileRaster(layer):
+    return (layer.dataProvider().name() == "gdal" and
+            rasterPixelCount(layer) > RASTER_TILE_PIXEL_THRESHOLD)
+
+
+def rasterSourcePath(layer):
+    """Resolve the on-disk file GDAL originally opened for this layer,
+    stripping any band/subdataset selector qgis2web doesn't need here."""
+    uri = layer.dataProvider().dataSourceUri()
+    return uri.split('|')[0]
+
+
+def exportRasterTiles(layer, count, layersFolder, feedback, minZoomOverride=None,
+                      maxZoomOverride=None):
+    """Tile a raster layer into an XYZ {z}/{x}/{y}.png pyramid using GDAL's
+    gdal2tiles, resampling directly from the source pixels (not via QGIS's
+    map-rendering path), so quality matches gdal2tiles.py CLI output.
+    Zoom range is auto-detected from the source resolution unless overridden.
+    Returns (tilesDirName, actualMinZoom, actualMaxZoom).
+    """
+    from osgeo_utils import gdal2tiles as gdal2tiles_mod
+
+    safeLayerName = safeName(layer.name()) + "_" + str(count)
+    tilesDirName = safeLayerName + "_tiles"
+    tilesFolder = os.path.join(layersFolder, tilesDirName)
+    if os.path.exists(tilesFolder):
+        shutil.rmtree(tilesFolder)
+    QDir().mkpath(layersFolder)
+
+    srcPath = rasterSourcePath(layer)
+
+    argv = ["gdal2tiles.py",
+           "--profile=mercator",
+           "--xyz",
+           "--webviewer=none",
+           "--resampling=bilinear",
+           "--processes=1",
+           "-q"]
+
+    crs = layer.crs()
+    if crs.isValid() and crs.authid().upper().startswith("EPSG"):
+        argv += ["--s_srs", crs.authid()]
+
+    provider = layer.dataProvider()
+    try:
+        bandCount = provider.bandCount()
+        nodataValues = []
+        for b in range(1, bandCount + 1):
+            if provider.sourceHasNoDataValue(b) and provider.useSourceNoDataValue(b):
+                nodataValues.append(str(provider.sourceNoDataValue(b)))
+        if nodataValues and len(nodataValues) == bandCount:
+            argv += ["--srcnodata", ",".join(nodataValues)]
+    except Exception:
+        pass
+
+    if minZoomOverride is not None and maxZoomOverride is not None:
+        argv += ["--zoom", "%d-%d" % (minZoomOverride, maxZoomOverride)]
+
+    argv += [srcPath, tilesFolder]
+
+    feedback.showFeedback(
+        'Tiling %s natively with GDAL (large orthophotos may take a while)...' %
+        layer.name())
+    gdal2tiles_mod.main(argv)
+
+    if os.path.isdir(tilesFolder):
+        zdirs = sorted(int(d) for d in os.listdir(tilesFolder) if d.isdigit())
+    else:
+        zdirs = []
+    actualMinZoom, actualMaxZoom = (zdirs[0], zdirs[-1]) if zdirs else (0, 0)
+    return tilesDirName, actualMinZoom, actualMaxZoom
 
 
 def is25d(layer, canvas, restrictToExtent, extent):

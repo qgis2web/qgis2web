@@ -47,6 +47,7 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            featureGroupsScript,
                                            extentScript,
                                            rasterScript,
+                                           rasterTileScript,
                                            wmsScript,
                                            scaleDependentLayerScript,
                                            addressSearchScript,
@@ -64,7 +65,8 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            addMeasureControl,
                                            addZoomControl)
 from qgis2web.utils import (ALL_ATTRIBUTES, exportVector, exportVectorTilesXYZ,
-                            exportRaster, safeName, returnFilterValues)
+                            exportRaster, exportRasterTiles, shouldTileRaster,
+                            safeName, returnFilterValues)
 from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
@@ -104,6 +106,7 @@ class LeafletWriter(Writer):
             json=self.json,
             cluster=self.cluster,
             pbfVectorTile=self.pbfVectorTile,
+            tileRaster=self.tileRaster,
             getFeatureInfo=self.getFeatureInfo,
             baseMap = self.baseMap,
             params=self.params,
@@ -119,7 +122,9 @@ class LeafletWriter(Writer):
     def writeLeaflet(
             cls, iface, feedback, folder,
             layer_list, groups, collapsedGroup, visible, interactive, cluster, pbfVectorTile,
-            json, getFeatureInfo, baseMap, params, popup):
+            json, getFeatureInfo, baseMap, params, popup, tileRaster=None):
+        if tileRaster is None:
+            tileRaster = []
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         legends = {}
@@ -202,6 +207,7 @@ class LeafletWriter(Writer):
         useWMS = False
         useWMTS = False
         useRaster = False
+        rasterTileInfo = {}
         scaleDependentLayers = ""
         labelVisibility = ""
         new_src = ""
@@ -241,8 +247,19 @@ class LeafletWriter(Writer):
                     if layer.dataProvider().name() != "wms":
                         layersFolder = os.path.join(outputProjectFileName,
                                                     "data")
-                        exportRaster(layer, lyrCount, layersFolder,
-                                     feedback, iface, matchCRS)
+                        tile_config = tileRaster[lyrCount] if lyrCount < len(tileRaster) else (None, None, None)
+                        tile_enabled, tile_min_zoom, tile_max_zoom = tile_config
+                        if tile_enabled is None:
+                            tile_enabled = shouldTileRaster(layer)
+                        if tile_enabled:
+                            tilesDirName, actualMinZoom, actualMaxZoom = exportRasterTiles(
+                                layer, lyrCount, layersFolder, feedback,
+                                tile_min_zoom, tile_max_zoom)
+                            rasterTileInfo[lyrCount] = (tilesDirName, actualMinZoom,
+                                                        actualMaxZoom)
+                        else:
+                            exportRaster(layer, lyrCount, layersFolder,
+                                         feedback, iface, matchCRS)
             if layer.hasScaleBasedVisibility():
                 scaleDependentLayers += scaleDependentLayerScript(
                     layer, safeLayerName, clst)
@@ -338,6 +355,14 @@ class LeafletWriter(Writer):
                                                          minZoom, maxZoom,
                                                          count)
                     feedback.completeStep()
+                elif count in rasterTileInfo:
+                    useRaster = True
+                    tilesDirName, actualMinZoom, actualMaxZoom = rasterTileInfo[count]
+                    feedback.showFeedback('Writing %s as tiled raster layer...' %
+                                          layer.name())
+                    new_obj = rasterTileScript(layer, safeLayerName, count,
+                                               tilesDirName, actualMinZoom,
+                                               actualMaxZoom)
                 else:
                     useRaster = True
                     feedback.showFeedback('Writing %s as raster layer...' %

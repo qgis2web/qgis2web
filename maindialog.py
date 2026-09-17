@@ -436,7 +436,7 @@ class MainDialog(QDialog, FORM_CLASS):
         writer = self.getWriterFactory()()
         (writer.layers, writer.groups, writer.popup,
          writer.visible, writer.interactive, writer.json,
-         writer.cluster, writer.pbfVectorTile, writer.getFeatureInfo,
+         writer.cluster, writer.pbfVectorTile, writer.tileRaster, writer.getFeatureInfo,
          writer.baseMap, writer.collapsedGroup) = self.getLayersAndGroups()
         writer.params = self.getParameters()
         return writer
@@ -850,7 +850,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.layer_search_combo.clear()
         self.layer_search_combo.addItem("None")
         (layers, groups, popup, visible, interactive,
-         json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
+         json, cluster, pbfVectorTile, tileRaster, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
                 # Skip PBF layers (not compatible with L.Control.Search)
@@ -876,7 +876,7 @@ class MainDialog(QDialog, FORM_CLASS):
     def populateAttrFilter(self):
         self.layer_filter_select.clear()
         (layers, groups, popup, visible, interactive,
-         json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
+         json, cluster, pbfVectorTile, tileRaster, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         options = []
         for count, layer in enumerate(layers):
             if layer.type() == layer.VectorLayer:
@@ -1043,6 +1043,7 @@ class MainDialog(QDialog, FORM_CLASS):
         json = []
         cluster = []
         pbfVectorTile = []
+        tileRaster = []
         getFeatureInfo = []
         baseMap = []
         collapsedGroup = []
@@ -1057,6 +1058,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     json.append(item.json)
                     cluster.append(item.cluster)
                     pbfVectorTile.append(item.pbfVectorTile)
+                    tileRaster.append(item.tileRaster)
                     getFeatureInfo.append(item.getFeatureInfo)
                     baseMap.append(item.baseMap)
             else:
@@ -1076,6 +1078,7 @@ class MainDialog(QDialog, FORM_CLASS):
                             json.append(allLayers.json)
                             cluster.append(allLayers.cluster)
                             pbfVectorTile.append(allLayers.pbfVectorTile)
+                            tileRaster.append(allLayers.tileRaster)
                             getFeatureInfo.append(allLayers.getFeatureInfo)
                             baseMap.append(allLayers.baseMap)
                 groups[group] = groupLayers[::-1]
@@ -1089,16 +1092,17 @@ class MainDialog(QDialog, FORM_CLASS):
         json = json[::-1]
         cluster = cluster[::-1]
         pbfVectorTile = pbfVectorTile[::-1]
+        tileRaster = tileRaster[::-1]
         getFeatureInfo = getFeatureInfo[::-1]
         baseMap = baseMap[::-1]
         collapsedGroup = collapsedGroup
 
-        return (layers, groups, popup, visible, interactive, json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup)
+        return (layers, groups, popup, visible, interactive, json, cluster, pbfVectorTile, tileRaster, getFeatureInfo, baseMap, collapsedGroup)
 
     def reject(self):
         self.saveParameters()
         (layers, groups, popup, visible, interactive,
-         json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
+         json, cluster, pbfVectorTile, tileRaster, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         try:
             for layer, pop, vis, int in zip(layers, popup, visible,
                                             interactive):
@@ -1320,6 +1324,55 @@ class TreeLayerItem(QTreeWidgetItem):
             pbfVtLayout.addStretch()
             self.addChild(self.pbfVectorTileItem)
             tree.setItemWidget(self.pbfVectorTileItem, 1, pbfVtContainer)
+        elif (layer.type() == QgsMapLayer.RasterLayer and
+              layer.dataProvider().name() != "wms"):
+            self.tileRasterItem = QTreeWidgetItem(self)
+            self.tileRasterCheck = QCheckBox()
+            savedTileRaster = layer.customProperty("qgis2web/Tile Raster", "")
+            if savedTileRaster != "":
+                self.tileRasterCheck.setChecked(savedTileRaster == "2" or
+                                                savedTileRaster is True or
+                                                savedTileRaster == 2)
+            else:
+                self.tileRasterCheck.setChecked(utils.shouldTileRaster(layer))
+            self.tileRasterCheck.stateChanged.connect(self.changeTileRaster)
+            self.tileRasterItem.setText(0, "Tile natively (GDAL, for large orthophotos)")
+            tileRasterContainer = QWidget()
+            tileRasterLayout = QHBoxLayout(tileRasterContainer)
+            tileRasterLayout.setContentsMargins(0, 0, 0, 0)
+            tileRasterLayout.setSpacing(4)
+            tileRasterLayout.addWidget(self.tileRasterCheck)
+            self.tileRasterMinEdit = QLineEdit()
+            self.tileRasterMinEdit.setPlaceholderText("Zmin[auto]")
+            self.tileRasterMinEdit.setFixedWidth(65)
+            self.tileRasterMinEdit.setFixedHeight(16)
+            self.tileRasterMinEdit.setMaxLength(2)
+            self.tileRasterMinEdit.setStyleSheet("color: #888;")
+            savedTileMin = layer.customProperty("qgis2web/Tile Raster Min Zoom", "")
+            if savedTileMin:
+                self.tileRasterMinEdit.setText(str(savedTileMin))
+            self.tileRasterMinEdit.editingFinished.connect(
+                lambda: layer.setCustomProperty("qgis2web/Tile Raster Min Zoom",
+                                                self.tileRasterMinEdit.text()))
+            tileRasterLayout.addWidget(self.tileRasterMinEdit)
+            self.tileRasterMaxEdit = QLineEdit()
+            self.tileRasterMaxEdit.setPlaceholderText("Zmax[auto]")
+            self.tileRasterMaxEdit.setFixedWidth(65)
+            self.tileRasterMaxEdit.setFixedHeight(16)
+            self.tileRasterMaxEdit.setMaxLength(2)
+            self.tileRasterMaxEdit.setStyleSheet("color: #888;")
+            savedTileMax = layer.customProperty("qgis2web/Tile Raster Max Zoom", "")
+            if savedTileMax:
+                self.tileRasterMaxEdit.setText(str(savedTileMax))
+            self.tileRasterMaxEdit.editingFinished.connect(
+                lambda: layer.setCustomProperty("qgis2web/Tile Raster Max Zoom",
+                                                self.tileRasterMaxEdit.text()))
+            tileRasterLayout.addWidget(self.tileRasterMaxEdit)
+            tileRasterHintLabel = QLabel("(unchecked = single image, as before)")
+            tileRasterLayout.addWidget(tileRasterHintLabel)
+            tileRasterLayout.addStretch()
+            self.addChild(self.tileRasterItem)
+            tree.setItemWidget(self.tileRasterItem, 1, tileRasterContainer)
         else:
             if layer.providerType() == 'wms':
                 # Check if the layer can identify
@@ -1479,6 +1532,18 @@ class TreeLayerItem(QTreeWidgetItem):
             return (False, None, None)
 
     @property
+    def tileRaster(self):
+        try:
+            enabled = self.tileRasterCheck.isChecked()
+            min_zoom = self.tileRasterMinEdit.text().strip()
+            max_zoom = self.tileRasterMaxEdit.text().strip()
+            min_zoom = int(min_zoom) if min_zoom != "" else None
+            max_zoom = int(max_zoom) if max_zoom != "" else None
+            return (enabled, min_zoom, max_zoom)
+        except Exception:
+            return (None, None, None)
+
+    @property
     def getFeatureInfo(self):
         try:
             return self.getFeatureInfoCheck.isChecked()
@@ -1506,6 +1571,9 @@ class TreeLayerItem(QTreeWidgetItem):
             # se cluster attivo, lo disattivo
             if hasattr(self, "clusterCheck"):
                 self.clusterCheck.setChecked(False)
+
+    def changeTileRaster(self, isTileRaster):
+        self.layer.setCustomProperty("qgis2web/Tile Raster", isTileRaster)
 
     def changeGetFeatureInfo(self, isGetFeatureInfo):
         self.layer.setCustomProperty("qgis2web/GetFeatureInfo",

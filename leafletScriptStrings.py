@@ -515,6 +515,39 @@ def rasterScript(layer, safeLayerName, zIndex):
         sln=safeLayerName)
     return raster
 
+
+def rasterTileScript(layer, safeLayerName, zIndex, tilesDirName, minZoom, maxZoom):
+    zIndex = zIndex + 400
+    pt2 = layer.extent()
+    crsSrc = layer.crs()
+    crsDest = QgsCoordinateReferenceSystem(4326)
+    try:
+        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
+    except Exception:
+        xform = QgsCoordinateTransform(crsSrc, crsDest)
+    pt3 = xform.transformBoundingBox(pt2)
+    bounds = '[[' + str(pt3.yMinimum()) + ','
+    bounds += str(pt3.xMinimum()) + '],['
+    bounds += str(pt3.yMaximum()) + ','
+    bounds += str(pt3.xMaximum()) + ']]'
+    raster = """
+        map.createPane('pane_{sln}');
+        map.getPane('pane_{sln}').style.zIndex = {zIndex};
+        var img_bounds_{sln} = {bounds};
+        var layer_{sln} = new L.tileLayer('data/{tilesDir}/{{z}}/{{x}}/{{y}}.png', {{
+            bounds: img_bounds_{sln},
+            minZoom: {minZoom},
+            maxZoom: {maxZoom},
+            maxNativeZoom: {maxZoom},
+            tms: false,
+            pane: 'pane_{sln}'
+        }});
+        bounds_group.addLayer(layer_{sln});""".format(
+        sln=safeLayerName, zIndex=zIndex, bounds=bounds, tilesDir=tilesDirName,
+        minZoom=minZoom, maxZoom=maxZoom)
+    return raster
+
+
 def titleSubScript(title, pos):
     if pos == "upper right":
         positionOpt = u"{'position':'topright'}"
