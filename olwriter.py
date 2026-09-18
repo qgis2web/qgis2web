@@ -123,6 +123,9 @@ class OpenLayersWriter(Writer):
         # because PBF tiles are always in EPSG:3857 and cannot be reprojected
         if any(pbf_enabled for pbf_enabled, _, _ in pbfVectorTile):
             matchCRS = False
+            hasPBFVectorTile = True
+        else:
+            hasPBFVectorTile = False
         extent = settings["Scale/Zoom"]["Extent"]
         mapbounds = bounds(iface, extent == "Canvas extent", layers, matchCRS)
         fullextent = bounds(iface, False, layers, matchCRS)
@@ -180,7 +183,7 @@ class OpenLayersWriter(Writer):
         highlightFill = f"rgba({color.red()}, {color.green()}, {color.blue()}, {color.alpha()/255:.2f})"
         
         (proj, proj4, view) = getCRSView(mapextent, fullextent, maxZoom,
-                                         minZoom, matchCRS, mapSettings)
+                                         minZoom, matchCRS, mapSettings, hasPBFVectorTile)
         (measureControl, measuring, measure, measureUnit, measureStyle,
          controlCount) = getMeasure(measureTool, controlCount)
         geolocateHead = geolocationHead(geolocateUser)
@@ -412,15 +415,15 @@ def getBackground(mapSettings, widgetAccent, widgetBackground):
            hover_focus_color=hover_focus_color)
 
 
-def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings):
+def getCRSView(mapextent, fullextent, maxZoom, minZoom, matchCRS, mapSettings, hasPBFVectorTile):
     units = {0: 'm', 1: 'km', 2: 'ft', 3: 'ft', 4: '', 5: '',
              6: 'degrees', 7: '', 8: 'cm', 9: 'mm', 10: '', 11: 'ft'}
     proj4 = ""
     proj = ""
-    view = """constrainResolution: true,
+    view = """constrainResolution: %s,
         maxZoom: %d,
         minZoom: %d,
-        %s""" % (maxZoom, minZoom, mapextent)
+        %s""" % ('true' if hasPBFVectorTile else 'false', maxZoom, minZoom, mapextent)
     if matchCRS:
         proj4 = """
 <script src="resources/proj4.js">"""

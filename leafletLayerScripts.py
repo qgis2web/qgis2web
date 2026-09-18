@@ -288,9 +288,9 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
                 f = "layer.feature.properties['%s']" % handleHiddenField(layer,
                                                                          fn)
             labeltext = ".bindTooltip((" + str(f)
-            labeltext += " !== null?String(%s%s)%s:'')" % (styleStart,
-                                                           str(f),
-                                                           styleEnd)
+            labeltext += " !== null?String(%s%s).replace(/\\\\n/g, '<br>')%s:'')" % (styleStart, 
+                                                                                     str(f), 
+                                                                                     styleEnd)
             labeltext += ", {permanent: true, offset: [-0, -16], "
             labeltext += "className: 'css_%s'}" % safeLayerName
             labeltext += ");"
@@ -320,7 +320,7 @@ def getLabels(layer, safeLayerName, outputProjectFileName, vts, vtLabels,
                                                      vtLayer, tileCoords)
                 marker = new L.CircleMarker(latlng,
                                             {stroke: false, fill: false});
-                marker.bindTooltip(%s,
+                marker.bindTooltip(String(%s).replace(/\\\\n/g, '<br>'),
                                    {permanent: true,
                                     direction: 'center'}).openTooltip();
                 this.addUserLayer(marker, tileCoords);
@@ -411,7 +411,7 @@ def getPBFLabels(layer, safeLayerName, outputProjectFileName):
         f = "feature.properties['%s']" % handleHiddenField(layer, fn)
         isExpression = False
 
-    inner_html = "(" + str(f) + " !== null?String(" + styleStart + str(f) + styleEnd + "):'')"
+    inner_html = "(" + str(f) + " !== null?String(" + styleStart + str(f) + styleEnd + ").replace(/\\\\n/g, '<br>'):'')"
 
     # --- Build inline GeoJSON with feature centroids in EPSG:4326 ---
     features_geojson = []

@@ -26,7 +26,7 @@ about=
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=4.3.2
+version=4.4.0
 
 # end of mandatory metadata
 
@@ -34,6 +34,7 @@ version=4.3.2
 
 # Uncomment the following line and add your changelog entries:
 changelog=
+    2026/09/18 4.4.0 Preview window technology overhaul: QtWebEngine QML integration included in the plugin, Qt5/Qt6 compatibility, and automatic startup of a local HTTP server to serve the preview and PBF tiles - The view performs full-step zooming (constrainResolution: true) only if the export includes one or more PBF Vector Tile layers - The \n sequence in a text field's value now triggers a line break in the label - Fixed a bug causing an error when using "set all" with PBF Vector Tiles
     2026/07/25 4.3.2 Fixed a bug that prevented features with text values ​​greater than 255 characters from being exported
     2026/07/06 4.3.1 Fix regex escaping in Leaflet exports
     2026/07/06 4.3.0 OpenLayers and Leaflet: Support for exporting layers as PBF Vector Tile in MVT format [for heavy layers] (layer search and attribute filter are disabled for these layers) - When a layer is exported as PBF, 3 scripts plus a .py file will be placed alongside index.html to start a local web server for previewing the map; a README.txt file explains everything - OpenLayers: Vector Tile PBF: Support is natively provided by OpenLayers - Leaflet: Vector Tile PBF: Updated Leaflet.VectorGrid.js library to v1.3.0 and applied a local patch to scale styles based on zoom level, plus a fallback style for renderers other than "single symbol" - Vector Tile PBF: Patched to display labels and popups for PBF layers (label visibility synced with the parent layer)

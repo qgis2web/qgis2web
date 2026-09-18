@@ -20,6 +20,7 @@
 import os
 import re
 import sys
+import site
 import shutil
 from collections import defaultdict, OrderedDict
 import webbrowser
@@ -28,7 +29,6 @@ import subprocess
 import sysconfig
 import pkgutil
 import traceback
-
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 from qgis.core import (Qgis,
@@ -38,8 +38,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsNetworkAccessManager,
                        QgsMessageLog,
-                       QgsApplication,
                        QgsSettings)
+from qgis.PyQt.QtNetwork import (QNetworkProxy)
 # noinspection PyUnresolvedReferences
 from qgis.PyQt.QtCore import (QObject,
                               QSettings,
@@ -48,10 +48,11 @@ from qgis.PyQt.QtCore import (QObject,
                               QByteArray,
                               QEvent,
                               Qt,
-                              QTimer,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QTimer)
 from qgis.PyQt.QtGui import (QIcon,
-                             QFont)
+                             QFont,
+                             QColor)
 from qgis.PyQt.QtWidgets import (QAction,
                                  QAbstractItemView,
                                  QDialog,
@@ -64,14 +65,44 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QToolButton,
                                  QWidget,
                                  QTextBrowser,
-                                 QPushButton,
                                  QMessageBox,
                                  QLabel,
                                  QLineEdit,
                                  QDialogButtonBox,
-                                 QSizePolicy,
-                                 QApplication)
+                                 QSizePolicy)
 from qgis.PyQt.QtNetwork import QNetworkProxy
+
+try:
+    from .browser_qml import (
+        LocalPreviewServer,
+        cleanup_polluted_webengine_settings,
+        _OLD_BAD_WE_ENTRIES,
+    )
+except Exception:
+    LocalPreviewServer = None
+    cleanup_polluted_webengine_settings = None
+    _OLD_BAD_WE_ENTRIES = {}
+
+try:
+    from .browser_qml import QmlPreviewWidget
+    qml_webengine_available = True
+except Exception as error:
+    print(f"Preview QML unavailable: {error}")
+    qml_webengine_available = False
+
+import qgis.PyQt.QtCore as qtcore
+USE_PYQT6 = qtcore.QT_VERSION_STR.startswith("6")
+
+try:
+    from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+    if USE_PYQT6:
+        from qgis.PyQt.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
+    else:
+        from qgis.PyQt.QtWebEngineWidgets import QWebEnginePage, QWebEngineSettings
+    python_webengine_available = True
+except ImportError as error:
+    print(f"Preview Python WebEngine unavailable: {error}")
+    python_webengine_available = False
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView, QWebInspector, QWebPage
@@ -80,66 +111,33 @@ try:
 except ImportError:
     webkit_available = False
 
-import qgis.PyQt.QtCore as qtcore
-USE_PYQT6 = qtcore.QT_VERSION_STR.startswith("6")
 
-# ----- 1. Set environment variables early (before any PyQt import)
-if USE_PYQT6:
-    # Setting environment variables to stabilize WebEngine in PyQt6
-    os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
-    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--no-sandbox --disable-gpu --disable-dev-shm-usage --disable-software-rasterizer --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-features=TranslateUI --single-process"
-    os.environ["QT_LOGGING_RULES"] = "qt.webenginecontext.debug=false"
-    # Try to prevent WebEngine process crashes
-    os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = "0"
+# ----- 1. Set WebEngine environment variables early (before any WebEngine
+# view is created; Chromium reads these variables when the engine starts).
+# QtWebEngine is already bundled with QGIS; keep the Chromium flags minimal.
+# Forcing --single-process / --disable-gpu / --disable-software-rasterizer is a
+# known cause of blank previews (Chromium is left without a rendering backend)
+# and of crashes on Windows, so those flags are no longer set by default.
+if not python_webengine_available and platform.system() == "Darwin":
+    # The WebEngine sandbox helper frequently fails on macOS QGIS => blank view.
+    os.environ.setdefault("QTWEBENGINE_DISABLE_SANDBOX", "1")
+elif not python_webengine_available and platform.system() == "Linux":
+    # The Chromium sandbox often cannot start inside QGIS on Linux.
+    os.environ.setdefault("QTWEBENGINE_DISABLE_SANDBOX", "1")
+
+# Previous plugin versions wrote the harmful Chromium flags into the global
+# QGIS settings (qgis/customEnvVars). Remove them and drop them from this
+# session as well, otherwise the preview stays blank until QGIS is restarted.
+try:
+    if cleanup_polluted_webengine_settings is not None:
+        cleanup_polluted_webengine_settings()
+        bad_flags = _OLD_BAD_WE_ENTRIES["QTWEBENGINE_CHROMIUM_FLAGS"]
+        if os.environ.get("QTWEBENGINE_CHROMIUM_FLAGS") == bad_flags:
+            del os.environ["QTWEBENGINE_CHROMIUM_FLAGS"]
+except Exception:
+    pass
 
 # ----- 2. Import modules AFTER environment vars
-try:
-    if USE_PYQT6:
-        from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
-        from qgis.PyQt.QtWebEngineCore import (
-            QWebEnginePage, QWebEngineSettings, QWebEngineProfile
-        )
-        print("PyQt6 WebEngine ready")
-        webengine_qt5_available = False
-        webengine_qt6_available = True
-    else:
-        from qgis.PyQt.QtWebEngineWidgets import (
-            QWebEngineView, QWebEnginePage, QWebEngineSettings, QWebEngineProfile
-        )
-        print("PyQt5 WebEngine ready")
-        webengine_qt5_available = True
-        webengine_qt6_available = False
-except ImportError as e:
-    print("WebEngine missing:", e)
-    webengine_qt5_available = False
-    webengine_qt6_available = False
-
-import traceback
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
-def _loadUiType_safe(ui_file):
-    """Load a .ui file after clearing XML modules polluted by third-party imports."""
-    transient_modules = {}
-    reload_prefixes = ("lxml", "defusedxml")
-    reload_modules = ("xml.etree.ElementTree", "xml.etree.cElementTree")
-
-    for key, module in list(sys.modules.items()):
-        if key.startswith(reload_prefixes) or key in reload_modules:
-            transient_modules[key] = module
-            sys.modules.pop(key, None)
-
-    try:
-        from qgis.PyQt.uic import loadUiType
-        return loadUiType(ui_file)
-    finally:
-        sys.modules.update(transient_modules)
-
-
-FORM_CLASS, _ = _loadUiType_safe(
-    os.path.join(os.path.dirname(__file__), 'ui_maindialog.ui'))
-
 from . import utils
 from qgis2web.configparams import (getParams,
                                    specificParams,
@@ -152,6 +150,29 @@ from qgis2web.exporter import (EXPORTER_REGISTRY)
 from qgis2web.feedbackDialog import FeedbackDialog
 
 from qgis.gui import QgsColorButton
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+def safe_load_ui_type(ui_file):
+    """Load a .ui file after clearing XML modules polluted by third-party imports."""
+    transient_modules = {}
+    reload_prefixes = ("lxml", "defusedxml")
+    reload_modules = ("xml.etree.ElementTree", "xml.etree.cElementTree")
+
+    for key, module in list(sys.modules.items()):
+        if key.startswith(reload_prefixes) or key in reload_modules:
+            transient_modules[key] = module
+            sys.modules.pop(key)
+    try:
+        from qgis.PyQt.uic import loadUiType
+        result = loadUiType(ui_file)
+    finally:
+        sys.modules.update(transient_modules)
+    return result
+
+
+FORM_CLASS, _ = safe_load_ui_type(os.path.join(
+    os.path.dirname(__file__), 'ui_maindialog.ui'))
 
 italic_font = QFont()
 italic_font.setItalic(True)
@@ -225,82 +246,76 @@ class MainDialog(QDialog, FORM_CLASS):
             stgs.value("qgis2web/previewFeatureLimit", "1000"))
 
         self.appearanceParams.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        
         self.preview = None
+        self.preview_backend = "none"
+        self.preview_server = None
+        self._closing = False
 
-        if webengine_qt5_available or webengine_qt6_available:
-         # Add preview space
-            self.preview = QWebEngineView(self)
-            self.preview.setPage(WebPageEngine(self.preview)) 
-            self.preview.setMinimumWidth(650)
-            self.preview.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)          
-            self.right_layout.insertWidget(0, self.preview)         
-
-            settings = self.preview.settings()
-            # settings.setAttribute(QWebEngineSettings.WebGLEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.Accelerated2dCanvasEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.PluginsEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.LocalStorageEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.XSSAuditingEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.HyperlinkAuditingEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.ErrorPageEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.FullScreenSupportEnabled, False)
-            # settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, False)
-            settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
-            settings.setAttribute(QWebEngineSettings.WebAttribute.DnsPrefetchEnabled, True)
-            settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
-
-            profile = self.preview.page().profile()
-            profile.clearHttpCache()
-            #profile.setHttpCacheMaximumSize(10 * 1024 * 1024)  # Cache limit to 10 MB
-
-         # Add fixed info label after preview
+        # Prefer the standard QtWebEngineWidgets backend: it is the same
+        # QtWebEngine that QGIS itself ships and uses, and it initializes
+        # correctly inside a running QGIS. The QtQuick/QML route is only a
+        # fallback: on Qt6 it requires QtWebEngineQuick.initialize() before the
+        # QGuiApplication exists, so inside a plugin it frequently renders a
+        # blank view.
+        if python_webengine_available:
+            try:
+                self.preview = QWebEngineView(self)
+                self.preview_backend = "python"
+                if LocalPreviewServer is None:
+                    raise RuntimeError("The local preview server is unavailable")
+                self.preview_server = LocalPreviewServer("qgis2web-preview-server")
+                settings = self.preview.settings()
+                settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
+                settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+                settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+            except Exception as error:
+                print(f"Preview Python WebEngine failed: {error}")
+                self.preview = None
+        if self.preview is None and qml_webengine_available:
+            try:
+                self.preview = QmlPreviewWidget(self)
+                self.preview_backend = "qml"
+            except Exception as error:
+                print(f"Preview QML failed: {error}")
+                self.preview = None
+        if self.preview is not None:
+            print(f"Preview backend: {self.preview_backend}")
+            self.preview.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+            self.right_layout.insertWidget(0, self.preview)
             self.info_label = QLabel(
-                "<b>Note For QGIS4:</b> The technology behind this preview window is still in its infancy. <br>"
-                "You can, however, use the program to Export your project. <br> <br>"
-                "<b>Note For QGIS3:</b> PyQtWebEngine is installed and enabled. If the plugin freezes or the preview does not work, try forcing QGIS to use <br>"
-                "the integrated GPU via the NVIDIA/AMD Control Panel. If the problem persists contact support"
+                "<b>Map preview is ready.</b> If the plugin freezes or the preview does not work,<br>"
+                "try forcing QGIS to use the integrated GPU via the NVIDIA/AMD Control Panel.<br>"
+                "If you are exporting PBF Vector Tile layers use Zmin=2 and Zmax=3 for preview<br>" \
+                "to reduce waiting time and change these values ​​for export."
             )
-            self.info_label.setStyleSheet("color: #444; background: #fffbe6; border: 1px solid #ffe58f; padding: 6px;")
-            self.right_layout.insertWidget(1, self.info_label) 
-
-        else: 
-            # Add installation instruction and button
+            self.info_label.setStyleSheet("color: #444; background: #eaf7ee; border: 1px solid #9bd3a8; padding: 6px;")
+            self.right_layout.insertWidget(1, self.info_label)
+        else:
+            # Keep export available when the QGIS installation has no WebEngine runtime.
             self.widget = QTextBrowser()
-            self.widget.setText(self.tr('qgis2web supports a new browser for webmap preview, but it is '
-                                   'not available because the PyQtWebEngine dependency is missing or your '
-                                   'QGIS version is earlier than 3.38.0\n\n'
-                                   'Please ensure you have:\n'
-                                   '- Recommended QGIS version (is shown below the Export button)\n'     
-                                   '- AN ACTIVE INTERNET CONNECTION (even under proxy)\n'
-                                   'Then click the button to install.\n\n'
-                                   'WARNING: QGIS will close after installation, SAVE YOUR PROJECT FIRST.\n\n'
-                                   'PS: In absence of this webmap preview, you can still use qgis2web to Export your project.'))
+            self.widget.setText(self.tr(
+                'The map preview is not available inside QGIS on this computer.\n\n'
+                'You can still export the web map normally. After exporting, double-click '
+                'the generated index.html file to open it in Chrome, Edge, Firefox or another '
+                'web browser.\n\n'
+                'To show the preview inside QGIS, close QGIS and install or update QGIS '
+                'using the official installer from qgis.org. Then restart QGIS and try again.'
+            ))
             self.widget.setMinimumWidth(400)
             
             self.layout = QVBoxLayout()
             self.layout.addWidget(self.widget)
 
-            # self.deny_button = QPushButton(self.tr('Use old browser\n'
-            #                                      '( Limitations and graphic artifacts )'))
-            # self.deny_button.clicked.connect(self.deny_qtwebengine)
-            # self.layout.addWidget(self.deny_button)
-            
-            self.install_button = QPushButton(self.tr('Install new Browser\n'
-                                                 '( Save your project - QGIS will close )'))
-            self.install_button.clicked.connect(install_qtwebengine)
-            self.layout.addWidget(self.install_button)
-            
             self.right_layout.insertWidget(0, self.widget)
             self.right_layout.insertLayout(0, self.layout)
-                      
+
         self.populateConfigParams(self)
         self.populate_layers_and_groups(self)
         self.populateSetAllCombo()
         # Insert min/max zoom widgets into the Set All layout (right after the Apply button, index 3)
         self.horizontalLayout_3.insertWidget(3, self._setAllPbfMinEdit)
         self.horizontalLayout_3.insertWidget(4, self._setAllPbfMaxEdit)
-        self.populateLayerSearch()
+        #self.populateLayerSearch()
         self.populateAttrFilter()
 
         writer = WRITER_REGISTRY.createWriterFromProject()
@@ -315,31 +330,35 @@ class MainDialog(QDialog, FORM_CLASS):
         self.toggleOptions()
 
         # launch preview on start and add click on preview button
-        if webengine_qt5_available or webengine_qt6_available:
+        if self.preview is not None:
             if self.previewOnStartup.checkState() == Qt.CheckState.Checked:
-                self.autoUpdatePreview()
+                QTimer.singleShot(0, self.autoUpdatePreview)
             self.buttonPreview.clicked.connect(self.previewMap)
         else:
-            self.buttonPreview.setDisabled(True)
+            self.buttonPreview.clicked.connect(self.previewMap)
 
         QgsProject.instance().cleared.connect(self.reject)
-        self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
+        #self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
         self.layersTree.model().dataChanged.connect(self.populateAttrFilter)
         #self.ol3.clicked.connect(self.changeFormat)
-        #self.leaflet.clicked.connect(self.changeFormat)
-        #self.mapbox.clicked.connect(self.changeFormat)
         self.coffeeButton.setStyleSheet("border: none; background: transparent;")
         self.coffeeButton.clicked.connect(self.openDonationPage)
+        #self.leaflet.clicked.connect(self.changeFormat)
+        #self.mapbox.clicked.connect(self.changeFormat)
         self.buttonExport.clicked.connect(self.saveMap)
-               
-        # add WebKit widget in WIKI Tab
+        
+        #helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        #                        "helpFile.md")
+        #self.helpField.setSource(QUrl.fromLocalFile(helpText))
+
+        # add WebKit or WebEngine widget in WIKI Tab
         if webkit_available:
             QWebSettings.clearMemoryCaches()
             self.webViewWiki = QWebView()
             wikiText = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./docs/index.html")
             self.webViewWiki.load(QUrl.fromLocalFile(wikiText))
             self.helpField.addWidget(self.webViewWiki)
-        elif webengine_qt6_available:
+        elif python_webengine_available:
             self.webViewWiki = QWebEngineView()
             wikiText = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./docs/index.html")
             self.webViewWiki.setUrl(QUrl.fromLocalFile(wikiText))
@@ -371,26 +390,11 @@ class MainDialog(QDialog, FORM_CLASS):
             self.webViewWiki.page().setNetworkAccessManager(network_manager)
             self.webViewWiki.load(QUrl("https://www.opengis.it/info"))
             self.info_container.addWidget(self.webViewWiki)
-        elif webengine_qt6_available:
-            # get qgis proxy configuration
-            network_manager = QgsNetworkAccessManager.instance()
-            proxy_settings = network_manager.proxy()
-            if proxy_settings.type() != QNetworkProxy.ProxyType.NoProxy:
-                self.webViewWiki = QWebEngineView()
-                profile = self.webViewWiki.page().profile()
-                proxy_config = f"--proxy-server={proxy_settings.hostName()}:{proxy_settings.port()}"
-                if proxy_settings.user():
-                    proxy_config += f" --proxy-auth={proxy_settings.user()}:{proxy_settings.password()}"
-                existing_flags = os.environ.get("QTWEBENGINE_CHROMIUM_FLAGS", "")
-                if proxy_config not in existing_flags:
-                    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = f"{existing_flags} {proxy_config}".strip()
-            else:
-                self.webViewWiki = QWebEngineView()
-            profile = self.webViewWiki.page().profile()
-            profile.clearHttpCache()
-            def load_url():
-                self.webViewWiki.setUrl(QUrl("https://www.opengis.it/info"))
-            QTimer.singleShot(200, load_url)
+        elif python_webengine_available:
+            # QtWebKit is not available on Qt6-based QGIS (>= 3.34): load the
+            # info page with the same QtWebEngine used for the map preview.
+            self.webViewWiki = QWebEngineView()
+            self.webViewWiki.load(QUrl("https://www.opengis.it/info"))
             self.info_container.addWidget(self.webViewWiki)
 
     #@pyqtSlot(bool)
@@ -453,7 +457,10 @@ class MainDialog(QDialog, FORM_CLASS):
         html += error
         html += "</code></body></html>"
         if self.preview:
-            self.preview.setHtml(html)
+            if isinstance(self.preview, QmlPreviewWidget):
+                self.preview.set_html(html)
+            else:
+                self.preview.setHtml(html)
 
     def showFeedbackMessage(self, title, message):
         """
@@ -466,7 +473,10 @@ class MainDialog(QDialog, FORM_CLASS):
         html += "<p>{}</p>".format(message)
         html += "</body></html>"
         if self.preview:
-            self.preview.setHtml(html)
+            if isinstance(self.preview, QmlPreviewWidget):
+                self.preview.set_html(html)
+            else:
+                self.preview.setHtml(html)
 
     def toggleOptions(self):
         currentWriter = self.getWriterFactory()
@@ -836,6 +846,8 @@ class MainDialog(QDialog, FORM_CLASS):
 
             self.layersTree.clear() # Delete layers tree
             self.populate_layers_and_groups(self) # Populate layers tree configured in TreeLayerItem class
+            self.populateLayerSearch()
+            self.populateAttrFilter()
 
         except Exception as e:
             print("Error in layersSettingsApplyClicked:", str(e))
@@ -1007,7 +1019,17 @@ class MainDialog(QDialog, FORM_CLASS):
         """
         Loads a web based preview from a local file path
         """
-        self.preview.setUrl(QUrl.fromLocalFile(preview_file))
+        if self.preview_backend == "qml":
+            self.preview.set_url(preview_file)
+        elif self.preview_backend == "python":
+            preview_url = self.preview_server.start(preview_file)
+            try:
+                self.preview.setUrl(preview_url)
+            except Exception:
+                self.preview_server.stop()
+                raise
+        else:
+            webbrowser.open_new_tab(QUrl.fromLocalFile(preview_file).toString())
 
     def getParameters(self):
         parameters = defaultdict(dict)
@@ -1096,6 +1118,13 @@ class MainDialog(QDialog, FORM_CLASS):
         return (layers, groups, popup, visible, interactive, json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup)
 
     def reject(self):
+        if self._closing:
+            return
+        self._closing = True
+        if self.preview_server is not None:
+            self.preview_server.stop()
+        if isinstance(self.preview, QmlPreviewWidget):
+            self.preview.stop_server()
         self.saveParameters()
         (layers, groups, popup, visible, interactive,
          json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
@@ -1428,7 +1457,9 @@ class TreeLayerItem(QTreeWidgetItem):
     @property
     def popup(self):
         popup = []
-        self.tree = self.treeWidget()
+        tree = self.treeWidget()
+        if tree is None:
+            return OrderedDict()
         for p in range(self.childCount()):
             optionItem = self.child(p)
             if optionItem.text(0) == "Popups":
@@ -1438,9 +1469,11 @@ class TreeLayerItem(QTreeWidgetItem):
                         widgetItem = popupFieldsItem.child(m)
                         widgetText = widgetItem.text(0)
                         if widgetText != "":
-                            popupVal = self.tree.itemWidget(widgetItem, 1).currentText()
-                            pair = (widgetText, popupVal)
-                            popup.append(pair)
+                            widget = tree.itemWidget(widgetItem, 1)
+                            if widget is not None:
+                                popupVal = widget.currentText()
+                                pair = (widgetText, popupVal)
+                                popup.append(pair)
         popup = OrderedDict(popup)
         return popup
 
@@ -1617,16 +1650,6 @@ if webkit_available:
                 raise jsException("JS %s:%d\n%s" % (sourceID, lineNumber, msg),
                                   Exception())
             
-if webengine_qt5_available or webengine_qt6_available:
-    class WebPageEngine(QWebEnginePage):
-        def javaScriptConsoleMessage(self, level, message, line_number, source_id):
-            exclude_messages = [
-                "Deprecated include of L.Mixin.Events"
-            ]
-            if any(message.startswith(exclude) for exclude in exclude_messages):
-                return
-            print(f"Console message: {message} (Source: {source_id}, Line: {line_number})")
-
 class jsException(Exception):
     def __init__(self, message, errors):
         # Call the base class constructor with the parameters it needs
@@ -1690,115 +1713,10 @@ def get_proxy_settings():
 
 
 def install_qtwebengine():
-    QgsApplication.setPrefixPath(os.getenv('QGIS_PREFIX_PATH', ''), True)
-
-    # add_user_site_packages_to_path()
-
-    # Check QGIS version
-    qgis_version = Qgis.QGIS_VERSION.split('-')[0]
-    qgis_version_tuple = tuple(map(int, qgis_version.split('.')))
-    required_version = (3, 38, 0)
-    if qgis_version_tuple < required_version:
-        QMessageBox.critical(None, "Version Error", "QtWebEngine dependency requires QGIS version 3.38.0 or higher.")
-        QApplication.quit()
-        os._exit(0)
-        return
-
-    proxy_url, proxy_user, proxy_password, proxy_enabled = get_proxy_settings()
-    full_proxy_url = ""
-
-    if proxy_enabled:
-        # Create and show dialog window
-        dialog = ProxyDialog(proxy_url, proxy_user, proxy_password)
-        if dialog.exec() == QDialog.Accepted:
-            proxy_url, proxy_user, proxy_password = dialog.get_data()
-            if proxy_user and proxy_password:
-                auth_part = f"{proxy_user}:{proxy_password}@"
-            else:
-                auth_part = ""
-            full_proxy_url = f"http://{auth_part}{proxy_url}"
-        else:
-            QMessageBox.information(None, "Cancelled", "Installation cancelled by user.")
-            QApplication.quit()
-            os._exit(0)
-            return
-
-    system = platform.system()
-    try:
-        if system == 'Windows':
-            pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
-            env = os.environ.copy()
-            if full_proxy_url:
-                env['http_proxy'] = full_proxy_url
-                env['https_proxy'] = full_proxy_url
-            if USE_PYQT6:
-                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQt6-WebEngine==6.8.0"], env=env)
-            else:
-                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"], env=env)
-        elif system == 'Linux':
-            if USE_PYQT6:
-                subprocess.check_call(["sudo", "apt-get", "install", "python3-pyqt6.qtwebengine"])
-            else:
-                subprocess.check_call(["sudo", "apt-get", "install", "python3-pyqt5.qtwebengine"])
-        elif system == 'Darwin':
-            brew_prefix = "/usr/local"  # Default for Intel Macs
-            try:
-                brew_prefix = subprocess.check_output(["/usr/local/bin/brew", "--prefix"]).strip().decode("utf-8")
-            except FileNotFoundError:
-                brew_prefix = "/opt/homebrew"  # Use Apple Silicon path if Intel path fails
-            if USE_PYQT6:
-                subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt6"])
-                pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
-                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQt6-WebEngine==6.8.0"])
-            else:
-                subprocess.check_call([os.path.join(brew_prefix, "bin", "brew"), "install", "pyqt5"])
-                pip_exec = os.path.join(sysconfig.get_path("scripts"), "pip3")
-                subprocess.check_call([pip_exec, "install", "--upgrade", "PyQtWebEngine==5.15.6"])
-            
-            framework_path = os.path.realpath(os.path.join(sys.executable, "../../Frameworks"))
-            if USE_PYQT6:
-                python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt6/Qt6/lib"))
-            else:
-                python_framework_path = os.path.realpath(os.path.join(sys.executable, "../../Resources/python/site-packages/PyQt5/Qt5/lib"))
-            webengine_framework = ["QtWebEngine.framework", "QtWebEngineCore.framework", "QtWebEngineWidgets.framework"]
-
-            try:
-                framework_directory_listing = os.listdir(framework_path)
-            except FileNotFoundError:
-                raise FileNotFoundError(
-                    "Unable to locate framework directory for QGIS. Only app bundles are supported " + 
-                    "e.g., the official QGIS version. Path searched: %s" % framework_path
-                )
-
-            for path in framework_directory_listing:
-                link_points_to = os.path.join(framework_path, path)
-
-                # Only want to link to directories that have the glob pattern "Qt*.framework" and
-                # are not part of the webengine framework. Not all of the Qt framework is needed,
-                # but it is simpler to add everything.
-                # TODO: Change all path operations to Pathlib
-                if (os.path.isdir(link_points_to) and path.startswith("Qt") and path.endswith(".framework")
-                    and path not in webengine_framework
-                ):
-                    link_path = os.path.join(python_framework_path, path)
-                    # If the symlink already exists, remove and create afresh
-                    if os.path.lexists(link_path) and os.path.islink(link_path):
-                        try:
-                            os.unlink(link_path)
-                        except:
-                            raise OSError("Unable to remove symlink: %s" % link_path)
-                    try:
-                        os.symlink(link_points_to, link_path, target_is_directory=True)
-                    except:
-                        raise OSError("Unable to create symlink: %s" % link_path)
-        else:
-            raise OSError("Unsupported operating system")
-        QMessageBox.information(None, "Installation Complete", "QtWebEngine has been installed successfully. Quit QGIS ...")
-    except subprocess.CalledProcessError as e:
-        QMessageBox.critical(None, "Installation Failed", f"An error occurred during installation: {e}")
-    except Exception as e:
-        QMessageBox.critical(None, "Installation Failed", f"An unexpected error occurred: {e}")
-    finally:
-        QApplication.quit()
-        os._exit(0)
+    QMessageBox.information(
+        None,
+        "QtWebEngine",
+        "This plugin uses the QtWebEngine runtime supplied by QGIS. "
+        "Install a QGIS package that includes QtWebEngine instead of using pip.",
+    )
 

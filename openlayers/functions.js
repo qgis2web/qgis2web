@@ -6,6 +6,10 @@ var createTextStyle = function(feature, resolution, labelText, labelFont,
         return; 
     } 
 
+    // Convert a literal "\n" (backslash + n) found in the attribute data
+    // into a real line break, so labels are rendered on multiple lines.
+    labelText = String(labelText).replace(/\\n/g, "\n");
+
     if (bufferWidth == 0) {
         var bufferStyle = null;
     } else {
