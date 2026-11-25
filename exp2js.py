@@ -183,10 +183,14 @@ def handle_in(node, mapLib):
 
 
 def handle_literal(node):
+    # JavaScript expects the capitalisation for
+    # reserved words to be lowercase
     val = node.value()
     quote = ""
     if val is None:
         val = "null"
+    elif isinstance(val, bool):
+        val = "true" if val == True else "false"
     elif isinstance(val, str):
         quote = "'"
         val = val.replace("\n", "\\n")
