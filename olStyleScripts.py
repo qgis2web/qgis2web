@@ -117,8 +117,8 @@ def exportStyles(layers, folder, clustered, feedback):
             with codecs.open(path, "w", "utf-8") as f:
                 f.write('''%(defs)s
 %(pattern)s
-var style_%(name)s = %(style)s;
-%(setPattern)s''' %
+%(setPattern)s
+var style_%(name)s = %(style)s;''' %
                         {"defs": defs, "pattern": pattern, "name": sln,
                          "style": style, "setPattern": setPattern})
         elif style != "" and style != "''":
@@ -441,6 +441,8 @@ function categories_%s(feature, value, size, resolution, labelText,
     var valueStr = (value !== null && value !== undefined) ? value.toString() : 'default';
     switch(valueStr) {""" % sln
     cats = []
+    patterns = []
+    setPatterns = []
     useAnyMapUnits = False
     for cnt, cat in enumerate(renderer.categories()):
         symbol = cat.symbol()
@@ -468,8 +470,12 @@ function categories_%s(feature, value, size, resolution, labelText,
         else:
             categoryStr = "default:"
         (style, pattern, setPattern,
-         useMapUnits) = (getSymbolAsStyle(symbol, stylesFolder, layer_alpha, renderer, sln, layer,
-                                          feedback))
+         useMapUnits) = (getSymbolAsStyle(symbol, stylesFolder, layer_alpha, renderer,
+                                          sln + "_" + str(cnt), layer, feedback))
+        if pattern != "":
+            patterns.append(pattern)
+        if setPattern != "":
+            setPatterns.append(setPattern)
         if useMapUnits:
             useAnyMapUnits = True
         categoryStr += """
@@ -482,13 +488,15 @@ function categories_%s(feature, value, size, resolution, labelText,
                           labelFont, labelFill, bufferColor,
                           bufferWidth, placement, textAlign, offsetX, offsetY, overflow, repeat)""" % sln
     value = getValue(layer, renderer)
-    return (style, pattern, setPattern, value, defs, useAnyMapUnits)
+    return (style, "".join(patterns), "".join(setPatterns), value, defs, useAnyMapUnits)
 
 
 def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
               feedback):
     # cluster = False
     ranges = []
+    patterns = []
+    setPatterns = []
     elseif = ""
     useAnyMapUnits = False
     for cnt, ran in enumerate(renderer.ranges()):
@@ -498,8 +506,12 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
 
         (symbolstyle, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(symbol, stylesFolder,
-                                         layer_alpha, renderer, sln, layer,
-                                         feedback)
+                                         layer_alpha, renderer,
+                                         sln + "_" + str(cnt), layer, feedback)
+        if pattern != "":
+            patterns.append(pattern)
+        if setPattern != "":
+            setPatterns.append(setPattern)
         ranges.append("""%sif (value >= %f && value <= %f) {
             style = %s
                     }""" % (elseif, ran.lowerValue(), ran.upperValue(),
@@ -509,7 +521,7 @@ def graduated(layer, renderer, legendFolder, sln, stylesFolder, layer_alpha,
             useAnyMapUnits = True
     style = "".join(ranges)
     value = getValue(layer, renderer)
-    return (style, pattern, setPattern, value, useAnyMapUnits)
+    return (style, "".join(patterns), "".join(setPatterns), value, useAnyMapUnits)
 
 
 def ruleBased(renderer, folder, stylesFolder, legendFolder, layer_alpha, sln, layer,
@@ -535,6 +547,8 @@ def ruleBased(renderer, folder, stylesFolder, legendFolder, layer_alpha, sln, la
     rules = root_rule.children()
     expFile = os.path.join(folder, "resources", "qgis2web_expressions.js")
     ifelse = "if"
+    patterns = []
+    setPatterns = []
     useAnyMapUnits = False
     for cnt, rule in enumerate(rules):
         symbol = rule.symbol()
@@ -543,7 +557,12 @@ def ruleBased(renderer, folder, stylesFolder, legendFolder, layer_alpha, sln, la
 
         (styleCode, pattern, setPattern,
          useMapUnits) = getSymbolAsStyle(symbol, stylesFolder, layer_alpha,
-                                         renderer, sln, layer, feedback)
+                                         renderer, sln + "_" + str(cnt), layer,
+                                         feedback)
+        if pattern != "":
+            patterns.append(pattern)
+        if setPattern != "":
+            setPatterns.append(setPattern)
         name = "".join((sln, "rule", str(cnt)))
         exp = rule.filterExpression()
         if rule.isElse():
@@ -561,7 +580,7 @@ def ruleBased(renderer, folder, stylesFolder, legendFolder, layer_alpha, sln, la
             useAnyMapUnits = True
     value = ("var value = '';")
     style = template % (sln, js, elsejs, sln)
-    return (style, pattern, setPattern, value, useAnyMapUnits)
+    return (style, "".join(patterns), "".join(setPatterns), value, useAnyMapUnits)
 
 
 def getValue(layer, renderer):
@@ -681,6 +700,8 @@ def getStyle(style, cluster, labelRes, labelText, sln, size,
 def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
                      layer, feedback):
     styles = {}
+    patterns = []
+    setPatterns = []
     useMapUnits = False
     if layer_transparency == 0:
         alpha = symbol.alpha()
@@ -689,8 +710,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
     for i in range(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
-        pattern = ""
-        setPattern = "" 
         ax = int(props["horizontal_anchor_point"]) if "horizontal_anchor_point" in props else 0
         ay = int(props["vertical_anchor_point"]) if "vertical_anchor_point" in props else 0
         if isinstance(sl, QgsSimpleMarkerSymbolLayer):
@@ -884,13 +903,14 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             color = sl.color().name()
             angle = 360 - sl.lineAngle()
 
-            pattern = """
-    var fill_%s = new ol.style.Fill();""" % sln
+            fill_var = "fill_%s_%s" % (sln, i)
+            patterns.append("""
+    var %s = new ol.style.Fill();""" % fill_var)
             style = """
-        fill: fill_%s""" % sln
-            setPattern = """
-    fill_%s.setColor(stripe(%s, %s, %s, '%s'));""" % (sln, weight, spaceWeight,
-                                                      angle, color)
+        fill: %s""" % fill_var
+            setPatterns.append("""
+    %s.setColor(stripe(%s, %s, %s, '%s'));""" % (fill_var, weight, spaceWeight,
+                                                 angle, color))
         else:
             color = getRGBAColor(props["color"], alpha)
             sizeUnits = props["size_unit"]
@@ -925,7 +945,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
         %s%s
     })''' % (style, ts)
     return ("[ %s]" % ",".join(styles[s] for s in sorted(styles.keys())),
-            pattern, setPattern, useMapUnits)
+            "".join(patterns), "".join(setPatterns), useMapUnits)
 
 
 def getSquare(color, borderColor, borderWidth, symbolSize, props, anchorX, anchorY):
