@@ -27,12 +27,14 @@ import webbrowser
 import platform
 import subprocess
 import sysconfig
+import tempfile
 import pkgutil
 import traceback
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 from qgis.core import (Qgis,
                        QgsWkbTypes,
+                       QgsMapLayer,
                        QgsProject,
                        QgsMapLayer,
                        QgsVectorLayer,
@@ -53,8 +55,7 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.PyQt.QtGui import (QIcon,
                              QFont,
                              QColor)
-from qgis.PyQt.QtWidgets import (QAction,
-                                 QAbstractItemView,
+from qgis.PyQt.QtWidgets import (QAbstractItemView,
                                  QDialog,
                                  QHBoxLayout,
                                  QVBoxLayout,
@@ -146,7 +147,8 @@ from qgis2web.olwriter import OpenLayersWriter
 from qgis2web.leafletWriter import LeafletWriter
 #from qgis2web.mapboxWriter import MapboxWriter
 from qgis2web.writerRegistry import (WRITER_REGISTRY)
-from qgis2web.exporter import (EXPORTER_REGISTRY)
+from qgis2web.exporter import (EXPORTER_REGISTRY, CloudExporter, CloudSyncExporter,
+                               FolderExporter, FolderSyncExporter, FtpExporter)
 from qgis2web.feedbackDialog import FeedbackDialog
 
 from qgis.gui import QgsColorButton
@@ -220,10 +222,9 @@ class MainDialog(QDialog, FORM_CLASS):
 
         self.layer_search_combo = None
         self.layer_filter_select = None
-        self.exporter_combo = None
-
         self.feedback = FeedbackDialog(self)
         self.feedback.setModal(True)
+        self._cloud_credentials_temp = None
         
         stgs = QSettings()
 
@@ -315,18 +316,13 @@ class MainDialog(QDialog, FORM_CLASS):
         # Insert min/max zoom widgets into the Set All layout (right after the Apply button, index 3)
         self.horizontalLayout_3.insertWidget(3, self._setAllPbfMinEdit)
         self.horizontalLayout_3.insertWidget(4, self._setAllPbfMaxEdit)
-        #self.populateLayerSearch()
+        self.populateLayerSearch()
         self.populateAttrFilter()
 
         writer = WRITER_REGISTRY.createWriterFromProject()
         self.setStateToWriter(writer)
 
         self.exporter = EXPORTER_REGISTRY.createFromProject()
-        self.exporter_combo.setCurrentIndex(
-            self.exporter_combo.findText(self.exporter.name()))
-        self.exporter_combo.currentIndexChanged.connect(
-            self.exporterTypeChanged)
-
         self.toggleOptions()
 
         # launch preview on start and add click on preview button
@@ -338,14 +334,31 @@ class MainDialog(QDialog, FORM_CLASS):
             self.buttonPreview.clicked.connect(self.previewMap)
 
         QgsProject.instance().cleared.connect(self.reject)
-        #self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
+        self.layersTree.model().dataChanged.connect(self.populateLayerSearch)
         self.layersTree.model().dataChanged.connect(self.populateAttrFilter)
         #self.ol3.clicked.connect(self.changeFormat)
         self.coffeeButton.setStyleSheet("border: none; background: transparent;")
-        self.coffeeButton.clicked.connect(self.openDonationPage)
+        self.coffeeButton.clicked.connect(self.openContributionPage)
         #self.leaflet.clicked.connect(self.changeFormat)
         #self.mapbox.clicked.connect(self.changeFormat)
-        self.buttonExport.clicked.connect(self.saveMap)
+        self.localExportCombo.clear()
+        self.localExportCombo.addItem(self._exportIcon('local_export.svg'),
+                                      self.tr('Local Export ...'))
+        self.localExportCombo.addItem(self._exportIcon('local_update.svg'),
+                                      self.tr('Local Update ...'))
+        self.cloudExportCombo.clear()
+        self.cloudExportCombo.addItem(self._exportIcon('cloud_export.svg'),
+                                      self.tr('Cloud Export ...'))
+        self.cloudExportCombo.addItem(self._exportIcon('cloud_update.svg'),
+                                      self.tr('Cloud Update ...'))
+        self.cloudExportCombo.addItem(self._exportIcon('ftp_export.svg'),
+                                      self.tr('FTP/FTPS Export ...'))
+        for combo in (self.localExportCombo, self.cloudExportCombo):
+            combo.setMinimumWidth(165)
+            combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+            combo.setMaxVisibleItems(5)
+        self.localExportCombo.activated.connect(self.localExportActivated)
+        self.cloudExportCombo.activated.connect(self.cloudExportActivated)
         
         #helpText = os.path.join(os.path.dirname(os.path.realpath(__file__)),
         #                        "helpFile.md")
@@ -377,7 +390,7 @@ class MainDialog(QDialog, FORM_CLASS):
             network_manager = QgsNetworkAccessManager.instance()
             proxy_settings = network_manager.proxy()
             # proxy configuration
-            if proxy_settings.type() != QNetworkProxy.NoProxy:
+            if proxy_settings.type() != QNetworkProxy.ProxyType.NoProxy:
                 proxy = QNetworkProxy()
                 proxy.setType(proxy_settings.type())
                 proxy.setHostName(proxy_settings.hostName())
@@ -406,14 +419,39 @@ class MainDialog(QDialog, FORM_CLASS):
     #     self.autoUpdatePreview()
     #     self.toggleOptions()
 
-    def exporterTypeChanged(self):
-        new_exporter_name = self.exporter_combo.currentText()
-        try:
-            self.exporter = [
-                e for e in EXPORTER_REGISTRY.getExporters()
-                if e.name() == new_exporter_name][0]()
-        except Exception:
-            pass
+    def _exportIcon(self, file_name):
+        return QIcon(os.path.join(os.path.dirname(__file__), 'icons', file_name))
+
+    def _rememberExporter(self, exporter):
+        exporter.writeToProject()
+        QgsProject.instance().writeEntry('qgis2web', 'Exporter', exporter.type())
+
+    def localExportActivated(self, index):
+        exporter = FolderExporter() if index == 0 else FolderSyncExporter()
+        if index == 0:
+            exporter.readFromProject()
+        if exporter.configure(self):
+            self.exporter = exporter
+            self._rememberExporter(exporter)
+            self.saveMap()
+        self.localExportCombo.setCurrentIndex(0)
+
+    def cloudExportActivated(self, index):
+        if index == 0:
+            exporter = CloudExporter()
+        elif index == 1:
+            exporter = CloudSyncExporter()
+        elif index == 2:
+            exporter = FtpExporter()
+        else:
+            self.cloudExportCombo.setCurrentIndex(0)
+            return
+        exporter.readFromProject()
+        if exporter.configure(self):
+            self.exporter = exporter
+            self._rememberExporter(exporter)
+            self.saveMap()
+        self.cloudExportCombo.setCurrentIndex(0)
 
     def currentMapFormat(self):
         """
@@ -560,39 +598,72 @@ class MainDialog(QDialog, FORM_CLASS):
         preview_file = self.createPreview()
         self.loadPreviewFile(preview_file)
 
-    def openDonationPage(self):
+    def openContributionPage(self):
         webbrowser.open('https://www.opengis.it/buy-me-a-coffee/')
 
     def saveMap(self):
         writer = self.createWriter()
+        self.feedback.reset()
+        self.feedback.show()
+        try:
+            if not self.exporter.prepareWriter(writer, self.feedback):
+                return
+        except (OSError, ValueError) as error:
+            self.feedback.setFatalError(str(getattr(error, 'message', error)))
+            return
         write_folder = self.exporter.exportDirectory()
         if not write_folder:
             return
 
-        self.feedback.reset()
-        self.feedback.show()
-        results = writer.write(self.iface,
-                               dest_folder=write_folder,
-                               feedback=self.feedback)
+        try:
+            results = writer.write(self.iface,
+                                   dest_folder=write_folder,
+                                   feedback=self.feedback)
+        except Exception as error:
+            self.feedback.setFatalError(str(error))
+            if self._cloud_credentials_temp:
+                self._cloud_credentials_temp.cleanup()
+                self._cloud_credentials_temp = None
+            return
         self.feedback.showFeedback('Success')
-        if self.closeFeedbackOnSuccess.checkState() == Qt.CheckState.Checked:
-            self.feedback.close()
-        result = self.exporter.postProcess(results, feedback=self.feedback)
-        if result and (not os.environ.get('CI') and
-                       not os.environ.get('TRAVIS')):
-            # The export folder is the directory containing index.html
-            export_folder = os.path.dirname(results.index_file)
-            # Check if any layer has PBF vector tile enabled
-            has_pbf = any(pbf_enabled for pbf_enabled, _, _ in writer.pbfVectorTile)
-            # Always copy the appropriate README.txt alongside index.html
-            self.copyReadmeFile(export_folder, has_pbf)
-            if has_pbf:
-                # Copy server launcher scripts inside the export folder
-                self.copyServerLaunchers(export_folder)
-                # Launch the appropriate platform-specific script
-                self.launchMapWithServer(export_folder)
-            else:
-                webbrowser.open_new_tab(self.exporter.destinationUrl())
+        # Include documentation and local launchers before sync or ZIP packaging.
+        export_folder = os.path.dirname(results.index_file)
+        has_pbf = any(pbf_enabled for pbf_enabled, _, _ in writer.pbfVectorTile)
+        self.copyReadmeFile(export_folder, has_pbf)
+        if has_pbf:
+            self.copyServerLaunchers(export_folder)
+        try:
+            if isinstance(self.exporter, (CloudExporter, CloudSyncExporter)):
+                self._cloud_credentials_temp = tempfile.TemporaryDirectory(
+                    prefix='qgis2web_cloud_credentials_')
+                credential_file = os.path.join(self._cloud_credentials_temp.name, 'credentials.json')
+                with open(credential_file, 'w', encoding='utf-8') as credential_stream:
+                    import json
+                    json.dump({'username': self.exporter.username,
+                               'password': self.exporter.password}, credential_stream)
+                os.chmod(credential_file, 0o600)
+                self.exporter.credential_file = credential_file
+            result = self.exporter.postProcess(results, feedback=self.feedback)
+        except OSError as error:
+            self.feedback.setFatalError('Export or upload failed: {}'.format(error))
+            return
+        finally:
+            if self._cloud_credentials_temp:
+                self._cloud_credentials_temp.cleanup()
+                self._cloud_credentials_temp = None
+            if isinstance(self.exporter, (CloudExporter, CloudSyncExporter)):
+                self.exporter.credential_file = None
+        if result:
+            if (not os.environ.get('CI') and not os.environ.get('TRAVIS')
+                    and self.closeFeedbackOnSuccess.checkState() == Qt.CheckState.Checked):
+                self.feedback.close()
+            if not os.environ.get('CI') and not os.environ.get('TRAVIS'):
+                destination = self.exporter.destinationUrl()
+                if has_pbf and isinstance(self.exporter, (FolderExporter, FolderSyncExporter)):
+                    folder = os.path.dirname(destination) if destination else export_folder
+                    self.launchMapWithServer(folder)
+                elif destination:
+                    webbrowser.open_new_tab(destination)
             
     def copyServerLaunchers(self, folder):
         """Copy server launcher scripts to the export folder."""
@@ -609,7 +680,7 @@ class MainDialog(QDialog, FORM_CLASS):
                     QgsMessageLog.logMessage(
                         "Could not copy '{}': {}".format(filename, str(e)),
                         "qgis2web",
-                        level=Qgis.Warning)
+                        level=utils.MESSAGE_LEVEL.Warning)
 
     def launchMapWithServer(self, folder):
         """Launch the map using a local HTTP server (for CORS support with PBF tiles)."""
@@ -628,7 +699,7 @@ class MainDialog(QDialog, FORM_CLASS):
             QgsMessageLog.logMessage(
                 "Unknown OS '{}', cannot launch server. Open index.html manually.".format(system),
                 "qgis2web",
-                level=Qgis.Warning)
+                level=utils.MESSAGE_LEVEL.Warning)
             return
 
         launcher_path = os.path.join(folder, launcher)
@@ -636,7 +707,7 @@ class MainDialog(QDialog, FORM_CLASS):
             QgsMessageLog.logMessage(
                 "Launcher '{}' not found in export folder.".format(launcher_path),
                 "qgis2web",
-                level=Qgis.Warning)
+                level=utils.MESSAGE_LEVEL.Warning)
             return
 
         try:
@@ -653,7 +724,7 @@ class MainDialog(QDialog, FORM_CLASS):
             QgsMessageLog.logMessage(
                 "Failed to launch server: {}".format(str(e)),
                 "qgis2web",
-                level=Qgis.Warning)
+                level=utils.MESSAGE_LEVEL.Warning)
 
     def copyReadmeFile(self, folder, has_pbf):
         """Copy the appropriate README.txt file to the export folder.
@@ -673,7 +744,7 @@ class MainDialog(QDialog, FORM_CLASS):
             QgsMessageLog.logMessage(
                 "Could not copy README.txt: {}".format(str(e)),
                 "qgis2web",
-                level=Qgis.Warning)
+                level=utils.MESSAGE_LEVEL.Warning)
 
     def populate_layers_and_groups(self, dlg):
         """Populate layers on QGIS into our layers and group tree view."""
@@ -687,9 +758,9 @@ class MainDialog(QDialog, FORM_CLASS):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if (layer.type() != QgsMapLayer.PluginLayer and
-                    (layer.type() != QgsMapLayer.VectorLayer or
-                     layer.wkbType() != QgsWkbTypes.NoGeometry) and
+            if (layer.type() != utils.LAYER_TYPE_PLUGIN and
+                    (layer.type() != utils.LAYER_TYPE_VECTOR or
+                     layer.wkbType() != utils._WKB.NoGeometry) and
                     layer.customProperty("ol_layer_type") is None):
                 try:
                     layer_parent = tree_layer.parent()
@@ -709,7 +780,7 @@ class MainDialog(QDialog, FORM_CLASS):
                         self.layers_item.addChild(group_item)
 
                 except Exception as e:
-                    QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web", level=Qgis.Critical)
+                    QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web", level=utils.MESSAGE_LEVEL.Critical)
              
         self.layersTree.addTopLevelItem(self.layers_item)
         self.layersTree.expandAll()
@@ -864,7 +935,7 @@ class MainDialog(QDialog, FORM_CLASS):
         (layers, groups, popup, visible, interactive,
          json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         for count, layer in enumerate(layers):
-            if layer.type() == layer.VectorLayer:
+            if layer.type() == utils.LAYER_TYPE_VECTOR:
                 # Skip PBF layers (not compatible with L.Control.Search)
                 pbf_config = pbfVectorTile[count] if count < len(pbfVectorTile) else (False, None, None)
                 if pbf_config[0]:
@@ -891,7 +962,7 @@ class MainDialog(QDialog, FORM_CLASS):
          json, cluster, pbfVectorTile, getFeatureInfo, baseMap, collapsedGroup) = self.getLayersAndGroups()
         options = []
         for count, layer in enumerate(layers):
-            if layer.type() == layer.VectorLayer:
+            if layer.type() == utils.LAYER_TYPE_VECTOR:
                 # Skip PBF layers (attribute filter not compatible)
                 pbf_config = pbfVectorTile[count] if count < len(pbfVectorTile) else (False, None, None)
                 if pbf_config[0]:
@@ -922,18 +993,11 @@ class MainDialog(QDialog, FORM_CLASS):
         for option in cleanOptions:
             self.layer_filter_select.insertItem(0, option)
 
-    def configureExporter(self):
-        self.exporter.configure()
-
     def populateConfigParams(self, dlg):
         """ Populates the dialog with option items and widgets """
         self.items = defaultdict(dict)
         tree = dlg.appearanceParams
-
-        configure_export_action = QAction('...', self)
-        configure_export_action.triggered.connect(self.configureExporter)
-
-        params = getParams(configure_exporter_action=configure_export_action)
+        params = getParams()
         for group, settings in params.items():
             if group != "Data export":
                 item = QTreeWidgetItem()
@@ -986,8 +1050,6 @@ class MainDialog(QDialog, FORM_CLASS):
             self.layer_search_combo = subitem.combo
         if parameter == 'Attribute filter':
             self.layer_filter_select = subitem.list
-        elif parameter == 'Exporter':
-            self.exporter_combo = subitem.combo
 
         return subitem
 
@@ -1169,8 +1231,8 @@ class devToggleFilter(QObject):
 
     def eventFilter(self, obj, event):
         try:
-            if event.type() == QEvent.KeyPress:
-                if event.key() == Qt.Key_F12:
+            if event.type() == QEvent.Type.KeyPress:
+                if event.key() == Qt.Key.Key_F12:
                     self.devToggle.emit(not obj.devConsole.isVisible())
                     if obj.devConsole.height() != 0:
                         obj.devConsole.setFixedHeight(0)
@@ -1265,7 +1327,7 @@ class TreeLayerItem(QTreeWidgetItem):
         self.addChild(self.visibleItem)
         tree.setItemWidget(self.visibleItem, 1, self.visibleCheck)
                 
-        if layer.type() == layer.VectorLayer:
+        if layer.type() == utils.LAYER_TYPE_VECTOR:
             if layer.providerType() == 'WFS':
                 self.jsonItem = QTreeWidgetItem(self)
                 self.jsonCheck = QCheckBox()
@@ -1280,7 +1342,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.jsonItem.setText(0, "Encode to JSON")
                 self.addChild(self.jsonItem)
                 tree.setItemWidget(self.jsonItem, 1, self.jsonCheck)
-            if layer.geometryType() == QgsWkbTypes.PointGeometry:
+            if layer.geometryType() == utils.GEOMETRY_TYPE_POINT:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterCheck = QCheckBox()
                 if layer.customProperty("qgis2web/Cluster") == 2:
@@ -1394,7 +1456,7 @@ class TreeLayerItem(QTreeWidgetItem):
                                        
         self.interactiveItem  = QTreeWidgetItem(self)
         self.interactiveCheck = QCheckBox()
-        if layer.type() == layer.VectorLayer:
+        if layer.type() == utils.LAYER_TYPE_VECTOR:
             int = True
             if int == 0 or str(int).lower() == "false":
                 self.interactiveCheck.setChecked(False)
@@ -1589,11 +1651,11 @@ class TreeSettingItem(QTreeWidgetItem):
                 self.list.addItem(option)
             widget = self.list
         else:
-            self.setText(1, unicode(value))
+            self.setText(1, str(value))
 
         if action:
             layout = QHBoxLayout()
-            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
             if widget:
                 layout.addWidget(widget)
             button = QToolButton()
@@ -1669,7 +1731,7 @@ class ProxyDialog(QDialog):
         self.proxy_url_input = QLineEdit(proxy_url, self)
         self.proxy_user_input = QLineEdit(proxy_user, self)
         self.proxy_password_input = QLineEdit(proxy_password, self)
-        self.proxy_password_input.setEchoMode(QLineEdit.Password)
+        self.proxy_password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
         layout.addWidget(QLabel("Proxy URL:"))
         layout.addWidget(self.proxy_url_input)
@@ -1678,7 +1740,7 @@ class ProxyDialog(QDialog):
         layout.addWidget(QLabel("Proxy Password:"))
         layout.addWidget(self.proxy_password_input)
 
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel, self)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 

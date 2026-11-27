@@ -4,6 +4,8 @@ import re
 import os
 import shutil
 import codecs
+from qgis2web.customcode import (CUSTOM_CODE_TEMPLATE_VALUES,
+                                 copy_custom_code)
 from qgis2web.utils import replaceInTemplate
 
 
@@ -11,6 +13,7 @@ def writeFoldersAndFiles(pluginDir, feedback, outputProjectFileName,
                          cluster_set, measure, matchCRS, layerSearch,
                          filterItems, useOFM, canvas, address, locate, layersList):
     feedback.showFeedback("Exporting libraries...")
+    copy_custom_code(outputProjectFileName)
     jsStore = os.path.join(outputProjectFileName, 'js')
     os.makedirs(jsStore)
     jsStore += os.sep
@@ -247,6 +250,7 @@ def writeHTMLstart(outputIndex, webpage_name, cluster_set, address, measure,
 
     canvasSize = canvas.size()
     values = {"@PAGETITLE@": webpage_name,
+              **CUSTOM_CODE_TEMPLATE_VALUES,
               "@CSSADDRESS@": cssAddress,
               "@EXTRACSS@": extracss,
               "@JSADDRESS@": jsAddress,

@@ -64,11 +64,17 @@ from qgis2web.leafletScriptStrings import (jsonScript,
                                            addMeasureControl,
                                            addZoomControl)
 from qgis2web.utils import (ALL_ATTRIBUTES, exportVector, exportVectorTilesXYZ,
-                            exportRaster, safeName, returnFilterValues)
+                            exportRaster, exportLayerImages,
+                            hasMixedAttributeTypes, safeName, returnFilterValues,
+                            LAYER_TYPE_VECTOR, LAYER_TYPE_RASTER,
+                            WKB_TYPE_NO_GEOMETRY, MESSAGE_LEVEL)
 from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
 from qgis2web.feedbackDialog import Feedback
+from qgis2web.layer_manifest import (LayerExportCache, MANIFEST_NAME,
+                                     PBF_CACHE_SCHEMA, layer_data_hash,
+                                     raster_data_hash, write_manifest)
 
 
 class LeafletWriter(Writer):
@@ -79,6 +85,7 @@ class LeafletWriter(Writer):
 
     def __init__(self):
         super(LeafletWriter, self).__init__()
+        self.layer_manifest_options = {'map_format': self.type()}
 
     @classmethod
     def type(cls):
@@ -92,7 +99,7 @@ class LeafletWriter(Writer):
         if not feedback:
             feedback = Feedback()
         feedback.showFeedback('Creating Leaflet map...')
-        self.preview_file = self.writeLeaflet(
+        self.preview_file, preserved_files = self.writeLeaflet(
             iface,
             feedback,
             layer_list=self.layers,
@@ -107,10 +114,12 @@ class LeafletWriter(Writer):
             getFeatureInfo=self.getFeatureInfo,
             baseMap = self.baseMap,
             params=self.params,
-            folder=dest_folder)
+            folder=dest_folder,
+            manifest_options=self.layer_manifest_options)
         result = WriterResult()
         result.index_file = self.preview_file
         result.folder = os.path.dirname(self.preview_file)
+        result.preserved_files = preserved_files
         for dirpath, dirnames, filenames in os.walk(result.folder):
             result.files.extend([os.path.join(dirpath, f) for f in filenames])
         return result
@@ -119,7 +128,8 @@ class LeafletWriter(Writer):
     def writeLeaflet(
             cls, iface, feedback, folder,
             layer_list, groups, collapsedGroup, visible, interactive, cluster, pbfVectorTile,
-            json, getFeatureInfo, baseMap, params, popup):
+            json, getFeatureInfo, baseMap, params, popup,
+            manifest_options=None):
         outputProjectFileName = folder
         QApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         legends = {}
@@ -161,7 +171,7 @@ class LeafletWriter(Writer):
         #QgsApplication.initQgis()
 
         useOFM = any(
-            layer.type() == QgsMapLayer.RasterLayer and
+            layer.type() == LAYER_TYPE_RASTER and
             layer.dataProvider().name() == "wms" and
             'tiles.openfreemap.org' in layer.dataProvider().dataSourceUri()
             for layer in layer_list
@@ -181,7 +191,7 @@ class LeafletWriter(Writer):
             rawLayerName = layer.name()
             safeLayerName = safeName(rawLayerName) + "_" + str(lyrCount)
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
-            if layer.type() == QgsMapLayer.VectorLayer and vts is None:
+            if layer.type() == LAYER_TYPE_VECTOR and vts is None:
                 labeltext, vtLabels, labelBuffer, labelBufferColor, labelBufferSize = getLabels(
                     layer, safeLayerName, outputProjectFileName, vts, vtLabels, feedback)
                 if labelBuffer:
@@ -208,6 +218,13 @@ class LeafletWriter(Writer):
         jsons = ""
         crs = QgsCoordinateReferenceSystem.EpsgCrsId
         exp_crs = QgsCoordinateReferenceSystem(4326, crs)
+        layer_cache = None
+        if manifest_options is not None:
+            layer_cache = LayerExportCache(
+                manifest_options.get('map_format', 'leaflet'),
+                manifest_options.get('previous_manifest'),
+                manifest_options.get('previous_root'),
+                manifest_options.get('remote_files'))
         lyrCount = 0
         for layer, jsonEncode, eachPopup, clst in zip(layer_list, json,
                                                       popup, cluster):
@@ -216,33 +233,120 @@ class LeafletWriter(Writer):
             vts = layer.customProperty("VectorTilesReader/vector_tile_url")
             pbf_config = pbfVectorTile[lyrCount] if lyrCount < len(pbfVectorTile) else (False, None, None)
             pbf_enabled, pbf_min_zoom, pbf_max_zoom = pbf_config
+            extent_options = None
+            if restrictToExtent:
+                try:
+                    extent_options = {
+                        'configured': str(extent),
+                        'canvas': canvas.extent().toString(),
+                    }
+                except AttributeError:
+                    extent_options = str(extent)
             if layer.providerType() != 'WFS' or jsonEncode is True:
-                if layer.type() == QgsMapLayer.VectorLayer and vts is None:
+                if layer.type() == LAYER_TYPE_VECTOR and vts is None:
+                    pbf_min = 3 if pbf_min_zoom is None else int(pbf_min_zoom)
+                    pbf_max = 4 if pbf_max_zoom is None else int(pbf_max_zoom)
+                    data_options = {
+                        'writer': 'leaflet',
+                        'format': 'pbf' if pbf_enabled else 'geojson',
+                        'precision': precision,
+                        'minify': bool(minify) if not pbf_enabled else False,
+                        'jsonEncode': (bool(jsonEncode)
+                                       if not pbf_enabled else False),
+                        'restrictToExtent': bool(restrictToExtent),
+                        'extent': extent_options,
+                        'renderer': (layer.renderer().dump()
+                                     if not pbf_enabled and layer.renderer()
+                                     else ''),
+                    }
+                    data_hash = (layer_data_hash(layer, data_options)
+                                 if layer_cache else None)
                     if pbf_enabled:
-                        feedback.showFeedback('Exporting %s to PBF XYZ EPSG:3857 [z%d - z%d]...' % (layer.name(), int(pbf_min_zoom or 3), int(pbf_max_zoom or 4)))
-                        feedback.showFeedback('<span style="color: gray">(it may take a long time depending on the Zmin-Zmax chosen, the number of features and other settings)</span>')
                         layersFolder = os.path.join(outputProjectFileName, "data")
                         QDir().mkpath(layersFolder)
-                        exportVectorTilesXYZ(layer, safeLayerName, layersFolder,
-                                             restrictToExtent, iface, extent, precision,
-                                             pbf_min_zoom, pbf_max_zoom)
+                        pbf_options = {
+                            'schema': PBF_CACHE_SCHEMA,
+                            'zmin': pbf_min,
+                            'zmax': pbf_max,
+                            'precision': precision,
+                            'restrictToExtent': bool(restrictToExtent),
+                            'extent': extent_options,
+                            'stringifyAttributes': hasMixedAttributeTypes(layer),
+                            'crs': 'EPSG:3857',
+                        }
+                        plan = (layer_cache.inspect(
+                            layer, safeLayerName, data_hash,
+                            pbf_options=pbf_options,
+                            pbf_root='data/{}-pbf'.format(safeLayerName))
+                                if layer_cache else
+                                {'pbf_ranges': [(pbf_min, pbf_max)]})
+                        if plan['pbf_ranges']:
+                            feedback.showFeedback(
+                                'Exporting %s to PBF XYZ EPSG:3857 [z%d-z%d]...' %
+                                (layer.name(), pbf_min, pbf_max))
+                            feedback.showFeedback(
+                                '<span style="color: gray">(only missing or '
+                                'incompatible zoom levels are generated)</span>')
+                            for range_index, (range_min, range_max) in enumerate(
+                                    plan['pbf_ranges']):
+                                exportVectorTilesXYZ(
+                                    layer, safeLayerName, layersFolder,
+                                    restrictToExtent, iface, extent, precision,
+                                    range_min, range_max,
+                                    clear_output=range_index == 0,
+                                    export_images=range_index == 0)
+                        else:
+                            feedback.showFeedback(
+                                'Reusing unchanged PBF data for %s.' % layer.name())
+                            exportLayerImages(
+                                layer, os.path.join(outputProjectFileName, 'images'))
                     else:
-                        feedback.showFeedback('Exporting %s to JSON...' % layer.name())
-                        exportVector(layer, safeLayerName, dataStore,
-                                     restrictToExtent, iface, extent, precision,
-                                     exp_crs, minify)
+                        plan = (layer_cache.inspect(
+                            layer, safeLayerName, data_hash,
+                            data_path='data/{}.js'.format(safeLayerName))
+                                if layer_cache else {'reuse_data': False})
+                        if plan['reuse_data']:
+                            feedback.showFeedback(
+                                'Reusing unchanged data for %s.' % layer.name())
+                            exportLayerImages(
+                                layer, os.path.join(outputProjectFileName, 'images'))
+                        else:
+                            feedback.showFeedback(
+                                'Exporting %s to JSON...' % layer.name())
+                            exportVector(layer, safeLayerName, dataStore,
+                                         restrictToExtent, iface, extent, precision,
+                                         exp_crs, minify)
                         jsons += jsonScript(safeLayerName)
                         scaleDependentLabels = \
                             scaleDependentLabelScript(layer, safeLayerName)
                         labelVisibility += scaleDependentLabels
                     feedback.completeStep()
 
-                elif layer.type() == QgsMapLayer.RasterLayer:
+                elif layer.type() == LAYER_TYPE_RASTER:
                     if layer.dataProvider().name() != "wms":
                         layersFolder = os.path.join(outputProjectFileName,
                                                     "data")
-                        exportRaster(layer, lyrCount, layersFolder,
-                                     feedback, iface, matchCRS)
+                        data_path = 'data/{}.png'.format(safeLayerName)
+                        raster_options = {
+                            'matchCRS': bool(matchCRS),
+                            'projectCrs': mapSettings.destinationCrs().authid(),
+                            'width': layer.width(),
+                            'height': layer.height(),
+                        }
+                        data_hash = (raster_data_hash(layer, raster_options)
+                                     if layer_cache else None)
+                        plan = (layer_cache.inspect(
+                            layer, safeLayerName, data_hash,
+                            data_path=data_path) if layer_cache else
+                            {'reuse_data': False})
+                        if plan['reuse_data']:
+                            feedback.showFeedback(
+                                'Reusing unchanged raster data for %s.' % layer.name())
+                        else:
+                            exportRaster(layer, lyrCount, layersFolder,
+                                         feedback, iface, matchCRS)
+            elif layer_cache:
+                layer_cache.inspect(layer, safeLayerName, None)
             if layer.hasScaleBasedVisibility():
                 scaleDependentLayers += scaleDependentLayerScript(
                     layer, safeLayerName, clst)
@@ -297,8 +401,8 @@ class LeafletWriter(Writer):
         for count, layer in enumerate(layer_list):
             rawLayerName = layer.name()
             safeLayerName = safeName(rawLayerName) + "_" + str(count)
-            if (layer.type() == QgsMapLayer.VectorLayer and
-                    layer.wkbType() != QgsWkbTypes.NoGeometry):
+            if (layer.type() == LAYER_TYPE_VECTOR and
+                    layer.wkbType() != WKB_TYPE_NO_GEOMETRY):
                 (new_src,
                  legends,
                  wfsLayers,
@@ -325,7 +429,7 @@ class LeafletWriter(Writer):
                                              pbfVectorTile=pbfVectorTile[count] if count < len(pbfVectorTile) else (False, None, None))
                 if useMapUnits:
                     mapUnitLayers.append(safeLayerName)
-            elif layer.type() == QgsMapLayer.RasterLayer:
+            elif layer.type() == LAYER_TYPE_RASTER:
                 if layer.dataProvider().name() == "wms":
                     feedback.showFeedback('Writing %s as WMS layer...' %
                                           layer.name())
@@ -429,7 +533,7 @@ class LeafletWriter(Writer):
             pbf_config = pbfVectorTile[count] if count < len(pbfVectorTile) else (False, None, None)
             pbf_enabled, _, _ = pbf_config
             safeLayerName = safeName(layer.name()) + "_" + str(count)
-            if (layer.type() == QgsMapLayer.VectorLayer and vts is None):
+            if (layer.type() == LAYER_TYPE_VECTOR and vts is None):
                 labelling = layer.labeling()
                 if labelling is not None:
                     palyr = labelling.settings()
@@ -450,7 +554,14 @@ class LeafletWriter(Writer):
                            useHeat, useShapes, useOSMB, useWMS, useWMTS, useVT)
         except Exception:
             QgsMessageLog.logMessage(traceback.format_exc(),
-                                     "qgis2web", level=Qgis.Critical)
+                                     "qgis2web", level=MESSAGE_LEVEL.Critical)
         finally:
             QApplication.restoreOverrideCursor()
-        return outputIndex
+        if layer_cache:
+            write_manifest(
+                os.path.join(outputProjectFileName, 'layers', MANIFEST_NAME),
+                layer_cache.manifest(project.title()))
+            preserved_files = sorted(layer_cache.preserved_paths)
+        else:
+            preserved_files = []
+        return outputIndex, preserved_files

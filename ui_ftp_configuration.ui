@@ -6,69 +6,208 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>349</width>
-    <height>198</height>
+    <width>520</width>
+    <height>500</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>460</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>FTP Settings</string>
+   <string>FTP / FTPS export</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>:/plugins/qgis2web/icons/qgis2web.png</normaloff>:/plugins/qgis2web/icons/qgis2web.png</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="hostLineEdit"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="usernameLineEdit"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
+  <layout class="QVBoxLayout" name="dialogLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="introLabel">
      <property name="text">
-      <string>Username</string>
+      <string>Upload the generated web map to an FTP or FTPS server. FTPS is recommended because it encrypts your login and files.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Host</string>
+   <item>
+    <widget class="QGroupBox" name="connectionGroupBox">
+     <property name="title">
+      <string>Server and destination</string>
      </property>
+     <layout class="QGridLayout" name="connectionGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="hostLabel">
+        <property name="text">
+         <string>Server (host)</string>
+        </property>
+        <property name="buddy">
+         <cstring>hostLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="hostLineEdit">
+        <property name="placeholderText">
+         <string>ftp.example.com</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="portLabel">
+        <property name="text">
+         <string>Port</string>
+        </property>
+        <property name="buddy">
+         <cstring>portSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="portSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>65535</number>
+        </property>
+        <property name="value">
+         <number>21</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="portHelpLabel">
+        <property name="text">
+         <string>Default port for the selected connection type: 21.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="folderLabel">
+        <property name="text">
+         <string>Remote folder</string>
+        </property>
+        <property name="buddy">
+         <cstring>folderLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="folderLineEdit">
+        <property name="placeholderText">
+         <string>public_html</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLabel" name="folderHelpLabel">
+        <property name="text">
+         <string>Leave empty to upload to your account's home folder.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Port</string>
+   <item>
+    <widget class="QGroupBox" name="securityGroupBox">
+     <property name="title">
+      <string>Connection security</string>
      </property>
+     <layout class="QGridLayout" name="securityGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="securityLabel">
+        <property name="text">
+         <string>Security mode</string>
+        </property>
+        <property name="buddy">
+         <cstring>securityComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="securityComboBox"/>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="securityDescriptionLabel">
+        <property name="text">
+         <string>TLS is required before login and for uploaded files. Usually uses port 21. Recommended for most servers.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QSpinBox" name="portSpinBox">
-     <property name="maximum">
-      <number>65535</number>
+   <item>
+    <widget class="QGroupBox" name="authenticationGroupBox">
+     <property name="title">
+      <string>Sign-in</string>
      </property>
-     <property name="value">
-      <number>21</number>
-     </property>
+     <layout class="QGridLayout" name="authenticationGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="authenticationLabel">
+        <property name="text">
+         <string>Login method</string>
+        </property>
+        <property name="buddy">
+         <cstring>authenticationComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="authenticationComboBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="usernameLabel">
+        <property name="text">
+         <string>Username</string>
+        </property>
+        <property name="buddy">
+         <cstring>usernameLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="usernameLineEdit">
+        <property name="placeholderText">
+         <string>FTP account username</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="authenticationDescriptionLabel">
+        <property name="text">
+         <string>The password is requested only if the server needs it and is never saved in the QGIS project. A blank password is allowed if the server accepts it.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="folderLineEdit"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Remote folder</string>
      </property>
     </widget>
    </item>
@@ -78,7 +217,10 @@
   <tabstop>hostLineEdit</tabstop>
   <tabstop>portSpinBox</tabstop>
   <tabstop>folderLineEdit</tabstop>
+  <tabstop>securityComboBox</tabstop>
+  <tabstop>authenticationComboBox</tabstop>
   <tabstop>usernameLineEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -89,12 +231,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>151</x>
-     <y>125</y>
+     <x>260</x>
+     <y>470</y>
     </hint>
     <hint type="destinationlabel">
-     <x>151</x>
-     <y>75</y>
+     <x>260</x>
+     <y>250</y>
     </hint>
    </hints>
   </connection>
@@ -105,12 +247,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>151</x>
-     <y>125</y>
+     <x>260</x>
+     <y>470</y>
     </hint>
     <hint type="destinationlabel">
-     <x>151</x>
-     <y>75</y>
+     <x>260</x>
+     <y>250</y>
     </hint>
    </hints>
   </connection>

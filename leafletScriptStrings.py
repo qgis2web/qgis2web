@@ -12,7 +12,9 @@ from qgis.core import (QgsProject,
                        QgsMessageLog,
                        Qgis,
                        QgsWkbTypes)
-from qgis2web.utils import scaleToZoom, safeName
+from qgis2web.utils import (scaleToZoom, safeName, GEOMETRY_TYPE_POINT,
+                            LAYER_TYPE_VECTOR, LAYER_TYPE_RASTER,
+                            MESSAGE_LEVEL)
 
 def jsonScript(layer):
     json = """
@@ -639,9 +641,9 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster
                         # Aggiunge il layer al gruppo
                         created_groups[group_name].append(i)
                             
-            if i.type() == QgsMapLayer.VectorLayer:
+            if i.type() == LAYER_TYPE_VECTOR:
                 # testDump = i.renderer().dump()
-                if clustered and i.geometryType() == QgsWkbTypes.PointGeometry:
+                if clustered and i.geometryType() == GEOMETRY_TYPE_POINT:
                     layersList += """
             {label: '""" + legends[safeLayerName].replace("'", "\'")
                     layersList += "', layer: cluster_""" + safeLayerName + "},"
@@ -649,7 +651,7 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster
                     layersList += """
             {label: '""" + legends[safeLayerName].replace("'", "\'")
                     layersList += "', layer: layer_" + safeLayerName + "},"
-            elif i.type() == QgsMapLayer.RasterLayer:
+            elif i.type() == LAYER_TYPE_RASTER:
                 layersList += '''
             {label: "''' + rawLayerName.replace("'", "\'") + '"'
                 layersList += ", layer: layer_" + safeLayerName 
@@ -667,7 +669,7 @@ def addLayersList(baseMap, matchCRS, layer_list, groups, collapsedGroup, cluster
 
         except Exception:
             QgsMessageLog.logMessage(traceback.format_exc(), "qgis2web",
-                                    level=Qgis.Critical)
+                                    level=MESSAGE_LEVEL.Critical)
             
     layersList += "]"
 

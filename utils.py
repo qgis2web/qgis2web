@@ -23,9 +23,21 @@ import shutil
 import sys
 import string
 from io import StringIO
-from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QMetaType, QTime
 from qgis.PyQt.QtGui import QPainter
+
+# QVariant.Type was removed in Qt 6; QMetaType.Type values work with QgsField
+# in both PyQt5 and PyQt6/QGIS 4.
+try:
+    FIELD_TYPE_INT = QMetaType.Type.Int
+    FIELD_TYPE_DOUBLE = QMetaType.Type.Double
+    FIELD_TYPE_STRING = QMetaType.Type.QString
+except AttributeError:
+    FIELD_TYPE_INT = QMetaType.Int
+    FIELD_TYPE_DOUBLE = QMetaType.Double
+    FIELD_TYPE_STRING = QMetaType.QString
 from qgis.core import (QgsApplication,
+                       QgsMapLayer,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
@@ -51,6 +63,35 @@ from qgis.core import (QgsApplication,
 from qgis.utils import Qgis
 import processing
 import tempfile
+from qgis2web.layer_manifest import (LayerExportCache, PBF_CACHE_SCHEMA,
+                                     layer_data_hash, raster_data_hash)
+
+# QGIS 4 exposes these enums through Qgis; QGIS 3.22 keeps the legacy aliases.
+def _enum_value(enum_type, name, legacy_name=None):
+    """Resolve a QGIS 4 enum member with its QGIS 3 legacy spelling fallback."""
+    value = getattr(enum_type, name, None)
+    if value is None and legacy_name:
+        value = getattr(enum_type, legacy_name)
+    return value
+
+
+_WKB = getattr(Qgis, 'WkbType', QgsWkbTypes)
+_GEOMETRY_TYPE = getattr(Qgis, 'GeometryType', QgsWkbTypes)
+_MAP_LAYER_TYPE = getattr(QgsMapLayer, 'LayerType', QgsMapLayer)
+LAYER_TYPE_VECTOR = _enum_value(_MAP_LAYER_TYPE, 'Vector', 'VectorLayer')
+LAYER_TYPE_RASTER = _enum_value(_MAP_LAYER_TYPE, 'Raster', 'RasterLayer')
+LAYER_TYPE_PLUGIN = _enum_value(_MAP_LAYER_TYPE, 'Plugin', 'PluginLayer')
+GEOMETRY_TYPE_POINT = _enum_value(_GEOMETRY_TYPE, 'Point', 'PointGeometry')
+GEOMETRY_TYPE_POLYGON = _enum_value(_GEOMETRY_TYPE, 'Polygon', 'PolygonGeometry')
+MESSAGE_LEVEL = getattr(Qgis, 'MessageLevel', Qgis)
+WKB_TYPE_NO_GEOMETRY = _WKB.NoGeometry
+WKB_TYPE_MULTIPOINT = _WKB.MultiPoint
+
+# QgsFeatureRequest flags moved to Qgis.FeatureRequestFlag in QGIS 3.36+; the
+# flat members are gone in QGIS 4.
+_FEATURE_REQUEST_FLAG = getattr(Qgis, 'FeatureRequestFlag', QgsFeatureRequest)
+FEATURE_REQUEST_EXACT_INTERSECT = _enum_value(_FEATURE_REQUEST_FLAG,
+                                              'ExactIntersect')
 
 NO_POPUP = 0
 ALL_ATTRIBUTES = 1
@@ -93,7 +134,7 @@ TYPE_MAP = {
     QgsWkbTypes.TriangleZ: 'Polygon',
     QgsWkbTypes.TriangleM: 'Polygon',
     QgsWkbTypes.TriangleZM: 'Polygon',
-    QgsWkbTypes.MultiPoint: 'MultiPoint',
+    _WKB.MultiPoint: 'MultiPoint',
     QgsWkbTypes.MultiPoint25D: 'MultiPoint',
     QgsWkbTypes.MultiPointZ: 'MultiPoint',
     QgsWkbTypes.MultiPointM: 'MultiPoint',
@@ -151,7 +192,7 @@ def getUsedFields(layer):
 
 
 def writeTmpLayer(layer, restrictToExtent, iface, extent):
-    if layer.wkbType() == QgsWkbTypes.NoGeometry:
+    if layer.wkbType() == _WKB.NoGeometry:
         return
 
     fields = layer.fields()
@@ -184,7 +225,7 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
         fieldLength = layer.fields().field(field).length()
         if (editorWidget == 'Hidden'):
             fieldName = "q2wHide_" + fieldName
-        if fieldType == QVariant.Double or fieldType == QVariant.Int:
+        if fieldType == FIELD_TYPE_DOUBLE or fieldType == FIELD_TYPE_INT:
             fieldType = "double"
             fieldLength = max(fieldLength, 20)
         else:
@@ -207,7 +248,7 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
             transform = QgsCoordinateTransform(canvasCRS, layerCRS)
         projectedExtent = transform.transformBoundingBox(extent)
         request = QgsFeatureRequest(projectedExtent)
-        request.setFlags(QgsFeatureRequest.ExactIntersect)
+        request.setFlags(FEATURE_REQUEST_EXACT_INTERSECT)
         features = layer.getFeatures(request)
     else:
         features = layer.getFeatures()
@@ -222,10 +263,18 @@ def writeTmpLayer(layer, restrictToExtent, iface, extent):
 
 
 def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
-                 restrictToExtent, extent, feedback, matchCRS, pbfVectorTile):
+                 restrictToExtent, extent, feedback, matchCRS, pbfVectorTile,
+                 manifest_options=None):
     feedback.showFeedback('Exporting layers...')
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
+    cache = None
+    if manifest_options is not None:
+        cache = LayerExportCache(
+            manifest_options.get('map_format', 'openlayers'),
+            manifest_options.get('previous_manifest'),
+            manifest_options.get('previous_root'),
+            manifest_options.get('remote_files'))
 
     pbf_vectortile_layers = [
         # knowing that print pbfVectorTile looks like this
@@ -242,38 +291,117 @@ def exportLayers(iface, layers, folder, precision, optimize, popupField, json,
         pbf_config = pbfVectorTile[count] if count < len(pbfVectorTile) else (False, None, None)
         pbf_enabled, pbf_min_zoom, pbf_max_zoom = pbf_config
         vts = layer.customProperty("VectorTilesReader/vector_tile_source")
-        if (layer.type() == layer.VectorLayer and vts is None and
+        if (layer.type() == LAYER_TYPE_VECTOR and vts is None and
                 (layer.providerType() != "WFS" or encode2json)):
+            extent_options = None
+            if restrictToExtent:
+                try:
+                    extent_options = {
+                        'configured': str(extent),
+                        'canvas': iface.mapCanvas().extent().toString(),
+                    }
+                except AttributeError:
+                    extent_options = str(extent)
+            data_options = {
+                'writer': 'openlayers',
+                'format': 'pbf' if pbf_enabled else 'geojson',
+                'precision': precision,
+                'minify': bool(optimize) if not pbf_enabled else False,
+                'restrictToExtent': bool(restrictToExtent),
+                'extent': extent_options,
+                'renderer': (layer.renderer().dump()
+                             if not pbf_enabled and layer.renderer()
+                             else ''),
+            }
+            data_hash = layer_data_hash(layer, data_options) if cache else None
             if pbf_enabled:
-                pbf_min = 3 if pbf_min_zoom is None else pbf_min_zoom
-                pbf_max = 4 if pbf_max_zoom is None else pbf_max_zoom
-                
-                feedback.showFeedback('Exporting %s to PBF XYZ EPSG:3857 [z%d - z%d]...' % (layer.name(), int(pbf_min), int(pbf_max)))  
+                pbf_min = 3 if pbf_min_zoom is None else int(pbf_min_zoom)
+                pbf_max = 4 if pbf_max_zoom is None else int(pbf_max_zoom)
+                pbf_options = {
+                    'schema': PBF_CACHE_SCHEMA,
+                    'zmin': pbf_min,
+                    'zmax': pbf_max,
+                    'precision': precision,
+                    'restrictToExtent': bool(restrictToExtent),
+                    'extent': extent_options,
+                    'stringifyAttributes': hasMixedAttributeTypes(layer),
+                    'crs': 'EPSG:3857',
+                }
+                plan = (cache.inspect(
+                    layer, sln, data_hash, pbf_options=pbf_options,
+                    pbf_root='layers/{}-pbf'.format(sln)) if cache else
+                    {'pbf_ranges': [(pbf_min, pbf_max)]})
                 feedback.showFeedback('<span style="color: gray">(attributes json required for layer search)</span>')
-                feedback.showFeedback('<span style="color: gray">(it may take a long time depending on the Zmin-Zmax chosen, the number of features and other settings)</span>')
-                
-                exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent,
-                                     iface, extent, precision, pbf_min_zoom, pbf_max_zoom, pbf_vectortile_layers)
+                if plan['pbf_ranges']:
+                    feedback.showFeedback(
+                        'Exporting %s to PBF XYZ EPSG:3857 [z%d-z%d]...' %
+                        (layer.name(), pbf_min, pbf_max))
+                    feedback.showFeedback(
+                        '<span style="color: gray">(only missing or incompatible '
+                        'zoom levels are generated)</span>')
+                    for range_index, (range_min, range_max) in enumerate(
+                            plan['pbf_ranges']):
+                        exportVectorTilesXYZ(
+                            layer, sln, layersFolder, restrictToExtent,
+                            iface, extent, precision, range_min, range_max,
+                            pbf_vectortile_layers,
+                            clear_output=range_index == 0,
+                            export_images=range_index == 0)
+                else:
+                    feedback.showFeedback(
+                        'Reusing unchanged PBF data for %s.' % layer.name())
+                    exportLayerImages(
+                        layer, os.path.join(os.path.dirname(layersFolder), 'images'))
             else:
-                feedback.showFeedback('Exporting %s to JSON...' % layer.name())
-                crs = QgsCoordinateReferenceSystem("EPSG:4326")
-                exportVector(layer, sln, layersFolder, restrictToExtent,
-                            iface, extent, precision, crs, optimize)
-        elif (layer.type() == layer.RasterLayer and
+                plan = (cache.inspect(
+                    layer, sln, data_hash,
+                    data_path='layers/{}.js'.format(sln)) if cache else
+                    {'reuse_data': False})
+                if plan['reuse_data']:
+                    feedback.showFeedback(
+                        'Reusing unchanged data for %s.' % layer.name())
+                    exportLayerImages(
+                        layer, os.path.join(os.path.dirname(layersFolder), 'images'))
+                else:
+                    feedback.showFeedback('Exporting %s to JSON...' % layer.name())
+                    crs = QgsCoordinateReferenceSystem("EPSG:4326")
+                    exportVector(layer, sln, layersFolder, restrictToExtent,
+                                 iface, extent, precision, crs, optimize)
+        elif (layer.type() == LAYER_TYPE_RASTER and
                 layer.providerType() != "wms"):
-            feedback.showFeedback('Exporting %s as raster...' % layer.name())
-            exportRaster(layer, count, layersFolder, feedback, iface, matchCRS)
+            data_path = 'layers/{}.png'.format(sln)
+            raster_options = {
+                'matchCRS': bool(matchCRS),
+                'projectCrs': iface.mapCanvas().mapSettings().destinationCrs().authid(),
+                'width': layer.width(),
+                'height': layer.height(),
+            }
+            data_hash = raster_data_hash(layer, raster_options) if cache else None
+            plan = (cache.inspect(
+                layer, sln, data_hash, data_path=data_path) if cache else
+                {'reuse_data': False})
+            if plan['reuse_data']:
+                feedback.showFeedback(
+                    'Reusing unchanged raster data for %s.' % layer.name())
+            else:
+                feedback.showFeedback('Exporting %s as raster...' % layer.name())
+                exportRaster(layer, count, layersFolder, feedback, iface, matchCRS)
+        elif cache:
+            cache.inspect(layer, sln, None)
         feedback.completeStep()
     feedback.completeStep()
+    return cache
 
 def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
-                         extent, precision="maintain", min_zoom=None, max_zoom=None, pbf_vectortile_layers=None):
+                         extent, precision="maintain", min_zoom=None, max_zoom=None,
+                         pbf_vectortile_layers=None, clear_output=True,
+                         export_images=True):
     cleanLayer = writeTmpLayer(layer, restrictToExtent, iface, extent)
     if cleanLayer is None:
         QgsMessageLog.logMessage(
             "writeTmpLayer returned None for {} - skipping PBF export".format(layer.name()),
             "qgis2web",
-            level=Qgis.Warning)
+            level=MESSAGE_LEVEL.Warning)
         return
 
     target_crs = QgsCoordinateReferenceSystem("EPSG:3857")
@@ -289,10 +417,10 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
             QgsMessageLog.logMessage(
                 "Could not reproject layer {} to EPSG:3857 before PBF export: {}".format(layer.name(), str(e)),
                 "qgis2web",
-                level=Qgis.Warning)
+                level=MESSAGE_LEVEL.Warning)
 
     pbf_dir = os.path.join(layersFolder, sln + "-pbf")
-    if os.path.exists(pbf_dir):
+    if clear_output and os.path.exists(pbf_dir):
         shutil.rmtree(pbf_dir)
     QDir().mkpath(pbf_dir)
 
@@ -303,6 +431,13 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
 
     min_z = 3 if min_zoom is None else int(min_zoom)
     max_z = 4 if max_zoom is None else int(max_zoom)
+
+    # The MVT encoder of QGIS deduplicates attribute values with a
+    # QMap<QVariant, int>. Comparing a string value with a numeric one is
+    # unordered, so its binary search can hit an unrelated entry and the tile
+    # stores another value's index: labels (and popups) then show the wrong
+    # attribute. Writing every tile attribute as text keeps the ordering total.
+    stringify_attributes = hasMixedAttributeTypes(cleanLayer)
 
     # Always use the layer extent converted to EPSG:3857
     layer_crs = cleanLayer.crs()
@@ -333,7 +468,7 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
     #     QgsMessageLog.logMessage(
     #         "Could not add idO field to {}: {}".format(layer.name(), str(e)),
     #         "qgis2web",
-    #         level=Qgis.Warning)
+    #         level=MESSAGE_LEVEL.Warning)
 
     # # Export individual JSON files ({sln}-{idO}.json) with WKB geometry (EPSG:3857) + properties
     # # Geometry is base64-encoded WKB, ready for ol.format.WKB().readGeometry() in JS
@@ -379,19 +514,13 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
     #     QgsMessageLog.logMessage(
     #         "Could not write individual geometry JSON for {}: {}".format(layer.name(), str(e)),
     #         "qgis2web",
-    #         level=Qgis.Warning
+    #         level=MESSAGE_LEVEL.Warning
     #     )
 
     # Export images BEFORE PBF (so it runs even if PBF succeeds and returns)
-    try:
-        images_folder = os.path.join(os.path.dirname(layersFolder), 'images')
-        for img_field in layer.fields():
-            exportImages(layer, img_field.name(), images_folder)
-    except Exception as e:
-        QgsMessageLog.logMessage(
-            "Could not export images for {}: {}".format(layer.name(), str(e)),
-            "qgis2web",
-            level=Qgis.Warning)
+    if export_images:
+        exportLayerImages(
+            layer, os.path.join(os.path.dirname(layersFolder), 'images'))
 
     # # save attributes-only JSON for layer search
     # try:
@@ -401,7 +530,7 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
     #     QgsMessageLog.logMessage(
     #         "Could not export searchable JSON for {}: {}".format(layer.name(), str(e)),
     #         "qgis2web",
-    #         level=Qgis.Warning
+    #         level=MESSAGE_LEVEL.Warning
     #     )
     last_error = None
 
@@ -410,7 +539,7 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
 
         # ricevo layer sfoltito e semplificato in base alla geometria e alla zoom level
         for z in range(min_z, max_z + 1):
-            zoomLayer = buildZoomLayer(cleanLayer, z)
+            zoomLayer = buildZoomLayer(cleanLayer, z, stringify_attributes)
             zoomLayer.setName(sln)
             layers_config.append({
                 "layer": zoomLayer,
@@ -441,9 +570,51 @@ def exportVectorTilesXYZ(layer, sln, layersFolder, restrictToExtent, iface,
         "PBF vector tile export failed for layer '{}'. All algorithms tried. "
         "Last error: {}".format(layer.name(), str(last_error)))
 
+
+def exportLayerImages(layer, images_folder):
+    """Export image attributes even when the layer's data files are reused."""
+    QDir().mkpath(images_folder)
+    try:
+        for field in layer.fields():
+            exportImages(layer, field.name(), images_folder)
+    except Exception as error:
+        QgsMessageLog.logMessage(
+            "Could not export images for {}: {}".format(layer.name(), str(error)),
+            "qgis2web",
+            level=MESSAGE_LEVEL.Warning)
+
+
 WORLD_SIZE = 40075016.68557849
 
-def createMemoryLayerLike(layer, name_suffix=""):
+def numericFieldTypeIds():
+    """QVariant type ids QgsField.type() uses for numeric values."""
+    ids = set()
+    containers = [getattr(QMetaType, "Type", None), QMetaType]
+    names = ("Int", "UInt", "LongLong", "ULongLong", "Double", "Float", "Bool")
+    for container in containers:
+        if container is None:
+            continue
+        for name in names:
+            value = getattr(container, name, None)
+            if isinstance(value, int):
+                ids.add(value)
+    return ids
+
+
+def hasMixedAttributeTypes(layer):
+    """True when the layer mixes text and numeric attribute values."""
+    numeric_ids = numericFieldTypeIds()
+    has_numeric = False
+    has_text = False
+    for field in layer.fields():
+        if field.type() in numeric_ids:
+            has_numeric = True
+        else:
+            has_text = True
+    return has_numeric and has_text
+
+
+def createMemoryLayerLike(layer, name_suffix="", stringifyAttributes=False):
     geom_type = QgsWkbTypes.displayString(layer.wkbType())
     uri = geom_type
     if layer.crs().isValid():
@@ -454,7 +625,12 @@ def createMemoryLayerLike(layer, name_suffix=""):
         "memory"
     )
     provider = out.dataProvider()
-    provider.addAttributes(layer.fields())
+    if stringifyAttributes:
+        provider.addAttributes(
+            [QgsField(field.name(), FIELD_TYPE_STRING)
+             for field in layer.fields()])
+    else:
+        provider.addAttributes(layer.fields())
     out.updateFields()
     return out
 
@@ -468,16 +644,16 @@ def simplifyTolerance(z):
 
 def representativePoint(geom):
     if geom.isMultipart():
-        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry:
+        if QgsWkbTypes.geometryType(geom.wkbType()) == GEOMETRY_TYPE_POINT:
             pts = geom.asMultiPoint()
             if pts:
                 return pts[0]
     else:
-        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry:
+        if QgsWkbTypes.geometryType(geom.wkbType()) == GEOMETRY_TYPE_POINT:
             return geom.asPoint()
     return None
 
-def thinPointLayer(layer, zoom):
+def thinPointLayer(layer, zoom, stringifyAttributes=False):
     tile_size = WORLD_SIZE / (2 ** zoom)
     # extent = 4096
     # GRID_SIZE = 32
@@ -487,7 +663,8 @@ def thinPointLayer(layer, zoom):
     occupied = set()
     out = createMemoryLayerLike(
         layer,
-        "_z{}".format(zoom)
+        "_z{}".format(zoom),
+        stringifyAttributes
     )
     provider = out.dataProvider()
 
@@ -518,11 +695,12 @@ def thinPointLayer(layer, zoom):
     )
     return out
 
-def simplifyLayer(layer, zoom):
+def simplifyLayer(layer, zoom, stringifyAttributes=False):
     tol = simplifyTolerance(zoom)
     out = createMemoryLayerLike(
         layer,
-        "_z{}".format(zoom)
+        "_z{}".format(zoom),
+        stringifyAttributes
     )
     provider = out.dataProvider()
 
@@ -555,11 +733,11 @@ def simplifyLayer(layer, zoom):
     )
     return out
 
-def buildZoomLayer(layer, zoom):
+def buildZoomLayer(layer, zoom, stringifyAttributes=False):
     geom_type = QgsWkbTypes.geometryType(layer.wkbType())
-    if geom_type == QgsWkbTypes.PointGeometry:
-        return thinPointLayer(layer, zoom)
-    return simplifyLayer(layer, zoom)
+    if geom_type == GEOMETRY_TYPE_POINT:
+        return thinPointLayer(layer, zoom, stringifyAttributes)
+    return simplifyLayer(layer, zoom, stringifyAttributes)
 
 
 def safe_json_value(val):
@@ -655,7 +833,7 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
         QgsMessageLog.logMessage(
             "Could not write json file {}: {}".format(tmpPath, result),
             "qgis2web",
-            level=Qgis.Critical)
+            level=MESSAGE_LEVEL.Critical)
         return
 
     fields = layer.fields()
@@ -667,9 +845,9 @@ def exportVector(layer, sln, layersFolder, restrictToExtent, iface,
 
 def add25dAttributes(cleanLayer, layer, canvas):
     provider = cleanLayer.dataProvider()
-    provider.addAttributes([QgsField("height", QVariant.Double),
-                            QgsField("wallColor", QVariant.String),
-                            QgsField("roofColor", QVariant.String)])
+    provider.addAttributes([QgsField("height", FIELD_TYPE_DOUBLE),
+                            QgsField("wallColor", FIELD_TYPE_STRING),
+                            QgsField("roofColor", FIELD_TYPE_STRING)])
     cleanLayer.updateFields()
     fields = cleanLayer.fields()
     renderer = layer.renderer()
@@ -859,9 +1037,9 @@ def exportRaster(layer, count, layersFolder, feedback, iface, matchCRS):
 
 
 def is25d(layer, canvas, restrictToExtent, extent):
-    if layer.type() != layer.VectorLayer:
+    if layer.type() != LAYER_TYPE_VECTOR:
         return False
-    if layer.geometryType() != QgsWkbTypes.PolygonGeometry:
+    if layer.geometryType() != GEOMETRY_TYPE_POLYGON:
         return False
     vts = layer.customProperty("VectorTilesReader/vector_tile_source")
     if vts is not None:
@@ -889,7 +1067,7 @@ def is25d(layer, canvas, restrictToExtent, extent):
         fields = layer.fields()
         if restrictToExtent and extent == "Canvas extent":
             request = QgsFeatureRequest(canvas.extent())
-            request.setFlags(QgsFeatureRequest.ExactIntersect)
+            request.setFlags(FEATURE_REQUEST_EXACT_INTERSECT)
             features = layer.getFeatures(request)
         else:
             features = layer.getFeatures()
@@ -1049,7 +1227,7 @@ def returnFilterValues(layer_list, fieldName, fieldType):
                 "values": ["true", "false"]}
     filterValues = []
     for layer in layer_list:
-        if layer.type() == layer.VectorLayer:
+        if layer.type() == LAYER_TYPE_VECTOR:
             fields = layer.fields()
             for f in fields:
                 if boilType(f.typeName()) == fieldType:

@@ -19,8 +19,11 @@
 
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
+try:
+    from qgis.PyQt.QtWidgets import QAction
+except ImportError:  # QAction moved from QtWidgets to QtGui in PyQt6.
+    from qgis.PyQt.QtGui import QAction
 from qgis.core import QgsApplication
 
 #import sip

@@ -158,7 +158,8 @@ class FeedbackDialog(QDialog, Ui_Feedback, Feedback):
         self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setEnabled(False)
 
     def setProgress(self, progress):
+        value = max(0, min(100, int(progress)))
         if not self.progressBar.maximum() == 100:
             self.progressBar.setRange(0, 100)
-        self.progressBar.setValue(progress)
+        self.progressBar.setValue(value)
         self.processEvents()

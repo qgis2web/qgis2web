@@ -1,0 +1,1 @@
+/* qgis2web custom JavaScript. Loaded after the generated map scripts. */

@@ -537,7 +537,10 @@
 				<h3>Export folder</h3>
 					<p>The folder where the webmap will be saved</p> 
 				<h3>Exporter</h3>
-					<p>How your map will be exported - currently supported are `Export to folder` and `Export to FTP site`: Click the `...` button to configure the export settings</p> 
+					<p>Choose Local Export, Local Update, Cloud Export, or Cloud Update. Click the `...` button to configure the destination and publishing settings.</p>
+				<h3>Incremental updates</h3>
+					<p>Local Update and Cloud Update reuse data for unchanged layers when the saved layer manifest, data hash, output format, and required files match. Other project files are regenerated and compared as usual. If a layer changed or the cache is missing or incompatible, that layer is exported again.</p>
+					<p>For PBF Vector Tiles, compatible zoom levels are retained and only newly requested zoom levels are generated. If the layer data or tile-generation options changed, its full requested zoom range is rebuilt. Cloud Update packages the changed files as a delta and uploads the archive in resumable chunks; the Cloud site's archive and account limits still apply.</p>
 				<h3>Minify GeoJSON files</h3>
 					<p>Remove unnecessary whitespace from exported GeoJSON to reduce file size</p>
 				<h3>Precision</h3>

@@ -43,6 +43,8 @@ from .exporter import (EXPORTER_REGISTRY)
 from .olwriter import (OpenLayersWriter)
 from .leafletWriter import (LeafletWriter)
 from .configparams import getDefaultParams
+from .utils import (LAYER_TYPE_PLUGIN, LAYER_TYPE_VECTOR,
+                    WKB_TYPE_NO_GEOMETRY, MESSAGE_LEVEL)
 
 defaultParams = getDefaultParams()
 
@@ -113,16 +115,16 @@ class exportProject(qgis2webAlgorithm):
 
         for tree_layer in tree_layers:
             layer = tree_layer.layer()
-            if (layer.type() != QgsMapLayer.PluginLayer and
-                    (layer.type() != QgsMapLayer.VectorLayer or
-                     layer.wkbType() != QgsWkbTypes.NoGeometry) and
+            if (layer.type() != LAYER_TYPE_PLUGIN and
+                    (layer.type() != LAYER_TYPE_VECTOR or
+                     layer.wkbType() != WKB_TYPE_NO_GEOMETRY) and
                     root_node.findLayer(layer.id()).isVisible()):
                 try:
-                    # if layer.type() == QgsMapLayer.VectorLayer:
+                    # if layer.type() == LAYER_TYPE_VECTOR:
                     #    testDump = layer.renderer().dump()
                     layers.append(layer)
                     layerPopups = []
-                    if layer.type() == QgsMapLayer.VectorLayer:
+                    if layer.type() == LAYER_TYPE_VECTOR:
                         for field in layer.fields():
                             fieldList = []
                             k = field.name()
@@ -135,7 +137,7 @@ class exportProject(qgis2webAlgorithm):
                 except Exception:
                     QgsMessageLog.logMessage(traceback.format_exc(),
                                              "qgis2web",
-                                             level=Qgis.Critical)
+                                             level=MESSAGE_LEVEL.Critical)
 
         visible = []
         json = []
@@ -426,9 +428,9 @@ class exportVector(exportLayer):
                 <dt>Mapping library location</dt>
                 <dd>Local | CDN</dd>
                 <dt>Exporter</dt>
-                <dd>Export to folder | Export to FTP site</dd>
+                <dd>Export to folder | Export to FTP / FTPS server</dd>
                 <dt>Exporter</dt>
-                <dd>Export to folder | Export to FTP site</dd>
+                <dd>Export to folder | Export to FTP / FTPS server</dd>
                 <dt>Precision</dt>
                 <dd>maintain | [decimal places]</dd>
                 <dt>Min zoom level</dt>
@@ -536,9 +538,9 @@ class exportRaster(exportLayer):
                 <dt>Mapping library location</dt>
                 <dd>Local | CDN</dd>
                 <dt>Exporter</dt>
-                <dd>Export to folder | Export to FTP site</dd>
+                <dd>Export to folder | Export to FTP / FTPS server</dd>
                 <dt>Exporter</dt>
-                <dd>Export to folder | Export to FTP site</dd>
+                <dd>Export to folder | Export to FTP / FTPS server</dd>
                 <dt>Precision</dt>
                 <dd>maintain | [decimal places]</dd>
                 <dt>Min zoom level</dt>

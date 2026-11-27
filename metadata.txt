@@ -12,21 +12,21 @@
 name=qgis2web
 qgisMinimumVersion=3.22
 qgisMaximumVersion=4.99
-#supportsQt6=True
-description=Export to an OpenLayers/Leaflet webmap
+description=Export and update to an OpenLayers/Leaflet webmap (local or cloud)
 about=
  QGIS plugin to export your project to an OpenLayers or Leaflet webmap. It replicates as many aspects of the project as it can, including layers, extent and styles (including categorized and graduated). No server-side software required for GeoJSON export. PBF vector tile export includes a local server launcher (Python required).
+ Local update: refresh an existing local export without starting from scratch.
+ Cloud export & cloud update: publish and update your webmap online, directly from QGIS (provided by O.GIS Cloud - https://opengis.cloud).
  
- Please consider a small donation at https://www.opengis.it/buy-me-a-coffee/
- Even a modest "virtual coffee" can help support our commitment to providing quality software.
- As a token of our gratitude, donors will receive as a gift qgis2o.gis (a plugin enhancing OpenLayers export of qgis2web).
- 
+ If you find qgis2web useful, please consider a contribution to support its development at https://www.opengis.it/buy-me-a-coffee/
+ As a token of our gratitude, supporters receive the qgis2o.gis plugin as a gift.
+ Every contribution helps keep the project active, free and open source.
  Happy mapping!
  
 author=Andrea Ordonselli, Tom Chadwin, Riccardo Klinger, Victor Olaya, Nyall Dawson
 email=info@opengis.it
 
-version=4.4.0
+version=5.0.0
 
 # end of mandatory metadata
 
@@ -34,6 +34,7 @@ version=4.4.0
 
 # Uncomment the following line and add your changelog entries:
 changelog=
+    2026/11/25 5.0.0 Local Export and Local Update: exporting and updating to local folders - Cloud Export and Cloud Update: publishing and updating on the O.GIS Cloud site directly from QGIS - FTP / FTPS Export: explicit TLS, implicit TLS and unencrypted FTP, with account or anonymous login - Fixed Openlayers abstract container width - Fixed ui layersearch fields list in appearance tab - Fixed Leaflet layer search to also work when symbology is something other than a circle
     2026/09/18 4.4.0 Preview window technology overhaul: QtWebEngine QML integration included in the plugin, Qt5/Qt6 compatibility, and automatic startup of a local HTTP server to serve the preview and PBF tiles - The view performs full-step zooming (constrainResolution: true) only if the export includes one or more PBF Vector Tile layers - The \n sequence in a text field's value now triggers a line break in the label - Fixed a bug causing an error when using "set all" with PBF Vector Tiles
     2026/07/25 4.3.2 Fixed a bug that prevented features with text values ​​greater than 255 characters from being exported
     2026/07/06 4.3.1 Fix regex escaping in Leaflet exports

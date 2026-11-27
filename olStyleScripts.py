@@ -25,7 +25,8 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsMapLayer)
 from qgis.PyQt.QtGui import QPixmap, QImage
 from qgis2web.exp2js import compile_to_file
-from qgis2web.utils import safeName, getRGBAColor, handleHiddenField, TYPE_MAP
+from qgis2web.utils import (safeName, getRGBAColor, handleHiddenField,
+                            TYPE_MAP, LAYER_TYPE_VECTOR, LAYER_TYPE_RASTER)
 
 
 def exportStyles(layers, folder, clustered, feedback):
@@ -39,7 +40,7 @@ def exportStyles(layers, folder, clustered, feedback):
         sln = safeName(layer.name()) + "_" + str(count)
 
         # if raster layer
-        if layer.type() == QgsMapLayer.RasterLayer and layer.dataProvider().name() == "gdal":
+        if layer.type() == LAYER_TYPE_RASTER and layer.dataProvider().name() == "gdal":
             legendSymbologyItems = layer.legendSymbologyItems() # simbology items list
             for count, (name, color) in enumerate(legendSymbologyItems):
                 pixmap = QPixmap(16, 16)
@@ -48,7 +49,7 @@ def exportStyles(layers, folder, clustered, feedback):
                 pixmap.save(os.path.join(legendFolder, icon_name))
         
         # if not vector layer      
-        if layer.type() != layer.VectorLayer:
+        if layer.type() != LAYER_TYPE_VECTOR:
             continue
         pattern = ""
         setPattern = ""

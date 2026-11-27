@@ -6,6 +6,7 @@ from urllib.parse import parse_qs
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProject,
+                       QgsMapLayer,
                        QgsRenderContext,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
@@ -15,7 +16,9 @@ from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsWkbTypes)
-from qgis2web.utils import safeName, is25d, BLEND_MODES
+from qgis2web.utils import (safeName, is25d, BLEND_MODES,
+                            LAYER_TYPE_VECTOR, LAYER_TYPE_RASTER,
+                            WKB_TYPE_NO_GEOMETRY)
 from qgis2web.olStyleScripts import getValue
 
 try:
@@ -82,8 +85,8 @@ def writeLayersAndGroups(layers, groups, collapsedGroup, visible, interactive, f
     for count, (layer, labels) in enumerate(zip(layers, popup)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         sln = safeName(layer.name()) + "_" + str(count)
-        if (layer.type() == layer.VectorLayer and
-                layer.wkbType() != QgsWkbTypes.NoGeometry and
+        if (layer.type() == LAYER_TYPE_VECTOR and
+                layer.wkbType() != WKB_TYPE_NO_GEOMETRY and
                 vts is None and
                 not isinstance(layer.renderer(), QgsHeatmapRenderer) and
                 not is25d(layer, canvas, restrictToExtent, extent)):
@@ -118,7 +121,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
     layerName = safeName(layer.name()) + "_" + str(count)
     rawName = layer.name()
     layerAttr = getAttribution(layer)
-    if layer.type() == layer.VectorLayer and not is25d(layer,
+    if layer.type() == LAYER_TYPE_VECTOR and not is25d(layer,
                                                        iface.mapCanvas(),
                                                        restrictToExtent,
                                                        extent):
@@ -159,7 +162,7 @@ def layerToJavascript(iface, layer, encode2json, matchCRS, interactive,
                            cluster, layerType, minResolution,
                            maxResolution, hmRadius, hmRamp, hmWeight,
                            hmWeightMax, renderer, layer, encode2json), vtLayers
-    elif layer.type() == layer.RasterLayer:
+    elif layer.type() == LAYER_TYPE_RASTER:
         baseMap = layer.customProperty("qgis2web/BaseMap", 0) == 2
         if layer.providerType().lower() == "wms":
             source = layer.source()

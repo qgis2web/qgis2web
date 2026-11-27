@@ -2,12 +2,14 @@ import re
 import os
 import shutil
 from qgis.PyQt.QtCore import QDir
-from qgis.core import QgsDataSourceUri
-from qgis2web.utils import safeName
+from qgis.core import QgsDataSourceUri, QgsMapLayer
+from qgis2web.customcode import copy_custom_code
+from qgis2web.utils import safeName, LAYER_TYPE_VECTOR
 
 
 def writeFiles(folder, restrictToExtent, feedback):
     feedback.showFeedback("Exporting libraries...")
+    copy_custom_code(folder)
     imagesFolder = os.path.join(folder, "images")
     QDir().mkpath(imagesFolder)
     dst = os.path.join(folder, "resources")
@@ -43,9 +45,9 @@ def writeHTMLstart(settings, controlCount, osmb, feedback):
 
 
 def writeLayerSearch(cssAddress, jsAddress, controlCount, layerSearch,
-                     searchLayer, pbfVectorTile, feedback):
+                     searchLayer, feedback):
     feedback.showFeedback("Writing Layer Search...")
-    if layerSearch != "None" and layerSearch != "" and not pbfVectorTile:
+    if layerSearch != "None" and layerSearch != "":
         cssAddress += """
         <link rel="stylesheet" type="text/css" href="resources/horsey.min.css">
         <link rel="stylesheet" type="text/css" """
@@ -82,7 +84,7 @@ def writeScriptIncludes(layers, json, matchCRS):
     for count, (layer, encode2json) in enumerate(zip(layers, json)):
         vts = layer.customProperty("VectorTilesReader/vector_tile_url")
         sln = safeName(layer.name()) + "_" + str(count)
-        if layer.type() == layer.VectorLayer:
+        if layer.type() == LAYER_TYPE_VECTOR:
             if layer.providerType() != "WFS" or encode2json:
                 if vts is None:
                     geojsonVars += ('<script src="layers/%s"></script>' %

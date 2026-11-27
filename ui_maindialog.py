@@ -7,8 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from .ui_timedialog import Ui_TimeDialog
+from qgis.PyQt import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -33,7 +32,7 @@ class Ui_MainDialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(
             QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/qgis2web.png")),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         MainDialog.setWindowIcon(icon)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(MainDialog)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
@@ -41,37 +40,37 @@ class Ui_MainDialog(object):
         self.tabWidget.setAutoFillBackground(True)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab_export = QtWidgets.QWidget()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                       QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                       QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tab.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.tab_export.sizePolicy().hasHeightForWidth())
         self.tab_export.setSizePolicy(sizePolicy)
         self.tab_export.setObjectName(_fromUtf8("tab"))
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.tab)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.tab_export)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.splitter_2 = QtWidgets.QSplitter(self.tab)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
-                                       QtWidgets.QSizePolicy.Expanding)
+        self.splitter_2 = QtWidgets.QSplitter(self.tab_export)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
             self.splitter_2.sizePolicy().hasHeightForWidth())
         self.splitter_2.setSizePolicy(sizePolicy)
-        self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter_2.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.splitter_2.setObjectName(_fromUtf8("splitter_2"))
         self.layoutWidget = QtWidgets.QWidget(self.splitter_2)
         self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
         self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.splitter = QtWidgets.QSplitter(self.layoutWidget)
-        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setOrientation(QtCore.Qt.Orientation.Vertical)
         self.splitter.setObjectName(_fromUtf8("splitter"))
         self.layersTree = QtWidgets.QTreeWidget(self.splitter)
         self.layersTree.setMinimumSize(QtCore.QSize(400, 0))
         self.layersTree.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.layersTree.setObjectName(_fromUtf8("layersTree"))
         self.layersTree.headerItem().setText(0, _fromUtf8("1"))
         self.layersTree.header().setVisible(False)
@@ -81,14 +80,14 @@ class Ui_MainDialog(object):
         self.widget.setObjectName(_fromUtf8("widget"))
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout_5.setSpacing(6)
-        self.verticalLayout_5.setMargin(0)
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
         self.appearanceParams = QtWidgets.QTreeWidget(self.widget)
         self.appearanceParams.setMinimumSize(QtCore.QSize(300, 0))
-        self.appearanceParams.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.appearanceParams.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.appearanceParams.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
+        self.appearanceParams.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.appearanceParams.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.appearanceParams.setAutoScroll(False)
         self.appearanceParams.setObjectName(_fromUtf8("appearanceParams"))
         self.appearanceParams.header().setVisible(False)
@@ -98,8 +97,8 @@ class Ui_MainDialog(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        spacerItem = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Fixed,
-                                       QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Policy.Fixed,
+                                       QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.ol3 = QtWidgets.QRadioButton(self.widget)
         self.ol3.setChecked(True)
@@ -117,29 +116,32 @@ class Ui_MainDialog(object):
         icon1 = QtGui.QIcon()
         icon1.addPixmap(
             QtGui.QPixmap(_fromUtf8(":/plugins/qgis2web/icons/preview.gif")),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.buttonPreview.setIcon(icon1)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
-        self.buttonExport = QtWidgets.QPushButton(self.widget)
-        self.buttonExport.setIcon(icon)
-        self.buttonExport.setObjectName(_fromUtf8("buttonExport"))
-        self.horizontalLayout_2.addWidget(self.buttonExport)
+        self.localExportCombo = QtWidgets.QComboBox(self.widget)
+        self.localExportCombo.setEditable(False)
+        self.localExportCombo.setObjectName(_fromUtf8("localExportCombo"))
+        self.horizontalLayout_2.addWidget(self.localExportCombo)
+        self.cloudExportCombo = QtWidgets.QComboBox(self.widget)
+        self.cloudExportCombo.setEditable(False)
+        self.cloudExportCombo.setObjectName(_fromUtf8("cloudExportCombo"))
+        self.horizontalLayout_2.addWidget(self.cloudExportCombo)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
         self.verticalLayout.addWidget(self.splitter)
         #self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.splitter_2)
         #self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
         #self.right_layout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
-        #self.right_layout.setMargin(0)
+        #self.right_layout.setContentsMargins(0, 0, 0, 0)
         #self.right_layout.setObjectName(_fromUtf8("right_layout"))
         self.horizontalLayout.addWidget(self.splitter_2)
         self.tabWidget.addTab(self.tab_export, _fromUtf8(""))
-        uitime = Ui_TimeDialog(self.tabWidget, MainDialog)
         self.tab_settings = QtWidgets.QWidget()
         self.tab_settings.setObjectName(_fromUtf8("tab_settings"))
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.tab_settings)
         self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
-        self.verticalLayout_6.setAlignment(QtCore.Qt.AlignTop)
+        self.verticalLayout_6.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.verticalLayout_6.setContentsMargins(11,16,11,11)
         self.previewOnStartup = QtWidgets.QCheckBox(self.tab_settings)
         self.previewOnStartup.setChecked(True)
@@ -167,8 +169,8 @@ class Ui_MainDialog(object):
         font.setPointSize(11)
         self.helpField.setFont(font)
         self.helpField.setStyleSheet(_fromUtf8("padding: 10px;"))
-        self.helpField.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.helpField.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.helpField.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
+        self.helpField.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
         self.helpField.setLineWidth(0)
         self.helpField.setObjectName(_fromUtf8("helpField"))
         self.horizontalLayout_4.addWidget(self.helpField)
@@ -192,7 +194,13 @@ class Ui_MainDialog(object):
         self.leaflet.setText(_translate("MainDialog", "Leaflet", None))
         self.buttonPreview.setText(_translate("MainDialog", "Update preview",
                                               None))
-        self.buttonExport.setText(_translate("MainDialog", "Export", None))
+        self.localExportCombo.clear()
+        self.localExportCombo.addItem(_translate("MainDialog", "Local Export ...", None))
+        self.localExportCombo.addItem(_translate("MainDialog", "Local Update ...", None))
+        self.cloudExportCombo.clear()
+        self.cloudExportCombo.addItem(_translate("MainDialog", "Cloud Export ...", None))
+        self.cloudExportCombo.addItem(_translate("MainDialog", "Cloud Update ...", None))
+        self.cloudExportCombo.addItem(_translate("MainDialog", "FTP/FTPS Export ...", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_export),
                                   _translate("MainDialog", "Export", None))
         self.previewOnStartup.setText(_translate("MainDialog",

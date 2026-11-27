@@ -191,11 +191,10 @@ td video {
 }
 
 #abstract {
-    max-width: 30%;
+    max-width: 30vw;
 }
 .ol-touch #abstract {
-    max-width: 50%;
-}
+    max-width: 50vw}
 
 .project-abstract {
     font: bold 18px 'Lucida Console', Monaco, monospace;

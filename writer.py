@@ -30,6 +30,7 @@ class WriterResult(object):
         self.index_file = None
         self.folder = None
         self.files = []
+        self.preserved_files = []
 
 
 class Writer(object):
@@ -43,6 +44,7 @@ class Writer(object):
     def __init__(self):
         self.written_files = []
         self.preview_file = None
+        self.layer_manifest_options = None
         # layer groups
         self.groups = {}
         # list of layers to write

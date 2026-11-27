@@ -18,7 +18,6 @@
 from qgis.core import QgsApplication
 import os
 import shutil
-from qgis2web.exporter import EXPORTER_REGISTRY
 from qgis.gui import QgsColorButton
 from qgis.PyQt.QtGui import QColor
 
@@ -46,7 +45,7 @@ def getTemplates():
                  if f.endswith("html"))
 
 
-def getParams(configure_exporter_action=None):
+def getParams():
 
     accentColor = QgsColorButton()
     accentColor.setColor(QColor(68, 68, 68))
@@ -90,14 +89,6 @@ def getParams(configure_exporter_action=None):
                                "22", "23", "24", "25", "26", "27", "28"),
         }
     }
-
-    if configure_exporter_action:
-        params["Data export"]["Exporter"] = {'option':
-                                             EXPORTER_REGISTRY.getOptions(),
-                                             'action':
-                                             configure_exporter_action}
-    else:
-        params["Data export"]["Exporter"] = EXPORTER_REGISTRY.getOptions()
 
     return params
 

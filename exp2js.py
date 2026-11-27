@@ -1,4 +1,5 @@
 from qgis.core import QgsExpression, QgsExpressionNode, QgsMessageLog, Qgis
+from qgis2web.utils import MESSAGE_LEVEL
 import re
 import json
 
@@ -96,13 +97,13 @@ def walkExpression(node, mapLib):
 def handle_condition(node, mapLib):
     global condtioncounts
     subexps = re.findall(r"WHEN(\s+.*?\s+)THEN(\s+.*?\s+)", node.dump())
-    QgsMessageLog.logMessage(subexps, "qgis2web", level=Qgis.Info)
+    QgsMessageLog.logMessage(subexps, "qgis2web", level=MESSAGE_LEVEL.Info)
     count = 1
     js = ""
     for sub in subexps:
         when = sub[0].strip()
         then = sub[1].strip()
-        QgsMessageLog.logMessage(then, "qgis2web", level=Qgis.Info)
+        QgsMessageLog.logMessage(then, "qgis2web", level=MESSAGE_LEVEL.Info)
         whenpart = QgsExpression(when)
         thenpart = QgsExpression(then)
         whenjs = walkExpression(whenpart.rootNode(), mapLib)

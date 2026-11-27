@@ -27,6 +27,7 @@ from qgis.core import (QgsProject,
 from qgis.PyQt.QtCore import Qt, QObject
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QApplication
+from qgis2web.customcode import CUSTOM_CODE_TEMPLATE_VALUES
 from qgis2web.utils import exportLayers, replaceInTemplate
 from qgis2web.olFileScripts import (writeFiles,
                                     writeHTMLstart,
@@ -58,6 +59,7 @@ from qgis2web.writer import (Writer,
                              WriterResult,
                              translator)
 from qgis2web.feedbackDialog import Feedback
+from qgis2web.layer_manifest import (MANIFEST_NAME, write_manifest)
 
 
 class OpenLayersWriter(Writer):
@@ -68,6 +70,7 @@ class OpenLayersWriter(Writer):
 
     def __init__(self):
         super(OpenLayersWriter, self).__init__()
+        self.layer_manifest_options = {'map_format': self.type()}
         
 
     @classmethod
@@ -85,23 +88,26 @@ class OpenLayersWriter(Writer):
 
         feedback.showFeedback('Creating OpenLayers map...')
 
-        self.preview_file = self.writeOL(iface, feedback,
-                                         layers=self.layers,
-                                         groups=self.groups,
-                                         collapsedGroup=self.collapsedGroup,
-                                         popup=self.popup,
-                                         visible=self.visible,
-                                         interactive=self.interactive,
-                                         json=self.json,
-                                         clustered=self.cluster,
-                                         pbfVectorTile=self.pbfVectorTile,
-                                         getFeatureInfo=self.getFeatureInfo,
-                                         baseMap=self.baseMap,
-                                         settings=self.params,
-                                         folder=dest_folder)
+        self.preview_file, preserved_files = self.writeOL(
+            iface, feedback,
+            layers=self.layers,
+            groups=self.groups,
+            collapsedGroup=self.collapsedGroup,
+            popup=self.popup,
+            visible=self.visible,
+            interactive=self.interactive,
+            json=self.json,
+            clustered=self.cluster,
+            pbfVectorTile=self.pbfVectorTile,
+            getFeatureInfo=self.getFeatureInfo,
+            baseMap=self.baseMap,
+            settings=self.params,
+            folder=dest_folder,
+            manifest_options=self.layer_manifest_options)
         result = WriterResult()
         result.index_file = self.preview_file
         result.folder = os.path.dirname(self.preview_file)
+        result.preserved_files = preserved_files
         for dirpath, dirnames, filenames in os.walk(result.folder):
             result.files.extend([os.path.join(dirpath, f) for f in filenames])
         return result
@@ -109,7 +115,7 @@ class OpenLayersWriter(Writer):
     @classmethod
     def writeOL(cls, iface, feedback, layers, groups, collapsedGroup, popup, visible,
                 interactive, json, clustered, pbfVectorTile, getFeatureInfo, baseMap, settings,
-                folder):
+                folder, manifest_options=None):
         QApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
         mapSettings = iface.mapCanvas().mapSettings()
         controlCount = 0
@@ -146,8 +152,10 @@ class OpenLayersWriter(Writer):
         abstractOption = settings["Appearance"]["Abstract"]
 
         writeFiles(folder, restrictToExtent, feedback)
-        exportLayers(iface, layers, folder, precision, optimize,
-                     popup, json, restrictToExtent, extent, feedback, matchCRS, pbfVectorTile)
+        layer_cache = exportLayers(
+            iface, layers, folder, precision, optimize,
+            popup, json, restrictToExtent, extent, feedback, matchCRS,
+            pbfVectorTile, manifest_options)
         mapUnitsLayers = exportStyles(layers, folder, clustered, feedback)
         mapUnitLayers = getMapUnitLayers(mapUnitsLayers)
         osmb = writeLayersAndGroups(layers, groups, collapsedGroup, visible, interactive,
@@ -199,7 +207,7 @@ class OpenLayersWriter(Writer):
          layerSearch, controlCount) = writeLayerSearch(cssAddress, jsAddress,
                                                        controlCount,
                                                        layerSearch,
-                                                       searchLayer, pbfVectorTile, feedback)
+                                                       searchLayer, feedback)
         ol3layerswitcher = getLayerSwitcher()
         ol3popup = getPopup()
         ol3qgis2webjs = getJS(osmb)
@@ -208,6 +216,7 @@ class OpenLayersWriter(Writer):
         exp_js = getExpJS()
         grid = getGrid(project)
         values = {"@PAGETITLE@": projectTitle,
+              **CUSTOM_CODE_TEMPLATE_VALUES,
                   "@CSSADDRESS@": cssAddress,
                   "@EXTRACSS@": extracss,
                   "@JSADDRESS@": jsAddress,
@@ -279,7 +288,15 @@ class OpenLayersWriter(Writer):
             out = replaceInScript("qgis2web.js", values)
             f.write(out)
         QApplication.restoreOverrideCursor()
-        return os.path.join(folder, "index.html")
+        if layer_cache:
+            manifest_path = os.path.join(folder, 'layers', MANIFEST_NAME)
+            write_manifest(
+                manifest_path,
+                layer_cache.manifest(QgsProject.instance().title()))
+            preserved_files = sorted(layer_cache.preserved_paths)
+        else:
+            preserved_files = []
+        return os.path.join(folder, "index.html"), preserved_files
 
 
 def replaceInScript(template, values):

@@ -31,7 +31,7 @@ except ImportError:
 
 from qgis2web.exp2js import compile_to_file
 from qgis2web.utils import (is25d, safeName, handleHiddenField, BLEND_MODES,
-                            TYPE_MAP)
+                            TYPE_MAP, GEOMETRY_TYPE_POINT)
 
 
 def writeVectorLayer(layer, safeLayerName, usedFields, highlight,
@@ -425,7 +425,7 @@ def getPBFLabels(layer, safeLayerName, outputProjectFileName):
         if feature.geometry() is None:
             continue
         geom = feature.geometry()
-        if geom.type() != QgsWkbTypes.PointGeometry:
+        if geom.type() != GEOMETRY_TYPE_POINT:
             centroid = geom.centroid()
             if centroid is None or centroid.isEmpty():
                 continue
@@ -782,7 +782,7 @@ def getPBFLayer(style_str, renderer, safeLayerName, interactive,
 def getLayer(layer, renderer, safeLayerName, interactive,
              outputProjectFileName, usedFields, legends, cluster, json,
              wfsLayers, markerType, useMultiStyle, slCount, feedback):
-    if layer.geometryType() == QgsWkbTypes.PointGeometry:
+    if layer.geometryType() == GEOMETRY_TYPE_POINT:
         (new_obj,
          wfsLayers,
          useMultiStyle) = pointLayer(layer, safeLayerName, interactive,
