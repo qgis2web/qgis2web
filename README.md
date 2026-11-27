@@ -1,5 +1,5 @@
 [![GitHub version](https://badge.fury.io/gh/tomchadwin%2Fqgis2web.svg)](https://badge.fury.io/gh/tomchadwin%2Fqgis2web)
-[![Contribution](https://img.shields.io/badge/ccontribution%20to-qgis2web-green)](https://www.opengis.it/buy-me-a-coffee/)
+[![Contribute](https://img.shields.io/badge/contribute%20to-qgis2web-green)](https://www.opengis.it/buy-me-a-coffee/)
 <h1>qgis2web</h1>
 
 &nbsp;&nbsp;&nbsp;&nbsp;![qgis2web](https://github.com/qgis2web/qgis2web/blob/master/icons/qgis2web.png)
@@ -55,7 +55,7 @@ qgis2web is among the winners of the [OSGeo:UK](https://uk.osgeo.org/agm/agm2024
 <h2>Support the development</h2>
 We are thrilled to see how widely our project is being used and appreciated around the world. The development and maintenance require significant time and effort, and we want to continue improving and adding new features.
 
-If you find qgis2web useful, please consider a contribution to support its development — even a modest one helps keep the project active, free and open source.
+If you find qgis2web useful, please consider a small contribution to support its development — even a modest "virtual coffee" helps keep the project active, free and open source.
 
 [<img src="https://github.com/qgis2web/qgis2web/assets/89784373/3bf8e193-e65e-4dc6-a189-a9e669f98b1e">](https://www.opengis.it/buy-me-a-coffee/)
 </br><b>🎁 As a token of our gratitude, every supporter receives [qgis2o.gis](https://github.com/andreaordonselli/qgis2o.gis) (a plugin enhancing the OpenLayers export of qgis2web).🎁</b>
