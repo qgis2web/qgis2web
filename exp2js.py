@@ -2,6 +2,7 @@ from qgis.core import QgsExpression, QgsExpressionNode, QgsMessageLog, Qgis
 from qgis2web.utils import MESSAGE_LEVEL
 import re
 import json
+import uuid
 
 whenfunctions = []
 
@@ -51,9 +52,7 @@ def exp2func(expstr, name=None, mapLib=None):
     exp = QgsExpression(expstr)
     js = walkExpression(exp.rootNode(), mapLib=mapLib)
     if name is None:
-        import random
-        import string
-        name = 'exp_' + ''.join(random.choice(string.ascii_lowercase) for _ in range(4))
+        name = 'exp_' + uuid.uuid4().hex
     name = "exp_" + name + "_eval_expression"
     temp = """
 function %s(context) {

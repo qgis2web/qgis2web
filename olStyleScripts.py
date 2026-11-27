@@ -4,12 +4,8 @@ import shutil
 import re
 import codecs
 import math
-try:
-    import defusedxml
-    import defusedxml.ElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET  # noqa: S405
 import traceback
+from qgis2web import xmltodict
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import (QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
@@ -776,32 +772,28 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency, renderer, sln,
             #        QgsSymbolLayerUtils::svgSymbolPathToName
             if svg_path[0:7] == "base64:":
                 svg_xml = base64.standard_b64decode(svg_path[7:]).decode("utf-8")
-                svg = ET.fromstring(svg_xml)  # nosec B314
+                svg_document = xmltodict.parse(
+                    svg_xml, disable_entities=True)
                 base_filename = "embedded.svg"
                 filename, file_extension = ("embedded", ".svg")
             else:
-                svg = ET.parse(svg_path).getroot()  # nosec B314
+                with open(svg_path, "rb") as svg_file:
+                    svg_document = xmltodict.parse(
+                        svg_file, disable_entities=True)
                 base_filename = os.path.basename(svg_path)
                 filename, file_extension = os.path.splitext(base_filename)
+            svg_root = next(iter(svg_document.values()))
+            svg_attributes = svg_root if isinstance(svg_root, dict) else {}
             # Check if the file already exists, if yes, append a progressive number
             count = 0
             while os.path.exists(os.path.join(stylesFolder, base_filename)):
                 count += 1
                 base_filename = f"{filename}_{count}{file_extension}"
             path = os.path.join(stylesFolder, base_filename)
-            try:
-                svgWidth = svg.attrib["width"]
-                svgWidth = re.sub("px", "", svgWidth)
-                svgWidth = re.sub("mm", "", svgWidth)
-            except Exception:
-                svgWidth = "5"
-
-            try:
-                svgHeight = svg.attrib["height"]
-                svgHeight = re.sub("px", "", svgHeight)
-                svgHeight = re.sub("mm", "", svgHeight)
-            except Exception:
-                svgHeight = "5"
+            svgWidth = re.sub(
+                "mm", "", re.sub("px", "", svg_attributes.get("@width", "5")))
+            svgHeight = re.sub(
+                "mm", "", re.sub("px", "", svg_attributes.get("@height", "5")))
 
             if symbol.dataDefinedAngle().isActive():
                 if symbol.dataDefinedAngle().useExpression():

@@ -79,15 +79,27 @@ def allow_dev_site():
 
 
 def ensure_allowed_site(site_url):
+    normalized = normalize_site_url(site_url)
+    try:
+        parsed = urllib.parse.urlsplit(normalized)
+        parsed.port
+    except ValueError as error:
+        raise CloudError(
+            'Cloud site URL is invalid or contains an invalid port.',
+            'invalid_site_url') from error
+    if parsed.scheme.lower() not in ('http', 'https') or not parsed.hostname:
+        raise CloudError(
+            'Cloud site URLs must use HTTP or HTTPS and include a hostname.',
+            'invalid_site_url')
+
     if not allow_dev_site() and not is_default_site(site_url):
         raise CloudError(
             'Publishing is locked to {}. To use a development site, explicitly enable '
             'the {} environment variable or the {} QGIS setting.'.format(
                 DEFAULT_SITE_URL, DEV_SITE_ENV_VAR, DEV_SITE_SETTING),
             'site_locked')
-    if not is_default_site(site_url) and not is_local_address(site_url):
-        if not normalize_site_url(site_url).lower().startswith('https://'):
-            raise CloudError('Cloud credentials may only be sent over HTTPS.', 'insecure_site')
+    if parsed.scheme.lower() != 'https' and not is_local_address(normalized):
+        raise CloudError('Cloud credentials may only be sent over HTTPS.', 'insecure_site')
 
 
 def _root(url):
@@ -142,10 +154,42 @@ def remove_credentials(config_id):
             pass
 
 
+class _HTTPRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers,
+                         new_url):
+        current = urllib.parse.urlsplit(request.full_url)
+        destination = urllib.parse.urlsplit(new_url)
+        if (destination.scheme.lower() != current.scheme.lower()
+                or destination.hostname != current.hostname
+                or destination.port != current.port):
+            raise urllib.error.URLError(
+                'Cloud API redirects must stay on the same HTTP(S) origin.')
+        return super(_HTTPRedirectHandler, self).redirect_request(
+            request, response, code, message, headers, new_url)
+
+
+def _open_http_request(request, timeout):
+    scheme = urllib.parse.urlsplit(request.full_url).scheme.lower()
+    if scheme not in ('http', 'https'):
+        raise urllib.error.URLError('Only HTTP and HTTPS requests are allowed.')
+
+    opener = urllib.request.OpenerDirector()
+    for handler in (
+            urllib.request.ProxyHandler(),
+            urllib.request.UnknownHandler(),
+            urllib.request.HTTPHandler(),
+            urllib.request.HTTPSHandler(),
+            urllib.request.HTTPDefaultErrorHandler(),
+            _HTTPRedirectHandler(),
+            urllib.request.HTTPErrorProcessor()):
+        opener.add_handler(handler)
+    return opener.open(request, timeout=timeout)
+
+
 class CloudClient:
     """Small client implementing the site's policy, manifest and ZIP upload API."""
 
-    def __init__(self, site_url=DEFAULT_SITE_URL, username='', password='', timeout=600):
+    def __init__(self, site_url=DEFAULT_SITE_URL, username='', password=None, timeout=600):
         ensure_allowed_site(site_url)
         self.site_url = _root(normalize_site_url(site_url))
         self.username = username or ''
@@ -154,6 +198,7 @@ class CloudClient:
 
     def request(self, method, path, params=None, body=None, content_type=None,
                 progress=None):
+        ensure_allowed_site(self.site_url)
         url = '{}/wp-json/ogis/v1/{}'.format(self.site_url, path.lstrip('/'))
         if params:
             url += '?' + urllib.parse.urlencode(params, doseq=True)
@@ -194,7 +239,7 @@ class CloudClient:
                                  status=status)
         except ImportError:
             try:
-                with urllib.request.urlopen(request, timeout=self.timeout) as response_obj:
+                with _open_http_request(request, self.timeout) as response_obj:
                     status, response = response_obj.status, response_obj.read()
             except urllib.error.HTTPError as error:
                 status, response = error.code, error.read()

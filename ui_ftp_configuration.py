@@ -118,8 +118,8 @@ class Ui_FtpConfiguration(object):
 
     def retranslateUi(self, FtpConfiguration):
         _translate = QtCore.QCoreApplication.translate
-        FtpConfiguration.setWindowTitle(_translate("FtpConfiguration", "FTP / FTPS export"))
-        self.introLabel.setText(_translate("FtpConfiguration", "Upload the generated web map to an FTP or FTPS server. FTPS is recommended because it encrypts your login and files."))
+        FtpConfiguration.setWindowTitle(_translate("FtpConfiguration", "FTPS export"))
+        self.introLabel.setText(_translate("FtpConfiguration", "Upload the generated web map to an FTPS server. TLS encrypts your login and files."))
         self.connectionGroupBox.setTitle(_translate("FtpConfiguration", "Server and destination"))
         self.hostLabel.setText(_translate("FtpConfiguration", "Server (host)"))
         self.hostLineEdit.setPlaceholderText(_translate("FtpConfiguration", "ftp.example.com"))
@@ -134,5 +134,5 @@ class Ui_FtpConfiguration(object):
         self.authenticationGroupBox.setTitle(_translate("FtpConfiguration", "Sign-in"))
         self.authenticationLabel.setText(_translate("FtpConfiguration", "Login method"))
         self.usernameLabel.setText(_translate("FtpConfiguration", "Username"))
-        self.usernameLineEdit.setPlaceholderText(_translate("FtpConfiguration", "FTP account username"))
+        self.usernameLineEdit.setPlaceholderText(_translate("FtpConfiguration", "FTPS account username"))
         self.authenticationDescriptionLabel.setText(_translate("FtpConfiguration", "The password is requested only if the server needs it and is never saved in the QGIS project. A blank password is allowed if the server accepts it."))

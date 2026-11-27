@@ -18,14 +18,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
+import platform
+import platform
 import re
 import sys
 import site
 import shutil
 from collections import defaultdict, OrderedDict
 import webbrowser
-import platform
-import subprocess
 import sysconfig
 import tempfile
 import pkgutil
@@ -51,7 +51,8 @@ from qgis.PyQt.QtCore import (QObject,
                               QEvent,
                               Qt,
                               QCoreApplication,
-                              QTimer)
+                              QTimer,
+                              QProcess)
 from qgis.PyQt.QtGui import (QIcon,
                              QFont,
                              QColor)
@@ -251,6 +252,7 @@ class MainDialog(QDialog, FORM_CLASS):
         self.preview_backend = "none"
         self.preview_server = None
         self._closing = False
+        self._server_processes = []
 
         # Prefer the standard QtWebEngineWidgets backend: it is the same
         # QtWebEngine that QGIS itself ships and uses, and it initializes
@@ -640,7 +642,8 @@ class MainDialog(QDialog, FORM_CLASS):
                 with open(credential_file, 'w', encoding='utf-8') as credential_stream:
                     import json
                     json.dump({'username': self.exporter.username,
-                               'password': self.exporter.password}, credential_stream)
+                               'password': self.exporter.password or ''},
+                              credential_stream)
                 os.chmod(credential_file, 0o600)
                 self.exporter.credential_file = credential_file
             result = self.exporter.postProcess(results, feedback=self.feedback)
@@ -683,48 +686,61 @@ class MainDialog(QDialog, FORM_CLASS):
                         level=utils.MESSAGE_LEVEL.Warning)
 
     def launchMapWithServer(self, folder):
-        """Launch the map using a local HTTP server (for CORS support with PBF tiles)."""
-        import platform
-        import subprocess
-
-        system = platform.system()
-
-        if system == 'Windows':
-            launcher = 'show_map_with_server-win.bat'
-        elif system == 'Linux':
-            launcher = 'show_map_with_server-linux.sh'
-        elif system == 'Darwin':  # macOS
-            launcher = 'show_map_with_server-mac.command'
-        else:
+        """Start the packaged local server without running files from the export."""
+        if not folder or not os.path.isdir(folder):
             QgsMessageLog.logMessage(
-                "Unknown OS '{}', cannot launch server. Open index.html manually.".format(system),
+                "Export folder not found; open index.html manually.",
                 "qgis2web",
                 level=utils.MESSAGE_LEVEL.Warning)
             return
 
-        launcher_path = os.path.join(folder, launcher)
-        if not os.path.exists(launcher_path):
+        python_executable = shutil.which('python3') or shutil.which('python')
+        if not python_executable:
             QgsMessageLog.logMessage(
-                "Launcher '{}' not found in export folder.".format(launcher_path),
+                "Python was not found; open index.html manually.",
                 "qgis2web",
                 level=utils.MESSAGE_LEVEL.Warning)
             return
 
-        try:
-            if system == 'Windows':
-                subprocess.Popen([launcher_path], cwd=folder)
-            else:
-                # Make executable and launch
-                subprocess.Popen(['chmod', '+x', launcher_path], cwd=folder)
-                if system == 'Darwin':
-                    subprocess.Popen(['open', launcher_path], cwd=folder)
-                else:
-                    subprocess.Popen(['x-terminal-emulator', '-e', launcher_path], cwd=folder)
-        except Exception as e:
+        server_script = os.path.abspath(os.path.join(
+            os.path.dirname(__file__), "templates", "server_launchers",
+            "start_server.py"))
+        if not os.path.isfile(server_script):
             QgsMessageLog.logMessage(
-                "Failed to launch server: {}".format(str(e)),
+                "The packaged local server script was not found.",
                 "qgis2web",
                 level=utils.MESSAGE_LEVEL.Warning)
+            return
+
+        target_folder = os.path.realpath(folder)
+        process = QProcess(self)
+        process.setProgram(os.path.abspath(python_executable))
+        process.setArguments([server_script, 'index.html', target_folder])
+        process.setWorkingDirectory(target_folder)
+        process.finished.connect(self._removeLocalServerProcess)
+        process.errorOccurred.connect(
+            lambda *_args, server_process=process: QgsMessageLog.logMessage(
+                "Local map server error: {}".format(
+                    server_process.errorString()),
+                "qgis2web",
+                level=utils.MESSAGE_LEVEL.Warning))
+        self._server_processes.append(process)
+        process.start()
+        if not process.waitForStarted(5000):
+            if process in self._server_processes:
+                self._server_processes.remove(process)
+            QgsMessageLog.logMessage(
+                "Failed to start the local map server: {}".format(
+                    process.errorString()),
+                "qgis2web",
+                level=utils.MESSAGE_LEVEL.Warning)
+            process.deleteLater()
+
+    def _removeLocalServerProcess(self, *_args):
+        process = self.sender()
+        if process in self._server_processes:
+            self._server_processes.remove(process)
+            process.deleteLater()
 
     def copyReadmeFile(self, folder, has_pbf):
         """Copy the appropriate README.txt file to the export folder.

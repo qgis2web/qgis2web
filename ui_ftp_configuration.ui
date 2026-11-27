@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>FTP / FTPS export</string>
+   <string>FTPS export</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -30,7 +30,7 @@
    <item>
     <widget class="QLabel" name="introLabel">
      <property name="text">
-      <string>Upload the generated web map to an FTP or FTPS server. FTPS is recommended because it encrypts your login and files.</string>
+      <string>Upload the generated web map to an FTPS server. TLS encrypts your login and files.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -187,7 +187,7 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="usernameLineEdit">
         <property name="placeholderText">
-         <string>FTP account username</string>
+         <string>FTPS account username</string>
         </property>
        </widget>
       </item>

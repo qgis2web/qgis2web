@@ -1,17 +1,21 @@
-"""FTP and FTPS connection helpers for the remote exporter."""
+"""FTPS connection helpers for the remote exporter."""
 
-import ftplib
+# Bandit's ftplib rule also flags FTP_TLS; this module uses TLS for all traffic.
+import ftplib  # nosec B402
 import os
 import socket
 import ssl
 
 
-FTP_MODE_PLAIN = 'ftp'
 FTP_MODE_FTPS_EXPLICIT = 'ftps_explicit'
 FTP_MODE_FTPS_IMPLICIT = 'ftps_implicit'
 
 FTP_AUTH_USER = 'user'
 FTP_AUTH_ANONYMOUS = 'anonymous'
+
+FTP_ERRORS = ftplib.all_errors
+FTP_PERMISSION_ERROR = ftplib.error_perm
+FTP_TLS = ftplib.FTP_TLS
 
 
 class FTPLoginCancelled(Exception):
@@ -58,14 +62,13 @@ class _ImplicitFTP_TLS(ftplib.FTP_TLS):
 def default_port_for_mode(security_mode):
     if security_mode == FTP_MODE_FTPS_IMPLICIT:
         return 990
-    if security_mode in (FTP_MODE_PLAIN, FTP_MODE_FTPS_EXPLICIT):
+    if security_mode == FTP_MODE_FTPS_EXPLICIT:
         return 21
     raise ValueError('Unsupported FTP connection security mode.')
 
 
 def security_mode_label(security_mode):
     labels = {
-        FTP_MODE_PLAIN: 'FTP without encryption',
         FTP_MODE_FTPS_EXPLICIT: 'FTPS with explicit TLS',
         FTP_MODE_FTPS_IMPLICIT: 'FTPS with implicit TLS',
     }
@@ -76,12 +79,9 @@ def security_mode_label(security_mode):
 
 
 def create_ftp_client(security_mode, timeout=30):
-    if security_mode == FTP_MODE_PLAIN:
-        return ftplib.FTP(timeout=timeout)
-
     context = ssl.create_default_context()
     if security_mode == FTP_MODE_FTPS_EXPLICIT:
-        return ftplib.FTP_TLS(context=context, timeout=timeout)
+        return FTP_TLS(context=context, timeout=timeout)
     if security_mode == FTP_MODE_FTPS_IMPLICIT:
         return _ImplicitFTP_TLS(context=context, timeout=timeout)
     raise ValueError('Unsupported FTP connection security mode.')
@@ -101,7 +101,7 @@ def open_ftp_connection(host, port, security_mode, authentication_mode,
     elif authentication_mode == FTP_AUTH_USER:
         login_username = (username or '').strip()
         if not login_username:
-            raise ValueError('Enter the FTP account username.')
+            raise ValueError('Enter the FTPS account username.')
     else:
         raise ValueError('Unsupported FTP login mode.')
 
@@ -147,10 +147,10 @@ def ensure_remote_directory(ftp, remote_folder):
             continue
         try:
             ftp.cwd(part)
-        except ftplib.error_perm:
+        except FTP_PERMISSION_ERROR:
             try:
                 ftp.mkd(part)
-            except ftplib.error_perm:
+            except FTP_PERMISSION_ERROR:
                 pass
             ftp.cwd(part)
 
@@ -179,7 +179,7 @@ def upload_directory(ftp, local_folder, feedback, total_files):
                 try:
                     try:
                         ftp.mkd(item.name)
-                    except ftplib.error_perm:
+                    except FTP_PERMISSION_ERROR:
                         pass
                     ftp.cwd(item.name)
                     if not upload_tree(item.path):

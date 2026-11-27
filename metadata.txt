@@ -34,7 +34,7 @@ version=5.0.0
 
 # Uncomment the following line and add your changelog entries:
 changelog=
-    2026/11/25 5.0.0 Local Export and Local Update: exporting and updating to local folders - Cloud Export and Cloud Update: publishing and updating on the O.GIS Cloud site directly from QGIS - FTP / FTPS Export: explicit TLS, implicit TLS and unencrypted FTP, with account or anonymous login - Fixed Openlayers abstract container width - Fixed ui layersearch fields list in appearance tab - Fixed Leaflet layer search to also work when symbology is something other than a circle
+    2026/11/25 5.0.0 Local Export and Local Update: exporting and updating to local folders - Cloud Export and Cloud Update: publishing and updating on the O.GIS Cloud site directly from QGIS - FTPS Export: explicit or implicit TLS, with account or anonymous login - Fixed Openlayers abstract container width - Fixed ui layersearch fields list in appearance tab - Fixed Leaflet layer search to also work when symbology is something other than a circle
     2026/09/18 4.4.0 Preview window technology overhaul: QtWebEngine QML integration included in the plugin, Qt5/Qt6 compatibility, and automatic startup of a local HTTP server to serve the preview and PBF tiles - The view performs full-step zooming (constrainResolution: true) only if the export includes one or more PBF Vector Tile layers - The \n sequence in a text field's value now triggers a line break in the label - Fixed a bug causing an error when using "set all" with PBF Vector Tiles
     2026/07/25 4.3.2 Fixed a bug that prevented features with text values ​​greater than 255 characters from being exported
     2026/07/06 4.3.1 Fix regex escaping in Leaflet exports

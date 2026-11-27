@@ -5,8 +5,10 @@ try:
     from defusedexpat import pyexpat as expat
 except ImportError:
     from xml.parsers import expat
-from xml.sax.saxutils import XMLGenerator
-from xml.sax.xmlreader import AttributesImpl
+# These SAX utilities write XML in unparse(); input is parsed by Expat with
+# entity expansion disabled in parse().
+from xml.sax.saxutils import XMLGenerator  # nosec B406
+from xml.sax.xmlreader import AttributesImpl  # nosec B406
 try:  # pragma no cover
     from cStringIO import StringIO
 except ImportError:  # pragma no cover

@@ -16,7 +16,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import ftplib
 import os
 import shutil
 from datetime import datetime
@@ -39,7 +38,7 @@ from .layer_manifest import (MANIFEST_NAME, empty_manifest, load_manifest,
                             normalize_manifest)
 from .ftp_transport import (FTP_AUTH_ANONYMOUS, FTP_AUTH_USER,
                             FTP_MODE_FTPS_EXPLICIT, FTP_MODE_FTPS_IMPLICIT,
-                            FTP_MODE_PLAIN, FTPLoginCancelled,
+                            FTP_ERRORS, FTPLoginCancelled,
                             default_port_for_mode, ensure_remote_directory,
                             open_ftp_connection, security_mode_label,
                             upload_directory)
@@ -370,7 +369,7 @@ class FolderSyncExporter(Exporter):
 
 
 class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
-    """Dialog for configuring FTP and FTPS connection details."""
+    """Dialog for configuring FTPS connection details."""
 
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
@@ -381,9 +380,6 @@ class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
         self.securityComboBox.addItem(
             self.tr('FTPS - implicit TLS'),
             FTP_MODE_FTPS_IMPLICIT)
-        self.securityComboBox.addItem(
-            self.tr('FTP - no encryption (insecure)'),
-            FTP_MODE_PLAIN)
         self.authenticationComboBox.addItem(
             self.tr('Username and password'),
             FTP_AUTH_USER)
@@ -478,9 +474,6 @@ class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
             FTP_MODE_FTPS_IMPLICIT: self.tr(
                 'TLS starts immediately when connecting. Usually uses port 990. '
                 'Choose this only if your hosting provider specifies implicit FTPS.'),
-            FTP_MODE_PLAIN: self.tr(
-                'No encryption: your username, password and map files can be read '
-                'in transit. Use only if your server requires plain FTP.'),
         }
         self.securityDescriptionLabel.setText(
             descriptions[self.securityMode()])
@@ -515,13 +508,13 @@ class FtpConfigurationDialog(QDialog, Ui_FtpConfiguration):
                 not self.username()):
             QMessageBox.warning(
                 self, self.tr('Username required'),
-                self.tr('Enter the FTP account username, or choose anonymous access.'))
+                self.tr('Enter the FTPS account username, or choose anonymous access.'))
             self.usernameLineEdit.setFocus()
             return
         QDialog.accept(self)
 
 class FtpExporter(Exporter):
-    """Exporter for uploading a web map to an FTP or FTPS site."""
+    """Exporter for uploading a web map to an FTPS site."""
 
     def __init__(self):
         super(Exporter, self).__init__()
@@ -541,7 +534,7 @@ class FtpExporter(Exporter):
     @classmethod
     def name(cls):
         return QCoreApplication.translate(
-            'FtpExporter', 'Export to FTP / FTPS site')
+            'FtpExporter', 'Export to FTPS site')
 
     def configure(self, parent_widget=None):
         dialog = FtpConfigurationDialog(parent_widget)
@@ -570,13 +563,13 @@ class FtpExporter(Exporter):
         self.export_file = ''
         file_count = max(len(results.files), 1)
         source_folder = results.folder
-        ftp = None
+        ftps = None
         try:
             if not self.host.strip() or not 1 <= int(self.port) <= 65535:
-                raise ValueError('Enter a valid FTP/FTPS server and port.')
+                raise ValueError('Enter a valid FTPS server and port.')
             if (self.authentication_mode == FTP_AUTH_USER and
                     not self.username.strip()):
-                raise ValueError('Enter the FTP account username.')
+                raise ValueError('Enter the FTPS account username.')
             feedback.showFeedback(
                 'Connecting to {}:{} using {}...'.format(
                     self.host, self.port,
@@ -586,46 +579,43 @@ class FtpExporter(Exporter):
                 if feedback.cancelled():
                     return None
                 if self.authentication_mode == FTP_AUTH_ANONYMOUS:
-                    title = 'Anonymous FTP login'
+                    title = 'Anonymous FTPS login'
                     label = 'Optional password or email:'
-                    default_password = 'anonymous@'
                 else:
-                    title = 'FTP account password'
+                    title = 'FTPS account password'
                     label = 'Password for {} (leave blank only if allowed):'.format(
                         self.username)
-                    default_password = ''
                 password, accepted = QInputDialog.getText(
-                    None, title, label, QLineEdit.EchoMode.Password,
-                    default_password)
+                    None, title, label, QLineEdit.EchoMode.Password)
                 return password if accepted else None
 
-            ftp = open_ftp_connection(
+            ftps = open_ftp_connection(
                 self.host, self.port, self.security_mode,
                 self.authentication_mode, self.username, request_password)
             if feedback.cancelled():
                 feedback.setFatalError('Upload cancelled by user.')
                 return False
 
-            ensure_remote_directory(ftp, self.remote_folder)
+            ensure_remote_directory(ftps, self.remote_folder)
             if not upload_directory(
-                    ftp, source_folder, feedback, file_count):
+                    ftps, source_folder, feedback, file_count):
                 feedback.setFatalError('Upload cancelled by user.')
                 return False
 
-            ftp.quit()
-            ftp = None
+            ftps.quit()
+            ftps = None
             feedback.setCompleted('Upload complete!')
             return True
         except FTPLoginCancelled:
             feedback.setFatalError('Upload cancelled by user.')
             return False
-        except (ftplib.Error, OSError, EOFError, ValueError) as error:
+        except FTP_ERRORS + (ValueError,) as error:
             feedback.setFatalError(
-                'FTP/FTPS upload failed: {}'.format(error))
+                'FTPS upload failed: {}'.format(error))
             return False
         finally:
-            if ftp is not None:
-                ftp.close()
+            if ftps is not None:
+                ftps.close()
             _remove_staging(source_folder)
             _remove_empty_staging_parent()
 
@@ -652,7 +642,7 @@ class FtpExporter(Exporter):
         saved_security_mode, has_security_mode = project.readEntry(
             'qgis2web', 'FtpSecurityMode')
         valid_security_modes = (
-            FTP_MODE_FTPS_EXPLICIT, FTP_MODE_FTPS_IMPLICIT, FTP_MODE_PLAIN)
+            FTP_MODE_FTPS_EXPLICIT, FTP_MODE_FTPS_IMPLICIT)
         if saved_security_mode in valid_security_modes:
             self.security_mode = saved_security_mode
         else:
@@ -684,7 +674,8 @@ class CloudPublishExporter(Exporter):
     def __init__(self):
         super(CloudPublishExporter, self).__init__()
         self.site_url = DEFAULT_SITE_URL
-        self.username = self.password = self.authcfg_id = ''
+        self.username = self.authcfg_id = ''
+        self.password = None
         self.slug = self.display_name = self.target_slug = ''
         self.project_id = self.target_project_id = ''
         self.selected_project_id = None
@@ -840,7 +831,7 @@ class CloudPublishExporter(Exporter):
         if old_auth and old_auth != self.authcfg_id:
             remove_credentials(old_auth)
         if self.remember_credentials and self.authcfg_id:
-            self.password = ''
+            self.password = None
         return True
 
     def client(self):

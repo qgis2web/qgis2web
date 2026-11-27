@@ -83,12 +83,12 @@ def open_browser_when_ready(port, url):
 
 
 def main():
-    # Determine the directory where this script is located
-    server_dir = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(server_dir)
-
     # Determine which HTML file to open
     index_file = sys.argv[1] if len(sys.argv) > 1 else "index.html"
+    server_dir = (os.path.abspath(sys.argv[2]) if len(sys.argv) > 2
+                  else os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(server_dir)
+
     index_path = os.path.join(server_dir, index_file)
     if not os.path.exists(index_path):
         print("Warning: {} not found in this directory.".format(index_file))
@@ -97,19 +97,19 @@ def main():
     # port search and the server start.
     handler = functools.partial(TileRequestHandler, directory=server_dir)
     try:
-        httpd = ThreadedHTTPServer(("", 0), handler)
+        httpd = ThreadedHTTPServer(("127.0.0.1", 0), handler)
     except OSError as e:
         print("Error starting server: {}".format(e))
         return 1
 
     port = httpd.server_address[1]
-    url = "http://localhost:{}/{}".format(port, index_file)
+    url = "http://127.0.0.1:{}/{}".format(port, index_file)
 
     print("=" * 60)
     print("qgis2web - Local HTTP Server")
     print("=" * 60)
     print("Serving directory: {}".format(server_dir))
-    print("Server URL:       http://localhost:{}".format(port))
+    print("Server URL:       http://127.0.0.1:{}".format(port))
     print("Map URL:          {}".format(url))
     print("Press Ctrl+C to stop the server or close the terminal window.")
     print("=" * 60)

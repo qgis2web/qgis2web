@@ -4,7 +4,12 @@
 import hashlib
 import json
 import os
-import xml.etree.ElementTree as ET
+from xml.parsers.expat import ExpatError
+
+if __package__:
+    from . import xmltodict
+else:
+    import xmltodict
 
 
 MANIFEST_NAME = 'layers_manifest.js'
@@ -14,6 +19,18 @@ PBF_CACHE_SCHEMA = 2
 
 def empty_manifest():
     return {'version': 1, 'nextPermalink': 1, 'layers': []}
+
+
+def _xml_elements(document, local_name):
+    if isinstance(document, dict):
+        for name, value in document.items():
+            if name.rsplit(':', 1)[-1] == local_name:
+                yield value
+            else:
+                yield from _xml_elements(value, local_name)
+    elif isinstance(document, list):
+        for value in document:
+            yield from _xml_elements(value, local_name)
 
 
 def parse_manifest(text):
@@ -179,21 +196,32 @@ def raster_data_hash(layer, options=None):
 
         if extension.lower() == '.vrt':
             try:
-                vrt_root = ET.parse(path).getroot()
-            except (ET.ParseError, OSError):
+                with open(path, 'rb') as vrt_file:
+                    vrt_document = xmltodict.parse(
+                        vrt_file, disable_entities=True)
+            except (ExpatError, OSError, ValueError):
                 return None
-            for element in vrt_root.iter():
-                if element.tag.rsplit('}', 1)[-1] != 'SourceFilename':
-                    continue
-                dependency = (element.text or '').strip()
-                if (not dependency or '://' in dependency
-                        or dependency.startswith('/vsi')):
-                    return None
-                if element.get('relativeToVRT') == '1':
-                    dependency = os.path.join(os.path.dirname(path), dependency)
-                elif not os.path.isabs(dependency):
-                    return None
-                pending.append(dependency)
+            for source_filenames in _xml_elements(
+                    vrt_document, 'SourceFilename'):
+                if not isinstance(source_filenames, list):
+                    source_filenames = [source_filenames]
+                for source in source_filenames:
+                    if isinstance(source, dict):
+                        dependency = source.get('#text') or ''
+                        relative_to_vrt = source.get('@relativeToVRT') == '1'
+                    else:
+                        dependency = source or ''
+                        relative_to_vrt = False
+                    dependency = dependency.strip()
+                    if (not dependency or '://' in dependency
+                            or dependency.startswith('/vsi')):
+                        return None
+                    if relative_to_vrt:
+                        dependency = os.path.join(
+                            os.path.dirname(path), dependency)
+                    elif not os.path.isabs(dependency):
+                        return None
+                    pending.append(dependency)
 
     renderer = layer.renderer()
     header = {
